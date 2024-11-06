@@ -252,11 +252,11 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         fatalError()
     }
 
-    func getWebAuthnRegistrationOptions(input: AWSCognitoIdentityProvider.GetWebAuthnRegistrationOptionsInput) async throws -> AWSCognitoIdentityProvider.GetWebAuthnRegistrationOptionsOutput {
+    func startWebAuthnRegistration(input: AWSCognitoIdentityProvider.StartWebAuthnRegistrationInput) async throws -> AWSCognitoIdentityProvider.StartWebAuthnRegistrationOutput {
         fatalError()
     }
 
-    func verifyWebAuthnRegistrationResult(input: AWSCognitoIdentityProvider.VerifyWebAuthnRegistrationResultInput) async throws -> AWSCognitoIdentityProvider.VerifyWebAuthnRegistrationResultOutput {
+    func completeWebAuthnRegistration(input: AWSCognitoIdentityProvider.CompleteWebAuthnRegistrationInput) async throws -> AWSCognitoIdentityProvider.CompleteWebAuthnRegistrationOutput {
         fatalError()
     }
 

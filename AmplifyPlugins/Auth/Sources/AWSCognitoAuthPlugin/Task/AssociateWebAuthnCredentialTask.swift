@@ -57,13 +57,13 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
     private func createWebAuthnCredential(
         accessToken: String,
         userPoolService: CognitoUserPoolBehavior
-    ) async throws -> String {
-        let result = try await userPoolService.getWebAuthnRegistrationOptions(
+    ) async throws -> Data {
+        let result = try await userPoolService.startWebAuthnRegistration(
             input: .init(accessToken: accessToken)
         )
 
         let options = try CredentialCreationOptions(
-            from: result.credentialCreationOptions
+            from: result.credentialCreationOptions?.asStringMap()
         )
 
         let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(
@@ -71,12 +71,12 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
         )
 
         let platformKeyRequest = platformProvider.createCredentialRegistrationRequest(
-            challenge: try options.challenge,
+            challenge: options.challenge,
             name: options.user.name,
-            userID: try options.user.id
+            userID: options.user.id
         )
-        platformKeyRequest.excludedCredentials = try options.excludeCredentials.compactMap { credential in
-            return .init(credentialID: try credential.id)
+        platformKeyRequest.excludedCredentials = options.excludeCredentials.compactMap { credential in
+            return .init(credentialID: credential.id)
         }
 
         let credential = try await withCheckedThrowingContinuation { continuation in
@@ -89,18 +89,18 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
             authController.performRequests()
         }
 
-        return try credential.stringify()
+        return try credential.asData()
     }
 
     private func associateWebAuthCredential(
-        credential: String,
+        credential: Data,
         accessToken: String,
         userPoolService: CognitoUserPoolBehavior
     ) async throws {
-        _ = try await userPoolService.verifyWebAuthnRegistrationResult(
+        _ = try await userPoolService.completeWebAuthnRegistration(
             input: .init(
                 accessToken: accessToken,
-                credential: credential
+                credential: .make(from: credential)
             )
         )
     }

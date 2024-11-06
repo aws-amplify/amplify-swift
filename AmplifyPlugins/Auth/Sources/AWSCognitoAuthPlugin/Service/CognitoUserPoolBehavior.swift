@@ -117,7 +117,7 @@ protocol CognitoUserPoolBehavior {
     func deleteWebAuthnCredential(input: DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
 
 
-    /// Retrieves the available options for creating WebAuthn credentials.
+    /// Starts the registration of a new WebAuthn credential
     ///
     /// - Parameter input: A `GetWebAuthnRegistrationOptionsInput` that contains the access token
     /// - Returns: A `GetWebAuthnRegistrationOptionsOutput` that contains the credential creation options
@@ -127,28 +127,30 @@ protocol CognitoUserPoolBehavior {
     /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
     /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
     /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
-    /// - `InvalidWebAuthnConfigurationException` : [no documentation found]
     /// - `LimitExceededException` : The user has exceeded the limit for a this resource.
     /// - `NotAuthorizedException` :  The user isn't authorized.
     /// - `TooManyRequestsException` : The user has made too many requests for this operation
-    /// - `WebAuthnNotEnabledException` : WebAuthn is not enabled for this user
-    func getWebAuthnRegistrationOptions(input: GetWebAuthnRegistrationOptionsInput) async throws -> GetWebAuthnRegistrationOptionsOutput
+    /// - `WebAuthnConfigurationMissingException` : The user presented passkey credentials from an unregistered device.
+    /// - `WebAuthnNotEnabledException` : The user selected passkey authentication but it's not enabled.
+    func startWebAuthnRegistration(input: StartWebAuthnRegistrationInput) async throws -> StartWebAuthnRegistrationOutput
 
-    /// Verifies a WebAuthn credential.
+    /// Completes the registration of a WebAuthn credential.
     ///
     /// - Parameter input: A `VerifyWebAuthnRegistrationResultInput` that contains the access token and the credential to verify
     /// - Returns: An empty `VerifyWebAuthnRegistrationResultOutput`
     /// - Throws: See  __Possible Errors__ bellow.
     ///
     /// __Possible Errors:__
-    /// - `CredentialAlreadyExistsException` : The credential already exists.
     /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
     /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
     /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
     /// - `NotAuthorizedException` :  The user isn't authorized.
     /// - `TooManyRequestsException` : The user has made too many requests for this operation.
-    /// - `WebAuthnAuthenticatorSelectionMismatchException` : The credential's authenticator doesn't match.
-    /// - `WebAuthnChallengeMismatchException` : The credential's challenge doesn't match.
-    /// - `WebAuthnRelyingPartyMismatchException` : The credential's relying party ID doesn't match.
-    func verifyWebAuthnRegistrationResult(input: VerifyWebAuthnRegistrationResultInput) async throws -> VerifyWebAuthnRegistrationResultOutput
+    /// - `WebAuthnChallengeNotFoundException` : Passkey credentials were sent to a challenge that doesn't match an existing request.
+    /// - `WebAuthnClientMismatchException` : The user attempted to sign in with a passkey with an app client that doesn't support passkey authentication.
+    /// - `WebAuthnCredentialNotSupportedException` : The user presented passkey credentials from an unsupported device.
+    /// - `WebAuthnNotEnabledException` : The user selected passkey authentication but it's not enabled.
+    /// - `WebAuthnOriginNotAllowedException` : The user presented passkey credentials from a device origin that isn't registered as an allowed origin. Registering allowed origins is optional.
+    /// - `WebAuthnRelyingPartyMismatchException` : The user's passkey didn't have an entry for the current relying party ID.
+    func completeWebAuthnRegistration(input: CompleteWebAuthnRegistrationInput) async throws -> CompleteWebAuthnRegistrationOutput
 }

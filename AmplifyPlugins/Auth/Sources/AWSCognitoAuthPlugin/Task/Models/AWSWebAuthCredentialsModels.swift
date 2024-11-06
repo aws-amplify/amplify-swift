@@ -8,6 +8,7 @@
 #if os(iOS) || os(macOS)
 import AuthenticationServices
 import Foundation
+import Smithy
 
 enum WebAuthnCredentialError<T>: Error {
     case missingValue(_ value: String, type: T.Type)
@@ -102,74 +103,76 @@ struct CredentialAssertionPayload: Codable {
     }
 }
 
-struct CredentialCreationOptions: Codable {
-    private enum CodingKeys : String, CodingKey {
-        case challengeString = "challenge", relyingParty = "rp", user, excludeCredentials
-    }
-
-    struct User: Codable {
-        private enum CodingKeys : String, CodingKey {
-            case idString = "id", name
-        }
-
-        private let idString: String
+struct CredentialCreationOptions {
+    struct User {
+        let id: Data
         let name: String
 
-        var id: Data {
-            get throws {
-                guard let id = idString.decodeBase64Url() else {
-                    throw WebAuthnCredentialError.missingValue("user.id", type: Self.self)
-                }
-                return id
+        fileprivate init(from dictionary: [String: SmithyDocument]) throws {
+            guard let idString = try? dictionary["id"]?.asString(),
+                  let id = idString.decodeBase64Url() else {
+                throw WebAuthnCredentialError.missingValue("user.id", type: Self.self)
             }
+
+            guard let name = try? dictionary["name"]?.asString() else {
+                throw WebAuthnCredentialError.missingValue("user.name", type: Self.self)
+            }
+
+            self.id = id
+            self.name = name
         }
     }
 
-    struct RelyingParty: Codable {
+    struct RelyingParty {
         let id: String
-    }
 
-    struct Credential: Codable {
-        private enum CodingKeys : String, CodingKey {
-            case idString = "id"
-        }
-
-        private let idString: String
-
-        var id: Data {
-            get throws {
-                guard let id = idString.decodeBase64Url() else {
-                    throw WebAuthnCredentialError.missingValue("credential.id", type: Self.self)
-                }
-                return id
+        fileprivate init(from dictionary: [String: SmithyDocument]) throws {
+            guard let id = try? dictionary["id"]?.asString() else {
+                throw WebAuthnCredentialError.missingValue("rp.id", type: Self.self)
             }
+            self.id = id
         }
     }
 
-    private let challengeString: String
+    struct Credential {
+        let id: Data
+
+        fileprivate init(from dictionary: [String: SmithyDocument]) throws {
+            guard let idString = try? dictionary["id"]?.asString(),
+                  let id = idString.decodeBase64Url() else {
+                throw WebAuthnCredentialError.missingValue("credential.id", type: Self.self)
+            }
+            self.id = id
+        }
+    }
+
+    let challenge: Data
     let relyingParty: RelyingParty
     let user: User
     let excludeCredentials: [Credential]
 
-    init(from string: String?) throws {
-        guard let options = string?.data(using: .utf8) else {
-            throw WebAuthnCredentialError.missingValue("CredentialOptions", type: Self.self)
+    init(from dictionary: [String: SmithyDocument]?) throws {
+        guard let challengeString = try? dictionary?["challenge"]?.asString(),
+              let challenge = challengeString.decodeBase64Url() else {
+            throw WebAuthnCredentialError.missingValue("challenge", type: Self.self)
         }
 
-        do {
-            self = try JSONDecoder().decode(Self.self, from: options)
-        } catch {
-            throw WebAuthnCredentialError.decodingError(error, type: Self.self)
+        guard let relyingParty = try? dictionary?["rp"]?.asStringMap() else {
+            throw WebAuthnCredentialError.missingValue("rp", type: Self.self)
         }
-    }
 
-    var challenge: Data {
-        get throws {
-            guard let challenge = challengeString.decodeBase64Url() else {
-                throw WebAuthnCredentialError.missingValue("challenge", type: Self.self)
-            }
-            return challenge
+        guard let excludeCredentials = try? dictionary?["excludeCredentials"]?.asList() else {
+            throw WebAuthnCredentialError.missingValue("excludeCredentials", type: Self.self)
         }
+
+        guard let user = try? dictionary?["user"]?.asStringMap() else {
+            throw WebAuthnCredentialError.missingValue("user", type: Self.self)
+        }
+
+        self.challenge = challenge
+        self.relyingParty = try RelyingParty(from: relyingParty)
+        self.user = try User(from: user)
+        self.excludeCredentials = try excludeCredentials.map { try Credential(from: $0.asStringMap()) }
     }
 }
 
@@ -217,9 +220,8 @@ struct CredentialRegistrationPayload: Codable {
         )
     }
 
-    func stringify() throws -> String {
-        let data = try JSONEncoder().encode(self)
-        return String(decoding: data, as: UTF8.self)
+    func asData() throws -> Data {
+        return try JSONEncoder().encode(self)
     }
 }
 
