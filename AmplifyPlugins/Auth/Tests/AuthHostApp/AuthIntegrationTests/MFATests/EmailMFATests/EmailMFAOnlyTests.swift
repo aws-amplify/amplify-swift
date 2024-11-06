@@ -60,7 +60,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
     func testSuccessfulEmailMFASetupStep() async {
         do {
             // Step 1: Set up a subscription to receive MFA codes
-            createMFASubscription()
+            subscribeToOTPCreation()
 
             // Step 2: Sign up a new user
             let uniqueId = UUID().uuidString
@@ -102,7 +102,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             XCTAssertFalse(result.isSignedIn, "User should not be signed in at this stage")
 
             // Step 7: Retrieve the MFA code sent to the email and confirm the sign-in
-            guard let mfaCode = try await waitForMFACode(for: username.lowercased()) else {
+            guard let mfaCode = try await otp(for: username.lowercased()) else {
                 XCTFail("Failed to retrieve the MFA code")
                 return
             }
@@ -144,7 +144,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
     func testSuccessfulEmailMFAWithIncorrectCodeFirstAndThenValidOne() async {
         do {
             // Step 1: Set up a subscription to receive MFA codes
-            createMFASubscription()
+            subscribeToOTPCreation()
 
             // Step 2: Sign up a new user
             let uniqueId = UUID().uuidString
@@ -178,7 +178,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             XCTAssertFalse(result.isSignedIn, "User should not be signed in at this stage")
 
             // Step 7: Retrieve the MFA code sent to the email and confirm the sign-in
-            guard let mfaCode = try await waitForMFACode(for: username.lowercased()) else {
+            guard let mfaCode = try await otp(for: username.lowercased()) else {
                 XCTFail("Failed to retrieve the MFA code")
                 return
             }
