@@ -40,10 +40,11 @@ class DeleteWebAuthnCredentialTask: AuthDeleteWebAuthnCredentialTask, DefaultLog
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
-            throw AuthError.unknown(
-                "Unable to delete WebAuthn credential",
-                error
+            let webAuthnError = WebAuthnError.unknown(
+                message: "Unable to delete WebAuthn credential",
+                error: error
             )
+            throw webAuthnError.authError
         }
     }
 

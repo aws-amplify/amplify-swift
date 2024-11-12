@@ -25,7 +25,7 @@ struct AssertWebAuthnCredentials: Action {
         respondToAuthChallenge: RespondToAuthChallenge,
         presentationAnchor: AuthUIPresentationAnchor?,
         asserterFactory: (AuthUIPresentationAnchor?) -> CredentialAsserterProtocol = { anchor in
-            PlatformCredentialAsserter(presentationAnchor: anchor)
+            PlatformWebAuthnCredentials(presentationAnchor: anchor)
         }
     ) {
         self.username = username
@@ -60,7 +60,10 @@ struct AssertWebAuthnCredentials: Action {
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let webAuthnError = WebAuthnError.service(error: error)
+            let webAuthnError = WebAuthnError.unknown(
+                message: "Unable to assert WebAuthn credentials",
+                error: error
+            )
             let event = WebAuthnEvent(
                 eventType: .error(webAuthnError, respondToAuthChallenge)
             )

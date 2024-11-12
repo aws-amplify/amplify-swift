@@ -17,19 +17,23 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: UserPoolEnvironment.CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
-    private var payloadContinuation: CheckedContinuation<CredentialRegistrationPayload, Error>?
+    private let credentialRegistrant: CredentialRegistrantProtocol
 
     let eventName: HubPayloadEventName = HubPayload.EventName.Auth.associateWebAuthnCredentialAPI
 
     init(
         request: AuthAssociateWebAuthnCredentialRequest,
         authStateMachine: AuthStateMachine,
-        userPoolFactory: @escaping UserPoolEnvironment.CognitoUserPoolFactory
+        userPoolFactory: @escaping UserPoolEnvironment.CognitoUserPoolFactory,
+        registrantFactory: (AuthUIPresentationAnchor?) -> CredentialRegistrantProtocol = { anchor in
+            PlatformWebAuthnCredentials(presentationAnchor: anchor)
+        }
     ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
+        self.credentialRegistrant = registrantFactory(request.presentationAnchor)
     }
 
     func execute() async throws {
@@ -47,10 +51,11 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
-            throw AuthError.unknown(
-                "Unable to associate WebAuthn credential",
-                error
+            let webAuthnError = WebAuthnError.unknown(
+                message: "Unable to associate WebAuthn credential",
+                error: error
             )
+            throw webAuthnError.authError
         }
     }
 
@@ -66,29 +71,7 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
             from: result.credentialCreationOptions?.asStringMap()
         )
 
-        let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(
-            relyingPartyIdentifier: options.relyingParty.id
-        )
-
-        let platformKeyRequest = platformProvider.createCredentialRegistrationRequest(
-            challenge: options.challenge,
-            name: options.user.name,
-            userID: options.user.id
-        )
-        platformKeyRequest.excludedCredentials = options.excludeCredentials.compactMap { credential in
-            return .init(credentialID: credential.id)
-        }
-
-        let credential = try await withCheckedThrowingContinuation { continuation in
-            payloadContinuation = continuation
-            let authController = ASAuthorizationController(
-                authorizationRequests: [platformKeyRequest]
-            )
-            authController.delegate = self
-            authController.presentationContextProvider = self
-            authController.performRequests()
-        }
-
+        let credential = try await credentialRegistrant.create(with: options)
         return try credential.asData()
     }
 
@@ -103,91 +86,6 @@ class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredential
                 credential: .make(from: credential)
             )
         )
-    }
-
-    private func resumeContinuation(with result: CredentialRegistrationPayload) {
-        payloadContinuation?.resume(returning: result)
-        payloadContinuation = nil
-    }
-
-    private func resumeContinuation(throwing error: any Error) {
-        log.error(error: error)
-        payloadContinuation?.resume(throwing: error)
-        payloadContinuation = nil
-    }
-}
-
-// - MARK: ASAuthorizationControllerDelegate
-@available(iOS 17.4, macOS 13.5, *)
-extension AssociateWebAuthnCredentialTask: ASAuthorizationControllerDelegate {
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        guard let credential = authorization.credential as? ASAuthorizationPublicKeyCredentialRegistration else {
-            log.verbose("Unexpected type of credential: \(type(of: authorization.credential)).")
-            resumeContinuation(throwing: WebAuthnError.unknown(
-                message: "Unable to associate WebAuthm Credential",
-                error: nil
-            ))
-            return
-        }
-
-        do {
-            try resumeContinuation(with: .init(from: credential))
-        } catch {
-            resumeContinuation(throwing: error)
-        }
-    }
-
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithError error: any Error
-    ) {
-        log.verbose("Unable to register new credential")
-        if let authError = error as? AuthErrorConvertible {
-            resumeContinuation(throwing: authError.authError)
-            return
-        }
-
-        guard let authorizationError = error as? ASAuthorizationError else {
-            resumeContinuation(throwing: WebAuthnError.unknown(
-                message: "Unable to associate WebAuthm Credential",
-                error: error
-            ))
-            return
-        }
-
-        let webAuthnError: WebAuthnError
-        if case .canceled = authorizationError.code {
-            webAuthnError = .userCancelled
-        } else if isMatchedExcludedCredential(authorizationError.code) {
-            webAuthnError = .credentialAlreadyExist
-        } else {
-            webAuthnError = .unknown(message: "Unable to associate WebAuthm Credential", error: error)
-        }
-
-        resumeContinuation(throwing: webAuthnError)
-    }
-
-    private func isMatchedExcludedCredential(_ code: ASAuthorizationError.Code) -> Bool {
-        // ASAuthorizationError.matchedExcludedCredential is only defined in iOS 18/macOS 15,
-        // This check doesn't work correctly without these runtimes installed.
-        // Until we require Xcode 16, we'll just use its rawValue
-        // if #available(iOS 18.0, macOS 15.0, *) {
-        //     return code == .matchedExcludedCredential
-        // } else {
-        //     return code.rawValue == 1006
-        // }
-        return code.rawValue == 1006
-    }
-}
-
-// - MARK: ASAuthorizationControllerPresentationContextProviding
-@available(iOS 17.4, macOS 13.5, *)
-extension AssociateWebAuthnCredentialTask: ASAuthorizationControllerPresentationContextProviding {
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return request.presentationAnchor ?? ASPresentationAnchor()
     }
 }
 #endif

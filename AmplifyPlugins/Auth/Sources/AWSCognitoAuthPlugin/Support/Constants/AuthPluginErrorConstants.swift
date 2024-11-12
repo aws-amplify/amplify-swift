@@ -183,7 +183,7 @@ enum AuthPluginErrorConstants {
     )
 
     static let associateWebAuthnCreationFailedError: AuthPluginErrorString = (
-        "User cancelled the creation of a new WebAuthn credential",
+        "Unable to complete the association of the given WebAuthn credential",
         "Invoke the associate WebAuthn credential flow again"
     )
 
@@ -386,6 +386,34 @@ extension AuthPluginErrorConstants {
 
     static let concurrentModificationException: RecoverySuggestion = """
     Make sure the requests sent are controlled and concurrent operations are handled properly
+    """
+
+    static let webAuthnChallengeNotFound: RecoverySuggestion = """
+    Call this API after receiving an WebAuthn challenge
+    """
+
+    static let webAuthnClientMismatch: RecoverySuggestion = """
+    Use an App client that supports passkey authentication
+    """
+
+    static let webAuthnCredentialNotSupported: RecoverySuggestion = """
+    Create credentials using a supported device
+    """
+
+    static let webAuthnNotEnabled: RecoverySuggestion = """
+    Check that WebAuthn authentication is enabled
+    """
+
+    static let webAuthnOriginNotAllowed: RecoverySuggestion = """
+    Check that the device origin is registered as an allowed origin
+    """
+
+    static let webAuthnRelyingPartyMismatch: RecoverySuggestion = """
+    Check that the relying party ID is correct
+    """
+
+    static let webAuthnConfigurationMissing: RecoverySuggestion = """
+    Check that the device is registered
     """
 
 }

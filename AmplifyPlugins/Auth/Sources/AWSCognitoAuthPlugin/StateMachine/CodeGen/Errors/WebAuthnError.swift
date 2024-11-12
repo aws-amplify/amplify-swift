@@ -9,28 +9,21 @@ import Foundation
 import AuthenticationServices
 
 enum WebAuthnError: Error {
-    case userCancelled
     case assertionFailed(error: ASAuthorizationError)
     case creationFailed(error: ASAuthorizationError)
-    case credentialAlreadyExist
-    case service(error: Error)
+    case service(error: AuthErrorConvertible)
     case unknown(message: String, error: Error? = nil)
 }
 
 extension WebAuthnError: Equatable {
     static func == (lhs: WebAuthnError, rhs: WebAuthnError) -> Bool {
         switch (lhs, rhs) {
-
-        case (.userCancelled, .userCancelled):
-            return true
         case (.assertionFailed(let lError), .assertionFailed(let rError)):
             return lError == rError
         case (.creationFailed(let lError), .creationFailed(let rError)):
             return lError == rError
-        case (.credentialAlreadyExist, .credentialAlreadyExist):
-            return true
         case (.service(let lhsError), .service(let rhsError)):
-            return areEquals(lhsError, rhsError)
+            return areEquals(lhsError.authError, rhsError.authError)
         case (.unknown(let lhsMessage, let lhsError), .unknown(let rhsMessage, let rhsError)):
             return lhsMessage == rhsMessage && areEquals(lhsError, rhsError)
         default:

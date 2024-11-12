@@ -190,7 +190,8 @@ struct CredentialRegistrationPayload: Codable {
     private let authenticatorAttachment: String
     private let response: Response
 
-    private init(
+    /// For testing purposes only
+    init(
         credentialId: String,
         attestationObject: String,
         clientDataJSON: String

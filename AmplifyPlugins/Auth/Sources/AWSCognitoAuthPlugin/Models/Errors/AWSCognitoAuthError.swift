@@ -88,4 +88,7 @@ public enum AWSCognitoAuthError: Error {
 
     /// Thrown when a user tries to use a login which is already linked to another account.
     case resourceConflictException
+
+    /// WebAuthn related issue
+    case webAuthn
 }

@@ -109,11 +109,11 @@ protocol CognitoUserPoolBehavior {
     /// - Throws: See  __Possible Errors__ bellow.
     ///
     /// __Possible Errors:__
-    /// - `WebAuthnCredentialDeletionNotAllowedException` : The credential cannot be deleted.
     /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
     /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
     /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
     /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `ResourceNotFoundException` : The Amazon Cognito service couldn't find the requested resource.
     func deleteWebAuthnCredential(input: DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
 
 

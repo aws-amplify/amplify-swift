@@ -52,8 +52,10 @@ struct InitializeWebAuthn: Action {
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
-            let webAuthnError = WebAuthnError.service(error: error)
+            let webAuthnError = WebAuthnError.unknown(
+                message: "Unable to initiate WebAuthn flow",
+                error: error
+            )
             let event = WebAuthnEvent(
                 eventType: .error(webAuthnError, respondToAuthChallenge)
             )

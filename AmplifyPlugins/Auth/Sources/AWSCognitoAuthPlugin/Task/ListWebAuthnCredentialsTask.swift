@@ -39,10 +39,11 @@ class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, DefaultLogge
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
-            throw AuthError.unknown(
-                "Unable to list WebAuthn credentials",
-                error
+            let webAuthnError = WebAuthnError.unknown(
+                message: "Unable to list WebAuthn credentials",
+                error: error
             )
+            throw webAuthnError.authError
         }
     }
 
