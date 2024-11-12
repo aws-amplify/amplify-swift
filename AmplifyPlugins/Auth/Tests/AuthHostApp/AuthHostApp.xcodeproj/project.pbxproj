@@ -127,6 +127,9 @@
 		97914B51295509AB002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914AF6295503D4002000EA /* README.md */; };
 		97914B5629552D2B002000EA /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B727B61F0F006CCEC7 /* AuthSessionHelper.swift */; };
 		97914B5729552D2B002000EA /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B827B61F0F006CCEC7 /* AuthSignInHelper.swift */; };
+		979D8A582CE283CA00E9B28F /* PasswordlessSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */; };
+		979D8A5A2CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */; };
+		979D8A5C2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */; };
 		97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */; };
 		B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */; };
 		B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */; };
@@ -228,6 +231,9 @@
 		97914AD72954FE0A002000EA /* AuthStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStressTests.swift; sourceTree = "<group>"; };
 		97914AF6295503D4002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		97914B4B29550988002000EA /* AuthStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordlessSignUpTests.swift; sourceTree = "<group>"; };
+		979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordlessConfirmSignUpTests.swift; sourceTree = "<group>"; };
+		979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordlessAutoSignInTests.swift; sourceTree = "<group>"; };
 		97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchDeviceTests.swift; sourceTree = "<group>"; };
 		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
@@ -383,6 +389,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				979D8A552CE2838600E9B28F /* PasswordlessTests */,
 				21CFD7C42C75243B0071C70F /* AppSyncSignerTests */,
 				21F762CC2BD6B1CD0048845A /* AuthGen2IntegrationTests.xctestplan */,
 				48916F362A412AF800E3E1B1 /* MFATests */,
@@ -500,6 +507,16 @@
 				970333EF295D793B0019981E /* AuthStressBaseTest.swift */,
 			);
 			path = AuthStressTests;
+			sourceTree = "<group>";
+		};
+		979D8A552CE2838600E9B28F /* PasswordlessTests */ = {
+			isa = PBXGroup;
+			children = (
+				979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */,
+				979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */,
+				979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */,
+			);
+			path = PasswordlessTests;
 			sourceTree = "<group>";
 		};
 		97B370C32878DA3500F1C088 /* DeviceTests */ = {
@@ -884,6 +901,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				979D8A5C2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift in Sources */,
 				485CB5B927B61F10006CCEC7 /* AuthSessionHelper.swift in Sources */,
 				487C403F2CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */,
 				681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */,
@@ -904,9 +922,11 @@
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,
 				4834D7C128B0770800DD564B /* FederatedSessionTests.swift in Sources */,
+				979D8A5A2CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift in Sources */,
 				4821B2F428737130000EC1D7 /* AuthCustomSignInTests.swift in Sources */,
 				484EDEB227F4FFBE000284B4 /* AuthEventIntegrationTests.swift in Sources */,
 				484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */,
+				979D8A582CE283CA00E9B28F /* PasswordlessSignUpTests.swift in Sources */,
 				48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
 				9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */,

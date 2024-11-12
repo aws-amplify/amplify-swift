@@ -25,7 +25,7 @@ extension SignUpState {
             case .initiatingSignUp(_):
                 return resolveInitiatingSignUp(byApplying: signUpEvent, from: oldState)
             case .awaitingUserConfirmation:
-                return resolveSignUpInitiated(byApplying: signUpEvent, from: oldState)
+                return resolveAwaitingUserConfirmation(byApplying: signUpEvent, from: oldState)
             case .confirmingSignUp(_):
                 return resolveConfirmingSignUp(byApplying: signUpEvent, from: oldState)
             case .signedUp:
@@ -64,8 +64,6 @@ extension SignUpState {
             case .confirmSignUp(let data, let code, let forceAliasCreation):
                 let action = ConfirmSignUp(data: data, confirmationCode: code, forceAliasCreation: forceAliasCreation)
                 return .init(newState: .confirmingSignUp(data), actions: [action])
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
             default:
                 return .from(oldState)
             }
@@ -91,7 +89,7 @@ extension SignUpState {
             }
         }
         
-        private func resolveSignUpInitiated(
+        private func resolveAwaitingUserConfirmation(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState
         ) -> StateResolution<SignUpState> {
@@ -142,19 +140,6 @@ extension SignUpState {
                 return .init(newState: .confirmingSignUp(data), actions: [action])
             case .throwAuthError(let error):
                 return .init(newState: .error(error))
-            default:
-                return .from(oldState)
-            }
-        }
-        
-        private func resolveAutoSignIn(
-            byApplying signUpEvent: SignUpEvent,
-            from oldState: SignUpState
-        ) -> StateResolution<SignUpState> {
-            switch signUpEvent.eventType {
-            case .initiateSignUp(let data, let password, let userAttributes):
-                let action = InitiateSignUp(data: data, password: password, attributes: userAttributes)
-                return .init(newState: .initiatingSignUp(data), actions: [action])
             default:
                 return .from(oldState)
             }
