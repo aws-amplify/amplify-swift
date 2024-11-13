@@ -27,6 +27,7 @@ import protocol ClientRuntime.ModeledError
 @_spi(UnknownAWSHTTPServiceError) import struct AWSClientRuntime.UnknownAWSHTTPServiceError
 import struct Smithy.URIQueryItem
 @_spi(SmithyReadWrite) import struct SmithyReadWrite.ReadingClosureBox
+@_spi(SmithyReadWrite) import struct SmithyReadWrite.WritingClosureBox
 
 /// You do not have permission to perform this operation.
 public struct AccessDeniedException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
@@ -186,6 +187,28 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
+    /// The capacity for each instance type.
+    public struct AssetInstanceTypeCapacity: Swift.Sendable {
+        /// The number of each instance type.
+        /// This member is required.
+        public var count: Swift.Int
+        /// The type of instance.
+        /// This member is required.
+        public var instanceType: Swift.String?
+
+        public init(
+            count: Swift.Int = 0,
+            instanceType: Swift.String? = nil
+        )
+        {
+            self.count = count
+            self.instanceType = instanceType
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
     public enum ComputeAssetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case isolated
@@ -224,6 +247,10 @@ extension OutpostsClientTypes {
         public var hostId: Swift.String?
         /// A list of the names of instance families that are currently associated with a given asset.
         public var instanceFamilies: [Swift.String]?
+        /// The instance type capacities configured for this asset. This can be changed through a capacity task.
+        public var instanceTypeCapacities: [OutpostsClientTypes.AssetInstanceTypeCapacity]?
+        /// The maximum number of vCPUs possible for the specified asset.
+        public var maxVcpus: Swift.Int?
         /// The state.
         ///
         /// * ACTIVE - The asset is available and can provide capacity for new compute resources.
@@ -236,11 +263,15 @@ extension OutpostsClientTypes {
         public init(
             hostId: Swift.String? = nil,
             instanceFamilies: [Swift.String]? = nil,
+            instanceTypeCapacities: [OutpostsClientTypes.AssetInstanceTypeCapacity]? = nil,
+            maxVcpus: Swift.Int? = nil,
             state: OutpostsClientTypes.ComputeAssetState? = nil
         )
         {
             self.hostId = hostId
             self.instanceFamilies = instanceFamilies
+            self.instanceTypeCapacities = instanceTypeCapacities
+            self.maxVcpus = maxVcpus
             self.state = state
         }
     }
@@ -280,6 +311,79 @@ extension OutpostsClientTypes {
 
 extension OutpostsClientTypes {
 
+    public enum AWSServiceName: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case aws
+        case ec2
+        case elasticache
+        case elb
+        case rds
+        case route53
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [AWSServiceName] {
+            return [
+                .aws,
+                .ec2,
+                .elasticache,
+                .elb,
+                .rds,
+                .route53
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .aws: return "AWS"
+            case .ec2: return "EC2"
+            case .elasticache: return "ELASTICACHE"
+            case .elb: return "ELB"
+            case .rds: return "RDS"
+            case .route53: return "ROUTE53"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
+    /// An Amazon EC2 instance.
+    public struct AssetInstance: Swift.Sendable {
+        /// The ID of the Amazon Web Services account.
+        public var accountId: Swift.String?
+        /// The ID of the asset.
+        public var assetId: Swift.String?
+        /// The Amazon Web Services service name of the instance.
+        public var awsServiceName: OutpostsClientTypes.AWSServiceName?
+        /// The ID of the instance.
+        public var instanceId: Swift.String?
+        /// The type of instance.
+        public var instanceType: Swift.String?
+
+        public init(
+            accountId: Swift.String? = nil,
+            assetId: Swift.String? = nil,
+            awsServiceName: OutpostsClientTypes.AWSServiceName? = nil,
+            instanceId: Swift.String? = nil,
+            instanceType: Swift.String? = nil
+        )
+        {
+            self.accountId = accountId
+            self.assetId = assetId
+            self.awsServiceName = awsServiceName
+            self.instanceId = instanceId
+            self.instanceType = instanceType
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
     public enum AssetState: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case active
         case isolated
@@ -306,6 +410,30 @@ extension OutpostsClientTypes {
             case .retiring: return "RETIRING"
             case let .sdkUnknown(s): return s
             }
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
+    /// A running Amazon EC2 instance that can be stopped to free up capacity needed to run the capacity task.
+    public struct BlockingInstance: Swift.Sendable {
+        /// The ID of the Amazon Web Services account.
+        public var accountId: Swift.String?
+        /// The Amazon Web Services service name that owns the specified blocking instance.
+        public var awsServiceName: OutpostsClientTypes.AWSServiceName?
+        /// The ID of the blocking instance.
+        public var instanceId: Swift.String?
+
+        public init(
+            accountId: Swift.String? = nil,
+            awsServiceName: OutpostsClientTypes.AWSServiceName? = nil,
+            instanceId: Swift.String? = nil
+        )
+        {
+            self.accountId = accountId
+            self.awsServiceName = awsServiceName
+            self.instanceId = instanceId
         }
     }
 }
@@ -487,11 +615,19 @@ public struct CancelOrderOutput: Swift.Sendable {
 extension OutpostsClientTypes {
 
     public enum CapacityTaskFailureType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case blockingInstancesNotEvacuated
+        case internalServerError
+        case resourceNotFound
+        case unexpectedAssetState
         case unsupportedCapacityConfiguration
         case sdkUnknown(Swift.String)
 
         public static var allCases: [CapacityTaskFailureType] {
             return [
+                .blockingInstancesNotEvacuated,
+                .internalServerError,
+                .resourceNotFound,
+                .unexpectedAssetState,
                 .unsupportedCapacityConfiguration
             ]
         }
@@ -503,6 +639,10 @@ extension OutpostsClientTypes {
 
         public var rawValue: Swift.String {
             switch self {
+            case .blockingInstancesNotEvacuated: return "BLOCKING_INSTANCES_NOT_EVACUATED"
+            case .internalServerError: return "INTERNAL_SERVER_ERROR"
+            case .resourceNotFound: return "RESOURCE_NOT_FOUND"
+            case .unexpectedAssetState: return "UNEXPECTED_ASSET_STATE"
             case .unsupportedCapacityConfiguration: return "UNSUPPORTED_CAPACITY_CONFIGURATION"
             case let .sdkUnknown(s): return s
             }
@@ -534,20 +674,24 @@ extension OutpostsClientTypes {
 extension OutpostsClientTypes {
 
     public enum CapacityTaskStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case cancellationInProgress
         case cancelled
         case completed
         case failed
         case inProgress
         case requested
+        case waitingForEvacuation
         case sdkUnknown(Swift.String)
 
         public static var allCases: [CapacityTaskStatus] {
             return [
+                .cancellationInProgress,
                 .cancelled,
                 .completed,
                 .failed,
                 .inProgress,
-                .requested
+                .requested,
+                .waitingForEvacuation
             ]
         }
 
@@ -558,11 +702,13 @@ extension OutpostsClientTypes {
 
         public var rawValue: Swift.String {
             switch self {
+            case .cancellationInProgress: return "CANCELLATION_IN_PROGRESS"
             case .cancelled: return "CANCELLED"
             case .completed: return "COMPLETED"
             case .failed: return "FAILED"
             case .inProgress: return "IN_PROGRESS"
             case .requested: return "REQUESTED"
+            case .waitingForEvacuation: return "WAITING_FOR_EVACUATION"
             case let .sdkUnknown(s): return s
             }
         }
@@ -1953,6 +2099,30 @@ public struct GetCapacityTaskInput: Swift.Sendable {
 
 extension OutpostsClientTypes {
 
+    /// User-specified instances that must not be stopped. These instances will not appear in the list of instances that Amazon Web Services recommends to stop in order to free up capacity.
+    public struct InstancesToExclude: Swift.Sendable {
+        /// IDs of the accounts that own each instance that must not be stopped.
+        public var accountIds: [Swift.String]?
+        /// List of user-specified instances that must not be stopped.
+        public var instances: [Swift.String]?
+        /// Names of the services that own each instance that must not be stopped in order to free up the capacity needed to run the capacity task.
+        public var services: [OutpostsClientTypes.AWSServiceName]?
+
+        public init(
+            accountIds: [Swift.String]? = nil,
+            instances: [Swift.String]? = nil,
+            services: [OutpostsClientTypes.AWSServiceName]? = nil
+        )
+        {
+            self.accountIds = accountIds
+            self.instances = instances
+            self.services = services
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
     /// The instance type that you specify determines the combination of CPU, memory, storage, and networking capacity.
     public struct InstanceTypeCapacity: Swift.Sendable {
         /// The number of instances for the specified instance type.
@@ -1969,6 +2139,35 @@ extension OutpostsClientTypes {
         {
             self.count = count
             self.instanceType = instanceType
+        }
+    }
+}
+
+extension OutpostsClientTypes {
+
+    public enum TaskActionOnBlockingInstances: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case failTask
+        case waitForEvacuation
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TaskActionOnBlockingInstances] {
+            return [
+                .failTask,
+                .waitForEvacuation
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .failTask: return "FAIL_TASK"
+            case .waitForEvacuation: return "WAIT_FOR_EVACUATION"
+            case let .sdkUnknown(s): return s
+            }
         }
     }
 }
@@ -1992,6 +2191,8 @@ public struct GetCapacityTaskOutput: Swift.Sendable {
     public var dryRun: Swift.Bool
     /// Reason why the capacity task failed.
     public var failed: OutpostsClientTypes.CapacityTaskFailure?
+    /// Instances that the user specified they cannot stop in order to free up the capacity needed to run the capacity task.
+    public var instancesToExclude: OutpostsClientTypes.InstancesToExclude?
     /// The date the capacity task was last modified.
     public var lastModifiedDate: Foundation.Date?
     /// ID of the Amazon Web Services Outposts order associated with the specified capacity task.
@@ -2000,6 +2201,12 @@ public struct GetCapacityTaskOutput: Swift.Sendable {
     public var outpostId: Swift.String?
     /// List of instance pools requested in the capacity task.
     public var requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]?
+    /// User-specified option in case an instance is blocking the capacity task from running. Shows one of the following options:
+    ///
+    /// * WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.
+    ///
+    /// * FAIL_TASK - The capacity task fails.
+    public var taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances?
 
     public init(
         capacityTaskId: Swift.String? = nil,
@@ -2008,10 +2215,12 @@ public struct GetCapacityTaskOutput: Swift.Sendable {
         creationDate: Foundation.Date? = nil,
         dryRun: Swift.Bool = false,
         failed: OutpostsClientTypes.CapacityTaskFailure? = nil,
+        instancesToExclude: OutpostsClientTypes.InstancesToExclude? = nil,
         lastModifiedDate: Foundation.Date? = nil,
         orderId: Swift.String? = nil,
         outpostId: Swift.String? = nil,
-        requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]? = nil
+        requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]? = nil,
+        taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances? = nil
     )
     {
         self.capacityTaskId = capacityTaskId
@@ -2020,10 +2229,12 @@ public struct GetCapacityTaskOutput: Swift.Sendable {
         self.creationDate = creationDate
         self.dryRun = dryRun
         self.failed = failed
+        self.instancesToExclude = instancesToExclude
         self.lastModifiedDate = lastModifiedDate
         self.orderId = orderId
         self.outpostId = outpostId
         self.requestedInstancePools = requestedInstancePools
+        self.taskActionOnBlockingInstances = taskActionOnBlockingInstances
     }
 }
 
@@ -2202,7 +2413,6 @@ public struct GetOutpostSupportedInstanceTypesInput: Swift.Sendable {
     /// The pagination token.
     public var nextToken: Swift.String?
     /// The ID for the Amazon Web Services Outposts order.
-    /// This member is required.
     public var orderId: Swift.String?
     /// The ID or ARN of the Outpost.
     /// This member is required.
@@ -2301,6 +2511,59 @@ public struct GetSiteAddressOutput: Swift.Sendable {
     }
 }
 
+public struct ListAssetInstancesInput: Swift.Sendable {
+    /// Filters the results by account ID.
+    public var accountIdFilter: [Swift.String]?
+    /// Filters the results by asset ID.
+    public var assetIdFilter: [Swift.String]?
+    /// Filters the results by Amazon Web Services service.
+    public var awsServiceFilter: [OutpostsClientTypes.AWSServiceName]?
+    /// Filters the results by instance ID.
+    public var instanceTypeFilter: [Swift.String]?
+    /// The maximum page size.
+    public var maxResults: Swift.Int?
+    /// The pagination token.
+    public var nextToken: Swift.String?
+    /// The ID of the Outpost.
+    /// This member is required.
+    public var outpostIdentifier: Swift.String?
+
+    public init(
+        accountIdFilter: [Swift.String]? = nil,
+        assetIdFilter: [Swift.String]? = nil,
+        awsServiceFilter: [OutpostsClientTypes.AWSServiceName]? = nil,
+        instanceTypeFilter: [Swift.String]? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        outpostIdentifier: Swift.String? = nil
+    )
+    {
+        self.accountIdFilter = accountIdFilter
+        self.assetIdFilter = assetIdFilter
+        self.awsServiceFilter = awsServiceFilter
+        self.instanceTypeFilter = instanceTypeFilter
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.outpostIdentifier = outpostIdentifier
+    }
+}
+
+public struct ListAssetInstancesOutput: Swift.Sendable {
+    /// List of instances owned by all accounts on the Outpost. Does not include Amazon EBS or Amazon S3 instances.
+    public var assetInstances: [OutpostsClientTypes.AssetInstance]?
+    /// The pagination token.
+    public var nextToken: Swift.String?
+
+    public init(
+        assetInstances: [OutpostsClientTypes.AssetInstance]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.assetInstances = assetInstances
+        self.nextToken = nextToken
+    }
+}
+
 public struct ListAssetsInput: Swift.Sendable {
     /// Filters the results by the host ID of a Dedicated Host.
     public var hostIdFilter: [Swift.String]?
@@ -2342,6 +2605,48 @@ public struct ListAssetsOutput: Swift.Sendable {
     )
     {
         self.assets = assets
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListBlockingInstancesForCapacityTaskInput: Swift.Sendable {
+    /// The ID of the capacity task.
+    /// This member is required.
+    public var capacityTaskId: Swift.String?
+    /// The maximum page size.
+    public var maxResults: Swift.Int?
+    /// The pagination token.
+    public var nextToken: Swift.String?
+    /// The ID or ARN of the Outpost associated with the specified capacity task.
+    /// This member is required.
+    public var outpostIdentifier: Swift.String?
+
+    public init(
+        capacityTaskId: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        outpostIdentifier: Swift.String? = nil
+    )
+    {
+        self.capacityTaskId = capacityTaskId
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.outpostIdentifier = outpostIdentifier
+    }
+}
+
+public struct ListBlockingInstancesForCapacityTaskOutput: Swift.Sendable {
+    /// A list of all running Amazon EC2 instances on the Outpost. Stopping one or more of these instances can free up the capacity needed to run the capacity task.
+    public var blockingInstances: [OutpostsClientTypes.BlockingInstance]?
+    /// The pagination token.
+    public var nextToken: Swift.String?
+
+    public init(
+        blockingInstances: [OutpostsClientTypes.BlockingInstance]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.blockingInstances = blockingInstances
         self.nextToken = nextToken
     }
 }
@@ -2638,24 +2943,35 @@ public struct StartCapacityTaskInput: Swift.Sendable {
     /// The instance pools specified in the capacity task.
     /// This member is required.
     public var instancePools: [OutpostsClientTypes.InstanceTypeCapacity]?
+    /// List of user-specified running instances that must not be stopped in order to free up the capacity needed to run the capacity task.
+    public var instancesToExclude: OutpostsClientTypes.InstancesToExclude?
     /// The ID of the Amazon Web Services Outposts order associated with the specified capacity task.
-    /// This member is required.
     public var orderId: Swift.String?
     /// The ID or ARN of the Outposts associated with the specified capacity task.
     /// This member is required.
     public var outpostIdentifier: Swift.String?
+    /// Specify one of the following options in case an instance is blocking the capacity task from running.
+    ///
+    /// * WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.
+    ///
+    /// * FAIL_TASK - The capacity task fails.
+    public var taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances?
 
     public init(
         dryRun: Swift.Bool? = false,
         instancePools: [OutpostsClientTypes.InstanceTypeCapacity]? = nil,
+        instancesToExclude: OutpostsClientTypes.InstancesToExclude? = nil,
         orderId: Swift.String? = nil,
-        outpostIdentifier: Swift.String? = nil
+        outpostIdentifier: Swift.String? = nil,
+        taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances? = nil
     )
     {
         self.dryRun = dryRun
         self.instancePools = instancePools
+        self.instancesToExclude = instancesToExclude
         self.orderId = orderId
         self.outpostIdentifier = outpostIdentifier
+        self.taskActionOnBlockingInstances = taskActionOnBlockingInstances
     }
 }
 
@@ -2672,6 +2988,8 @@ public struct StartCapacityTaskOutput: Swift.Sendable {
     public var dryRun: Swift.Bool
     /// Reason that the specified capacity task failed.
     public var failed: OutpostsClientTypes.CapacityTaskFailure?
+    /// User-specified instances that must not be stopped in order to free up the capacity needed to run the capacity task.
+    public var instancesToExclude: OutpostsClientTypes.InstancesToExclude?
     /// Date that the specified capacity task was last modified.
     public var lastModifiedDate: Foundation.Date?
     /// ID of the Amazon Web Services Outposts order of the host associated with the capacity task.
@@ -2680,6 +2998,12 @@ public struct StartCapacityTaskOutput: Swift.Sendable {
     public var outpostId: Swift.String?
     /// List of the instance pools requested in the specified capacity task.
     public var requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]?
+    /// User-specified option in case an instance is blocking the capacity task from running.
+    ///
+    /// * WAIT_FOR_EVACUATION - Checks every 10 minutes over 48 hours to determine if instances have stopped and capacity is available to complete the task.
+    ///
+    /// * FAIL_TASK - The capacity task fails.
+    public var taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances?
 
     public init(
         capacityTaskId: Swift.String? = nil,
@@ -2688,10 +3012,12 @@ public struct StartCapacityTaskOutput: Swift.Sendable {
         creationDate: Foundation.Date? = nil,
         dryRun: Swift.Bool = false,
         failed: OutpostsClientTypes.CapacityTaskFailure? = nil,
+        instancesToExclude: OutpostsClientTypes.InstancesToExclude? = nil,
         lastModifiedDate: Foundation.Date? = nil,
         orderId: Swift.String? = nil,
         outpostId: Swift.String? = nil,
-        requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]? = nil
+        requestedInstancePools: [OutpostsClientTypes.InstanceTypeCapacity]? = nil,
+        taskActionOnBlockingInstances: OutpostsClientTypes.TaskActionOnBlockingInstances? = nil
     )
     {
         self.capacityTaskId = capacityTaskId
@@ -2700,10 +3026,12 @@ public struct StartCapacityTaskOutput: Swift.Sendable {
         self.creationDate = creationDate
         self.dryRun = dryRun
         self.failed = failed
+        self.instancesToExclude = instancesToExclude
         self.lastModifiedDate = lastModifiedDate
         self.orderId = orderId
         self.outpostId = outpostId
         self.requestedInstancePools = requestedInstancePools
+        self.taskActionOnBlockingInstances = taskActionOnBlockingInstances
     }
 }
 
@@ -3186,12 +3514,10 @@ extension GetOutpostSupportedInstanceTypesInput {
             let maxResultsQueryItem = Smithy.URIQueryItem(name: "MaxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
             items.append(maxResultsQueryItem)
         }
-        guard let orderId = value.orderId else {
-            let message = "Creating a URL Query Item failed. orderId is required and must not be nil."
-            throw Smithy.ClientError.unknownError(message)
+        if let orderId = value.orderId {
+            let orderIdQueryItem = Smithy.URIQueryItem(name: "OrderId".urlPercentEncoding(), value: Swift.String(orderId).urlPercentEncoding())
+            items.append(orderIdQueryItem)
         }
-        let orderIdQueryItem = Smithy.URIQueryItem(name: "OrderId".urlPercentEncoding(), value: Swift.String(orderId).urlPercentEncoding())
-        items.append(orderIdQueryItem)
         return items
     }
 }
@@ -3230,6 +3556,56 @@ extension GetSiteAddressInput {
     }
 }
 
+extension ListAssetInstancesInput {
+
+    static func urlPathProvider(_ value: ListAssetInstancesInput) -> Swift.String? {
+        guard let outpostIdentifier = value.outpostIdentifier else {
+            return nil
+        }
+        return "/outposts/\(outpostIdentifier.urlPercentEncoding())/assetInstances"
+    }
+}
+
+extension ListAssetInstancesInput {
+
+    static func queryItemProvider(_ value: ListAssetInstancesInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let instanceTypeFilter = value.instanceTypeFilter {
+            instanceTypeFilter.forEach { queryItemValue in
+                let queryItem = Smithy.URIQueryItem(name: "InstanceTypeFilter".urlPercentEncoding(), value: Swift.String(queryItemValue).urlPercentEncoding())
+                items.append(queryItem)
+            }
+        }
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "NextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let awsServiceFilter = value.awsServiceFilter {
+            awsServiceFilter.forEach { queryItemValue in
+                let queryItem = Smithy.URIQueryItem(name: "AwsServiceFilter".urlPercentEncoding(), value: Swift.String(queryItemValue.rawValue).urlPercentEncoding())
+                items.append(queryItem)
+            }
+        }
+        if let accountIdFilter = value.accountIdFilter {
+            accountIdFilter.forEach { queryItemValue in
+                let queryItem = Smithy.URIQueryItem(name: "AccountIdFilter".urlPercentEncoding(), value: Swift.String(queryItemValue).urlPercentEncoding())
+                items.append(queryItem)
+            }
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "MaxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        if let assetIdFilter = value.assetIdFilter {
+            assetIdFilter.forEach { queryItemValue in
+                let queryItem = Smithy.URIQueryItem(name: "AssetIdFilter".urlPercentEncoding(), value: Swift.String(queryItemValue).urlPercentEncoding())
+                items.append(queryItem)
+            }
+        }
+        return items
+    }
+}
+
 extension ListAssetsInput {
 
     static func urlPathProvider(_ value: ListAssetsInput) -> Swift.String? {
@@ -3263,6 +3639,35 @@ extension ListAssetsInput {
                 let queryItem = Smithy.URIQueryItem(name: "StatusFilter".urlPercentEncoding(), value: Swift.String(queryItemValue.rawValue).urlPercentEncoding())
                 items.append(queryItem)
             }
+        }
+        return items
+    }
+}
+
+extension ListBlockingInstancesForCapacityTaskInput {
+
+    static func urlPathProvider(_ value: ListBlockingInstancesForCapacityTaskInput) -> Swift.String? {
+        guard let outpostIdentifier = value.outpostIdentifier else {
+            return nil
+        }
+        guard let capacityTaskId = value.capacityTaskId else {
+            return nil
+        }
+        return "/outposts/\(outpostIdentifier.urlPercentEncoding())/capacity/\(capacityTaskId.urlPercentEncoding())/blockingInstances"
+    }
+}
+
+extension ListBlockingInstancesForCapacityTaskInput {
+
+    static func queryItemProvider(_ value: ListBlockingInstancesForCapacityTaskInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "NextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "MaxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
         }
         return items
     }
@@ -3599,7 +4004,9 @@ extension StartCapacityTaskInput {
         guard let value else { return }
         try writer["DryRun"].write(value.dryRun)
         try writer["InstancePools"].writeList(value.instancePools, memberWritingClosure: OutpostsClientTypes.InstanceTypeCapacity.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["InstancesToExclude"].write(value.instancesToExclude, with: OutpostsClientTypes.InstancesToExclude.write(value:to:))
         try writer["OrderId"].write(value.orderId)
+        try writer["TaskActionOnBlockingInstances"].write(value.taskActionOnBlockingInstances)
     }
 }
 
@@ -3744,10 +4151,12 @@ extension GetCapacityTaskOutput {
         value.creationDate = try reader["CreationDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.dryRun = try reader["DryRun"].readIfPresent() ?? false
         value.failed = try reader["Failed"].readIfPresent(with: OutpostsClientTypes.CapacityTaskFailure.read(from:))
+        value.instancesToExclude = try reader["InstancesToExclude"].readIfPresent(with: OutpostsClientTypes.InstancesToExclude.read(from:))
         value.lastModifiedDate = try reader["LastModifiedDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.orderId = try reader["OrderId"].readIfPresent()
         value.outpostId = try reader["OutpostId"].readIfPresent()
         value.requestedInstancePools = try reader["RequestedInstancePools"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.InstanceTypeCapacity.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.taskActionOnBlockingInstances = try reader["TaskActionOnBlockingInstances"].readIfPresent()
         return value
     }
 }
@@ -3855,6 +4264,19 @@ extension GetSiteAddressOutput {
     }
 }
 
+extension ListAssetInstancesOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListAssetInstancesOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListAssetInstancesOutput()
+        value.assetInstances = try reader["AssetInstances"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.AssetInstance.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
 extension ListAssetsOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListAssetsOutput {
@@ -3863,6 +4285,19 @@ extension ListAssetsOutput {
         let reader = responseReader
         var value = ListAssetsOutput()
         value.assets = try reader["Assets"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.AssetInfo.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListBlockingInstancesForCapacityTaskOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListBlockingInstancesForCapacityTaskOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListBlockingInstancesForCapacityTaskOutput()
+        value.blockingInstances = try reader["BlockingInstances"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.BlockingInstance.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.nextToken = try reader["NextToken"].readIfPresent()
         return value
     }
@@ -3958,10 +4393,12 @@ extension StartCapacityTaskOutput {
         value.creationDate = try reader["CreationDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.dryRun = try reader["DryRun"].readIfPresent() ?? false
         value.failed = try reader["Failed"].readIfPresent(with: OutpostsClientTypes.CapacityTaskFailure.read(from:))
+        value.instancesToExclude = try reader["InstancesToExclude"].readIfPresent(with: OutpostsClientTypes.InstancesToExclude.read(from:))
         value.lastModifiedDate = try reader["LastModifiedDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.orderId = try reader["OrderId"].readIfPresent()
         value.outpostId = try reader["OutpostId"].readIfPresent()
         value.requestedInstancePools = try reader["RequestedInstancePools"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.InstanceTypeCapacity.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.taskActionOnBlockingInstances = try reader["TaskActionOnBlockingInstances"].readIfPresent()
         return value
     }
 }
@@ -4321,7 +4758,41 @@ enum GetSiteAddressOutputError {
     }
 }
 
+enum ListAssetInstancesOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "NotFoundException": return try NotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum ListAssetsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "NotFoundException": return try NotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListBlockingInstancesForCapacityTaskOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -4801,6 +5272,25 @@ extension OutpostsClientTypes.InstanceTypeCapacity {
     }
 }
 
+extension OutpostsClientTypes.InstancesToExclude {
+
+    static func write(value: OutpostsClientTypes.InstancesToExclude?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["AccountIds"].writeList(value.accountIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Instances"].writeList(value.instances, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Services"].writeList(value.services, memberWritingClosure: SmithyReadWrite.WritingClosureBox<OutpostsClientTypes.AWSServiceName>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.InstancesToExclude {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = OutpostsClientTypes.InstancesToExclude()
+        value.instances = try reader["Instances"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.accountIds = try reader["AccountIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.services = try reader["Services"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<OutpostsClientTypes.AWSServiceName>().read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
 extension OutpostsClientTypes.CapacityTaskFailure {
 
     static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.CapacityTaskFailure {
@@ -4901,6 +5391,20 @@ extension OutpostsClientTypes.Address {
     }
 }
 
+extension OutpostsClientTypes.AssetInstance {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.AssetInstance {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = OutpostsClientTypes.AssetInstance()
+        value.instanceId = try reader["InstanceId"].readIfPresent()
+        value.instanceType = try reader["InstanceType"].readIfPresent()
+        value.assetId = try reader["AssetId"].readIfPresent()
+        value.accountId = try reader["AccountId"].readIfPresent()
+        value.awsServiceName = try reader["AwsServiceName"].readIfPresent()
+        return value
+    }
+}
+
 extension OutpostsClientTypes.AssetInfo {
 
     static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.AssetInfo {
@@ -4933,6 +5437,31 @@ extension OutpostsClientTypes.ComputeAttributes {
         value.hostId = try reader["HostId"].readIfPresent()
         value.state = try reader["State"].readIfPresent()
         value.instanceFamilies = try reader["InstanceFamilies"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.instanceTypeCapacities = try reader["InstanceTypeCapacities"].readListIfPresent(memberReadingClosure: OutpostsClientTypes.AssetInstanceTypeCapacity.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.maxVcpus = try reader["MaxVcpus"].readIfPresent()
+        return value
+    }
+}
+
+extension OutpostsClientTypes.AssetInstanceTypeCapacity {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.AssetInstanceTypeCapacity {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = OutpostsClientTypes.AssetInstanceTypeCapacity()
+        value.instanceType = try reader["InstanceType"].readIfPresent() ?? ""
+        value.count = try reader["Count"].readIfPresent() ?? 0
+        return value
+    }
+}
+
+extension OutpostsClientTypes.BlockingInstance {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> OutpostsClientTypes.BlockingInstance {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = OutpostsClientTypes.BlockingInstance()
+        value.instanceId = try reader["InstanceId"].readIfPresent()
+        value.accountId = try reader["AccountId"].readIfPresent()
+        value.awsServiceName = try reader["AwsServiceName"].readIfPresent()
         return value
     }
 }

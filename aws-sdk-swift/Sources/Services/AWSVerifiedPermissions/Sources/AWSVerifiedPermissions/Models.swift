@@ -107,6 +107,258 @@ extension VerifiedPermissionsClientTypes.EntityIdentifier: Swift.CustomDebugStri
 
 extension VerifiedPermissionsClientTypes {
 
+    /// Information about a policy that you include in a BatchGetPolicy API request.
+    public struct BatchGetPolicyInputItem: Swift.Sendable {
+        /// The identifier of the policy you want information about.
+        /// This member is required.
+        public var policyId: Swift.String?
+        /// The identifier of the policy store where the policy you want information about is stored.
+        /// This member is required.
+        public var policyStoreId: Swift.String?
+
+        public init(
+            policyId: Swift.String? = nil,
+            policyStoreId: Swift.String? = nil
+        )
+        {
+            self.policyId = policyId
+            self.policyStoreId = policyStoreId
+        }
+    }
+}
+
+public struct BatchGetPolicyInput: Swift.Sendable {
+    /// An array of up to 100 policies you want information about.
+    /// This member is required.
+    public var requests: [VerifiedPermissionsClientTypes.BatchGetPolicyInputItem]?
+
+    public init(
+        requests: [VerifiedPermissionsClientTypes.BatchGetPolicyInputItem]? = nil
+    )
+    {
+        self.requests = requests
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    public enum BatchGetPolicyErrorCode: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case policyNotFound
+        case policyStoreNotFound
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [BatchGetPolicyErrorCode] {
+            return [
+                .policyNotFound,
+                .policyStoreNotFound
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .policyNotFound: return "POLICY_NOT_FOUND"
+            case .policyStoreNotFound: return "POLICY_STORE_NOT_FOUND"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    /// Contains the information about an error resulting from a BatchGetPolicy API call.
+    public struct BatchGetPolicyErrorItem: Swift.Sendable {
+        /// The error code that was returned.
+        /// This member is required.
+        public var code: VerifiedPermissionsClientTypes.BatchGetPolicyErrorCode?
+        /// A detailed error message.
+        /// This member is required.
+        public var message: Swift.String?
+        /// The identifier of the policy associated with the failed request.
+        /// This member is required.
+        public var policyId: Swift.String?
+        /// The identifier of the policy store associated with the failed request.
+        /// This member is required.
+        public var policyStoreId: Swift.String?
+
+        public init(
+            code: VerifiedPermissionsClientTypes.BatchGetPolicyErrorCode? = nil,
+            message: Swift.String? = nil,
+            policyId: Swift.String? = nil,
+            policyStoreId: Swift.String? = nil
+        )
+        {
+            self.code = code
+            self.message = message
+            self.policyId = policyId
+            self.policyStoreId = policyStoreId
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    /// A structure that contains details about a static policy. It includes the description and policy body. This data type is used within a [PolicyDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinition.html) structure as part of a request parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) operation.
+    public struct StaticPolicyDefinitionDetail: Swift.Sendable {
+        /// A description of the static policy.
+        public var description: Swift.String?
+        /// The content of the static policy written in the Cedar policy language.
+        /// This member is required.
+        public var statement: Swift.String?
+
+        public init(
+            description: Swift.String? = nil,
+            statement: Swift.String? = nil
+        )
+        {
+            self.description = description
+            self.statement = statement
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "StaticPolicyDefinitionDetail(description: \"CONTENT_REDACTED\", statement: \"CONTENT_REDACTED\")"}
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    /// Contains information about a policy that was created by instantiating a policy template.
+    public struct TemplateLinkedPolicyDefinitionDetail: Swift.Sendable {
+        /// The unique identifier of the policy template used to create this policy.
+        /// This member is required.
+        public var policyTemplateId: Swift.String?
+        /// The principal associated with this template-linked policy. Verified Permissions substitutes this principal for the ?principal placeholder in the policy template when it evaluates an authorization request.
+        public var principal: VerifiedPermissionsClientTypes.EntityIdentifier?
+        /// The resource associated with this template-linked policy. Verified Permissions substitutes this resource for the ?resource placeholder in the policy template when it evaluates an authorization request.
+        public var resource: VerifiedPermissionsClientTypes.EntityIdentifier?
+
+        public init(
+            policyTemplateId: Swift.String? = nil,
+            principal: VerifiedPermissionsClientTypes.EntityIdentifier? = nil,
+            resource: VerifiedPermissionsClientTypes.EntityIdentifier? = nil
+        )
+        {
+            self.policyTemplateId = policyTemplateId
+            self.principal = principal
+            self.resource = resource
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    /// A structure that describes a policy definition. It must always have either an static or a templateLinked element. This data type is used as a response parameter for the [GetPolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicy.html) operation.
+    public enum PolicyDefinitionDetail: Swift.Sendable {
+        /// Information about a static policy that wasn't created with a policy template.
+        case `static`(VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail)
+        /// Information about a template-linked policy that was created by instantiating a policy template.
+        case templatelinked(VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case `static`
+        case templateLinked
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [PolicyType] {
+            return [
+                .static,
+                .templateLinked
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .static: return "STATIC"
+            case .templateLinked: return "TEMPLATE_LINKED"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
+    /// Contains information about a policy returned from a BatchGetPolicy API request.
+    public struct BatchGetPolicyOutputItem: Swift.Sendable {
+        /// The date and time the policy was created.
+        /// This member is required.
+        public var createdDate: Foundation.Date?
+        /// The policy definition of an item in the list of policies returned.
+        /// This member is required.
+        public var definition: VerifiedPermissionsClientTypes.PolicyDefinitionDetail?
+        /// The date and time the policy was most recently updated.
+        /// This member is required.
+        public var lastUpdatedDate: Foundation.Date?
+        /// The identifier of the policy you want information about.
+        /// This member is required.
+        public var policyId: Swift.String?
+        /// The identifier of the policy store where the policy you want information about is stored.
+        /// This member is required.
+        public var policyStoreId: Swift.String?
+        /// The type of the policy. This is one of the following values:
+        ///
+        /// * STATIC
+        ///
+        /// * TEMPLATE_LINKED
+        /// This member is required.
+        public var policyType: VerifiedPermissionsClientTypes.PolicyType?
+
+        public init(
+            createdDate: Foundation.Date? = nil,
+            definition: VerifiedPermissionsClientTypes.PolicyDefinitionDetail? = nil,
+            lastUpdatedDate: Foundation.Date? = nil,
+            policyId: Swift.String? = nil,
+            policyStoreId: Swift.String? = nil,
+            policyType: VerifiedPermissionsClientTypes.PolicyType? = nil
+        )
+        {
+            self.createdDate = createdDate
+            self.definition = definition
+            self.lastUpdatedDate = lastUpdatedDate
+            self.policyId = policyId
+            self.policyStoreId = policyStoreId
+            self.policyType = policyType
+        }
+    }
+}
+
+public struct BatchGetPolicyOutput: Swift.Sendable {
+    /// Information about the policies from the request that resulted in an error. These results are returned in the order they were requested.
+    /// This member is required.
+    public var errors: [VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem]?
+    /// Information about the policies listed in the request that were successfully returned. These results are returned in the order they were requested.
+    /// This member is required.
+    public var results: [VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem]?
+
+    public init(
+        errors: [VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem]? = nil,
+        results: [VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem]? = nil
+    )
+    {
+        self.errors = errors
+        self.results = results
+    }
+}
+
+extension VerifiedPermissionsClientTypes {
+
     public enum ResourceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case identitySource
         case policy
@@ -1088,35 +1340,6 @@ extension VerifiedPermissionsClientTypes {
     }
 }
 
-extension VerifiedPermissionsClientTypes {
-
-    public enum PolicyType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
-        case `static`
-        case templateLinked
-        case sdkUnknown(Swift.String)
-
-        public static var allCases: [PolicyType] {
-            return [
-                .static,
-                .templateLinked
-            ]
-        }
-
-        public init?(rawValue: Swift.String) {
-            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
-            self = value ?? Self.sdkUnknown(rawValue)
-        }
-
-        public var rawValue: Swift.String {
-            switch self {
-            case .static: return "STATIC"
-            case .templateLinked: return "TEMPLATE_LINKED"
-            case let .sdkUnknown(s): return s
-            }
-        }
-    }
-}
-
 public struct CreatePolicyOutput: Swift.Sendable {
     /// The action that a policy permits or forbids. For example, {"actions": [{"actionId": "ViewPhoto", "actionType": "PhotoFlash::Action"}, {"entityID": "SharePhoto", "entityType": "PhotoFlash::Action"}]}.
     public var actions: [VerifiedPermissionsClientTypes.ActionIdentifier]?
@@ -1575,69 +1798,6 @@ public struct GetPolicyInput: Swift.Sendable {
     {
         self.policyId = policyId
         self.policyStoreId = policyStoreId
-    }
-}
-
-extension VerifiedPermissionsClientTypes {
-
-    /// A structure that contains details about a static policy. It includes the description and policy body. This data type is used within a [PolicyDefinition](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinition.html) structure as part of a request parameter for the [CreatePolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html) operation.
-    public struct StaticPolicyDefinitionDetail: Swift.Sendable {
-        /// A description of the static policy.
-        public var description: Swift.String?
-        /// The content of the static policy written in the Cedar policy language.
-        /// This member is required.
-        public var statement: Swift.String?
-
-        public init(
-            description: Swift.String? = nil,
-            statement: Swift.String? = nil
-        )
-        {
-            self.description = description
-            self.statement = statement
-        }
-    }
-}
-
-extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail: Swift.CustomDebugStringConvertible {
-    public var debugDescription: Swift.String {
-        "StaticPolicyDefinitionDetail(description: \"CONTENT_REDACTED\", statement: \"CONTENT_REDACTED\")"}
-}
-
-extension VerifiedPermissionsClientTypes {
-
-    /// Contains information about a policy that was created by instantiating a policy template.
-    public struct TemplateLinkedPolicyDefinitionDetail: Swift.Sendable {
-        /// The unique identifier of the policy template used to create this policy.
-        /// This member is required.
-        public var policyTemplateId: Swift.String?
-        /// The principal associated with this template-linked policy. Verified Permissions substitutes this principal for the ?principal placeholder in the policy template when it evaluates an authorization request.
-        public var principal: VerifiedPermissionsClientTypes.EntityIdentifier?
-        /// The resource associated with this template-linked policy. Verified Permissions substitutes this resource for the ?resource placeholder in the policy template when it evaluates an authorization request.
-        public var resource: VerifiedPermissionsClientTypes.EntityIdentifier?
-
-        public init(
-            policyTemplateId: Swift.String? = nil,
-            principal: VerifiedPermissionsClientTypes.EntityIdentifier? = nil,
-            resource: VerifiedPermissionsClientTypes.EntityIdentifier? = nil
-        )
-        {
-            self.policyTemplateId = policyTemplateId
-            self.principal = principal
-            self.resource = resource
-        }
-    }
-}
-
-extension VerifiedPermissionsClientTypes {
-
-    /// A structure that describes a policy definition. It must always have either an static or a templateLinked element. This data type is used as a response parameter for the [GetPolicy](https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicy.html) operation.
-    public enum PolicyDefinitionDetail: Swift.Sendable {
-        /// Information about a static policy that wasn't created with a policy template.
-        case `static`(VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail)
-        /// Information about a template-linked policy that was created by instantiating a policy template.
-        case templatelinked(VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail)
-        case sdkUnknown(Swift.String)
     }
 }
 
@@ -2476,7 +2636,7 @@ extension VerifiedPermissionsClientTypes {
         /// The identifier of the policy you want information about.
         /// This member is required.
         public var policyId: Swift.String?
-        /// The identifier of the PolicyStore where the policy you want information about is stored.
+        /// The identifier of the policy store where the policy you want information about is stored.
         /// This member is required.
         public var policyStoreId: Swift.String?
         /// The type of the policy. This is one of the following values:
@@ -3134,6 +3294,10 @@ extension VerifiedPermissionsClientTypes {
         case `set`([VerifiedPermissionsClientTypes.AttributeValue])
         /// An attribute value of [Record](https://docs.cedarpolicy.com/policies/syntax-datatypes.html#record) type. Example: {"record": { "keyName": {} } }
         case record([Swift.String: VerifiedPermissionsClientTypes.AttributeValue])
+        /// An attribute value of [ipaddr](https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-ipaddr) type. Example: {"ip": "192.168.1.100"}
+        case ipaddr(Swift.String)
+        /// An attribute value of [decimal](https://docs.cedarpolicy.com/policies/syntax-datatypes.html#datatype-decimal) type. Example: {"decimal": "1.1"}
+        case decimal(Swift.String)
         case sdkUnknown(Swift.String)
     }
 }
@@ -3310,7 +3474,7 @@ extension VerifiedPermissionsClientTypes {
 }
 
 public struct BatchIsAuthorizedOutput: Swift.Sendable {
-    /// A series of Allow or Deny decisions for each request, and the policies that produced them.
+    /// A series of Allow or Deny decisions for each request, and the policies that produced them. These results are returned in the order they were requested.
     /// This member is required.
     public var results: [VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem]?
 
@@ -3325,7 +3489,7 @@ public struct BatchIsAuthorizedOutput: Swift.Sendable {
 public struct BatchIsAuthorizedWithTokenOutput: Swift.Sendable {
     /// The identifier of the principal in the ID or access token.
     public var principal: VerifiedPermissionsClientTypes.EntityIdentifier?
-    /// A series of Allow or Deny decisions for each request, and the policies that produced them.
+    /// A series of Allow or Deny decisions for each request, and the policies that produced them. These results are returned in the order they were requested.
     /// This member is required.
     public var results: [VerifiedPermissionsClientTypes.BatchIsAuthorizedWithTokenOutputItem]?
 
@@ -3477,6 +3641,13 @@ public struct BatchIsAuthorizedWithTokenInput: Swift.Sendable {
 extension BatchIsAuthorizedWithTokenInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
         "BatchIsAuthorizedWithTokenInput(entities: \(Swift.String(describing: entities)), policyStoreId: \(Swift.String(describing: policyStoreId)), requests: \(Swift.String(describing: requests)), accessToken: \"CONTENT_REDACTED\", identityToken: \"CONTENT_REDACTED\")"}
+}
+
+extension BatchGetPolicyInput {
+
+    static func urlPathProvider(_ value: BatchGetPolicyInput) -> Swift.String? {
+        return "/"
+    }
 }
 
 extension BatchIsAuthorizedInput {
@@ -3658,6 +3829,14 @@ extension UpdatePolicyTemplateInput {
 
     static func urlPathProvider(_ value: UpdatePolicyTemplateInput) -> Swift.String? {
         return "/"
+    }
+}
+
+extension BatchGetPolicyInput {
+
+    static func write(value: BatchGetPolicyInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["requests"].writeList(value.requests, memberWritingClosure: VerifiedPermissionsClientTypes.BatchGetPolicyInputItem.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 }
 
@@ -3919,6 +4098,19 @@ extension UpdatePolicyTemplateInput {
         try writer["policyStoreId"].write(value.policyStoreId)
         try writer["policyTemplateId"].write(value.policyTemplateId)
         try writer["statement"].write(value.statement)
+    }
+}
+
+extension BatchGetPolicyOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> BatchGetPolicyOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = BatchGetPolicyOutput()
+        value.errors = try reader["errors"].readListIfPresent(memberReadingClosure: VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.results = try reader["results"].readListIfPresent(memberReadingClosure: VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
     }
 }
 
@@ -4297,6 +4489,20 @@ func httpServiceError(baseError: AWSClientRuntime.AWSJSONError) throws -> Swift.
         case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
         case "ValidationException": return try ValidationException.makeError(baseError: baseError)
         default: return nil
+    }
+}
+
+enum BatchGetPolicyOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.AWSJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        if let error = try httpServiceError(baseError: baseError) { return error }
+        switch baseError.code {
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
     }
 }
 
@@ -4806,6 +5012,90 @@ extension ValidationException {
     }
 }
 
+extension VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = VerifiedPermissionsClientTypes.BatchGetPolicyOutputItem()
+        value.policyStoreId = try reader["policyStoreId"].readIfPresent() ?? ""
+        value.policyId = try reader["policyId"].readIfPresent() ?? ""
+        value.policyType = try reader["policyType"].readIfPresent() ?? .sdkUnknown("")
+        value.definition = try reader["definition"].readIfPresent(with: VerifiedPermissionsClientTypes.PolicyDefinitionDetail.read(from:))
+        value.createdDate = try reader["createdDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.lastUpdatedDate = try reader["lastUpdatedDate"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension VerifiedPermissionsClientTypes.PolicyDefinitionDetail {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.PolicyDefinitionDetail {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "static":
+                return .`static`(try reader["static"].read(with: VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail.read(from:)))
+            case "templateLinked":
+                return .templatelinked(try reader["templateLinked"].read(with: VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail()
+        value.policyTemplateId = try reader["policyTemplateId"].readIfPresent() ?? ""
+        value.principal = try reader["principal"].readIfPresent(with: VerifiedPermissionsClientTypes.EntityIdentifier.read(from:))
+        value.resource = try reader["resource"].readIfPresent(with: VerifiedPermissionsClientTypes.EntityIdentifier.read(from:))
+        return value
+    }
+}
+
+extension VerifiedPermissionsClientTypes.EntityIdentifier {
+
+    static func write(value: VerifiedPermissionsClientTypes.EntityIdentifier?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["entityId"].write(value.entityId)
+        try writer["entityType"].write(value.entityType)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.EntityIdentifier {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = VerifiedPermissionsClientTypes.EntityIdentifier()
+        value.entityType = try reader["entityType"].readIfPresent() ?? ""
+        value.entityId = try reader["entityId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail()
+        value.description = try reader["description"].readIfPresent()
+        value.statement = try reader["statement"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = VerifiedPermissionsClientTypes.BatchGetPolicyErrorItem()
+        value.code = try reader["code"].readIfPresent() ?? .sdkUnknown("")
+        value.policyStoreId = try reader["policyStoreId"].readIfPresent() ?? ""
+        value.policyId = try reader["policyId"].readIfPresent() ?? ""
+        value.message = try reader["message"].readIfPresent() ?? ""
+        return value
+    }
+}
+
 extension VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem {
 
     static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.BatchIsAuthorizedOutputItem {
@@ -4891,8 +5181,12 @@ extension VerifiedPermissionsClientTypes.AttributeValue {
         switch value {
             case let .boolean(boolean):
                 try writer["boolean"].write(boolean)
+            case let .decimal(decimal):
+                try writer["decimal"].write(decimal)
             case let .entityidentifier(entityidentifier):
                 try writer["entityIdentifier"].write(entityidentifier, with: VerifiedPermissionsClientTypes.EntityIdentifier.write(value:to:))
+            case let .ipaddr(ipaddr):
+                try writer["ipaddr"].write(ipaddr)
             case let .long(long):
                 try writer["long"].write(long)
             case let .record(record):
@@ -4922,26 +5216,13 @@ extension VerifiedPermissionsClientTypes.AttributeValue {
                 return .`set`(try reader["set"].readList(memberReadingClosure: VerifiedPermissionsClientTypes.AttributeValue.read(from:), memberNodeInfo: "member", isFlattened: false))
             case "record":
                 return .record(try reader["record"].readMap(valueReadingClosure: VerifiedPermissionsClientTypes.AttributeValue.read(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false))
+            case "ipaddr":
+                return .ipaddr(try reader["ipaddr"].read())
+            case "decimal":
+                return .decimal(try reader["decimal"].read())
             default:
                 return .sdkUnknown(name ?? "")
         }
-    }
-}
-
-extension VerifiedPermissionsClientTypes.EntityIdentifier {
-
-    static func write(value: VerifiedPermissionsClientTypes.EntityIdentifier?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["entityId"].write(value.entityId)
-        try writer["entityType"].write(value.entityType)
-    }
-
-    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.EntityIdentifier {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = VerifiedPermissionsClientTypes.EntityIdentifier()
-        value.entityType = try reader["entityType"].readIfPresent() ?? ""
-        value.entityId = try reader["entityId"].readIfPresent() ?? ""
-        return value
     }
 }
 
@@ -5104,45 +5385,6 @@ extension VerifiedPermissionsClientTypes.CognitoGroupConfigurationDetail {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = VerifiedPermissionsClientTypes.CognitoGroupConfigurationDetail()
         value.groupEntityType = try reader["groupEntityType"].readIfPresent()
-        return value
-    }
-}
-
-extension VerifiedPermissionsClientTypes.PolicyDefinitionDetail {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.PolicyDefinitionDetail {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
-        switch name {
-            case "static":
-                return .`static`(try reader["static"].read(with: VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail.read(from:)))
-            case "templateLinked":
-                return .templatelinked(try reader["templateLinked"].read(with: VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail.read(from:)))
-            default:
-                return .sdkUnknown(name ?? "")
-        }
-    }
-}
-
-extension VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = VerifiedPermissionsClientTypes.TemplateLinkedPolicyDefinitionDetail()
-        value.policyTemplateId = try reader["policyTemplateId"].readIfPresent() ?? ""
-        value.principal = try reader["principal"].readIfPresent(with: VerifiedPermissionsClientTypes.EntityIdentifier.read(from:))
-        value.resource = try reader["resource"].readIfPresent(with: VerifiedPermissionsClientTypes.EntityIdentifier.read(from:))
-        return value
-    }
-}
-
-extension VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail {
-
-    static func read(from reader: SmithyJSON.Reader) throws -> VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = VerifiedPermissionsClientTypes.StaticPolicyDefinitionDetail()
-        value.description = try reader["description"].readIfPresent()
-        value.statement = try reader["statement"].readIfPresent() ?? ""
         return value
     }
 }
@@ -5396,6 +5638,15 @@ extension VerifiedPermissionsClientTypes.ValidationExceptionField {
         value.path = try reader["path"].readIfPresent() ?? ""
         value.message = try reader["message"].readIfPresent() ?? ""
         return value
+    }
+}
+
+extension VerifiedPermissionsClientTypes.BatchGetPolicyInputItem {
+
+    static func write(value: VerifiedPermissionsClientTypes.BatchGetPolicyInputItem?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["policyId"].write(value.policyId)
+        try writer["policyStoreId"].write(value.policyStoreId)
     }
 }
 

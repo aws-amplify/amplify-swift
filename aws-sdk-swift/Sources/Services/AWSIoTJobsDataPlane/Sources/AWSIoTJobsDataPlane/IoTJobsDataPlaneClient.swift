@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class IoTJobsDataPlaneClient: ClientRuntime.Client {
     public static let clientName = "IoTJobsDataPlaneClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: IoTJobsDataPlaneClient.IoTJobsDataPlaneClientConfiguration
     let serviceName = "IoT Jobs Data Plane"
@@ -246,7 +247,7 @@ extension IoTJobsDataPlaneClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<DescribeJobExecutionOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DescribeJobExecutionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DescribeJobExecutionInput, DescribeJobExecutionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DescribeJobExecutionInput, DescribeJobExecutionOutput>(serviceID: serviceName, version: IoTJobsDataPlaneClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DescribeJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DescribeJobExecutionInput, DescribeJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DescribeJobExecutionInput, DescribeJobExecutionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -316,7 +317,7 @@ extension IoTJobsDataPlaneClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetPendingJobExecutionsOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetPendingJobExecutionsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPendingJobExecutionsInput, GetPendingJobExecutionsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPendingJobExecutionsInput, GetPendingJobExecutionsOutput>(serviceID: serviceName, version: IoTJobsDataPlaneClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetPendingJobExecutionsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetPendingJobExecutionsInput, GetPendingJobExecutionsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetPendingJobExecutionsInput, GetPendingJobExecutionsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -389,7 +390,7 @@ extension IoTJobsDataPlaneClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<StartNextPendingJobExecutionOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StartNextPendingJobExecutionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartNextPendingJobExecutionInput, StartNextPendingJobExecutionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartNextPendingJobExecutionInput, StartNextPendingJobExecutionOutput>(serviceID: serviceName, version: IoTJobsDataPlaneClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<StartNextPendingJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<StartNextPendingJobExecutionInput, StartNextPendingJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<StartNextPendingJobExecutionInput, StartNextPendingJobExecutionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -463,7 +464,7 @@ extension IoTJobsDataPlaneClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<UpdateJobExecutionOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<UpdateJobExecutionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<UpdateJobExecutionInput, UpdateJobExecutionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<UpdateJobExecutionInput, UpdateJobExecutionOutput>(serviceID: serviceName, version: IoTJobsDataPlaneClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<UpdateJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<UpdateJobExecutionInput, UpdateJobExecutionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<UpdateJobExecutionInput, UpdateJobExecutionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

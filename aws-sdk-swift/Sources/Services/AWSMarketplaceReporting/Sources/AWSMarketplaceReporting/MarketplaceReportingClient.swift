@@ -62,6 +62,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class MarketplaceReportingClient: ClientRuntime.Client {
     public static let clientName = "MarketplaceReportingClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: MarketplaceReportingClient.MarketplaceReportingClientConfiguration
     let serviceName = "Marketplace Reporting"
@@ -249,7 +250,7 @@ extension MarketplaceReportingClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetBuyerDashboardOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetBuyerDashboardOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetBuyerDashboardInput, GetBuyerDashboardOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetBuyerDashboardInput, GetBuyerDashboardOutput>(serviceID: serviceName, version: MarketplaceReportingClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetBuyerDashboardOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetBuyerDashboardInput, GetBuyerDashboardOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetBuyerDashboardInput, GetBuyerDashboardOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

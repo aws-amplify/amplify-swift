@@ -20,17 +20,36 @@ public struct AWSJSONError: BaseError {
     private let responseReader: Reader
 
     @_spi(SmithyReadWrite)
-    public init(httpResponse: HTTPResponse, responseReader: Reader, noErrorWrapping: Bool) throws {
-        let code: String? = try httpResponse.headers.value(for: "X-Amzn-Errortype")
+    public init(httpResponse: HTTPResponse, responseReader: Reader, noErrorWrapping: Bool, code: String? = nil) throws {
+        let errorCode: String? = try httpResponse.headers.value(for: "X-Amzn-Errortype")
                             ?? responseReader["code"].readIfPresent()
                             ?? responseReader["__type"].readIfPresent()
+        let resolvedCode = code ?? errorCode
         let message: String? = try responseReader["Message"].readIfPresent()
         let requestID: String? = try responseReader["RequestId"].readIfPresent()
-        guard let code else { throw BaseErrorDecodeError.missingRequiredData }
-        self.code = sanitizeErrorType(code)
+        guard let resolvedCode else { throw BaseErrorDecodeError.missingRequiredData }
+        self.code = sanitizeErrorType(resolvedCode)
         self.message = message
         self.requestID = requestID
         self.httpResponse = httpResponse
         self.responseReader = responseReader
+    }
+}
+
+extension AWSJSONError {
+    @_spi(SmithyReadWrite)
+    public static func makeQueryCompatibleAWSJsonError(
+        httpResponse: HTTPResponse,
+        responseReader: Reader,
+        noErrorWrapping: Bool,
+        errorDetails: String?
+    ) throws -> AWSJSONError {
+        let errorCode = try AwsQueryCompatibleErrorDetails.parse(errorDetails).code
+        return try AWSJSONError(
+            httpResponse: httpResponse,
+            responseReader: responseReader,
+            noErrorWrapping: noErrorWrapping,
+            code: errorCode
+        )
     }
 }

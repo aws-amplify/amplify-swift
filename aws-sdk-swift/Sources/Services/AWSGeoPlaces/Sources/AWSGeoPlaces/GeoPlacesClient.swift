@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class GeoPlacesClient: ClientRuntime.Client {
     public static let clientName = "GeoPlacesClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: GeoPlacesClient.GeoPlacesClientConfiguration
     let serviceName = "Geo Places"
@@ -247,7 +248,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<AutocompleteOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<AutocompleteOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<AutocompleteInput, AutocompleteOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<AutocompleteInput, AutocompleteOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<AutocompleteOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<AutocompleteInput, AutocompleteOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<AutocompleteInput, AutocompleteOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -320,7 +321,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GeocodeOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GeocodeOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GeocodeInput, GeocodeOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GeocodeInput, GeocodeOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GeocodeOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GeocodeInput, GeocodeOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GeocodeInput, GeocodeOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -390,7 +391,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetPlaceOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetPlaceOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPlaceInput, GetPlaceOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPlaceInput, GetPlaceOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetPlaceOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetPlaceInput, GetPlaceOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetPlaceInput, GetPlaceOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -463,7 +464,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ReverseGeocodeOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ReverseGeocodeOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ReverseGeocodeInput, ReverseGeocodeOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ReverseGeocodeInput, ReverseGeocodeOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ReverseGeocodeOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ReverseGeocodeInput, ReverseGeocodeOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ReverseGeocodeInput, ReverseGeocodeOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -536,7 +537,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<SearchNearbyOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<SearchNearbyOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SearchNearbyInput, SearchNearbyOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SearchNearbyInput, SearchNearbyOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<SearchNearbyOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<SearchNearbyInput, SearchNearbyOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<SearchNearbyInput, SearchNearbyOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -609,7 +610,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<SearchTextOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<SearchTextOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SearchTextInput, SearchTextOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SearchTextInput, SearchTextOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<SearchTextOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<SearchTextInput, SearchTextOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<SearchTextInput, SearchTextOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -682,7 +683,7 @@ extension GeoPlacesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<SuggestOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<SuggestOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SuggestInput, SuggestOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SuggestInput, SuggestOutput>(serviceID: serviceName, version: GeoPlacesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<SuggestOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<SuggestInput, SuggestOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<SuggestInput, SuggestOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

@@ -999,6 +999,88 @@ extension GetIndexOutput: Swift.CustomDebugStringConvertible {
         "GetIndexOutput(arn: \(Swift.String(describing: arn)), createdAt: \(Swift.String(describing: createdAt)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), replicatingFrom: \(Swift.String(describing: replicatingFrom)), replicatingTo: \(Swift.String(describing: replicatingTo)), state: \(Swift.String(describing: state)), type: \(Swift.String(describing: type)), tags: \"CONTENT_REDACTED\")"}
 }
 
+public struct GetManagedViewInput: Swift.Sendable {
+    /// The Amazon resource name (ARN) of the managed view.
+    /// This member is required.
+    public var managedViewArn: Swift.String?
+
+    public init(
+        managedViewArn: Swift.String? = nil
+    )
+    {
+        self.managedViewArn = managedViewArn
+    }
+}
+
+extension ResourceExplorer2ClientTypes {
+
+    /// An Amazon Web Services-managed view is how other Amazon Web Services services can access resource information indexed by Resource Explorer for your Amazon Web Services account or organization with your consent. For more information, see [Managed views](https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html).
+    public struct ManagedView: Swift.Sendable {
+        /// A search filter defines which resources can be part of a search query result set.
+        public var filters: ResourceExplorer2ClientTypes.SearchFilter?
+        /// A structure that contains additional information about the managed view.
+        public var includedProperties: [ResourceExplorer2ClientTypes.IncludedProperty]?
+        /// The date and time when this managed view was last modified.
+        public var lastUpdatedAt: Foundation.Date?
+        /// The [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of the managed view.
+        public var managedViewArn: Swift.String?
+        /// The name of the managed view.
+        public var managedViewName: Swift.String?
+        /// The Amazon Web Services account that owns this managed view.
+        public var owner: Swift.String?
+        /// The resource policy that defines access to the managed view. To learn more about this policy, review [Managed views](https://docs.aws.amazon.com/resource-explorer/latest/userguide/aws-managed-views.html).
+        public var resourcePolicy: Swift.String?
+        /// An [Amazon resource name (ARN)](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) of an Amazon Web Services account or organization that specifies whether this managed view includes resources from only the specified Amazon Web Services account or all accounts in the specified organization.
+        public var scope: Swift.String?
+        /// The service principal of the Amazon Web Services service that created and manages the managed view.
+        public var trustedService: Swift.String?
+        /// The version of the managed view.
+        public var version: Swift.String?
+
+        public init(
+            filters: ResourceExplorer2ClientTypes.SearchFilter? = nil,
+            includedProperties: [ResourceExplorer2ClientTypes.IncludedProperty]? = nil,
+            lastUpdatedAt: Foundation.Date? = nil,
+            managedViewArn: Swift.String? = nil,
+            managedViewName: Swift.String? = nil,
+            owner: Swift.String? = nil,
+            resourcePolicy: Swift.String? = nil,
+            scope: Swift.String? = nil,
+            trustedService: Swift.String? = nil,
+            version: Swift.String? = nil
+        )
+        {
+            self.filters = filters
+            self.includedProperties = includedProperties
+            self.lastUpdatedAt = lastUpdatedAt
+            self.managedViewArn = managedViewArn
+            self.managedViewName = managedViewName
+            self.owner = owner
+            self.resourcePolicy = resourcePolicy
+            self.scope = scope
+            self.trustedService = trustedService
+            self.version = version
+        }
+    }
+}
+
+extension ResourceExplorer2ClientTypes.ManagedView: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ManagedView(includedProperties: \(Swift.String(describing: includedProperties)), lastUpdatedAt: \(Swift.String(describing: lastUpdatedAt)), managedViewArn: \(Swift.String(describing: managedViewArn)), managedViewName: \(Swift.String(describing: managedViewName)), owner: \(Swift.String(describing: owner)), resourcePolicy: \(Swift.String(describing: resourcePolicy)), scope: \(Swift.String(describing: scope)), trustedService: \(Swift.String(describing: trustedService)), version: \(Swift.String(describing: version)), filters: \"CONTENT_REDACTED\")"}
+}
+
+public struct GetManagedViewOutput: Swift.Sendable {
+    /// Details about the specified managed view.
+    public var managedView: ResourceExplorer2ClientTypes.ManagedView?
+
+    public init(
+        managedView: ResourceExplorer2ClientTypes.ManagedView? = nil
+    )
+    {
+        self.managedView = managedView
+    }
+}
+
 public struct ListIndexesForMembersInput: Swift.Sendable {
     /// The account IDs will limit the output to only indexes from these accounts.
     /// This member is required.
@@ -1064,6 +1146,42 @@ public struct ListIndexesForMembersOutput: Swift.Sendable {
     )
     {
         self.indexes = indexes
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListManagedViewsInput: Swift.Sendable {
+    /// The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the NextToken response element is present and has a value (is not null). Include that value as the NextToken request parameter in the next call to the operation to get the next part of the results. An API operation can return fewer results than the maximum even when there are more results available. You should check NextToken after every operation to ensure that you receive all of the results.
+    public var maxResults: Swift.Int?
+    /// The parameter for receiving additional results if you receive a NextToken response in a previous request. A NextToken response indicates that more output is available. Set this parameter to the value of the previous call's NextToken response to indicate where the output should continue from. The pagination tokens expire after 24 hours.
+    public var nextToken: Swift.String?
+    /// Specifies a service principal name. If specified, then the operation only returns the managed views that are managed by the input service.
+    public var servicePrincipal: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        servicePrincipal: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.servicePrincipal = servicePrincipal
+    }
+}
+
+public struct ListManagedViewsOutput: Swift.Sendable {
+    /// The list of managed views available in the Amazon Web Services Region in which you called this operation.
+    public var managedViews: [Swift.String]?
+    /// If present, indicates that more output is available than is included in the current response. Use this value in the NextToken request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the NextToken response element comes back as null. The pagination tokens expire after 24 hours.
+    public var nextToken: Swift.String?
+
+    public init(
+        managedViews: [Swift.String]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.managedViews = managedViews
         self.nextToken = nextToken
     }
 }
@@ -1137,7 +1255,7 @@ extension ResourceExplorer2ClientTypes {
         public var region: Swift.String?
         /// The type of the resource.
         public var resourceType: Swift.String?
-        /// The Amazon Web Servicesservice that owns the resource and is responsible for creating and updating it.
+        /// The Amazon Web Services service that owns the resource and is responsible for creating and updating it.
         public var service: Swift.String?
 
         public init(
@@ -1203,7 +1321,7 @@ extension ResourceExplorer2ClientTypes {
     public struct SupportedResourceType: Swift.Sendable {
         /// The unique identifier of the resource type.
         public var resourceType: Swift.String?
-        /// The Amazon Web Servicesservice that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.
+        /// The Amazon Web Services service that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.
         public var service: Swift.String?
 
         public init(
@@ -1466,6 +1584,13 @@ extension GetIndexInput {
     }
 }
 
+extension GetManagedViewInput {
+
+    static func urlPathProvider(_ value: GetManagedViewInput) -> Swift.String? {
+        return "/GetManagedView"
+    }
+}
+
 extension GetViewInput {
 
     static func urlPathProvider(_ value: GetViewInput) -> Swift.String? {
@@ -1484,6 +1609,13 @@ extension ListIndexesForMembersInput {
 
     static func urlPathProvider(_ value: ListIndexesForMembersInput) -> Swift.String? {
         return "/ListIndexesForMembers"
+    }
+}
+
+extension ListManagedViewsInput {
+
+    static func urlPathProvider(_ value: ListManagedViewsInput) -> Swift.String? {
+        return "/ListManagedViews"
     }
 }
 
@@ -1629,6 +1761,14 @@ extension DeleteViewInput {
     }
 }
 
+extension GetManagedViewInput {
+
+    static func write(value: GetManagedViewInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["ManagedViewArn"].write(value.managedViewArn)
+    }
+}
+
 extension GetViewInput {
 
     static func write(value: GetViewInput?, to writer: SmithyJSON.Writer) throws {
@@ -1655,6 +1795,16 @@ extension ListIndexesForMembersInput {
         try writer["AccountIdList"].writeList(value.accountIdList, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["MaxResults"].write(value.maxResults)
         try writer["NextToken"].write(value.nextToken)
+    }
+}
+
+extension ListManagedViewsInput {
+
+    static func write(value: ListManagedViewsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["MaxResults"].write(value.maxResults)
+        try writer["NextToken"].write(value.nextToken)
+        try writer["ServicePrincipal"].write(value.servicePrincipal)
     }
 }
 
@@ -1852,6 +2002,18 @@ extension GetIndexOutput {
     }
 }
 
+extension GetManagedViewOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetManagedViewOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetManagedViewOutput()
+        value.managedView = try reader["ManagedView"].readIfPresent(with: ResourceExplorer2ClientTypes.ManagedView.read(from:))
+        return value
+    }
+}
+
 extension GetViewOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetViewOutput {
@@ -1886,6 +2048,19 @@ extension ListIndexesForMembersOutput {
         let reader = responseReader
         var value = ListIndexesForMembersOutput()
         value.indexes = try reader["Indexes"].readListIfPresent(memberReadingClosure: ResourceExplorer2ClientTypes.MemberIndex.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListManagedViewsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListManagedViewsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListManagedViewsOutput()
+        value.managedViews = try reader["ManagedViews"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         value.nextToken = try reader["NextToken"].readIfPresent()
         return value
     }
@@ -2181,6 +2356,25 @@ enum GetIndexOutputError {
     }
 }
 
+enum GetManagedViewOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum GetViewOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -2228,6 +2422,24 @@ enum ListIndexesForMembersOutputError {
             case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListManagedViewsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -2572,6 +2784,25 @@ extension ResourceExplorer2ClientTypes.OrgConfiguration {
         var value = ResourceExplorer2ClientTypes.OrgConfiguration()
         value.awsServiceAccessStatus = try reader["AWSServiceAccessStatus"].readIfPresent() ?? .sdkUnknown("")
         value.serviceLinkedRole = try reader["ServiceLinkedRole"].readIfPresent()
+        return value
+    }
+}
+
+extension ResourceExplorer2ClientTypes.ManagedView {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> ResourceExplorer2ClientTypes.ManagedView {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = ResourceExplorer2ClientTypes.ManagedView()
+        value.managedViewArn = try reader["ManagedViewArn"].readIfPresent()
+        value.managedViewName = try reader["ManagedViewName"].readIfPresent()
+        value.trustedService = try reader["TrustedService"].readIfPresent()
+        value.lastUpdatedAt = try reader["LastUpdatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
+        value.owner = try reader["Owner"].readIfPresent()
+        value.scope = try reader["Scope"].readIfPresent()
+        value.includedProperties = try reader["IncludedProperties"].readListIfPresent(memberReadingClosure: ResourceExplorer2ClientTypes.IncludedProperty.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.filters = try reader["Filters"].readIfPresent(with: ResourceExplorer2ClientTypes.SearchFilter.read(from:))
+        value.resourcePolicy = try reader["ResourcePolicy"].readIfPresent()
+        value.version = try reader["Version"].readIfPresent()
         return value
     }
 }

@@ -11965,7 +11965,7 @@ public struct ListPublicKeysInput: Swift.Sendable {
 extension CloudFrontClientTypes {
 
     /// Contains information about a public key.
-    public struct PublicKeySummary: Swift.Sendable {
+    public struct PublicKeySummary: Swift.Sendable, Swift.Equatable {
         /// A comment to describe the public key. The comment cannot be longer than 128 characters.
         public var comment: Swift.String?
         /// The date and time when the public key was uploaded.
@@ -12001,7 +12001,7 @@ extension CloudFrontClientTypes {
 extension CloudFrontClientTypes {
 
     /// A list of public keys that you can use with [signed URLs and signed cookies](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html), or with [field-level encryption](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/field-level-encryption.html).
-    public struct PublicKeyList: Swift.Sendable {
+    public struct PublicKeyList: Swift.Sendable, Swift.Equatable {
         /// A list of public keys.
         public var items: [CloudFrontClientTypes.PublicKeySummary]?
         /// The maximum number of public keys you want in the response.
@@ -12734,7 +12734,7 @@ public struct UpdateDistributionWithStagingConfigInput: Swift.Sendable {
     /// The identifier of the primary distribution to which you are copying a staging distribution's configuration.
     /// This member is required.
     public var id: Swift.String?
-    /// The current versions (ETag values) of both primary and staging distributions. Provide these in the following format: ,
+    /// The current versions (ETag values) of both primary and staging distributions. Provide these in the following format: <primary ETag>, <staging ETag>
     public var ifMatch: Swift.String?
     /// The identifier of the staging distribution whose configuration you are copying to the primary distribution.
     public var stagingDistributionId: Swift.String?

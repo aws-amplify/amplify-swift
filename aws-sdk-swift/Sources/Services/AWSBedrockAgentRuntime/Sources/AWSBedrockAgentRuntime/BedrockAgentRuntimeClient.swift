@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class BedrockAgentRuntimeClient: ClientRuntime.Client {
     public static let clientName = "BedrockAgentRuntimeClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: BedrockAgentRuntimeClient.BedrockAgentRuntimeClientConfiguration
     let serviceName = "Bedrock Agent Runtime"
@@ -249,7 +250,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<DeleteAgentMemoryOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DeleteAgentMemoryOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteAgentMemoryInput, DeleteAgentMemoryOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DeleteAgentMemoryInput, DeleteAgentMemoryOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<DeleteAgentMemoryOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<DeleteAgentMemoryInput, DeleteAgentMemoryOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<DeleteAgentMemoryInput, DeleteAgentMemoryOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -324,7 +325,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetAgentMemoryOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetAgentMemoryOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetAgentMemoryInput, GetAgentMemoryOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetAgentMemoryInput, GetAgentMemoryOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetAgentMemoryOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetAgentMemoryInput, GetAgentMemoryOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetAgentMemoryInput, GetAgentMemoryOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -420,7 +421,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeAgentOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeAgentOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeAgentInput, InvokeAgentOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeAgentInput, InvokeAgentOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeAgentOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeAgentInput, InvokeAgentOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeAgentInput, InvokeAgentOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -497,7 +498,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeFlowOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeFlowOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeFlowInput, InvokeFlowOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeFlowInput, InvokeFlowOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeFlowOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeFlowInput, InvokeFlowOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeFlowInput, InvokeFlowOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -574,7 +575,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<RetrieveOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<RetrieveOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RetrieveInput, RetrieveOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RetrieveInput, RetrieveOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<RetrieveOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<RetrieveInput, RetrieveOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<RetrieveInput, RetrieveOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -651,7 +652,7 @@ extension BedrockAgentRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<RetrieveAndGenerateOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<RetrieveAndGenerateOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RetrieveAndGenerateInput, RetrieveAndGenerateOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RetrieveAndGenerateInput, RetrieveAndGenerateOutput>(serviceID: serviceName, version: BedrockAgentRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<RetrieveAndGenerateOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<RetrieveAndGenerateInput, RetrieveAndGenerateOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<RetrieveAndGenerateInput, RetrieveAndGenerateOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

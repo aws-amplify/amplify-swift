@@ -368,6 +368,102 @@ extension FisClientTypes {
 
 extension FisClientTypes {
 
+    /// Specifies the CloudWatch dashboard for the experiment report.
+    public struct ReportConfigurationCloudWatchDashboardInput: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.
+        public var dashboardIdentifier: Swift.String?
+
+        public init(
+            dashboardIdentifier: Swift.String? = nil
+        )
+        {
+            self.dashboardIdentifier = dashboardIdentifier
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the data sources for the experiment report.
+    public struct ExperimentTemplateReportConfigurationDataSourcesInput: Swift.Sendable {
+        /// The CloudWatch dashboards to include as data sources in the experiment report.
+        public var cloudWatchDashboards: [FisClientTypes.ReportConfigurationCloudWatchDashboardInput]?
+
+        public init(
+            cloudWatchDashboards: [FisClientTypes.ReportConfigurationCloudWatchDashboardInput]? = nil
+        )
+        {
+            self.cloudWatchDashboards = cloudWatchDashboards
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the S3 destination for the experiment report.
+    public struct ReportConfigurationS3OutputInput: Swift.Sendable {
+        /// The name of the S3 bucket where the experiment report will be stored.
+        public var bucketName: Swift.String?
+        /// The prefix of the S3 bucket where the experiment report will be stored.
+        public var `prefix`: Swift.String?
+
+        public init(
+            bucketName: Swift.String? = nil,
+            `prefix`: Swift.String? = nil
+        )
+        {
+            self.bucketName = bucketName
+            self.`prefix` = `prefix`
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the outputs for the experiment templates.
+    public struct ExperimentTemplateReportConfigurationOutputsInput: Swift.Sendable {
+        /// The S3 destination for the experiment report.
+        public var s3Configuration: FisClientTypes.ReportConfigurationS3OutputInput?
+
+        public init(
+            s3Configuration: FisClientTypes.ReportConfigurationS3OutputInput? = nil
+        )
+        {
+            self.s3Configuration = s3Configuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the configuration for experiment reports.
+    public struct CreateExperimentTemplateReportConfigurationInput: Swift.Sendable {
+        /// The data sources for the experiment report.
+        public var dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput?
+        /// The output destinations of the experiment report.
+        public var outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput?
+        /// The duration after the experiment end time for the data sources to include in the report.
+        public var postExperimentDuration: Swift.String?
+        /// The duration before the experiment start time for the data sources to include in the report.
+        public var preExperimentDuration: Swift.String?
+
+        public init(
+            dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput? = nil,
+            outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput? = nil,
+            postExperimentDuration: Swift.String? = nil,
+            preExperimentDuration: Swift.String? = nil
+        )
+        {
+            self.dataSources = dataSources
+            self.outputs = outputs
+            self.postExperimentDuration = postExperimentDuration
+            self.preExperimentDuration = preExperimentDuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging to Amazon CloudWatch Logs.
     public struct ExperimentTemplateCloudWatchLogsLogConfigurationInput: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.
@@ -528,6 +624,8 @@ public struct CreateExperimentTemplateInput: Swift.Sendable {
     public var description: Swift.String?
     /// The experiment options for the experiment template.
     public var experimentOptions: FisClientTypes.CreateExperimentTemplateExperimentOptionsInput?
+    /// The experiment report configuration for the experiment template.
+    public var experimentReportConfiguration: FisClientTypes.CreateExperimentTemplateReportConfigurationInput?
     /// The configuration for experiment logging.
     public var logConfiguration: FisClientTypes.CreateExperimentTemplateLogConfigurationInput?
     /// The Amazon Resource Name (ARN) of an IAM role that grants the FIS service permission to perform service actions on your behalf.
@@ -546,6 +644,7 @@ public struct CreateExperimentTemplateInput: Swift.Sendable {
         clientToken: Swift.String? = nil,
         description: Swift.String? = nil,
         experimentOptions: FisClientTypes.CreateExperimentTemplateExperimentOptionsInput? = nil,
+        experimentReportConfiguration: FisClientTypes.CreateExperimentTemplateReportConfigurationInput? = nil,
         logConfiguration: FisClientTypes.CreateExperimentTemplateLogConfigurationInput? = nil,
         roleArn: Swift.String? = nil,
         stopConditions: [FisClientTypes.CreateExperimentTemplateStopConditionInput]? = nil,
@@ -557,6 +656,7 @@ public struct CreateExperimentTemplateInput: Swift.Sendable {
         self.clientToken = clientToken
         self.description = description
         self.experimentOptions = experimentOptions
+        self.experimentReportConfiguration = experimentReportConfiguration
         self.logConfiguration = logConfiguration
         self.roleArn = roleArn
         self.stopConditions = stopConditions
@@ -613,6 +713,102 @@ extension FisClientTypes {
         {
             self.accountTargeting = accountTargeting
             self.emptyTargetResolutionMode = emptyTargetResolutionMode
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// The CloudWatch dashboards to include as data sources in the experiment report.
+    public struct ExperimentTemplateReportConfigurationCloudWatchDashboard: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.
+        public var dashboardIdentifier: Swift.String?
+
+        public init(
+            dashboardIdentifier: Swift.String? = nil
+        )
+        {
+            self.dashboardIdentifier = dashboardIdentifier
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the data sources for the experiment report.
+    public struct ExperimentTemplateReportConfigurationDataSources: Swift.Sendable {
+        /// The CloudWatch dashboards to include as data sources in the experiment report.
+        public var cloudWatchDashboards: [FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard]?
+
+        public init(
+            cloudWatchDashboards: [FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard]? = nil
+        )
+        {
+            self.cloudWatchDashboards = cloudWatchDashboards
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the S3 destination for the experiment report.
+    public struct ReportConfigurationS3Output: Swift.Sendable {
+        /// The name of the S3 bucket where the experiment report will be stored.
+        public var bucketName: Swift.String?
+        /// The prefix of the S3 bucket where the experiment report will be stored.
+        public var `prefix`: Swift.String?
+
+        public init(
+            bucketName: Swift.String? = nil,
+            `prefix`: Swift.String? = nil
+        )
+        {
+            self.bucketName = bucketName
+            self.`prefix` = `prefix`
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// The output destinations of the experiment report.
+    public struct ExperimentTemplateReportConfigurationOutputs: Swift.Sendable {
+        /// The S3 destination for the experiment report.
+        public var s3Configuration: FisClientTypes.ReportConfigurationS3Output?
+
+        public init(
+            s3Configuration: FisClientTypes.ReportConfigurationS3Output? = nil
+        )
+        {
+            self.s3Configuration = s3Configuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the experiment report configuration. For more information, see [Experiment report configurations for AWS FIS](https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration).
+    public struct ExperimentTemplateReportConfiguration: Swift.Sendable {
+        /// The data sources for the experiment report.
+        public var dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSources?
+        /// Describes the output destinations of the experiment report.
+        public var outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputs?
+        /// The duration after the experiment end time for the data sources to include in the report.
+        public var postExperimentDuration: Swift.String?
+        /// The duration before the experiment start time for the data sources to include in the report.
+        public var preExperimentDuration: Swift.String?
+
+        public init(
+            dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSources? = nil,
+            outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputs? = nil,
+            postExperimentDuration: Swift.String? = nil,
+            preExperimentDuration: Swift.String? = nil
+        )
+        {
+            self.dataSources = dataSources
+            self.outputs = outputs
+            self.postExperimentDuration = postExperimentDuration
+            self.preExperimentDuration = preExperimentDuration
         }
     }
 }
@@ -767,6 +963,8 @@ extension FisClientTypes {
         public var description: Swift.String?
         /// The experiment options for an experiment template.
         public var experimentOptions: FisClientTypes.ExperimentTemplateExperimentOptions?
+        /// Describes the report configuration for the experiment template.
+        public var experimentReportConfiguration: FisClientTypes.ExperimentTemplateReportConfiguration?
         /// The ID of the experiment template.
         public var id: Swift.String?
         /// The time the experiment template was last updated.
@@ -790,6 +988,7 @@ extension FisClientTypes {
             creationTime: Foundation.Date? = nil,
             description: Swift.String? = nil,
             experimentOptions: FisClientTypes.ExperimentTemplateExperimentOptions? = nil,
+            experimentReportConfiguration: FisClientTypes.ExperimentTemplateReportConfiguration? = nil,
             id: Swift.String? = nil,
             lastUpdateTime: Foundation.Date? = nil,
             logConfiguration: FisClientTypes.ExperimentTemplateLogConfiguration? = nil,
@@ -805,6 +1004,7 @@ extension FisClientTypes {
             self.creationTime = creationTime
             self.description = description
             self.experimentOptions = experimentOptions
+            self.experimentReportConfiguration = experimentReportConfiguration
             self.id = id
             self.lastUpdateTime = lastUpdateTime
             self.logConfiguration = logConfiguration
@@ -1091,6 +1291,220 @@ extension FisClientTypes {
 
 extension FisClientTypes {
 
+    /// Describes the S3 destination for the report.
+    public struct ExperimentReportS3Report: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the generated report.
+        public var arn: Swift.String?
+        /// The report type for the experiment report.
+        public var reportType: Swift.String?
+
+        public init(
+            arn: Swift.String? = nil,
+            reportType: Swift.String? = nil
+        )
+        {
+            self.arn = arn
+            self.reportType = reportType
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the error when experiment report generation has failed.
+    public struct ExperimentReportError: Swift.Sendable {
+        /// The error code for the failed experiment report generation.
+        public var code: Swift.String?
+
+        public init(
+            code: Swift.String? = nil
+        )
+        {
+            self.code = code
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    public enum ExperimentReportStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case cancelled
+        case completed
+        case failed
+        case pending
+        case running
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ExperimentReportStatus] {
+            return [
+                .cancelled,
+                .completed,
+                .failed,
+                .pending,
+                .running
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .cancelled: return "cancelled"
+            case .completed: return "completed"
+            case .failed: return "failed"
+            case .pending: return "pending"
+            case .running: return "running"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the state of the experiment report generation.
+    public struct ExperimentReportState: Swift.Sendable {
+        /// The error information of the experiment when the experiment report generation has failed.
+        public var error: FisClientTypes.ExperimentReportError?
+        /// The reason for the state of the experiment report generation.
+        public var reason: Swift.String?
+        /// The state of the experiment report generation.
+        public var status: FisClientTypes.ExperimentReportStatus?
+
+        public init(
+            error: FisClientTypes.ExperimentReportError? = nil,
+            reason: Swift.String? = nil,
+            status: FisClientTypes.ExperimentReportStatus? = nil
+        )
+        {
+            self.error = error
+            self.reason = reason
+            self.status = status
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the experiment report.
+    public struct ExperimentReport: Swift.Sendable {
+        /// The S3 destination of the experiment report.
+        public var s3Reports: [FisClientTypes.ExperimentReportS3Report]?
+        /// The state of the experiment report.
+        public var state: FisClientTypes.ExperimentReportState?
+
+        public init(
+            s3Reports: [FisClientTypes.ExperimentReportS3Report]? = nil,
+            state: FisClientTypes.ExperimentReportState? = nil
+        )
+        {
+            self.s3Reports = s3Reports
+            self.state = state
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the CloudWatch dashboard to include in the experiment report. The dashboard widgets will be captured as snapshot graphs within the report.
+    public struct ExperimentReportConfigurationCloudWatchDashboard: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the CloudWatch dashboard to include in the experiment report.
+        public var dashboardIdentifier: Swift.String?
+
+        public init(
+            dashboardIdentifier: Swift.String? = nil
+        )
+        {
+            self.dashboardIdentifier = dashboardIdentifier
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the data sources for the experiment report.
+    public struct ExperimentReportConfigurationDataSources: Swift.Sendable {
+        /// The CloudWatch dashboards to include as data sources in the experiment report.
+        public var cloudWatchDashboards: [FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard]?
+
+        public init(
+            cloudWatchDashboards: [FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard]? = nil
+        )
+        {
+            self.cloudWatchDashboards = cloudWatchDashboards
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Specifies the S3 destination for the experiment report.
+    public struct ExperimentReportConfigurationOutputsS3Configuration: Swift.Sendable {
+        /// The name of the S3 bucket where the experiment report will be stored.
+        public var bucketName: Swift.String?
+        /// The prefix of the S3 bucket where the experiment report will be stored.
+        public var `prefix`: Swift.String?
+
+        public init(
+            bucketName: Swift.String? = nil,
+            `prefix`: Swift.String? = nil
+        )
+        {
+            self.bucketName = bucketName
+            self.`prefix` = `prefix`
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the output destinations of the experiment report.
+    public struct ExperimentReportConfigurationOutputs: Swift.Sendable {
+        /// The S3 destination for the experiment report.
+        public var s3Configuration: FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration?
+
+        public init(
+            s3Configuration: FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration? = nil
+        )
+        {
+            self.s3Configuration = s3Configuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
+    /// Describes the report configuration for the experiment. For more information, see [Experiment report configurations for AWS FIS](https://docs.aws.amazon.com/fis/latest/userguide/experiment-report-configuration).
+    public struct ExperimentReportConfiguration: Swift.Sendable {
+        /// The data sources for the experiment report.
+        public var dataSources: FisClientTypes.ExperimentReportConfigurationDataSources?
+        /// The output destinations of the experiment report.
+        public var outputs: FisClientTypes.ExperimentReportConfigurationOutputs?
+        /// The duration after the experiment end time for the data sources to include in the report.
+        public var postExperimentDuration: Swift.String?
+        /// The duration before the experiment start time for the data sources to include in the report.
+        public var preExperimentDuration: Swift.String?
+
+        public init(
+            dataSources: FisClientTypes.ExperimentReportConfigurationDataSources? = nil,
+            outputs: FisClientTypes.ExperimentReportConfigurationOutputs? = nil,
+            postExperimentDuration: Swift.String? = nil,
+            preExperimentDuration: Swift.String? = nil
+        )
+        {
+            self.dataSources = dataSources
+            self.outputs = outputs
+            self.postExperimentDuration = postExperimentDuration
+            self.preExperimentDuration = preExperimentDuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
     /// Describes the configuration for experiment logging to Amazon CloudWatch Logs.
     public struct ExperimentCloudWatchLogsLogConfiguration: Swift.Sendable {
         /// The Amazon Resource Name (ARN) of the destination Amazon CloudWatch Logs log group.
@@ -1334,6 +1748,10 @@ extension FisClientTypes {
         public var endTime: Foundation.Date?
         /// The experiment options for the experiment.
         public var experimentOptions: FisClientTypes.ExperimentOptions?
+        /// The experiment report for the experiment.
+        public var experimentReport: FisClientTypes.ExperimentReport?
+        /// The experiment report configuration for the experiment.
+        public var experimentReportConfiguration: FisClientTypes.ExperimentReportConfiguration?
         /// The ID of the experiment template.
         public var experimentTemplateId: Swift.String?
         /// The ID of the experiment.
@@ -1361,6 +1779,8 @@ extension FisClientTypes {
             creationTime: Foundation.Date? = nil,
             endTime: Foundation.Date? = nil,
             experimentOptions: FisClientTypes.ExperimentOptions? = nil,
+            experimentReport: FisClientTypes.ExperimentReport? = nil,
+            experimentReportConfiguration: FisClientTypes.ExperimentReportConfiguration? = nil,
             experimentTemplateId: Swift.String? = nil,
             id: Swift.String? = nil,
             logConfiguration: FisClientTypes.ExperimentLogConfiguration? = nil,
@@ -1378,6 +1798,8 @@ extension FisClientTypes {
             self.creationTime = creationTime
             self.endTime = endTime
             self.experimentOptions = experimentOptions
+            self.experimentReport = experimentReport
+            self.experimentReportConfiguration = experimentReportConfiguration
             self.experimentTemplateId = experimentTemplateId
             self.id = id
             self.logConfiguration = logConfiguration
@@ -2331,6 +2753,34 @@ extension FisClientTypes {
 
 extension FisClientTypes {
 
+    /// Specifies the input for the experiment report configuration.
+    public struct UpdateExperimentTemplateReportConfigurationInput: Swift.Sendable {
+        /// The data sources for the experiment report.
+        public var dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput?
+        /// Describes the output destinations of the experiment report.
+        public var outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput?
+        /// The duration after the experiment end time for the data sources to include in the report.
+        public var postExperimentDuration: Swift.String?
+        /// The duration before the experiment start time for the data sources to include in the report.
+        public var preExperimentDuration: Swift.String?
+
+        public init(
+            dataSources: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput? = nil,
+            outputs: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput? = nil,
+            postExperimentDuration: Swift.String? = nil,
+            preExperimentDuration: Swift.String? = nil
+        )
+        {
+            self.dataSources = dataSources
+            self.outputs = outputs
+            self.postExperimentDuration = postExperimentDuration
+            self.preExperimentDuration = preExperimentDuration
+        }
+    }
+}
+
+extension FisClientTypes {
+
     /// Specifies the configuration for experiment logging.
     public struct UpdateExperimentTemplateLogConfigurationInput: Swift.Sendable {
         /// The configuration for experiment logging to Amazon CloudWatch Logs.
@@ -2419,6 +2869,8 @@ public struct UpdateExperimentTemplateInput: Swift.Sendable {
     public var description: Swift.String?
     /// The experiment options for the experiment template.
     public var experimentOptions: FisClientTypes.UpdateExperimentTemplateExperimentOptionsInput?
+    /// The experiment report configuration for the experiment template.
+    public var experimentReportConfiguration: FisClientTypes.UpdateExperimentTemplateReportConfigurationInput?
     /// The ID of the experiment template.
     /// This member is required.
     public var id: Swift.String?
@@ -2435,6 +2887,7 @@ public struct UpdateExperimentTemplateInput: Swift.Sendable {
         actions: [Swift.String: FisClientTypes.UpdateExperimentTemplateActionInputItem]? = nil,
         description: Swift.String? = nil,
         experimentOptions: FisClientTypes.UpdateExperimentTemplateExperimentOptionsInput? = nil,
+        experimentReportConfiguration: FisClientTypes.UpdateExperimentTemplateReportConfigurationInput? = nil,
         id: Swift.String? = nil,
         logConfiguration: FisClientTypes.UpdateExperimentTemplateLogConfigurationInput? = nil,
         roleArn: Swift.String? = nil,
@@ -2445,6 +2898,7 @@ public struct UpdateExperimentTemplateInput: Swift.Sendable {
         self.actions = actions
         self.description = description
         self.experimentOptions = experimentOptions
+        self.experimentReportConfiguration = experimentReportConfiguration
         self.id = id
         self.logConfiguration = logConfiguration
         self.roleArn = roleArn
@@ -2979,6 +3433,7 @@ extension CreateExperimentTemplateInput {
         try writer["clientToken"].write(value.clientToken)
         try writer["description"].write(value.description)
         try writer["experimentOptions"].write(value.experimentOptions, with: FisClientTypes.CreateExperimentTemplateExperimentOptionsInput.write(value:to:))
+        try writer["experimentReportConfiguration"].write(value.experimentReportConfiguration, with: FisClientTypes.CreateExperimentTemplateReportConfigurationInput.write(value:to:))
         try writer["logConfiguration"].write(value.logConfiguration, with: FisClientTypes.CreateExperimentTemplateLogConfigurationInput.write(value:to:))
         try writer["roleArn"].write(value.roleArn)
         try writer["stopConditions"].writeList(value.stopConditions, memberWritingClosure: FisClientTypes.CreateExperimentTemplateStopConditionInput.write(value:to:), memberNodeInfo: "member", isFlattened: false)
@@ -3023,6 +3478,7 @@ extension UpdateExperimentTemplateInput {
         try writer["actions"].writeMap(value.actions, valueWritingClosure: FisClientTypes.UpdateExperimentTemplateActionInputItem.write(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["description"].write(value.description)
         try writer["experimentOptions"].write(value.experimentOptions, with: FisClientTypes.UpdateExperimentTemplateExperimentOptionsInput.write(value:to:))
+        try writer["experimentReportConfiguration"].write(value.experimentReportConfiguration, with: FisClientTypes.UpdateExperimentTemplateReportConfigurationInput.write(value:to:))
         try writer["logConfiguration"].write(value.logConfiguration, with: FisClientTypes.UpdateExperimentTemplateLogConfigurationInput.write(value:to:))
         try writer["roleArn"].write(value.roleArn)
         try writer["stopConditions"].writeList(value.stopConditions, memberWritingClosure: FisClientTypes.UpdateExperimentTemplateStopConditionInput.write(value:to:), memberNodeInfo: "member", isFlattened: false)
@@ -3813,6 +4269,61 @@ extension FisClientTypes.ExperimentTemplate {
         value.logConfiguration = try reader["logConfiguration"].readIfPresent(with: FisClientTypes.ExperimentTemplateLogConfiguration.read(from:))
         value.experimentOptions = try reader["experimentOptions"].readIfPresent(with: FisClientTypes.ExperimentTemplateExperimentOptions.read(from:))
         value.targetAccountConfigurationsCount = try reader["targetAccountConfigurationsCount"].readIfPresent()
+        value.experimentReportConfiguration = try reader["experimentReportConfiguration"].readIfPresent(with: FisClientTypes.ExperimentTemplateReportConfiguration.read(from:))
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfiguration {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentTemplateReportConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentTemplateReportConfiguration()
+        value.outputs = try reader["outputs"].readIfPresent(with: FisClientTypes.ExperimentTemplateReportConfigurationOutputs.read(from:))
+        value.dataSources = try reader["dataSources"].readIfPresent(with: FisClientTypes.ExperimentTemplateReportConfigurationDataSources.read(from:))
+        value.preExperimentDuration = try reader["preExperimentDuration"].readIfPresent()
+        value.postExperimentDuration = try reader["postExperimentDuration"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfigurationDataSources {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentTemplateReportConfigurationDataSources {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentTemplateReportConfigurationDataSources()
+        value.cloudWatchDashboards = try reader["cloudWatchDashboards"].readListIfPresent(memberReadingClosure: FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentTemplateReportConfigurationCloudWatchDashboard()
+        value.dashboardIdentifier = try reader["dashboardIdentifier"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfigurationOutputs {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentTemplateReportConfigurationOutputs {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentTemplateReportConfigurationOutputs()
+        value.s3Configuration = try reader["s3Configuration"].readIfPresent(with: FisClientTypes.ReportConfigurationS3Output.read(from:))
+        return value
+    }
+}
+
+extension FisClientTypes.ReportConfigurationS3Output {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ReportConfigurationS3Output {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ReportConfigurationS3Output()
+        value.bucketName = try reader["bucketName"].readIfPresent()
+        value.`prefix` = try reader["prefix"].readIfPresent()
         return value
     }
 }
@@ -3980,6 +4491,106 @@ extension FisClientTypes.Experiment {
         value.logConfiguration = try reader["logConfiguration"].readIfPresent(with: FisClientTypes.ExperimentLogConfiguration.read(from:))
         value.experimentOptions = try reader["experimentOptions"].readIfPresent(with: FisClientTypes.ExperimentOptions.read(from:))
         value.targetAccountConfigurationsCount = try reader["targetAccountConfigurationsCount"].readIfPresent()
+        value.experimentReportConfiguration = try reader["experimentReportConfiguration"].readIfPresent(with: FisClientTypes.ExperimentReportConfiguration.read(from:))
+        value.experimentReport = try reader["experimentReport"].readIfPresent(with: FisClientTypes.ExperimentReport.read(from:))
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReport {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReport {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReport()
+        value.state = try reader["state"].readIfPresent(with: FisClientTypes.ExperimentReportState.read(from:))
+        value.s3Reports = try reader["s3Reports"].readListIfPresent(memberReadingClosure: FisClientTypes.ExperimentReportS3Report.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportS3Report {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportS3Report {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportS3Report()
+        value.arn = try reader["arn"].readIfPresent()
+        value.reportType = try reader["reportType"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportState {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportState {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportState()
+        value.status = try reader["status"].readIfPresent()
+        value.reason = try reader["reason"].readIfPresent()
+        value.error = try reader["error"].readIfPresent(with: FisClientTypes.ExperimentReportError.read(from:))
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportError {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportError {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportError()
+        value.code = try reader["code"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportConfiguration {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportConfiguration()
+        value.outputs = try reader["outputs"].readIfPresent(with: FisClientTypes.ExperimentReportConfigurationOutputs.read(from:))
+        value.dataSources = try reader["dataSources"].readIfPresent(with: FisClientTypes.ExperimentReportConfigurationDataSources.read(from:))
+        value.preExperimentDuration = try reader["preExperimentDuration"].readIfPresent()
+        value.postExperimentDuration = try reader["postExperimentDuration"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportConfigurationDataSources {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportConfigurationDataSources {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportConfigurationDataSources()
+        value.cloudWatchDashboards = try reader["cloudWatchDashboards"].readListIfPresent(memberReadingClosure: FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportConfigurationCloudWatchDashboard()
+        value.dashboardIdentifier = try reader["dashboardIdentifier"].readIfPresent()
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportConfigurationOutputs {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportConfigurationOutputs {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportConfigurationOutputs()
+        value.s3Configuration = try reader["s3Configuration"].readIfPresent(with: FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration.read(from:))
+        return value
+    }
+}
+
+extension FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = FisClientTypes.ExperimentReportConfigurationOutputsS3Configuration()
+        value.bucketName = try reader["bucketName"].readIfPresent()
+        value.`prefix` = try reader["prefix"].readIfPresent()
         return value
     }
 }
@@ -4347,6 +4958,50 @@ extension FisClientTypes.CreateExperimentTemplateExperimentOptionsInput {
     }
 }
 
+extension FisClientTypes.CreateExperimentTemplateReportConfigurationInput {
+
+    static func write(value: FisClientTypes.CreateExperimentTemplateReportConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["dataSources"].write(value.dataSources, with: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput.write(value:to:))
+        try writer["outputs"].write(value.outputs, with: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput.write(value:to:))
+        try writer["postExperimentDuration"].write(value.postExperimentDuration)
+        try writer["preExperimentDuration"].write(value.preExperimentDuration)
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput {
+
+    static func write(value: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["cloudWatchDashboards"].writeList(value.cloudWatchDashboards, memberWritingClosure: FisClientTypes.ReportConfigurationCloudWatchDashboardInput.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
+extension FisClientTypes.ReportConfigurationCloudWatchDashboardInput {
+
+    static func write(value: FisClientTypes.ReportConfigurationCloudWatchDashboardInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["dashboardIdentifier"].write(value.dashboardIdentifier)
+    }
+}
+
+extension FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput {
+
+    static func write(value: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["s3Configuration"].write(value.s3Configuration, with: FisClientTypes.ReportConfigurationS3OutputInput.write(value:to:))
+    }
+}
+
+extension FisClientTypes.ReportConfigurationS3OutputInput {
+
+    static func write(value: FisClientTypes.ReportConfigurationS3OutputInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["bucketName"].write(value.bucketName)
+        try writer["prefix"].write(value.`prefix`)
+    }
+}
+
 extension FisClientTypes.StartExperimentExperimentOptionsInput {
 
     static func write(value: FisClientTypes.StartExperimentExperimentOptionsInput?, to writer: SmithyJSON.Writer) throws {
@@ -4404,6 +5059,17 @@ extension FisClientTypes.UpdateExperimentTemplateExperimentOptionsInput {
     static func write(value: FisClientTypes.UpdateExperimentTemplateExperimentOptionsInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["emptyTargetResolutionMode"].write(value.emptyTargetResolutionMode)
+    }
+}
+
+extension FisClientTypes.UpdateExperimentTemplateReportConfigurationInput {
+
+    static func write(value: FisClientTypes.UpdateExperimentTemplateReportConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["dataSources"].write(value.dataSources, with: FisClientTypes.ExperimentTemplateReportConfigurationDataSourcesInput.write(value:to:))
+        try writer["outputs"].write(value.outputs, with: FisClientTypes.ExperimentTemplateReportConfigurationOutputsInput.write(value:to:))
+        try writer["postExperimentDuration"].write(value.postExperimentDuration)
+        try writer["preExperimentDuration"].write(value.preExperimentDuration)
     }
 }
 

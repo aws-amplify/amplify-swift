@@ -22,21 +22,14 @@ class UserAgentMiddleware(val settings: SwiftSettings) : MiddlewareRenderable {
         writer: SwiftWriter,
         op: OperationShape
     ) {
-        val params = middlewareParamsString(writer)
         val input = MiddlewareShapeUtils.inputSymbol(ctx.symbolProvider, ctx.model, op)
         val output = MiddlewareShapeUtils.outputSymbol(ctx.symbolProvider, ctx.model, op)
         writer.write(
-            "\$N<\$N, \$N>($params)",
+            "\$N<\$N, \$N>(serviceID: serviceName, version: \$L.version, config: config)",
             AWSClientRuntimeTypes.Core.UserAgentMiddleware,
             input,
-            output
-        )
-    }
-
-    private fun middlewareParamsString(writer: SwiftWriter): String {
-        return writer.format(
-            "serviceID: serviceName, version: \$S, config: config",
-            settings.moduleVersion,
+            output,
+            ctx.symbolProvider.toSymbol(ctx.service).name,
         )
     }
 }

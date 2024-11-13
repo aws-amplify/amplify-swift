@@ -408,6 +408,7 @@ extension ControlTowerClientTypes {
     public enum ControlOperationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case disableControl
         case enableControl
+        case resetEnabledControl
         case updateEnabledControl
         case sdkUnknown(Swift.String)
 
@@ -415,6 +416,7 @@ extension ControlTowerClientTypes {
             return [
                 .disableControl,
                 .enableControl,
+                .resetEnabledControl,
                 .updateEnabledControl
             ]
         }
@@ -428,6 +430,7 @@ extension ControlTowerClientTypes {
             switch self {
             case .disableControl: return "DISABLE_CONTROL"
             case .enableControl: return "ENABLE_CONTROL"
+            case .resetEnabledControl: return "RESET_ENABLED_CONTROL"
             case .updateEnabledControl: return "UPDATE_ENABLED_CONTROL"
             case let .sdkUnknown(s): return s
             }
@@ -1447,6 +1450,32 @@ public struct ListEnabledControlsOutput: Swift.Sendable {
     }
 }
 
+public struct ResetEnabledControlInput: Swift.Sendable {
+    /// The ARN of the enabled control to be reset.
+    /// This member is required.
+    public var enabledControlIdentifier: Swift.String?
+
+    public init(
+        enabledControlIdentifier: Swift.String? = nil
+    )
+    {
+        self.enabledControlIdentifier = enabledControlIdentifier
+    }
+}
+
+public struct ResetEnabledControlOutput: Swift.Sendable {
+    /// The operation identifier for this ResetEnabledControl operation.
+    /// This member is required.
+    public var operationIdentifier: Swift.String?
+
+    public init(
+        operationIdentifier: Swift.String? = nil
+    )
+    {
+        self.operationIdentifier = operationIdentifier
+    }
+}
+
 public struct UpdateEnabledControlInput: Swift.Sendable {
     /// The ARN of the enabled control that will be updated.
     /// This member is required.
@@ -2246,6 +2275,13 @@ extension ResetEnabledBaselineInput {
     }
 }
 
+extension ResetEnabledControlInput {
+
+    static func urlPathProvider(_ value: ResetEnabledControlInput) -> Swift.String? {
+        return "/reset-enabled-control"
+    }
+}
+
 extension ResetLandingZoneInput {
 
     static func urlPathProvider(_ value: ResetLandingZoneInput) -> Swift.String? {
@@ -2488,6 +2524,14 @@ extension ResetEnabledBaselineInput {
     static func write(value: ResetEnabledBaselineInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["enabledBaselineIdentifier"].write(value.enabledBaselineIdentifier)
+    }
+}
+
+extension ResetEnabledControlInput {
+
+    static func write(value: ResetEnabledControlInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["enabledControlIdentifier"].write(value.enabledControlIdentifier)
     }
 }
 
@@ -2794,6 +2838,18 @@ extension ResetEnabledBaselineOutput {
         let responseReader = try SmithyJSON.Reader.from(data: data)
         let reader = responseReader
         var value = ResetEnabledBaselineOutput()
+        value.operationIdentifier = try reader["operationIdentifier"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension ResetEnabledControlOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ResetEnabledControlOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ResetEnabledControlOutput()
         value.operationIdentifier = try reader["operationIdentifier"].readIfPresent() ?? ""
         return value
     }
@@ -3224,6 +3280,26 @@ enum ListTagsForResourceOutputError {
 }
 
 enum ResetEnabledBaselineOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ResetEnabledControlOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()

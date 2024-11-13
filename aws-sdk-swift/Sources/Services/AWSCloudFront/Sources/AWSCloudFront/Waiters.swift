@@ -27,7 +27,7 @@ extension CloudFrontClient {
                 return SmithyWaitersAPI.JMESUtils.compare(status, ==, "Deployed")
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<GetDistributionInput, GetDistributionOutput>(acceptors: acceptors, minDelay: 60.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<GetDistributionInput, GetDistributionOutput>(acceptors: acceptors, minDelay: 60.0, maxDelay: 2100.0)
     }
 
     /// Initiates waiting for the DistributionDeployed event on the getDistribution operation.
@@ -58,7 +58,7 @@ extension CloudFrontClient {
                 return SmithyWaitersAPI.JMESUtils.compare(status, ==, "Completed")
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<GetInvalidationInput, GetInvalidationOutput>(acceptors: acceptors, minDelay: 20.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<GetInvalidationInput, GetInvalidationOutput>(acceptors: acceptors, minDelay: 20.0, maxDelay: 600.0)
     }
 
     /// Initiates waiting for the InvalidationCompleted event on the getInvalidation operation.
@@ -89,7 +89,7 @@ extension CloudFrontClient {
                 return SmithyWaitersAPI.JMESUtils.compare(status, ==, "Deployed")
             }),
         ]
-        return try SmithyWaitersAPI.WaiterConfiguration<GetStreamingDistributionInput, GetStreamingDistributionOutput>(acceptors: acceptors, minDelay: 60.0, maxDelay: 120.0)
+        return try SmithyWaitersAPI.WaiterConfiguration<GetStreamingDistributionInput, GetStreamingDistributionOutput>(acceptors: acceptors, minDelay: 60.0, maxDelay: 1500.0)
     }
 
     /// Initiates waiting for the StreamingDistributionDeployed event on the getStreamingDistribution operation.

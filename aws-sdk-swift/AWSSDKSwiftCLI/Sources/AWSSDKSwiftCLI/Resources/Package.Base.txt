@@ -189,8 +189,7 @@ private func target(_ service: String) -> Target {
             .awsSDKEventStreamsAuth,
             .awsSDKChecksums,
         ],
-        path: "Sources/Services/\(service)/Sources/\(service)",
-        resources: [.process("Resources")]
+        path: "Sources/Services/\(service)/Sources/\(service)"
     )
 }
 

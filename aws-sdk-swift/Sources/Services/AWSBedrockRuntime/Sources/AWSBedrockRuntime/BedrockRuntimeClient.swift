@@ -67,6 +67,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class BedrockRuntimeClient: ClientRuntime.Client {
     public static let clientName = "BedrockRuntimeClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: BedrockRuntimeClient.BedrockRuntimeClientConfiguration
     let serviceName = "Bedrock Runtime"
@@ -252,7 +253,7 @@ extension BedrockRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ApplyGuardrailOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ApplyGuardrailOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ApplyGuardrailInput, ApplyGuardrailOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ApplyGuardrailInput, ApplyGuardrailOutput>(serviceID: serviceName, version: BedrockRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ApplyGuardrailOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ApplyGuardrailInput, ApplyGuardrailOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ApplyGuardrailInput, ApplyGuardrailOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -273,7 +274,7 @@ extension BedrockRuntimeClient {
 
     /// Performs the `Converse` operation on the `AmazonBedrockFrontendService` service.
     ///
-    /// Sends messages to the specified Amazon Bedrock model. Converse provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. If a model has unique inference parameters, you can also pass those unique parameters to the model. Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response. For information about the Converse API, see Use the Converse API in the Amazon Bedrock User Guide. To use a guardrail, see Use a guardrail with the Converse API in the Amazon Bedrock User Guide. To use a tool with a model, see Tool use (Function calling) in the Amazon Bedrock User Guide For example code, see Converse API examples in the Amazon Bedrock User Guide. This operation requires permission for the bedrock:InvokeModel action.
+    /// Sends messages to the specified Amazon Bedrock model. Converse provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. If a model has unique inference parameters, you can also pass those unique parameters to the model. Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response. You can submit a prompt by including it in the messages field, specifying the modelId of a foundation model or inference profile to run inference on it, and including any other fields that are relevant to your use case. You can also submit a prompt from Prompt management by specifying the ARN of the prompt version and including a map of variables to values in the promptVariables field. You can append more messages to the prompt by using the messages field. If you use a prompt from Prompt management, you can't include the following fields in the request: additionalModelRequestFields, inferenceConfig, system, or toolConfig. Instead, these fields must be defined through Prompt management. For more information, see [Use a prompt from Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-use.html). For information about the Converse API, see Use the Converse API in the Amazon Bedrock User Guide. To use a guardrail, see Use a guardrail with the Converse API in the Amazon Bedrock User Guide. To use a tool with a model, see Tool use (Function calling) in the Amazon Bedrock User Guide For example code, see Converse API examples in the Amazon Bedrock User Guide. This operation requires permission for the bedrock:InvokeModel action.
     ///
     /// - Parameter ConverseInput : [no documentation found]
     ///
@@ -329,7 +330,7 @@ extension BedrockRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ConverseOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ConverseOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ConverseInput, ConverseOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ConverseInput, ConverseOutput>(serviceID: serviceName, version: BedrockRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ConverseOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ConverseInput, ConverseOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ConverseInput, ConverseOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -350,7 +351,7 @@ extension BedrockRuntimeClient {
 
     /// Performs the `ConverseStream` operation on the `AmazonBedrockFrontendService` service.
     ///
-    /// Sends messages to the specified Amazon Bedrock model and returns the response in a stream. ConverseStream provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. To find out if a model supports streaming, call [GetFoundationModel](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html) and check the responseStreamingSupported field in the response. The CLI doesn't support streaming operations in Amazon Bedrock, including ConverseStream. Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response. For information about the Converse API, see Use the Converse API in the Amazon Bedrock User Guide. To use a guardrail, see Use a guardrail with the Converse API in the Amazon Bedrock User Guide. To use a tool with a model, see Tool use (Function calling) in the Amazon Bedrock User Guide For example code, see Conversation streaming example in the Amazon Bedrock User Guide. This operation requires permission for the bedrock:InvokeModelWithResponseStream action.
+    /// Sends messages to the specified Amazon Bedrock model and returns the response in a stream. ConverseStream provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. To find out if a model supports streaming, call [GetFoundationModel](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html) and check the responseStreamingSupported field in the response. The CLI doesn't support streaming operations in Amazon Bedrock, including ConverseStream. Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response. You can submit a prompt by including it in the messages field, specifying the modelId of a foundation model or inference profile to run inference on it, and including any other fields that are relevant to your use case. You can also submit a prompt from Prompt management by specifying the ARN of the prompt version and including a map of variables to values in the promptVariables field. You can append more messages to the prompt by using the messages field. If you use a prompt from Prompt management, you can't include the following fields in the request: additionalModelRequestFields, inferenceConfig, system, or toolConfig. Instead, these fields must be defined through Prompt management. For more information, see [Use a prompt from Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-use.html). For information about the Converse API, see Use the Converse API in the Amazon Bedrock User Guide. To use a guardrail, see Use a guardrail with the Converse API in the Amazon Bedrock User Guide. To use a tool with a model, see Tool use (Function calling) in the Amazon Bedrock User Guide For example code, see Conversation streaming example in the Amazon Bedrock User Guide. This operation requires permission for the bedrock:InvokeModelWithResponseStream action.
     ///
     /// - Parameter ConverseStreamInput : [no documentation found]
     ///
@@ -406,7 +407,7 @@ extension BedrockRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ConverseStreamOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ConverseStreamOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ConverseStreamInput, ConverseStreamOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ConverseStreamInput, ConverseStreamOutput>(serviceID: serviceName, version: BedrockRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ConverseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ConverseStreamInput, ConverseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ConverseStreamInput, ConverseStreamOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -485,7 +486,7 @@ extension BedrockRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeModelOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeModelOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeModelInput, InvokeModelOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeModelInput, InvokeModelOutput>(serviceID: serviceName, version: BedrockRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeModelOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeModelInput, InvokeModelOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeModelInput, InvokeModelOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -565,7 +566,7 @@ extension BedrockRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeModelWithResponseStreamOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeModelWithResponseStreamOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeModelWithResponseStreamInput, InvokeModelWithResponseStreamOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeModelWithResponseStreamInput, InvokeModelWithResponseStreamOutput>(serviceID: serviceName, version: BedrockRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeModelWithResponseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeModelWithResponseStreamInput, InvokeModelWithResponseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeModelWithResponseStreamInput, InvokeModelWithResponseStreamOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class KinesisVideoMediaClient: ClientRuntime.Client {
     public static let clientName = "KinesisVideoMediaClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: KinesisVideoMediaClient.KinesisVideoMediaClientConfiguration
     let serviceName = "Kinesis Video Media"
@@ -262,7 +263,7 @@ extension KinesisVideoMediaClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetMediaOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetMediaOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetMediaInput, GetMediaOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetMediaInput, GetMediaOutput>(serviceID: serviceName, version: KinesisVideoMediaClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetMediaOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetMediaInput, GetMediaOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetMediaInput, GetMediaOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

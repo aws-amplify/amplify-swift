@@ -349,6 +349,58 @@ public struct GetControlInput: Swift.Sendable {
 
 extension ControlCatalogClientTypes {
 
+    /// An object that describes the implementation type for a control. Our ImplementationDetailsType format has three required segments:
+    ///
+    /// * SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME
+    ///
+    ///
+    /// For example, AWS::Config::ConfigRule or AWS::SecurityHub::SecurityControl resources have the format with three required segments. Our ImplementationDetailsType format has an optional fourth segment, which is present for applicable implementation types. The format is as follows:
+    ///
+    /// * SERVICE-PROVIDER::SERVICE-NAME::RESOURCE-NAME::RESOURCE-TYPE-DESCRIPTION
+    ///
+    ///
+    /// For example, AWS::Organizations::Policy::SERVICE_CONTROL_POLICY or AWS::CloudFormation::Type::HOOK have the format with four segments. Although the format is similar, the values for the Type field do not match any Amazon Web Services CloudFormation values, and we do not use CloudFormation to implement these controls.
+    public struct ImplementationDetails: Swift.Sendable {
+        /// A string that describes a control's implementation type.
+        /// This member is required.
+        public var type: Swift.String?
+
+        public init(
+            type: Swift.String? = nil
+        )
+        {
+            self.type = type
+        }
+    }
+}
+
+extension ControlCatalogClientTypes {
+
+    /// Four types of control parameters are supported.
+    ///
+    /// * AllowedRegions: List of Amazon Web Services Regions exempted from the control. Each string is expected to be an Amazon Web Services Region code. This parameter is mandatory for the OU Region deny control, CT.MULTISERVICE.PV.1. Example: ["us-east-1","us-west-2"]
+    ///
+    /// * ExemptedActions: List of Amazon Web Services IAM actions exempted from the control. Each string is expected to be an IAM action. Example: ["logs:DescribeLogGroups","logs:StartQuery","logs:GetQueryResults"]
+    ///
+    /// * ExemptedPrincipalArns: List of Amazon Web Services IAM principal ARNs exempted from the control. Each string is expected to be an IAM principal that follows the pattern ^arn:(aws|aws-us-gov):(iam|sts)::.+:.+$ Example: ["arn:aws:iam::*:role/ReadOnly","arn:aws:sts::*:assumed-role/ReadOnly/*"]
+    ///
+    /// * ExemptedResourceArns: List of resource ARNs exempted from the control. Each string is expected to be a resource ARN. Example: ["arn:aws:s3:::my-bucket-name"]
+    public struct ControlParameter: Swift.Sendable {
+        /// The parameter name. This name is the parameter key when you call [EnableControl](https://docs.aws.amazon.com/controltower/latest/APIReference/API_EnableControl.html) or [UpdateEnabledControl](https://docs.aws.amazon.com/controltower/latest/APIReference/API_UpdateEnabledControl.html).
+        /// This member is required.
+        public var name: Swift.String?
+
+        public init(
+            name: Swift.String? = nil
+        )
+        {
+            self.name = name
+        }
+    }
+}
+
+extension ControlCatalogClientTypes {
+
     public enum ControlScope: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case global
         case regional
@@ -378,7 +430,7 @@ extension ControlCatalogClientTypes {
 
 extension ControlCatalogClientTypes {
 
-    /// Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the RegionConfiguration API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions A,B,and C while the control is available in Regions A, B, C, and D, you'd see a response with DeployableRegions of A, B, C, and D for a control with REGIONAL scope, even though you may not intend to deploy the control in Region D, because you do not govern it through your landing zone.
+    /// Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. For more information about scope, see [Global services](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html). If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the RegionConfiguration API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions A,B,and C while the control is available in Regions A, B, C, and D, you'd see a response with DeployableRegions of A, B, C, and D for a control with REGIONAL scope, even though you may not intend to deploy the control in Region D, because you do not govern it through your landing zone.
     public struct RegionConfiguration: Swift.Sendable {
         /// Regions in which the control is available to be deployed.
         public var deployableRegions: [Swift.String]?
@@ -401,16 +453,20 @@ public struct GetControlOutput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the control.
     /// This member is required.
     public var arn: Swift.String?
-    /// A term that identifies the control's functional behavior. One of Preventive, Deteictive, Proactive
+    /// A term that identifies the control's functional behavior. One of Preventive, Detective, Proactive
     /// This member is required.
     public var behavior: ControlCatalogClientTypes.ControlBehavior?
     /// A description of what the control does.
     /// This member is required.
     public var description: Swift.String?
+    /// Returns information about the control, as an ImplementationDetails object that shows the underlying implementation type for a control.
+    public var implementation: ControlCatalogClientTypes.ImplementationDetails?
     /// The display name of the control.
     /// This member is required.
     public var name: Swift.String?
-    /// Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the RegionConfiguration API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions A,B,and C while the control is available in Regions A, B, C, and D, you'd see a response with DeployableRegions of A, B, C, and D for a control with REGIONAL scope, even though you may not intend to deploy the control in Region D, because you do not govern it through your landing zone.
+    /// Returns an array of ControlParameter objects that specify the parameters a control supports. An empty list is returned for controls that don’t support parameters.
+    public var parameters: [ControlCatalogClientTypes.ControlParameter]?
+    /// Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment. For more information about scope, see [Global services](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html). If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the RegionConfiguration API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions A,B,and C while the control is available in Regions A, B, C, and D, you'd see a response with DeployableRegions of A, B, C, and D for a control with REGIONAL scope, even though you may not intend to deploy the control in Region D, because you do not govern it through your landing zone.
     /// This member is required.
     public var regionConfiguration: ControlCatalogClientTypes.RegionConfiguration?
 
@@ -418,14 +474,18 @@ public struct GetControlOutput: Swift.Sendable {
         arn: Swift.String? = nil,
         behavior: ControlCatalogClientTypes.ControlBehavior? = nil,
         description: Swift.String? = nil,
+        implementation: ControlCatalogClientTypes.ImplementationDetails? = nil,
         name: Swift.String? = nil,
+        parameters: [ControlCatalogClientTypes.ControlParameter]? = nil,
         regionConfiguration: ControlCatalogClientTypes.RegionConfiguration? = nil
     )
     {
         self.arn = arn
         self.behavior = behavior
         self.description = description
+        self.implementation = implementation
         self.name = name
+        self.parameters = parameters
         self.regionConfiguration = regionConfiguration
     }
 }
@@ -804,7 +864,9 @@ extension GetControlOutput {
         value.arn = try reader["Arn"].readIfPresent() ?? ""
         value.behavior = try reader["Behavior"].readIfPresent() ?? .sdkUnknown("")
         value.description = try reader["Description"].readIfPresent() ?? ""
+        value.implementation = try reader["Implementation"].readIfPresent(with: ControlCatalogClientTypes.ImplementationDetails.read(from:))
         value.name = try reader["Name"].readIfPresent() ?? ""
+        value.parameters = try reader["Parameters"].readListIfPresent(memberReadingClosure: ControlCatalogClientTypes.ControlParameter.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.regionConfiguration = try reader["RegionConfiguration"].readIfPresent(with: ControlCatalogClientTypes.RegionConfiguration.read(from:))
         return value
     }
@@ -1020,6 +1082,26 @@ extension ControlCatalogClientTypes.RegionConfiguration {
         var value = ControlCatalogClientTypes.RegionConfiguration()
         value.scope = try reader["Scope"].readIfPresent() ?? .sdkUnknown("")
         value.deployableRegions = try reader["DeployableRegions"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension ControlCatalogClientTypes.ImplementationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> ControlCatalogClientTypes.ImplementationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = ControlCatalogClientTypes.ImplementationDetails()
+        value.type = try reader["Type"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension ControlCatalogClientTypes.ControlParameter {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> ControlCatalogClientTypes.ControlParameter {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = ControlCatalogClientTypes.ControlParameter()
+        value.name = try reader["Name"].readIfPresent() ?? ""
         return value
     }
 }

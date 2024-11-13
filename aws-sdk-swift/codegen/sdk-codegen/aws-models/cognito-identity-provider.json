@@ -1812,7 +1812,7 @@
                 "UserAttributes": {
                     "target": "com.amazonaws.cognitoidentityprovider#AttributeListType",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array of name-value pairs that contain user attributes and attribute values to be\n            set for the user to be created. You can create a user without specifying any attributes\n            other than <code>Username</code>. However, any attributes that you specify as required\n            (when creating a user pool or in the <b>Attributes</b> tab of\n            the console) either you should supply (in your call to <code>AdminCreateUser</code>) or\n            the user should supply (when they sign up in response to your welcome message).</p>\n         <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the\n            attribute name.</p>\n         <p>To send a message inviting the user to sign up, you must specify the user's email\n            address or phone number. You can do this in your call to AdminCreateUser or in the\n                <b>Users</b> tab of the Amazon Cognito console for managing your\n            user pools.</p>\n         <p>You must also provide an email address or phone number when you expect the user to \n        do passwordless sign-in with an email or SMS OTP. These attributes must be provided when\n        passwordless options are the only available, or when you don't submit a \n        <code>TemporaryPassword</code>.</p>\n         <p>In your call to <code>AdminCreateUser</code>, you can set the\n                <code>email_verified</code> attribute to <code>True</code>, and you can set the\n                <code>phone_number_verified</code> attribute to <code>True</code>. You can also do\n            this by calling <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html\">AdminUpdateUserAttributes</a>.</p>\n         <ul>\n            <li>\n               <p>\n                  <b>email</b>: The email address of the user to whom\n                    the message that contains the code and username will be sent. Required if the\n                        <code>email_verified</code> attribute is set to <code>True</code>, or if\n                        <code>\"EMAIL\"</code> is specified in the <code>DesiredDeliveryMediums</code>\n                    parameter.</p>\n            </li>\n            <li>\n               <p>\n                  <b>phone_number</b>: The phone number of the user to\n                    whom the message that contains the code and username will be sent. Required if\n                    the <code>phone_number_verified</code> attribute is set to <code>True</code>, or\n                    if <code>\"SMS\"</code> is specified in the <code>DesiredDeliveryMediums</code>\n                    parameter.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>An array of name-value pairs that contain user attributes and attribute values to be\n            set for the user to be created. You can create a user without specifying any attributes\n            other than <code>Username</code>. However, any attributes that you specify as required\n            (when creating a user pool or in the <b>Attributes</b> tab of\n            the console) either you should supply (in your call to <code>AdminCreateUser</code>) or\n            the user should supply (when they sign up in response to your welcome message).</p>\n         <p>For custom attributes, you must prepend the <code>custom:</code> prefix to the\n            attribute name.</p>\n         <p>To send a message inviting the user to sign up, you must specify the user's email\n            address or phone number. You can do this in your call to AdminCreateUser or in the\n                <b>Users</b> tab of the Amazon Cognito console for managing your\n            user pools.</p>\n         <p>You must also provide an email address or phone number when you expect the user to do\n            passwordless sign-in with an email or SMS OTP. These attributes must be provided when\n            passwordless options are the only available, or when you don't submit a\n                <code>TemporaryPassword</code>.</p>\n         <p>In your call to <code>AdminCreateUser</code>, you can set the\n                <code>email_verified</code> attribute to <code>True</code>, and you can set the\n                <code>phone_number_verified</code> attribute to <code>True</code>. You can also do\n            this by calling <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminUpdateUserAttributes.html\">AdminUpdateUserAttributes</a>.</p>\n         <ul>\n            <li>\n               <p>\n                  <b>email</b>: The email address of the user to whom\n                    the message that contains the code and username will be sent. Required if the\n                        <code>email_verified</code> attribute is set to <code>True</code>, or if\n                        <code>\"EMAIL\"</code> is specified in the <code>DesiredDeliveryMediums</code>\n                    parameter.</p>\n            </li>\n            <li>\n               <p>\n                  <b>phone_number</b>: The phone number of the user to\n                    whom the message that contains the code and username will be sent. Required if\n                    the <code>phone_number_verified</code> attribute is set to <code>True</code>, or\n                    if <code>\"SMS\"</code> is specified in the <code>DesiredDeliveryMediums</code>\n                    parameter.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "ValidationData": {
@@ -1824,7 +1824,7 @@
                 "TemporaryPassword": {
                     "target": "com.amazonaws.cognitoidentityprovider#PasswordType",
                     "traits": {
-                        "smithy.api#documentation": "<p>The user's temporary password. This password must conform to the password policy that\n            you specified when you created the user pool.</p>\n         <p>The exception to the requirement for a password is when your user pool supports\n            passwordless sign-in with email or SMS OTPs. To create a user with no password, omit\n            this parameter or submit a blank value. You can only create a passwordless user when\n            passwordless sign-in is available. See <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignInPolicyType.html\">the SignInPolicyType</a> property of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a> and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>.</p>\n         <p>The temporary password is valid only once. To complete the Admin Create User flow, the\n            user must enter the temporary password in the sign-in page, along with a new password to\n            be used in all future sign-ins.</p>\n         <p>If you don't specify a value, Amazon Cognito generates one for\n            you unless you have passwordless options active for your user pool.</p>\n         <p>The temporary password can only be used until the user account expiration limit that\n            you set for your user pool. To reset the account after that time limit, you must call\n                <code>AdminCreateUser</code> again and specify <code>RESEND</code> for the\n                <code>MessageAction</code> parameter.</p>"
+                        "smithy.api#documentation": "<p>The user's temporary password. This password must conform to the password policy that\n            you specified when you created the user pool.</p>\n         <p>The exception to the requirement for a password is when your user pool supports\n            passwordless sign-in with email or SMS OTPs. To create a user with no password, omit\n            this parameter or submit a blank value. You can only create a passwordless user when\n            passwordless sign-in is available. See <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignInPolicyType.html\">the SignInPolicyType</a> property of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a> and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>.</p>\n         <p>The temporary password is valid only once. To complete the Admin Create User flow, the\n            user must enter the temporary password in the sign-in page, along with a new password to\n            be used in all future sign-ins.</p>\n         <p>If you don't specify a value, Amazon Cognito generates one for you unless you have passwordless\n            options active for your user pool.</p>\n         <p>The temporary password can only be used until the user account expiration limit that\n            you set for your user pool. To reset the account after that time limit, you must call\n                <code>AdminCreateUser</code> again and specify <code>RESEND</code> for the\n                <code>MessageAction</code> parameter.</p>"
                     }
                 },
                 "ForceAliasCreation": {
@@ -5118,7 +5118,9 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Completes registration of a passkey registration for the current user. Your\n            application provides data from a successful registration request with metadata from the\n            output of a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_StartWebAuthnRegistration.html\"> StartWebAuthnRegistration</a>.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>"
+                "smithy.api#auth": [],
+                "smithy.api#documentation": "<p>Completes registration of a passkey registration for the current user. Your\n            application provides data from a successful registration request with metadata from the\n            output of a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_StartWebAuthnRegistration.html\"> StartWebAuthnRegistration</a>.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>",
+                "smithy.api#optionalAuth": {}
             }
         },
         "com.amazonaws.cognitoidentityprovider#CompleteWebAuthnRegistrationRequest": {
@@ -5924,7 +5926,7 @@
                     "target": "com.amazonaws.cognitoidentityprovider#BooleanType",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>When true, applies the default branding style options. This option reverts to a\n            \"blank\" style that you can modify later in the branding designer.</p>"
+                        "smithy.api#documentation": "<p>When true, applies the default branding style options. This option reverts to default\n            style options that are managed by Amazon Cognito. You can modify them later in the branding\n            designer.</p>\n         <p>When you specify <code>true</code> for this option, you must also omit values for\n                <code>Settings</code> and <code>Assets</code> in the request.</p>"
                     }
                 },
                 "Settings": {
@@ -5950,7 +5952,7 @@
                 "ManagedLoginBranding": {
                     "target": "com.amazonaws.cognitoidentityprovider#ManagedLoginBrandingType",
                     "traits": {
-                        "smithy.api#documentation": "<p></p>"
+                        "smithy.api#documentation": "<p>The details of the branding style that you created.</p>"
                     }
                 }
             },
@@ -7169,6 +7171,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The available verified method a user can use to recover their password when they call\n                <code>ForgotPassword</code>. You can use this setting to define a preferred method\n            when a user has more than one method available. With this setting, SMS doesn't qualify\n            for a valid password recovery mechanism if the user also has SMS multi-factor\n            authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy\n            behavior to determine the recovery method where SMS is preferred through email.</p>"
                     }
+                },
+                "UserPoolTier": {
+                    "target": "com.amazonaws.cognitoidentityprovider#UserPoolTierType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user pool <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>, or tier. This parameter determines the\n            eligibility of the user pool for features like managed login, access-token\n            customization, and threat protection.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7844,7 +7852,9 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes a registered passkey, or webauthN, device for the currently signed-in\n            user.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>"
+                "smithy.api#auth": [],
+                "smithy.api#documentation": "<p>Deletes a registered passkey, or webauthN, device for the currently signed-in\n            user.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>",
+                "smithy.api#optionalAuth": {}
             }
         },
         "com.amazonaws.cognitoidentityprovider#DeleteWebAuthnCredentialRequest": {
@@ -8061,7 +8071,7 @@
                     "target": "com.amazonaws.cognitoidentityprovider#BooleanType",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Determines whether you want to return merged resources from your managed login\n            branding style.</p>"
+                        "smithy.api#documentation": "<p>When <code>true</code>, returns values for branding options that are unchanged from\n            Amazon Cognito defaults. When <code>false</code> or when you omit this parameter, returns only\n            values that you customized in your branding style.</p>"
                     }
                 }
             },
@@ -8104,7 +8114,7 @@
                     "target": "com.amazonaws.cognitoidentityprovider#BooleanType",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Determines whether you want to return merged resources from your managed login\n            branding style.</p>"
+                        "smithy.api#documentation": "<p>When <code>true</code>, returns values for branding options that are unchanged from\n            Amazon Cognito defaults. When <code>false</code> or when you omit this parameter, returns only\n            values that you customized in your branding style.</p>"
                     }
                 }
             },
@@ -8817,6 +8827,16 @@
             },
             "traits": {
                 "smithy.api#documentation": "<p>The email configuration of your user pool. The email configuration type sets your\n            preferred sending method, Amazon Web Services Region, and sender for messages from your user\n            pool.</p>\n         <note>\n            <p>Amazon Cognito can send email messages with Amazon Simple Email Service resources in the Amazon Web Services Region where\n                you created your user pool, and in alternate Regions in some cases. For more\n                information on the supported Regions, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html\">Email settings for Amazon Cognito user pools</a>.</p>\n         </note>\n         <p>This data type is a request parameter of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a>, <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>, and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a>, and a response parameter of\n                <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a>, <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>, and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html\">GetUserPoolMfaConfig</a>.</p>"
+            }
+        },
+        "com.amazonaws.cognitoidentityprovider#EmailInviteMessageType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 6,
+                    "max": 20000
+                },
+                "smithy.api#pattern": "^[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*$"
             }
         },
         "com.amazonaws.cognitoidentityprovider#EmailMfaConfigType": {
@@ -10167,7 +10187,9 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Lists the authentication options for the currently signed-in user. Returns the\n            following:</p>\n         <ol>\n            <li>\n               <p>The user's multi-factor authentication (MFA) preferences.</p>\n            </li>\n            <li>\n               <p>The user's options in the <code>USER_AUTH</code> flow that they can\n                    select in a <code>SELECT_CHALLENGE</code> response or request in a\n                        <code>PREFERRED_CHALLENGE</code>request.</p>\n            </li>\n         </ol>"
+                "smithy.api#auth": [],
+                "smithy.api#documentation": "<p>Lists the authentication options for the currently signed-in user. Returns the\n            following:</p>\n         <ol>\n            <li>\n               <p>The user's multi-factor authentication (MFA) preferences.</p>\n            </li>\n            <li>\n               <p>The user's options in the <code>USER_AUTH</code> flow that they can\n                    select in a <code>SELECT_CHALLENGE</code> response or request in a\n                        <code>PREFERRED_CHALLENGE</code>request.</p>\n            </li>\n         </ol>",
+                "smithy.api#optionalAuth": {}
             }
         },
         "com.amazonaws.cognitoidentityprovider#GetUserAuthFactorsRequest": {
@@ -11004,8 +11026,11 @@
                         "smithy.api#documentation": "<p>The message returned when the Amazon Cognito service throws an invalid parameter\n            exception.</p>"
                     }
                 },
-                "errorCode": {
-                    "target": "com.amazonaws.cognitoidentityprovider#InvalidParameterExceptionErrorCodeType"
+                "exceptionErrorCode": {
+                    "target": "com.amazonaws.cognitoidentityprovider#InvalidParameterExceptionErrorCodeType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error code of the exception.</p>"
+                    }
                 }
             },
             "traits": {
@@ -12147,7 +12172,9 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Generates a list of the current user's registered passkey, or webauthN,\n            credentials.</p>"
+                "smithy.api#auth": [],
+                "smithy.api#documentation": "<p>Generates a list of the current user's registered passkey, or webauthN,\n            credentials.</p>",
+                "smithy.api#optionalAuth": {}
             }
         },
         "com.amazonaws.cognitoidentityprovider#ListWebAuthnCredentialsRequest": {
@@ -12440,13 +12467,13 @@
             "type": "structure",
             "members": {
                 "SMSMessage": {
-                    "target": "com.amazonaws.cognitoidentityprovider#SmsVerificationMessageType",
+                    "target": "com.amazonaws.cognitoidentityprovider#SmsInviteMessageType",
                     "traits": {
                         "smithy.api#documentation": "<p>The message template for SMS messages.</p>"
                     }
                 },
                 "EmailMessage": {
-                    "target": "com.amazonaws.cognitoidentityprovider#EmailVerificationMessageType",
+                    "target": "com.amazonaws.cognitoidentityprovider#EmailInviteMessageType",
                     "traits": {
                         "smithy.api#documentation": "<p>The message template for email messages. EmailMessage is allowed only if <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_EmailConfigurationType.html#CognitoUserPools-Type-EmailConfigurationType-EmailSendingAccount\">EmailSendingAccount</a> is DEVELOPER. </p>"
                     }
@@ -14625,6 +14652,16 @@
                 "smithy.api#documentation": "<p>User pool configuration for delivery of SMS messages with Amazon Simple Notification Service. To send SMS\n            messages with Amazon SNS in the Amazon Web Services Region that you want, the Amazon Cognito user pool uses an\n            Identity and Access Management (IAM) role in your Amazon Web Services account.</p>\n         <p>This data type is a request parameter of <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a>, <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>, and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html\">SetUserPoolMfaConfig</a>, and a response parameter of\n                <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html\">CreateUserPool</a>, <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html\">UpdateUserPool</a>, and <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html\">GetUserPoolMfaConfig</a>.</p>"
             }
         },
+        "com.amazonaws.cognitoidentityprovider#SmsInviteMessageType": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 6,
+                    "max": 140
+                },
+                "smithy.api#pattern": "^(?s)"
+            }
+        },
         "com.amazonaws.cognitoidentityprovider#SmsMfaConfigType": {
             "type": "structure",
             "members": {
@@ -14821,7 +14858,9 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Requests metadata about your user pool for registration of a passkey device: a\n            biometric or security key authentication factor. Returns information about the user\n            pool, the user profile, and authentication details. Users must provide this information\n            in their request to enroll your application with their passkey provider.</p>\n         <p>After users present this data and register with their passkey provider, return the\n            response to your user pool in a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CompleteWebAuthnRegistration.html\"> CompleteWebAuthnRegistration</a> API request.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>"
+                "smithy.api#auth": [],
+                "smithy.api#documentation": "<p>Requests metadata about your user pool for registration of a passkey device: a\n            biometric or security key authentication factor. Returns information about the user\n            pool, the user profile, and authentication details. Users must provide this information\n            in their request to enroll your application with their passkey provider.</p>\n         <p>After users present this data and register with their passkey provider, return the\n            response to your user pool in a <a href=\"https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CompleteWebAuthnRegistration.html\"> CompleteWebAuthnRegistration</a> API request.</p>\n         <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p>",
+                "smithy.api#optionalAuth": {}
             }
         },
         "com.amazonaws.cognitoidentityprovider#StartWebAuthnRegistrationRequest": {
@@ -15755,7 +15794,7 @@
                     "target": "com.amazonaws.cognitoidentityprovider#BooleanType",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>When true, applies the default branding style options. This option reverts to a\n            \"blank\" style that you can modify later in the branding designer.</p>"
+                        "smithy.api#documentation": "<p>When true, applies the default branding style options. This option reverts to default\n            style options that are managed by Amazon Cognito. You can modify them later in the branding\n            designer.</p>\n         <p>When you specify <code>true</code> for this option, you must also omit values for\n                <code>Settings</code> and <code>Assets</code> in the request.</p>"
                     }
                 },
                 "Settings": {
@@ -16448,6 +16487,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The updated name of your user pool.</p>"
                     }
+                },
+                "UserPoolTier": {
+                    "target": "com.amazonaws.cognitoidentityprovider#UserPoolTierType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user pool <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>, or tier. This parameter determines the\n            eligibility of the user pool for features like managed login, access-token\n            customization, and threat protection.</p>"
+                    }
                 }
             },
             "traits": {
@@ -17121,6 +17166,29 @@
                 "target": "com.amazonaws.cognitoidentityprovider#TagValueType"
             }
         },
+        "com.amazonaws.cognitoidentityprovider#UserPoolTierType": {
+            "type": "enum",
+            "members": {
+                "LITE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LITE"
+                    }
+                },
+                "ESSENTIALS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ESSENTIALS"
+                    }
+                },
+                "PLUS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "PLUS"
+                    }
+                }
+            }
+        },
         "com.amazonaws.cognitoidentityprovider#UserPoolType": {
             "type": "structure",
             "members": {
@@ -17324,6 +17392,12 @@
                     "target": "com.amazonaws.cognitoidentityprovider#AccountRecoverySettingType",
                     "traits": {
                         "smithy.api#documentation": "<p>The available verified method a user can use to recover their password when they call\n                <code>ForgotPassword</code>. You can use this setting to define a preferred method\n            when a user has more than one method available. With this setting, SMS doesn't qualify\n            for a valid password recovery mechanism if the user also has SMS multi-factor\n            authentication (MFA) activated. In the absence of this setting, Amazon Cognito uses the legacy\n            behavior to determine the recovery method where SMS is preferred through email.</p>"
+                    }
+                },
+                "UserPoolTier": {
+                    "target": "com.amazonaws.cognitoidentityprovider#UserPoolTierType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user pool <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>, or tier. This parameter determines the\n            eligibility of the user pool for features like managed login, access-token\n            customization, and threat protection.</p>"
                     }
                 }
             },

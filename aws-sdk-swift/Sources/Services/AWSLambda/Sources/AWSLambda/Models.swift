@@ -1684,6 +1684,8 @@ extension LambdaClientTypes {
         public var s3Key: Swift.String?
         /// For versioned objects, the version of the deployment package object to use.
         public var s3ObjectVersion: Swift.String?
+        /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk).
+        public var sourceKMSKeyArn: Swift.String?
         /// The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you.
         public var zipFile: Foundation.Data?
 
@@ -1692,6 +1694,7 @@ extension LambdaClientTypes {
             s3Bucket: Swift.String? = nil,
             s3Key: Swift.String? = nil,
             s3ObjectVersion: Swift.String? = nil,
+            sourceKMSKeyArn: Swift.String? = nil,
             zipFile: Foundation.Data? = nil
         )
         {
@@ -1699,6 +1702,7 @@ extension LambdaClientTypes {
             self.s3Bucket = s3Bucket
             self.s3Key = s3Key
             self.s3ObjectVersion = s3ObjectVersion
+            self.sourceKMSKeyArn = sourceKMSKeyArn
             self.zipFile = zipFile
         }
     }
@@ -1706,7 +1710,7 @@ extension LambdaClientTypes {
 
 extension LambdaClientTypes.FunctionCode: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "FunctionCode(imageUri: \(Swift.String(describing: imageUri)), s3Bucket: \(Swift.String(describing: s3Bucket)), s3Key: \(Swift.String(describing: s3Key)), s3ObjectVersion: \(Swift.String(describing: s3ObjectVersion)), zipFile: \"CONTENT_REDACTED\")"}
+        "FunctionCode(imageUri: \(Swift.String(describing: imageUri)), s3Bucket: \(Swift.String(describing: s3Bucket)), s3Key: \(Swift.String(describing: s3Key)), s3ObjectVersion: \(Swift.String(describing: s3ObjectVersion)), sourceKMSKeyArn: \(Swift.String(describing: sourceKMSKeyArn)), zipFile: \"CONTENT_REDACTED\")"}
 }
 
 extension LambdaClientTypes {
@@ -1960,6 +1964,7 @@ extension LambdaClientTypes {
         case python310
         case python311
         case python312
+        case python313
         case python36
         case python37
         case python38
@@ -2002,6 +2007,7 @@ extension LambdaClientTypes {
                 .python310,
                 .python311,
                 .python312,
+                .python313,
                 .python36,
                 .python37,
                 .python38,
@@ -2050,6 +2056,7 @@ extension LambdaClientTypes {
             case .python310: return "python3.10"
             case .python311: return "python3.11"
             case .python312: return "python3.12"
+            case .python313: return "python3.13"
             case .python36: return "python3.6"
             case .python37: return "python3.7"
             case .python38: return "python3.8"
@@ -2212,7 +2219,18 @@ public struct CreateFunctionInput: Swift.Sendable {
     public var handler: Swift.String?
     /// Container image [configuration values](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms) that override the values in the container image Dockerfile.
     public var imageConfig: LambdaClientTypes.ImageConfig?
-    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// A list of [function layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html) to add to the function's execution environment. Specify each layer by its ARN, including the version.
     public var layers: [Swift.String]?
@@ -2829,7 +2847,18 @@ public struct CreateFunctionOutput: Swift.Sendable {
     public var handler: Swift.String?
     /// The function's image configuration values.
     public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-    /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
     public var lastModified: Swift.String?
@@ -3772,18 +3801,22 @@ extension LambdaClientTypes {
         public var repositoryType: Swift.String?
         /// The resolved URI for the image.
         public var resolvedImageUri: Swift.String?
+        /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk).
+        public var sourceKMSKeyArn: Swift.String?
 
         public init(
             imageUri: Swift.String? = nil,
             location: Swift.String? = nil,
             repositoryType: Swift.String? = nil,
-            resolvedImageUri: Swift.String? = nil
+            resolvedImageUri: Swift.String? = nil,
+            sourceKMSKeyArn: Swift.String? = nil
         )
         {
             self.imageUri = imageUri
             self.location = location
             self.repositoryType = repositoryType
             self.resolvedImageUri = resolvedImageUri
+            self.sourceKMSKeyArn = sourceKMSKeyArn
         }
     }
 }
@@ -3831,7 +3864,18 @@ extension LambdaClientTypes {
         public var handler: Swift.String?
         /// The function's image configuration values.
         public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-        /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+        /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+        ///
+        /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+        ///
+        /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+        ///
+        /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+        ///
+        /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+        ///
+        ///
+        /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
         public var kmsKeyArn: Swift.String?
         /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
         public var lastModified: Swift.String?
@@ -3988,7 +4032,7 @@ public struct GetFunctionOutput: Swift.Sendable {
     public var concurrency: LambdaClientTypes.Concurrency?
     /// The configuration of the function or version.
     public var configuration: LambdaClientTypes.FunctionConfiguration?
-    /// The function's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html). Lambda returns tag data only if you have explicit allow permissions for [lambda:ListTags](https://docs.aws.amazon.com/https:/docs.aws.amazon.com/lambda/latest/api/API_ListTags.html).
+    /// The function's [tags](https://docs.aws.amazon.com/lambda/latest/dg/tagging.html). Lambda returns tag data only if you have explicit allow permissions for [lambda:ListTags](https://docs.aws.amazon.com/lambda/latest/api/API_ListTags.html).
     public var tags: [Swift.String: Swift.String]?
     /// An object that contains details about an error related to retrieving tags.
     public var tagsError: LambdaClientTypes.TagsError?
@@ -4144,7 +4188,18 @@ public struct GetFunctionConfigurationOutput: Swift.Sendable {
     public var handler: Swift.String?
     /// The function's image configuration values.
     public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-    /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
     public var lastModified: Swift.String?
@@ -6960,7 +7015,18 @@ public struct PublishVersionOutput: Swift.Sendable {
     public var handler: Swift.String?
     /// The function's image configuration values.
     public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-    /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
     public var lastModified: Swift.String?
@@ -7900,6 +7966,8 @@ public struct UpdateFunctionCodeInput: Swift.Sendable {
     public var s3Key: Swift.String?
     /// For versioned objects, the version of the deployment package object to use.
     public var s3ObjectVersion: Swift.String?
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an Amazon Web Services managed key.
+    public var sourceKMSKeyArn: Swift.String?
     /// The base64-encoded contents of the deployment package. Amazon Web Services SDK and CLI clients handle the encoding for you. Use only with a function defined with a .zip file archive deployment package.
     public var zipFile: Foundation.Data?
 
@@ -7913,6 +7981,7 @@ public struct UpdateFunctionCodeInput: Swift.Sendable {
         s3Bucket: Swift.String? = nil,
         s3Key: Swift.String? = nil,
         s3ObjectVersion: Swift.String? = nil,
+        sourceKMSKeyArn: Swift.String? = nil,
         zipFile: Foundation.Data? = nil
     )
     {
@@ -7925,13 +7994,14 @@ public struct UpdateFunctionCodeInput: Swift.Sendable {
         self.s3Bucket = s3Bucket
         self.s3Key = s3Key
         self.s3ObjectVersion = s3ObjectVersion
+        self.sourceKMSKeyArn = sourceKMSKeyArn
         self.zipFile = zipFile
     }
 }
 
 extension UpdateFunctionCodeInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "UpdateFunctionCodeInput(architectures: \(Swift.String(describing: architectures)), dryRun: \(Swift.String(describing: dryRun)), functionName: \(Swift.String(describing: functionName)), imageUri: \(Swift.String(describing: imageUri)), publish: \(Swift.String(describing: publish)), revisionId: \(Swift.String(describing: revisionId)), s3Bucket: \(Swift.String(describing: s3Bucket)), s3Key: \(Swift.String(describing: s3Key)), s3ObjectVersion: \(Swift.String(describing: s3ObjectVersion)), zipFile: \"CONTENT_REDACTED\")"}
+        "UpdateFunctionCodeInput(architectures: \(Swift.String(describing: architectures)), dryRun: \(Swift.String(describing: dryRun)), functionName: \(Swift.String(describing: functionName)), imageUri: \(Swift.String(describing: imageUri)), publish: \(Swift.String(describing: publish)), revisionId: \(Swift.String(describing: revisionId)), s3Bucket: \(Swift.String(describing: s3Bucket)), s3Key: \(Swift.String(describing: s3Key)), s3ObjectVersion: \(Swift.String(describing: s3ObjectVersion)), sourceKMSKeyArn: \(Swift.String(describing: sourceKMSKeyArn)), zipFile: \"CONTENT_REDACTED\")"}
 }
 
 /// Details about a function's configuration.
@@ -7960,7 +8030,18 @@ public struct UpdateFunctionCodeOutput: Swift.Sendable {
     public var handler: Swift.String?
     /// The function's image configuration values.
     public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-    /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
     public var lastModified: Swift.String?
@@ -8114,7 +8195,18 @@ public struct UpdateFunctionConfigurationInput: Swift.Sendable {
     public var handler: Swift.String?
     /// [Container image configuration values](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms) that override the values in the container image Docker file.
     public var imageConfig: LambdaClientTypes.ImageConfig?
-    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, Lambda also uses this key is to encrypt your function's snapshot. If you deploy your function using a container image, Lambda also uses this key to encrypt your function when it's deployed. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). If you don't provide a customer managed key, Lambda uses a default service key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// A list of [function layers](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html) to add to the function's execution environment. Specify each layer by its ARN, including the version.
     public var layers: [Swift.String]?
@@ -8207,7 +8299,18 @@ public struct UpdateFunctionConfigurationOutput: Swift.Sendable {
     public var handler: Swift.String?
     /// The function's image configuration values.
     public var imageConfigResponse: LambdaClientTypes.ImageConfigResponse?
-    /// The KMS key that's used to encrypt the function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption). When [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) is activated, this key is also used to encrypt the function's snapshot. This key is returned only if you've configured a customer managed key.
+    /// The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt the following resources:
+    ///
+    /// * The function's [environment variables](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).
+    ///
+    /// * The function's [Lambda SnapStart](https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html) snapshots.
+    ///
+    /// * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment package that's used for function invocations. For more information, see [ Specifying a customer managed key for Lambda](https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).
+    ///
+    /// * The optimized version of the container image that's used for function invocations. Note that this is not the same key that's used to protect your container image in the Amazon Elastic Container Registry (Amazon ECR). For more information, see [Function lifecycle](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).
+    ///
+    ///
+    /// If you don't provide a customer managed key, Lambda uses an [Amazon Web Services owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk) or an [Amazon Web Services managed key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
     public var kmsKeyArn: Swift.String?
     /// The date and time that the function was last updated, in [ISO-8601 format](https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD).
     public var lastModified: Swift.String?
@@ -10033,6 +10136,7 @@ extension UpdateFunctionCodeInput {
         try writer["S3Bucket"].write(value.s3Bucket)
         try writer["S3Key"].write(value.s3Key)
         try writer["S3ObjectVersion"].write(value.s3ObjectVersion)
+        try writer["SourceKMSKeyArn"].write(value.sourceKMSKeyArn)
         try writer["ZipFile"].write(value.zipFile)
     }
 }
@@ -13619,6 +13723,7 @@ extension LambdaClientTypes.FunctionCodeLocation {
         value.location = try reader["Location"].readIfPresent()
         value.imageUri = try reader["ImageUri"].readIfPresent()
         value.resolvedImageUri = try reader["ResolvedImageUri"].readIfPresent()
+        value.sourceKMSKeyArn = try reader["SourceKMSKeyArn"].readIfPresent()
         return value
     }
 }
@@ -13816,6 +13921,7 @@ extension LambdaClientTypes.FunctionCode {
         try writer["S3Bucket"].write(value.s3Bucket)
         try writer["S3Key"].write(value.s3Key)
         try writer["S3ObjectVersion"].write(value.s3ObjectVersion)
+        try writer["SourceKMSKeyArn"].write(value.sourceKMSKeyArn)
         try writer["ZipFile"].write(value.zipFile)
     }
 }

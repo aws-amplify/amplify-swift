@@ -64,6 +64,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class MarketplaceMeteringClient: ClientRuntime.Client {
     public static let clientName = "MarketplaceMeteringClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: MarketplaceMeteringClient.MarketplaceMeteringClientConfiguration
     let serviceName = "Marketplace Metering"
@@ -250,7 +251,7 @@ extension MarketplaceMeteringClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<BatchMeterUsageOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<BatchMeterUsageOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<BatchMeterUsageInput, BatchMeterUsageOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<BatchMeterUsageInput, BatchMeterUsageOutput>(serviceID: serviceName, version: MarketplaceMeteringClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<BatchMeterUsageInput, BatchMeterUsageOutput>(xAmzTarget: "AWSMPMeteringService.BatchMeterUsage"))
         builder.serialize(ClientRuntime.BodyMiddleware<BatchMeterUsageInput, BatchMeterUsageOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: BatchMeterUsageInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<BatchMeterUsageInput, BatchMeterUsageOutput>(contentType: "application/x-amz-json-1.1"))
@@ -329,7 +330,7 @@ extension MarketplaceMeteringClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<MeterUsageOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<MeterUsageOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<MeterUsageInput, MeterUsageOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<MeterUsageInput, MeterUsageOutput>(serviceID: serviceName, version: MarketplaceMeteringClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<MeterUsageInput, MeterUsageOutput>(xAmzTarget: "AWSMPMeteringService.MeterUsage"))
         builder.serialize(ClientRuntime.BodyMiddleware<MeterUsageInput, MeterUsageOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: MeterUsageInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<MeterUsageInput, MeterUsageOutput>(contentType: "application/x-amz-json-1.1"))
@@ -410,7 +411,7 @@ extension MarketplaceMeteringClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<RegisterUsageOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<RegisterUsageOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RegisterUsageInput, RegisterUsageOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<RegisterUsageInput, RegisterUsageOutput>(serviceID: serviceName, version: MarketplaceMeteringClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<RegisterUsageInput, RegisterUsageOutput>(xAmzTarget: "AWSMPMeteringService.RegisterUsage"))
         builder.serialize(ClientRuntime.BodyMiddleware<RegisterUsageInput, RegisterUsageOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: RegisterUsageInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<RegisterUsageInput, RegisterUsageOutput>(contentType: "application/x-amz-json-1.1"))
@@ -484,7 +485,7 @@ extension MarketplaceMeteringClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ResolveCustomerOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ResolveCustomerOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ResolveCustomerInput, ResolveCustomerOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ResolveCustomerInput, ResolveCustomerOutput>(serviceID: serviceName, version: MarketplaceMeteringClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<ResolveCustomerInput, ResolveCustomerOutput>(xAmzTarget: "AWSMPMeteringService.ResolveCustomer"))
         builder.serialize(ClientRuntime.BodyMiddleware<ResolveCustomerInput, ResolveCustomerOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: ResolveCustomerInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<ResolveCustomerInput, ResolveCustomerOutput>(contentType: "application/x-amz-json-1.1"))

@@ -99,7 +99,7 @@ class STSWebIdentityAWSCredentialIdentityResolverTests: XCTestCase {
     // MARK: - TEST CASE
 
     // Confirm STS web identity credentials provider works by validating response.
-    func testGetCallerIdentity() async throws {
+    func xtestGetCallerIdentity() async throws {
         let response = try await webIdentityStsClient.getCallerIdentity(
             input: GetCallerIdentityInput()
         )

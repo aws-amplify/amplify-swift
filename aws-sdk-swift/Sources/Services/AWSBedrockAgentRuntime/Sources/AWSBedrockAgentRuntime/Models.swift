@@ -32,6 +32,7 @@ import struct Smithy.Document
 import struct Smithy.URIQueryItem
 import struct SmithyEventStreams.DefaultMessageDecoderStream
 import struct SmithyEventStreamsAPI.Message
+@_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 import typealias SmithyEventStreamsAPI.UnmarshalClosure
 
 /// The request is denied because of missing access permissions. Check your permissions and retry your request.
@@ -431,9 +432,7 @@ public struct ValidationException: ClientRuntime.ModeledError, AWSClientRuntime.
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// Contains information about an input into the flow. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
+    /// Contains information about an input into the flow.
     public enum FlowInputContent: Swift.Sendable {
         /// The input to send to the prompt flow input node.
         case document(Smithy.Document)
@@ -443,9 +442,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// Contains information about an input into the prompt flow and where to send it. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
+    /// Contains information about an input into the prompt flow and where to send it.
     public struct FlowInput: Swift.Sendable {
         /// Contains information about an input into the prompt flow.
         /// This member is required.
@@ -476,6 +473,8 @@ extension BedrockAgentRuntimeClientTypes.FlowInput: Swift.CustomDebugStringConve
 }
 
 public struct InvokeFlowInput: Swift.Sendable {
+    /// Specifies whether to return the trace for the flow or not. Traces track inputs and outputs for nodes in the flow. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public var enableTrace: Swift.Bool?
     /// The unique identifier of the flow alias.
     /// This member is required.
     public var flowAliasIdentifier: Swift.String?
@@ -487,11 +486,13 @@ public struct InvokeFlowInput: Swift.Sendable {
     public var inputs: [BedrockAgentRuntimeClientTypes.FlowInput]?
 
     public init(
+        enableTrace: Swift.Bool? = nil,
         flowAliasIdentifier: Swift.String? = nil,
         flowIdentifier: Swift.String? = nil,
         inputs: [BedrockAgentRuntimeClientTypes.FlowInput]? = nil
     )
     {
+        self.enableTrace = enableTrace
         self.flowAliasIdentifier = flowAliasIdentifier
         self.flowIdentifier = flowIdentifier
         self.inputs = inputs
@@ -526,9 +527,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// Contains information about why a flow completed. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
+    /// Contains information about why a flow completed.
     public struct FlowCompletionEvent: Swift.Sendable {
         /// The reason that the flow completed.
         /// This member is required.
@@ -551,9 +550,7 @@ extension BedrockAgentRuntimeClientTypes.FlowCompletionEvent: Swift.CustomDebugS
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// Contains information about the content in an output from prompt flow invocation. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow request](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax)
+    /// Contains information about the content in an output from prompt flow invocation.
     public enum FlowOutputContent: Swift.Sendable {
         /// The content in the output.
         case document(Smithy.Document)
@@ -607,9 +604,7 @@ extension BedrockAgentRuntimeClientTypes {
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// Contains information about an output from prompt flow invoction. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
+    /// Contains information about an output from prompt flow invoction.
     public struct FlowOutputEvent: Swift.Sendable {
         /// The content in the output.
         /// This member is required.
@@ -642,14 +637,248 @@ extension BedrockAgentRuntimeClientTypes.FlowOutputEvent: Swift.CustomDebugStrin
 
 extension BedrockAgentRuntimeClientTypes {
 
-    /// The output of the flow. This data type is used in the following API operations:
-    ///
-    /// * [InvokeFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax)
+    /// Contains information about a condition that was satisfied. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceCondition: Swift.Sendable {
+        /// The name of the condition.
+        /// This member is required.
+        public var conditionName: Swift.String?
+
+        public init(
+            conditionName: Swift.String? = nil
+        )
+        {
+            self.conditionName = conditionName
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceCondition: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about an output from a condition node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceConditionNodeResultEvent: Swift.Sendable {
+        /// The name of the condition node.
+        /// This member is required.
+        public var nodeName: Swift.String?
+        /// An array of objects containing information about the conditions that were satisfied.
+        /// This member is required.
+        public var satisfiedConditions: [BedrockAgentRuntimeClientTypes.FlowTraceCondition]?
+        /// The date and time that the trace was returned.
+        /// This member is required.
+        public var timestamp: Foundation.Date?
+
+        public init(
+            nodeName: Swift.String? = nil,
+            satisfiedConditions: [BedrockAgentRuntimeClientTypes.FlowTraceCondition]? = nil,
+            timestamp: Foundation.Date? = nil
+        )
+        {
+            self.nodeName = nodeName
+            self.satisfiedConditions = satisfiedConditions
+            self.timestamp = timestamp
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains the content of the node input. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public enum FlowTraceNodeInputContent: Swift.Sendable {
+        /// The content of the node input.
+        case document(Smithy.Document)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about a field in the input into a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceNodeInputField: Swift.Sendable {
+        /// The content of the node input.
+        /// This member is required.
+        public var content: BedrockAgentRuntimeClientTypes.FlowTraceNodeInputContent?
+        /// The name of the node input.
+        /// This member is required.
+        public var nodeInputName: Swift.String?
+
+        public init(
+            content: BedrockAgentRuntimeClientTypes.FlowTraceNodeInputContent? = nil,
+            nodeInputName: Swift.String? = nil
+        )
+        {
+            self.content = content
+            self.nodeInputName = nodeInputName
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about the input into a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceNodeInputEvent: Swift.Sendable {
+        /// An array of objects containing information about each field in the input.
+        /// This member is required.
+        public var fields: [BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField]?
+        /// The name of the node that received the input.
+        /// This member is required.
+        public var nodeName: Swift.String?
+        /// The date and time that the trace was returned.
+        /// This member is required.
+        public var timestamp: Foundation.Date?
+
+        public init(
+            fields: [BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField]? = nil,
+            nodeName: Swift.String? = nil,
+            timestamp: Foundation.Date? = nil
+        )
+        {
+            self.fields = fields
+            self.nodeName = nodeName
+            self.timestamp = timestamp
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains the content of the node output. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public enum FlowTraceNodeOutputContent: Swift.Sendable {
+        /// The content of the node output.
+        case document(Smithy.Document)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about a field in the output from a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceNodeOutputField: Swift.Sendable {
+        /// The content of the node output.
+        /// This member is required.
+        public var content: BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputContent?
+        /// The name of the node output.
+        /// This member is required.
+        public var nodeOutputName: Swift.String?
+
+        public init(
+            content: BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputContent? = nil,
+            nodeOutputName: Swift.String? = nil
+        )
+        {
+            self.content = content
+            self.nodeOutputName = nodeOutputName
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about the output from a node. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceNodeOutputEvent: Swift.Sendable {
+        /// An array of objects containing information about each field in the output.
+        /// This member is required.
+        public var fields: [BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField]?
+        /// The name of the node that yielded the output.
+        /// This member is required.
+        public var nodeName: Swift.String?
+        /// The date and time that the trace was returned.
+        /// This member is required.
+        public var timestamp: Foundation.Date?
+
+        public init(
+            fields: [BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField]? = nil,
+            nodeName: Swift.String? = nil,
+            timestamp: Foundation.Date? = nil
+        )
+        {
+            self.fields = fields
+            self.nodeName = nodeName
+            self.timestamp = timestamp
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about an input or output for a node in the flow. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public enum FlowTrace: Swift.Sendable {
+        /// Contains information about the input into a node.
+        case nodeinputtrace(BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent)
+        /// Contains information about the output from a node.
+        case nodeoutputtrace(BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent)
+        /// Contains information about an output from a condition node.
+        case conditionnoderesulttrace(BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// Contains information about a trace, which tracks an input or output for a node in the flow. For more information, see [Track each step in your prompt flow by viewing its trace in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html).
+    public struct FlowTraceEvent: Swift.Sendable {
+        /// The trace object containing information about an input or output for a node in the flow.
+        /// This member is required.
+        public var trace: BedrockAgentRuntimeClientTypes.FlowTrace?
+
+        public init(
+            trace: BedrockAgentRuntimeClientTypes.FlowTrace? = nil
+        )
+        {
+            self.trace = trace
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceEvent: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "FlowTraceEvent(trace: \"CONTENT_REDACTED\")"}
+}
+
+extension BedrockAgentRuntimeClientTypes {
+
+    /// The output of the flow.
     public enum FlowResponseStream: Swift.Sendable {
         /// Contains information about an output from flow invocation.
         case flowoutputevent(BedrockAgentRuntimeClientTypes.FlowOutputEvent)
         /// Contains information about why the flow completed.
         case flowcompletionevent(BedrockAgentRuntimeClientTypes.FlowCompletionEvent)
+        /// Contains information about a trace, which tracks an input or output for a node in the flow.
+        case flowtraceevent(BedrockAgentRuntimeClientTypes.FlowTraceEvent)
         case sdkUnknown(Swift.String)
     }
 }
@@ -3749,7 +3978,7 @@ extension BedrockAgentRuntimeClientTypes {
         public var guardrailConfiguration: BedrockAgentRuntimeClientTypes.GuardrailConfiguration?
         /// Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source.
         public var inferenceConfig: BedrockAgentRuntimeClientTypes.InferenceConfig?
-        /// Contains the template for the prompt that's sent to the model for response generation.
+        /// Contains the template for the prompt that's sent to the model for response generation. Generation prompts must include the $search_results$ variable. For more information, see [Use placeholder variables](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html) in the user guide.
         public var promptTemplate: BedrockAgentRuntimeClientTypes.PromptTemplate?
 
         public init(
@@ -3818,7 +4047,7 @@ extension BedrockAgentRuntimeClientTypes {
         public var additionalModelRequestFields: [Swift.String: Smithy.Document]?
         /// Configuration settings for inference when using RetrieveAndGenerate to generate responses while using a knowledge base as a source.
         public var inferenceConfig: BedrockAgentRuntimeClientTypes.InferenceConfig?
-        /// Contains the template for the prompt that's sent to the model for response generation.
+        /// Contains the template for the prompt that's sent to the model. Orchestration prompts must include the $conversation_history$ and $output_format_instructions$ variables. For more information, see [Use placeholder variables](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html) in the user guide.
         public var promptTemplate: BedrockAgentRuntimeClientTypes.PromptTemplate?
         /// To split up the prompt and retrieve multiple sources, set the transformation type to QUERY_DECOMPOSITION.
         public var queryTransformationConfiguration: BedrockAgentRuntimeClientTypes.QueryTransformationConfiguration?
@@ -4510,6 +4739,7 @@ extension InvokeFlowInput {
 
     static func write(value: InvokeFlowInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["enableTrace"].write(value.enableTrace)
         try writer["inputs"].writeList(value.inputs, memberWritingClosure: BedrockAgentRuntimeClientTypes.FlowInput.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 }
@@ -4949,6 +5179,9 @@ extension BedrockAgentRuntimeClientTypes.FlowResponseStream {
                 case "flowCompletionEvent":
                     let value = try SmithyJSON.Reader.readFrom(message.payload, with: BedrockAgentRuntimeClientTypes.FlowCompletionEvent.read(from:))
                     return .flowcompletionevent(value)
+                case "flowTraceEvent":
+                    let value = try SmithyJSON.Reader.readFrom(message.payload, with: BedrockAgentRuntimeClientTypes.FlowTraceEvent.read(from:))
+                    return .flowtraceevent(value)
                 default:
                     return .sdkUnknown("error processing event stream, unrecognized event: \(params.eventType)")
                 }
@@ -5377,9 +5610,9 @@ extension BedrockAgentRuntimeClientTypes.ModelInvocationInput {
         value.traceId = try reader["traceId"].readIfPresent()
         value.text = try reader["text"].readIfPresent()
         value.type = try reader["type"].readIfPresent()
-        value.inferenceConfiguration = try reader["inferenceConfiguration"].readIfPresent(with: BedrockAgentRuntimeClientTypes.InferenceConfiguration.read(from:))
         value.overrideLambda = try reader["overrideLambda"].readIfPresent()
         value.promptCreationMode = try reader["promptCreationMode"].readIfPresent()
+        value.inferenceConfiguration = try reader["inferenceConfiguration"].readIfPresent(with: BedrockAgentRuntimeClientTypes.InferenceConfiguration.read(from:))
         value.parserMode = try reader["parserMode"].readIfPresent()
         return value
     }
@@ -5905,6 +6138,130 @@ extension BedrockAgentRuntimeClientTypes.Span {
         value.start = try reader["start"].readIfPresent()
         value.end = try reader["end"].readIfPresent()
         return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceEvent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceEvent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceEvent()
+        value.trace = try reader["trace"].readIfPresent(with: BedrockAgentRuntimeClientTypes.FlowTrace.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTrace {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTrace {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "nodeInputTrace":
+                return .nodeinputtrace(try reader["nodeInputTrace"].read(with: BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent.read(from:)))
+            case "nodeOutputTrace":
+                return .nodeoutputtrace(try reader["nodeOutputTrace"].read(with: BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent.read(from:)))
+            case "conditionNodeResultTrace":
+                return .conditionnoderesulttrace(try reader["conditionNodeResultTrace"].read(with: BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceConditionNodeResultEvent()
+        value.nodeName = try reader["nodeName"].readIfPresent() ?? ""
+        value.timestamp = try reader["timestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.satisfiedConditions = try reader["satisfiedConditions"].readListIfPresent(memberReadingClosure: BedrockAgentRuntimeClientTypes.FlowTraceCondition.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceCondition {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceCondition {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceCondition()
+        value.conditionName = try reader["conditionName"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputEvent()
+        value.nodeName = try reader["nodeName"].readIfPresent() ?? ""
+        value.timestamp = try reader["timestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.fields = try reader["fields"].readListIfPresent(memberReadingClosure: BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputField()
+        value.nodeOutputName = try reader["nodeOutputName"].readIfPresent() ?? ""
+        value.content = try reader["content"].readIfPresent(with: BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputContent.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputContent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeOutputContent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "document":
+                return .document(try reader["document"].read())
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceNodeInputEvent()
+        value.nodeName = try reader["nodeName"].readIfPresent() ?? ""
+        value.timestamp = try reader["timestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.fields = try reader["fields"].readListIfPresent(memberReadingClosure: BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentRuntimeClientTypes.FlowTraceNodeInputField()
+        value.nodeInputName = try reader["nodeInputName"].readIfPresent() ?? ""
+        value.content = try reader["content"].readIfPresent(with: BedrockAgentRuntimeClientTypes.FlowTraceNodeInputContent.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentRuntimeClientTypes.FlowTraceNodeInputContent {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentRuntimeClientTypes.FlowTraceNodeInputContent {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "document":
+                return .document(try reader["document"].read())
+            default:
+                return .sdkUnknown(name ?? "")
+        }
     }
 }
 

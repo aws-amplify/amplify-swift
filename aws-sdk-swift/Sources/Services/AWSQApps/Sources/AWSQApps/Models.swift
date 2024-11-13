@@ -43,6 +43,21 @@ public struct AssociateQAppWithUserOutput: Swift.Sendable {
     public init() { }
 }
 
+public struct BatchCreateCategoryOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct BatchDeleteCategoryOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct BatchUpdateCategoryOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct DeleteLibraryItemOutput: Swift.Sendable {
 
     public init() { }
@@ -818,6 +833,111 @@ public struct AssociateQAppWithUserInput: Swift.Sendable {
 
 extension QAppsClientTypes {
 
+    /// The category object to be created.
+    public struct BatchCreateCategoryInputCategory: Swift.Sendable {
+        /// The color to be associated with a category. The color must be a hexadecimal value of either 3 or 6 digits.
+        public var color: Swift.String?
+        /// The unique identifier to be associated with a category. If you don't include a value, the category is automatically assigned a unique identifier.
+        public var id: Swift.String?
+        /// The name of the category.
+        /// This member is required.
+        public var title: Swift.String?
+
+        public init(
+            color: Swift.String? = nil,
+            id: Swift.String? = nil,
+            title: Swift.String? = nil
+        )
+        {
+            self.color = color
+            self.id = id
+            self.title = title
+        }
+    }
+}
+
+public struct BatchCreateCategoryInput: Swift.Sendable {
+    /// The list of category objects to be created
+    /// This member is required.
+    public var categories: [QAppsClientTypes.BatchCreateCategoryInputCategory]?
+    /// The unique identifier of the Amazon Q Business application environment instance.
+    /// This member is required.
+    public var instanceId: Swift.String?
+
+    public init(
+        categories: [QAppsClientTypes.BatchCreateCategoryInputCategory]? = nil,
+        instanceId: Swift.String? = nil
+    )
+    {
+        self.categories = categories
+        self.instanceId = instanceId
+    }
+}
+
+public struct BatchDeleteCategoryInput: Swift.Sendable {
+    /// The list of IDs of the categories to be deleted.
+    /// This member is required.
+    public var categories: [Swift.String]?
+    /// The unique identifier of the Amazon Q Business application environment instance.
+    /// This member is required.
+    public var instanceId: Swift.String?
+
+    public init(
+        categories: [Swift.String]? = nil,
+        instanceId: Swift.String? = nil
+    )
+    {
+        self.categories = categories
+        self.instanceId = instanceId
+    }
+}
+
+extension QAppsClientTypes {
+
+    /// A label that web experience users associate with a library item. Web experience users use Categories to tag and filter library items.
+    public struct CategoryInput: Swift.Sendable {
+        /// The color of the category, represented as a hexadecimal value of either 3 or 6 digits.
+        public var color: Swift.String?
+        /// The unique identifier of the category.
+        /// This member is required.
+        public var id: Swift.String?
+        /// The name of the category.
+        /// This member is required.
+        public var title: Swift.String?
+
+        public init(
+            color: Swift.String? = nil,
+            id: Swift.String? = nil,
+            title: Swift.String? = nil
+        )
+        {
+            self.color = color
+            self.id = id
+            self.title = title
+        }
+    }
+}
+
+public struct BatchUpdateCategoryInput: Swift.Sendable {
+    /// The list of categories to be updated with their new values.
+    /// This member is required.
+    public var categories: [QAppsClientTypes.CategoryInput]?
+    /// The unique identifier of the Amazon Q Business application environment instance.
+    /// This member is required.
+    public var instanceId: Swift.String?
+
+    public init(
+        categories: [QAppsClientTypes.CategoryInput]? = nil,
+        instanceId: Swift.String? = nil
+    )
+    {
+        self.categories = categories
+        self.instanceId = instanceId
+    }
+}
+
+extension QAppsClientTypes {
+
     public enum ExecutionStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case completed
         case inProgress
@@ -896,6 +1016,10 @@ extension QAppsClientTypes {
 
     /// A category used to classify and filter library items for Amazon Q Apps.
     public struct Category: Swift.Sendable {
+        /// The number of published Amazon Q Apps associated with a category
+        public var appCount: Swift.Int?
+        /// The color of the category
+        public var color: Swift.String?
         /// The unique identifier of the category.
         /// This member is required.
         public var id: Swift.String?
@@ -904,10 +1028,14 @@ extension QAppsClientTypes {
         public var title: Swift.String?
 
         public init(
+            appCount: Swift.Int? = nil,
+            color: Swift.String? = nil,
             id: Swift.String? = nil,
             title: Swift.String? = nil
         )
         {
+            self.appCount = appCount
+            self.color = color
             self.id = id
             self.title = title
         }
@@ -1545,6 +1673,31 @@ extension QAppsClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
+    }
+}
+
+public struct ListCategoriesInput: Swift.Sendable {
+    /// The unique identifier of the Amazon Q Business application environment instance.
+    /// This member is required.
+    public var instanceId: Swift.String?
+
+    public init(
+        instanceId: Swift.String? = nil
+    )
+    {
+        self.instanceId = instanceId
+    }
+}
+
+public struct ListCategoriesOutput: Swift.Sendable {
+    /// The categories of a Amazon Q Business application environment instance.
+    public var categories: [QAppsClientTypes.Category]?
+
+    public init(
+        categories: [QAppsClientTypes.Category]? = nil
+    )
+    {
+        self.categories = categories
     }
 }
 
@@ -2491,6 +2644,60 @@ extension AssociateQAppWithUserInput {
     }
 }
 
+extension BatchCreateCategoryInput {
+
+    static func urlPathProvider(_ value: BatchCreateCategoryInput) -> Swift.String? {
+        return "/catalog.createCategories"
+    }
+}
+
+extension BatchCreateCategoryInput {
+
+    static func headerProvider(_ value: BatchCreateCategoryInput) -> SmithyHTTPAPI.Headers {
+        var items = SmithyHTTPAPI.Headers()
+        if let instanceId = value.instanceId {
+            items.add(SmithyHTTPAPI.Header(name: "instance-id", value: Swift.String(instanceId)))
+        }
+        return items
+    }
+}
+
+extension BatchDeleteCategoryInput {
+
+    static func urlPathProvider(_ value: BatchDeleteCategoryInput) -> Swift.String? {
+        return "/catalog.deleteCategories"
+    }
+}
+
+extension BatchDeleteCategoryInput {
+
+    static func headerProvider(_ value: BatchDeleteCategoryInput) -> SmithyHTTPAPI.Headers {
+        var items = SmithyHTTPAPI.Headers()
+        if let instanceId = value.instanceId {
+            items.add(SmithyHTTPAPI.Header(name: "instance-id", value: Swift.String(instanceId)))
+        }
+        return items
+    }
+}
+
+extension BatchUpdateCategoryInput {
+
+    static func urlPathProvider(_ value: BatchUpdateCategoryInput) -> Swift.String? {
+        return "/catalog.updateCategories"
+    }
+}
+
+extension BatchUpdateCategoryInput {
+
+    static func headerProvider(_ value: BatchUpdateCategoryInput) -> SmithyHTTPAPI.Headers {
+        var items = SmithyHTTPAPI.Headers()
+        if let instanceId = value.instanceId {
+            items.add(SmithyHTTPAPI.Header(name: "instance-id", value: Swift.String(instanceId)))
+        }
+        return items
+    }
+}
+
 extension CreateLibraryItemInput {
 
     static func urlPathProvider(_ value: CreateLibraryItemInput) -> Swift.String? {
@@ -2709,6 +2916,24 @@ extension ImportDocumentInput {
 extension ImportDocumentInput {
 
     static func headerProvider(_ value: ImportDocumentInput) -> SmithyHTTPAPI.Headers {
+        var items = SmithyHTTPAPI.Headers()
+        if let instanceId = value.instanceId {
+            items.add(SmithyHTTPAPI.Header(name: "instance-id", value: Swift.String(instanceId)))
+        }
+        return items
+    }
+}
+
+extension ListCategoriesInput {
+
+    static func urlPathProvider(_ value: ListCategoriesInput) -> Swift.String? {
+        return "/catalog.listCategories"
+    }
+}
+
+extension ListCategoriesInput {
+
+    static func headerProvider(_ value: ListCategoriesInput) -> SmithyHTTPAPI.Headers {
         var items = SmithyHTTPAPI.Headers()
         if let instanceId = value.instanceId {
             items.add(SmithyHTTPAPI.Header(name: "instance-id", value: Swift.String(instanceId)))
@@ -2977,6 +3202,30 @@ extension AssociateQAppWithUserInput {
     }
 }
 
+extension BatchCreateCategoryInput {
+
+    static func write(value: BatchCreateCategoryInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["categories"].writeList(value.categories, memberWritingClosure: QAppsClientTypes.BatchCreateCategoryInputCategory.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
+extension BatchDeleteCategoryInput {
+
+    static func write(value: BatchDeleteCategoryInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["categories"].writeList(value.categories, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
+extension BatchUpdateCategoryInput {
+
+    static func write(value: BatchUpdateCategoryInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["categories"].writeList(value.categories, memberWritingClosure: QAppsClientTypes.CategoryInput.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
 extension CreateLibraryItemInput {
 
     static func write(value: CreateLibraryItemInput?, to writer: SmithyJSON.Writer) throws {
@@ -3131,6 +3380,27 @@ extension AssociateQAppWithUserOutput {
     }
 }
 
+extension BatchCreateCategoryOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> BatchCreateCategoryOutput {
+        return BatchCreateCategoryOutput()
+    }
+}
+
+extension BatchDeleteCategoryOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> BatchDeleteCategoryOutput {
+        return BatchDeleteCategoryOutput()
+    }
+}
+
+extension BatchUpdateCategoryOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> BatchUpdateCategoryOutput {
+        return BatchUpdateCategoryOutput()
+    }
+}
+
 extension CreateLibraryItemOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateLibraryItemOutput {
@@ -3272,6 +3542,18 @@ extension ImportDocumentOutput {
         let reader = responseReader
         var value = ImportDocumentOutput()
         value.fileId = try reader["fileId"].readIfPresent()
+        return value
+    }
+}
+
+extension ListCategoriesOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCategoriesOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCategoriesOutput()
+        value.categories = try reader["categories"].readListIfPresent(memberReadingClosure: QAppsClientTypes.Category.read(from:), memberNodeInfo: "member", isFlattened: false)
         return value
     }
 }
@@ -3461,6 +3743,66 @@ enum AssociateQAppWithUserOutputError {
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum BatchCreateCategoryOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum BatchDeleteCategoryOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum BatchUpdateCategoryOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
@@ -3660,6 +4002,25 @@ enum ImportDocumentOutputError {
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListCategoriesOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "UnauthorizedException": return try UnauthorizedException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
@@ -4042,6 +4403,8 @@ extension QAppsClientTypes.Category {
         var value = QAppsClientTypes.Category()
         value.id = try reader["id"].readIfPresent() ?? ""
         value.title = try reader["title"].readIfPresent() ?? ""
+        value.color = try reader["color"].readIfPresent()
+        value.appCount = try reader["appCount"].readIfPresent()
         return value
     }
 }
@@ -4435,6 +4798,26 @@ extension QAppsClientTypes.TextInputCardInput {
         value.placeholder = try reader["placeholder"].readIfPresent()
         value.defaultValue = try reader["defaultValue"].readIfPresent()
         return value
+    }
+}
+
+extension QAppsClientTypes.BatchCreateCategoryInputCategory {
+
+    static func write(value: QAppsClientTypes.BatchCreateCategoryInputCategory?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["color"].write(value.color)
+        try writer["id"].write(value.id)
+        try writer["title"].write(value.title)
+    }
+}
+
+extension QAppsClientTypes.CategoryInput {
+
+    static func write(value: QAppsClientTypes.CategoryInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["color"].write(value.color)
+        try writer["id"].write(value.id)
+        try writer["title"].write(value.title)
     }
 }
 

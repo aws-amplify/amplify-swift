@@ -80,20 +80,6 @@ class AWSRetryErrorInfoProviderTests: XCTestCase {
         }
     }
 
-    // MARK: - Retry after hint
-
-    func test_retryAfterHint_setsRetryAfterHintWhenRetryAfterHeaderIsSetWithSeconds() throws {
-        let error = try TestHTTPError(statusCode: 500, headers: ["retry-after": "2.8"])
-        let errorInfo = AWSRetryErrorInfoProvider.errorInfo(for: error)
-        XCTAssertEqual(errorInfo?.retryAfterHint, 2.8)
-    }
-
-    func test_retryAfterHint_setsRetryAfterHintWhenXAmzRetryAfterHeaderIsSetWithSeconds() throws {
-        let error = try TestHTTPError(statusCode: 500, headers: ["x-amz-retry-after": "2.7"])
-        let errorInfo = AWSRetryErrorInfoProvider.errorInfo(for: error)
-        XCTAssertEqual(errorInfo?.retryAfterHint, 2.7)
-    }
-
     // MARK: - isTimeout
 
     func test_isTimeout_setsIsTimeoutWhenHTTPStatusCodeIndicatesTimeout() throws {

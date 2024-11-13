@@ -20,7 +20,7 @@ let package = Package(
             exact: "0.0.1"
         ),
         .package(
-            id: "aws-sdk-swift.smithy-swift",
+            url: "https://github.com/smithy-lang/smithy-swift",
             exact: "0.0.1"
         ),
     ],
@@ -38,51 +38,48 @@ let package = Package(
                 ),
                 .product(
                     name: "SmithyHTTPAuthAPI",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "Smithy",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "ClientRuntime",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyHTTPAPI",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyJSON",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyReadWrite",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyTimestamps",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyIdentity",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyRetriesAPI",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyRetries",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
                 .product(
                     name: "SmithyTestUtil",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
-            ],
-            resources: [
-                .process("Resources")
             ]
         ),
         .testTarget(
@@ -91,7 +88,7 @@ let package = Package(
                 "AWSSecurityLake",
                 .product(
                     name: "SmithyTestUtil",
-                    package: "aws-sdk-swift.smithy-swift"
+                    package: "smithy-swift"
                 ),
             ]
         )

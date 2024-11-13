@@ -134,7 +134,7 @@ public struct AcceptAdministratorInvitationOutput: Swift.Sendable {
 
 @available(*, deprecated, message: "This input is deprecated, use AcceptAdministratorInvitationRequest instead")
 public struct AcceptInvitationInput: Swift.Sendable {
-    /// The unique ID of the detector of the GuardDuty member account.
+    /// The unique ID of the detector of the GuardDuty member account. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The value that is used to validate the administrator account to the member account.
@@ -1400,7 +1400,7 @@ extension GuardDutyClientTypes {
 }
 
 public struct ArchiveFindingsInput: Swift.Sendable {
-    /// The ID of the detector that specifies the GuardDuty service whose findings you want to archive.
+    /// The ID of the detector that specifies the GuardDuty service whose findings you want to archive. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The IDs of the findings that you want to archive.
@@ -2744,7 +2744,7 @@ public struct CreateFilterInput: Swift.Sendable {
     public var clientToken: Swift.String?
     /// The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses ({ }, [ ], and ( )), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.
     public var description: Swift.String?
-    /// The detector ID associated with the GuardDuty account for which you want to create a filter.
+    /// The detector ID associated with the GuardDuty account for which you want to create a filter. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria to be used in the filter for querying findings. You can only use the following attributes to query findings:
@@ -3039,7 +3039,7 @@ public struct CreateIPSetInput: Swift.Sendable {
     public var activate: Swift.Bool?
     /// The idempotency token for the create request.
     public var clientToken: Swift.String?
-    /// The unique ID of the detector of the GuardDuty account for which you want to create an IPSet.
+    /// The unique ID of the detector of the GuardDuty account for which you want to create an IPSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The format of the file that contains the IPSet.
@@ -3230,7 +3230,7 @@ public struct CreateMembersInput: Swift.Sendable {
     /// A list of account ID and email address pairs of the accounts that you want to associate with the GuardDuty administrator account.
     /// This member is required.
     public var accountDetails: [GuardDutyClientTypes.AccountDetail]?
-    /// The unique ID of the detector of the GuardDuty account for which you want to associate member accounts.
+    /// The unique ID of the detector of the GuardDuty account for which you want to associate member accounts. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -3334,7 +3334,7 @@ public struct CreatePublishingDestinationInput: Swift.Sendable {
     /// The type of resource for the publishing destination. Currently only Amazon S3 buckets are supported.
     /// This member is required.
     public var destinationType: GuardDutyClientTypes.DestinationType?
-    /// The ID of the GuardDuty detector associated with the publishing destination.
+    /// The ID of the GuardDuty detector associated with the publishing destination. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -3366,7 +3366,7 @@ public struct CreatePublishingDestinationOutput: Swift.Sendable {
 }
 
 public struct CreateSampleFindingsInput: Swift.Sendable {
-    /// The ID of the detector for which you need to create sample findings.
+    /// The ID of the detector for which you need to create sample findings. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The types of sample findings to generate.
@@ -3434,7 +3434,7 @@ public struct CreateThreatIntelSetInput: Swift.Sendable {
     public var activate: Swift.Bool?
     /// The idempotency token for the create request.
     public var clientToken: Swift.String?
-    /// The unique ID of the detector of the GuardDuty account for which you want to create a ThreatIntelSet.
+    /// The unique ID of the detector of the GuardDuty account for which you want to create a ThreatIntelSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The format of the file that contains the ThreatIntelSet.
@@ -3767,7 +3767,7 @@ extension GuardDutyClientTypes {
 }
 
 public struct DeleteDetectorInput: Swift.Sendable {
-    /// The unique ID of the detector that you want to delete.
+    /// The unique ID of the detector that you want to delete. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -3785,7 +3785,7 @@ public struct DeleteDetectorOutput: Swift.Sendable {
 }
 
 public struct DeleteFilterInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the filter.
+    /// The unique ID of the detector that is associated with the filter. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The name of the filter that you want to delete.
@@ -3834,7 +3834,7 @@ public struct DeleteInvitationsOutput: Swift.Sendable {
 }
 
 public struct DeleteIPSetInput: Swift.Sendable {
-    /// The unique ID of the detector associated with the IPSet.
+    /// The unique ID of the detector associated with the IPSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The unique ID of the IPSet to delete.
@@ -3902,7 +3902,7 @@ public struct DeleteMembersInput: Swift.Sendable {
     /// A list of account IDs of the GuardDuty member accounts that you want to delete.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector of the GuardDuty account whose members you want to delete.
+    /// The unique ID of the detector of the GuardDuty account whose members you want to delete. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -3933,7 +3933,7 @@ public struct DeletePublishingDestinationInput: Swift.Sendable {
     /// The ID of the publishing destination to delete.
     /// This member is required.
     public var destinationId: Swift.String?
-    /// The unique ID of the detector associated with the publishing destination to delete.
+    /// The unique ID of the detector associated with the publishing destination to delete. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -3953,7 +3953,7 @@ public struct DeletePublishingDestinationOutput: Swift.Sendable {
 }
 
 public struct DeleteThreatIntelSetInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the threatIntelSet.
+    /// The unique ID of the detector that is associated with the threatIntelSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The unique ID of the threatIntelSet that you want to delete.
@@ -4056,7 +4056,7 @@ extension GuardDutyClientTypes {
 }
 
 public struct DescribeMalwareScansInput: Swift.Sendable {
-    /// The unique ID of the detector that the request is associated with.
+    /// The unique ID of the detector that the request is associated with. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria to be used in the filter for describing scan entries.
@@ -4275,11 +4275,11 @@ extension GuardDutyClientTypes {
     public struct Scan: Swift.Sendable {
         /// The ID for the account that belongs to the scan.
         public var accountId: Swift.String?
-        /// The unique detector ID of the administrator account that the request is associated with. If the account is an administrator, the AdminDetectorId will be the same as the one used for DetectorId.
+        /// The unique detector ID of the administrator account that the request is associated with. If the account is an administrator, the AdminDetectorId will be the same as the one used for DetectorId. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
         public var adminDetectorId: Swift.String?
         /// List of volumes that were attached to the original instance to be scanned.
         public var attachedVolumes: [GuardDutyClientTypes.VolumeDetail]?
-        /// The unique ID of the detector that the request is associated with.
+        /// The unique ID of the detector that the request is associated with. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
         public var detectorId: Swift.String?
         /// Represents the reason for FAILED scan status.
         public var failureReason: Swift.String?
@@ -4359,7 +4359,7 @@ public struct DescribeMalwareScansOutput: Swift.Sendable {
 }
 
 public struct DescribeOrganizationConfigurationInput: Swift.Sendable {
-    /// The detector ID of the delegated administrator for which you need to retrieve the information.
+    /// The detector ID of the delegated administrator for which you need to retrieve the information. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// You can use this parameter to indicate the maximum number of items that you want in the response.
@@ -4712,7 +4712,7 @@ public struct DescribePublishingDestinationInput: Swift.Sendable {
     /// The ID of the publishing destination to retrieve.
     /// This member is required.
     public var destinationId: Swift.String?
-    /// The unique ID of the detector associated with the publishing destination to retrieve.
+    /// The unique ID of the detector associated with the publishing destination to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -5325,11 +5325,11 @@ extension GuardDutyClientTypes {
 
 extension GuardDutyClientTypes {
 
-    /// Contains information about a tag associated with the EC2 instance.
+    /// Contains information about a tag key-value pair.
     public struct Tag: Swift.Sendable {
-        /// The EC2 instance tag key.
+        /// Describes the key associated with the tag.
         public var key: Swift.String?
-        /// The EC2 instance tag value.
+        /// Describes the value associated with the tag key.
         public var value: Swift.String?
 
         public init(
@@ -6018,7 +6018,7 @@ extension GuardDutyClientTypes {
         public var engine: Swift.String?
         /// The version of the database engine that was involved in the finding.
         public var engineVersion: Swift.String?
-        /// Instance tag key-value pairs associated with the database instance ID.
+        /// Information about the tag key-value pairs.
         public var tags: [GuardDutyClientTypes.Tag]?
 
         public init(
@@ -6068,6 +6068,46 @@ extension GuardDutyClientTypes {
             self.database = database
             self.ssl = ssl
             self.user = user
+        }
+    }
+}
+
+extension GuardDutyClientTypes {
+
+    /// Contains information about the resource type RDSLimitlessDB that is involved in a GuardDuty finding.
+    public struct RdsLimitlessDbDetails: Swift.Sendable {
+        /// The name of the database cluster that is a part of the Limitless Database.
+        public var dbClusterIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) that identifies the DB shard group.
+        public var dbShardGroupArn: Swift.String?
+        /// The name associated with the Limitless DB shard group.
+        public var dbShardGroupIdentifier: Swift.String?
+        /// The resource identifier of the DB shard group within the Limitless Database.
+        public var dbShardGroupResourceId: Swift.String?
+        /// The database engine of the database instance involved in the finding.
+        public var engine: Swift.String?
+        /// The version of the database engine.
+        public var engineVersion: Swift.String?
+        /// Information about the tag-key value pair.
+        public var tags: [GuardDutyClientTypes.Tag]?
+
+        public init(
+            dbClusterIdentifier: Swift.String? = nil,
+            dbShardGroupArn: Swift.String? = nil,
+            dbShardGroupIdentifier: Swift.String? = nil,
+            dbShardGroupResourceId: Swift.String? = nil,
+            engine: Swift.String? = nil,
+            engineVersion: Swift.String? = nil,
+            tags: [GuardDutyClientTypes.Tag]? = nil
+        )
+        {
+            self.dbClusterIdentifier = dbClusterIdentifier
+            self.dbShardGroupArn = dbShardGroupArn
+            self.dbShardGroupIdentifier = dbShardGroupIdentifier
+            self.dbShardGroupResourceId = dbShardGroupResourceId
+            self.engine = engine
+            self.engineVersion = engineVersion
+            self.tags = tags
         }
     }
 }
@@ -6232,6 +6272,8 @@ extension GuardDutyClientTypes {
         public var rdsDbInstanceDetails: GuardDutyClientTypes.RdsDbInstanceDetails?
         /// Contains information about the user details through which anomalous login attempt was made.
         public var rdsDbUserDetails: GuardDutyClientTypes.RdsDbUserDetails?
+        /// Contains information about the RDS Limitless database that was involved in a GuardDuty finding.
+        public var rdsLimitlessDbDetails: GuardDutyClientTypes.RdsLimitlessDbDetails?
         /// The type of Amazon Web Services resource.
         public var resourceType: Swift.String?
         /// Contains information on the S3 bucket.
@@ -6248,6 +6290,7 @@ extension GuardDutyClientTypes {
             lambdaDetails: GuardDutyClientTypes.LambdaDetails? = nil,
             rdsDbInstanceDetails: GuardDutyClientTypes.RdsDbInstanceDetails? = nil,
             rdsDbUserDetails: GuardDutyClientTypes.RdsDbUserDetails? = nil,
+            rdsLimitlessDbDetails: GuardDutyClientTypes.RdsLimitlessDbDetails? = nil,
             resourceType: Swift.String? = nil,
             s3BucketDetails: [GuardDutyClientTypes.S3BucketDetail]? = nil
         )
@@ -6262,6 +6305,7 @@ extension GuardDutyClientTypes {
             self.lambdaDetails = lambdaDetails
             self.rdsDbInstanceDetails = rdsDbInstanceDetails
             self.rdsDbUserDetails = rdsDbUserDetails
+            self.rdsLimitlessDbDetails = rdsLimitlessDbDetails
             self.resourceType = resourceType
             self.s3BucketDetails = s3BucketDetails
         }
@@ -6940,7 +6984,7 @@ public struct GetAdministratorAccountOutput: Swift.Sendable {
 }
 
 public struct GetCoverageStatisticsInput: Swift.Sendable {
-    /// The unique ID of the GuardDuty detector.
+    /// The unique ID of the GuardDuty detector. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria used to filter the coverage statistics.
@@ -6974,7 +7018,7 @@ public struct GetCoverageStatisticsOutput: Swift.Sendable {
 }
 
 public struct GetDetectorInput: Swift.Sendable {
-    /// The unique ID of the detector that you want to get.
+    /// The unique ID of the detector that you want to get. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7030,7 +7074,7 @@ public struct GetDetectorOutput: Swift.Sendable {
 }
 
 public struct GetFilterInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with this filter.
+    /// The unique ID of the detector that is associated with this filter. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The name of the filter you want to get.
@@ -7083,7 +7127,7 @@ public struct GetFilterOutput: Swift.Sendable {
 }
 
 public struct GetFindingsInput: Swift.Sendable {
-    /// The ID of the detector that specifies the GuardDuty service whose findings you want to retrieve.
+    /// The ID of the detector that specifies the GuardDuty service whose findings you want to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The IDs of the findings that you want to retrieve.
@@ -7156,7 +7200,7 @@ extension GuardDutyClientTypes {
 }
 
 public struct GetFindingsStatisticsInput: Swift.Sendable {
-    /// The ID of the detector whose findings statistics you want to retrieve.
+    /// The ID of the detector whose findings statistics you want to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria that is used for querying findings.
@@ -7224,7 +7268,7 @@ public struct GetInvitationsCountOutput: Swift.Sendable {
 }
 
 public struct GetIPSetInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the IPSet.
+    /// The unique ID of the detector that is associated with the IPSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The unique ID of the IPSet to retrieve.
@@ -7423,7 +7467,7 @@ public struct GetMalwareProtectionPlanOutput: Swift.Sendable {
 }
 
 public struct GetMalwareScanSettingsInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with this scan.
+    /// The unique ID of the detector that is associated with this scan. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7538,7 +7582,7 @@ public struct GetMalwareScanSettingsOutput: Swift.Sendable {
 
 @available(*, deprecated, message: "This input is deprecated, use GetAdministratorAccountRequest instead")
 public struct GetMasterAccountInput: Swift.Sendable {
-    /// The unique ID of the detector of the GuardDuty member account.
+    /// The unique ID of the detector of the GuardDuty member account. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7596,7 +7640,7 @@ public struct GetMemberDetectorsInput: Swift.Sendable {
     /// A list of member account IDs.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The detector ID for the administrator account.
+    /// The detector ID for the administrator account. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7710,7 +7754,7 @@ public struct GetMembersInput: Swift.Sendable {
     /// A list of account IDs of the GuardDuty member accounts that you want to describe.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector of the GuardDuty account whose members you want to retrieve.
+    /// The unique ID of the detector of the GuardDuty account whose members you want to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7907,7 +7951,7 @@ public struct GetOrganizationStatisticsOutput: Swift.Sendable {
 public struct GetRemainingFreeTrialDaysInput: Swift.Sendable {
     /// A list of account identifiers of the GuardDuty member account.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector of the GuardDuty member account.
+    /// The unique ID of the detector of the GuardDuty member account. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -7938,7 +7982,7 @@ public struct GetRemainingFreeTrialDaysOutput: Swift.Sendable {
 }
 
 public struct GetThreatIntelSetInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the threatIntelSet.
+    /// The unique ID of the detector that is associated with the threatIntelSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The unique ID of the threatIntelSet that you want to get.
@@ -8164,7 +8208,7 @@ extension GuardDutyClientTypes {
 }
 
 public struct GetUsageStatisticsInput: Swift.Sendable {
-    /// The ID of the detector that specifies the GuardDuty service whose usage statistics you want to retrieve.
+    /// The ID of the detector that specifies the GuardDuty service whose usage statistics you want to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The maximum number of results to return in the response.
@@ -8394,7 +8438,7 @@ public struct InviteMembersInput: Swift.Sendable {
     /// A list of account IDs of the accounts that you want to invite to GuardDuty as members.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector of the GuardDuty account with which you want to invite members.
+    /// The unique ID of the detector of the GuardDuty account with which you want to invite members. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// A Boolean value that specifies whether you want to disable email notification to the accounts that you are inviting to GuardDuty as members.
@@ -8430,7 +8474,7 @@ public struct InviteMembersOutput: Swift.Sendable {
 }
 
 public struct ListCoverageInput: Swift.Sendable {
-    /// The unique ID of the detector whose coverage details you want to retrieve.
+    /// The unique ID of the detector whose coverage details you want to retrieve. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria used to filter the coverage details.
@@ -8509,7 +8553,7 @@ public struct ListDetectorsOutput: Swift.Sendable {
 }
 
 public struct ListFiltersInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the filter.
+    /// The unique ID of the detector that is associated with the filter. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.
@@ -8547,7 +8591,7 @@ public struct ListFiltersOutput: Swift.Sendable {
 }
 
 public struct ListFindingsInput: Swift.Sendable {
-    /// The ID of the detector that specifies the GuardDuty service whose findings you want to list.
+    /// The ID of the detector that specifies the GuardDuty service whose findings you want to list. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Represents the criteria used for querying findings. Valid values include:
@@ -8753,7 +8797,7 @@ public struct ListInvitationsOutput: Swift.Sendable {
 }
 
 public struct ListIPSetsInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with IPSet.
+    /// The unique ID of the detector that is associated with IPSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50. The maximum value is 50.
@@ -8835,7 +8879,7 @@ public struct ListMalwareProtectionPlansOutput: Swift.Sendable {
 }
 
 public struct ListMembersInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the member.
+    /// The unique ID of the detector that is associated with the member. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// You can use this parameter to indicate the maximum number of items you want in the response. The default value is 50. The maximum value is 50.
@@ -8908,7 +8952,7 @@ public struct ListOrganizationAdminAccountsOutput: Swift.Sendable {
 }
 
 public struct ListPublishingDestinationsInput: Swift.Sendable {
-    /// The detector ID for which you want to retrieve the publishing destination.
+    /// The detector ID for which you want to retrieve the publishing destination. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The maximum number of results to return in the response.
@@ -8971,7 +9015,7 @@ public struct ListTagsForResourceOutput: Swift.Sendable {
 }
 
 public struct ListThreatIntelSetsInput: Swift.Sendable {
-    /// The unique ID of the detector that is associated with the threatIntelSet.
+    /// The unique ID of the detector that is associated with the threatIntelSet. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.
@@ -9037,7 +9081,7 @@ public struct StartMonitoringMembersInput: Swift.Sendable {
     /// A list of account IDs of the GuardDuty member accounts to start monitoring.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector of the GuardDuty administrator account associated with the member accounts to monitor.
+    /// The unique ID of the detector of the GuardDuty administrator account associated with the member accounts to monitor. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -9068,7 +9112,7 @@ public struct StopMonitoringMembersInput: Swift.Sendable {
     /// A list of account IDs for the member accounts to stop monitoring.
     /// This member is required.
     public var accountIds: [Swift.String]?
-    /// The unique ID of the detector associated with the GuardDuty administrator account that is monitoring member accounts.
+    /// The unique ID of the detector associated with the GuardDuty administrator account that is monitoring member accounts. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -9119,7 +9163,7 @@ public struct TagResourceOutput: Swift.Sendable {
 }
 
 public struct UnarchiveFindingsInput: Swift.Sendable {
-    /// The ID of the detector associated with the findings to unarchive.
+    /// The ID of the detector associated with the findings to unarchive. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The IDs of the findings to unarchive.
@@ -9168,7 +9212,7 @@ public struct UpdateDetectorInput: Swift.Sendable {
     /// Describes which data sources will be updated. There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see [Regions and endpoints](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html).
     @available(*, deprecated, message: "This parameter is deprecated, use Features instead")
     public var dataSources: GuardDutyClientTypes.DataSourceConfigurations?
-    /// The unique ID of the detector to update.
+    /// The unique ID of the detector to update. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// Specifies whether the detector is enabled or not enabled.
@@ -9204,7 +9248,7 @@ public struct UpdateFilterInput: Swift.Sendable {
     public var action: GuardDutyClientTypes.FilterAction?
     /// The description of the filter. Valid characters include alphanumeric characters, and special characters such as hyphen, period, colon, underscore, parentheses ({ }, [ ], and ( )), forward slash, horizontal tab, vertical tab, newline, form feed, return, and whitespace.
     public var description: Swift.String?
-    /// The unique ID of the detector that specifies the GuardDuty service where you want to update a filter.
+    /// The unique ID of the detector that specifies the GuardDuty service where you want to update a filter. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The name of the filter.
@@ -9249,7 +9293,7 @@ public struct UpdateFilterOutput: Swift.Sendable {
 public struct UpdateFindingsFeedbackInput: Swift.Sendable {
     /// Additional feedback about the GuardDuty findings.
     public var comments: Swift.String?
-    /// The ID of the detector that is associated with the findings for which you want to update the feedback.
+    /// The ID of the detector that is associated with the findings for which you want to update the feedback. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The feedback for the finding.
@@ -9281,7 +9325,7 @@ public struct UpdateFindingsFeedbackOutput: Swift.Sendable {
 public struct UpdateIPSetInput: Swift.Sendable {
     /// The updated Boolean value that specifies whether the IPSet is active or not.
     public var activate: Swift.Bool?
-    /// The detectorID that specifies the GuardDuty service whose IPSet you want to update.
+    /// The detectorID that specifies the GuardDuty service whose IPSet you want to update. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The unique ID that specifies the IPSet that you want to update.
@@ -9371,7 +9415,7 @@ public struct UpdateMalwareProtectionPlanInput: Swift.Sendable {
 }
 
 public struct UpdateMalwareScanSettingsInput: Swift.Sendable {
-    /// The unique ID of the detector that specifies the GuardDuty service where you want to update scan settings.
+    /// The unique ID of the detector that specifies the GuardDuty service where you want to update scan settings. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// An enum value representing possible snapshot preservation settings.
@@ -9447,7 +9491,7 @@ public struct UpdateMemberDetectorsInput: Swift.Sendable {
     /// Describes which data sources will be updated.
     @available(*, deprecated, message: "This parameter is deprecated, use Features instead")
     public var dataSources: GuardDutyClientTypes.DataSourceConfigurations?
-    /// The detector ID of the administrator account.
+    /// The detector ID of the administrator account. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// A list of features that will be updated for the specified member accounts.
@@ -9674,7 +9718,7 @@ public struct UpdateOrganizationConfigurationInput: Swift.Sendable {
     /// Describes which data sources will be updated.
     @available(*, deprecated, message: "This parameter is deprecated, use Features instead")
     public var dataSources: GuardDutyClientTypes.OrganizationDataSourceConfigurations?
-    /// The ID of the detector that configures the delegated administrator.
+    /// The ID of the detector that configures the delegated administrator. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// A list of features that will be configured for the organization.
@@ -9707,7 +9751,7 @@ public struct UpdatePublishingDestinationInput: Swift.Sendable {
     public var destinationId: Swift.String?
     /// A DestinationProperties object that includes the DestinationArn and KmsKeyArn of the publishing destination.
     public var destinationProperties: GuardDutyClientTypes.DestinationProperties?
-    /// The ID of the detector associated with the publishing destinations to update.
+    /// The ID of the detector associated with the publishing destinations to update. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
 
@@ -9731,7 +9775,7 @@ public struct UpdatePublishingDestinationOutput: Swift.Sendable {
 public struct UpdateThreatIntelSetInput: Swift.Sendable {
     /// The updated Boolean value that specifies whether the ThreateIntelSet is active or not.
     public var activate: Swift.Bool?
-    /// The detectorID that specifies the GuardDuty service whose ThreatIntelSet you want to update.
+    /// The detectorID that specifies the GuardDuty service whose ThreatIntelSet you want to update. To find the detectorId in the current Region, see the Settings page in the GuardDuty console, or run the [ListDetectors](https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html) API.
     /// This member is required.
     public var detectorId: Swift.String?
     /// The updated URI of the file that contains the ThreateIntelSet.
@@ -14170,6 +14214,7 @@ extension GuardDutyClientTypes.Resource {
         value.ecsClusterDetails = try reader["ecsClusterDetails"].readIfPresent(with: GuardDutyClientTypes.EcsClusterDetails.read(from:))
         value.containerDetails = try reader["containerDetails"].readIfPresent(with: GuardDutyClientTypes.Container.read(from:))
         value.rdsDbInstanceDetails = try reader["rdsDbInstanceDetails"].readIfPresent(with: GuardDutyClientTypes.RdsDbInstanceDetails.read(from:))
+        value.rdsLimitlessDbDetails = try reader["rdsLimitlessDbDetails"].readIfPresent(with: GuardDutyClientTypes.RdsLimitlessDbDetails.read(from:))
         value.rdsDbUserDetails = try reader["rdsDbUserDetails"].readIfPresent(with: GuardDutyClientTypes.RdsDbUserDetails.read(from:))
         value.lambdaDetails = try reader["lambdaDetails"].readIfPresent(with: GuardDutyClientTypes.LambdaDetails.read(from:))
         return value
@@ -14238,6 +14283,22 @@ extension GuardDutyClientTypes.RdsDbUserDetails {
         value.database = try reader["database"].readIfPresent()
         value.ssl = try reader["ssl"].readIfPresent()
         value.authMethod = try reader["authMethod"].readIfPresent()
+        return value
+    }
+}
+
+extension GuardDutyClientTypes.RdsLimitlessDbDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> GuardDutyClientTypes.RdsLimitlessDbDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = GuardDutyClientTypes.RdsLimitlessDbDetails()
+        value.dbShardGroupIdentifier = try reader["dbShardGroupIdentifier"].readIfPresent()
+        value.dbShardGroupResourceId = try reader["dbShardGroupResourceId"].readIfPresent()
+        value.dbShardGroupArn = try reader["dbShardGroupArn"].readIfPresent()
+        value.engine = try reader["engine"].readIfPresent()
+        value.engineVersion = try reader["engineVersion"].readIfPresent()
+        value.dbClusterIdentifier = try reader["dbClusterIdentifier"].readIfPresent()
+        value.tags = try reader["tags"].readListIfPresent(memberReadingClosure: GuardDutyClientTypes.Tag.read(from:), memberNodeInfo: "member", isFlattened: false)
         return value
     }
 }

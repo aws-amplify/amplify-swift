@@ -6346,14 +6346,18 @@ extension QBusinessClientTypes {
         public var memberGroups: [QBusinessClientTypes.MemberGroup]?
         /// A list of users that belong to a group. For example, a list of interns all belong to the "Interns" group.
         public var memberUsers: [QBusinessClientTypes.MemberUser]?
+        /// Information required for Amazon Q Business to find a specific file in an Amazon S3 bucket.
+        public var s3PathForGroupMembers: QBusinessClientTypes.S3?
 
         public init(
             memberGroups: [QBusinessClientTypes.MemberGroup]? = nil,
-            memberUsers: [QBusinessClientTypes.MemberUser]? = nil
+            memberUsers: [QBusinessClientTypes.MemberUser]? = nil,
+            s3PathForGroupMembers: QBusinessClientTypes.S3? = nil
         )
         {
             self.memberGroups = memberGroups
             self.memberUsers = memberUsers
+            self.s3PathForGroupMembers = s3PathForGroupMembers
         }
     }
 }
@@ -6373,6 +6377,8 @@ public struct PutGroupInput: Swift.Sendable {
     /// The identifier of the index in which you want to map users to their groups.
     /// This member is required.
     public var indexId: Swift.String?
+    /// The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file that contains your list of users that belong to a group.
+    public var roleArn: Swift.String?
     /// The type of the group.
     /// This member is required.
     public var type: QBusinessClientTypes.MembershipType?
@@ -6383,6 +6389,7 @@ public struct PutGroupInput: Swift.Sendable {
         groupMembers: QBusinessClientTypes.GroupMembers? = nil,
         groupName: Swift.String? = nil,
         indexId: Swift.String? = nil,
+        roleArn: Swift.String? = nil,
         type: QBusinessClientTypes.MembershipType? = nil
     )
     {
@@ -6391,6 +6398,7 @@ public struct PutGroupInput: Swift.Sendable {
         self.groupMembers = groupMembers
         self.groupName = groupName
         self.indexId = indexId
+        self.roleArn = roleArn
         self.type = type
     }
 }
@@ -7984,6 +7992,7 @@ extension PutGroupInput {
         try writer["dataSourceId"].write(value.dataSourceId)
         try writer["groupMembers"].write(value.groupMembers, with: QBusinessClientTypes.GroupMembers.write(value:to:))
         try writer["groupName"].write(value.groupName)
+        try writer["roleArn"].write(value.roleArn)
         try writer["type"].write(value.type)
     }
 }
@@ -11557,6 +11566,7 @@ extension QBusinessClientTypes.GroupMembers {
         guard let value else { return }
         try writer["memberGroups"].writeList(value.memberGroups, memberWritingClosure: QBusinessClientTypes.MemberGroup.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["memberUsers"].writeList(value.memberUsers, memberWritingClosure: QBusinessClientTypes.MemberUser.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["s3PathForGroupMembers"].write(value.s3PathForGroupMembers, with: QBusinessClientTypes.S3.write(value:to:))
     }
 }
 

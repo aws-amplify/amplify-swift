@@ -41,4 +41,16 @@ class SQSTests: XCTestCase {
         XCTAssertNotNil(response.queueUrl, "Queue URL should not be nil")
         XCTAssertTrue(response.queueUrl?.contains(queueName) ?? false, "Queue URL should contain the queue name.")
     }
+
+    func test_QueryCompatible() async throws {
+        do {
+            _ = try await client.getQueueUrl(input: .init(queueName: "non-existent-queue-123"))
+            XCTFail("Expected an error to be thrown!")
+        } catch let error as QueueDoesNotExist {
+            let errorCode = error.errorCode
+            XCTAssertTrue(errorCode == "AWS.SimpleQueueService.NonExistentQueue")
+        } catch let unknownError {
+            XCTFail("An unexpected error occurred: \(unknownError.localizedDescription)")
+        }
+    }
 }

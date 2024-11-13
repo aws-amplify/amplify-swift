@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class SageMakerRuntimeClient: ClientRuntime.Client {
     public static let clientName = "SageMakerRuntimeClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: SageMakerRuntimeClient.SageMakerRuntimeClientConfiguration
     let serviceName = "SageMaker Runtime"
@@ -249,7 +250,7 @@ extension SageMakerRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeEndpointOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeEndpointOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointInput, InvokeEndpointOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointInput, InvokeEndpointOutput>(serviceID: serviceName, version: SageMakerRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeEndpointOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeEndpointInput, InvokeEndpointOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeEndpointInput, InvokeEndpointOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -318,7 +319,7 @@ extension SageMakerRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeEndpointAsyncOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeEndpointAsyncOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointAsyncInput, InvokeEndpointAsyncOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointAsyncInput, InvokeEndpointAsyncOutput>(serviceID: serviceName, version: SageMakerRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeEndpointAsyncOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeEndpointAsyncInput, InvokeEndpointAsyncOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeEndpointAsyncInput, InvokeEndpointAsyncOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -400,7 +401,7 @@ extension SageMakerRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<InvokeEndpointWithResponseStreamOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<InvokeEndpointWithResponseStreamOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointWithResponseStreamInput, InvokeEndpointWithResponseStreamOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<InvokeEndpointWithResponseStreamInput, InvokeEndpointWithResponseStreamOutput>(serviceID: serviceName, version: SageMakerRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<InvokeEndpointWithResponseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<InvokeEndpointWithResponseStreamInput, InvokeEndpointWithResponseStreamOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<InvokeEndpointWithResponseStreamInput, InvokeEndpointWithResponseStreamOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

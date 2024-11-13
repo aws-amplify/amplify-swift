@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class ForecastqueryClient: ClientRuntime.Client {
     public static let clientName = "ForecastqueryClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: ForecastqueryClient.ForecastqueryClientConfiguration
     let serviceName = "forecastquery"
@@ -245,7 +246,7 @@ extension ForecastqueryClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<QueryForecastOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<QueryForecastOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<QueryForecastInput, QueryForecastOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<QueryForecastInput, QueryForecastOutput>(serviceID: serviceName, version: ForecastqueryClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<QueryForecastInput, QueryForecastOutput>(xAmzTarget: "AmazonForecastRuntime.QueryForecast"))
         builder.serialize(ClientRuntime.BodyMiddleware<QueryForecastInput, QueryForecastOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: QueryForecastInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<QueryForecastInput, QueryForecastOutput>(contentType: "application/x-amz-json-1.1"))
@@ -319,7 +320,7 @@ extension ForecastqueryClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<QueryWhatIfForecastOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<QueryWhatIfForecastOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<QueryWhatIfForecastInput, QueryWhatIfForecastOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<QueryWhatIfForecastInput, QueryWhatIfForecastOutput>(serviceID: serviceName, version: ForecastqueryClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<QueryWhatIfForecastInput, QueryWhatIfForecastOutput>(xAmzTarget: "AmazonForecastRuntime.QueryWhatIfForecast"))
         builder.serialize(ClientRuntime.BodyMiddleware<QueryWhatIfForecastInput, QueryWhatIfForecastOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: QueryWhatIfForecastInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<QueryWhatIfForecastInput, QueryWhatIfForecastOutput>(contentType: "application/x-amz-json-1.1"))

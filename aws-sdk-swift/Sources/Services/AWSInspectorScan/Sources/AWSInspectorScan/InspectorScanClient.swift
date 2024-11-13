@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class InspectorScanClient: ClientRuntime.Client {
     public static let clientName = "InspectorScanClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: InspectorScanClient.InspectorScanClientConfiguration
     let serviceName = "Inspector Scan"
@@ -246,7 +247,7 @@ extension InspectorScanClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<ScanSbomOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<ScanSbomOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ScanSbomInput, ScanSbomOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<ScanSbomInput, ScanSbomOutput>(serviceID: serviceName, version: InspectorScanClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<ScanSbomOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<ScanSbomInput, ScanSbomOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<ScanSbomInput, ScanSbomOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

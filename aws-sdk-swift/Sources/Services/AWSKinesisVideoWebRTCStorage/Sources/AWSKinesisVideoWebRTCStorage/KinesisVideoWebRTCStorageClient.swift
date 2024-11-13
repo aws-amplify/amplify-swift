@@ -62,6 +62,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class KinesisVideoWebRTCStorageClient: ClientRuntime.Client {
     public static let clientName = "KinesisVideoWebRTCStorageClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: KinesisVideoWebRTCStorageClient.KinesisVideoWebRTCStorageClientConfiguration
     let serviceName = "Kinesis Video WebRTC Storage"
@@ -258,7 +259,7 @@ extension KinesisVideoWebRTCStorageClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<JoinStorageSessionOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<JoinStorageSessionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<JoinStorageSessionInput, JoinStorageSessionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<JoinStorageSessionInput, JoinStorageSessionOutput>(serviceID: serviceName, version: KinesisVideoWebRTCStorageClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<JoinStorageSessionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<JoinStorageSessionInput, JoinStorageSessionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<JoinStorageSessionInput, JoinStorageSessionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -330,7 +331,7 @@ extension KinesisVideoWebRTCStorageClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<JoinStorageSessionAsViewerOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<JoinStorageSessionAsViewerOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<JoinStorageSessionAsViewerInput, JoinStorageSessionAsViewerOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<JoinStorageSessionAsViewerInput, JoinStorageSessionAsViewerOutput>(serviceID: serviceName, version: KinesisVideoWebRTCStorageClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<JoinStorageSessionAsViewerOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<JoinStorageSessionAsViewerInput, JoinStorageSessionAsViewerOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<JoinStorageSessionAsViewerInput, JoinStorageSessionAsViewerOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

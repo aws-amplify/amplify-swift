@@ -911,7 +911,7 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
-    /// Details about the guardrail associated with an agent.
+    /// Details about a guardrail associated with a resource.
     public struct GuardrailConfiguration: Swift.Sendable {
         /// The unique identifier of the guardrail.
         public var guardrailIdentifier: Swift.String?
@@ -4034,6 +4034,8 @@ extension BedrockAgentClientTypes {
 
     /// Contains configurations for a knowledge base node in a flow. This node takes a query as the input and returns, as the output, the retrieved responses directly (as an array) or a response generated based on the retrieved responses. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
     public struct KnowledgeBaseFlowNodeConfiguration: Swift.Sendable {
+        /// Contains configurations for a guardrail to apply during query and response generation for the knowledge base in this configuration.
+        public var guardrailConfiguration: BedrockAgentClientTypes.GuardrailConfiguration?
         /// The unique identifier of the knowledge base to query.
         /// This member is required.
         public var knowledgeBaseId: Swift.String?
@@ -4041,10 +4043,12 @@ extension BedrockAgentClientTypes {
         public var modelId: Swift.String?
 
         public init(
+            guardrailConfiguration: BedrockAgentClientTypes.GuardrailConfiguration? = nil,
             knowledgeBaseId: Swift.String? = nil,
             modelId: Swift.String? = nil
         )
         {
+            self.guardrailConfiguration = guardrailConfiguration
             self.knowledgeBaseId = knowledgeBaseId
             self.modelId = modelId
         }
@@ -4155,6 +4159,238 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
+    /// Contains the content for the message you pass to, or receive from a model. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+    public enum ContentBlock: Swift.Sendable {
+        /// The text in the message.
+        case text(Swift.String)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    public enum ConversationRole: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case assistant
+        case user
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ConversationRole] {
+            return [
+                .assistant,
+                .user
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .assistant: return "assistant"
+            case .user: return "user"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// A message input or response from a model. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+    public struct Message: Swift.Sendable {
+        /// The content in the message.
+        /// This member is required.
+        public var content: [BedrockAgentClientTypes.ContentBlock]?
+        /// The role that the message belongs to.
+        /// This member is required.
+        public var role: BedrockAgentClientTypes.ConversationRole?
+
+        public init(
+            content: [BedrockAgentClientTypes.ContentBlock]? = nil,
+            role: BedrockAgentClientTypes.ConversationRole? = nil
+        )
+        {
+            self.content = content
+            self.role = role
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.Message: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "Message(role: \(Swift.String(describing: role)), content: \"CONTENT_REDACTED\")"}
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Contains a system prompt to provide context to the model or to describe how it should behave. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+    public enum SystemContentBlock: Swift.Sendable {
+        /// The text in the system prompt.
+        case text(Swift.String)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Defines tools, at least one of which must be requested by the model. No text is generated but the results of tool use are sent back to the model to help generate a response. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public struct AnyToolChoice: Swift.Sendable {
+
+        public init() { }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Defines tools. The model automatically decides whether to call a tool or to generate text instead. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public struct AutoToolChoice: Swift.Sendable {
+
+        public init() { }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Defines a specific tool that the model must request. No text is generated but the results of tool use are sent back to the model to help generate a response. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public struct SpecificToolChoice: Swift.Sendable {
+        /// The name of the tool.
+        /// This member is required.
+        public var name: Swift.String?
+
+        public init(
+            name: Swift.String? = nil
+        )
+        {
+            self.name = name
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Defines which tools the model should request when invoked. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public enum ToolChoice: Swift.Sendable {
+        /// Defines tools. The model automatically decides whether to call a tool or to generate text instead.
+        case auto(BedrockAgentClientTypes.AutoToolChoice)
+        /// Defines tools, at least one of which must be requested by the model. No text is generated but the results of tool use are sent back to the model to help generate a response.
+        case any(BedrockAgentClientTypes.AnyToolChoice)
+        /// Defines a specific tool that the model must request. No text is generated but the results of tool use are sent back to the model to help generate a response.
+        case tool(BedrockAgentClientTypes.SpecificToolChoice)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// The input schema for the tool. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public enum ToolInputSchema: Swift.Sendable {
+        /// A JSON object defining the input schema for the tool.
+        case json(Smithy.Document)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Contains a specification for a tool. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public struct ToolSpecification: Swift.Sendable {
+        /// The description of the tool.
+        public var description: Swift.String?
+        /// The input schema for the tool.
+        /// This member is required.
+        public var inputSchema: BedrockAgentClientTypes.ToolInputSchema?
+        /// The name of the tool.
+        /// This member is required.
+        public var name: Swift.String?
+
+        public init(
+            description: Swift.String? = nil,
+            inputSchema: BedrockAgentClientTypes.ToolInputSchema? = nil,
+            name: Swift.String? = nil
+        )
+        {
+            self.description = description
+            self.inputSchema = inputSchema
+            self.name = name
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Contains configurations for a tool that a model can use when generating a response. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public enum Tool: Swift.Sendable {
+        /// The specification for the tool.
+        case toolspec(BedrockAgentClientTypes.ToolSpecification)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Configuration information for the tools that the model can use when generating a response. For more information, see [Use a tool to complete an Amazon Bedrock model response](https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html).
+    public struct ToolConfiguration: Swift.Sendable {
+        /// Defines which tools the model should request when invoked.
+        public var toolChoice: BedrockAgentClientTypes.ToolChoice?
+        /// An array of tools to pass to a model.
+        /// This member is required.
+        public var tools: [BedrockAgentClientTypes.Tool]?
+
+        public init(
+            toolChoice: BedrockAgentClientTypes.ToolChoice? = nil,
+            tools: [BedrockAgentClientTypes.Tool]? = nil
+        )
+        {
+            self.toolChoice = toolChoice
+            self.tools = tools
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.ToolConfiguration: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ToolConfiguration(toolChoice: \"CONTENT_REDACTED\", tools: \"CONTENT_REDACTED\")"}
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Contains configurations to use a prompt in a conversational format. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+    public struct ChatPromptTemplateConfiguration: Swift.Sendable {
+        /// An array of the variables in the prompt template.
+        public var inputVariables: [BedrockAgentClientTypes.PromptInputVariable]?
+        /// Contains messages in the chat for the prompt.
+        /// This member is required.
+        public var messages: [BedrockAgentClientTypes.Message]?
+        /// Contains system prompts to provide context to the model or to describe how it should behave.
+        public var system: [BedrockAgentClientTypes.SystemContentBlock]?
+        /// Configuration information for the tools that the model can use when generating a response.
+        public var toolConfiguration: BedrockAgentClientTypes.ToolConfiguration?
+
+        public init(
+            inputVariables: [BedrockAgentClientTypes.PromptInputVariable]? = nil,
+            messages: [BedrockAgentClientTypes.Message]? = nil,
+            system: [BedrockAgentClientTypes.SystemContentBlock]? = nil,
+            toolConfiguration: BedrockAgentClientTypes.ToolConfiguration? = nil
+        )
+        {
+            self.inputVariables = inputVariables
+            self.messages = messages
+            self.system = system
+            self.toolConfiguration = toolConfiguration
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.ChatPromptTemplateConfiguration: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentClientTypes {
+
     /// Contains configurations for a text prompt template. To include a variable, enclose a word in double curly braces as in {{variable}}.
     public struct TextPromptTemplateConfiguration: Swift.Sendable {
         /// An array of the variables in the prompt template.
@@ -4182,10 +4418,12 @@ extension BedrockAgentClientTypes.TextPromptTemplateConfiguration: Swift.CustomD
 
 extension BedrockAgentClientTypes {
 
-    /// Contains the message for a prompt. For more information, see [Prompt management in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html).
+    /// Contains the message for a prompt. For more information, see [Construct and store reusable prompts with Prompt management in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management.html).
     public enum PromptTemplateConfiguration: Swift.Sendable {
         /// Contains configurations for the text in a message for a prompt.
         case text(BedrockAgentClientTypes.TextPromptTemplateConfiguration)
+        /// Contains configurations to use the prompt in a conversational format.
+        case chat(BedrockAgentClientTypes.ChatPromptTemplateConfiguration)
         case sdkUnknown(Swift.String)
     }
 }
@@ -4193,11 +4431,13 @@ extension BedrockAgentClientTypes {
 extension BedrockAgentClientTypes {
 
     public enum PromptTemplateType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case chat
         case text
         case sdkUnknown(Swift.String)
 
         public static var allCases: [PromptTemplateType] {
             return [
+                .chat,
                 .text
             ]
         }
@@ -4209,6 +4449,7 @@ extension BedrockAgentClientTypes {
 
         public var rawValue: Swift.String {
             switch self {
+            case .chat: return "CHAT"
             case .text: return "TEXT"
             case let .sdkUnknown(s): return s
             }
@@ -4220,7 +4461,7 @@ extension BedrockAgentClientTypes {
 
     /// Contains configurations for a prompt defined inline in the node.
     public struct PromptFlowNodeInlineConfiguration: Swift.Sendable {
-        /// Contains model-specific inference configurations that aren't in the inferenceConfiguration field. To see model-specific inference parameters, see [Inference request parameters and response fields for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+        /// Additional fields to be included in the model request for the Prompt node.
         public var additionalModelRequestFields: Smithy.Document?
         /// Contains inference configurations for the prompt.
         public var inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration?
@@ -4284,14 +4525,18 @@ extension BedrockAgentClientTypes {
 
     /// Contains configurations for a prompt node in the flow. You can use a prompt from Prompt management or you can define one in this node. If the prompt contains variables, the inputs into this node will fill in the variables. The output from this node is the response generated by the model. For more information, see [Node types in Amazon Bedrock works](https://docs.aws.amazon.com/bedrock/latest/userguide/flows-nodes.html) in the Amazon Bedrock User Guide.
     public struct PromptFlowNodeConfiguration: Swift.Sendable {
+        /// Contains configurations for a guardrail to apply to the prompt in this node and the response generated from it.
+        public var guardrailConfiguration: BedrockAgentClientTypes.GuardrailConfiguration?
         /// Specifies whether the prompt is from Prompt management or defined inline.
         /// This member is required.
         public var sourceConfiguration: BedrockAgentClientTypes.PromptFlowNodeSourceConfiguration?
 
         public init(
+            guardrailConfiguration: BedrockAgentClientTypes.GuardrailConfiguration? = nil,
             sourceConfiguration: BedrockAgentClientTypes.PromptFlowNodeSourceConfiguration? = nil
         )
         {
+            self.guardrailConfiguration = guardrailConfiguration
             self.sourceConfiguration = sourceConfiguration
         }
     }
@@ -5461,6 +5706,540 @@ public struct GetFlowInput: Swift.Sendable {
 
 extension BedrockAgentClientTypes {
 
+    /// Details about a cyclic connection detected in the flow.
+    public struct CyclicConnectionFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection that causes the cycle in the flow.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about duplicate condition expressions found in a condition node.
+    public struct DuplicateConditionExpressionFlowValidationDetails: Swift.Sendable {
+        /// The duplicated condition expression.
+        /// This member is required.
+        public var expression: Swift.String?
+        /// The name of the node containing the duplicate condition expressions.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            expression: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.expression = expression
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "DuplicateConditionExpressionFlowValidationDetails(node: \(Swift.String(describing: node)), expression: \"CONTENT_REDACTED\")"}
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about duplicate connections found between two nodes in the flow.
+    public struct DuplicateConnectionsFlowValidationDetails: Swift.Sendable {
+        /// The name of the source node where the duplicate connection starts.
+        /// This member is required.
+        public var source: Swift.String?
+        /// The name of the target node where the duplicate connection ends.
+        /// This member is required.
+        public var target: Swift.String?
+
+        public init(
+            source: Swift.String? = nil,
+            target: Swift.String? = nil
+        )
+        {
+            self.source = source
+            self.target = target
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about incompatible data types in a connection between nodes.
+    public struct IncompatibleConnectionDataTypeFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with incompatible data types.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a malformed condition expression in a node.
+    public struct MalformedConditionExpressionFlowValidationDetails: Swift.Sendable {
+        /// The error message describing why the condition expression is malformed.
+        /// This member is required.
+        public var cause: Swift.String?
+        /// The name of the malformed condition.
+        /// This member is required.
+        public var condition: Swift.String?
+        /// The name of the node containing the malformed condition expression.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            cause: Swift.String? = nil,
+            condition: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.cause = cause
+            self.condition = condition
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a malformed input expression in a node.
+    public struct MalformedNodeInputExpressionFlowValidationDetails: Swift.Sendable {
+        /// The error message describing why the input expression is malformed.
+        /// This member is required.
+        public var cause: Swift.String?
+        /// The name of the input with the malformed expression.
+        /// This member is required.
+        public var input: Swift.String?
+        /// The name of the node containing the malformed input expression.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            cause: Swift.String? = nil,
+            input: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.cause = cause
+            self.input = input
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about mismatched input data types in a node.
+    public struct MismatchedNodeInputTypeFlowValidationDetails: Swift.Sendable {
+        /// The expected data type for the node input.
+        /// This member is required.
+        public var expectedType: BedrockAgentClientTypes.FlowNodeIODataType?
+        /// The name of the input with the mismatched data type.
+        /// This member is required.
+        public var input: Swift.String?
+        /// The name of the node containing the input with the mismatched data type.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            expectedType: BedrockAgentClientTypes.FlowNodeIODataType? = nil,
+            input: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.expectedType = expectedType
+            self.input = input
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about mismatched output data types in a node.
+    public struct MismatchedNodeOutputTypeFlowValidationDetails: Swift.Sendable {
+        /// The expected data type for the node output.
+        /// This member is required.
+        public var expectedType: BedrockAgentClientTypes.FlowNodeIODataType?
+        /// The name of the node containing the output with the mismatched data type.
+        /// This member is required.
+        public var node: Swift.String?
+        /// The name of the output with the mismatched data type.
+        /// This member is required.
+        public var output: Swift.String?
+
+        public init(
+            expectedType: BedrockAgentClientTypes.FlowNodeIODataType? = nil,
+            node: Swift.String? = nil,
+            output: Swift.String? = nil
+        )
+        {
+            self.expectedType = expectedType
+            self.node = node
+            self.output = output
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a connection missing required configuration.
+    public struct MissingConnectionConfigurationFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection missing configuration.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a missing default condition in a conditional node.
+    public struct MissingDefaultConditionFlowValidationDetails: Swift.Sendable {
+        /// The name of the node missing the default condition.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            node: Swift.String? = nil
+        )
+        {
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about missing ending nodes (such as FlowOutputNode) in the flow.
+    public struct MissingEndingNodesFlowValidationDetails: Swift.Sendable {
+
+        public init() { }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a node missing required configuration.
+    public struct MissingNodeConfigurationFlowValidationDetails: Swift.Sendable {
+        /// The name of the node missing configuration.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            node: Swift.String? = nil
+        )
+        {
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a missing required input in a node.
+    public struct MissingNodeInputFlowValidationDetails: Swift.Sendable {
+        /// The name of the missing input.
+        /// This member is required.
+        public var input: Swift.String?
+        /// The name of the node missing the required input.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            input: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.input = input
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about a missing required output in a node.
+    public struct MissingNodeOutputFlowValidationDetails: Swift.Sendable {
+        /// The name of the node missing the required output.
+        /// This member is required.
+        public var node: Swift.String?
+        /// The name of the missing output.
+        /// This member is required.
+        public var output: Swift.String?
+
+        public init(
+            node: Swift.String? = nil,
+            output: Swift.String? = nil
+        )
+        {
+            self.node = node
+            self.output = output
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about missing starting nodes (such as FlowInputNode) in the flow.
+    public struct MissingStartingNodesFlowValidationDetails: Swift.Sendable {
+
+        public init() { }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about multiple connections to a single node input.
+    public struct MultipleNodeInputConnectionsFlowValidationDetails: Swift.Sendable {
+        /// The name of the input with multiple connections to it.
+        /// This member is required.
+        public var input: Swift.String?
+        /// The name of the node containing the input with multiple connections.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            input: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.input = input
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unfulfilled node input with no valid connections.
+    public struct UnfulfilledNodeInputFlowValidationDetails: Swift.Sendable {
+        /// The name of the unfulfilled input. An input is unfulfilled if there are no data connections to it.
+        /// This member is required.
+        public var input: Swift.String?
+        /// The name of the node containing the unfulfilled input.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            input: Swift.String? = nil,
+            node: Swift.String? = nil
+        )
+        {
+            self.input = input
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unknown condition for a connection.
+    public struct UnknownConnectionConditionFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with the unknown condition.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unknown source node for a connection.
+    public struct UnknownConnectionSourceFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with the unknown source.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unknown source output for a connection.
+    public struct UnknownConnectionSourceOutputFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with the unknown source output.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unknown target node for a connection.
+    public struct UnknownConnectionTargetFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with the unknown target.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unknown target input for a connection.
+    public struct UnknownConnectionTargetInputFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with the unknown target input.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unreachable node in the flow. A node is unreachable when there are no paths to it from any starting node.
+    public struct UnreachableNodeFlowValidationDetails: Swift.Sendable {
+        /// The name of the unreachable node.
+        /// This member is required.
+        public var node: Swift.String?
+
+        public init(
+            node: Swift.String? = nil
+        )
+        {
+            self.node = node
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about unsatisfied conditions for a connection. A condition is unsatisfied if it can never be true, for example two branches of condition node cannot be simultaneously true.
+    public struct UnsatisfiedConnectionConditionsFlowValidationDetails: Swift.Sendable {
+        /// The name of the connection with unsatisfied conditions.
+        /// This member is required.
+        public var connection: Swift.String?
+
+        public init(
+            connection: Swift.String? = nil
+        )
+        {
+            self.connection = connection
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Details about an unspecified validation that doesn't fit other categories.
+    public struct UnspecifiedFlowValidationDetails: Swift.Sendable {
+
+        public init() { }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// A union type containing various possible validation issues in the flow.
+    public enum FlowValidationDetails: Swift.Sendable {
+        /// Details about a cyclic connection in the flow.
+        case cyclicconnection(BedrockAgentClientTypes.CyclicConnectionFlowValidationDetails)
+        /// Details about duplicate connections between nodes.
+        case duplicateconnections(BedrockAgentClientTypes.DuplicateConnectionsFlowValidationDetails)
+        /// Details about duplicate condition expressions in a node.
+        case duplicateconditionexpression(BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails)
+        /// Details about an unreachable node in the flow.
+        case unreachablenode(BedrockAgentClientTypes.UnreachableNodeFlowValidationDetails)
+        /// Details about an unknown source node for a connection.
+        case unknownconnectionsource(BedrockAgentClientTypes.UnknownConnectionSourceFlowValidationDetails)
+        /// Details about an unknown source output for a connection.
+        case unknownconnectionsourceoutput(BedrockAgentClientTypes.UnknownConnectionSourceOutputFlowValidationDetails)
+        /// Details about an unknown target node for a connection.
+        case unknownconnectiontarget(BedrockAgentClientTypes.UnknownConnectionTargetFlowValidationDetails)
+        /// Details about an unknown target input for a connection.
+        case unknownconnectiontargetinput(BedrockAgentClientTypes.UnknownConnectionTargetInputFlowValidationDetails)
+        /// Details about an unknown condition for a connection.
+        case unknownconnectioncondition(BedrockAgentClientTypes.UnknownConnectionConditionFlowValidationDetails)
+        /// Details about a malformed condition expression in a node.
+        case malformedconditionexpression(BedrockAgentClientTypes.MalformedConditionExpressionFlowValidationDetails)
+        /// Details about a malformed input expression in a node.
+        case malformednodeinputexpression(BedrockAgentClientTypes.MalformedNodeInputExpressionFlowValidationDetails)
+        /// Details about mismatched input data types in a node.
+        case mismatchednodeinputtype(BedrockAgentClientTypes.MismatchedNodeInputTypeFlowValidationDetails)
+        /// Details about mismatched output data types in a node.
+        case mismatchednodeoutputtype(BedrockAgentClientTypes.MismatchedNodeOutputTypeFlowValidationDetails)
+        /// Details about incompatible data types in a connection.
+        case incompatibleconnectiondatatype(BedrockAgentClientTypes.IncompatibleConnectionDataTypeFlowValidationDetails)
+        /// Details about missing configuration for a connection.
+        case missingconnectionconfiguration(BedrockAgentClientTypes.MissingConnectionConfigurationFlowValidationDetails)
+        /// Details about a missing default condition in a conditional node.
+        case missingdefaultcondition(BedrockAgentClientTypes.MissingDefaultConditionFlowValidationDetails)
+        /// Details about missing ending nodes in the flow.
+        case missingendingnodes(BedrockAgentClientTypes.MissingEndingNodesFlowValidationDetails)
+        /// Details about missing configuration for a node.
+        case missingnodeconfiguration(BedrockAgentClientTypes.MissingNodeConfigurationFlowValidationDetails)
+        /// Details about a missing required input in a node.
+        case missingnodeinput(BedrockAgentClientTypes.MissingNodeInputFlowValidationDetails)
+        /// Details about a missing required output in a node.
+        case missingnodeoutput(BedrockAgentClientTypes.MissingNodeOutputFlowValidationDetails)
+        /// Details about missing starting nodes in the flow.
+        case missingstartingnodes(BedrockAgentClientTypes.MissingStartingNodesFlowValidationDetails)
+        /// Details about multiple connections to a single node input.
+        case multiplenodeinputconnections(BedrockAgentClientTypes.MultipleNodeInputConnectionsFlowValidationDetails)
+        /// Details about an unfulfilled node input with no valid connections.
+        case unfulfillednodeinput(BedrockAgentClientTypes.UnfulfilledNodeInputFlowValidationDetails)
+        /// Details about unsatisfied conditions for a connection.
+        case unsatisfiedconnectionconditions(BedrockAgentClientTypes.UnsatisfiedConnectionConditionsFlowValidationDetails)
+        /// Details about an unspecified validation.
+        case unspecified(BedrockAgentClientTypes.UnspecifiedFlowValidationDetails)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
     public enum FlowValidationSeverity: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case error
         case warning
@@ -5490,26 +6269,132 @@ extension BedrockAgentClientTypes {
 
 extension BedrockAgentClientTypes {
 
+    public enum FlowValidationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case cyclicConnection
+        case duplicateConditionExpression
+        case duplicateConnections
+        case incompatibleConnectionDataType
+        case malformedConditionExpression
+        case malformedNodeInputExpression
+        case mismatchedNodeInputType
+        case mismatchedNodeOutputType
+        case missingConnectionConfiguration
+        case missingDefaultCondition
+        case missingEndingNodes
+        case missingNodeConfiguration
+        case missingNodeInput
+        case missingNodeOutput
+        case missingStartingNodes
+        case multipleNodeInputConnections
+        case unfulfilledNodeInput
+        case unknownConnectionCondition
+        case unknownConnectionSource
+        case unknownConnectionSourceOutput
+        case unknownConnectionTarget
+        case unknownConnectionTargetInput
+        case unreachableNode
+        case unsatisfiedConnectionConditions
+        case unspecified
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [FlowValidationType] {
+            return [
+                .cyclicConnection,
+                .duplicateConditionExpression,
+                .duplicateConnections,
+                .incompatibleConnectionDataType,
+                .malformedConditionExpression,
+                .malformedNodeInputExpression,
+                .mismatchedNodeInputType,
+                .mismatchedNodeOutputType,
+                .missingConnectionConfiguration,
+                .missingDefaultCondition,
+                .missingEndingNodes,
+                .missingNodeConfiguration,
+                .missingNodeInput,
+                .missingNodeOutput,
+                .missingStartingNodes,
+                .multipleNodeInputConnections,
+                .unfulfilledNodeInput,
+                .unknownConnectionCondition,
+                .unknownConnectionSource,
+                .unknownConnectionSourceOutput,
+                .unknownConnectionTarget,
+                .unknownConnectionTargetInput,
+                .unreachableNode,
+                .unsatisfiedConnectionConditions,
+                .unspecified
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .cyclicConnection: return "CyclicConnection"
+            case .duplicateConditionExpression: return "DuplicateConditionExpression"
+            case .duplicateConnections: return "DuplicateConnections"
+            case .incompatibleConnectionDataType: return "IncompatibleConnectionDataType"
+            case .malformedConditionExpression: return "MalformedConditionExpression"
+            case .malformedNodeInputExpression: return "MalformedNodeInputExpression"
+            case .mismatchedNodeInputType: return "MismatchedNodeInputType"
+            case .mismatchedNodeOutputType: return "MismatchedNodeOutputType"
+            case .missingConnectionConfiguration: return "MissingConnectionConfiguration"
+            case .missingDefaultCondition: return "MissingDefaultCondition"
+            case .missingEndingNodes: return "MissingEndingNodes"
+            case .missingNodeConfiguration: return "MissingNodeConfiguration"
+            case .missingNodeInput: return "MissingNodeInput"
+            case .missingNodeOutput: return "MissingNodeOutput"
+            case .missingStartingNodes: return "MissingStartingNodes"
+            case .multipleNodeInputConnections: return "MultipleNodeInputConnections"
+            case .unfulfilledNodeInput: return "UnfulfilledNodeInput"
+            case .unknownConnectionCondition: return "UnknownConnectionCondition"
+            case .unknownConnectionSource: return "UnknownConnectionSource"
+            case .unknownConnectionSourceOutput: return "UnknownConnectionSourceOutput"
+            case .unknownConnectionTarget: return "UnknownConnectionTarget"
+            case .unknownConnectionTargetInput: return "UnknownConnectionTargetInput"
+            case .unreachableNode: return "UnreachableNode"
+            case .unsatisfiedConnectionConditions: return "UnsatisfiedConnectionConditions"
+            case .unspecified: return "Unspecified"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension BedrockAgentClientTypes {
+
     /// Contains information about validation of the flow. This data type is used in the following API operations:
     ///
     /// * [GetFlow response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetFlow.html#API_agent_GetFlow_ResponseSyntax)
     ///
     /// * [GetFlowVersion response](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetFlowVersion.html#API_agent_GetFlowVersion_ResponseSyntax)
     public struct FlowValidation: Swift.Sendable {
+        /// Specific details about the validation issue encountered in the flow.
+        public var details: BedrockAgentClientTypes.FlowValidationDetails?
         /// A message describing the validation error.
         /// This member is required.
         public var message: Swift.String?
         /// The severity of the issue described in the message.
         /// This member is required.
         public var severity: BedrockAgentClientTypes.FlowValidationSeverity?
+        /// The type of validation issue encountered in the flow.
+        public var type: BedrockAgentClientTypes.FlowValidationType?
 
         public init(
+            details: BedrockAgentClientTypes.FlowValidationDetails? = nil,
             message: Swift.String? = nil,
-            severity: BedrockAgentClientTypes.FlowValidationSeverity? = nil
+            severity: BedrockAgentClientTypes.FlowValidationSeverity? = nil,
+            type: BedrockAgentClientTypes.FlowValidationType? = nil
         )
         {
+            self.details = details
             self.message = message
             self.severity = severity
+            self.type = type
         }
     }
 }
@@ -7357,6 +8242,39 @@ public struct UpdateKnowledgeBaseOutput: Swift.Sendable {
 
 extension BedrockAgentClientTypes {
 
+    /// Contains specifications for an Amazon Bedrock agent with which to use the prompt. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html) and [Automate tasks in your application using conversational agents](https://docs.aws.amazon.com/bedrock/latest/userguide/agents.html).
+    public struct PromptAgentResource: Swift.Sendable {
+        /// The ARN of the agent with which to use the prompt.
+        /// This member is required.
+        public var agentIdentifier: Swift.String?
+
+        public init(
+            agentIdentifier: Swift.String? = nil
+        )
+        {
+            self.agentIdentifier = agentIdentifier
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.PromptAgentResource: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "CONTENT_REDACTED"
+    }
+}
+
+extension BedrockAgentClientTypes {
+
+    /// Contains specifications for a generative AI resource with which to use the prompt. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+    public enum PromptGenAiResource: Swift.Sendable {
+        /// Specifies an Amazon Bedrock agent with which to use the prompt.
+        case agent(BedrockAgentClientTypes.PromptAgentResource)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockAgentClientTypes {
+
     /// Contains a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
     public struct PromptMetadataEntry: Swift.Sendable {
         /// The key of a metadata tag for a prompt variant.
@@ -7389,9 +8307,11 @@ extension BedrockAgentClientTypes {
     public struct PromptVariant: Swift.Sendable {
         /// Contains model-specific inference configurations that aren't in the inferenceConfiguration field. To see model-specific inference parameters, see [Inference request parameters and response fields for foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
         public var additionalModelRequestFields: Smithy.Document?
+        /// Specifies a generative AI resource with which to use the prompt.
+        public var genAiResource: BedrockAgentClientTypes.PromptGenAiResource?
         /// Contains inference configurations for the prompt variant.
         public var inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration?
-        /// An array of objects, each containing a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see [Create a prompt using Prompt management](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html).
+        /// An array of objects, each containing a key-value pair that defines a metadata tag and value to attach to a prompt variant.
         public var metadata: [BedrockAgentClientTypes.PromptMetadataEntry]?
         /// The unique identifier of the model or [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) with which to run inference on the prompt.
         public var modelId: Swift.String?
@@ -7407,6 +8327,7 @@ extension BedrockAgentClientTypes {
 
         public init(
             additionalModelRequestFields: Smithy.Document? = nil,
+            genAiResource: BedrockAgentClientTypes.PromptGenAiResource? = nil,
             inferenceConfiguration: BedrockAgentClientTypes.PromptInferenceConfiguration? = nil,
             metadata: [BedrockAgentClientTypes.PromptMetadataEntry]? = nil,
             modelId: Swift.String? = nil,
@@ -7416,6 +8337,7 @@ extension BedrockAgentClientTypes {
         )
         {
             self.additionalModelRequestFields = additionalModelRequestFields
+            self.genAiResource = genAiResource
             self.inferenceConfiguration = inferenceConfiguration
             self.metadata = metadata
             self.modelId = modelId
@@ -7979,6 +8901,37 @@ public struct UntagResourceInput: Swift.Sendable {
 public struct UntagResourceOutput: Swift.Sendable {
 
     public init() { }
+}
+
+public struct ValidateFlowDefinitionInput: Swift.Sendable {
+    /// The definition of a flow to validate.
+    /// This member is required.
+    public var definition: BedrockAgentClientTypes.FlowDefinition?
+
+    public init(
+        definition: BedrockAgentClientTypes.FlowDefinition? = nil
+    )
+    {
+        self.definition = definition
+    }
+}
+
+extension ValidateFlowDefinitionInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ValidateFlowDefinitionInput(definition: \"CONTENT_REDACTED\")"}
+}
+
+public struct ValidateFlowDefinitionOutput: Swift.Sendable {
+    /// Contains an array of objects, each of which contains an error identified by validation.
+    /// This member is required.
+    public var validations: [BedrockAgentClientTypes.FlowValidation]?
+
+    public init(
+        validations: [BedrockAgentClientTypes.FlowValidation]? = nil
+    )
+    {
+        self.validations = validations
+    }
 }
 
 public struct DeleteAgentVersionInput: Swift.Sendable {
@@ -8964,6 +9917,13 @@ extension UpdatePromptInput {
     }
 }
 
+extension ValidateFlowDefinitionInput {
+
+    static func urlPathProvider(_ value: ValidateFlowDefinitionInput) -> Swift.String? {
+        return "/flows/validate-definition"
+    }
+}
+
 extension AssociateAgentKnowledgeBaseInput {
 
     static func write(value: AssociateAgentKnowledgeBaseInput?, to writer: SmithyJSON.Writer) throws {
@@ -9304,6 +10264,14 @@ extension UpdatePromptInput {
         try writer["description"].write(value.description)
         try writer["name"].write(value.name)
         try writer["variants"].writeList(value.variants, memberWritingClosure: BedrockAgentClientTypes.PromptVariant.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
+extension ValidateFlowDefinitionInput {
+
+    static func write(value: ValidateFlowDefinitionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["definition"].write(value.definition, with: BedrockAgentClientTypes.FlowDefinition.write(value:to:))
     }
 }
 
@@ -10160,6 +11128,18 @@ extension UpdatePromptOutput {
         value.updatedAt = try reader["updatedAt"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.variants = try reader["variants"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.PromptVariant.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.version = try reader["version"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension ValidateFlowDefinitionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ValidateFlowDefinitionOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ValidateFlowDefinitionOutput()
+        value.validations = try reader["validations"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.FlowValidation.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -11321,6 +12301,23 @@ enum UpdatePromptOutputError {
             case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
             case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ValidateFlowDefinitionOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServerException": return try InternalServerException.makeError(baseError: baseError)
             case "ThrottlingException": return try ThrottlingException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
@@ -12809,6 +13806,7 @@ extension BedrockAgentClientTypes.PromptFlowNodeConfiguration {
 
     static func write(value: BedrockAgentClientTypes.PromptFlowNodeConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["guardrailConfiguration"].write(value.guardrailConfiguration, with: BedrockAgentClientTypes.GuardrailConfiguration.write(value:to:))
         try writer["sourceConfiguration"].write(value.sourceConfiguration, with: BedrockAgentClientTypes.PromptFlowNodeSourceConfiguration.write(value:to:))
     }
 
@@ -12816,6 +13814,7 @@ extension BedrockAgentClientTypes.PromptFlowNodeConfiguration {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = BedrockAgentClientTypes.PromptFlowNodeConfiguration()
         value.sourceConfiguration = try reader["sourceConfiguration"].readIfPresent(with: BedrockAgentClientTypes.PromptFlowNodeSourceConfiguration.read(from:))
+        value.guardrailConfiguration = try reader["guardrailConfiguration"].readIfPresent(with: BedrockAgentClientTypes.GuardrailConfiguration.read(from:))
         return value
     }
 }
@@ -12921,6 +13920,8 @@ extension BedrockAgentClientTypes.PromptTemplateConfiguration {
     static func write(value: BedrockAgentClientTypes.PromptTemplateConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         switch value {
+            case let .chat(chat):
+                try writer["chat"].write(chat, with: BedrockAgentClientTypes.ChatPromptTemplateConfiguration.write(value:to:))
             case let .text(text):
                 try writer["text"].write(text, with: BedrockAgentClientTypes.TextPromptTemplateConfiguration.write(value:to:))
             case let .sdkUnknown(sdkUnknown):
@@ -12934,6 +13935,266 @@ extension BedrockAgentClientTypes.PromptTemplateConfiguration {
         switch name {
             case "text":
                 return .text(try reader["text"].read(with: BedrockAgentClientTypes.TextPromptTemplateConfiguration.read(from:)))
+            case "chat":
+                return .chat(try reader["chat"].read(with: BedrockAgentClientTypes.ChatPromptTemplateConfiguration.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.ChatPromptTemplateConfiguration {
+
+    static func write(value: BedrockAgentClientTypes.ChatPromptTemplateConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["inputVariables"].writeList(value.inputVariables, memberWritingClosure: BedrockAgentClientTypes.PromptInputVariable.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["messages"].writeList(value.messages, memberWritingClosure: BedrockAgentClientTypes.Message.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["system"].writeList(value.system, memberWritingClosure: BedrockAgentClientTypes.SystemContentBlock.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["toolConfiguration"].write(value.toolConfiguration, with: BedrockAgentClientTypes.ToolConfiguration.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ChatPromptTemplateConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.ChatPromptTemplateConfiguration()
+        value.messages = try reader["messages"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.Message.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.system = try reader["system"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.SystemContentBlock.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.inputVariables = try reader["inputVariables"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.PromptInputVariable.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.toolConfiguration = try reader["toolConfiguration"].readIfPresent(with: BedrockAgentClientTypes.ToolConfiguration.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.ToolConfiguration {
+
+    static func write(value: BedrockAgentClientTypes.ToolConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["toolChoice"].write(value.toolChoice, with: BedrockAgentClientTypes.ToolChoice.write(value:to:))
+        try writer["tools"].writeList(value.tools, memberWritingClosure: BedrockAgentClientTypes.Tool.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ToolConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.ToolConfiguration()
+        value.tools = try reader["tools"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.Tool.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.toolChoice = try reader["toolChoice"].readIfPresent(with: BedrockAgentClientTypes.ToolChoice.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.ToolChoice {
+
+    static func write(value: BedrockAgentClientTypes.ToolChoice?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .any(any):
+                try writer["any"].write(any, with: BedrockAgentClientTypes.AnyToolChoice.write(value:to:))
+            case let .auto(auto):
+                try writer["auto"].write(auto, with: BedrockAgentClientTypes.AutoToolChoice.write(value:to:))
+            case let .tool(tool):
+                try writer["tool"].write(tool, with: BedrockAgentClientTypes.SpecificToolChoice.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ToolChoice {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "auto":
+                return .auto(try reader["auto"].read(with: BedrockAgentClientTypes.AutoToolChoice.read(from:)))
+            case "any":
+                return .any(try reader["any"].read(with: BedrockAgentClientTypes.AnyToolChoice.read(from:)))
+            case "tool":
+                return .tool(try reader["tool"].read(with: BedrockAgentClientTypes.SpecificToolChoice.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.SpecificToolChoice {
+
+    static func write(value: BedrockAgentClientTypes.SpecificToolChoice?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["name"].write(value.name)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.SpecificToolChoice {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.SpecificToolChoice()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.AnyToolChoice {
+
+    static func write(value: BedrockAgentClientTypes.AnyToolChoice?, to writer: SmithyJSON.Writer) throws {
+        guard value != nil else { return }
+        _ = writer[""]  // create an empty structure
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.AnyToolChoice {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        return BedrockAgentClientTypes.AnyToolChoice()
+    }
+}
+
+extension BedrockAgentClientTypes.AutoToolChoice {
+
+    static func write(value: BedrockAgentClientTypes.AutoToolChoice?, to writer: SmithyJSON.Writer) throws {
+        guard value != nil else { return }
+        _ = writer[""]  // create an empty structure
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.AutoToolChoice {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        return BedrockAgentClientTypes.AutoToolChoice()
+    }
+}
+
+extension BedrockAgentClientTypes.Tool {
+
+    static func write(value: BedrockAgentClientTypes.Tool?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .toolspec(toolspec):
+                try writer["toolSpec"].write(toolspec, with: BedrockAgentClientTypes.ToolSpecification.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.Tool {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "toolSpec":
+                return .toolspec(try reader["toolSpec"].read(with: BedrockAgentClientTypes.ToolSpecification.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.ToolSpecification {
+
+    static func write(value: BedrockAgentClientTypes.ToolSpecification?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["description"].write(value.description)
+        try writer["inputSchema"].write(value.inputSchema, with: BedrockAgentClientTypes.ToolInputSchema.write(value:to:))
+        try writer["name"].write(value.name)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ToolSpecification {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.ToolSpecification()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.inputSchema = try reader["inputSchema"].readIfPresent(with: BedrockAgentClientTypes.ToolInputSchema.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.ToolInputSchema {
+
+    static func write(value: BedrockAgentClientTypes.ToolInputSchema?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .json(json):
+                try writer["json"].write(json)
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ToolInputSchema {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "json":
+                return .json(try reader["json"].read())
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.PromptInputVariable {
+
+    static func write(value: BedrockAgentClientTypes.PromptInputVariable?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["name"].write(value.name)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.PromptInputVariable {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.PromptInputVariable()
+        value.name = try reader["name"].readIfPresent()
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.SystemContentBlock {
+
+    static func write(value: BedrockAgentClientTypes.SystemContentBlock?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .text(text):
+                try writer["text"].write(text)
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.SystemContentBlock {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "text":
+                return .text(try reader["text"].read())
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.Message {
+
+    static func write(value: BedrockAgentClientTypes.Message?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["content"].writeList(value.content, memberWritingClosure: BedrockAgentClientTypes.ContentBlock.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["role"].write(value.role)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.Message {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.Message()
+        value.role = try reader["role"].readIfPresent() ?? .sdkUnknown("")
+        value.content = try reader["content"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.ContentBlock.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.ContentBlock {
+
+    static func write(value: BedrockAgentClientTypes.ContentBlock?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .text(text):
+                try writer["text"].write(text)
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.ContentBlock {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "text":
+                return .text(try reader["text"].read())
             default:
                 return .sdkUnknown(name ?? "")
         }
@@ -12953,21 +14214,6 @@ extension BedrockAgentClientTypes.TextPromptTemplateConfiguration {
         var value = BedrockAgentClientTypes.TextPromptTemplateConfiguration()
         value.text = try reader["text"].readIfPresent() ?? ""
         value.inputVariables = try reader["inputVariables"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.PromptInputVariable.read(from:), memberNodeInfo: "member", isFlattened: false)
-        return value
-    }
-}
-
-extension BedrockAgentClientTypes.PromptInputVariable {
-
-    static func write(value: BedrockAgentClientTypes.PromptInputVariable?, to writer: SmithyJSON.Writer) throws {
-        guard let value else { return }
-        try writer["name"].write(value.name)
-    }
-
-    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.PromptInputVariable {
-        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
-        var value = BedrockAgentClientTypes.PromptInputVariable()
-        value.name = try reader["name"].readIfPresent()
         return value
     }
 }
@@ -13040,6 +14286,7 @@ extension BedrockAgentClientTypes.KnowledgeBaseFlowNodeConfiguration {
 
     static func write(value: BedrockAgentClientTypes.KnowledgeBaseFlowNodeConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["guardrailConfiguration"].write(value.guardrailConfiguration, with: BedrockAgentClientTypes.GuardrailConfiguration.write(value:to:))
         try writer["knowledgeBaseId"].write(value.knowledgeBaseId)
         try writer["modelId"].write(value.modelId)
     }
@@ -13049,6 +14296,7 @@ extension BedrockAgentClientTypes.KnowledgeBaseFlowNodeConfiguration {
         var value = BedrockAgentClientTypes.KnowledgeBaseFlowNodeConfiguration()
         value.knowledgeBaseId = try reader["knowledgeBaseId"].readIfPresent() ?? ""
         value.modelId = try reader["modelId"].readIfPresent()
+        value.guardrailConfiguration = try reader["guardrailConfiguration"].readIfPresent(with: BedrockAgentClientTypes.GuardrailConfiguration.read(from:))
         return value
     }
 }
@@ -13414,6 +14662,7 @@ extension BedrockAgentClientTypes.PromptVariant {
     static func write(value: BedrockAgentClientTypes.PromptVariant?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
         try writer["additionalModelRequestFields"].write(value.additionalModelRequestFields)
+        try writer["genAiResource"].write(value.genAiResource, with: BedrockAgentClientTypes.PromptGenAiResource.write(value:to:))
         try writer["inferenceConfiguration"].write(value.inferenceConfiguration, with: BedrockAgentClientTypes.PromptInferenceConfiguration.write(value:to:))
         try writer["metadata"].writeList(value.metadata, memberWritingClosure: BedrockAgentClientTypes.PromptMetadataEntry.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["modelId"].write(value.modelId)
@@ -13432,6 +14681,46 @@ extension BedrockAgentClientTypes.PromptVariant {
         value.inferenceConfiguration = try reader["inferenceConfiguration"].readIfPresent(with: BedrockAgentClientTypes.PromptInferenceConfiguration.read(from:))
         value.metadata = try reader["metadata"].readListIfPresent(memberReadingClosure: BedrockAgentClientTypes.PromptMetadataEntry.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.additionalModelRequestFields = try reader["additionalModelRequestFields"].readIfPresent()
+        value.genAiResource = try reader["genAiResource"].readIfPresent(with: BedrockAgentClientTypes.PromptGenAiResource.read(from:))
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.PromptGenAiResource {
+
+    static func write(value: BedrockAgentClientTypes.PromptGenAiResource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .agent(agent):
+                try writer["agent"].write(agent, with: BedrockAgentClientTypes.PromptAgentResource.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.PromptGenAiResource {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "agent":
+                return .agent(try reader["agent"].read(with: BedrockAgentClientTypes.PromptAgentResource.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.PromptAgentResource {
+
+    static func write(value: BedrockAgentClientTypes.PromptAgentResource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["agentIdentifier"].write(value.agentIdentifier)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.PromptAgentResource {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.PromptAgentResource()
+        value.agentIdentifier = try reader["agentIdentifier"].readIfPresent() ?? ""
         return value
     }
 }
@@ -13487,6 +14776,328 @@ extension BedrockAgentClientTypes.FlowValidation {
         var value = BedrockAgentClientTypes.FlowValidation()
         value.message = try reader["message"].readIfPresent() ?? ""
         value.severity = try reader["severity"].readIfPresent() ?? .sdkUnknown("")
+        value.details = try reader["details"].readIfPresent(with: BedrockAgentClientTypes.FlowValidationDetails.read(from:))
+        value.type = try reader["type"].readIfPresent()
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.FlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.FlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "cyclicConnection":
+                return .cyclicconnection(try reader["cyclicConnection"].read(with: BedrockAgentClientTypes.CyclicConnectionFlowValidationDetails.read(from:)))
+            case "duplicateConnections":
+                return .duplicateconnections(try reader["duplicateConnections"].read(with: BedrockAgentClientTypes.DuplicateConnectionsFlowValidationDetails.read(from:)))
+            case "duplicateConditionExpression":
+                return .duplicateconditionexpression(try reader["duplicateConditionExpression"].read(with: BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails.read(from:)))
+            case "unreachableNode":
+                return .unreachablenode(try reader["unreachableNode"].read(with: BedrockAgentClientTypes.UnreachableNodeFlowValidationDetails.read(from:)))
+            case "unknownConnectionSource":
+                return .unknownconnectionsource(try reader["unknownConnectionSource"].read(with: BedrockAgentClientTypes.UnknownConnectionSourceFlowValidationDetails.read(from:)))
+            case "unknownConnectionSourceOutput":
+                return .unknownconnectionsourceoutput(try reader["unknownConnectionSourceOutput"].read(with: BedrockAgentClientTypes.UnknownConnectionSourceOutputFlowValidationDetails.read(from:)))
+            case "unknownConnectionTarget":
+                return .unknownconnectiontarget(try reader["unknownConnectionTarget"].read(with: BedrockAgentClientTypes.UnknownConnectionTargetFlowValidationDetails.read(from:)))
+            case "unknownConnectionTargetInput":
+                return .unknownconnectiontargetinput(try reader["unknownConnectionTargetInput"].read(with: BedrockAgentClientTypes.UnknownConnectionTargetInputFlowValidationDetails.read(from:)))
+            case "unknownConnectionCondition":
+                return .unknownconnectioncondition(try reader["unknownConnectionCondition"].read(with: BedrockAgentClientTypes.UnknownConnectionConditionFlowValidationDetails.read(from:)))
+            case "malformedConditionExpression":
+                return .malformedconditionexpression(try reader["malformedConditionExpression"].read(with: BedrockAgentClientTypes.MalformedConditionExpressionFlowValidationDetails.read(from:)))
+            case "malformedNodeInputExpression":
+                return .malformednodeinputexpression(try reader["malformedNodeInputExpression"].read(with: BedrockAgentClientTypes.MalformedNodeInputExpressionFlowValidationDetails.read(from:)))
+            case "mismatchedNodeInputType":
+                return .mismatchednodeinputtype(try reader["mismatchedNodeInputType"].read(with: BedrockAgentClientTypes.MismatchedNodeInputTypeFlowValidationDetails.read(from:)))
+            case "mismatchedNodeOutputType":
+                return .mismatchednodeoutputtype(try reader["mismatchedNodeOutputType"].read(with: BedrockAgentClientTypes.MismatchedNodeOutputTypeFlowValidationDetails.read(from:)))
+            case "incompatibleConnectionDataType":
+                return .incompatibleconnectiondatatype(try reader["incompatibleConnectionDataType"].read(with: BedrockAgentClientTypes.IncompatibleConnectionDataTypeFlowValidationDetails.read(from:)))
+            case "missingConnectionConfiguration":
+                return .missingconnectionconfiguration(try reader["missingConnectionConfiguration"].read(with: BedrockAgentClientTypes.MissingConnectionConfigurationFlowValidationDetails.read(from:)))
+            case "missingDefaultCondition":
+                return .missingdefaultcondition(try reader["missingDefaultCondition"].read(with: BedrockAgentClientTypes.MissingDefaultConditionFlowValidationDetails.read(from:)))
+            case "missingEndingNodes":
+                return .missingendingnodes(try reader["missingEndingNodes"].read(with: BedrockAgentClientTypes.MissingEndingNodesFlowValidationDetails.read(from:)))
+            case "missingNodeConfiguration":
+                return .missingnodeconfiguration(try reader["missingNodeConfiguration"].read(with: BedrockAgentClientTypes.MissingNodeConfigurationFlowValidationDetails.read(from:)))
+            case "missingNodeInput":
+                return .missingnodeinput(try reader["missingNodeInput"].read(with: BedrockAgentClientTypes.MissingNodeInputFlowValidationDetails.read(from:)))
+            case "missingNodeOutput":
+                return .missingnodeoutput(try reader["missingNodeOutput"].read(with: BedrockAgentClientTypes.MissingNodeOutputFlowValidationDetails.read(from:)))
+            case "missingStartingNodes":
+                return .missingstartingnodes(try reader["missingStartingNodes"].read(with: BedrockAgentClientTypes.MissingStartingNodesFlowValidationDetails.read(from:)))
+            case "multipleNodeInputConnections":
+                return .multiplenodeinputconnections(try reader["multipleNodeInputConnections"].read(with: BedrockAgentClientTypes.MultipleNodeInputConnectionsFlowValidationDetails.read(from:)))
+            case "unfulfilledNodeInput":
+                return .unfulfillednodeinput(try reader["unfulfilledNodeInput"].read(with: BedrockAgentClientTypes.UnfulfilledNodeInputFlowValidationDetails.read(from:)))
+            case "unsatisfiedConnectionConditions":
+                return .unsatisfiedconnectionconditions(try reader["unsatisfiedConnectionConditions"].read(with: BedrockAgentClientTypes.UnsatisfiedConnectionConditionsFlowValidationDetails.read(from:)))
+            case "unspecified":
+                return .unspecified(try reader["unspecified"].read(with: BedrockAgentClientTypes.UnspecifiedFlowValidationDetails.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension BedrockAgentClientTypes.UnspecifiedFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnspecifiedFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        return BedrockAgentClientTypes.UnspecifiedFlowValidationDetails()
+    }
+}
+
+extension BedrockAgentClientTypes.UnsatisfiedConnectionConditionsFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnsatisfiedConnectionConditionsFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnsatisfiedConnectionConditionsFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnfulfilledNodeInputFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnfulfilledNodeInputFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnfulfilledNodeInputFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.input = try reader["input"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MultipleNodeInputConnectionsFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MultipleNodeInputConnectionsFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MultipleNodeInputConnectionsFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.input = try reader["input"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MissingStartingNodesFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingStartingNodesFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        return BedrockAgentClientTypes.MissingStartingNodesFlowValidationDetails()
+    }
+}
+
+extension BedrockAgentClientTypes.MissingNodeOutputFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingNodeOutputFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MissingNodeOutputFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.output = try reader["output"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MissingNodeInputFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingNodeInputFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MissingNodeInputFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.input = try reader["input"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MissingNodeConfigurationFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingNodeConfigurationFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MissingNodeConfigurationFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MissingEndingNodesFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingEndingNodesFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        return BedrockAgentClientTypes.MissingEndingNodesFlowValidationDetails()
+    }
+}
+
+extension BedrockAgentClientTypes.MissingDefaultConditionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingDefaultConditionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MissingDefaultConditionFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MissingConnectionConfigurationFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MissingConnectionConfigurationFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MissingConnectionConfigurationFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.IncompatibleConnectionDataTypeFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.IncompatibleConnectionDataTypeFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.IncompatibleConnectionDataTypeFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MismatchedNodeOutputTypeFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MismatchedNodeOutputTypeFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MismatchedNodeOutputTypeFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.output = try reader["output"].readIfPresent() ?? ""
+        value.expectedType = try reader["expectedType"].readIfPresent() ?? .sdkUnknown("")
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MismatchedNodeInputTypeFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MismatchedNodeInputTypeFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MismatchedNodeInputTypeFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.input = try reader["input"].readIfPresent() ?? ""
+        value.expectedType = try reader["expectedType"].readIfPresent() ?? .sdkUnknown("")
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MalformedNodeInputExpressionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MalformedNodeInputExpressionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MalformedNodeInputExpressionFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.input = try reader["input"].readIfPresent() ?? ""
+        value.cause = try reader["cause"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.MalformedConditionExpressionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.MalformedConditionExpressionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.MalformedConditionExpressionFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.condition = try reader["condition"].readIfPresent() ?? ""
+        value.cause = try reader["cause"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnknownConnectionConditionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnknownConnectionConditionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnknownConnectionConditionFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnknownConnectionTargetInputFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnknownConnectionTargetInputFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnknownConnectionTargetInputFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnknownConnectionTargetFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnknownConnectionTargetFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnknownConnectionTargetFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnknownConnectionSourceOutputFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnknownConnectionSourceOutputFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnknownConnectionSourceOutputFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnknownConnectionSourceFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnknownConnectionSourceFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnknownConnectionSourceFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.UnreachableNodeFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.UnreachableNodeFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.UnreachableNodeFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.DuplicateConditionExpressionFlowValidationDetails()
+        value.node = try reader["node"].readIfPresent() ?? ""
+        value.expression = try reader["expression"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.DuplicateConnectionsFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.DuplicateConnectionsFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.DuplicateConnectionsFlowValidationDetails()
+        value.source = try reader["source"].readIfPresent() ?? ""
+        value.target = try reader["target"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension BedrockAgentClientTypes.CyclicConnectionFlowValidationDetails {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BedrockAgentClientTypes.CyclicConnectionFlowValidationDetails {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BedrockAgentClientTypes.CyclicConnectionFlowValidationDetails()
+        value.connection = try reader["connection"].readIfPresent() ?? ""
         return value
     }
 }

@@ -3323,6 +3323,7 @@ extension EKSClientTypes {
         case autoScalingGroupOptInRequired
         case autoScalingGroupRateLimitExceeded
         case clusterUnreachable
+        case ec2InstanceTypeDoesNotExist
         case ec2LaunchTemplateDeletionFailure
         case ec2LaunchTemplateInvalidConfiguration
         case ec2LaunchTemplateMaxLimitExceeded
@@ -3362,6 +3363,7 @@ extension EKSClientTypes {
                 .autoScalingGroupOptInRequired,
                 .autoScalingGroupRateLimitExceeded,
                 .clusterUnreachable,
+                .ec2InstanceTypeDoesNotExist,
                 .ec2LaunchTemplateDeletionFailure,
                 .ec2LaunchTemplateInvalidConfiguration,
                 .ec2LaunchTemplateMaxLimitExceeded,
@@ -3407,6 +3409,7 @@ extension EKSClientTypes {
             case .autoScalingGroupOptInRequired: return "AutoScalingGroupOptInRequired"
             case .autoScalingGroupRateLimitExceeded: return "AutoScalingGroupRateLimitExceeded"
             case .clusterUnreachable: return "ClusterUnreachable"
+            case .ec2InstanceTypeDoesNotExist: return "Ec2InstanceTypeDoesNotExist"
             case .ec2LaunchTemplateDeletionFailure: return "Ec2LaunchTemplateDeletionFailure"
             case .ec2LaunchTemplateInvalidConfiguration: return "Ec2LaunchTemplateInvalidConfiguration"
             case .ec2LaunchTemplateMaxLimitExceeded: return "Ec2LaunchTemplateMaxLimitExceeded"
@@ -3452,6 +3455,8 @@ extension EKSClientTypes {
         /// * AutoScalingGroupNotFound: We couldn't find the Auto Scaling group associated with the managed node group. You may be able to recreate an Auto Scaling group with the same settings to recover.
         ///
         /// * ClusterUnreachable: Amazon EKS or one or more of your managed nodes is unable to to communicate with your Kubernetes cluster API server. This can happen if there are network disruptions or if API servers are timing out processing requests.
+        ///
+        /// * Ec2InstanceTypeDoesNotExist: One or more of the supplied Amazon EC2 instance types do not exist. Amazon EKS checked for the instance types that you provided in this Amazon Web Services Region, and one or more aren't available.
         ///
         /// * Ec2LaunchTemplateNotFound: We couldn't find the Amazon EC2 launch template for your managed node group. You may be able to recreate a launch template with the same settings to recover.
         ///

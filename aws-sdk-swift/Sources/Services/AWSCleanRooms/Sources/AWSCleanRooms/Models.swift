@@ -2409,6 +2409,106 @@ extension CleanRoomsClientTypes {
 
 extension CleanRoomsClientTypes {
 
+    public enum CustomMLMemberAbility: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case canReceiveInferenceOutput
+        case canReceiveModelOutput
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [CustomMLMemberAbility] {
+            return [
+                .canReceiveInferenceOutput,
+                .canReceiveModelOutput
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .canReceiveInferenceOutput: return "CAN_RECEIVE_INFERENCE_OUTPUT"
+            case .canReceiveModelOutput: return "CAN_RECEIVE_MODEL_OUTPUT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// The ML member abilities for a collaboration member. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+    public struct MLMemberAbilities: Swift.Sendable {
+        /// The custom ML member abilities for a collaboration member. The inference feature is not available in the custom ML modeling beta. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+        /// This member is required.
+        public var customMLMemberAbilities: [CleanRoomsClientTypes.CustomMLMemberAbility]?
+
+        public init(
+            customMLMemberAbilities: [CleanRoomsClientTypes.CustomMLMemberAbility]? = nil
+        )
+        {
+            self.customMLMemberAbilities = customMLMemberAbilities
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// An object representing the collaboration member's model inference payment responsibilities set by the collaboration creator.
+    public struct ModelInferencePaymentConfig: Swift.Sendable {
+        /// Indicates whether the collaboration creator has configured the collaboration member to pay for model inference costs (TRUE) or has not configured the collaboration member to pay for model inference costs (FALSE). Exactly one member can be configured to pay for model inference costs. An error is returned if the collaboration creator sets a TRUE value for more than one member in the collaboration. If the collaboration creator hasn't specified anyone as the member paying for model inference costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a FALSE value for the member who can query.
+        /// This member is required.
+        public var isResponsible: Swift.Bool?
+
+        public init(
+            isResponsible: Swift.Bool? = nil
+        )
+        {
+            self.isResponsible = isResponsible
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.
+    public struct ModelTrainingPaymentConfig: Swift.Sendable {
+        /// Indicates whether the collaboration creator has configured the collaboration member to pay for model training costs (TRUE) or has not configured the collaboration member to pay for model training costs (FALSE). Exactly one member can be configured to pay for model training costs. An error is returned if the collaboration creator sets a TRUE value for more than one member in the collaboration. If the collaboration creator hasn't specified anyone as the member paying for model training costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a FALSE value for the member who can query.
+        /// This member is required.
+        public var isResponsible: Swift.Bool?
+
+        public init(
+            isResponsible: Swift.Bool? = nil
+        )
+        {
+            self.isResponsible = isResponsible
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.
+    public struct MLPaymentConfig: Swift.Sendable {
+        /// The payment responsibilities accepted by the member for model inference.
+        public var modelInference: CleanRoomsClientTypes.ModelInferencePaymentConfig?
+        /// The payment responsibilities accepted by the member for model training.
+        public var modelTraining: CleanRoomsClientTypes.ModelTrainingPaymentConfig?
+
+        public init(
+            modelInference: CleanRoomsClientTypes.ModelInferencePaymentConfig? = nil,
+            modelTraining: CleanRoomsClientTypes.ModelTrainingPaymentConfig? = nil
+        )
+        {
+            self.modelInference = modelInference
+            self.modelTraining = modelTraining
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
     /// An object representing the collaboration member's payment responsibilities set by the collaboration creator for query compute costs.
     public struct QueryComputePaymentConfig: Swift.Sendable {
         /// Indicates whether the collaboration creator has configured the collaboration member to pay for query compute costs (TRUE) or has not configured the collaboration member to pay for query compute costs (FALSE). Exactly one member can be configured to pay for query compute costs. An error is returned if the collaboration creator sets a TRUE value for more than one member in the collaboration. If the collaboration creator hasn't specified anyone as the member paying for query compute costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a FALSE value for the member who can query.
@@ -2428,14 +2528,18 @@ extension CleanRoomsClientTypes {
 
     /// An object representing the collaboration member's payment responsibilities set by the collaboration creator.
     public struct PaymentConfiguration: Swift.Sendable {
+        /// An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.
+        public var machineLearning: CleanRoomsClientTypes.MLPaymentConfig?
         /// The collaboration member's payment responsibilities set by the collaboration creator for query compute costs.
         /// This member is required.
         public var queryCompute: CleanRoomsClientTypes.QueryComputePaymentConfig?
 
         public init(
+            machineLearning: CleanRoomsClientTypes.MLPaymentConfig? = nil,
             queryCompute: CleanRoomsClientTypes.QueryComputePaymentConfig? = nil
         )
         {
+            self.machineLearning = machineLearning
             self.queryCompute = queryCompute
         }
     }
@@ -2486,6 +2590,8 @@ extension CleanRoomsClientTypes {
         /// The abilities granted to the collaboration member.
         /// This member is required.
         public var memberAbilities: [CleanRoomsClientTypes.MemberAbility]?
+        /// The ML abilities granted to the collaboration member. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+        public var mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities?
         /// The collaboration member's payment responsibilities set by the collaboration creator. If the collaboration creator hasn't speciﬁed anyone as the member paying for query compute costs, then the member who can query is the default payer.
         public var paymentConfiguration: CleanRoomsClientTypes.PaymentConfiguration?
 
@@ -2493,12 +2599,14 @@ extension CleanRoomsClientTypes {
             accountId: Swift.String? = nil,
             displayName: Swift.String? = nil,
             memberAbilities: [CleanRoomsClientTypes.MemberAbility]? = nil,
+            mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities? = nil,
             paymentConfiguration: CleanRoomsClientTypes.PaymentConfiguration? = nil
         )
         {
             self.accountId = accountId
             self.displayName = displayName
             self.memberAbilities = memberAbilities
+            self.mlMemberAbilities = mlMemberAbilities
             self.paymentConfiguration = paymentConfiguration
         }
     }
@@ -2539,6 +2647,8 @@ public struct CreateCollaborationInput: Swift.Sendable {
     /// The display name of the collaboration creator.
     /// This member is required.
     public var creatorDisplayName: Swift.String?
+    /// The ML abilities granted to the collaboration creator. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+    public var creatorMLMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities?
     /// The abilities granted to the collaboration creator.
     /// This member is required.
     public var creatorMemberAbilities: [CleanRoomsClientTypes.MemberAbility]?
@@ -2564,6 +2674,7 @@ public struct CreateCollaborationInput: Swift.Sendable {
     public init(
         analyticsEngine: CleanRoomsClientTypes.AnalyticsEngine? = nil,
         creatorDisplayName: Swift.String? = nil,
+        creatorMLMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities? = nil,
         creatorMemberAbilities: [CleanRoomsClientTypes.MemberAbility]? = nil,
         creatorPaymentConfiguration: CleanRoomsClientTypes.PaymentConfiguration? = nil,
         dataEncryptionMetadata: CleanRoomsClientTypes.DataEncryptionMetadata? = nil,
@@ -2576,6 +2687,7 @@ public struct CreateCollaborationInput: Swift.Sendable {
     {
         self.analyticsEngine = analyticsEngine
         self.creatorDisplayName = creatorDisplayName
+        self.creatorMLMemberAbilities = creatorMLMemberAbilities
         self.creatorMemberAbilities = creatorMemberAbilities
         self.creatorPaymentConfiguration = creatorPaymentConfiguration
         self.dataEncryptionMetadata = dataEncryptionMetadata
@@ -4083,6 +4195,8 @@ extension CleanRoomsClientTypes {
         public var membershipArn: Swift.String?
         /// The unique ID for the member's associated membership, if present.
         public var membershipId: Swift.String?
+        /// Provides a summary of the ML abilities for the collaboration member. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+        public var mlAbilities: CleanRoomsClientTypes.MLMemberAbilities?
         /// The collaboration member's payment responsibilities set by the collaboration creator.
         /// This member is required.
         public var paymentConfiguration: CleanRoomsClientTypes.PaymentConfiguration?
@@ -4100,6 +4214,7 @@ extension CleanRoomsClientTypes {
             displayName: Swift.String? = nil,
             membershipArn: Swift.String? = nil,
             membershipId: Swift.String? = nil,
+            mlAbilities: CleanRoomsClientTypes.MLMemberAbilities? = nil,
             paymentConfiguration: CleanRoomsClientTypes.PaymentConfiguration? = nil,
             status: CleanRoomsClientTypes.MemberStatus? = nil,
             updateTime: Foundation.Date? = nil
@@ -4111,6 +4226,7 @@ extension CleanRoomsClientTypes {
             self.displayName = displayName
             self.membershipArn = membershipArn
             self.membershipId = membershipId
+            self.mlAbilities = mlAbilities
             self.paymentConfiguration = paymentConfiguration
             self.status = status
             self.updateTime = updateTime
@@ -6558,6 +6674,68 @@ extension CleanRoomsClientTypes {
 
 extension CleanRoomsClientTypes {
 
+    /// An object representing the collaboration member's model inference payment responsibilities set by the collaboration creator.
+    public struct MembershipModelInferencePaymentConfig: Swift.Sendable {
+        /// Indicates whether the collaboration member has accepted to pay for model inference costs (TRUE) or has not accepted to pay for model inference costs (FALSE). If the collaboration creator has not specified anyone to pay for model inference costs, then the member who can query is the default payer. An error message is returned for the following reasons:
+        ///
+        /// * If you set the value to FALSE but you are responsible to pay for model inference costs.
+        ///
+        /// * If you set the value to TRUE but you are not responsible to pay for model inference costs.
+        /// This member is required.
+        public var isResponsible: Swift.Bool?
+
+        public init(
+            isResponsible: Swift.Bool? = nil
+        )
+        {
+            self.isResponsible = isResponsible
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// An object representing the collaboration member's model training payment responsibilities set by the collaboration creator.
+    public struct MembershipModelTrainingPaymentConfig: Swift.Sendable {
+        /// Indicates whether the collaboration member has accepted to pay for model training costs (TRUE) or has not accepted to pay for model training costs (FALSE). If the collaboration creator has not specified anyone to pay for model training costs, then the member who can query is the default payer. An error message is returned for the following reasons:
+        ///
+        /// * If you set the value to FALSE but you are responsible to pay for model training costs.
+        ///
+        /// * If you set the value to TRUE but you are not responsible to pay for model training costs.
+        /// This member is required.
+        public var isResponsible: Swift.Bool?
+
+        public init(
+            isResponsible: Swift.Bool? = nil
+        )
+        {
+            self.isResponsible = isResponsible
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
+    /// An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.
+    public struct MembershipMLPaymentConfig: Swift.Sendable {
+        /// The payment responsibilities accepted by the member for model inference.
+        public var modelInference: CleanRoomsClientTypes.MembershipModelInferencePaymentConfig?
+        /// The payment responsibilities accepted by the member for model training.
+        public var modelTraining: CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig?
+
+        public init(
+            modelInference: CleanRoomsClientTypes.MembershipModelInferencePaymentConfig? = nil,
+            modelTraining: CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig? = nil
+        )
+        {
+            self.modelInference = modelInference
+            self.modelTraining = modelTraining
+        }
+    }
+}
+
+extension CleanRoomsClientTypes {
+
     /// An object representing the payment responsibilities accepted by the collaboration member for query compute costs.
     public struct MembershipQueryComputePaymentConfig: Swift.Sendable {
         /// Indicates whether the collaboration member has accepted to pay for query compute costs (TRUE) or has not accepted to pay for query compute costs (FALSE). If the collaboration creator has not specified anyone to pay for query compute costs, then the member who can query is the default payer. An error message is returned for the following reasons:
@@ -6581,14 +6759,18 @@ extension CleanRoomsClientTypes {
 
     /// An object representing the payment responsibilities accepted by the collaboration member.
     public struct MembershipPaymentConfiguration: Swift.Sendable {
+        /// The payment responsibilities accepted by the collaboration member for machine learning costs.
+        public var machineLearning: CleanRoomsClientTypes.MembershipMLPaymentConfig?
         /// The payment responsibilities accepted by the collaboration member for query compute costs.
         /// This member is required.
         public var queryCompute: CleanRoomsClientTypes.MembershipQueryComputePaymentConfig?
 
         public init(
+            machineLearning: CleanRoomsClientTypes.MembershipMLPaymentConfig? = nil,
             queryCompute: CleanRoomsClientTypes.MembershipQueryComputePaymentConfig? = nil
         )
         {
+            self.machineLearning = machineLearning
             self.queryCompute = queryCompute
         }
     }
@@ -6718,6 +6900,8 @@ extension CleanRoomsClientTypes {
         /// The abilities granted to the collaboration member.
         /// This member is required.
         public var memberAbilities: [CleanRoomsClientTypes.MemberAbility]?
+        /// Specifies the ML member abilities that are granted to a collaboration member. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+        public var mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities?
         /// The payment responsibilities accepted by the collaboration member.
         /// This member is required.
         public var paymentConfiguration: CleanRoomsClientTypes.MembershipPaymentConfiguration?
@@ -6742,6 +6926,7 @@ extension CleanRoomsClientTypes {
             defaultResultConfiguration: CleanRoomsClientTypes.MembershipProtectedQueryResultConfiguration? = nil,
             id: Swift.String? = nil,
             memberAbilities: [CleanRoomsClientTypes.MemberAbility]? = nil,
+            mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities? = nil,
             paymentConfiguration: CleanRoomsClientTypes.MembershipPaymentConfiguration? = nil,
             queryLogStatus: CleanRoomsClientTypes.MembershipQueryLogStatus? = nil,
             status: CleanRoomsClientTypes.MembershipStatus? = nil,
@@ -6758,6 +6943,7 @@ extension CleanRoomsClientTypes {
             self.defaultResultConfiguration = defaultResultConfiguration
             self.id = id
             self.memberAbilities = memberAbilities
+            self.mlMemberAbilities = mlMemberAbilities
             self.paymentConfiguration = paymentConfiguration
             self.queryLogStatus = queryLogStatus
             self.status = status
@@ -7328,6 +7514,8 @@ extension CleanRoomsClientTypes {
         /// The abilities granted to the collaboration member.
         /// This member is required.
         public var memberAbilities: [CleanRoomsClientTypes.MemberAbility]?
+        /// Provides a summary of the ML abilities for the collaboration member. Custom ML modeling is in beta release and is subject to change. For beta terms and conditions, see Betas and Previews in the [Amazon Web Services Service Terms](https://aws.amazon.com/service-terms/).
+        public var mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities?
         /// The payment responsibilities accepted by the collaboration member.
         /// This member is required.
         public var paymentConfiguration: CleanRoomsClientTypes.MembershipPaymentConfiguration?
@@ -7348,6 +7536,7 @@ extension CleanRoomsClientTypes {
             createTime: Foundation.Date? = nil,
             id: Swift.String? = nil,
             memberAbilities: [CleanRoomsClientTypes.MemberAbility]? = nil,
+            mlMemberAbilities: CleanRoomsClientTypes.MLMemberAbilities? = nil,
             paymentConfiguration: CleanRoomsClientTypes.MembershipPaymentConfiguration? = nil,
             status: CleanRoomsClientTypes.MembershipStatus? = nil,
             updateTime: Foundation.Date? = nil
@@ -7362,6 +7551,7 @@ extension CleanRoomsClientTypes {
             self.createTime = createTime
             self.id = id
             self.memberAbilities = memberAbilities
+            self.mlMemberAbilities = mlMemberAbilities
             self.paymentConfiguration = paymentConfiguration
             self.status = status
             self.updateTime = updateTime
@@ -9593,6 +9783,7 @@ extension CreateCollaborationInput {
         guard let value else { return }
         try writer["analyticsEngine"].write(value.analyticsEngine)
         try writer["creatorDisplayName"].write(value.creatorDisplayName)
+        try writer["creatorMLMemberAbilities"].write(value.creatorMLMemberAbilities, with: CleanRoomsClientTypes.MLMemberAbilities.write(value:to:))
         try writer["creatorMemberAbilities"].writeList(value.creatorMemberAbilities, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CleanRoomsClientTypes.MemberAbility>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["creatorPaymentConfiguration"].write(value.creatorPaymentConfiguration, with: CleanRoomsClientTypes.PaymentConfiguration.write(value:to:))
         try writer["dataEncryptionMetadata"].write(value.dataEncryptionMetadata, with: CleanRoomsClientTypes.DataEncryptionMetadata.write(value:to:))
@@ -13255,6 +13446,7 @@ extension CleanRoomsClientTypes.Membership {
         value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.memberAbilities = try reader["memberAbilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<CleanRoomsClientTypes.MemberAbility>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.mlMemberAbilities = try reader["mlMemberAbilities"].readIfPresent(with: CleanRoomsClientTypes.MLMemberAbilities.read(from:))
         value.queryLogStatus = try reader["queryLogStatus"].readIfPresent() ?? .sdkUnknown("")
         value.defaultResultConfiguration = try reader["defaultResultConfiguration"].readIfPresent(with: CleanRoomsClientTypes.MembershipProtectedQueryResultConfiguration.read(from:))
         value.paymentConfiguration = try reader["paymentConfiguration"].readIfPresent(with: CleanRoomsClientTypes.MembershipPaymentConfiguration.read(from:))
@@ -13266,6 +13458,7 @@ extension CleanRoomsClientTypes.MembershipPaymentConfiguration {
 
     static func write(value: CleanRoomsClientTypes.MembershipPaymentConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["machineLearning"].write(value.machineLearning, with: CleanRoomsClientTypes.MembershipMLPaymentConfig.write(value:to:))
         try writer["queryCompute"].write(value.queryCompute, with: CleanRoomsClientTypes.MembershipQueryComputePaymentConfig.write(value:to:))
     }
 
@@ -13273,6 +13466,54 @@ extension CleanRoomsClientTypes.MembershipPaymentConfiguration {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = CleanRoomsClientTypes.MembershipPaymentConfiguration()
         value.queryCompute = try reader["queryCompute"].readIfPresent(with: CleanRoomsClientTypes.MembershipQueryComputePaymentConfig.read(from:))
+        value.machineLearning = try reader["machineLearning"].readIfPresent(with: CleanRoomsClientTypes.MembershipMLPaymentConfig.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.MembershipMLPaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.MembershipMLPaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["modelInference"].write(value.modelInference, with: CleanRoomsClientTypes.MembershipModelInferencePaymentConfig.write(value:to:))
+        try writer["modelTraining"].write(value.modelTraining, with: CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.MembershipMLPaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.MembershipMLPaymentConfig()
+        value.modelTraining = try reader["modelTraining"].readIfPresent(with: CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig.read(from:))
+        value.modelInference = try reader["modelInference"].readIfPresent(with: CleanRoomsClientTypes.MembershipModelInferencePaymentConfig.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.MembershipModelInferencePaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.MembershipModelInferencePaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["isResponsible"].write(value.isResponsible)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.MembershipModelInferencePaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.MembershipModelInferencePaymentConfig()
+        value.isResponsible = try reader["isResponsible"].readIfPresent() ?? false
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["isResponsible"].write(value.isResponsible)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.MembershipModelTrainingPaymentConfig()
+        value.isResponsible = try reader["isResponsible"].readIfPresent() ?? false
         return value
     }
 }
@@ -13350,6 +13591,21 @@ extension CleanRoomsClientTypes.ProtectedQueryS3OutputConfiguration {
         value.bucket = try reader["bucket"].readIfPresent() ?? ""
         value.keyPrefix = try reader["keyPrefix"].readIfPresent()
         value.singleFileOutput = try reader["singleFileOutput"].readIfPresent()
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.MLMemberAbilities {
+
+    static func write(value: CleanRoomsClientTypes.MLMemberAbilities?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["customMLMemberAbilities"].writeList(value.customMLMemberAbilities, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CleanRoomsClientTypes.CustomMLMemberAbility>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.MLMemberAbilities {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.MLMemberAbilities()
+        value.customMLMemberAbilities = try reader["customMLMemberAbilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<CleanRoomsClientTypes.CustomMLMemberAbility>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -13980,6 +14236,7 @@ extension CleanRoomsClientTypes.MemberSummary {
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.displayName = try reader["displayName"].readIfPresent() ?? ""
         value.abilities = try reader["abilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<CleanRoomsClientTypes.MemberAbility>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.mlAbilities = try reader["mlAbilities"].readIfPresent(with: CleanRoomsClientTypes.MLMemberAbilities.read(from:))
         value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.membershipId = try reader["membershipId"].readIfPresent()
@@ -13993,6 +14250,7 @@ extension CleanRoomsClientTypes.PaymentConfiguration {
 
     static func write(value: CleanRoomsClientTypes.PaymentConfiguration?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["machineLearning"].write(value.machineLearning, with: CleanRoomsClientTypes.MLPaymentConfig.write(value:to:))
         try writer["queryCompute"].write(value.queryCompute, with: CleanRoomsClientTypes.QueryComputePaymentConfig.write(value:to:))
     }
 
@@ -14000,6 +14258,54 @@ extension CleanRoomsClientTypes.PaymentConfiguration {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = CleanRoomsClientTypes.PaymentConfiguration()
         value.queryCompute = try reader["queryCompute"].readIfPresent(with: CleanRoomsClientTypes.QueryComputePaymentConfig.read(from:))
+        value.machineLearning = try reader["machineLearning"].readIfPresent(with: CleanRoomsClientTypes.MLPaymentConfig.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.MLPaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.MLPaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["modelInference"].write(value.modelInference, with: CleanRoomsClientTypes.ModelInferencePaymentConfig.write(value:to:))
+        try writer["modelTraining"].write(value.modelTraining, with: CleanRoomsClientTypes.ModelTrainingPaymentConfig.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.MLPaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.MLPaymentConfig()
+        value.modelTraining = try reader["modelTraining"].readIfPresent(with: CleanRoomsClientTypes.ModelTrainingPaymentConfig.read(from:))
+        value.modelInference = try reader["modelInference"].readIfPresent(with: CleanRoomsClientTypes.ModelInferencePaymentConfig.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.ModelInferencePaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.ModelInferencePaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["isResponsible"].write(value.isResponsible)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.ModelInferencePaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.ModelInferencePaymentConfig()
+        value.isResponsible = try reader["isResponsible"].readIfPresent() ?? false
+        return value
+    }
+}
+
+extension CleanRoomsClientTypes.ModelTrainingPaymentConfig {
+
+    static func write(value: CleanRoomsClientTypes.ModelTrainingPaymentConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["isResponsible"].write(value.isResponsible)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsClientTypes.ModelTrainingPaymentConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsClientTypes.ModelTrainingPaymentConfig()
+        value.isResponsible = try reader["isResponsible"].readIfPresent() ?? false
         return value
     }
 }
@@ -14035,6 +14341,7 @@ extension CleanRoomsClientTypes.MembershipSummary {
         value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
         value.memberAbilities = try reader["memberAbilities"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<CleanRoomsClientTypes.MemberAbility>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.mlMemberAbilities = try reader["mlMemberAbilities"].readIfPresent(with: CleanRoomsClientTypes.MLMemberAbilities.read(from:))
         value.paymentConfiguration = try reader["paymentConfiguration"].readIfPresent(with: CleanRoomsClientTypes.MembershipPaymentConfiguration.read(from:))
         return value
     }
@@ -14208,6 +14515,7 @@ extension CleanRoomsClientTypes.MemberSpecification {
         try writer["accountId"].write(value.accountId)
         try writer["displayName"].write(value.displayName)
         try writer["memberAbilities"].writeList(value.memberAbilities, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CleanRoomsClientTypes.MemberAbility>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["mlMemberAbilities"].write(value.mlMemberAbilities, with: CleanRoomsClientTypes.MLMemberAbilities.write(value:to:))
         try writer["paymentConfiguration"].write(value.paymentConfiguration, with: CleanRoomsClientTypes.PaymentConfiguration.write(value:to:))
     }
 }

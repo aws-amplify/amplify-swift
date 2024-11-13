@@ -15,7 +15,7 @@ import PackageDescription
 
 // MARK: - Dynamic Content
 
-let clientRuntimeVersion: Version = "0.87.0"
+let clientRuntimeVersion: Version = "0.90.0"
 let crtVersion: Version = "0.37.0"
 
 let excludeRuntimeUnitTests = false
@@ -603,8 +603,7 @@ private func target(_ service: String) -> Target {
             .awsSDKEventStreamsAuth,
             .awsSDKChecksums,
         ],
-        path: "Sources/Services/\(service)/Sources/\(service)",
-        resources: [.process("Resources")]
+        path: "Sources/Services/\(service)/Sources/\(service)"
     )
 }
 

@@ -147,6 +147,37 @@ extension ListLakeFormationOptInsInput: ClientRuntime.PaginateToken {
         )}
 }
 extension LakeFormationClient {
+    /// Paginate over `[ListLFTagExpressionsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListLFTagExpressionsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListLFTagExpressionsOutput`
+    public func listLFTagExpressionsPaginated(input: ListLFTagExpressionsInput) -> ClientRuntime.PaginatorSequence<ListLFTagExpressionsInput, ListLFTagExpressionsOutput> {
+        return ClientRuntime.PaginatorSequence<ListLFTagExpressionsInput, ListLFTagExpressionsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listLFTagExpressions(input:))
+    }
+}
+
+extension ListLFTagExpressionsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListLFTagExpressionsInput {
+        return ListLFTagExpressionsInput(
+            catalogId: self.catalogId,
+            maxResults: self.maxResults,
+            nextToken: token
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListLFTagExpressionsInput, OperationStackOutput == ListLFTagExpressionsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listLFTagExpressionsPaginated`
+    /// to access the nested member `[LakeFormationClientTypes.LFTagExpression]`
+    /// - Returns: `[LakeFormationClientTypes.LFTagExpression]`
+    public func lfTagExpressions() async throws -> [LakeFormationClientTypes.LFTagExpression] {
+        return try await self.asyncCompactMap { item in item.lfTagExpressions }
+    }
+}
+extension LakeFormationClient {
     /// Paginate over `[ListLFTagsOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

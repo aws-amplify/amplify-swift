@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class GeoRoutesClient: ClientRuntime.Client {
     public static let clientName = "GeoRoutesClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: GeoRoutesClient.GeoRoutesClientConfiguration
     let serviceName = "Geo Routes"
@@ -247,7 +248,7 @@ extension GeoRoutesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<CalculateIsolinesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CalculateIsolinesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateIsolinesInput, CalculateIsolinesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateIsolinesInput, CalculateIsolinesOutput>(serviceID: serviceName, version: GeoRoutesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CalculateIsolinesOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CalculateIsolinesInput, CalculateIsolinesOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CalculateIsolinesInput, CalculateIsolinesOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -320,7 +321,7 @@ extension GeoRoutesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<CalculateRouteMatrixOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CalculateRouteMatrixOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateRouteMatrixInput, CalculateRouteMatrixOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateRouteMatrixInput, CalculateRouteMatrixOutput>(serviceID: serviceName, version: GeoRoutesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CalculateRouteMatrixOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CalculateRouteMatrixInput, CalculateRouteMatrixOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CalculateRouteMatrixInput, CalculateRouteMatrixOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -393,7 +394,7 @@ extension GeoRoutesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<CalculateRoutesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<CalculateRoutesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateRoutesInput, CalculateRoutesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<CalculateRoutesInput, CalculateRoutesOutput>(serviceID: serviceName, version: GeoRoutesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<CalculateRoutesOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<CalculateRoutesInput, CalculateRoutesOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<CalculateRoutesInput, CalculateRoutesOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -466,7 +467,7 @@ extension GeoRoutesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<OptimizeWaypointsOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<OptimizeWaypointsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<OptimizeWaypointsInput, OptimizeWaypointsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<OptimizeWaypointsInput, OptimizeWaypointsOutput>(serviceID: serviceName, version: GeoRoutesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<OptimizeWaypointsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<OptimizeWaypointsInput, OptimizeWaypointsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<OptimizeWaypointsInput, OptimizeWaypointsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -539,7 +540,7 @@ extension GeoRoutesClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<SnapToRoadsOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<SnapToRoadsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SnapToRoadsInput, SnapToRoadsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SnapToRoadsInput, SnapToRoadsOutput>(serviceID: serviceName, version: GeoRoutesClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<SnapToRoadsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<SnapToRoadsInput, SnapToRoadsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<SnapToRoadsInput, SnapToRoadsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

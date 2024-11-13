@@ -427,23 +427,63 @@ extension BatchClientTypes {
 
 extension BatchClientTypes {
 
+    /// An object that represents a launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both. If security groups are specified using both the securityGroupIds parameter of CreateComputeEnvironment and the launch template, the values in the securityGroupIds parameter of CreateComputeEnvironment will be used. You can define up to ten (10) overrides for each compute environment. This object isn't applicable to jobs that are running on Fargate resources. To unset all override templates for a compute environment, you can pass an empty array to the [UpdateComputeEnvironment.overrides](https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html) parameter, or not include the overrides parameter when submitting the UpdateComputeEnvironment API operation.
+    public struct LaunchTemplateSpecificationOverride: Swift.Sendable {
+        /// The ID of the launch template. Note: If you specify the launchTemplateId you can't specify the launchTemplateName as well.
+        public var launchTemplateId: Swift.String?
+        /// The name of the launch template. Note: If you specify the launchTemplateName you can't specify the launchTemplateId as well.
+        public var launchTemplateName: Swift.String?
+        /// The instance type or family that this this override launch template should be applied to. This parameter is required when defining a launch template override. Information included in this parameter must meet the following requirements:
+        ///
+        /// * Must be a valid Amazon EC2 instance type or family.
+        ///
+        /// * optimal isn't allowed.
+        ///
+        /// * targetInstanceTypes can target only instance types and families that are included within the [ComputeResource.instanceTypes](https://docs.aws.amazon.com/batch/latest/APIReference/API_ComputeResource.html#Batch-Type-ComputeResource-instanceTypes) set. targetInstanceTypes doesn't need to include all of the instances from the instanceType set, but at least a subset. For example, if ComputeResource.instanceTypes includes [m5, g5], targetInstanceTypes can include [m5.2xlarge] and [m5.large] but not [c5.large].
+        ///
+        /// * targetInstanceTypes included within the same launch template override or across launch template overrides can't overlap for the same compute environment. For example, you can't define one launch template override to target an instance family and another define an instance type within this same family.
+        public var targetInstanceTypes: [Swift.String]?
+        /// The version number of the launch template, $Default, or $Latest. If the value is $Default, the default version of the launch template is used. If the value is $Latest, the latest version of the launch template is used. If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the updateToLatestImageVersion parameter for the compute environment is set to true. During an infrastructure update, if either $Default or $Latest is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. Default: $Default Latest: $Latest
+        public var version: Swift.String?
+
+        public init(
+            launchTemplateId: Swift.String? = nil,
+            launchTemplateName: Swift.String? = nil,
+            targetInstanceTypes: [Swift.String]? = nil,
+            version: Swift.String? = nil
+        )
+        {
+            self.launchTemplateId = launchTemplateId
+            self.launchTemplateName = launchTemplateName
+            self.targetInstanceTypes = targetInstanceTypes
+            self.version = version
+        }
+    }
+}
+
+extension BatchClientTypes {
+
     /// An object that represents a launch template that's associated with a compute resource. You must specify either the launch template ID or launch template name in the request, but not both. If security groups are specified using both the securityGroupIds parameter of CreateComputeEnvironment and the launch template, the values in the securityGroupIds parameter of CreateComputeEnvironment will be used. This object isn't applicable to jobs that are running on Fargate resources.
     public struct LaunchTemplateSpecification: Swift.Sendable {
         /// The ID of the launch template.
         public var launchTemplateId: Swift.String?
         /// The name of the launch template.
         public var launchTemplateName: Swift.String?
-        /// The version number of the launch template, $Latest, or $Default. If the value is $Latest, the latest version of the launch template is used. If the value is $Default, the default version of the launch template is used. If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the updateToLatestImageVersion parameter for the compute environment is set to true. During an infrastructure update, if either $Latest or $Default is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. Default: $Default.
+        /// A launch template to use in place of the default launch template. You must specify either the launch template ID or launch template name in the request, but not both. You can specify up to ten (10) launch template overrides that are associated to unique instance types or families for each compute environment. To unset all override templates for a compute environment, you can pass an empty array to the [UpdateComputeEnvironment.overrides](https://docs.aws.amazon.com/batch/latest/APIReference/API_UpdateComputeEnvironment.html) parameter, or not include the overrides parameter when submitting the UpdateComputeEnvironment API operation.
+        public var overrides: [BatchClientTypes.LaunchTemplateSpecificationOverride]?
+        /// The version number of the launch template, $Default, or $Latest. If the value is $Default, the default version of the launch template is used. If the value is $Latest, the latest version of the launch template is used. If the AMI ID that's used in a compute environment is from the launch template, the AMI isn't changed when the compute environment is updated. It's only changed if the updateToLatestImageVersion parameter for the compute environment is set to true. During an infrastructure update, if either $Default or $Latest is specified, Batch re-evaluates the launch template version, and it might use a different version of the launch template. This is the case even if the launch template isn't specified in the update. When updating a compute environment, changing the launch template requires an infrastructure update of the compute environment. For more information, see [Updating compute environments](https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html) in the Batch User Guide. Default: $Default Latest: $Latest
         public var version: Swift.String?
 
         public init(
             launchTemplateId: Swift.String? = nil,
             launchTemplateName: Swift.String? = nil,
+            overrides: [BatchClientTypes.LaunchTemplateSpecificationOverride]? = nil,
             version: Swift.String? = nil
         )
         {
             self.launchTemplateId = launchTemplateId
             self.launchTemplateName = launchTemplateName
+            self.overrides = overrides
             self.version = version
         }
     }
@@ -6115,6 +6155,7 @@ extension BatchClientTypes.LaunchTemplateSpecification {
         guard let value else { return }
         try writer["launchTemplateId"].write(value.launchTemplateId)
         try writer["launchTemplateName"].write(value.launchTemplateName)
+        try writer["overrides"].writeList(value.overrides, memberWritingClosure: BatchClientTypes.LaunchTemplateSpecificationOverride.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["version"].write(value.version)
     }
 
@@ -6124,6 +6165,28 @@ extension BatchClientTypes.LaunchTemplateSpecification {
         value.launchTemplateId = try reader["launchTemplateId"].readIfPresent()
         value.launchTemplateName = try reader["launchTemplateName"].readIfPresent()
         value.version = try reader["version"].readIfPresent()
+        value.overrides = try reader["overrides"].readListIfPresent(memberReadingClosure: BatchClientTypes.LaunchTemplateSpecificationOverride.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension BatchClientTypes.LaunchTemplateSpecificationOverride {
+
+    static func write(value: BatchClientTypes.LaunchTemplateSpecificationOverride?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["launchTemplateId"].write(value.launchTemplateId)
+        try writer["launchTemplateName"].write(value.launchTemplateName)
+        try writer["targetInstanceTypes"].writeList(value.targetInstanceTypes, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["version"].write(value.version)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> BatchClientTypes.LaunchTemplateSpecificationOverride {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = BatchClientTypes.LaunchTemplateSpecificationOverride()
+        value.launchTemplateId = try reader["launchTemplateId"].readIfPresent()
+        value.launchTemplateName = try reader["launchTemplateName"].readIfPresent()
+        value.version = try reader["version"].readIfPresent()
+        value.targetInstanceTypes = try reader["targetInstanceTypes"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
         return value
     }
 }

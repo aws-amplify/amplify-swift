@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class QLDBSessionClient: ClientRuntime.Client {
     public static let clientName = "QLDBSessionClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: QLDBSessionClient.QLDBSessionClientConfiguration
     let serviceName = "QLDB Session"
@@ -250,7 +251,7 @@ extension QLDBSessionClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<SendCommandOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<SendCommandOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SendCommandInput, SendCommandOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<SendCommandInput, SendCommandOutput>(serviceID: serviceName, version: QLDBSessionClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<SendCommandInput, SendCommandOutput>(xAmzTarget: "QLDBSession.SendCommand"))
         builder.serialize(ClientRuntime.BodyMiddleware<SendCommandInput, SendCommandOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: SendCommandInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<SendCommandInput, SendCommandOutput>(contentType: "application/x-amz-json-1.0"))

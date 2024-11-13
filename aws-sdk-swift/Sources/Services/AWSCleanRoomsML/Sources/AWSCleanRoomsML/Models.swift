@@ -31,6 +31,16 @@ import struct Smithy.URIQueryItem
 @_spi(SmithyTimestamps) import struct SmithyTimestamps.TimestampFormatter
 
 
+public struct CancelTrainedModelInferenceJobOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct CancelTrainedModelOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct DeleteAudienceGenerationJobOutput: Swift.Sendable {
 
     public init() { }
@@ -51,12 +61,47 @@ public struct DeleteConfiguredAudienceModelPolicyOutput: Swift.Sendable {
     public init() { }
 }
 
+public struct DeleteConfiguredModelAlgorithmAssociationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteConfiguredModelAlgorithmOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteMLConfigurationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteMLInputChannelDataOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteTrainedModelOutputOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct DeleteTrainingDatasetOutput: Swift.Sendable {
 
     public init() { }
 }
 
+public struct PutMLConfigurationOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct StartAudienceExportJobOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct StartTrainedModelExportJobOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -329,7 +374,7 @@ public struct ListAudienceExportJobsOutput: Swift.Sendable {
     /// The audience export jobs that match the request.
     /// This member is required.
     public var audienceExportJobs: [CleanRoomsMLClientTypes.AudienceExportJobSummary]?
-    /// The token value retrieved from a previous call to access the next page of results.
+    /// The token value used to access the next page of results.
     public var nextToken: Swift.String?
 
     public init(
@@ -776,7 +821,7 @@ public struct ListAudienceGenerationJobsOutput: Swift.Sendable {
     /// The audience generation jobs that match the request.
     /// This member is required.
     public var audienceGenerationJobs: [CleanRoomsMLClientTypes.AudienceGenerationJobSummary]?
-    /// The token value retrieved from a previous call to access the next page of results.
+    /// The token value used to access the next page of results.
     public var nextToken: Swift.String?
 
     public init(
@@ -1118,7 +1163,7 @@ public struct ListAudienceModelsOutput: Swift.Sendable {
     /// The audience models that match the request.
     /// This member is required.
     public var audienceModels: [CleanRoomsMLClientTypes.AudienceModelSummary]?
-    /// The token value retrieved from a previous call to access the next page of results.
+    /// The token value used to access the next page of results.
     public var nextToken: Swift.String?
 
     public init(
@@ -1499,7 +1544,7 @@ public struct ListConfiguredAudienceModelsOutput: Swift.Sendable {
     /// The configured audience models.
     /// This member is required.
     public var configuredAudienceModels: [CleanRoomsMLClientTypes.ConfiguredAudienceModelSummary]?
-    /// The token value retrieved from a previous call to access the next page of results.
+    /// The token value used to access the next page of results.
     public var nextToken: Swift.String?
 
     public init(
@@ -1684,6 +1729,1775 @@ public struct PutConfiguredAudienceModelPolicyOutput: Swift.Sendable {
     }
 }
 
+extension CleanRoomsMLClientTypes {
+
+    /// Provides configuration information for the inference container.
+    public struct InferenceContainerConfig: Swift.Sendable {
+        /// The registry path of the docker image that contains the inference algorithm. Clean Rooms ML supports both registry/repository[:tag] and registry/repositry[@digest] image path formats. For more information about using images in Clean Rooms ML, see the [Sagemaker API reference](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage).
+        /// This member is required.
+        public var imageUri: Swift.String?
+
+        public init(
+            imageUri: Swift.String? = nil
+        )
+        {
+            self.imageUri = imageUri
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the model metric that is reported for a trained model.
+    public struct MetricDefinition: Swift.Sendable {
+        /// The name of the model metric.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The regular expression statement that defines how the model metric is reported.
+        /// This member is required.
+        public var regex: Swift.String?
+
+        public init(
+            name: Swift.String? = nil,
+            regex: Swift.String? = nil
+        )
+        {
+            self.name = name
+            self.regex = regex
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides configuration information for the dockerized container where the model algorithm is stored.
+    public struct ContainerConfig: Swift.Sendable {
+        /// The arguments for a container used to run a training job. See How Amazon SageMaker Runs Your Training Image for additional information. For more information, see [How Sagemaker runs your training image](https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html).
+        public var arguments: [Swift.String]?
+        /// The entrypoint script for a Docker container used to run a training job. This script takes precedence over the default train processing instructions. See How Amazon SageMaker Runs Your Training Image for additional information. For more information, see [How Sagemaker runs your training image](https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html).
+        public var entrypoint: [Swift.String]?
+        /// The registry path of the docker image that contains the algorithm. Clean Rooms ML supports both registry/repository[:tag] and registry/repositry[@digest] image path formats. For more information about using images in Clean Rooms ML, see the [Sagemaker API reference](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AlgorithmSpecification.html#sagemaker-Type-AlgorithmSpecification-TrainingImage).
+        /// This member is required.
+        public var imageUri: Swift.String?
+        /// A list of metric definition objects. Each object specifies the metric name and regular expressions used to parse algorithm logs. Amazon Web Services Clean Rooms ML publishes each metric to all members' Amazon CloudWatch using IAM role configured in [PutMLConfiguration].
+        public var metricDefinitions: [CleanRoomsMLClientTypes.MetricDefinition]?
+
+        public init(
+            arguments: [Swift.String]? = nil,
+            entrypoint: [Swift.String]? = nil,
+            imageUri: Swift.String? = nil,
+            metricDefinitions: [CleanRoomsMLClientTypes.MetricDefinition]? = nil
+        )
+        {
+            self.arguments = arguments
+            self.entrypoint = entrypoint
+            self.imageUri = imageUri
+            self.metricDefinitions = metricDefinitions
+        }
+    }
+}
+
+public struct CreateConfiguredModelAlgorithmInput: Swift.Sendable {
+    /// The description of the configured model algorithm.
+    public var description: Swift.String?
+    /// Configuration information for the inference container that is used when you run an inference job on a configured model algorithm.
+    public var inferenceContainerConfig: CleanRoomsMLClientTypes.InferenceContainerConfig?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the configured ML model algorithm and associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The name of the configured model algorithm.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Resource Name (ARN) of the role that is used to access the repository.
+    /// This member is required.
+    public var roleArn: Swift.String?
+    /// The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// Configuration information for the training container, including entrypoints and arguments.
+    public var trainingContainerConfig: CleanRoomsMLClientTypes.ContainerConfig?
+
+    public init(
+        description: Swift.String? = nil,
+        inferenceContainerConfig: CleanRoomsMLClientTypes.InferenceContainerConfig? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        name: Swift.String? = nil,
+        roleArn: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        trainingContainerConfig: CleanRoomsMLClientTypes.ContainerConfig? = nil
+    )
+    {
+        self.description = description
+        self.inferenceContainerConfig = inferenceContainerConfig
+        self.kmsKeyArn = kmsKeyArn
+        self.name = name
+        self.roleArn = roleArn
+        self.tags = tags
+        self.trainingContainerConfig = trainingContainerConfig
+    }
+}
+
+public struct CreateConfiguredModelAlgorithmOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+
+    public init(
+        configuredModelAlgorithmArn: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+    }
+}
+
+public struct DeleteConfiguredModelAlgorithmInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm that you want to delete.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+
+    public init(
+        configuredModelAlgorithmArn: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+    }
+}
+
+public struct GetConfiguredModelAlgorithmInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm that you want to return information about.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+
+    public init(
+        configuredModelAlgorithmArn: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+    }
+}
+
+public struct GetConfiguredModelAlgorithmOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+    /// The time at which the configured model algorithm was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The description of the configured model algorithm.
+    public var description: Swift.String?
+    /// Configuration information for the inference container.
+    public var inferenceContainerConfig: CleanRoomsMLClientTypes.InferenceContainerConfig?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the configured ML model and associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The name of the configured model algorithm.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The Amazon Resource Name (ARN) of the service role that was used to create the configured model algorithm.
+    /// This member is required.
+    public var roleArn: Swift.String?
+    /// The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The configuration information of the training container for the configured model algorithm.
+    public var trainingContainerConfig: CleanRoomsMLClientTypes.ContainerConfig?
+    /// The most recent time at which the configured model algorithm was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        configuredModelAlgorithmArn: Swift.String? = nil,
+        createTime: Foundation.Date? = nil,
+        description: Swift.String? = nil,
+        inferenceContainerConfig: CleanRoomsMLClientTypes.InferenceContainerConfig? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        name: Swift.String? = nil,
+        roleArn: Swift.String? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        trainingContainerConfig: CleanRoomsMLClientTypes.ContainerConfig? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+        self.createTime = createTime
+        self.description = description
+        self.inferenceContainerConfig = inferenceContainerConfig
+        self.kmsKeyArn = kmsKeyArn
+        self.name = name
+        self.roleArn = roleArn
+        self.tags = tags
+        self.trainingContainerConfig = trainingContainerConfig
+        self.updateTime = updateTime
+    }
+}
+
+public struct ListConfiguredModelAlgorithmsInput: Swift.Sendable {
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about a configured model algorithm.
+    public struct ConfiguredModelAlgorithmSummary: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the configured model algorithm.
+        /// This member is required.
+        public var configuredModelAlgorithmArn: Swift.String?
+        /// The time at which the configured model algorithm was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The description of the configured model algorithm.
+        public var description: Swift.String?
+        /// The name of the configured model algorithm.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The most recent time at which the configured model algorithm was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            configuredModelAlgorithmArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            description: Swift.String? = nil,
+            name: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+            self.createTime = createTime
+            self.description = description
+            self.name = name
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListConfiguredModelAlgorithmsOutput: Swift.Sendable {
+    /// The list of configured model algorithms.
+    /// This member is required.
+    public var configuredModelAlgorithms: [CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        configuredModelAlgorithms: [CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithms = configuredModelAlgorithms
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelExportFileType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case model
+        case output
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelExportFileType] {
+            return [
+                .model,
+                .output
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .model: return "MODEL"
+            case .output: return "OUTPUT"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelExportsMaxSizeUnitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case gb
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelExportsMaxSizeUnitType] {
+            return [
+                .gb
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .gb: return "GB"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// The maximum size of the trained model metrics that can be exported. If the trained model metrics dataset is larger than this value, it will not be exported.
+    public struct TrainedModelExportsMaxSize: Swift.Sendable {
+        /// The unit of measurement for the data size.
+        /// This member is required.
+        public var unit: CleanRoomsMLClientTypes.TrainedModelExportsMaxSizeUnitType?
+        /// The maximum size of the dataset to export.
+        /// This member is required.
+        public var value: Swift.Double?
+
+        public init(
+            unit: CleanRoomsMLClientTypes.TrainedModelExportsMaxSizeUnitType? = nil,
+            value: Swift.Double? = nil
+        )
+        {
+            self.unit = unit
+            self.value = value
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about how the trained model exports are configured.
+    public struct TrainedModelExportsConfigurationPolicy: Swift.Sendable {
+        /// The files that are exported during the trained model export job.
+        /// This member is required.
+        public var filesToExport: [CleanRoomsMLClientTypes.TrainedModelExportFileType]?
+        /// The maximum size of the data that can be exported.
+        /// This member is required.
+        public var maxSize: CleanRoomsMLClientTypes.TrainedModelExportsMaxSize?
+
+        public init(
+            filesToExport: [CleanRoomsMLClientTypes.TrainedModelExportFileType]? = nil,
+            maxSize: CleanRoomsMLClientTypes.TrainedModelExportsMaxSize? = nil
+        )
+        {
+            self.filesToExport = filesToExport
+            self.maxSize = maxSize
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides the information necessary for a user to access the logs.
+    public struct LogsConfigurationPolicy: Swift.Sendable {
+        /// A list of account IDs that are allowed to access the logs.
+        /// This member is required.
+        public var allowedAccountIds: [Swift.String]?
+        /// A regular expression pattern that is used to parse the logs and return information that matches the pattern.
+        public var filterPattern: Swift.String?
+
+        public init(
+            allowedAccountIds: [Swift.String]? = nil,
+            filterPattern: Swift.String? = nil
+        )
+        {
+            self.allowedAccountIds = allowedAccountIds
+            self.filterPattern = filterPattern
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelInferenceMaxOutputSizeUnitType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case gb
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelInferenceMaxOutputSizeUnitType] {
+            return [
+                .gb
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .gb: return "GB"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the maximum output size for a trained model inference job.
+    public struct TrainedModelInferenceMaxOutputSize: Swift.Sendable {
+        /// The measurement unit to use.
+        /// This member is required.
+        public var unit: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSizeUnitType?
+        /// The maximum output size value.
+        /// This member is required.
+        public var value: Swift.Double?
+
+        public init(
+            unit: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSizeUnitType? = nil,
+            value: Swift.Double? = nil
+        )
+        {
+            self.unit = unit
+            self.value = value
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides configuration information for the trained model inference job.
+    public struct TrainedModelInferenceJobsConfigurationPolicy: Swift.Sendable {
+        /// The logs container for the trained model inference job.
+        public var containerLogs: [CleanRoomsMLClientTypes.LogsConfigurationPolicy]?
+        /// The maximum allowed size of the output of the trained model inference job.
+        public var maxOutputSize: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize?
+
+        public init(
+            containerLogs: [CleanRoomsMLClientTypes.LogsConfigurationPolicy]? = nil,
+            maxOutputSize: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize? = nil
+        )
+        {
+            self.containerLogs = containerLogs
+            self.maxOutputSize = maxOutputSize
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum NoiseLevelType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case high
+        case low
+        case medium
+        case `none`
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [NoiseLevelType] {
+            return [
+                .high,
+                .low,
+                .medium,
+                .none
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .high: return "HIGH"
+            case .low: return "LOW"
+            case .medium: return "MEDIUM"
+            case .none: return "NONE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides the configuration policy for metrics generation.
+    public struct MetricsConfigurationPolicy: Swift.Sendable {
+        /// The noise level for the generated metrics.
+        /// This member is required.
+        public var noiseLevel: CleanRoomsMLClientTypes.NoiseLevelType?
+
+        public init(
+            noiseLevel: CleanRoomsMLClientTypes.NoiseLevelType? = nil
+        )
+        {
+            self.noiseLevel = noiseLevel
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// The configuration policy for the trained models.
+    public struct TrainedModelsConfigurationPolicy: Swift.Sendable {
+        /// The container for the logs of the trained model.
+        public var containerLogs: [CleanRoomsMLClientTypes.LogsConfigurationPolicy]?
+        /// The container for the metrics of the trained model.
+        public var containerMetrics: CleanRoomsMLClientTypes.MetricsConfigurationPolicy?
+
+        public init(
+            containerLogs: [CleanRoomsMLClientTypes.LogsConfigurationPolicy]? = nil,
+            containerMetrics: CleanRoomsMLClientTypes.MetricsConfigurationPolicy? = nil
+        )
+        {
+            self.containerLogs = containerLogs
+            self.containerMetrics = containerMetrics
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the privacy configuration policies for a configured model algorithm association.
+    public struct PrivacyConfigurationPolicies: Swift.Sendable {
+        /// Specifies who will receive the trained model export.
+        public var trainedModelExports: CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy?
+        /// Specifies who will receive the trained model inference jobs.
+        public var trainedModelInferenceJobs: CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy?
+        /// Specifies who will receive the trained models.
+        public var trainedModels: CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy?
+
+        public init(
+            trainedModelExports: CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy? = nil,
+            trainedModelInferenceJobs: CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy? = nil,
+            trainedModels: CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy? = nil
+        )
+        {
+            self.trainedModelExports = trainedModelExports
+            self.trainedModelInferenceJobs = trainedModelInferenceJobs
+            self.trainedModels = trainedModels
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the privacy configuration for a configured model algorithm association.
+    public struct PrivacyConfiguration: Swift.Sendable {
+        /// The privacy configuration policies for a configured model algorithm association.
+        /// This member is required.
+        public var policies: CleanRoomsMLClientTypes.PrivacyConfigurationPolicies?
+
+        public init(
+            policies: CleanRoomsMLClientTypes.PrivacyConfigurationPolicies? = nil
+        )
+        {
+            self.policies = policies
+        }
+    }
+}
+
+public struct CreateConfiguredModelAlgorithmAssociationInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm that you want to associate.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+    /// The description of the configured model algorithm association.
+    public var description: Swift.String?
+    /// The membership ID of the member who is associating this configured model algorithm.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the configured model algorithm association.
+    /// This member is required.
+    public var name: Swift.String?
+    /// Specifies the privacy configuration information for the configured model algorithm association. This information includes the maximum data size that can be exported.
+    public var privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration?
+    /// The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+
+    public init(
+        configuredModelAlgorithmArn: Swift.String? = nil,
+        description: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration? = nil,
+        tags: [Swift.String: Swift.String]? = nil
+    )
+    {
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+        self.description = description
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.privacyConfiguration = privacyConfiguration
+        self.tags = tags
+    }
+}
+
+public struct CreateConfiguredModelAlgorithmAssociationOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+    }
+}
+
+public struct DeleteConfiguredModelAlgorithmAssociationInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that you want to delete.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The membership ID of the member that is deleting the configured model algorithm association.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.membershipIdentifier = membershipIdentifier
+    }
+}
+
+public struct GetCollaborationConfiguredModelAlgorithmAssociationInput: Swift.Sendable {
+    /// The collaboration ID for the collaboration that contains the configured model algorithm association that you want to return information about.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that you want to return information about.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+    }
+}
+
+public struct GetCollaborationConfiguredModelAlgorithmAssociationOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the configured model algorithm association.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The time at which the configured model algorithm association was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The account ID of the member that created the configured model algorithm association.
+    /// This member is required.
+    public var creatorAccountId: Swift.String?
+    /// The description of the configured model algorithm association.
+    public var description: Swift.String?
+    /// The membership ID of the member that created the configured model algorithm association.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the configured model algorithm association.
+    /// This member is required.
+    public var name: Swift.String?
+    /// Information about the privacy configuration for a configured model algorithm association.
+    public var privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration?
+    /// The most recent time at which the configured model algorithm association was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmArn: Swift.String? = nil,
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        createTime: Foundation.Date? = nil,
+        creatorAccountId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.createTime = createTime
+        self.creatorAccountId = creatorAccountId
+        self.description = description
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.privacyConfiguration = privacyConfiguration
+        self.updateTime = updateTime
+    }
+}
+
+public struct GetConfiguredModelAlgorithmAssociationInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that you want to return information about.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The membership ID of the member that created the configured model algorithm association.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.membershipIdentifier = membershipIdentifier
+    }
+}
+
+public struct GetConfiguredModelAlgorithmAssociationOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the configured model algorithm association.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm that was associated to the collaboration.
+    /// This member is required.
+    public var configuredModelAlgorithmArn: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The time at which the configured model algorithm association was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The description of the configured model algorithm association.
+    public var description: Swift.String?
+    /// The membership ID of the member that created the configured model algorithm association.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the configured model algorithm association.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The privacy configuration information for the configured model algorithm association.
+    public var privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration?
+    /// The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The most recent time at which the configured model algorithm association was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmArn: Swift.String? = nil,
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        createTime: Foundation.Date? = nil,
+        description: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        privacyConfiguration: CleanRoomsMLClientTypes.PrivacyConfiguration? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.createTime = createTime
+        self.description = description
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.privacyConfiguration = privacyConfiguration
+        self.tags = tags
+        self.updateTime = updateTime
+    }
+}
+
+public struct ListConfiguredModelAlgorithmAssociationsInput: Swift.Sendable {
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The membership ID of the member that created the configured model algorithm associations you are interested in.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.membershipIdentifier = membershipIdentifier
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about the configured model algorithm association.
+    public struct ConfiguredModelAlgorithmAssociationSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the configured model algorithm association.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm that is being associated.
+        /// This member is required.
+        public var configuredModelAlgorithmArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the configured model algorithm association was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The description of the configured model algorithm association.
+        public var description: Swift.String?
+        /// The membership ID of the member that created the configured model algorithm association.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The name of the configured model algorithm association.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The most recent time at which the configured model algorithm association was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmArn: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            name: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.name = name
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListConfiguredModelAlgorithmAssociationsOutput: Swift.Sendable {
+    /// The list of configured model algorithm associations.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociations: [CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        configuredModelAlgorithmAssociations: [CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListCollaborationConfiguredModelAlgorithmAssociationsInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the configured model algorithm associations that you are interested in.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about a configured model algorithm in a collaboration.
+    public struct CollaborationConfiguredModelAlgorithmAssociationSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the configured model algorithm association.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm that is associated to the collaboration.
+        /// This member is required.
+        public var configuredModelAlgorithmArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the configured model algorithm association was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The account ID of the member that created the configured model algorithm association.
+        /// This member is required.
+        public var creatorAccountId: Swift.String?
+        /// The description of the configured model algorithm association.
+        public var description: Swift.String?
+        /// The membership ID of the member that created the configured model algorithm association.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The name of the configured model algorithm association.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The most recent time at which the configured model algorithm association was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmArn: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            creatorAccountId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            name: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmArn = configuredModelAlgorithmArn
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.creatorAccountId = creatorAccountId
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.name = name
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListCollaborationConfiguredModelAlgorithmAssociationsOutput: Swift.Sendable {
+    /// The configured model algorithm associations that belong to this collaboration.
+    /// This member is required.
+    public var collaborationConfiguredModelAlgorithmAssociations: [CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationConfiguredModelAlgorithmAssociations: [CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationConfiguredModelAlgorithmAssociations = collaborationConfiguredModelAlgorithmAssociations
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListCollaborationMLInputChannelsInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the ML input channels that you want to list.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The maximum number of results to return.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum MLInputChannelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case active
+        case createFailed
+        case createInProgress
+        case createPending
+        case deleteFailed
+        case deleteInProgress
+        case deletePending
+        case inactive
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [MLInputChannelStatus] {
+            return [
+                .active,
+                .createFailed,
+                .createInProgress,
+                .createPending,
+                .deleteFailed,
+                .deleteInProgress,
+                .deletePending,
+                .inactive
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .active: return "ACTIVE"
+            case .createFailed: return "CREATE_FAILED"
+            case .createInProgress: return "CREATE_IN_PROGRESS"
+            case .createPending: return "CREATE_PENDING"
+            case .deleteFailed: return "DELETE_FAILED"
+            case .deleteInProgress: return "DELETE_IN_PROGRESS"
+            case .deletePending: return "DELETE_PENDING"
+            case .inactive: return "INACTIVE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about an ML input channel in a collaboration.
+    public struct CollaborationMLInputChannelSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the ML input channel.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The associated configured model algorithms used to create the ML input channel.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociations: [Swift.String]?
+        /// The time at which the ML input channel was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The account ID of the member who created the ML input channel.
+        /// This member is required.
+        public var creatorAccountId: Swift.String?
+        /// The description of the ML input channel.
+        public var description: Swift.String?
+        /// The membership ID of the membership that contains the ML input channel.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the ML input channel.
+        /// This member is required.
+        public var mlInputChannelArn: Swift.String?
+        /// The name of the ML input channel.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The status of the ML input channel.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.MLInputChannelStatus?
+        /// The most recent time at which the ML input channel was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociations: [Swift.String]? = nil,
+            createTime: Foundation.Date? = nil,
+            creatorAccountId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            mlInputChannelArn: Swift.String? = nil,
+            name: Swift.String? = nil,
+            status: CleanRoomsMLClientTypes.MLInputChannelStatus? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+            self.createTime = createTime
+            self.creatorAccountId = creatorAccountId
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.mlInputChannelArn = mlInputChannelArn
+            self.name = name
+            self.status = status
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListCollaborationMLInputChannelsOutput: Swift.Sendable {
+    /// The list of ML input channels that you wanted.
+    /// This member is required.
+    public var collaborationMLInputChannelsList: [CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationMLInputChannelsList: [CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationMLInputChannelsList = collaborationMLInputChannelsList
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListCollaborationTrainedModelExportJobsInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the trained model export jobs that you are interested in.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model that was used to create the export jobs that you are interested in.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides information about the member who will receive trained model exports.
+    public struct TrainedModelExportReceiverMember: Swift.Sendable {
+        /// The account ID of the member who will receive trained model exports.
+        /// This member is required.
+        public var accountId: Swift.String?
+
+        public init(
+            accountId: Swift.String? = nil
+        )
+        {
+            self.accountId = accountId
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the output of the trained model export job.
+    public struct TrainedModelExportOutputConfiguration: Swift.Sendable {
+        /// The members that will received the exported trained model output.
+        /// This member is required.
+        public var members: [CleanRoomsMLClientTypes.TrainedModelExportReceiverMember]?
+
+        public init(
+            members: [CleanRoomsMLClientTypes.TrainedModelExportReceiverMember]? = nil
+        )
+        {
+            self.members = members
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelExportJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case active
+        case createFailed
+        case createInProgress
+        case createPending
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelExportJobStatus] {
+            return [
+                .active,
+                .createFailed,
+                .createInProgress,
+                .createPending
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .active: return "ACTIVE"
+            case .createFailed: return "CREATE_FAILED"
+            case .createInProgress: return "CREATE_IN_PROGRESS"
+            case .createPending: return "CREATE_PENDING"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about a trained model export job in a collaboration.
+    public struct CollaborationTrainedModelExportJobSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the trained model export job.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The time at which the trained model export job was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The account ID of the member that created the trained model.
+        /// This member is required.
+        public var creatorAccountId: Swift.String?
+        /// The description of the trained model.
+        public var description: Swift.String?
+        /// The membership ID of the member that created the trained model export job.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The name of the trained model export job.
+        /// This member is required.
+        public var name: Swift.String?
+        /// Information about the output of the trained model export job.
+        /// This member is required.
+        public var outputConfiguration: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration?
+        /// The status of the trained model.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.TrainedModelExportJobStatus?
+        /// Details about the status of a resource.
+        public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+        /// The Amazon Resource Name (ARN) of the trained model that is being exported.
+        /// This member is required.
+        public var trainedModelArn: Swift.String?
+        /// The most recent time at which the trained model export job was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            creatorAccountId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            name: Swift.String? = nil,
+            outputConfiguration: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration? = nil,
+            status: CleanRoomsMLClientTypes.TrainedModelExportJobStatus? = nil,
+            statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+            trainedModelArn: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.createTime = createTime
+            self.creatorAccountId = creatorAccountId
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.name = name
+            self.outputConfiguration = outputConfiguration
+            self.status = status
+            self.statusDetails = statusDetails
+            self.trainedModelArn = trainedModelArn
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListCollaborationTrainedModelExportJobsOutput: Swift.Sendable {
+    /// The exports jobs that exist for the requested trained model in the requested collaboration.
+    /// This member is required.
+    public var collaborationTrainedModelExportJobs: [CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationTrainedModelExportJobs: [CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationTrainedModelExportJobs = collaborationTrainedModelExportJobs
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListCollaborationTrainedModelInferenceJobsInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the trained model inference jobs that you are interested in.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model that was used to create the trained model inference jobs that you are interested in.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum LogsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case publishFailed
+        case publishSucceeded
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [LogsStatus] {
+            return [
+                .publishFailed,
+                .publishSucceeded
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .publishFailed: return "PUBLISH_FAILED"
+            case .publishSucceeded: return "PUBLISH_SUCCEEDED"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum MetricsStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case publishFailed
+        case publishSucceeded
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [MetricsStatus] {
+            return [
+                .publishFailed,
+                .publishSucceeded
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .publishFailed: return "PUBLISH_FAILED"
+            case .publishSucceeded: return "PUBLISH_SUCCEEDED"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Defines who will receive inference results.
+    public struct InferenceReceiverMember: Swift.Sendable {
+        /// The account ID of the member that can receive inference results.
+        /// This member is required.
+        public var accountId: Swift.String?
+
+        public init(
+            accountId: Swift.String? = nil
+        )
+        {
+            self.accountId = accountId
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Configuration information about how the inference output is stored.
+    public struct InferenceOutputConfiguration: Swift.Sendable {
+        /// The MIME type used to specify the output data.
+        public var accept: Swift.String?
+        /// Defines the members that can receive inference output.
+        /// This member is required.
+        public var members: [CleanRoomsMLClientTypes.InferenceReceiverMember]?
+
+        public init(
+            accept: Swift.String? = "application/json",
+            members: [CleanRoomsMLClientTypes.InferenceReceiverMember]? = nil
+        )
+        {
+            self.accept = accept
+            self.members = members
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelInferenceJobStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case active
+        case cancelFailed
+        case cancelInProgress
+        case cancelPending
+        case createFailed
+        case createInProgress
+        case createPending
+        case inactive
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelInferenceJobStatus] {
+            return [
+                .active,
+                .cancelFailed,
+                .cancelInProgress,
+                .cancelPending,
+                .createFailed,
+                .createInProgress,
+                .createPending,
+                .inactive
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .active: return "ACTIVE"
+            case .cancelFailed: return "CANCEL_FAILED"
+            case .cancelInProgress: return "CANCEL_IN_PROGRESS"
+            case .cancelPending: return "CANCEL_PENDING"
+            case .createFailed: return "CREATE_FAILED"
+            case .createInProgress: return "CREATE_IN_PROGRESS"
+            case .createPending: return "CREATE_PENDING"
+            case .inactive: return "INACTIVE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about a trained model inference job in a collaboration.
+    public struct CollaborationTrainedModelInferenceJobSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the trained model inference job.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association that is used for the trained model inference job.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the trained model inference job was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The account ID that created the trained model inference job.
+        /// This member is required.
+        public var creatorAccountId: Swift.String?
+        /// The description of the trained model inference job.
+        public var description: Swift.String?
+        /// The trained model inference job logs status.
+        public var logsStatus: CleanRoomsMLClientTypes.LogsStatus?
+        /// Details about the logs status for the trained model inference job.
+        public var logsStatusDetails: Swift.String?
+        /// The membership ID of the membership that contains the trained model inference job.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// the trained model inference job metrics status.
+        public var metricsStatus: CleanRoomsMLClientTypes.MetricsStatus?
+        /// Details about the metrics status for trained model inference job.
+        public var metricsStatusDetails: Swift.String?
+        /// The name of the trained model inference job.
+        /// This member is required.
+        public var name: Swift.String?
+        /// Returns output configuration information for the trained model inference job.
+        /// This member is required.
+        public var outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration?
+        /// The status of the trained model inference job.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus?
+        /// The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.
+        /// This member is required.
+        public var trainedModelArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the trained model inference job.
+        /// This member is required.
+        public var trainedModelInferenceJobArn: Swift.String?
+        /// The most recent time at which the trained model inference job was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            creatorAccountId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            logsStatus: CleanRoomsMLClientTypes.LogsStatus? = nil,
+            logsStatusDetails: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            metricsStatus: CleanRoomsMLClientTypes.MetricsStatus? = nil,
+            metricsStatusDetails: Swift.String? = nil,
+            name: Swift.String? = nil,
+            outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration? = nil,
+            status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus? = nil,
+            trainedModelArn: Swift.String? = nil,
+            trainedModelInferenceJobArn: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.creatorAccountId = creatorAccountId
+            self.description = description
+            self.logsStatus = logsStatus
+            self.logsStatusDetails = logsStatusDetails
+            self.membershipIdentifier = membershipIdentifier
+            self.metricsStatus = metricsStatus
+            self.metricsStatusDetails = metricsStatusDetails
+            self.name = name
+            self.outputConfiguration = outputConfiguration
+            self.status = status
+            self.trainedModelArn = trainedModelArn
+            self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListCollaborationTrainedModelInferenceJobsOutput: Swift.Sendable {
+    /// The trained model inference jobs that you are interested in.
+    /// This member is required.
+    public var collaborationTrainedModelInferenceJobs: [CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationTrainedModelInferenceJobs: [CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationTrainedModelInferenceJobs = collaborationTrainedModelInferenceJobs
+        self.nextToken = nextToken
+    }
+}
+
+public struct ListCollaborationTrainedModelsInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the trained models you are interested in.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum TrainedModelStatus: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case active
+        case cancelFailed
+        case cancelInProgress
+        case cancelPending
+        case createFailed
+        case createInProgress
+        case createPending
+        case deleteFailed
+        case deleteInProgress
+        case deletePending
+        case inactive
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [TrainedModelStatus] {
+            return [
+                .active,
+                .cancelFailed,
+                .cancelInProgress,
+                .cancelPending,
+                .createFailed,
+                .createInProgress,
+                .createPending,
+                .deleteFailed,
+                .deleteInProgress,
+                .deletePending,
+                .inactive
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .active: return "ACTIVE"
+            case .cancelFailed: return "CANCEL_FAILED"
+            case .cancelInProgress: return "CANCEL_IN_PROGRESS"
+            case .cancelPending: return "CANCEL_PENDING"
+            case .createFailed: return "CREATE_FAILED"
+            case .createInProgress: return "CREATE_IN_PROGRESS"
+            case .createPending: return "CREATE_PENDING"
+            case .deleteFailed: return "DELETE_FAILED"
+            case .deleteInProgress: return "DELETE_IN_PROGRESS"
+            case .deletePending: return "DELETE_PENDING"
+            case .inactive: return "INACTIVE"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about a trained model in a collaboration.
+    public struct CollaborationTrainedModelSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the trained model.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association that is used for this trained model.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the trained model was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The account ID of the member that created the trained model.
+        /// This member is required.
+        public var creatorAccountId: Swift.String?
+        /// The description of the trained model.
+        public var description: Swift.String?
+        /// The membership ID of the member that created the trained model.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The name of the trained model.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The status of the trained model.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.TrainedModelStatus?
+        /// The Amazon Resource Name (ARN) of the trained model.
+        /// This member is required.
+        public var trainedModelArn: Swift.String?
+        /// The most recent time at which the trained model was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            creatorAccountId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            name: Swift.String? = nil,
+            status: CleanRoomsMLClientTypes.TrainedModelStatus? = nil,
+            trainedModelArn: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.creatorAccountId = creatorAccountId
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.name = name
+            self.status = status
+            self.trainedModelArn = trainedModelArn
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListCollaborationTrainedModelsOutput: Swift.Sendable {
+    /// The trained models in the collaboration that you requested.
+    /// This member is required.
+    public var collaborationTrainedModels: [CleanRoomsMLClientTypes.CollaborationTrainedModelSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        collaborationTrainedModels: [CleanRoomsMLClientTypes.CollaborationTrainedModelSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.collaborationTrainedModels = collaborationTrainedModels
+        self.nextToken = nextToken
+    }
+}
+
 public struct ListTagsForResourceInput: Swift.Sendable {
     /// The Amazon Resource Name (ARN) of the resource that you are interested in.
     /// This member is required.
@@ -1707,6 +3521,631 @@ public struct ListTagsForResourceOutput: Swift.Sendable {
     )
     {
         self.tags = tags
+    }
+}
+
+public struct DeleteMLConfigurationInput: Swift.Sendable {
+    /// The membership ID of the of the member that is deleting the ML modeling configuration.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+    }
+}
+
+public struct GetMLConfigurationInput: Swift.Sendable {
+    /// The membership ID of the member that owns the ML configuration you want to return information about.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// The Amazon S3 location where the exported model artifacts are stored.
+    public struct Destination: Swift.Sendable {
+        /// Provides information about an Amazon S3 bucket and path.
+        /// This member is required.
+        public var s3Destination: CleanRoomsMLClientTypes.S3ConfigMap?
+
+        public init(
+            s3Destination: CleanRoomsMLClientTypes.S3ConfigMap? = nil
+        )
+        {
+            self.s3Destination = s3Destination
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Configuration information about how the exported model artifacts are stored.
+    public struct MLOutputConfiguration: Swift.Sendable {
+        /// The Amazon S3 location where exported model artifacts are stored.
+        public var destination: CleanRoomsMLClientTypes.Destination?
+        /// The Amazon Resource Name (ARN) of the service access role that is used to store the model artifacts.
+        /// This member is required.
+        public var roleArn: Swift.String?
+
+        public init(
+            destination: CleanRoomsMLClientTypes.Destination? = nil,
+            roleArn: Swift.String? = nil
+        )
+        {
+            self.destination = destination
+            self.roleArn = roleArn
+        }
+    }
+}
+
+public struct GetMLConfigurationOutput: Swift.Sendable {
+    /// The time at which the ML configuration was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The Amazon S3 location where ML model output is stored.
+    /// This member is required.
+    public var defaultOutputLocation: CleanRoomsMLClientTypes.MLOutputConfiguration?
+    /// The membership ID of the member that owns the ML configuration you requested.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The most recent time at which the ML configuration was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        createTime: Foundation.Date? = nil,
+        defaultOutputLocation: CleanRoomsMLClientTypes.MLOutputConfiguration? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.createTime = createTime
+        self.defaultOutputLocation = defaultOutputLocation
+        self.membershipIdentifier = membershipIdentifier
+        self.updateTime = updateTime
+    }
+}
+
+public struct PutMLConfigurationInput: Swift.Sendable {
+    /// The default Amazon S3 location where ML output is stored for the specified member.
+    /// This member is required.
+    public var defaultOutputLocation: CleanRoomsMLClientTypes.MLOutputConfiguration?
+    /// The membership ID of the member that is being configured.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+
+    public init(
+        defaultOutputLocation: CleanRoomsMLClientTypes.MLOutputConfiguration? = nil,
+        membershipIdentifier: Swift.String? = nil
+    )
+    {
+        self.defaultOutputLocation = defaultOutputLocation
+        self.membershipIdentifier = membershipIdentifier
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum WorkerComputeType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case cr1x
+        case cr4x
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [WorkerComputeType] {
+            return [
+                .cr1x,
+                .cr4x
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .cr1x: return "CR.1X"
+            case .cr4x: return "CR.4X"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Configuration information about the compute workers that perform the transform job.
+    public struct WorkerComputeConfiguration: Swift.Sendable {
+        /// The number of compute workers that are used.
+        public var number: Swift.Int?
+        /// The instance type of the compute workers that are used.
+        public var type: CleanRoomsMLClientTypes.WorkerComputeType?
+
+        public init(
+            number: Swift.Int? = 16,
+            type: CleanRoomsMLClientTypes.WorkerComputeType? = .cr1x
+        )
+        {
+            self.number = number
+            self.type = type
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides configuration information for the instances that will perform the compute work.
+    public enum ComputeConfiguration: Swift.Sendable {
+        /// The worker instances that will perform the compute work.
+        case worker(CleanRoomsMLClientTypes.WorkerComputeConfiguration)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides information necessary to perform the protected query.
+    public struct ProtectedQueryInputParameters: Swift.Sendable {
+        /// Provides configuration information for the workers that will perform the protected query.
+        public var computeConfiguration: CleanRoomsMLClientTypes.ComputeConfiguration?
+        /// The parameters for the SQL type Protected Query.
+        /// This member is required.
+        public var sqlParameters: CleanRoomsMLClientTypes.ProtectedQuerySQLParameters?
+
+        public init(
+            computeConfiguration: CleanRoomsMLClientTypes.ComputeConfiguration? = nil,
+            sqlParameters: CleanRoomsMLClientTypes.ProtectedQuerySQLParameters? = nil
+        )
+        {
+            self.computeConfiguration = computeConfiguration
+            self.sqlParameters = sqlParameters
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes.ProtectedQueryInputParameters: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ProtectedQueryInputParameters(computeConfiguration: \(Swift.String(describing: computeConfiguration)), sqlParameters: \"CONTENT_REDACTED\")"}
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides the data source that is used to define an input channel.
+    public enum InputChannelDataSource: Swift.Sendable {
+        /// Provides information necessary to perform the protected query.
+        case protectedqueryinputparameters(CleanRoomsMLClientTypes.ProtectedQueryInputParameters)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides information about the data source that is used to create an ML input channel.
+    public struct InputChannel: Swift.Sendable {
+        /// The data source that is used to create the ML input channel.
+        /// This member is required.
+        public var dataSource: CleanRoomsMLClientTypes.InputChannelDataSource?
+        /// The ARN of the IAM role that Clean Rooms ML can assume to read the data referred to in the dataSource field the input channel. Passing a role across AWS accounts is not allowed. If you pass a role that isn't in your account, you get an AccessDeniedException error.
+        /// This member is required.
+        public var roleArn: Swift.String?
+
+        public init(
+            dataSource: CleanRoomsMLClientTypes.InputChannelDataSource? = nil,
+            roleArn: Swift.String? = nil
+        )
+        {
+            self.dataSource = dataSource
+            self.roleArn = roleArn
+        }
+    }
+}
+
+public struct CreateMLInputChannelInput: Swift.Sendable {
+    /// The associated configured model algorithms that are necessary to create this ML input channel.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociations: [Swift.String]?
+    /// The description of the ML input channel.
+    public var description: Swift.String?
+    /// The input data that is used to create this ML input channel.
+    /// This member is required.
+    public var inputChannel: CleanRoomsMLClientTypes.InputChannel?
+    /// The Amazon Resource Name (ARN) of the KMS key that is used to access the input channel.
+    public var kmsKeyArn: Swift.String?
+    /// The membership ID of the member that is creating the ML input channel.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the ML input channel.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The number of days that the data in the ML input channel is retained.
+    /// This member is required.
+    public var retentionInDays: Swift.Int?
+    /// The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+
+    public init(
+        configuredModelAlgorithmAssociations: [Swift.String]? = nil,
+        description: Swift.String? = nil,
+        inputChannel: CleanRoomsMLClientTypes.InputChannel? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        retentionInDays: Swift.Int? = nil,
+        tags: [Swift.String: Swift.String]? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+        self.description = description
+        self.inputChannel = inputChannel
+        self.kmsKeyArn = kmsKeyArn
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.retentionInDays = retentionInDays
+        self.tags = tags
+    }
+}
+
+public struct CreateMLInputChannelOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the ML input channel.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+
+    public init(
+        mlInputChannelArn: Swift.String? = nil
+    )
+    {
+        self.mlInputChannelArn = mlInputChannelArn
+    }
+}
+
+public struct DeleteMLInputChannelDataInput: Swift.Sendable {
+    /// The membership ID of the membership that contains the ML input channel you want to delete.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the ML input channel that you want to delete.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        mlInputChannelArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.mlInputChannelArn = mlInputChannelArn
+    }
+}
+
+public struct GetCollaborationMLInputChannelInput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the ML input channel that you want to get.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the ML input channel that you want to get.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        mlInputChannelArn: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.mlInputChannelArn = mlInputChannelArn
+    }
+}
+
+public struct GetCollaborationMLInputChannelOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the ML input channel.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The configured model algorithm associations that were used to create the ML input channel.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociations: [Swift.String]?
+    /// The time at which the ML input channel was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The account ID of the member who created the ML input channel.
+    /// This member is required.
+    public var creatorAccountId: Swift.String?
+    /// The description of the ML input channel.
+    public var description: Swift.String?
+    /// The membership ID of the membership that contains the ML input channel.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the ML input channel.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+    /// The name of the ML input channel.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The number of records in the ML input channel.
+    public var numberOfRecords: Swift.Int?
+    /// The number of days to retain the data for the ML input channel.
+    /// This member is required.
+    public var retentionInDays: Swift.Int?
+    /// The status of the ML input channel.
+    /// This member is required.
+    public var status: CleanRoomsMLClientTypes.MLInputChannelStatus?
+    /// Details about the status of a resource.
+    public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+    /// The most recent time at which the ML input channel was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmAssociations: [Swift.String]? = nil,
+        createTime: Foundation.Date? = nil,
+        creatorAccountId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        mlInputChannelArn: Swift.String? = nil,
+        name: Swift.String? = nil,
+        numberOfRecords: Swift.Int? = nil,
+        retentionInDays: Swift.Int? = nil,
+        status: CleanRoomsMLClientTypes.MLInputChannelStatus? = nil,
+        statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+        self.createTime = createTime
+        self.creatorAccountId = creatorAccountId
+        self.description = description
+        self.membershipIdentifier = membershipIdentifier
+        self.mlInputChannelArn = mlInputChannelArn
+        self.name = name
+        self.numberOfRecords = numberOfRecords
+        self.retentionInDays = retentionInDays
+        self.status = status
+        self.statusDetails = statusDetails
+        self.updateTime = updateTime
+    }
+}
+
+public struct GetMLInputChannelInput: Swift.Sendable {
+    /// The membership ID of the membership that contains the ML input channel that you want to get.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the ML input channel that you want to get.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        mlInputChannelArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.mlInputChannelArn = mlInputChannelArn
+    }
+}
+
+public struct GetMLInputChannelOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the ML input channel.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The configured model algorithm associations that were used to create the ML input channel.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociations: [Swift.String]?
+    /// The time at which the ML input channel was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The description of the ML input channel.
+    public var description: Swift.String?
+    /// The input channel that was used to create the ML input channel.
+    /// This member is required.
+    public var inputChannel: CleanRoomsMLClientTypes.InputChannel?
+    /// The Amazon Resource Name (ARN) of the KMS key that was used to create the ML input channel.
+    public var kmsKeyArn: Swift.String?
+    /// The membership ID of the membership that contains the ML input channel.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the ML input channel.
+    /// This member is required.
+    public var mlInputChannelArn: Swift.String?
+    /// The name of the ML input channel.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The number of files in the ML input channel.
+    public var numberOfFiles: Swift.Double?
+    /// The number of records in the ML input channel.
+    public var numberOfRecords: Swift.Int?
+    /// The ID of the protected query that was used to create the ML input channel.
+    public var protectedQueryIdentifier: Swift.String?
+    /// The number of days to keep the data in the ML input channel.
+    /// This member is required.
+    public var retentionInDays: Swift.Int?
+    /// The size, in GB, of the ML input channel.
+    public var sizeInGb: Swift.Double?
+    /// The status of the ML input channel.
+    /// This member is required.
+    public var status: CleanRoomsMLClientTypes.MLInputChannelStatus?
+    /// Details about the status of a resource.
+    public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+    /// The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The most recent time at which the ML input channel was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmAssociations: [Swift.String]? = nil,
+        createTime: Foundation.Date? = nil,
+        description: Swift.String? = nil,
+        inputChannel: CleanRoomsMLClientTypes.InputChannel? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        mlInputChannelArn: Swift.String? = nil,
+        name: Swift.String? = nil,
+        numberOfFiles: Swift.Double? = nil,
+        numberOfRecords: Swift.Int? = nil,
+        protectedQueryIdentifier: Swift.String? = nil,
+        retentionInDays: Swift.Int? = nil,
+        sizeInGb: Swift.Double? = nil,
+        status: CleanRoomsMLClientTypes.MLInputChannelStatus? = nil,
+        statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+        self.createTime = createTime
+        self.description = description
+        self.inputChannel = inputChannel
+        self.kmsKeyArn = kmsKeyArn
+        self.membershipIdentifier = membershipIdentifier
+        self.mlInputChannelArn = mlInputChannelArn
+        self.name = name
+        self.numberOfFiles = numberOfFiles
+        self.numberOfRecords = numberOfRecords
+        self.protectedQueryIdentifier = protectedQueryIdentifier
+        self.retentionInDays = retentionInDays
+        self.sizeInGb = sizeInGb
+        self.status = status
+        self.statusDetails = statusDetails
+        self.tags = tags
+        self.updateTime = updateTime
+    }
+}
+
+public struct ListMLInputChannelsInput: Swift.Sendable {
+    /// The maximum number of ML input channels to return.
+    public var maxResults: Swift.Int?
+    /// The membership ID of the membership that contains the ML input channels that you want to list.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.membershipIdentifier = membershipIdentifier
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides summary information about the ML input channel.
+    public struct MLInputChannelSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the ML input channel.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The associated configured model algorithms used to create the ML input channel.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociations: [Swift.String]?
+        /// The time at which the ML input channel was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The description of the ML input channel.
+        public var description: Swift.String?
+        /// The membership ID of the membership that contains the ML input channel.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the ML input channel.
+        /// This member is required.
+        public var mlInputChannelArn: Swift.String?
+        /// The name of the ML input channel.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The ID of the protected query that was used to create the ML input channel.
+        public var protectedQueryIdentifier: Swift.String?
+        /// The status of the ML input channel.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.MLInputChannelStatus?
+        /// The most recent time at which the ML input channel was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociations: [Swift.String]? = nil,
+            createTime: Foundation.Date? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            mlInputChannelArn: Swift.String? = nil,
+            name: Swift.String? = nil,
+            protectedQueryIdentifier: Swift.String? = nil,
+            status: CleanRoomsMLClientTypes.MLInputChannelStatus? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociations = configuredModelAlgorithmAssociations
+            self.createTime = createTime
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.mlInputChannelArn = mlInputChannelArn
+            self.name = name
+            self.protectedQueryIdentifier = protectedQueryIdentifier
+            self.status = status
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListMLInputChannelsOutput: Swift.Sendable {
+    /// The list of ML input channels that you wanted.
+    /// This member is required.
+    public var mlInputChannelsList: [CleanRoomsMLClientTypes.MLInputChannelSummary]?
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        mlInputChannelsList: [CleanRoomsMLClientTypes.MLInputChannelSummary]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.mlInputChannelsList = mlInputChannelsList
+        self.nextToken = nextToken
     }
 }
 
@@ -1745,6 +4184,1577 @@ public struct TagResourceInput: Swift.Sendable {
 public struct TagResourceOutput: Swift.Sendable {
 
     public init() { }
+}
+
+public struct CancelTrainedModelInput: Swift.Sendable {
+    /// The membership ID of the trained model job that you want to cancel.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model job that you want to cancel.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the model training data channel. A training data channel is a named data source that the training algorithms can consume.
+    public struct ModelTrainingDataChannel: Swift.Sendable {
+        /// The name of the training data channel.
+        /// This member is required.
+        public var channelName: Swift.String?
+        /// The Amazon Resource Name (ARN) of the ML input channel for this model training data channel.
+        /// This member is required.
+        public var mlInputChannelArn: Swift.String?
+
+        public init(
+            channelName: Swift.String? = nil,
+            mlInputChannelArn: Swift.String? = nil
+        )
+        {
+            self.channelName = channelName
+            self.mlInputChannelArn = mlInputChannelArn
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum InstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case mlC42xlarge
+        case mlC44xlarge
+        case mlC48xlarge
+        case mlC4Xlarge
+        case mlC5n18xlarge
+        case mlC5n2xlarge
+        case mlC5n4xlarge
+        case mlC5n9xlarge
+        case mlC5nXlarge
+        case mlC518xlarge
+        case mlC52xlarge
+        case mlC54xlarge
+        case mlC59xlarge
+        case mlC5Xlarge
+        case mlC6i12xlarge
+        case mlC6i16xlarge
+        case mlC6i24xlarge
+        case mlC6i2xlarge
+        case mlC6i32xlarge
+        case mlC6i4xlarge
+        case mlC6i8xlarge
+        case mlC6iXlarge
+        case mlG4dn12xlarge
+        case mlG4dn16xlarge
+        case mlG4dn2xlarge
+        case mlG4dn4xlarge
+        case mlG4dn8xlarge
+        case mlG4dnXlarge
+        case mlG512xlarge
+        case mlG516xlarge
+        case mlG524xlarge
+        case mlG52xlarge
+        case mlG548xlarge
+        case mlG54xlarge
+        case mlG58xlarge
+        case mlG5Xlarge
+        case mlM410xlarge
+        case mlM416xlarge
+        case mlM42xlarge
+        case mlM44xlarge
+        case mlM4Xlarge
+        case mlM512xlarge
+        case mlM524xlarge
+        case mlM52xlarge
+        case mlM54xlarge
+        case mlM5Large
+        case mlM5Xlarge
+        case mlM6i12xlarge
+        case mlM6i16xlarge
+        case mlM6i24xlarge
+        case mlM6i2xlarge
+        case mlM6i32xlarge
+        case mlM6i4xlarge
+        case mlM6i8xlarge
+        case mlM6iLarge
+        case mlM6iXlarge
+        case mlP216xlarge
+        case mlP28xlarge
+        case mlP2Xlarge
+        case mlP3dn24xlarge
+        case mlP316xlarge
+        case mlP32xlarge
+        case mlP38xlarge
+        case mlP4de24xlarge
+        case mlP4d24xlarge
+        case mlP548xlarge
+        case mlR5d12xlarge
+        case mlR5d16xlarge
+        case mlR5d24xlarge
+        case mlR5d2xlarge
+        case mlR5d4xlarge
+        case mlR5d8xlarge
+        case mlR5dLarge
+        case mlR5dXlarge
+        case mlR512xlarge
+        case mlR516xlarge
+        case mlR524xlarge
+        case mlR52xlarge
+        case mlR54xlarge
+        case mlR58xlarge
+        case mlR5Large
+        case mlR5Xlarge
+        case mlT32xlarge
+        case mlT3Large
+        case mlT3Medium
+        case mlT3Xlarge
+        case mlTrn1n32xlarge
+        case mlTrn12xlarge
+        case mlTrn132xlarge
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [InstanceType] {
+            return [
+                .mlC42xlarge,
+                .mlC44xlarge,
+                .mlC48xlarge,
+                .mlC4Xlarge,
+                .mlC5n18xlarge,
+                .mlC5n2xlarge,
+                .mlC5n4xlarge,
+                .mlC5n9xlarge,
+                .mlC5nXlarge,
+                .mlC518xlarge,
+                .mlC52xlarge,
+                .mlC54xlarge,
+                .mlC59xlarge,
+                .mlC5Xlarge,
+                .mlC6i12xlarge,
+                .mlC6i16xlarge,
+                .mlC6i24xlarge,
+                .mlC6i2xlarge,
+                .mlC6i32xlarge,
+                .mlC6i4xlarge,
+                .mlC6i8xlarge,
+                .mlC6iXlarge,
+                .mlG4dn12xlarge,
+                .mlG4dn16xlarge,
+                .mlG4dn2xlarge,
+                .mlG4dn4xlarge,
+                .mlG4dn8xlarge,
+                .mlG4dnXlarge,
+                .mlG512xlarge,
+                .mlG516xlarge,
+                .mlG524xlarge,
+                .mlG52xlarge,
+                .mlG548xlarge,
+                .mlG54xlarge,
+                .mlG58xlarge,
+                .mlG5Xlarge,
+                .mlM410xlarge,
+                .mlM416xlarge,
+                .mlM42xlarge,
+                .mlM44xlarge,
+                .mlM4Xlarge,
+                .mlM512xlarge,
+                .mlM524xlarge,
+                .mlM52xlarge,
+                .mlM54xlarge,
+                .mlM5Large,
+                .mlM5Xlarge,
+                .mlM6i12xlarge,
+                .mlM6i16xlarge,
+                .mlM6i24xlarge,
+                .mlM6i2xlarge,
+                .mlM6i32xlarge,
+                .mlM6i4xlarge,
+                .mlM6i8xlarge,
+                .mlM6iLarge,
+                .mlM6iXlarge,
+                .mlP216xlarge,
+                .mlP28xlarge,
+                .mlP2Xlarge,
+                .mlP3dn24xlarge,
+                .mlP316xlarge,
+                .mlP32xlarge,
+                .mlP38xlarge,
+                .mlP4de24xlarge,
+                .mlP4d24xlarge,
+                .mlP548xlarge,
+                .mlR5d12xlarge,
+                .mlR5d16xlarge,
+                .mlR5d24xlarge,
+                .mlR5d2xlarge,
+                .mlR5d4xlarge,
+                .mlR5d8xlarge,
+                .mlR5dLarge,
+                .mlR5dXlarge,
+                .mlR512xlarge,
+                .mlR516xlarge,
+                .mlR524xlarge,
+                .mlR52xlarge,
+                .mlR54xlarge,
+                .mlR58xlarge,
+                .mlR5Large,
+                .mlR5Xlarge,
+                .mlT32xlarge,
+                .mlT3Large,
+                .mlT3Medium,
+                .mlT3Xlarge,
+                .mlTrn1n32xlarge,
+                .mlTrn12xlarge,
+                .mlTrn132xlarge
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .mlC42xlarge: return "ml.c4.2xlarge"
+            case .mlC44xlarge: return "ml.c4.4xlarge"
+            case .mlC48xlarge: return "ml.c4.8xlarge"
+            case .mlC4Xlarge: return "ml.c4.xlarge"
+            case .mlC5n18xlarge: return "ml.c5n.18xlarge"
+            case .mlC5n2xlarge: return "ml.c5n.2xlarge"
+            case .mlC5n4xlarge: return "ml.c5n.4xlarge"
+            case .mlC5n9xlarge: return "ml.c5n.9xlarge"
+            case .mlC5nXlarge: return "ml.c5n.xlarge"
+            case .mlC518xlarge: return "ml.c5.18xlarge"
+            case .mlC52xlarge: return "ml.c5.2xlarge"
+            case .mlC54xlarge: return "ml.c5.4xlarge"
+            case .mlC59xlarge: return "ml.c5.9xlarge"
+            case .mlC5Xlarge: return "ml.c5.xlarge"
+            case .mlC6i12xlarge: return "ml.c6i.12xlarge"
+            case .mlC6i16xlarge: return "ml.c6i.16xlarge"
+            case .mlC6i24xlarge: return "ml.c6i.24xlarge"
+            case .mlC6i2xlarge: return "ml.c6i.2xlarge"
+            case .mlC6i32xlarge: return "ml.c6i.32xlarge"
+            case .mlC6i4xlarge: return "ml.c6i.4xlarge"
+            case .mlC6i8xlarge: return "ml.c6i.8xlarge"
+            case .mlC6iXlarge: return "ml.c6i.xlarge"
+            case .mlG4dn12xlarge: return "ml.g4dn.12xlarge"
+            case .mlG4dn16xlarge: return "ml.g4dn.16xlarge"
+            case .mlG4dn2xlarge: return "ml.g4dn.2xlarge"
+            case .mlG4dn4xlarge: return "ml.g4dn.4xlarge"
+            case .mlG4dn8xlarge: return "ml.g4dn.8xlarge"
+            case .mlG4dnXlarge: return "ml.g4dn.xlarge"
+            case .mlG512xlarge: return "ml.g5.12xlarge"
+            case .mlG516xlarge: return "ml.g5.16xlarge"
+            case .mlG524xlarge: return "ml.g5.24xlarge"
+            case .mlG52xlarge: return "ml.g5.2xlarge"
+            case .mlG548xlarge: return "ml.g5.48xlarge"
+            case .mlG54xlarge: return "ml.g5.4xlarge"
+            case .mlG58xlarge: return "ml.g5.8xlarge"
+            case .mlG5Xlarge: return "ml.g5.xlarge"
+            case .mlM410xlarge: return "ml.m4.10xlarge"
+            case .mlM416xlarge: return "ml.m4.16xlarge"
+            case .mlM42xlarge: return "ml.m4.2xlarge"
+            case .mlM44xlarge: return "ml.m4.4xlarge"
+            case .mlM4Xlarge: return "ml.m4.xlarge"
+            case .mlM512xlarge: return "ml.m5.12xlarge"
+            case .mlM524xlarge: return "ml.m5.24xlarge"
+            case .mlM52xlarge: return "ml.m5.2xlarge"
+            case .mlM54xlarge: return "ml.m5.4xlarge"
+            case .mlM5Large: return "ml.m5.large"
+            case .mlM5Xlarge: return "ml.m5.xlarge"
+            case .mlM6i12xlarge: return "ml.m6i.12xlarge"
+            case .mlM6i16xlarge: return "ml.m6i.16xlarge"
+            case .mlM6i24xlarge: return "ml.m6i.24xlarge"
+            case .mlM6i2xlarge: return "ml.m6i.2xlarge"
+            case .mlM6i32xlarge: return "ml.m6i.32xlarge"
+            case .mlM6i4xlarge: return "ml.m6i.4xlarge"
+            case .mlM6i8xlarge: return "ml.m6i.8xlarge"
+            case .mlM6iLarge: return "ml.m6i.large"
+            case .mlM6iXlarge: return "ml.m6i.xlarge"
+            case .mlP216xlarge: return "ml.p2.16xlarge"
+            case .mlP28xlarge: return "ml.p2.8xlarge"
+            case .mlP2Xlarge: return "ml.p2.xlarge"
+            case .mlP3dn24xlarge: return "ml.p3dn.24xlarge"
+            case .mlP316xlarge: return "ml.p3.16xlarge"
+            case .mlP32xlarge: return "ml.p3.2xlarge"
+            case .mlP38xlarge: return "ml.p3.8xlarge"
+            case .mlP4de24xlarge: return "ml.p4de.24xlarge"
+            case .mlP4d24xlarge: return "ml.p4d.24xlarge"
+            case .mlP548xlarge: return "ml.p5.48xlarge"
+            case .mlR5d12xlarge: return "ml.r5d.12xlarge"
+            case .mlR5d16xlarge: return "ml.r5d.16xlarge"
+            case .mlR5d24xlarge: return "ml.r5d.24xlarge"
+            case .mlR5d2xlarge: return "ml.r5d.2xlarge"
+            case .mlR5d4xlarge: return "ml.r5d.4xlarge"
+            case .mlR5d8xlarge: return "ml.r5d.8xlarge"
+            case .mlR5dLarge: return "ml.r5d.large"
+            case .mlR5dXlarge: return "ml.r5d.xlarge"
+            case .mlR512xlarge: return "ml.r5.12xlarge"
+            case .mlR516xlarge: return "ml.r5.16xlarge"
+            case .mlR524xlarge: return "ml.r5.24xlarge"
+            case .mlR52xlarge: return "ml.r5.2xlarge"
+            case .mlR54xlarge: return "ml.r5.4xlarge"
+            case .mlR58xlarge: return "ml.r5.8xlarge"
+            case .mlR5Large: return "ml.r5.large"
+            case .mlR5Xlarge: return "ml.r5.xlarge"
+            case .mlT32xlarge: return "ml.t3.2xlarge"
+            case .mlT3Large: return "ml.t3.large"
+            case .mlT3Medium: return "ml.t3.medium"
+            case .mlT3Xlarge: return "ml.t3.xlarge"
+            case .mlTrn1n32xlarge: return "ml.trn1n.32xlarge"
+            case .mlTrn12xlarge: return "ml.trn1.2xlarge"
+            case .mlTrn132xlarge: return "ml.trn1.32xlarge"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Information about the EC2 resources that are used to train the model.
+    public struct ResourceConfig: Swift.Sendable {
+        /// The number of resources that are used to train the model.
+        public var instanceCount: Swift.Int?
+        /// The instance type that is used to train the model.
+        /// This member is required.
+        public var instanceType: CleanRoomsMLClientTypes.InstanceType?
+        /// The maximum size of the instance that is used to train the model.
+        /// This member is required.
+        public var volumeSizeInGB: Swift.Int?
+
+        public init(
+            instanceCount: Swift.Int? = 1,
+            instanceType: CleanRoomsMLClientTypes.InstanceType? = nil,
+            volumeSizeInGB: Swift.Int? = nil
+        )
+        {
+            self.instanceCount = instanceCount
+            self.instanceType = instanceType
+            self.volumeSizeInGB = volumeSizeInGB
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// The criteria used to stop model training.
+    public struct StoppingCondition: Swift.Sendable {
+        /// The maximum amount of time, in seconds, that model training can run before it is terminated.
+        public var maxRuntimeInSeconds: Swift.Int?
+
+        public init(
+            maxRuntimeInSeconds: Swift.Int? = 86400
+        )
+        {
+            self.maxRuntimeInSeconds = maxRuntimeInSeconds
+        }
+    }
+}
+
+public struct CreateTrainedModelInput: Swift.Sendable {
+    /// The associated configured model algorithm used to train this model.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// Defines the data channels that are used as input for the trained model request.
+    /// This member is required.
+    public var dataChannels: [CleanRoomsMLClientTypes.ModelTrainingDataChannel]?
+    /// The description of the trained model.
+    public var description: Swift.String?
+    /// The environment variables to set in the Docker container.
+    public var environment: [Swift.String: Swift.String]?
+    /// Algorithm-specific parameters that influence the quality of the model. You set hyperparameters before you start the learning process.
+    public var hyperparameters: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the trained ML model and the associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The membership ID of the member that is creating the trained model.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the trained model.
+    /// This member is required.
+    public var name: Swift.String?
+    /// Information about the EC2 resources that are used to train this model.
+    /// This member is required.
+    public var resourceConfig: CleanRoomsMLClientTypes.ResourceConfig?
+    /// The criteria that is used to stop model training.
+    public var stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition?
+    /// The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        dataChannels: [CleanRoomsMLClientTypes.ModelTrainingDataChannel]? = nil,
+        description: Swift.String? = nil,
+        environment: [Swift.String: Swift.String]? = nil,
+        hyperparameters: [Swift.String: Swift.String]? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        resourceConfig: CleanRoomsMLClientTypes.ResourceConfig? = nil,
+        stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition? = nil,
+        tags: [Swift.String: Swift.String]? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.dataChannels = dataChannels
+        self.description = description
+        self.environment = environment
+        self.hyperparameters = hyperparameters
+        self.kmsKeyArn = kmsKeyArn
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.resourceConfig = resourceConfig
+        self.stoppingCondition = stoppingCondition
+        self.tags = tags
+    }
+}
+
+public struct CreateTrainedModelOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the trained model.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct DeleteTrainedModelOutputInput: Swift.Sendable {
+    /// The membership ID of the member that is deleting the trained model output.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model whose output you want to delete.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct GetCollaborationTrainedModelInput: Swift.Sendable {
+    /// The collaboration ID that contains the trained model that you want to return information about.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model that you want to return information about.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct GetCollaborationTrainedModelOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the trained model.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create this trained model.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The time at which the trained model was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The account ID of the member that created the trained model.
+    /// This member is required.
+    public var creatorAccountId: Swift.String?
+    /// The description of the trained model.
+    public var description: Swift.String?
+    /// Status information for the logs.
+    public var logsStatus: CleanRoomsMLClientTypes.LogsStatus?
+    /// Details about the status information for the logs.
+    public var logsStatusDetails: Swift.String?
+    /// The membership ID of the member that created the trained model.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The status of the model metrics.
+    public var metricsStatus: CleanRoomsMLClientTypes.MetricsStatus?
+    /// Details about the status information for the model metrics.
+    public var metricsStatusDetails: Swift.String?
+    /// The name of the trained model.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The EC2 resource configuration that was used to train this model.
+    public var resourceConfig: CleanRoomsMLClientTypes.ResourceConfig?
+    /// The status of the trained model.
+    /// This member is required.
+    public var status: CleanRoomsMLClientTypes.TrainedModelStatus?
+    /// Details about the status of a resource.
+    public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+    /// The stopping condition that determined when model training ended.
+    public var stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition?
+    /// The Amazon Resource Name (ARN) of the trained model.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+    /// Information about the training container image.
+    public var trainingContainerImageDigest: Swift.String?
+    /// The most recent time at which the trained model was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        createTime: Foundation.Date? = nil,
+        creatorAccountId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        logsStatus: CleanRoomsMLClientTypes.LogsStatus? = nil,
+        logsStatusDetails: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        metricsStatus: CleanRoomsMLClientTypes.MetricsStatus? = nil,
+        metricsStatusDetails: Swift.String? = nil,
+        name: Swift.String? = nil,
+        resourceConfig: CleanRoomsMLClientTypes.ResourceConfig? = nil,
+        status: CleanRoomsMLClientTypes.TrainedModelStatus? = nil,
+        statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+        stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition? = nil,
+        trainedModelArn: Swift.String? = nil,
+        trainingContainerImageDigest: Swift.String? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.createTime = createTime
+        self.creatorAccountId = creatorAccountId
+        self.description = description
+        self.logsStatus = logsStatus
+        self.logsStatusDetails = logsStatusDetails
+        self.membershipIdentifier = membershipIdentifier
+        self.metricsStatus = metricsStatus
+        self.metricsStatusDetails = metricsStatusDetails
+        self.name = name
+        self.resourceConfig = resourceConfig
+        self.status = status
+        self.statusDetails = statusDetails
+        self.stoppingCondition = stoppingCondition
+        self.trainedModelArn = trainedModelArn
+        self.trainingContainerImageDigest = trainingContainerImageDigest
+        self.updateTime = updateTime
+    }
+}
+
+public struct GetTrainedModelInput: Swift.Sendable {
+    /// The membership ID of the member that created the trained model that you are interested in.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model that you are interested in.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct GetTrainedModelOutput: Swift.Sendable {
+    /// The collaboration ID of the collaboration that contains the trained model.
+    /// This member is required.
+    public var collaborationIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create the trained model.
+    /// This member is required.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The time at which the trained model was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The data channels that were used for the trained model.
+    /// This member is required.
+    public var dataChannels: [CleanRoomsMLClientTypes.ModelTrainingDataChannel]?
+    /// The description of the trained model.
+    public var description: Swift.String?
+    /// The EC2 environment that was used to create the trained model.
+    public var environment: [Swift.String: Swift.String]?
+    /// The hyperparameters that were used to create the trained model.
+    public var hyperparameters: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the trained ML model and associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The logs status for the trained model.
+    public var logsStatus: CleanRoomsMLClientTypes.LogsStatus?
+    /// Details about the logs status for the trained model.
+    public var logsStatusDetails: Swift.String?
+    /// The membership ID of the member that created the trained model.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The status of the model metrics.
+    public var metricsStatus: CleanRoomsMLClientTypes.MetricsStatus?
+    /// Details about the metrics status for the trained model.
+    public var metricsStatusDetails: Swift.String?
+    /// The name of the trained model.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The EC2 resource configuration that was used to create the trained model.
+    public var resourceConfig: CleanRoomsMLClientTypes.ResourceConfig?
+    /// The status of the trained model.
+    /// This member is required.
+    public var status: CleanRoomsMLClientTypes.TrainedModelStatus?
+    /// Details about the status of a resource.
+    public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+    /// The stopping condition that was used to terminate model training.
+    public var stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition?
+    /// The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the trained model.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+    /// Information about the training image container.
+    public var trainingContainerImageDigest: Swift.String?
+    /// The most recent time at which the trained model was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        collaborationIdentifier: Swift.String? = nil,
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        createTime: Foundation.Date? = nil,
+        dataChannels: [CleanRoomsMLClientTypes.ModelTrainingDataChannel]? = nil,
+        description: Swift.String? = nil,
+        environment: [Swift.String: Swift.String]? = nil,
+        hyperparameters: [Swift.String: Swift.String]? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        logsStatus: CleanRoomsMLClientTypes.LogsStatus? = nil,
+        logsStatusDetails: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        metricsStatus: CleanRoomsMLClientTypes.MetricsStatus? = nil,
+        metricsStatusDetails: Swift.String? = nil,
+        name: Swift.String? = nil,
+        resourceConfig: CleanRoomsMLClientTypes.ResourceConfig? = nil,
+        status: CleanRoomsMLClientTypes.TrainedModelStatus? = nil,
+        statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+        stoppingCondition: CleanRoomsMLClientTypes.StoppingCondition? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        trainedModelArn: Swift.String? = nil,
+        trainingContainerImageDigest: Swift.String? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.collaborationIdentifier = collaborationIdentifier
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.createTime = createTime
+        self.dataChannels = dataChannels
+        self.description = description
+        self.environment = environment
+        self.hyperparameters = hyperparameters
+        self.kmsKeyArn = kmsKeyArn
+        self.logsStatus = logsStatus
+        self.logsStatusDetails = logsStatusDetails
+        self.membershipIdentifier = membershipIdentifier
+        self.metricsStatus = metricsStatus
+        self.metricsStatusDetails = metricsStatusDetails
+        self.name = name
+        self.resourceConfig = resourceConfig
+        self.status = status
+        self.statusDetails = statusDetails
+        self.stoppingCondition = stoppingCondition
+        self.tags = tags
+        self.trainedModelArn = trainedModelArn
+        self.trainingContainerImageDigest = trainingContainerImageDigest
+        self.updateTime = updateTime
+    }
+}
+
+public struct ListTrainedModelsInput: Swift.Sendable {
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The membership ID of the member that created the trained models you are interested in.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.membershipIdentifier = membershipIdentifier
+        self.nextToken = nextToken
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Summary information about the trained model.
+    public struct TrainedModelSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the trained model.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association that was used to create this trained model.
+        /// This member is required.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the trained model was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The description of the trained model.
+        public var description: Swift.String?
+        /// The membership ID of the member that created the trained model.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The name of the trained model.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The status of the trained model.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.TrainedModelStatus?
+        /// The Amazon Resource Name (ARN) of the trained model.
+        /// This member is required.
+        public var trainedModelArn: Swift.String?
+        /// The most recent time at which the trained model was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            description: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            name: Swift.String? = nil,
+            status: CleanRoomsMLClientTypes.TrainedModelStatus? = nil,
+            trainedModelArn: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.description = description
+            self.membershipIdentifier = membershipIdentifier
+            self.name = name
+            self.status = status
+            self.trainedModelArn = trainedModelArn
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListTrainedModelsOutput: Swift.Sendable {
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+    /// The list of trained models.
+    /// This member is required.
+    public var trainedModels: [CleanRoomsMLClientTypes.TrainedModelSummary]?
+
+    public init(
+        nextToken: Swift.String? = nil,
+        trainedModels: [CleanRoomsMLClientTypes.TrainedModelSummary]? = nil
+    )
+    {
+        self.nextToken = nextToken
+        self.trainedModels = trainedModels
+    }
+}
+
+public struct StartTrainedModelExportJobInput: Swift.Sendable {
+    /// The description of the trained model export job.
+    public var description: Swift.String?
+    /// The membership ID of the member that is receiving the exported trained model artifacts.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the trained model export job.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The output configuration information for the trained model export job.
+    /// This member is required.
+    public var outputConfiguration: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration?
+    /// The Amazon Resource Name (ARN) of the trained model that you want to export.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        description: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        outputConfiguration: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.description = description
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.outputConfiguration = outputConfiguration
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct CancelTrainedModelInferenceJobInput: Swift.Sendable {
+    /// The membership ID of the trained model inference job that you want to cancel.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model inference job that you want to cancel.
+    /// This member is required.
+    public var trainedModelInferenceJobArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        trainedModelInferenceJobArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+    }
+}
+
+public struct GetTrainedModelInferenceJobInput: Swift.Sendable {
+    /// Provides the membership ID of the membership that contains the trained model inference job that you are interested in.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// Provides the Amazon Resource Name (ARN) of the trained model inference job that you are interested in.
+    /// This member is required.
+    public var trainedModelInferenceJobArn: Swift.String?
+
+    public init(
+        membershipIdentifier: Swift.String? = nil,
+        trainedModelInferenceJobArn: Swift.String? = nil
+    )
+    {
+        self.membershipIdentifier = membershipIdentifier
+        self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides execution parameters for the inference container.
+    public struct InferenceContainerExecutionParameters: Swift.Sendable {
+        /// The maximum size of the inference container payload, specified in MB.
+        public var maxPayloadInMB: Swift.Int?
+
+        public init(
+            maxPayloadInMB: Swift.Int? = nil
+        )
+        {
+            self.maxPayloadInMB = maxPayloadInMB
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Defines information about the data source used for model inference.
+    public struct ModelInferenceDataSource: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) of the ML input channel for this model inference data source.
+        /// This member is required.
+        public var mlInputChannelArn: Swift.String?
+
+        public init(
+            mlInputChannelArn: Swift.String? = nil
+        )
+        {
+            self.mlInputChannelArn = mlInputChannelArn
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    public enum InferenceInstanceType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case mlC42xlarge
+        case mlC44xlarge
+        case mlC48xlarge
+        case mlC4Xlarge
+        case mlC518xlarge
+        case mlC52xlarge
+        case mlC54xlarge
+        case mlC59xlarge
+        case mlC5Xlarge
+        case mlC6i12xlarge
+        case mlC6i16xlarge
+        case mlC6i24xlarge
+        case mlC6i2xlarge
+        case mlC6i32xlarge
+        case mlC6i4xlarge
+        case mlC6i8xlarge
+        case mlC6iLarge
+        case mlC6iXlarge
+        case mlC7i12xlarge
+        case mlC7i16xlarge
+        case mlC7i24xlarge
+        case mlC7i2xlarge
+        case mlC7i48xlarge
+        case mlC7i4xlarge
+        case mlC7i8xlarge
+        case mlC7iLarge
+        case mlC7iXlarge
+        case mlG4dn12xlarge
+        case mlG4dn16xlarge
+        case mlG4dn2xlarge
+        case mlG4dn4xlarge
+        case mlG4dn8xlarge
+        case mlG4dnXlarge
+        case mlG512xlarge
+        case mlG516xlarge
+        case mlG524xlarge
+        case mlG52xlarge
+        case mlG548xlarge
+        case mlG54xlarge
+        case mlG58xlarge
+        case mlG5Xlarge
+        case mlM410xlarge
+        case mlM416xlarge
+        case mlM42xlarge
+        case mlM44xlarge
+        case mlM4Xlarge
+        case mlM512xlarge
+        case mlM524xlarge
+        case mlM52xlarge
+        case mlM54xlarge
+        case mlM5Large
+        case mlM5Xlarge
+        case mlM6i12xlarge
+        case mlM6i16xlarge
+        case mlM6i24xlarge
+        case mlM6i2xlarge
+        case mlM6i32xlarge
+        case mlM6i4xlarge
+        case mlM6i8xlarge
+        case mlM6iLarge
+        case mlM6iXlarge
+        case mlM7i12xlarge
+        case mlM7i16xlarge
+        case mlM7i24xlarge
+        case mlM7i2xlarge
+        case mlM7i48xlarge
+        case mlM7i4xlarge
+        case mlM7i8xlarge
+        case mlM7iLarge
+        case mlM7iXlarge
+        case mlP216xlarge
+        case mlP28xlarge
+        case mlP2Xlarge
+        case mlP316xlarge
+        case mlP32xlarge
+        case mlP38xlarge
+        case mlR6i12xlarge
+        case mlR6i16xlarge
+        case mlR6i24xlarge
+        case mlR6i2xlarge
+        case mlR6i32xlarge
+        case mlR6i4xlarge
+        case mlR6i8xlarge
+        case mlR6iLarge
+        case mlR6iXlarge
+        case mlR7i12xlarge
+        case mlR7i16xlarge
+        case mlR7i24xlarge
+        case mlR7i2xlarge
+        case mlR7i48xlarge
+        case mlR7i4xlarge
+        case mlR7i8xlarge
+        case mlR7iLarge
+        case mlR7iXlarge
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [InferenceInstanceType] {
+            return [
+                .mlC42xlarge,
+                .mlC44xlarge,
+                .mlC48xlarge,
+                .mlC4Xlarge,
+                .mlC518xlarge,
+                .mlC52xlarge,
+                .mlC54xlarge,
+                .mlC59xlarge,
+                .mlC5Xlarge,
+                .mlC6i12xlarge,
+                .mlC6i16xlarge,
+                .mlC6i24xlarge,
+                .mlC6i2xlarge,
+                .mlC6i32xlarge,
+                .mlC6i4xlarge,
+                .mlC6i8xlarge,
+                .mlC6iLarge,
+                .mlC6iXlarge,
+                .mlC7i12xlarge,
+                .mlC7i16xlarge,
+                .mlC7i24xlarge,
+                .mlC7i2xlarge,
+                .mlC7i48xlarge,
+                .mlC7i4xlarge,
+                .mlC7i8xlarge,
+                .mlC7iLarge,
+                .mlC7iXlarge,
+                .mlG4dn12xlarge,
+                .mlG4dn16xlarge,
+                .mlG4dn2xlarge,
+                .mlG4dn4xlarge,
+                .mlG4dn8xlarge,
+                .mlG4dnXlarge,
+                .mlG512xlarge,
+                .mlG516xlarge,
+                .mlG524xlarge,
+                .mlG52xlarge,
+                .mlG548xlarge,
+                .mlG54xlarge,
+                .mlG58xlarge,
+                .mlG5Xlarge,
+                .mlM410xlarge,
+                .mlM416xlarge,
+                .mlM42xlarge,
+                .mlM44xlarge,
+                .mlM4Xlarge,
+                .mlM512xlarge,
+                .mlM524xlarge,
+                .mlM52xlarge,
+                .mlM54xlarge,
+                .mlM5Large,
+                .mlM5Xlarge,
+                .mlM6i12xlarge,
+                .mlM6i16xlarge,
+                .mlM6i24xlarge,
+                .mlM6i2xlarge,
+                .mlM6i32xlarge,
+                .mlM6i4xlarge,
+                .mlM6i8xlarge,
+                .mlM6iLarge,
+                .mlM6iXlarge,
+                .mlM7i12xlarge,
+                .mlM7i16xlarge,
+                .mlM7i24xlarge,
+                .mlM7i2xlarge,
+                .mlM7i48xlarge,
+                .mlM7i4xlarge,
+                .mlM7i8xlarge,
+                .mlM7iLarge,
+                .mlM7iXlarge,
+                .mlP216xlarge,
+                .mlP28xlarge,
+                .mlP2Xlarge,
+                .mlP316xlarge,
+                .mlP32xlarge,
+                .mlP38xlarge,
+                .mlR6i12xlarge,
+                .mlR6i16xlarge,
+                .mlR6i24xlarge,
+                .mlR6i2xlarge,
+                .mlR6i32xlarge,
+                .mlR6i4xlarge,
+                .mlR6i8xlarge,
+                .mlR6iLarge,
+                .mlR6iXlarge,
+                .mlR7i12xlarge,
+                .mlR7i16xlarge,
+                .mlR7i24xlarge,
+                .mlR7i2xlarge,
+                .mlR7i48xlarge,
+                .mlR7i4xlarge,
+                .mlR7i8xlarge,
+                .mlR7iLarge,
+                .mlR7iXlarge
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .mlC42xlarge: return "ml.c4.2xlarge"
+            case .mlC44xlarge: return "ml.c4.4xlarge"
+            case .mlC48xlarge: return "ml.c4.8xlarge"
+            case .mlC4Xlarge: return "ml.c4.xlarge"
+            case .mlC518xlarge: return "ml.c5.18xlarge"
+            case .mlC52xlarge: return "ml.c5.2xlarge"
+            case .mlC54xlarge: return "ml.c5.4xlarge"
+            case .mlC59xlarge: return "ml.c5.9xlarge"
+            case .mlC5Xlarge: return "ml.c5.xlarge"
+            case .mlC6i12xlarge: return "ml.c6i.12xlarge"
+            case .mlC6i16xlarge: return "ml.c6i.16xlarge"
+            case .mlC6i24xlarge: return "ml.c6i.24xlarge"
+            case .mlC6i2xlarge: return "ml.c6i.2xlarge"
+            case .mlC6i32xlarge: return "ml.c6i.32xlarge"
+            case .mlC6i4xlarge: return "ml.c6i.4xlarge"
+            case .mlC6i8xlarge: return "ml.c6i.8xlarge"
+            case .mlC6iLarge: return "ml.c6i.large"
+            case .mlC6iXlarge: return "ml.c6i.xlarge"
+            case .mlC7i12xlarge: return "ml.c7i.12xlarge"
+            case .mlC7i16xlarge: return "ml.c7i.16xlarge"
+            case .mlC7i24xlarge: return "ml.c7i.24xlarge"
+            case .mlC7i2xlarge: return "ml.c7i.2xlarge"
+            case .mlC7i48xlarge: return "ml.c7i.48xlarge"
+            case .mlC7i4xlarge: return "ml.c7i.4xlarge"
+            case .mlC7i8xlarge: return "ml.c7i.8xlarge"
+            case .mlC7iLarge: return "ml.c7i.large"
+            case .mlC7iXlarge: return "ml.c7i.xlarge"
+            case .mlG4dn12xlarge: return "ml.g4dn.12xlarge"
+            case .mlG4dn16xlarge: return "ml.g4dn.16xlarge"
+            case .mlG4dn2xlarge: return "ml.g4dn.2xlarge"
+            case .mlG4dn4xlarge: return "ml.g4dn.4xlarge"
+            case .mlG4dn8xlarge: return "ml.g4dn.8xlarge"
+            case .mlG4dnXlarge: return "ml.g4dn.xlarge"
+            case .mlG512xlarge: return "ml.g5.12xlarge"
+            case .mlG516xlarge: return "ml.g5.16xlarge"
+            case .mlG524xlarge: return "ml.g5.24xlarge"
+            case .mlG52xlarge: return "ml.g5.2xlarge"
+            case .mlG548xlarge: return "ml.g5.48xlarge"
+            case .mlG54xlarge: return "ml.g5.4xlarge"
+            case .mlG58xlarge: return "ml.g5.8xlarge"
+            case .mlG5Xlarge: return "ml.g5.xlarge"
+            case .mlM410xlarge: return "ml.m4.10xlarge"
+            case .mlM416xlarge: return "ml.m4.16xlarge"
+            case .mlM42xlarge: return "ml.m4.2xlarge"
+            case .mlM44xlarge: return "ml.m4.4xlarge"
+            case .mlM4Xlarge: return "ml.m4.xlarge"
+            case .mlM512xlarge: return "ml.m5.12xlarge"
+            case .mlM524xlarge: return "ml.m5.24xlarge"
+            case .mlM52xlarge: return "ml.m5.2xlarge"
+            case .mlM54xlarge: return "ml.m5.4xlarge"
+            case .mlM5Large: return "ml.m5.large"
+            case .mlM5Xlarge: return "ml.m5.xlarge"
+            case .mlM6i12xlarge: return "ml.m6i.12xlarge"
+            case .mlM6i16xlarge: return "ml.m6i.16xlarge"
+            case .mlM6i24xlarge: return "ml.m6i.24xlarge"
+            case .mlM6i2xlarge: return "ml.m6i.2xlarge"
+            case .mlM6i32xlarge: return "ml.m6i.32xlarge"
+            case .mlM6i4xlarge: return "ml.m6i.4xlarge"
+            case .mlM6i8xlarge: return "ml.m6i.8xlarge"
+            case .mlM6iLarge: return "ml.m6i.large"
+            case .mlM6iXlarge: return "ml.m6i.xlarge"
+            case .mlM7i12xlarge: return "ml.m7i.12xlarge"
+            case .mlM7i16xlarge: return "ml.m7i.16xlarge"
+            case .mlM7i24xlarge: return "ml.m7i.24xlarge"
+            case .mlM7i2xlarge: return "ml.m7i.2xlarge"
+            case .mlM7i48xlarge: return "ml.m7i.48xlarge"
+            case .mlM7i4xlarge: return "ml.m7i.4xlarge"
+            case .mlM7i8xlarge: return "ml.m7i.8xlarge"
+            case .mlM7iLarge: return "ml.m7i.large"
+            case .mlM7iXlarge: return "ml.m7i.xlarge"
+            case .mlP216xlarge: return "ml.p2.16xlarge"
+            case .mlP28xlarge: return "ml.p2.8xlarge"
+            case .mlP2Xlarge: return "ml.p2.xlarge"
+            case .mlP316xlarge: return "ml.p3.16xlarge"
+            case .mlP32xlarge: return "ml.p3.2xlarge"
+            case .mlP38xlarge: return "ml.p3.8xlarge"
+            case .mlR6i12xlarge: return "ml.r6i.12xlarge"
+            case .mlR6i16xlarge: return "ml.r6i.16xlarge"
+            case .mlR6i24xlarge: return "ml.r6i.24xlarge"
+            case .mlR6i2xlarge: return "ml.r6i.2xlarge"
+            case .mlR6i32xlarge: return "ml.r6i.32xlarge"
+            case .mlR6i4xlarge: return "ml.r6i.4xlarge"
+            case .mlR6i8xlarge: return "ml.r6i.8xlarge"
+            case .mlR6iLarge: return "ml.r6i.large"
+            case .mlR6iXlarge: return "ml.r6i.xlarge"
+            case .mlR7i12xlarge: return "ml.r7i.12xlarge"
+            case .mlR7i16xlarge: return "ml.r7i.16xlarge"
+            case .mlR7i24xlarge: return "ml.r7i.24xlarge"
+            case .mlR7i2xlarge: return "ml.r7i.2xlarge"
+            case .mlR7i48xlarge: return "ml.r7i.48xlarge"
+            case .mlR7i4xlarge: return "ml.r7i.4xlarge"
+            case .mlR7i8xlarge: return "ml.r7i.8xlarge"
+            case .mlR7iLarge: return "ml.r7i.large"
+            case .mlR7iXlarge: return "ml.r7i.xlarge"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Defines the resources used to perform model inference.
+    public struct InferenceResourceConfig: Swift.Sendable {
+        /// The number of instances to use.
+        public var instanceCount: Swift.Int?
+        /// The type of instance that is used to perform model inference.
+        /// This member is required.
+        public var instanceType: CleanRoomsMLClientTypes.InferenceInstanceType?
+
+        public init(
+            instanceCount: Swift.Int? = 1,
+            instanceType: CleanRoomsMLClientTypes.InferenceInstanceType? = nil
+        )
+        {
+            self.instanceCount = instanceCount
+            self.instanceType = instanceType
+        }
+    }
+}
+
+public struct GetTrainedModelInferenceJobOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that was used for the trained model inference job.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The execution parameters for the model inference job container.
+    public var containerExecutionParameters: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters?
+    /// The time at which the trained model inference job was created.
+    /// This member is required.
+    public var createTime: Foundation.Date?
+    /// The data source that was used for the trained model inference job.
+    /// This member is required.
+    public var dataSource: CleanRoomsMLClientTypes.ModelInferenceDataSource?
+    /// The description of the trained model inference job.
+    public var description: Swift.String?
+    /// The environment variables to set in the Docker container.
+    public var environment: [Swift.String: Swift.String]?
+    /// Information about the training container image.
+    public var inferenceContainerImageDigest: Swift.String?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the ML inference job and associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The logs status for the trained model inference job.
+    public var logsStatus: CleanRoomsMLClientTypes.LogsStatus?
+    /// Details about the logs status for the trained model inference job.
+    public var logsStatusDetails: Swift.String?
+    /// The membership ID of the membership that contains the trained model inference job.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The metrics status for the trained model inference job.
+    public var metricsStatus: CleanRoomsMLClientTypes.MetricsStatus?
+    /// Details about the metrics status for the trained model inference job.
+    public var metricsStatusDetails: Swift.String?
+    /// The name of the trained model inference job.
+    /// This member is required.
+    public var name: Swift.String?
+    /// The output configuration information for the trained model inference job.
+    /// This member is required.
+    public var outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration?
+    /// The resource configuration information for the trained model inference job.
+    /// This member is required.
+    public var resourceConfig: CleanRoomsMLClientTypes.InferenceResourceConfig?
+    /// The status of the trained model inference job.
+    /// This member is required.
+    public var status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus?
+    /// Details about the status of a resource.
+    public var statusDetails: CleanRoomsMLClientTypes.StatusDetails?
+    /// The optional metadata that you applied to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) for the trained model that was used for the trained model inference job.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+    /// The Amazon Resource Name (ARN) of the trained model inference job.
+    /// This member is required.
+    public var trainedModelInferenceJobArn: Swift.String?
+    /// The most recent time at which the trained model inference job was updated.
+    /// This member is required.
+    public var updateTime: Foundation.Date?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        containerExecutionParameters: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters? = nil,
+        createTime: Foundation.Date? = nil,
+        dataSource: CleanRoomsMLClientTypes.ModelInferenceDataSource? = nil,
+        description: Swift.String? = nil,
+        environment: [Swift.String: Swift.String]? = nil,
+        inferenceContainerImageDigest: Swift.String? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        logsStatus: CleanRoomsMLClientTypes.LogsStatus? = nil,
+        logsStatusDetails: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        metricsStatus: CleanRoomsMLClientTypes.MetricsStatus? = nil,
+        metricsStatusDetails: Swift.String? = nil,
+        name: Swift.String? = nil,
+        outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration? = nil,
+        resourceConfig: CleanRoomsMLClientTypes.InferenceResourceConfig? = nil,
+        status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus? = nil,
+        statusDetails: CleanRoomsMLClientTypes.StatusDetails? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        trainedModelArn: Swift.String? = nil,
+        trainedModelInferenceJobArn: Swift.String? = nil,
+        updateTime: Foundation.Date? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.containerExecutionParameters = containerExecutionParameters
+        self.createTime = createTime
+        self.dataSource = dataSource
+        self.description = description
+        self.environment = environment
+        self.inferenceContainerImageDigest = inferenceContainerImageDigest
+        self.kmsKeyArn = kmsKeyArn
+        self.logsStatus = logsStatus
+        self.logsStatusDetails = logsStatusDetails
+        self.membershipIdentifier = membershipIdentifier
+        self.metricsStatus = metricsStatus
+        self.metricsStatusDetails = metricsStatusDetails
+        self.name = name
+        self.outputConfiguration = outputConfiguration
+        self.resourceConfig = resourceConfig
+        self.status = status
+        self.statusDetails = statusDetails
+        self.tags = tags
+        self.trainedModelArn = trainedModelArn
+        self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+        self.updateTime = updateTime
+    }
+}
+
+public struct ListTrainedModelInferenceJobsInput: Swift.Sendable {
+    /// The maximum size of the results that is returned per call.
+    public var maxResults: Swift.Int?
+    /// The membership
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The token value retrieved from a previous call to access the next page of results.
+    public var nextToken: Swift.String?
+    /// The Amazon Resource Name (ARN) of a trained model that was used to create the trained model inference jobs that you are interested in.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        maxResults: Swift.Int? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        nextToken: Swift.String? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.maxResults = maxResults
+        self.membershipIdentifier = membershipIdentifier
+        self.nextToken = nextToken
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+extension CleanRoomsMLClientTypes {
+
+    /// Provides information about the trained model inference job.
+    public struct TrainedModelInferenceJobSummary: Swift.Sendable {
+        /// The collaboration ID of the collaboration that contains the trained model inference job.
+        /// This member is required.
+        public var collaborationIdentifier: Swift.String?
+        /// The Amazon Resource Name (ARN) of the configured model algorithm association that is used for the trained model inference job.
+        public var configuredModelAlgorithmAssociationArn: Swift.String?
+        /// The time at which the trained model inference job was created.
+        /// This member is required.
+        public var createTime: Foundation.Date?
+        /// The description of the trained model inference job.
+        public var description: Swift.String?
+        /// The log status of the trained model inference job.
+        public var logsStatus: CleanRoomsMLClientTypes.LogsStatus?
+        /// Details about the log status for the trained model inference job.
+        public var logsStatusDetails: Swift.String?
+        /// The membership ID of the membership that contains the trained model inference job.
+        /// This member is required.
+        public var membershipIdentifier: Swift.String?
+        /// The metric status of the trained model inference job.
+        public var metricsStatus: CleanRoomsMLClientTypes.MetricsStatus?
+        /// Details about the metrics status for the trained model inference job.
+        public var metricsStatusDetails: Swift.String?
+        /// The name of the trained model inference job.
+        /// This member is required.
+        public var name: Swift.String?
+        /// The output configuration information of the trained model job.
+        /// This member is required.
+        public var outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration?
+        /// The status of the trained model inference job.
+        /// This member is required.
+        public var status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus?
+        /// The Amazon Resource Name (ARN) of the trained model that is used for the trained model inference job.
+        /// This member is required.
+        public var trainedModelArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the trained model inference job.
+        /// This member is required.
+        public var trainedModelInferenceJobArn: Swift.String?
+        /// The most recent time at which the trained model inference job was updated.
+        /// This member is required.
+        public var updateTime: Foundation.Date?
+
+        public init(
+            collaborationIdentifier: Swift.String? = nil,
+            configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+            createTime: Foundation.Date? = nil,
+            description: Swift.String? = nil,
+            logsStatus: CleanRoomsMLClientTypes.LogsStatus? = nil,
+            logsStatusDetails: Swift.String? = nil,
+            membershipIdentifier: Swift.String? = nil,
+            metricsStatus: CleanRoomsMLClientTypes.MetricsStatus? = nil,
+            metricsStatusDetails: Swift.String? = nil,
+            name: Swift.String? = nil,
+            outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration? = nil,
+            status: CleanRoomsMLClientTypes.TrainedModelInferenceJobStatus? = nil,
+            trainedModelArn: Swift.String? = nil,
+            trainedModelInferenceJobArn: Swift.String? = nil,
+            updateTime: Foundation.Date? = nil
+        )
+        {
+            self.collaborationIdentifier = collaborationIdentifier
+            self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+            self.createTime = createTime
+            self.description = description
+            self.logsStatus = logsStatus
+            self.logsStatusDetails = logsStatusDetails
+            self.membershipIdentifier = membershipIdentifier
+            self.metricsStatus = metricsStatus
+            self.metricsStatusDetails = metricsStatusDetails
+            self.name = name
+            self.outputConfiguration = outputConfiguration
+            self.status = status
+            self.trainedModelArn = trainedModelArn
+            self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+            self.updateTime = updateTime
+        }
+    }
+}
+
+public struct ListTrainedModelInferenceJobsOutput: Swift.Sendable {
+    /// The token value used to access the next page of results.
+    public var nextToken: Swift.String?
+    /// Returns the requested trained model inference jobs.
+    /// This member is required.
+    public var trainedModelInferenceJobs: [CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary]?
+
+    public init(
+        nextToken: Swift.String? = nil,
+        trainedModelInferenceJobs: [CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary]? = nil
+    )
+    {
+        self.nextToken = nextToken
+        self.trainedModelInferenceJobs = trainedModelInferenceJobs
+    }
+}
+
+public struct StartTrainedModelInferenceJobInput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the configured model algorithm association that is used for this trained model inference job.
+    public var configuredModelAlgorithmAssociationArn: Swift.String?
+    /// The execution parameters for the container.
+    public var containerExecutionParameters: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters?
+    /// Defines he data source that is used for the trained model inference job.
+    /// This member is required.
+    public var dataSource: CleanRoomsMLClientTypes.ModelInferenceDataSource?
+    /// The description of the trained model inference job.
+    public var description: Swift.String?
+    /// The environment variables to set in the Docker container.
+    public var environment: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the KMS key. This key is used to encrypt and decrypt customer-owned data in the ML inference job and associated data.
+    public var kmsKeyArn: Swift.String?
+    /// The membership ID of the membership that contains the trained model inference job.
+    /// This member is required.
+    public var membershipIdentifier: Swift.String?
+    /// The name of the trained model inference job.
+    /// This member is required.
+    public var name: Swift.String?
+    /// Defines the output configuration information for the trained model inference job.
+    /// This member is required.
+    public var outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration?
+    /// Defines the resource configuration for the trained model inference job.
+    /// This member is required.
+    public var resourceConfig: CleanRoomsMLClientTypes.InferenceResourceConfig?
+    /// The optional metadata that you apply to the resource to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. The following basic restrictions apply to tags:
+    ///
+    /// * Maximum number of tags per resource - 50.
+    ///
+    /// * For each resource, each tag key must be unique, and each tag key can have only one value.
+    ///
+    /// * Maximum key length - 128 Unicode characters in UTF-8.
+    ///
+    /// * Maximum value length - 256 Unicode characters in UTF-8.
+    ///
+    /// * If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.
+    ///
+    /// * Tag keys and values are case sensitive.
+    ///
+    /// * Do not use aws:, AWS:, or any upper or lowercase combination of such as a prefix for keys as it is reserved for AWS use. You cannot edit or delete tag keys with this prefix. Values can have this prefix. If a tag value has aws as its prefix but the key does not, then Clean Rooms ML considers it to be a user tag and will count against the limit of 50 tags. Tags with only the key prefix of aws do not count against your tags per resource limit.
+    public var tags: [Swift.String: Swift.String]?
+    /// The Amazon Resource Name (ARN) of the trained model that is used for this trained model inference job.
+    /// This member is required.
+    public var trainedModelArn: Swift.String?
+
+    public init(
+        configuredModelAlgorithmAssociationArn: Swift.String? = nil,
+        containerExecutionParameters: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters? = nil,
+        dataSource: CleanRoomsMLClientTypes.ModelInferenceDataSource? = nil,
+        description: Swift.String? = nil,
+        environment: [Swift.String: Swift.String]? = nil,
+        kmsKeyArn: Swift.String? = nil,
+        membershipIdentifier: Swift.String? = nil,
+        name: Swift.String? = nil,
+        outputConfiguration: CleanRoomsMLClientTypes.InferenceOutputConfiguration? = nil,
+        resourceConfig: CleanRoomsMLClientTypes.InferenceResourceConfig? = nil,
+        tags: [Swift.String: Swift.String]? = nil,
+        trainedModelArn: Swift.String? = nil
+    )
+    {
+        self.configuredModelAlgorithmAssociationArn = configuredModelAlgorithmAssociationArn
+        self.containerExecutionParameters = containerExecutionParameters
+        self.dataSource = dataSource
+        self.description = description
+        self.environment = environment
+        self.kmsKeyArn = kmsKeyArn
+        self.membershipIdentifier = membershipIdentifier
+        self.name = name
+        self.outputConfiguration = outputConfiguration
+        self.resourceConfig = resourceConfig
+        self.tags = tags
+        self.trainedModelArn = trainedModelArn
+    }
+}
+
+public struct StartTrainedModelInferenceJobOutput: Swift.Sendable {
+    /// The Amazon Resource Name (ARN) of the trained model inference job.
+    /// This member is required.
+    public var trainedModelInferenceJobArn: Swift.String?
+
+    public init(
+        trainedModelInferenceJobArn: Swift.String? = nil
+    )
+    {
+        self.trainedModelInferenceJobArn = trainedModelInferenceJobArn
+    }
 }
 
 extension CleanRoomsMLClientTypes {
@@ -2139,7 +6149,7 @@ extension CleanRoomsMLClientTypes {
 }
 
 public struct ListTrainingDatasetsOutput: Swift.Sendable {
-    /// The token value retrieved from a previous call to access the next page of results.
+    /// The token value used to access the next page of results.
     public var nextToken: Swift.String?
     /// The training datasets that match the request.
     /// This member is required.
@@ -2178,6 +6188,32 @@ public struct UntagResourceOutput: Swift.Sendable {
     public init() { }
 }
 
+extension CancelTrainedModelInput {
+
+    static func urlPathProvider(_ value: CancelTrainedModelInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())"
+    }
+}
+
+extension CancelTrainedModelInferenceJobInput {
+
+    static func urlPathProvider(_ value: CancelTrainedModelInferenceJobInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelInferenceJobArn = value.trainedModelInferenceJobArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-model-inference-jobs/\(trainedModelInferenceJobArn.urlPercentEncoding())"
+    }
+}
+
 extension CreateAudienceModelInput {
 
     static func urlPathProvider(_ value: CreateAudienceModelInput) -> Swift.String? {
@@ -2189,6 +6225,43 @@ extension CreateConfiguredAudienceModelInput {
 
     static func urlPathProvider(_ value: CreateConfiguredAudienceModelInput) -> Swift.String? {
         return "/configured-audience-model"
+    }
+}
+
+extension CreateConfiguredModelAlgorithmInput {
+
+    static func urlPathProvider(_ value: CreateConfiguredModelAlgorithmInput) -> Swift.String? {
+        return "/configured-model-algorithms"
+    }
+}
+
+extension CreateConfiguredModelAlgorithmAssociationInput {
+
+    static func urlPathProvider(_ value: CreateConfiguredModelAlgorithmAssociationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/configured-model-algorithm-associations"
+    }
+}
+
+extension CreateMLInputChannelInput {
+
+    static func urlPathProvider(_ value: CreateMLInputChannelInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-input-channels"
+    }
+}
+
+extension CreateTrainedModelInput {
+
+    static func urlPathProvider(_ value: CreateTrainedModelInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models"
     }
 }
 
@@ -2239,6 +6312,65 @@ extension DeleteConfiguredAudienceModelPolicyInput {
     }
 }
 
+extension DeleteConfiguredModelAlgorithmInput {
+
+    static func urlPathProvider(_ value: DeleteConfiguredModelAlgorithmInput) -> Swift.String? {
+        guard let configuredModelAlgorithmArn = value.configuredModelAlgorithmArn else {
+            return nil
+        }
+        return "/configured-model-algorithms/\(configuredModelAlgorithmArn.urlPercentEncoding())"
+    }
+}
+
+extension DeleteConfiguredModelAlgorithmAssociationInput {
+
+    static func urlPathProvider(_ value: DeleteConfiguredModelAlgorithmAssociationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let configuredModelAlgorithmAssociationArn = value.configuredModelAlgorithmAssociationArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/configured-model-algorithm-associations/\(configuredModelAlgorithmAssociationArn.urlPercentEncoding())"
+    }
+}
+
+extension DeleteMLConfigurationInput {
+
+    static func urlPathProvider(_ value: DeleteMLConfigurationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-configurations"
+    }
+}
+
+extension DeleteMLInputChannelDataInput {
+
+    static func urlPathProvider(_ value: DeleteMLInputChannelDataInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let mlInputChannelArn = value.mlInputChannelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-input-channels/\(mlInputChannelArn.urlPercentEncoding())"
+    }
+}
+
+extension DeleteTrainedModelOutputInput {
+
+    static func urlPathProvider(_ value: DeleteTrainedModelOutputInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())"
+    }
+}
+
 extension DeleteTrainingDatasetInput {
 
     static func urlPathProvider(_ value: DeleteTrainingDatasetInput) -> Swift.String? {
@@ -2269,6 +6401,45 @@ extension GetAudienceModelInput {
     }
 }
 
+extension GetCollaborationConfiguredModelAlgorithmAssociationInput {
+
+    static func urlPathProvider(_ value: GetCollaborationConfiguredModelAlgorithmAssociationInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        guard let configuredModelAlgorithmAssociationArn = value.configuredModelAlgorithmAssociationArn else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/configured-model-algorithm-associations/\(configuredModelAlgorithmAssociationArn.urlPercentEncoding())"
+    }
+}
+
+extension GetCollaborationMLInputChannelInput {
+
+    static func urlPathProvider(_ value: GetCollaborationMLInputChannelInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        guard let mlInputChannelArn = value.mlInputChannelArn else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/ml-input-channels/\(mlInputChannelArn.urlPercentEncoding())"
+    }
+}
+
+extension GetCollaborationTrainedModelInput {
+
+    static func urlPathProvider(_ value: GetCollaborationTrainedModelInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())"
+    }
+}
+
 extension GetConfiguredAudienceModelInput {
 
     static func urlPathProvider(_ value: GetConfiguredAudienceModelInput) -> Swift.String? {
@@ -2286,6 +6457,78 @@ extension GetConfiguredAudienceModelPolicyInput {
             return nil
         }
         return "/configured-audience-model/\(configuredAudienceModelArn.urlPercentEncoding())/policy"
+    }
+}
+
+extension GetConfiguredModelAlgorithmInput {
+
+    static func urlPathProvider(_ value: GetConfiguredModelAlgorithmInput) -> Swift.String? {
+        guard let configuredModelAlgorithmArn = value.configuredModelAlgorithmArn else {
+            return nil
+        }
+        return "/configured-model-algorithms/\(configuredModelAlgorithmArn.urlPercentEncoding())"
+    }
+}
+
+extension GetConfiguredModelAlgorithmAssociationInput {
+
+    static func urlPathProvider(_ value: GetConfiguredModelAlgorithmAssociationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let configuredModelAlgorithmAssociationArn = value.configuredModelAlgorithmAssociationArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/configured-model-algorithm-associations/\(configuredModelAlgorithmAssociationArn.urlPercentEncoding())"
+    }
+}
+
+extension GetMLConfigurationInput {
+
+    static func urlPathProvider(_ value: GetMLConfigurationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-configurations"
+    }
+}
+
+extension GetMLInputChannelInput {
+
+    static func urlPathProvider(_ value: GetMLInputChannelInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let mlInputChannelArn = value.mlInputChannelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-input-channels/\(mlInputChannelArn.urlPercentEncoding())"
+    }
+}
+
+extension GetTrainedModelInput {
+
+    static func urlPathProvider(_ value: GetTrainedModelInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())"
+    }
+}
+
+extension GetTrainedModelInferenceJobInput {
+
+    static func urlPathProvider(_ value: GetTrainedModelInferenceJobInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelInferenceJobArn = value.trainedModelInferenceJobArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-model-inference-jobs/\(trainedModelInferenceJobArn.urlPercentEncoding())"
     }
 }
 
@@ -2380,6 +6623,143 @@ extension ListAudienceModelsInput {
     }
 }
 
+extension ListCollaborationConfiguredModelAlgorithmAssociationsInput {
+
+    static func urlPathProvider(_ value: ListCollaborationConfiguredModelAlgorithmAssociationsInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/configured-model-algorithm-associations"
+    }
+}
+
+extension ListCollaborationConfiguredModelAlgorithmAssociationsInput {
+
+    static func queryItemProvider(_ value: ListCollaborationConfiguredModelAlgorithmAssociationsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListCollaborationMLInputChannelsInput {
+
+    static func urlPathProvider(_ value: ListCollaborationMLInputChannelsInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/ml-input-channels"
+    }
+}
+
+extension ListCollaborationMLInputChannelsInput {
+
+    static func queryItemProvider(_ value: ListCollaborationMLInputChannelsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListCollaborationTrainedModelExportJobsInput {
+
+    static func urlPathProvider(_ value: ListCollaborationTrainedModelExportJobsInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())/export-jobs"
+    }
+}
+
+extension ListCollaborationTrainedModelExportJobsInput {
+
+    static func queryItemProvider(_ value: ListCollaborationTrainedModelExportJobsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListCollaborationTrainedModelInferenceJobsInput {
+
+    static func urlPathProvider(_ value: ListCollaborationTrainedModelInferenceJobsInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/trained-model-inference-jobs"
+    }
+}
+
+extension ListCollaborationTrainedModelInferenceJobsInput {
+
+    static func queryItemProvider(_ value: ListCollaborationTrainedModelInferenceJobsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        if let trainedModelArn = value.trainedModelArn {
+            let trainedModelArnQueryItem = Smithy.URIQueryItem(name: "trainedModelArn".urlPercentEncoding(), value: Swift.String(trainedModelArn).urlPercentEncoding())
+            items.append(trainedModelArnQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListCollaborationTrainedModelsInput {
+
+    static func urlPathProvider(_ value: ListCollaborationTrainedModelsInput) -> Swift.String? {
+        guard let collaborationIdentifier = value.collaborationIdentifier else {
+            return nil
+        }
+        return "/collaborations/\(collaborationIdentifier.urlPercentEncoding())/trained-models"
+    }
+}
+
+extension ListCollaborationTrainedModelsInput {
+
+    static func queryItemProvider(_ value: ListCollaborationTrainedModelsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
 extension ListConfiguredAudienceModelsInput {
 
     static func urlPathProvider(_ value: ListConfiguredAudienceModelsInput) -> Swift.String? {
@@ -2403,6 +6783,81 @@ extension ListConfiguredAudienceModelsInput {
     }
 }
 
+extension ListConfiguredModelAlgorithmAssociationsInput {
+
+    static func urlPathProvider(_ value: ListConfiguredModelAlgorithmAssociationsInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/configured-model-algorithm-associations"
+    }
+}
+
+extension ListConfiguredModelAlgorithmAssociationsInput {
+
+    static func queryItemProvider(_ value: ListConfiguredModelAlgorithmAssociationsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListConfiguredModelAlgorithmsInput {
+
+    static func urlPathProvider(_ value: ListConfiguredModelAlgorithmsInput) -> Swift.String? {
+        return "/configured-model-algorithms"
+    }
+}
+
+extension ListConfiguredModelAlgorithmsInput {
+
+    static func queryItemProvider(_ value: ListConfiguredModelAlgorithmsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListMLInputChannelsInput {
+
+    static func urlPathProvider(_ value: ListMLInputChannelsInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-input-channels"
+    }
+}
+
+extension ListMLInputChannelsInput {
+
+    static func queryItemProvider(_ value: ListMLInputChannelsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
+    }
+}
+
 extension ListTagsForResourceInput {
 
     static func urlPathProvider(_ value: ListTagsForResourceInput) -> Swift.String? {
@@ -2410,6 +6865,62 @@ extension ListTagsForResourceInput {
             return nil
         }
         return "/tags/\(resourceArn.urlPercentEncoding())"
+    }
+}
+
+extension ListTrainedModelInferenceJobsInput {
+
+    static func urlPathProvider(_ value: ListTrainedModelInferenceJobsInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-model-inference-jobs"
+    }
+}
+
+extension ListTrainedModelInferenceJobsInput {
+
+    static func queryItemProvider(_ value: ListTrainedModelInferenceJobsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        if let trainedModelArn = value.trainedModelArn {
+            let trainedModelArnQueryItem = Smithy.URIQueryItem(name: "trainedModelArn".urlPercentEncoding(), value: Swift.String(trainedModelArn).urlPercentEncoding())
+            items.append(trainedModelArnQueryItem)
+        }
+        return items
+    }
+}
+
+extension ListTrainedModelsInput {
+
+    static func urlPathProvider(_ value: ListTrainedModelsInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models"
+    }
+}
+
+extension ListTrainedModelsInput {
+
+    static func queryItemProvider(_ value: ListTrainedModelsInput) throws -> [Smithy.URIQueryItem] {
+        var items = [Smithy.URIQueryItem]()
+        if let nextToken = value.nextToken {
+            let nextTokenQueryItem = Smithy.URIQueryItem(name: "nextToken".urlPercentEncoding(), value: Swift.String(nextToken).urlPercentEncoding())
+            items.append(nextTokenQueryItem)
+        }
+        if let maxResults = value.maxResults {
+            let maxResultsQueryItem = Smithy.URIQueryItem(name: "maxResults".urlPercentEncoding(), value: Swift.String(maxResults).urlPercentEncoding())
+            items.append(maxResultsQueryItem)
+        }
+        return items
     }
 }
 
@@ -2446,6 +6957,16 @@ extension PutConfiguredAudienceModelPolicyInput {
     }
 }
 
+extension PutMLConfigurationInput {
+
+    static func urlPathProvider(_ value: PutMLConfigurationInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/ml-configurations"
+    }
+}
+
 extension StartAudienceExportJobInput {
 
     static func urlPathProvider(_ value: StartAudienceExportJobInput) -> Swift.String? {
@@ -2457,6 +6978,29 @@ extension StartAudienceGenerationJobInput {
 
     static func urlPathProvider(_ value: StartAudienceGenerationJobInput) -> Swift.String? {
         return "/audience-generation-job"
+    }
+}
+
+extension StartTrainedModelExportJobInput {
+
+    static func urlPathProvider(_ value: StartTrainedModelExportJobInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        guard let trainedModelArn = value.trainedModelArn else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-models/\(trainedModelArn.urlPercentEncoding())/export-jobs"
+    }
+}
+
+extension StartTrainedModelInferenceJobInput {
+
+    static func urlPathProvider(_ value: StartTrainedModelInferenceJobInput) -> Swift.String? {
+        guard let membershipIdentifier = value.membershipIdentifier else {
+            return nil
+        }
+        return "/memberships/\(membershipIdentifier.urlPercentEncoding())/trained-model-inference-jobs"
     }
 }
 
@@ -2536,6 +7080,63 @@ extension CreateConfiguredAudienceModelInput {
     }
 }
 
+extension CreateConfiguredModelAlgorithmInput {
+
+    static func write(value: CreateConfiguredModelAlgorithmInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["description"].write(value.description)
+        try writer["inferenceContainerConfig"].write(value.inferenceContainerConfig, with: CleanRoomsMLClientTypes.InferenceContainerConfig.write(value:to:))
+        try writer["kmsKeyArn"].write(value.kmsKeyArn)
+        try writer["name"].write(value.name)
+        try writer["roleArn"].write(value.roleArn)
+        try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["trainingContainerConfig"].write(value.trainingContainerConfig, with: CleanRoomsMLClientTypes.ContainerConfig.write(value:to:))
+    }
+}
+
+extension CreateConfiguredModelAlgorithmAssociationInput {
+
+    static func write(value: CreateConfiguredModelAlgorithmAssociationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["configuredModelAlgorithmArn"].write(value.configuredModelAlgorithmArn)
+        try writer["description"].write(value.description)
+        try writer["name"].write(value.name)
+        try writer["privacyConfiguration"].write(value.privacyConfiguration, with: CleanRoomsMLClientTypes.PrivacyConfiguration.write(value:to:))
+        try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+    }
+}
+
+extension CreateMLInputChannelInput {
+
+    static func write(value: CreateMLInputChannelInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["configuredModelAlgorithmAssociations"].writeList(value.configuredModelAlgorithmAssociations, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["description"].write(value.description)
+        try writer["inputChannel"].write(value.inputChannel, with: CleanRoomsMLClientTypes.InputChannel.write(value:to:))
+        try writer["kmsKeyArn"].write(value.kmsKeyArn)
+        try writer["name"].write(value.name)
+        try writer["retentionInDays"].write(value.retentionInDays)
+        try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+    }
+}
+
+extension CreateTrainedModelInput {
+
+    static func write(value: CreateTrainedModelInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["configuredModelAlgorithmAssociationArn"].write(value.configuredModelAlgorithmAssociationArn)
+        try writer["dataChannels"].writeList(value.dataChannels, memberWritingClosure: CleanRoomsMLClientTypes.ModelTrainingDataChannel.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["description"].write(value.description)
+        try writer["environment"].writeMap(value.environment, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["hyperparameters"].writeMap(value.hyperparameters, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["kmsKeyArn"].write(value.kmsKeyArn)
+        try writer["name"].write(value.name)
+        try writer["resourceConfig"].write(value.resourceConfig, with: CleanRoomsMLClientTypes.ResourceConfig.write(value:to:))
+        try writer["stoppingCondition"].write(value.stoppingCondition, with: CleanRoomsMLClientTypes.StoppingCondition.write(value:to:))
+        try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+    }
+}
+
 extension CreateTrainingDatasetInput {
 
     static func write(value: CreateTrainingDatasetInput?, to writer: SmithyJSON.Writer) throws {
@@ -2555,6 +7156,14 @@ extension PutConfiguredAudienceModelPolicyInput {
         try writer["configuredAudienceModelPolicy"].write(value.configuredAudienceModelPolicy)
         try writer["policyExistenceCondition"].write(value.policyExistenceCondition)
         try writer["previousPolicyHash"].write(value.previousPolicyHash)
+    }
+}
+
+extension PutMLConfigurationInput {
+
+    static func write(value: PutMLConfigurationInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["defaultOutputLocation"].write(value.defaultOutputLocation, with: CleanRoomsMLClientTypes.MLOutputConfiguration.write(value:to:))
     }
 }
 
@@ -2583,6 +7192,34 @@ extension StartAudienceGenerationJobInput {
     }
 }
 
+extension StartTrainedModelExportJobInput {
+
+    static func write(value: StartTrainedModelExportJobInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["description"].write(value.description)
+        try writer["name"].write(value.name)
+        try writer["outputConfiguration"].write(value.outputConfiguration, with: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration.write(value:to:))
+    }
+}
+
+extension StartTrainedModelInferenceJobInput {
+
+    static func write(value: StartTrainedModelInferenceJobInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["configuredModelAlgorithmAssociationArn"].write(value.configuredModelAlgorithmAssociationArn)
+        try writer["containerExecutionParameters"].write(value.containerExecutionParameters, with: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters.write(value:to:))
+        try writer["dataSource"].write(value.dataSource, with: CleanRoomsMLClientTypes.ModelInferenceDataSource.write(value:to:))
+        try writer["description"].write(value.description)
+        try writer["environment"].writeMap(value.environment, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["kmsKeyArn"].write(value.kmsKeyArn)
+        try writer["name"].write(value.name)
+        try writer["outputConfiguration"].write(value.outputConfiguration, with: CleanRoomsMLClientTypes.InferenceOutputConfiguration.write(value:to:))
+        try writer["resourceConfig"].write(value.resourceConfig, with: CleanRoomsMLClientTypes.InferenceResourceConfig.write(value:to:))
+        try writer["tags"].writeMap(value.tags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["trainedModelArn"].write(value.trainedModelArn)
+    }
+}
+
 extension TagResourceInput {
 
     static func write(value: TagResourceInput?, to writer: SmithyJSON.Writer) throws {
@@ -2601,6 +7238,20 @@ extension UpdateConfiguredAudienceModelInput {
         try writer["minMatchingSeedSize"].write(value.minMatchingSeedSize)
         try writer["outputConfig"].write(value.outputConfig, with: CleanRoomsMLClientTypes.ConfiguredAudienceModelOutputConfig.write(value:to:))
         try writer["sharedAudienceMetrics"].writeList(value.sharedAudienceMetrics, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CleanRoomsMLClientTypes.SharedAudienceMetrics>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+}
+
+extension CancelTrainedModelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CancelTrainedModelOutput {
+        return CancelTrainedModelOutput()
+    }
+}
+
+extension CancelTrainedModelInferenceJobOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CancelTrainedModelInferenceJobOutput {
+        return CancelTrainedModelInferenceJobOutput()
     }
 }
 
@@ -2624,6 +7275,54 @@ extension CreateConfiguredAudienceModelOutput {
         let reader = responseReader
         var value = CreateConfiguredAudienceModelOutput()
         value.configuredAudienceModelArn = try reader["configuredAudienceModelArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CreateConfiguredModelAlgorithmOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateConfiguredModelAlgorithmOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateConfiguredModelAlgorithmOutput()
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CreateConfiguredModelAlgorithmAssociationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateConfiguredModelAlgorithmAssociationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateConfiguredModelAlgorithmAssociationOutput()
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CreateMLInputChannelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateMLInputChannelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateMLInputChannelOutput()
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CreateTrainedModelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateTrainedModelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = CreateTrainedModelOutput()
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
         return value
     }
 }
@@ -2665,6 +7364,41 @@ extension DeleteConfiguredAudienceModelPolicyOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteConfiguredAudienceModelPolicyOutput {
         return DeleteConfiguredAudienceModelPolicyOutput()
+    }
+}
+
+extension DeleteConfiguredModelAlgorithmOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteConfiguredModelAlgorithmOutput {
+        return DeleteConfiguredModelAlgorithmOutput()
+    }
+}
+
+extension DeleteConfiguredModelAlgorithmAssociationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteConfiguredModelAlgorithmAssociationOutput {
+        return DeleteConfiguredModelAlgorithmAssociationOutput()
+    }
+}
+
+extension DeleteMLConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteMLConfigurationOutput {
+        return DeleteMLConfigurationOutput()
+    }
+}
+
+extension DeleteMLInputChannelDataOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteMLInputChannelDataOutput {
+        return DeleteMLInputChannelDataOutput()
+    }
+}
+
+extension DeleteTrainedModelOutputOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteTrainedModelOutputOutput {
+        return DeleteTrainedModelOutputOutput()
     }
 }
 
@@ -2724,6 +7458,80 @@ extension GetAudienceModelOutput {
     }
 }
 
+extension GetCollaborationConfiguredModelAlgorithmAssociationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetCollaborationConfiguredModelAlgorithmAssociationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetCollaborationConfiguredModelAlgorithmAssociationOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.privacyConfiguration = try reader["privacyConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.PrivacyConfiguration.read(from:))
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetCollaborationMLInputChannelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetCollaborationMLInputChannelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetCollaborationMLInputChannelOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociations = try reader["configuredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.numberOfRecords = try reader["numberOfRecords"].readIfPresent()
+        value.retentionInDays = try reader["retentionInDays"].readIfPresent() ?? 0
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetCollaborationTrainedModelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetCollaborationTrainedModelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetCollaborationTrainedModelOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.logsStatus = try reader["logsStatus"].readIfPresent()
+        value.logsStatusDetails = try reader["logsStatusDetails"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.metricsStatus = try reader["metricsStatus"].readIfPresent()
+        value.metricsStatusDetails = try reader["metricsStatusDetails"].readIfPresent()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.resourceConfig = try reader["resourceConfig"].readIfPresent(with: CleanRoomsMLClientTypes.ResourceConfig.read(from:))
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.stoppingCondition = try reader["stoppingCondition"].readIfPresent(with: CleanRoomsMLClientTypes.StoppingCondition.read(from:))
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.trainingContainerImageDigest = try reader["trainingContainerImageDigest"].readIfPresent()
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
 extension GetConfiguredAudienceModelOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetConfiguredAudienceModelOutput {
@@ -2758,6 +7566,158 @@ extension GetConfiguredAudienceModelPolicyOutput {
         value.configuredAudienceModelArn = try reader["configuredAudienceModelArn"].readIfPresent() ?? ""
         value.configuredAudienceModelPolicy = try reader["configuredAudienceModelPolicy"].readIfPresent() ?? ""
         value.policyHash = try reader["policyHash"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension GetConfiguredModelAlgorithmOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetConfiguredModelAlgorithmOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetConfiguredModelAlgorithmOutput()
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.description = try reader["description"].readIfPresent()
+        value.inferenceContainerConfig = try reader["inferenceContainerConfig"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceContainerConfig.read(from:))
+        value.kmsKeyArn = try reader["kmsKeyArn"].readIfPresent()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.roleArn = try reader["roleArn"].readIfPresent() ?? ""
+        value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.trainingContainerConfig = try reader["trainingContainerConfig"].readIfPresent(with: CleanRoomsMLClientTypes.ContainerConfig.read(from:))
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetConfiguredModelAlgorithmAssociationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetConfiguredModelAlgorithmAssociationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetConfiguredModelAlgorithmAssociationOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.privacyConfiguration = try reader["privacyConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.PrivacyConfiguration.read(from:))
+        value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetMLConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetMLConfigurationOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetMLConfigurationOutput()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.defaultOutputLocation = try reader["defaultOutputLocation"].readIfPresent(with: CleanRoomsMLClientTypes.MLOutputConfiguration.read(from:))
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetMLInputChannelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetMLInputChannelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetMLInputChannelOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociations = try reader["configuredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.description = try reader["description"].readIfPresent()
+        value.inputChannel = try reader["inputChannel"].readIfPresent(with: CleanRoomsMLClientTypes.InputChannel.read(from:))
+        value.kmsKeyArn = try reader["kmsKeyArn"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.numberOfFiles = try reader["numberOfFiles"].readIfPresent()
+        value.numberOfRecords = try reader["numberOfRecords"].readIfPresent()
+        value.protectedQueryIdentifier = try reader["protectedQueryIdentifier"].readIfPresent()
+        value.retentionInDays = try reader["retentionInDays"].readIfPresent() ?? 0
+        value.sizeInGb = try reader["sizeInGb"].readIfPresent()
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetTrainedModelOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetTrainedModelOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetTrainedModelOutput()
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataChannels = try reader["dataChannels"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.ModelTrainingDataChannel.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.description = try reader["description"].readIfPresent()
+        value.environment = try reader["environment"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.hyperparameters = try reader["hyperparameters"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.kmsKeyArn = try reader["kmsKeyArn"].readIfPresent()
+        value.logsStatus = try reader["logsStatus"].readIfPresent()
+        value.logsStatusDetails = try reader["logsStatusDetails"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.metricsStatus = try reader["metricsStatus"].readIfPresent()
+        value.metricsStatusDetails = try reader["metricsStatusDetails"].readIfPresent()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.resourceConfig = try reader["resourceConfig"].readIfPresent(with: CleanRoomsMLClientTypes.ResourceConfig.read(from:))
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.stoppingCondition = try reader["stoppingCondition"].readIfPresent(with: CleanRoomsMLClientTypes.StoppingCondition.read(from:))
+        value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.trainingContainerImageDigest = try reader["trainingContainerImageDigest"].readIfPresent()
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension GetTrainedModelInferenceJobOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetTrainedModelInferenceJobOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetTrainedModelInferenceJobOutput()
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent()
+        value.containerExecutionParameters = try reader["containerExecutionParameters"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters.read(from:))
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.dataSource = try reader["dataSource"].readIfPresent(with: CleanRoomsMLClientTypes.ModelInferenceDataSource.read(from:))
+        value.description = try reader["description"].readIfPresent()
+        value.environment = try reader["environment"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.inferenceContainerImageDigest = try reader["inferenceContainerImageDigest"].readIfPresent()
+        value.kmsKeyArn = try reader["kmsKeyArn"].readIfPresent()
+        value.logsStatus = try reader["logsStatus"].readIfPresent()
+        value.logsStatusDetails = try reader["logsStatusDetails"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.metricsStatus = try reader["metricsStatus"].readIfPresent()
+        value.metricsStatusDetails = try reader["metricsStatusDetails"].readIfPresent()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.outputConfiguration = try reader["outputConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceOutputConfiguration.read(from:))
+        value.resourceConfig = try reader["resourceConfig"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceResourceConfig.read(from:))
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.trainedModelInferenceJobArn = try reader["trainedModelInferenceJobArn"].readIfPresent() ?? ""
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         return value
     }
 }
@@ -2821,6 +7781,71 @@ extension ListAudienceModelsOutput {
     }
 }
 
+extension ListCollaborationConfiguredModelAlgorithmAssociationsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCollaborationConfiguredModelAlgorithmAssociationsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCollaborationConfiguredModelAlgorithmAssociationsOutput()
+        value.collaborationConfiguredModelAlgorithmAssociations = try reader["collaborationConfiguredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListCollaborationMLInputChannelsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCollaborationMLInputChannelsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCollaborationMLInputChannelsOutput()
+        value.collaborationMLInputChannelsList = try reader["collaborationMLInputChannelsList"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListCollaborationTrainedModelExportJobsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCollaborationTrainedModelExportJobsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCollaborationTrainedModelExportJobsOutput()
+        value.collaborationTrainedModelExportJobs = try reader["collaborationTrainedModelExportJobs"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListCollaborationTrainedModelInferenceJobsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCollaborationTrainedModelInferenceJobsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCollaborationTrainedModelInferenceJobsOutput()
+        value.collaborationTrainedModelInferenceJobs = try reader["collaborationTrainedModelInferenceJobs"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListCollaborationTrainedModelsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListCollaborationTrainedModelsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListCollaborationTrainedModelsOutput()
+        value.collaborationTrainedModels = try reader["collaborationTrainedModels"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.CollaborationTrainedModelSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
 extension ListConfiguredAudienceModelsOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListConfiguredAudienceModelsOutput {
@@ -2834,6 +7859,45 @@ extension ListConfiguredAudienceModelsOutput {
     }
 }
 
+extension ListConfiguredModelAlgorithmAssociationsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListConfiguredModelAlgorithmAssociationsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListConfiguredModelAlgorithmAssociationsOutput()
+        value.configuredModelAlgorithmAssociations = try reader["configuredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListConfiguredModelAlgorithmsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListConfiguredModelAlgorithmsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListConfiguredModelAlgorithmsOutput()
+        value.configuredModelAlgorithms = try reader["configuredModelAlgorithms"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListMLInputChannelsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListMLInputChannelsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListMLInputChannelsOutput()
+        value.mlInputChannelsList = try reader["mlInputChannelsList"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.MLInputChannelSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        return value
+    }
+}
+
 extension ListTagsForResourceOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListTagsForResourceOutput {
@@ -2842,6 +7906,32 @@ extension ListTagsForResourceOutput {
         let reader = responseReader
         var value = ListTagsForResourceOutput()
         value.tags = try reader["tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false) ?? [:]
+        return value
+    }
+}
+
+extension ListTrainedModelInferenceJobsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListTrainedModelInferenceJobsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListTrainedModelInferenceJobsOutput()
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        value.trainedModelInferenceJobs = try reader["trainedModelInferenceJobs"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension ListTrainedModelsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListTrainedModelsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListTrainedModelsOutput()
+        value.nextToken = try reader["nextToken"].readIfPresent()
+        value.trainedModels = try reader["trainedModels"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.TrainedModelSummary.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
         return value
     }
 }
@@ -2872,6 +7962,13 @@ extension PutConfiguredAudienceModelPolicyOutput {
     }
 }
 
+extension PutMLConfigurationOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> PutMLConfigurationOutput {
+        return PutMLConfigurationOutput()
+    }
+}
+
 extension StartAudienceExportJobOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartAudienceExportJobOutput {
@@ -2887,6 +7984,25 @@ extension StartAudienceGenerationJobOutput {
         let reader = responseReader
         var value = StartAudienceGenerationJobOutput()
         value.audienceGenerationJobArn = try reader["audienceGenerationJobArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension StartTrainedModelExportJobOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartTrainedModelExportJobOutput {
+        return StartTrainedModelExportJobOutput()
+    }
+}
+
+extension StartTrainedModelInferenceJobOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> StartTrainedModelInferenceJobOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = StartTrainedModelInferenceJobOutput()
+        value.trainedModelInferenceJobArn = try reader["trainedModelInferenceJobArn"].readIfPresent() ?? ""
         return value
     }
 }
@@ -2917,6 +8033,40 @@ extension UpdateConfiguredAudienceModelOutput {
     }
 }
 
+enum CancelTrainedModelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CancelTrainedModelInferenceJobOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum CreateAudienceModelOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -2936,6 +8086,77 @@ enum CreateAudienceModelOutputError {
 }
 
 enum CreateConfiguredAudienceModelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateConfiguredModelAlgorithmOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateConfiguredModelAlgorithmAssociationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateMLInputChannelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum CreateTrainedModelOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -3036,6 +8257,90 @@ enum DeleteConfiguredAudienceModelPolicyOutputError {
     }
 }
 
+enum DeleteConfiguredModelAlgorithmOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteConfiguredModelAlgorithmAssociationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteMLConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteMLInputChannelDataOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteTrainedModelOutputOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DeleteTrainingDatasetOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -3085,6 +8390,54 @@ enum GetAudienceModelOutputError {
     }
 }
 
+enum GetCollaborationConfiguredModelAlgorithmAssociationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetCollaborationMLInputChannelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetCollaborationTrainedModelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum GetConfiguredAudienceModelOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -3102,6 +8455,102 @@ enum GetConfiguredAudienceModelOutputError {
 }
 
 enum GetConfiguredAudienceModelPolicyOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetConfiguredModelAlgorithmOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetConfiguredModelAlgorithmAssociationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetMLConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetMLInputChannelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetTrainedModelOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum GetTrainedModelInferenceJobOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -3178,7 +8627,127 @@ enum ListAudienceModelsOutputError {
     }
 }
 
+enum ListCollaborationConfiguredModelAlgorithmAssociationsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListCollaborationMLInputChannelsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListCollaborationTrainedModelExportJobsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListCollaborationTrainedModelInferenceJobsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListCollaborationTrainedModelsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum ListConfiguredAudienceModelsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListConfiguredModelAlgorithmAssociationsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListConfiguredModelAlgorithmsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListMLInputChannelsOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -3203,6 +8772,36 @@ enum ListTagsForResourceOutputError {
         switch baseError.code {
             case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
             case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListTrainedModelInferenceJobsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListTrainedModelsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
             case "ValidationException": return try ValidationException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
@@ -3240,6 +8839,21 @@ enum PutConfiguredAudienceModelPolicyOutputError {
     }
 }
 
+enum PutMLConfigurationOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum StartAudienceExportJobOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -3259,6 +8873,41 @@ enum StartAudienceExportJobOutputError {
 }
 
 enum StartAudienceGenerationJobOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ServiceQuotaExceededException": return try ServiceQuotaExceededException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum StartTrainedModelExportJobOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "ConflictException": return try ConflictException.makeError(baseError: baseError)
+            case "ResourceNotFoundException": return try ResourceNotFoundException.makeError(baseError: baseError)
+            case "ValidationException": return try ValidationException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum StartTrainedModelInferenceJobOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -3325,19 +8974,6 @@ enum UpdateConfiguredAudienceModelOutputError {
     }
 }
 
-extension ServiceQuotaExceededException {
-
-    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ServiceQuotaExceededException {
-        let reader = baseError.errorBodyReader
-        var value = ServiceQuotaExceededException()
-        value.properties.message = try reader["message"].readIfPresent() ?? ""
-        value.httpResponse = baseError.httpResponse
-        value.requestID = baseError.requestID
-        value.message = baseError.message
-        return value
-    }
-}
-
 extension ConflictException {
 
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ConflictException {
@@ -3382,6 +9018,19 @@ extension ResourceNotFoundException {
     static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ResourceNotFoundException {
         let reader = baseError.errorBodyReader
         var value = ResourceNotFoundException()
+        value.properties.message = try reader["message"].readIfPresent() ?? ""
+        value.httpResponse = baseError.httpResponse
+        value.requestID = baseError.requestID
+        value.message = baseError.message
+        return value
+    }
+}
+
+extension ServiceQuotaExceededException {
+
+    static func makeError(baseError: AWSClientRuntime.RestJSONError) throws -> ServiceQuotaExceededException {
+        let reader = baseError.errorBodyReader
+        var value = ServiceQuotaExceededException()
         value.properties.message = try reader["message"].readIfPresent() ?? ""
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -3493,6 +9142,191 @@ extension CleanRoomsMLClientTypes.AudienceSize {
     }
 }
 
+extension CleanRoomsMLClientTypes.PrivacyConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.PrivacyConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["policies"].write(value.policies, with: CleanRoomsMLClientTypes.PrivacyConfigurationPolicies.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.PrivacyConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.PrivacyConfiguration()
+        value.policies = try reader["policies"].readIfPresent(with: CleanRoomsMLClientTypes.PrivacyConfigurationPolicies.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.PrivacyConfigurationPolicies {
+
+    static func write(value: CleanRoomsMLClientTypes.PrivacyConfigurationPolicies?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["trainedModelExports"].write(value.trainedModelExports, with: CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy.write(value:to:))
+        try writer["trainedModelInferenceJobs"].write(value.trainedModelInferenceJobs, with: CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy.write(value:to:))
+        try writer["trainedModels"].write(value.trainedModels, with: CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.PrivacyConfigurationPolicies {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.PrivacyConfigurationPolicies()
+        value.trainedModels = try reader["trainedModels"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy.read(from:))
+        value.trainedModelExports = try reader["trainedModelExports"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy.read(from:))
+        value.trainedModelInferenceJobs = try reader["trainedModelInferenceJobs"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["containerLogs"].writeList(value.containerLogs, memberWritingClosure: CleanRoomsMLClientTypes.LogsConfigurationPolicy.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["maxOutputSize"].write(value.maxOutputSize, with: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelInferenceJobsConfigurationPolicy()
+        value.containerLogs = try reader["containerLogs"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.LogsConfigurationPolicy.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.maxOutputSize = try reader["maxOutputSize"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["unit"].write(value.unit)
+        try writer["value"].write(value.value)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelInferenceMaxOutputSize()
+        value.unit = try reader["unit"].readIfPresent() ?? .sdkUnknown("")
+        value.value = try reader["value"].readIfPresent() ?? 0.0
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.LogsConfigurationPolicy {
+
+    static func write(value: CleanRoomsMLClientTypes.LogsConfigurationPolicy?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["allowedAccountIds"].writeList(value.allowedAccountIds, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["filterPattern"].write(value.filterPattern)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.LogsConfigurationPolicy {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.LogsConfigurationPolicy()
+        value.allowedAccountIds = try reader["allowedAccountIds"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.filterPattern = try reader["filterPattern"].readIfPresent()
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["filesToExport"].writeList(value.filesToExport, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CleanRoomsMLClientTypes.TrainedModelExportFileType>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["maxSize"].write(value.maxSize, with: CleanRoomsMLClientTypes.TrainedModelExportsMaxSize.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelExportsConfigurationPolicy()
+        value.maxSize = try reader["maxSize"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelExportsMaxSize.read(from:))
+        value.filesToExport = try reader["filesToExport"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosureBox<CleanRoomsMLClientTypes.TrainedModelExportFileType>().read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelExportsMaxSize {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelExportsMaxSize?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["unit"].write(value.unit)
+        try writer["value"].write(value.value)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelExportsMaxSize {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelExportsMaxSize()
+        value.unit = try reader["unit"].readIfPresent() ?? .sdkUnknown("")
+        value.value = try reader["value"].readIfPresent() ?? 0.0
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["containerLogs"].writeList(value.containerLogs, memberWritingClosure: CleanRoomsMLClientTypes.LogsConfigurationPolicy.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["containerMetrics"].write(value.containerMetrics, with: CleanRoomsMLClientTypes.MetricsConfigurationPolicy.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelsConfigurationPolicy()
+        value.containerLogs = try reader["containerLogs"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.LogsConfigurationPolicy.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.containerMetrics = try reader["containerMetrics"].readIfPresent(with: CleanRoomsMLClientTypes.MetricsConfigurationPolicy.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.MetricsConfigurationPolicy {
+
+    static func write(value: CleanRoomsMLClientTypes.MetricsConfigurationPolicy?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["noiseLevel"].write(value.noiseLevel)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.MetricsConfigurationPolicy {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.MetricsConfigurationPolicy()
+        value.noiseLevel = try reader["noiseLevel"].readIfPresent() ?? .sdkUnknown("")
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ResourceConfig {
+
+    static func write(value: CleanRoomsMLClientTypes.ResourceConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["instanceCount"].write(value.instanceCount)
+        try writer["instanceType"].write(value.instanceType)
+        try writer["volumeSizeInGB"].write(value.volumeSizeInGB)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ResourceConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ResourceConfig()
+        value.instanceCount = try reader["instanceCount"].readIfPresent() ?? 1
+        value.instanceType = try reader["instanceType"].readIfPresent() ?? .sdkUnknown("")
+        value.volumeSizeInGB = try reader["volumeSizeInGB"].readIfPresent() ?? 0
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.StoppingCondition {
+
+    static func write(value: CleanRoomsMLClientTypes.StoppingCondition?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["maxRuntimeInSeconds"].write(value.maxRuntimeInSeconds)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.StoppingCondition {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.StoppingCondition()
+        value.maxRuntimeInSeconds = try reader["maxRuntimeInSeconds"].readIfPresent() ?? 86400
+        return value
+    }
+}
+
 extension CleanRoomsMLClientTypes.ConfiguredAudienceModelOutputConfig {
 
     static func write(value: CleanRoomsMLClientTypes.ConfiguredAudienceModelOutputConfig?, to writer: SmithyJSON.Writer) throws {
@@ -3538,6 +9372,286 @@ extension CleanRoomsMLClientTypes.AudienceSizeConfig {
         var value = CleanRoomsMLClientTypes.AudienceSizeConfig()
         value.audienceSizeType = try reader["audienceSizeType"].readIfPresent() ?? .sdkUnknown("")
         value.audienceSizeBins = try reader["audienceSizeBins"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readInt(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ContainerConfig {
+
+    static func write(value: CleanRoomsMLClientTypes.ContainerConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["arguments"].writeList(value.arguments, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["entrypoint"].writeList(value.entrypoint, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["imageUri"].write(value.imageUri)
+        try writer["metricDefinitions"].writeList(value.metricDefinitions, memberWritingClosure: CleanRoomsMLClientTypes.MetricDefinition.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ContainerConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ContainerConfig()
+        value.imageUri = try reader["imageUri"].readIfPresent() ?? ""
+        value.entrypoint = try reader["entrypoint"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.arguments = try reader["arguments"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        value.metricDefinitions = try reader["metricDefinitions"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.MetricDefinition.read(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.MetricDefinition {
+
+    static func write(value: CleanRoomsMLClientTypes.MetricDefinition?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["name"].write(value.name)
+        try writer["regex"].write(value.regex)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.MetricDefinition {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.MetricDefinition()
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.regex = try reader["regex"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InferenceContainerConfig {
+
+    static func write(value: CleanRoomsMLClientTypes.InferenceContainerConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["imageUri"].write(value.imageUri)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InferenceContainerConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InferenceContainerConfig()
+        value.imageUri = try reader["imageUri"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.MLOutputConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.MLOutputConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["destination"].write(value.destination, with: CleanRoomsMLClientTypes.Destination.write(value:to:))
+        try writer["roleArn"].write(value.roleArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.MLOutputConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.MLOutputConfiguration()
+        value.destination = try reader["destination"].readIfPresent(with: CleanRoomsMLClientTypes.Destination.read(from:))
+        value.roleArn = try reader["roleArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.Destination {
+
+    static func write(value: CleanRoomsMLClientTypes.Destination?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["s3Destination"].write(value.s3Destination, with: CleanRoomsMLClientTypes.S3ConfigMap.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.Destination {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.Destination()
+        value.s3Destination = try reader["s3Destination"].readIfPresent(with: CleanRoomsMLClientTypes.S3ConfigMap.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InputChannel {
+
+    static func write(value: CleanRoomsMLClientTypes.InputChannel?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["dataSource"].write(value.dataSource, with: CleanRoomsMLClientTypes.InputChannelDataSource.write(value:to:))
+        try writer["roleArn"].write(value.roleArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InputChannel {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InputChannel()
+        value.dataSource = try reader["dataSource"].readIfPresent(with: CleanRoomsMLClientTypes.InputChannelDataSource.read(from:))
+        value.roleArn = try reader["roleArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InputChannelDataSource {
+
+    static func write(value: CleanRoomsMLClientTypes.InputChannelDataSource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .protectedqueryinputparameters(protectedqueryinputparameters):
+                try writer["protectedQueryInputParameters"].write(protectedqueryinputparameters, with: CleanRoomsMLClientTypes.ProtectedQueryInputParameters.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InputChannelDataSource {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "protectedQueryInputParameters":
+                return .protectedqueryinputparameters(try reader["protectedQueryInputParameters"].read(with: CleanRoomsMLClientTypes.ProtectedQueryInputParameters.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes.ProtectedQueryInputParameters {
+
+    static func write(value: CleanRoomsMLClientTypes.ProtectedQueryInputParameters?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["computeConfiguration"].write(value.computeConfiguration, with: CleanRoomsMLClientTypes.ComputeConfiguration.write(value:to:))
+        try writer["sqlParameters"].write(value.sqlParameters, with: CleanRoomsMLClientTypes.ProtectedQuerySQLParameters.write(value:to:))
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ProtectedQueryInputParameters {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ProtectedQueryInputParameters()
+        value.sqlParameters = try reader["sqlParameters"].readIfPresent(with: CleanRoomsMLClientTypes.ProtectedQuerySQLParameters.read(from:))
+        value.computeConfiguration = try reader["computeConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.ComputeConfiguration.read(from:))
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ComputeConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.ComputeConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .worker(worker):
+                try writer["worker"].write(worker, with: CleanRoomsMLClientTypes.WorkerComputeConfiguration.write(value:to:))
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ComputeConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        let name = reader.children.filter { $0.hasContent && $0.nodeInfo.name != "__type" }.first?.nodeInfo.name
+        switch name {
+            case "worker":
+                return .worker(try reader["worker"].read(with: CleanRoomsMLClientTypes.WorkerComputeConfiguration.read(from:)))
+            default:
+                return .sdkUnknown(name ?? "")
+        }
+    }
+}
+
+extension CleanRoomsMLClientTypes.WorkerComputeConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.WorkerComputeConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["number"].write(value.number)
+        try writer["type"].write(value.type)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.WorkerComputeConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.WorkerComputeConfiguration()
+        value.type = try reader["type"].readIfPresent() ?? .cr1x
+        value.number = try reader["number"].readIfPresent() ?? 16
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ModelTrainingDataChannel {
+
+    static func write(value: CleanRoomsMLClientTypes.ModelTrainingDataChannel?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["channelName"].write(value.channelName)
+        try writer["mlInputChannelArn"].write(value.mlInputChannelArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ModelTrainingDataChannel {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ModelTrainingDataChannel()
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        value.channelName = try reader["channelName"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InferenceResourceConfig {
+
+    static func write(value: CleanRoomsMLClientTypes.InferenceResourceConfig?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["instanceCount"].write(value.instanceCount)
+        try writer["instanceType"].write(value.instanceType)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InferenceResourceConfig {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InferenceResourceConfig()
+        value.instanceType = try reader["instanceType"].readIfPresent() ?? .sdkUnknown("")
+        value.instanceCount = try reader["instanceCount"].readIfPresent() ?? 1
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InferenceOutputConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.InferenceOutputConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["accept"].write(value.accept)
+        try writer["members"].writeList(value.members, memberWritingClosure: CleanRoomsMLClientTypes.InferenceReceiverMember.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InferenceOutputConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InferenceOutputConfiguration()
+        value.accept = try reader["accept"].readIfPresent() ?? "application/json"
+        value.members = try reader["members"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.InferenceReceiverMember.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InferenceReceiverMember {
+
+    static func write(value: CleanRoomsMLClientTypes.InferenceReceiverMember?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["accountId"].write(value.accountId)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InferenceReceiverMember {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InferenceReceiverMember()
+        value.accountId = try reader["accountId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ModelInferenceDataSource {
+
+    static func write(value: CleanRoomsMLClientTypes.ModelInferenceDataSource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["mlInputChannelArn"].write(value.mlInputChannelArn)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ModelInferenceDataSource {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ModelInferenceDataSource()
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.InferenceContainerExecutionParameters {
+
+    static func write(value: CleanRoomsMLClientTypes.InferenceContainerExecutionParameters?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["maxPayloadInMB"].write(value.maxPayloadInMB)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.InferenceContainerExecutionParameters {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.InferenceContainerExecutionParameters()
+        value.maxPayloadInMB = try reader["maxPayloadInMB"].readIfPresent()
         return value
     }
 }
@@ -3679,6 +9793,137 @@ extension CleanRoomsMLClientTypes.AudienceModelSummary {
     }
 }
 
+extension CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.CollaborationConfiguredModelAlgorithmAssociationSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.CollaborationMLInputChannelSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociations = try reader["configuredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.CollaborationTrainedModelExportJobSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.outputConfiguration = try reader["outputConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration.read(from:))
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.statusDetails = try reader["statusDetails"].readIfPresent(with: CleanRoomsMLClientTypes.StatusDetails.read(from:))
+        value.description = try reader["description"].readIfPresent()
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["members"].writeList(value.members, memberWritingClosure: CleanRoomsMLClientTypes.TrainedModelExportReceiverMember.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelExportOutputConfiguration()
+        value.members = try reader["members"].readListIfPresent(memberReadingClosure: CleanRoomsMLClientTypes.TrainedModelExportReceiverMember.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelExportReceiverMember {
+
+    static func write(value: CleanRoomsMLClientTypes.TrainedModelExportReceiverMember?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["accountId"].write(value.accountId)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelExportReceiverMember {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelExportReceiverMember()
+        value.accountId = try reader["accountId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.CollaborationTrainedModelInferenceJobSummary()
+        value.trainedModelInferenceJobArn = try reader["trainedModelInferenceJobArn"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.outputConfiguration = try reader["outputConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceOutputConfiguration.read(from:))
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.metricsStatus = try reader["metricsStatus"].readIfPresent()
+        value.metricsStatusDetails = try reader["metricsStatusDetails"].readIfPresent()
+        value.logsStatus = try reader["logsStatus"].readIfPresent()
+        value.logsStatusDetails = try reader["logsStatusDetails"].readIfPresent()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.CollaborationTrainedModelSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.CollaborationTrainedModelSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.CollaborationTrainedModelSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.creatorAccountId = try reader["creatorAccountId"].readIfPresent() ?? ""
+        return value
+    }
+}
+
 extension CleanRoomsMLClientTypes.ConfiguredAudienceModelSummary {
 
     static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ConfiguredAudienceModelSummary {
@@ -3692,6 +9937,98 @@ extension CleanRoomsMLClientTypes.ConfiguredAudienceModelSummary {
         value.description = try reader["description"].readIfPresent()
         value.configuredAudienceModelArn = try reader["configuredAudienceModelArn"].readIfPresent() ?? ""
         value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ConfiguredModelAlgorithmAssociationSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.ConfiguredModelAlgorithmSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.configuredModelAlgorithmArn = try reader["configuredModelAlgorithmArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.MLInputChannelSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.MLInputChannelSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.MLInputChannelSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociations = try reader["configuredModelAlgorithmAssociations"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.protectedQueryIdentifier = try reader["protectedQueryIdentifier"].readIfPresent()
+        value.mlInputChannelArn = try reader["mlInputChannelArn"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.description = try reader["description"].readIfPresent()
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelInferenceJobSummary()
+        value.trainedModelInferenceJobArn = try reader["trainedModelInferenceJobArn"].readIfPresent() ?? ""
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.outputConfiguration = try reader["outputConfiguration"].readIfPresent(with: CleanRoomsMLClientTypes.InferenceOutputConfiguration.read(from:))
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.metricsStatus = try reader["metricsStatus"].readIfPresent()
+        value.metricsStatusDetails = try reader["metricsStatusDetails"].readIfPresent()
+        value.logsStatus = try reader["logsStatus"].readIfPresent()
+        value.logsStatusDetails = try reader["logsStatusDetails"].readIfPresent()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        return value
+    }
+}
+
+extension CleanRoomsMLClientTypes.TrainedModelSummary {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> CleanRoomsMLClientTypes.TrainedModelSummary {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = CleanRoomsMLClientTypes.TrainedModelSummary()
+        value.createTime = try reader["createTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.updateTime = try reader["updateTime"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
+        value.trainedModelArn = try reader["trainedModelArn"].readIfPresent() ?? ""
+        value.name = try reader["name"].readIfPresent() ?? ""
+        value.description = try reader["description"].readIfPresent()
+        value.membershipIdentifier = try reader["membershipIdentifier"].readIfPresent() ?? ""
+        value.collaborationIdentifier = try reader["collaborationIdentifier"].readIfPresent() ?? ""
+        value.status = try reader["status"].readIfPresent() ?? .sdkUnknown("")
+        value.configuredModelAlgorithmAssociationArn = try reader["configuredModelAlgorithmAssociationArn"].readIfPresent() ?? ""
         return value
     }
 }

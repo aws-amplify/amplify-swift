@@ -63,6 +63,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class ResourceGroupsTaggingAPIClient: ClientRuntime.Client {
     public static let clientName = "ResourceGroupsTaggingAPIClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: ResourceGroupsTaggingAPIClient.ResourceGroupsTaggingAPIClientConfiguration
     let serviceName = "Resource Groups Tagging API"
@@ -260,7 +261,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<DescribeReportCreationOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<DescribeReportCreationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DescribeReportCreationInput, DescribeReportCreationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<DescribeReportCreationInput, DescribeReportCreationOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<DescribeReportCreationInput, DescribeReportCreationOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.DescribeReportCreation"))
         builder.serialize(ClientRuntime.BodyMiddleware<DescribeReportCreationInput, DescribeReportCreationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: DescribeReportCreationInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<DescribeReportCreationInput, DescribeReportCreationOutput>(contentType: "application/x-amz-json-1.1"))
@@ -349,7 +350,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetComplianceSummaryOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetComplianceSummaryOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetComplianceSummaryInput, GetComplianceSummaryOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetComplianceSummaryInput, GetComplianceSummaryOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetComplianceSummaryInput, GetComplianceSummaryOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.GetComplianceSummary"))
         builder.serialize(ClientRuntime.BodyMiddleware<GetComplianceSummaryInput, GetComplianceSummaryOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetComplianceSummaryInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetComplianceSummaryInput, GetComplianceSummaryOutput>(contentType: "application/x-amz-json-1.1"))
@@ -439,7 +440,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetResourcesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetResourcesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetResourcesInput, GetResourcesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetResourcesInput, GetResourcesOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetResourcesInput, GetResourcesOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.GetResources"))
         builder.serialize(ClientRuntime.BodyMiddleware<GetResourcesInput, GetResourcesOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetResourcesInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetResourcesInput, GetResourcesOutput>(contentType: "application/x-amz-json-1.1"))
@@ -522,7 +523,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetTagKeysOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetTagKeysOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetTagKeysInput, GetTagKeysOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetTagKeysInput, GetTagKeysOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetTagKeysInput, GetTagKeysOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.GetTagKeys"))
         builder.serialize(ClientRuntime.BodyMiddleware<GetTagKeysInput, GetTagKeysOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetTagKeysInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetTagKeysInput, GetTagKeysOutput>(contentType: "application/x-amz-json-1.1"))
@@ -605,7 +606,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetTagValuesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetTagValuesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetTagValuesInput, GetTagValuesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetTagValuesInput, GetTagValuesOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<GetTagValuesInput, GetTagValuesOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.GetTagValues"))
         builder.serialize(ClientRuntime.BodyMiddleware<GetTagValuesInput, GetTagValuesOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: GetTagValuesInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<GetTagValuesInput, GetTagValuesOutput>(contentType: "application/x-amz-json-1.1"))
@@ -695,7 +696,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<StartReportCreationOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StartReportCreationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartReportCreationInput, StartReportCreationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartReportCreationInput, StartReportCreationOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<StartReportCreationInput, StartReportCreationOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.StartReportCreation"))
         builder.serialize(ClientRuntime.BodyMiddleware<StartReportCreationInput, StartReportCreationOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: StartReportCreationInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<StartReportCreationInput, StartReportCreationOutput>(contentType: "application/x-amz-json-1.1"))
@@ -792,7 +793,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<TagResourcesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<TagResourcesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<TagResourcesInput, TagResourcesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<TagResourcesInput, TagResourcesOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<TagResourcesInput, TagResourcesOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.TagResources"))
         builder.serialize(ClientRuntime.BodyMiddleware<TagResourcesInput, TagResourcesOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: TagResourcesInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<TagResourcesInput, TagResourcesOutput>(contentType: "application/x-amz-json-1.1"))
@@ -885,7 +886,7 @@ extension ResourceGroupsTaggingAPIClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<UntagResourcesOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<UntagResourcesOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<UntagResourcesInput, UntagResourcesOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<UntagResourcesInput, UntagResourcesOutput>(serviceID: serviceName, version: ResourceGroupsTaggingAPIClient.version, config: config))
         builder.interceptors.add(AWSClientRuntime.XAmzTargetMiddleware<UntagResourcesInput, UntagResourcesOutput>(xAmzTarget: "ResourceGroupsTaggingAPI_20170126.UntagResources"))
         builder.serialize(ClientRuntime.BodyMiddleware<UntagResourcesInput, UntagResourcesOutput, SmithyJSON.Writer>(rootNodeInfo: "", inputWritingClosure: UntagResourcesInput.write(value:to:)))
         builder.interceptors.add(ClientRuntime.ContentTypeMiddleware<UntagResourcesInput, UntagResourcesOutput>(contentType: "application/x-amz-json-1.1"))

@@ -62,6 +62,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class PersonalizeRuntimeClient: ClientRuntime.Client {
     public static let clientName = "PersonalizeRuntimeClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: PersonalizeRuntimeClient.PersonalizeRuntimeClientConfiguration
     let serviceName = "Personalize Runtime"
@@ -243,7 +244,7 @@ extension PersonalizeRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetActionRecommendationsOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetActionRecommendationsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetActionRecommendationsInput, GetActionRecommendationsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetActionRecommendationsInput, GetActionRecommendationsOutput>(serviceID: serviceName, version: PersonalizeRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetActionRecommendationsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetActionRecommendationsInput, GetActionRecommendationsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetActionRecommendationsInput, GetActionRecommendationsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -313,7 +314,7 @@ extension PersonalizeRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetPersonalizedRankingOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetPersonalizedRankingOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPersonalizedRankingInput, GetPersonalizedRankingOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetPersonalizedRankingInput, GetPersonalizedRankingOutput>(serviceID: serviceName, version: PersonalizeRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetPersonalizedRankingOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetPersonalizedRankingInput, GetPersonalizedRankingOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetPersonalizedRankingInput, GetPersonalizedRankingOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -390,7 +391,7 @@ extension PersonalizeRuntimeClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetRecommendationsOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetRecommendationsOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetRecommendationsInput, GetRecommendationsOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetRecommendationsInput, GetRecommendationsOutput>(serviceID: serviceName, version: PersonalizeRuntimeClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetRecommendationsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetRecommendationsInput, GetRecommendationsOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetRecommendationsInput, GetRecommendationsOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

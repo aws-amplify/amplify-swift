@@ -1845,6 +1845,16 @@ extension BedrockRuntimeClientTypes {
 
 extension BedrockRuntimeClientTypes {
 
+    /// Contains a map of variables in a prompt from Prompt management to an object containing the values to fill in for them when running model invocation. For more information, see [How Prompt management works](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-how.html).
+    public enum PromptVariableValues: Swift.Sendable {
+        /// The text value that the variable maps to.
+        case text(Swift.String)
+        case sdkUnknown(Swift.String)
+    }
+}
+
+extension BedrockRuntimeClientTypes {
+
     /// A system content block.
     public enum SystemContentBlock: Swift.Sendable {
         /// A system prompt for the model.
@@ -1972,18 +1982,17 @@ extension BedrockRuntimeClientTypes {
 }
 
 public struct ConverseInput: Swift.Sendable {
-    /// Additional inference parameters that the model supports, beyond the base set of inference parameters that Converse supports in the inferenceConfig field. For more information, see [Model parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
+    /// Additional inference parameters that the model supports, beyond the base set of inference parameters that Converse and ConverseStream support in the inferenceConfig field. For more information, see [Model parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
     public var additionalModelRequestFields: Smithy.Document?
-    /// Additional model parameters field paths to return in the response. Converse returns the requested fields as a JSON Pointer object in the additionalModelResponseFields field. The following is example JSON for additionalModelResponseFieldPaths. [ "/stop_sequence" ] For information about the JSON Pointer syntax, see the [Internet Engineering Task Force (IETF)](https://datatracker.ietf.org/doc/html/rfc6901) documentation. Converse rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a 400 error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by Converse.
+    /// Additional model parameters field paths to return in the response. Converse and ConverseStream return the requested fields as a JSON Pointer object in the additionalModelResponseFields field. The following is example JSON for additionalModelResponseFieldPaths. [ "/stop_sequence" ] For information about the JSON Pointer syntax, see the [Internet Engineering Task Force (IETF)](https://datatracker.ietf.org/doc/html/rfc6901) documentation. Converse and ConverseStream reject an empty JSON Pointer or incorrectly structured JSON Pointer with a 400 error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by Converse.
     public var additionalModelResponseFieldPaths: [Swift.String]?
-    /// Configuration information for a guardrail that you want to use in the request.
+    /// Configuration information for a guardrail that you want to use in the request. If you include guardContent blocks in the content field in the messages field, the guardrail operates only on those messages. If you include no guardContent blocks, the guardrail operates on all messages in the request body and in any included prompt resource.
     public var guardrailConfig: BedrockRuntimeClientTypes.GuardrailConfiguration?
-    /// Inference parameters to pass to the model. Converse supports a base set of inference parameters. If you need to pass additional parameters that the model supports, use the additionalModelRequestFields request field.
+    /// Inference parameters to pass to the model. Converse and ConverseStream support a base set of inference parameters. If you need to pass additional parameters that the model supports, use the additionalModelRequestFields request field.
     public var inferenceConfig: BedrockRuntimeClientTypes.InferenceConfiguration?
     /// The messages that you want to send to the model.
-    /// This member is required.
     public var messages: [BedrockRuntimeClientTypes.Message]?
-    /// The identifier for the model that you want to call. The modelId to provide depends on the type of model or throughput that you use:
+    /// Specifies the model or throughput with which to run inference, or the prompt resource to use in inference. The value depends on the resource that you use:
     ///
     /// * If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see [Amazon Bedrock base model IDs (on-demand throughput)](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns) in the Amazon Bedrock User Guide.
     ///
@@ -1993,11 +2002,15 @@ public struct ConverseInput: Swift.Sendable {
     ///
     /// * If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see [Use a custom model in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html) in the Amazon Bedrock User Guide.
     ///
+    /// * To include a prompt that was defined in Prompt management, specify the ARN of the prompt version to use.
+    ///
     ///
     /// The Converse API doesn't support [imported models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html).
     /// This member is required.
     public var modelId: Swift.String?
-    /// A system prompt to pass to the model.
+    /// Contains a map of variables in a prompt from Prompt management to objects containing the values to fill in for them when running model invocation. This field is ignored if you don't specify a prompt resource in the modelId field.
+    public var promptVariables: [Swift.String: BedrockRuntimeClientTypes.PromptVariableValues]?
+    /// A prompt that provides instructions or context to the model about the task it should perform, or the persona it should adopt during the conversation.
     public var system: [BedrockRuntimeClientTypes.SystemContentBlock]?
     /// Configuration information for the tools that the model can use when generating a response. This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.
     public var toolConfig: BedrockRuntimeClientTypes.ToolConfiguration?
@@ -2009,6 +2022,7 @@ public struct ConverseInput: Swift.Sendable {
         inferenceConfig: BedrockRuntimeClientTypes.InferenceConfiguration? = nil,
         messages: [BedrockRuntimeClientTypes.Message]? = nil,
         modelId: Swift.String? = nil,
+        promptVariables: [Swift.String: BedrockRuntimeClientTypes.PromptVariableValues]? = nil,
         system: [BedrockRuntimeClientTypes.SystemContentBlock]? = nil,
         toolConfig: BedrockRuntimeClientTypes.ToolConfiguration? = nil
     )
@@ -2019,9 +2033,15 @@ public struct ConverseInput: Swift.Sendable {
         self.inferenceConfig = inferenceConfig
         self.messages = messages
         self.modelId = modelId
+        self.promptVariables = promptVariables
         self.system = system
         self.toolConfig = toolConfig
     }
+}
+
+extension ConverseInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ConverseInput(additionalModelRequestFields: \(Swift.String(describing: additionalModelRequestFields)), additionalModelResponseFieldPaths: \(Swift.String(describing: additionalModelResponseFieldPaths)), guardrailConfig: \(Swift.String(describing: guardrailConfig)), inferenceConfig: \(Swift.String(describing: inferenceConfig)), messages: \(Swift.String(describing: messages)), modelId: \(Swift.String(describing: modelId)), system: \(Swift.String(describing: system)), toolConfig: \(Swift.String(describing: toolConfig)), promptVariables: \"CONTENT_REDACTED\")"}
 }
 
 extension BedrockRuntimeClientTypes {
@@ -2255,18 +2275,17 @@ extension BedrockRuntimeClientTypes {
 }
 
 public struct ConverseStreamInput: Swift.Sendable {
-    /// Additional inference parameters that the model supports, beyond the base set of inference parameters that ConverseStream supports in the inferenceConfig field.
+    /// Additional inference parameters that the model supports, beyond the base set of inference parameters that Converse and ConverseStream support in the inferenceConfig field. For more information, see [Model parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html).
     public var additionalModelRequestFields: Smithy.Document?
-    /// Additional model parameters field paths to return in the response. ConverseStream returns the requested fields as a JSON Pointer object in the additionalModelResponseFields field. The following is example JSON for additionalModelResponseFieldPaths. [ "/stop_sequence" ] For information about the JSON Pointer syntax, see the [Internet Engineering Task Force (IETF)](https://datatracker.ietf.org/doc/html/rfc6901) documentation. ConverseStream rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a 400 error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by ConverseStream.
+    /// Additional model parameters field paths to return in the response. Converse and ConverseStream return the requested fields as a JSON Pointer object in the additionalModelResponseFields field. The following is example JSON for additionalModelResponseFieldPaths. [ "/stop_sequence" ] For information about the JSON Pointer syntax, see the [Internet Engineering Task Force (IETF)](https://datatracker.ietf.org/doc/html/rfc6901) documentation. Converse and ConverseStream reject an empty JSON Pointer or incorrectly structured JSON Pointer with a 400 error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by Converse.
     public var additionalModelResponseFieldPaths: [Swift.String]?
-    /// Configuration information for a guardrail that you want to use in the request.
+    /// Configuration information for a guardrail that you want to use in the request. If you include guardContent blocks in the content field in the messages field, the guardrail operates only on those messages. If you include no guardContent blocks, the guardrail operates on all messages in the request body and in any included prompt resource.
     public var guardrailConfig: BedrockRuntimeClientTypes.GuardrailStreamConfiguration?
-    /// Inference parameters to pass to the model. ConverseStream supports a base set of inference parameters. If you need to pass additional parameters that the model supports, use the additionalModelRequestFields request field.
+    /// Inference parameters to pass to the model. Converse and ConverseStream support a base set of inference parameters. If you need to pass additional parameters that the model supports, use the additionalModelRequestFields request field.
     public var inferenceConfig: BedrockRuntimeClientTypes.InferenceConfiguration?
     /// The messages that you want to send to the model.
-    /// This member is required.
     public var messages: [BedrockRuntimeClientTypes.Message]?
-    /// The ID for the model. The modelId to provide depends on the type of model or throughput that you use:
+    /// Specifies the model or throughput with which to run inference, or the prompt resource to use in inference. The value depends on the resource that you use:
     ///
     /// * If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see [Amazon Bedrock base model IDs (on-demand throughput)](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns) in the Amazon Bedrock User Guide.
     ///
@@ -2276,11 +2295,15 @@ public struct ConverseStreamInput: Swift.Sendable {
     ///
     /// * If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see [Use a custom model in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html) in the Amazon Bedrock User Guide.
     ///
+    /// * To include a prompt that was defined in Prompt management, specify the ARN of the prompt version to use.
+    ///
     ///
     /// The Converse API doesn't support [imported models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html).
     /// This member is required.
     public var modelId: Swift.String?
-    /// A system prompt to send to the model.
+    /// Contains a map of variables in a prompt from Prompt management to objects containing the values to fill in for them when running model invocation. This field is ignored if you don't specify a prompt resource in the modelId field.
+    public var promptVariables: [Swift.String: BedrockRuntimeClientTypes.PromptVariableValues]?
+    /// A prompt that provides instructions or context to the model about the task it should perform, or the persona it should adopt during the conversation.
     public var system: [BedrockRuntimeClientTypes.SystemContentBlock]?
     /// Configuration information for the tools that the model can use when generating a response. This field is only supported by Anthropic Claude 3 models.
     public var toolConfig: BedrockRuntimeClientTypes.ToolConfiguration?
@@ -2292,6 +2315,7 @@ public struct ConverseStreamInput: Swift.Sendable {
         inferenceConfig: BedrockRuntimeClientTypes.InferenceConfiguration? = nil,
         messages: [BedrockRuntimeClientTypes.Message]? = nil,
         modelId: Swift.String? = nil,
+        promptVariables: [Swift.String: BedrockRuntimeClientTypes.PromptVariableValues]? = nil,
         system: [BedrockRuntimeClientTypes.SystemContentBlock]? = nil,
         toolConfig: BedrockRuntimeClientTypes.ToolConfiguration? = nil
     )
@@ -2302,9 +2326,15 @@ public struct ConverseStreamInput: Swift.Sendable {
         self.inferenceConfig = inferenceConfig
         self.messages = messages
         self.modelId = modelId
+        self.promptVariables = promptVariables
         self.system = system
         self.toolConfig = toolConfig
     }
+}
+
+extension ConverseStreamInput: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ConverseStreamInput(additionalModelRequestFields: \(Swift.String(describing: additionalModelRequestFields)), additionalModelResponseFieldPaths: \(Swift.String(describing: additionalModelResponseFieldPaths)), guardrailConfig: \(Swift.String(describing: guardrailConfig)), inferenceConfig: \(Swift.String(describing: inferenceConfig)), messages: \(Swift.String(describing: messages)), modelId: \(Swift.String(describing: modelId)), system: \(Swift.String(describing: system)), toolConfig: \(Swift.String(describing: toolConfig)), promptVariables: \"CONTENT_REDACTED\")"}
 }
 
 extension BedrockRuntimeClientTypes {
@@ -2623,7 +2653,6 @@ public struct InvokeModelInput: Swift.Sendable {
     /// The desired MIME type of the inference body in the response. The default value is application/json.
     public var accept: Swift.String?
     /// The prompt and inference parameters in the format specified in the contentType in the header. You must provide the body in JSON format. To see the format and content of the request and response bodies for different models, refer to [Inference parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html). For more information, see [Run inference](https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html) in the Bedrock User Guide.
-    /// This member is required.
     public var body: Foundation.Data?
     /// The MIME type of the input data in the request. You must specify application/json.
     public var contentType: Swift.String?
@@ -2703,7 +2732,6 @@ public struct InvokeModelWithResponseStreamInput: Swift.Sendable {
     /// The desired MIME type of the inference body in the response. The default value is application/json.
     public var accept: Swift.String?
     /// The prompt and inference parameters in the format specified in the contentType in the header. You must provide the body in JSON format. To see the format and content of the request and response bodies for different models, refer to [Inference parameters](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html). For more information, see [Run inference](https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html) in the Bedrock User Guide.
-    /// This member is required.
     public var body: Foundation.Data?
     /// The MIME type of the input data in the request. You must specify application/json.
     public var contentType: Swift.String?
@@ -2923,6 +2951,7 @@ extension ConverseInput {
         try writer["guardrailConfig"].write(value.guardrailConfig, with: BedrockRuntimeClientTypes.GuardrailConfiguration.write(value:to:))
         try writer["inferenceConfig"].write(value.inferenceConfig, with: BedrockRuntimeClientTypes.InferenceConfiguration.write(value:to:))
         try writer["messages"].writeList(value.messages, memberWritingClosure: BedrockRuntimeClientTypes.Message.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["promptVariables"].writeMap(value.promptVariables, valueWritingClosure: BedrockRuntimeClientTypes.PromptVariableValues.write(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["system"].writeList(value.system, memberWritingClosure: BedrockRuntimeClientTypes.SystemContentBlock.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["toolConfig"].write(value.toolConfig, with: BedrockRuntimeClientTypes.ToolConfiguration.write(value:to:))
     }
@@ -2937,6 +2966,7 @@ extension ConverseStreamInput {
         try writer["guardrailConfig"].write(value.guardrailConfig, with: BedrockRuntimeClientTypes.GuardrailStreamConfiguration.write(value:to:))
         try writer["inferenceConfig"].write(value.inferenceConfig, with: BedrockRuntimeClientTypes.InferenceConfiguration.write(value:to:))
         try writer["messages"].writeList(value.messages, memberWritingClosure: BedrockRuntimeClientTypes.Message.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["promptVariables"].writeMap(value.promptVariables, valueWritingClosure: BedrockRuntimeClientTypes.PromptVariableValues.write(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         try writer["system"].writeList(value.system, memberWritingClosure: BedrockRuntimeClientTypes.SystemContentBlock.write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["toolConfig"].write(value.toolConfig, with: BedrockRuntimeClientTypes.ToolConfiguration.write(value:to:))
     }
@@ -4286,6 +4316,19 @@ extension BedrockRuntimeClientTypes.GuardrailConfiguration {
         try writer["guardrailIdentifier"].write(value.guardrailIdentifier)
         try writer["guardrailVersion"].write(value.guardrailVersion)
         try writer["trace"].write(value.trace)
+    }
+}
+
+extension BedrockRuntimeClientTypes.PromptVariableValues {
+
+    static func write(value: BedrockRuntimeClientTypes.PromptVariableValues?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        switch value {
+            case let .text(text):
+                try writer["text"].write(text)
+            case let .sdkUnknown(sdkUnknown):
+                try writer["sdkUnknown"].write(sdkUnknown)
+        }
     }
 }
 

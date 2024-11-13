@@ -314,16 +314,20 @@ public struct GetAliasOutput: Swift.Sendable {
 }
 
 public struct ListAliasesInput: Swift.Sendable {
+    /// The keyARN for which you want to list all aliases.
+    public var keyArn: Swift.String?
     /// Use this parameter to specify the maximum number of items to return. When this value is present, Amazon Web Services Payment Cryptography does not return more than the specified number of items, but it might return fewer. This value is optional. If you include a value, it must be between 1 and 100, inclusive. If you do not include a value, it defaults to 50.
     public var maxResults: Swift.Int?
     /// Use this parameter in a subsequent request after you receive a response with truncated results. Set it to the value of NextToken from the truncated response you just received.
     public var nextToken: Swift.String?
 
     public init(
+        keyArn: Swift.String? = nil,
         maxResults: Swift.Int? = nil,
         nextToken: Swift.String? = nil
     )
     {
+        self.keyArn = keyArn
         self.maxResults = maxResults
         self.nextToken = nextToken
     }
@@ -673,6 +677,7 @@ extension PaymentCryptographyClientTypes {
         /// This member is required.
         public var key: Swift.String?
         /// The value of the tag.
+        /// This member is required.
         public var value: Swift.String?
 
         public init(
@@ -1520,6 +1525,11 @@ extension PaymentCryptographyClientTypes {
     }
 }
 
+extension PaymentCryptographyClientTypes.ImportKeyCryptogram: Swift.CustomDebugStringConvertible {
+    public var debugDescription: Swift.String {
+        "ImportKeyCryptogram(exportable: \(Swift.String(describing: exportable)), importToken: \(Swift.String(describing: importToken)), keyAttributes: \(Swift.String(describing: keyAttributes)), wrappingSpec: \(Swift.String(describing: wrappingSpec)), wrappedKeyCryptogram: \"CONTENT_REDACTED\")"}
+}
+
 extension PaymentCryptographyClientTypes {
 
     /// Parameter information for root public key certificate import.
@@ -1617,7 +1627,7 @@ extension PaymentCryptographyClientTypes {
 
 extension PaymentCryptographyClientTypes.ImportTr34KeyBlock: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "ImportTr34KeyBlock(certificateAuthorityPublicKeyIdentifier: \(Swift.String(describing: certificateAuthorityPublicKeyIdentifier)), importToken: \(Swift.String(describing: importToken)), keyBlockFormat: \(Swift.String(describing: keyBlockFormat)), randomNonce: \(Swift.String(describing: randomNonce)), wrappedKeyBlock: \(Swift.String(describing: wrappedKeyBlock)), signingKeyCertificate: \"CONTENT_REDACTED\")"}
+        "ImportTr34KeyBlock(certificateAuthorityPublicKeyIdentifier: \(Swift.String(describing: certificateAuthorityPublicKeyIdentifier)), importToken: \(Swift.String(describing: importToken)), keyBlockFormat: \(Swift.String(describing: keyBlockFormat)), randomNonce: \(Swift.String(describing: randomNonce)), signingKeyCertificate: \"CONTENT_REDACTED\", wrappedKeyBlock: \"CONTENT_REDACTED\")"}
 }
 
 extension PaymentCryptographyClientTypes {
@@ -2194,6 +2204,7 @@ extension ListAliasesInput {
 
     static func write(value: ListAliasesInput?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["KeyArn"].write(value.keyArn)
         try writer["MaxResults"].write(value.maxResults)
         try writer["NextToken"].write(value.nextToken)
     }
@@ -3140,7 +3151,7 @@ extension PaymentCryptographyClientTypes.Tag {
         guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
         var value = PaymentCryptographyClientTypes.Tag()
         value.key = try reader["Key"].readIfPresent() ?? ""
-        value.value = try reader["Value"].readIfPresent()
+        value.value = try reader["Value"].readIfPresent() ?? ""
         return value
     }
 }

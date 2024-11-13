@@ -42,6 +42,37 @@ extension PaginatorSequence where OperationStackInput == ListIndexesForMembersIn
     }
 }
 extension ResourceExplorer2Client {
+    /// Paginate over `[ListManagedViewsOutput]` results.
+    ///
+    /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service
+    /// calls are made until the sequence is iterated over. This also means there is no guarantee that the request is valid
+    /// until then. If there are errors in your request, you will see the failures only after you start iterating.
+    /// - Parameters:
+    ///     - input: A `[ListManagedViewsInput]` to start pagination
+    /// - Returns: An `AsyncSequence` that can iterate over `ListManagedViewsOutput`
+    public func listManagedViewsPaginated(input: ListManagedViewsInput) -> ClientRuntime.PaginatorSequence<ListManagedViewsInput, ListManagedViewsOutput> {
+        return ClientRuntime.PaginatorSequence<ListManagedViewsInput, ListManagedViewsOutput>(input: input, inputKey: \.nextToken, outputKey: \.nextToken, paginationFunction: self.listManagedViews(input:))
+    }
+}
+
+extension ListManagedViewsInput: ClientRuntime.PaginateToken {
+    public func usingPaginationToken(_ token: Swift.String) -> ListManagedViewsInput {
+        return ListManagedViewsInput(
+            maxResults: self.maxResults,
+            nextToken: token,
+            servicePrincipal: self.servicePrincipal
+        )}
+}
+
+extension PaginatorSequence where OperationStackInput == ListManagedViewsInput, OperationStackOutput == ListManagedViewsOutput {
+    /// This paginator transforms the `AsyncSequence` returned by `listManagedViewsPaginated`
+    /// to access the nested member `[Swift.String]`
+    /// - Returns: `[Swift.String]`
+    public func managedViews() async throws -> [Swift.String] {
+        return try await self.asyncCompactMap { item in item.managedViews }
+    }
+}
+extension ResourceExplorer2Client {
     /// Paginate over `[ListResourcesOutput]` results.
     ///
     /// When this operation is called, an `AsyncSequence` is created. AsyncSequences are lazy so no service

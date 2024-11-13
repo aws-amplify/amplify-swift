@@ -312,6 +312,27 @@ extension LakeFormationClientTypes {
 
 extension LakeFormationClientTypes {
 
+    /// A structure containing a LF-Tag expression (keys and values).
+    public struct LFTagExpressionResource: Swift.Sendable {
+        /// The identifier for the Data Catalog. By default, the account ID.
+        public var catalogId: Swift.String?
+        /// The name of the LF-Tag expression to grant permissions on.
+        /// This member is required.
+        public var name: Swift.String?
+
+        public init(
+            catalogId: Swift.String? = nil,
+            name: Swift.String? = nil
+        )
+        {
+            self.catalogId = catalogId
+            self.name = name
+        }
+    }
+}
+
+extension LakeFormationClientTypes {
+
     /// A structure that allows an admin to grant user permissions on certain conditions. For example, granting a role access to all columns that do not have the LF-tag 'PII' in tables that have the LF-tag 'Prod'.
     public struct LFTag: Swift.Sendable {
         /// The key-name for the LF-tag.
@@ -363,25 +384,28 @@ extension LakeFormationClientTypes {
 
 extension LakeFormationClientTypes {
 
-    /// A structure containing a list of LF-tag conditions that apply to a resource's LF-tag policy.
+    /// A structure containing a list of LF-tag conditions or saved LF-Tag expressions that apply to a resource's LF-tag policy.
     public struct LFTagPolicyResource: Swift.Sendable {
         /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
         public var catalogId: Swift.String?
-        /// A list of LF-tag conditions that apply to the resource's LF-tag policy.
-        /// This member is required.
+        /// A list of LF-tag conditions or a saved expression that apply to the resource's LF-tag policy.
         public var expression: [LakeFormationClientTypes.LFTag]?
+        /// If provided, permissions are granted to the Data Catalog resources whose assigned LF-Tags match the expression body of the saved expression under the provided ExpressionName.
+        public var expressionName: Swift.String?
         /// The resource type for which the LF-tag policy applies.
         /// This member is required.
         public var resourceType: LakeFormationClientTypes.ResourceType?
 
         public init(
             catalogId: Swift.String? = nil,
-            expression: [LakeFormationClientTypes.LFTag]? = nil,
+            expression: [LakeFormationClientTypes.LFTag]? = [],
+            expressionName: Swift.String? = nil,
             resourceType: LakeFormationClientTypes.ResourceType? = nil
         )
         {
             self.catalogId = catalogId
             self.expression = expression
+            self.expressionName = expressionName
             self.resourceType = resourceType
         }
     }
@@ -489,7 +513,9 @@ extension LakeFormationClientTypes {
         public var database: LakeFormationClientTypes.DatabaseResource?
         /// The LF-tag key and values attached to a resource.
         public var lfTag: LakeFormationClientTypes.LFTagKeyResource?
-        /// A list of LF-tag conditions that define a resource's LF-tag policy.
+        /// LF-Tag expression resource. A logical expression composed of one or more LF-Tag key:value pairs.
+        public var lfTagExpression: LakeFormationClientTypes.LFTagExpressionResource?
+        /// A list of LF-tag conditions or saved LF-Tag expressions that define a resource's LF-tag policy.
         public var lfTagPolicy: LakeFormationClientTypes.LFTagPolicyResource?
         /// The table for the resource. A table is a metadata definition that represents your data. You can Grant and Revoke table privileges to a principal.
         public var table: LakeFormationClientTypes.TableResource?
@@ -502,6 +528,7 @@ extension LakeFormationClientTypes {
             dataLocation: LakeFormationClientTypes.DataLocationResource? = nil,
             database: LakeFormationClientTypes.DatabaseResource? = nil,
             lfTag: LakeFormationClientTypes.LFTagKeyResource? = nil,
+            lfTagExpression: LakeFormationClientTypes.LFTagExpressionResource? = nil,
             lfTagPolicy: LakeFormationClientTypes.LFTagPolicyResource? = nil,
             table: LakeFormationClientTypes.TableResource? = nil,
             tableWithColumns: LakeFormationClientTypes.TableWithColumnsResource? = nil
@@ -512,6 +539,7 @@ extension LakeFormationClientTypes {
             self.dataLocation = dataLocation
             self.database = database
             self.lfTag = lfTag
+            self.lfTagExpression = lfTagExpression
             self.lfTagPolicy = lfTagPolicy
             self.table = table
             self.tableWithColumns = tableWithColumns
@@ -762,6 +790,7 @@ extension LakeFormationClientTypes {
         case associate
         case createDatabase
         case createLfTag
+        case createLfTagExpression
         case createTable
         case dataLocationAccess
         case delete
@@ -779,6 +808,7 @@ extension LakeFormationClientTypes {
                 .associate,
                 .createDatabase,
                 .createLfTag,
+                .createLfTagExpression,
                 .createTable,
                 .dataLocationAccess,
                 .delete,
@@ -802,6 +832,7 @@ extension LakeFormationClientTypes {
             case .associate: return "ASSOCIATE"
             case .createDatabase: return "CREATE_DATABASE"
             case .createLfTag: return "CREATE_LF_TAG"
+            case .createLfTagExpression: return "CREATE_LF_TAG_EXPRESSION"
             case .createTable: return "CREATE_TABLE"
             case .dataLocationAccess: return "DATA_LOCATION_ACCESS"
             case .delete: return "DELETE"
@@ -1344,6 +1375,37 @@ public struct CreateLFTagOutput: Swift.Sendable {
     public init() { }
 }
 
+public struct CreateLFTagExpressionInput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.
+    public var catalogId: Swift.String?
+    /// A description with information about the LF-Tag expression.
+    public var description: Swift.String?
+    /// A list of LF-Tag conditions (key-value pairs).
+    /// This member is required.
+    public var expression: [LakeFormationClientTypes.LFTag]?
+    /// A name for the expression.
+    /// This member is required.
+    public var name: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        expression: [LakeFormationClientTypes.LFTag]? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.description = description
+        self.expression = expression
+        self.name = name
+    }
+}
+
+public struct CreateLFTagExpressionOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct DeleteDataCellsFilterInput: Swift.Sendable {
     /// A database in the Glue Data Catalog.
     public var databaseName: Swift.String?
@@ -1431,6 +1493,28 @@ public struct DeleteLFTagInput: Swift.Sendable {
 }
 
 public struct DeleteLFTagOutput: Swift.Sendable {
+
+    public init() { }
+}
+
+public struct DeleteLFTagExpressionInput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID in which the LF-Tag expression is saved.
+    public var catalogId: Swift.String?
+    /// The name for the LF-Tag expression.
+    /// This member is required.
+    public var name: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.name = name
+    }
+}
+
+public struct DeleteLFTagExpressionOutput: Swift.Sendable {
 
     public init() { }
 }
@@ -1991,6 +2075,47 @@ public struct GetLFTagOutput: Swift.Sendable {
         self.catalogId = catalogId
         self.tagKey = tagKey
         self.tagValues = tagValues
+    }
+}
+
+public struct GetLFTagExpressionInput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID.
+    public var catalogId: Swift.String?
+    /// The name for the LF-Tag expression
+    /// This member is required.
+    public var name: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.name = name
+    }
+}
+
+public struct GetLFTagExpressionOutput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID in which the LF-Tag expression is saved.
+    public var catalogId: Swift.String?
+    /// The description with information about the LF-Tag expression.
+    public var description: Swift.String?
+    /// The body of the LF-Tag expression. It is composed of one or more LF-Tag key-value pairs.
+    public var expression: [LakeFormationClientTypes.LFTag]?
+    /// The name for the LF-Tag expression.
+    public var name: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        expression: [LakeFormationClientTypes.LFTag]? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.description = description
+        self.expression = expression
+        self.name = name
     }
 }
 
@@ -2934,6 +3059,70 @@ public struct ListLakeFormationOptInsOutput: Swift.Sendable {
     }
 }
 
+public struct ListLFTagExpressionsInput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID.
+    public var catalogId: Swift.String?
+    /// The maximum number of results to return.
+    public var maxResults: Swift.Int?
+    /// A continuation token, if this is not the first call to retrieve this list.
+    public var nextToken: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        maxResults: Swift.Int? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.maxResults = maxResults
+        self.nextToken = nextToken
+    }
+}
+
+extension LakeFormationClientTypes {
+
+    /// A structure consists LF-Tag expression name and catalog ID.
+    public struct LFTagExpression: Swift.Sendable {
+        /// The identifier for the Data Catalog. By default, the account ID.
+        public var catalogId: Swift.String?
+        /// A structure that contains information about the LF-Tag expression.
+        public var description: Swift.String?
+        /// A logical expression composed of one or more LF-Tags.
+        public var expression: [LakeFormationClientTypes.LFTag]?
+        /// The name for saved the LF-Tag expression.
+        public var name: Swift.String?
+
+        public init(
+            catalogId: Swift.String? = nil,
+            description: Swift.String? = nil,
+            expression: [LakeFormationClientTypes.LFTag]? = nil,
+            name: Swift.String? = nil
+        )
+        {
+            self.catalogId = catalogId
+            self.description = description
+            self.expression = expression
+            self.name = name
+        }
+    }
+}
+
+public struct ListLFTagExpressionsOutput: Swift.Sendable {
+    /// Logical expressions composed of one more LF-Tag key-value pairs.
+    public var lfTagExpressions: [LakeFormationClientTypes.LFTagExpression]?
+    /// A continuation token, if this is not the first call to retrieve this list.
+    public var nextToken: Swift.String?
+
+    public init(
+        lfTagExpressions: [LakeFormationClientTypes.LFTagExpression]? = nil,
+        nextToken: Swift.String? = nil
+    )
+    {
+        self.lfTagExpressions = lfTagExpressions
+        self.nextToken = nextToken
+    }
+}
+
 extension LakeFormationClientTypes {
 
     public enum ResourceShareType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
@@ -3009,6 +3198,7 @@ extension LakeFormationClientTypes {
         case catalog
         case database
         case dataLocation
+        case lfNamedTagExpression
         case lfTag
         case lfTagPolicy
         case lfTagPolicyDatabase
@@ -3021,6 +3211,7 @@ extension LakeFormationClientTypes {
                 .catalog,
                 .database,
                 .dataLocation,
+                .lfNamedTagExpression,
                 .lfTag,
                 .lfTagPolicy,
                 .lfTagPolicyDatabase,
@@ -3039,6 +3230,7 @@ extension LakeFormationClientTypes {
             case .catalog: return "CATALOG"
             case .database: return "DATABASE"
             case .dataLocation: return "DATA_LOCATION"
+            case .lfNamedTagExpression: return "LF_NAMED_TAG_EXPRESSION"
             case .lfTag: return "LF_TAG"
             case .lfTagPolicy: return "LF_TAG_POLICY"
             case .lfTagPolicyDatabase: return "LF_TAG_POLICY_DATABASE"
@@ -3898,6 +4090,37 @@ public struct UpdateLFTagOutput: Swift.Sendable {
     public init() { }
 }
 
+public struct UpdateLFTagExpressionInput: Swift.Sendable {
+    /// The identifier for the Data Catalog. By default, the account ID.
+    public var catalogId: Swift.String?
+    /// The description with information about the saved LF-Tag expression.
+    public var description: Swift.String?
+    /// The LF-Tag expression body composed of one more LF-Tag key-value pairs.
+    /// This member is required.
+    public var expression: [LakeFormationClientTypes.LFTag]?
+    /// The name for the LF-Tag expression.
+    /// This member is required.
+    public var name: Swift.String?
+
+    public init(
+        catalogId: Swift.String? = nil,
+        description: Swift.String? = nil,
+        expression: [LakeFormationClientTypes.LFTag]? = nil,
+        name: Swift.String? = nil
+    )
+    {
+        self.catalogId = catalogId
+        self.description = description
+        self.expression = expression
+        self.name = name
+    }
+}
+
+public struct UpdateLFTagExpressionOutput: Swift.Sendable {
+
+    public init() { }
+}
+
 public struct UpdateResourceInput: Swift.Sendable {
     /// Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies.
     public var hybridAccessEnabled: Swift.Bool?
@@ -4016,7 +4239,7 @@ public struct UpdateTableStorageOptimizerInput: Swift.Sendable {
     /// Name of the database where the table is present.
     /// This member is required.
     public var databaseName: Swift.String?
-    /// Name of the table for which to enable the storage optimizer.
+    /// Name of the configuration for the storage optimizer.
     /// This member is required.
     public var storageOptimizerConfig: [Swift.String: [Swift.String: Swift.String]]?
     /// Name of the table for which to enable the storage optimizer.
@@ -4119,6 +4342,13 @@ extension CreateLFTagInput {
     }
 }
 
+extension CreateLFTagExpressionInput {
+
+    static func urlPathProvider(_ value: CreateLFTagExpressionInput) -> Swift.String? {
+        return "/CreateLFTagExpression"
+    }
+}
+
 extension DeleteDataCellsFilterInput {
 
     static func urlPathProvider(_ value: DeleteDataCellsFilterInput) -> Swift.String? {
@@ -4144,6 +4374,13 @@ extension DeleteLFTagInput {
 
     static func urlPathProvider(_ value: DeleteLFTagInput) -> Swift.String? {
         return "/DeleteLFTag"
+    }
+}
+
+extension DeleteLFTagExpressionInput {
+
+    static func urlPathProvider(_ value: DeleteLFTagExpressionInput) -> Swift.String? {
+        return "/DeleteLFTagExpression"
     }
 }
 
@@ -4224,6 +4461,13 @@ extension GetLFTagInput {
     }
 }
 
+extension GetLFTagExpressionInput {
+
+    static func urlPathProvider(_ value: GetLFTagExpressionInput) -> Swift.String? {
+        return "/GetLFTagExpression"
+    }
+}
+
 extension GetQueryStateInput {
 
     static func urlPathProvider(_ value: GetQueryStateInput) -> Swift.String? {
@@ -4298,6 +4542,13 @@ extension ListLakeFormationOptInsInput {
 
     static func urlPathProvider(_ value: ListLakeFormationOptInsInput) -> Swift.String? {
         return "/ListLakeFormationOptIns"
+    }
+}
+
+extension ListLFTagExpressionsInput {
+
+    static func urlPathProvider(_ value: ListLFTagExpressionsInput) -> Swift.String? {
+        return "/ListLFTagExpressions"
     }
 }
 
@@ -4410,6 +4661,13 @@ extension UpdateLFTagInput {
 
     static func urlPathProvider(_ value: UpdateLFTagInput) -> Swift.String? {
         return "/UpdateLFTag"
+    }
+}
+
+extension UpdateLFTagExpressionInput {
+
+    static func urlPathProvider(_ value: UpdateLFTagExpressionInput) -> Swift.String? {
+        return "/UpdateLFTagExpression"
     }
 }
 
@@ -4527,6 +4785,17 @@ extension CreateLFTagInput {
     }
 }
 
+extension CreateLFTagExpressionInput {
+
+    static func write(value: CreateLFTagExpressionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["Description"].write(value.description)
+        try writer["Expression"].writeList(value.expression, memberWritingClosure: LakeFormationClientTypes.LFTag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Name"].write(value.name)
+    }
+}
+
 extension DeleteDataCellsFilterInput {
 
     static func write(value: DeleteDataCellsFilterInput?, to writer: SmithyJSON.Writer) throws {
@@ -4561,6 +4830,15 @@ extension DeleteLFTagInput {
         guard let value else { return }
         try writer["CatalogId"].write(value.catalogId)
         try writer["TagKey"].write(value.tagKey)
+    }
+}
+
+extension DeleteLFTagExpressionInput {
+
+    static func write(value: DeleteLFTagExpressionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["Name"].write(value.name)
     }
 }
 
@@ -4652,6 +4930,15 @@ extension GetLFTagInput {
         guard let value else { return }
         try writer["CatalogId"].write(value.catalogId)
         try writer["TagKey"].write(value.tagKey)
+    }
+}
+
+extension GetLFTagExpressionInput {
+
+    static func write(value: GetLFTagExpressionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["Name"].write(value.name)
     }
 }
 
@@ -4773,6 +5060,16 @@ extension ListLakeFormationOptInsInput {
         try writer["NextToken"].write(value.nextToken)
         try writer["Principal"].write(value.principal, with: LakeFormationClientTypes.DataLakePrincipal.write(value:to:))
         try writer["Resource"].write(value.resource, with: LakeFormationClientTypes.Resource.write(value:to:))
+    }
+}
+
+extension ListLFTagExpressionsInput {
+
+    static func write(value: ListLFTagExpressionsInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["MaxResults"].write(value.maxResults)
+        try writer["NextToken"].write(value.nextToken)
     }
 }
 
@@ -4947,6 +5244,17 @@ extension UpdateLFTagInput {
     }
 }
 
+extension UpdateLFTagExpressionInput {
+
+    static func write(value: UpdateLFTagExpressionInput?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["Description"].write(value.description)
+        try writer["Expression"].writeList(value.expression, memberWritingClosure: LakeFormationClientTypes.LFTag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["Name"].write(value.name)
+    }
+}
+
 extension UpdateResourceInput {
 
     static func write(value: UpdateResourceInput?, to writer: SmithyJSON.Writer) throws {
@@ -5084,6 +5392,13 @@ extension CreateLFTagOutput {
     }
 }
 
+extension CreateLFTagExpressionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> CreateLFTagExpressionOutput {
+        return CreateLFTagExpressionOutput()
+    }
+}
+
 extension DeleteDataCellsFilterOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteDataCellsFilterOutput {
@@ -5109,6 +5424,13 @@ extension DeleteLFTagOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteLFTagOutput {
         return DeleteLFTagOutput()
+    }
+}
+
+extension DeleteLFTagExpressionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> DeleteLFTagExpressionOutput {
+        return DeleteLFTagExpressionOutput()
     }
 }
 
@@ -5233,6 +5555,21 @@ extension GetLFTagOutput {
         value.catalogId = try reader["CatalogId"].readIfPresent()
         value.tagKey = try reader["TagKey"].readIfPresent()
         value.tagValues = try reader["TagValues"].readListIfPresent(memberReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), memberNodeInfo: "member", isFlattened: false)
+        return value
+    }
+}
+
+extension GetLFTagExpressionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> GetLFTagExpressionOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = GetLFTagExpressionOutput()
+        value.catalogId = try reader["CatalogId"].readIfPresent()
+        value.description = try reader["Description"].readIfPresent()
+        value.expression = try reader["Expression"].readListIfPresent(memberReadingClosure: LakeFormationClientTypes.LFTag.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.name = try reader["Name"].readIfPresent()
         return value
     }
 }
@@ -5380,6 +5717,19 @@ extension ListLakeFormationOptInsOutput {
         let reader = responseReader
         var value = ListLakeFormationOptInsOutput()
         value.lakeFormationOptInsInfoList = try reader["LakeFormationOptInsInfoList"].readListIfPresent(memberReadingClosure: LakeFormationClientTypes.LakeFormationOptInsInfo.read(from:), memberNodeInfo: "member", isFlattened: false)
+        value.nextToken = try reader["NextToken"].readIfPresent()
+        return value
+    }
+}
+
+extension ListLFTagExpressionsOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> ListLFTagExpressionsOutput {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let reader = responseReader
+        var value = ListLFTagExpressionsOutput()
+        value.lfTagExpressions = try reader["LFTagExpressions"].readListIfPresent(memberReadingClosure: LakeFormationClientTypes.LFTagExpression.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.nextToken = try reader["NextToken"].readIfPresent()
         return value
     }
@@ -5551,6 +5901,13 @@ extension UpdateLFTagOutput {
 
     static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> UpdateLFTagOutput {
         return UpdateLFTagOutput()
+    }
+}
+
+extension UpdateLFTagExpressionOutput {
+
+    static func httpOutput(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> UpdateLFTagExpressionOutput {
+        return UpdateLFTagExpressionOutput()
     }
 }
 
@@ -5763,6 +6120,25 @@ enum CreateLFTagOutputError {
     }
 }
 
+enum CreateLFTagExpressionOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            case "ResourceNumberLimitExceededException": return try ResourceNumberLimitExceededException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum DeleteDataCellsFilterOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -5820,6 +6196,24 @@ enum DeleteLakeFormationOptInOutputError {
 }
 
 enum DeleteLFTagOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum DeleteLFTagExpressionOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
         let data = try await httpResponse.data()
@@ -6032,6 +6426,24 @@ enum GetLFTagOutputError {
     }
 }
 
+enum GetLFTagExpressionOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
 enum GetQueryStateOutputError {
 
     static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
@@ -6222,6 +6634,24 @@ enum ListLakeFormationOptInsOutputError {
         if let error = baseError.customError() { return error }
         switch baseError.code {
             case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum ListLFTagExpressionsOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
             case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
             case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
@@ -6506,6 +6936,25 @@ enum UpdateLFTagOutputError {
             case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
             case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
             case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
+        }
+    }
+}
+
+enum UpdateLFTagExpressionOutputError {
+
+    static func httpError(from httpResponse: SmithyHTTPAPI.HTTPResponse) async throws -> Swift.Error {
+        let data = try await httpResponse.data()
+        let responseReader = try SmithyJSON.Reader.from(data: data)
+        let baseError = try AWSClientRuntime.RestJSONError(httpResponse: httpResponse, responseReader: responseReader, noErrorWrapping: false)
+        if let error = baseError.customError() { return error }
+        switch baseError.code {
+            case "AccessDeniedException": return try AccessDeniedException.makeError(baseError: baseError)
+            case "EntityNotFoundException": return try EntityNotFoundException.makeError(baseError: baseError)
+            case "InternalServiceException": return try InternalServiceException.makeError(baseError: baseError)
+            case "InvalidInputException": return try InvalidInputException.makeError(baseError: baseError)
+            case "OperationTimeoutException": return try OperationTimeoutException.makeError(baseError: baseError)
+            case "ResourceNumberLimitExceededException": return try ResourceNumberLimitExceededException.makeError(baseError: baseError)
             default: return try AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(baseError: baseError)
         }
     }
@@ -6885,6 +7334,7 @@ extension LakeFormationClientTypes.Resource {
         try writer["DataLocation"].write(value.dataLocation, with: LakeFormationClientTypes.DataLocationResource.write(value:to:))
         try writer["Database"].write(value.database, with: LakeFormationClientTypes.DatabaseResource.write(value:to:))
         try writer["LFTag"].write(value.lfTag, with: LakeFormationClientTypes.LFTagKeyResource.write(value:to:))
+        try writer["LFTagExpression"].write(value.lfTagExpression, with: LakeFormationClientTypes.LFTagExpressionResource.write(value:to:))
         try writer["LFTagPolicy"].write(value.lfTagPolicy, with: LakeFormationClientTypes.LFTagPolicyResource.write(value:to:))
         try writer["Table"].write(value.table, with: LakeFormationClientTypes.TableResource.write(value:to:))
         try writer["TableWithColumns"].write(value.tableWithColumns, with: LakeFormationClientTypes.TableWithColumnsResource.write(value:to:))
@@ -6901,6 +7351,24 @@ extension LakeFormationClientTypes.Resource {
         value.dataCellsFilter = try reader["DataCellsFilter"].readIfPresent(with: LakeFormationClientTypes.DataCellsFilterResource.read(from:))
         value.lfTag = try reader["LFTag"].readIfPresent(with: LakeFormationClientTypes.LFTagKeyResource.read(from:))
         value.lfTagPolicy = try reader["LFTagPolicy"].readIfPresent(with: LakeFormationClientTypes.LFTagPolicyResource.read(from:))
+        value.lfTagExpression = try reader["LFTagExpression"].readIfPresent(with: LakeFormationClientTypes.LFTagExpressionResource.read(from:))
+        return value
+    }
+}
+
+extension LakeFormationClientTypes.LFTagExpressionResource {
+
+    static func write(value: LakeFormationClientTypes.LFTagExpressionResource?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["CatalogId"].write(value.catalogId)
+        try writer["Name"].write(value.name)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> LakeFormationClientTypes.LFTagExpressionResource {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = LakeFormationClientTypes.LFTagExpressionResource()
+        value.catalogId = try reader["CatalogId"].readIfPresent()
+        value.name = try reader["Name"].readIfPresent() ?? ""
         return value
     }
 }
@@ -6911,6 +7379,7 @@ extension LakeFormationClientTypes.LFTagPolicyResource {
         guard let value else { return }
         try writer["CatalogId"].write(value.catalogId)
         try writer["Expression"].writeList(value.expression, memberWritingClosure: LakeFormationClientTypes.LFTag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
+        try writer["ExpressionName"].write(value.expressionName)
         try writer["ResourceType"].write(value.resourceType)
     }
 
@@ -6920,6 +7389,7 @@ extension LakeFormationClientTypes.LFTagPolicyResource {
         value.catalogId = try reader["CatalogId"].readIfPresent()
         value.resourceType = try reader["ResourceType"].readIfPresent() ?? .sdkUnknown("")
         value.expression = try reader["Expression"].readListIfPresent(memberReadingClosure: LakeFormationClientTypes.LFTag.read(from:), memberNodeInfo: "member", isFlattened: false) ?? []
+        value.expressionName = try reader["ExpressionName"].readIfPresent()
         return value
     }
 }
@@ -7374,6 +7844,19 @@ extension LakeFormationClientTypes.LakeFormationOptInsInfo {
         value.principal = try reader["Principal"].readIfPresent(with: LakeFormationClientTypes.DataLakePrincipal.read(from:))
         value.lastModified = try reader["LastModified"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.lastUpdatedBy = try reader["LastUpdatedBy"].readIfPresent()
+        return value
+    }
+}
+
+extension LakeFormationClientTypes.LFTagExpression {
+
+    static func read(from reader: SmithyJSON.Reader) throws -> LakeFormationClientTypes.LFTagExpression {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = LakeFormationClientTypes.LFTagExpression()
+        value.name = try reader["Name"].readIfPresent()
+        value.description = try reader["Description"].readIfPresent()
+        value.catalogId = try reader["CatalogId"].readIfPresent()
+        value.expression = try reader["Expression"].readListIfPresent(memberReadingClosure: LakeFormationClientTypes.LFTag.read(from:), memberNodeInfo: "member", isFlattened: false)
         return value
     }
 }

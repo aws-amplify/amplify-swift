@@ -1833,21 +1833,23 @@ public struct CreateRegistrationOutput: Swift.Sendable {
     public var registrationId: Swift.String?
     /// The status of the registration.
     ///
+    /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+    ///
     /// * CREATED: Your registration is created but not submitted.
     ///
-    /// * SUBMITTED: Your registration has been submitted and is awaiting review.
+    /// * COMPLETE: Your registration has been approved and your origination identity has been created.
     ///
-    /// * REVIEWING: Your registration has been accepted and is being reviewed.
+    /// * DELETED: The registration has been deleted.
     ///
     /// * PROVISIONING: Your registration has been approved and your origination identity is being created.
     ///
-    /// * COMPLETE: Your registration has been approved and and your origination identity has been created.
+    /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
     ///
     /// * REQUIRES_UPDATES: You must fix your registration and resubmit it.
     ///
-    /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+    /// * REVIEWING: Your registration has been accepted and is being reviewed.
     ///
-    /// * DELETED: The registration has been deleted.
+    /// * SUBMITTED: Your registration has been submitted and is awaiting review.
     /// This member is required.
     public var registrationStatus: PinpointSMSVoiceV2ClientTypes.RegistrationStatus?
     /// The type of registration form to create. The list of RegistrationTypes can be found using the [DescribeRegistrationTypeDefinitions] action.
@@ -2084,6 +2086,8 @@ extension PinpointSMSVoiceV2ClientTypes {
         /// The time when the registration was in the draft state, in [UNIX epoch time](https://www.epochconverter.com/) format.
         /// This member is required.
         public var draftTimestamp: Foundation.Date?
+        /// The time when the registration was in the requires authentication state, in [UNIX epoch time](https://www.epochconverter.com/) format.
+        public var requiresAuthenticationTimestamp: Foundation.Date?
         /// The time when the registration was in the reviewing state, in [UNIX epoch time](https://www.epochconverter.com/) format.
         public var reviewingTimestamp: Foundation.Date?
         /// The time when the registration was in the revoked state, in [UNIX epoch time](https://www.epochconverter.com/) format.
@@ -2097,6 +2101,7 @@ extension PinpointSMSVoiceV2ClientTypes {
             deniedTimestamp: Foundation.Date? = nil,
             discardedTimestamp: Foundation.Date? = nil,
             draftTimestamp: Foundation.Date? = nil,
+            requiresAuthenticationTimestamp: Foundation.Date? = nil,
             reviewingTimestamp: Foundation.Date? = nil,
             revokedTimestamp: Foundation.Date? = nil,
             submittedTimestamp: Foundation.Date? = nil
@@ -2107,6 +2112,7 @@ extension PinpointSMSVoiceV2ClientTypes {
             self.deniedTimestamp = deniedTimestamp
             self.discardedTimestamp = discardedTimestamp
             self.draftTimestamp = draftTimestamp
+            self.requiresAuthenticationTimestamp = requiresAuthenticationTimestamp
             self.reviewingTimestamp = reviewingTimestamp
             self.revokedTimestamp = revokedTimestamp
             self.submittedTimestamp = submittedTimestamp
@@ -2123,21 +2129,23 @@ public struct CreateRegistrationVersionOutput: Swift.Sendable {
     public var registrationId: Swift.String?
     /// The status of the registration.
     ///
-    /// * DRAFT: The initial status of a registration version after it’s created.
-    ///
-    /// * SUBMITTED: Your registration has been submitted.
-    ///
-    /// * REVIEWING: Your registration has been accepted and is being reviewed.
-    ///
     /// * APPROVED: Your registration has been approved.
     ///
-    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
     ///
     /// * DENIED: You must fix your registration and resubmit it.
     ///
+    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    ///
+    /// * DRAFT: The initial status of a registration version after it’s created.
+    ///
+    /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
+    ///
+    /// * REVIEWING: Your registration has been accepted and is being reviewed.
+    ///
     /// * REVOKED: Your previously approved registration has been revoked.
     ///
-    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
+    /// * SUBMITTED: Your registration has been submitted.
     /// This member is required.
     public var registrationVersionStatus: PinpointSMSVoiceV2ClientTypes.RegistrationVersionStatus?
     /// A RegistrationVersionStatusHistory object that contains timestamps for the registration.
@@ -2751,21 +2759,23 @@ public struct DeleteRegistrationOutput: Swift.Sendable {
     public var registrationId: Swift.String?
     /// The status of the registration.
     ///
+    /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+    ///
     /// * CREATED: Your registration is created but not submitted.
     ///
-    /// * SUBMITTED: Your registration has been submitted and is awaiting review.
+    /// * COMPLETE: Your registration has been approved and your origination identity has been created.
     ///
-    /// * REVIEWING: Your registration has been accepted and is being reviewed.
+    /// * DELETED: The registration has been deleted.
     ///
     /// * PROVISIONING: Your registration has been approved and your origination identity is being created.
     ///
-    /// * COMPLETE: Your registration has been approved and and your origination identity has been created.
+    /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
     ///
     /// * REQUIRES_UPDATES: You must fix your registration and resubmit it.
     ///
-    /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+    /// * REVIEWING: Your registration has been accepted and is being reviewed.
     ///
-    /// * DELETED: The registration has been deleted.
+    /// * SUBMITTED: Your registration has been submitted and is awaiting review.
     /// This member is required.
     public var registrationStatus: PinpointSMSVoiceV2ClientTypes.RegistrationStatus?
     /// The type of registration form. The list of RegistrationTypes can be found using the [DescribeRegistrationTypeDefinitions] action.
@@ -4721,21 +4731,23 @@ extension PinpointSMSVoiceV2ClientTypes {
         public var registrationId: Swift.String?
         /// The status of the registration.
         ///
+        /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+        ///
         /// * CREATED: Your registration is created but not submitted.
         ///
-        /// * SUBMITTED: Your registration has been submitted and is awaiting review.
+        /// * COMPLETE: Your registration has been approved and your origination identity has been created.
         ///
-        /// * REVIEWING: Your registration has been accepted and is being reviewed.
+        /// * DELETED: The registration has been deleted.
         ///
         /// * PROVISIONING: Your registration has been approved and your origination identity is being created.
         ///
-        /// * COMPLETE: Your registration has been approved and and your origination identity has been created.
+        /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
         ///
         /// * REQUIRES_UPDATES: You must fix your registration and resubmit it.
         ///
-        /// * CLOSED: The phone number or sender ID has been deleted and you must also delete the registration for the number.
+        /// * REVIEWING: Your registration has been accepted and is being reviewed.
         ///
-        /// * DELETED: The registration has been deleted.
+        /// * SUBMITTED: Your registration has been submitted and is awaiting review.
         /// This member is required.
         public var registrationStatus: PinpointSMSVoiceV2ClientTypes.RegistrationStatus?
         /// The type of registration form. The list of RegistrationTypes can be found using the [DescribeRegistrationTypeDefinitions] action.
@@ -5264,21 +5276,23 @@ extension PinpointSMSVoiceV2ClientTypes {
         public var deniedReasons: [PinpointSMSVoiceV2ClientTypes.RegistrationDeniedReasonInformation]?
         /// The status of the registration.
         ///
-        /// * DRAFT: The initial status of a registration version after it’s created.
-        ///
-        /// * SUBMITTED: Your registration has been submitted.
-        ///
-        /// * REVIEWING: Your registration has been accepted and is being reviewed.
-        ///
         /// * APPROVED: Your registration has been approved.
         ///
-        /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+        /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
         ///
         /// * DENIED: You must fix your registration and resubmit it.
         ///
+        /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+        ///
+        /// * DRAFT: The initial status of a registration version after it’s created.
+        ///
+        /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
+        ///
+        /// * REVIEWING: Your registration has been accepted and is being reviewed.
+        ///
         /// * REVOKED: Your previously approved registration has been revoked.
         ///
-        /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
+        /// * SUBMITTED: Your registration has been submitted.
         /// This member is required.
         public var registrationVersionStatus: PinpointSMSVoiceV2ClientTypes.RegistrationVersionStatus?
         /// The RegistrationVersionStatusHistory object contains the time stamps for when the reservations status changes.
@@ -5889,21 +5903,23 @@ public struct DiscardRegistrationVersionOutput: Swift.Sendable {
     public var registrationId: Swift.String?
     /// The status of the registration version.
     ///
-    /// * DRAFT: The initial status of a registration version after it’s created.
-    ///
-    /// * SUBMITTED: Your registration has been submitted.
-    ///
-    /// * REVIEWING: Your registration has been accepted and is being reviewed.
-    ///
     /// * APPROVED: Your registration has been approved.
     ///
-    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
     ///
     /// * DENIED: You must fix your registration and resubmit it.
     ///
+    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    ///
+    /// * DRAFT: The initial status of a registration version after it’s created.
+    ///
+    /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
+    ///
+    /// * REVIEWING: Your registration has been accepted and is being reviewed.
+    ///
     /// * REVOKED: Your previously approved registration has been revoked.
     ///
-    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
+    /// * SUBMITTED: Your registration has been submitted.
     /// This member is required.
     public var registrationVersionStatus: PinpointSMSVoiceV2ClientTypes.RegistrationVersionStatus?
     /// The RegistrationVersionStatusHistory object contains the time stamps for when the reservations status changes.
@@ -7754,21 +7770,23 @@ public struct SubmitRegistrationVersionOutput: Swift.Sendable {
     public var registrationId: Swift.String?
     /// The status of the registration version.
     ///
-    /// * DRAFT: The initial status of a registration version after it’s created.
-    ///
-    /// * SUBMITTED: Your registration has been submitted.
-    ///
-    /// * REVIEWING: Your registration has been accepted and is being reviewed.
-    ///
     /// * APPROVED: Your registration has been approved.
     ///
-    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
     ///
     /// * DENIED: You must fix your registration and resubmit it.
     ///
+    /// * DISCARDED: You've abandon this version of their registration to start over with a new version.
+    ///
+    /// * DRAFT: The initial status of a registration version after it’s created.
+    ///
+    /// * REQUIRES_AUTHENTICATION: You need to complete email authentication.
+    ///
+    /// * REVIEWING: Your registration has been accepted and is being reviewed.
+    ///
     /// * REVOKED: Your previously approved registration has been revoked.
     ///
-    /// * ARCHIVED: Your previously approved registration version moves into this status when a more recently submitted version is approved.
+    /// * SUBMITTED: Your registration has been submitted.
     /// This member is required.
     public var registrationVersionStatus: PinpointSMSVoiceV2ClientTypes.RegistrationVersionStatus?
     /// The RegistrationVersionStatusHistory object contains the time stamps for when the reservations status changes.
@@ -12856,6 +12874,7 @@ extension PinpointSMSVoiceV2ClientTypes.RegistrationVersionStatusHistory {
         value.draftTimestamp = try reader["DraftTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds) ?? SmithyTimestamps.TimestampFormatter(format: .dateTime).date(from: "1970-01-01T00:00:00Z")
         value.submittedTimestamp = try reader["SubmittedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.reviewingTimestamp = try reader["ReviewingTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
+        value.requiresAuthenticationTimestamp = try reader["RequiresAuthenticationTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.approvedTimestamp = try reader["ApprovedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.discardedTimestamp = try reader["DiscardedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)
         value.deniedTimestamp = try reader["DeniedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.epochSeconds)

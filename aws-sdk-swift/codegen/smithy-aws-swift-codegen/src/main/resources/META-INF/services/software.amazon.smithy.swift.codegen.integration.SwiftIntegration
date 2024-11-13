@@ -11,6 +11,7 @@ software.amazon.smithy.aws.swift.codegen.customization.flexiblechecksums.Flexibl
 software.amazon.smithy.aws.swift.codegen.customization.glacier.GlacierAddVersionHeader
 software.amazon.smithy.aws.swift.codegen.customization.glacier.GlacierAccountIdDefault
 software.amazon.smithy.aws.swift.codegen.customization.glacier.GlacierChecksum
+software.amazon.smithy.aws.swift.codegen.customization.AwsQueryModeCustomization
 software.amazon.smithy.aws.swift.codegen.customization.BoxServices
 software.amazon.smithy.aws.swift.codegen.customization.PresignableModelIntegration
 software.amazon.smithy.aws.swift.codegen.customization.machinelearning.PredictEndpointIntegration
@@ -24,5 +25,4 @@ software.amazon.smithy.aws.swift.codegen.model.AWSDeprecatedShapeRemover
 software.amazon.smithy.aws.swift.codegen.AWSClientConfigurationIntegration
 software.amazon.smithy.swift.codegen.swiftintegrations.InitialRequestIntegration
 software.amazon.smithy.aws.swift.codegen.swiftintegrations.RegistryConfigIntegration
-software.amazon.smithy.aws.swift.codegen.swiftintegrations.PackageVersionIntegration
 software.amazon.smithy.aws.swift.codegen.swiftintegrations.AmzSdkRetryHeadersIntegration

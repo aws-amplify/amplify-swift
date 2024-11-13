@@ -61,6 +61,7 @@ extension ExplicitBlobInput {
         val expectedContents = """
 public class ExampleClient: ClientRuntime.Client {
     public static let clientName = "ExampleClient"
+    public static let version = "1.0.0"
     let client: ClientRuntime.SdkHttpClient
     let config: ExampleClient.ExampleClientConfiguration
     let serviceName = "Example"

@@ -19861,26 +19861,116 @@ extension QuickSightClientTypes {
 
 extension QuickSightClientTypes {
 
+    public enum AuthenticationType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case password
+        case token
+        case x509
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [AuthenticationType] {
+            return [
+                .password,
+                .token,
+                .x509
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .password: return "PASSWORD"
+            case .token: return "TOKEN"
+            case .x509: return "X509"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    /// VPC connection properties.
+    public struct VpcConnectionProperties: Swift.Sendable {
+        /// The Amazon Resource Name (ARN) for the VPC connection.
+        /// This member is required.
+        public var vpcConnectionArn: Swift.String?
+
+        public init(
+            vpcConnectionArn: Swift.String? = nil
+        )
+        {
+            self.vpcConnectionArn = vpcConnectionArn
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
+    /// An object that contains information needed to create a data source connection that uses OAuth client credentials. This option is available for data source connections that are made with Snowflake and Starburst.
+    public struct OAuthParameters: Swift.Sendable {
+        /// The resource uri of the identity provider.
+        public var identityProviderResourceUri: Swift.String?
+        /// VPC connection properties.
+        public var identityProviderVpcConnectionProperties: QuickSightClientTypes.VpcConnectionProperties?
+        /// The OAuth scope.
+        public var oAuthScope: Swift.String?
+        /// The token endpoint URL of the identity provider.
+        /// This member is required.
+        public var tokenProviderUrl: Swift.String?
+
+        public init(
+            identityProviderResourceUri: Swift.String? = nil,
+            identityProviderVpcConnectionProperties: QuickSightClientTypes.VpcConnectionProperties? = nil,
+            oAuthScope: Swift.String? = nil,
+            tokenProviderUrl: Swift.String? = nil
+        )
+        {
+            self.identityProviderResourceUri = identityProviderResourceUri
+            self.identityProviderVpcConnectionProperties = identityProviderVpcConnectionProperties
+            self.oAuthScope = oAuthScope
+            self.tokenProviderUrl = tokenProviderUrl
+        }
+    }
+}
+
+extension QuickSightClientTypes {
+
     /// The parameters for Snowflake.
     public struct SnowflakeParameters: Swift.Sendable {
+        /// The authentication type that you want to use for your connection. This parameter accepts OAuth and non-OAuth authentication types.
+        public var authenticationType: QuickSightClientTypes.AuthenticationType?
         /// Database.
         /// This member is required.
         public var database: Swift.String?
+        /// The database access control role.
+        public var databaseAccessControlRole: Swift.String?
         /// Host.
         /// This member is required.
         public var host: Swift.String?
+        /// An object that contains information needed to create a data source connection between an Amazon QuickSight account and Snowflake.
+        public var oAuthParameters: QuickSightClientTypes.OAuthParameters?
         /// Warehouse.
         /// This member is required.
         public var warehouse: Swift.String?
 
         public init(
+            authenticationType: QuickSightClientTypes.AuthenticationType? = nil,
             database: Swift.String? = nil,
+            databaseAccessControlRole: Swift.String? = nil,
             host: Swift.String? = nil,
+            oAuthParameters: QuickSightClientTypes.OAuthParameters? = nil,
             warehouse: Swift.String? = nil
         )
         {
+            self.authenticationType = authenticationType
             self.database = database
+            self.databaseAccessControlRole = databaseAccessControlRole
             self.host = host
+            self.oAuthParameters = oAuthParameters
             self.warehouse = warehouse
         }
     }
@@ -19968,12 +20058,18 @@ extension QuickSightClientTypes {
 
     /// The parameters that are required to connect to a Starburst data source.
     public struct StarburstParameters: Swift.Sendable {
+        /// The authentication type that you want to use for your connection. This parameter accepts OAuth and non-OAuth authentication types.
+        public var authenticationType: QuickSightClientTypes.AuthenticationType?
         /// The catalog name for the Starburst data source.
         /// This member is required.
         public var catalog: Swift.String?
+        /// The database access control role.
+        public var databaseAccessControlRole: Swift.String?
         /// The host name of the Starburst data source.
         /// This member is required.
         public var host: Swift.String?
+        /// An object that contains information needed to create a data source connection between an Amazon QuickSight account and Starburst.
+        public var oAuthParameters: QuickSightClientTypes.OAuthParameters?
         /// The port for the Starburst data source.
         /// This member is required.
         public var port: Swift.Int?
@@ -19981,14 +20077,20 @@ extension QuickSightClientTypes {
         public var productType: QuickSightClientTypes.StarburstProductType?
 
         public init(
+            authenticationType: QuickSightClientTypes.AuthenticationType? = nil,
             catalog: Swift.String? = nil,
+            databaseAccessControlRole: Swift.String? = nil,
             host: Swift.String? = nil,
+            oAuthParameters: QuickSightClientTypes.OAuthParameters? = nil,
             port: Swift.Int? = nil,
             productType: QuickSightClientTypes.StarburstProductType? = nil
         )
         {
+            self.authenticationType = authenticationType
             self.catalog = catalog
+            self.databaseAccessControlRole = databaseAccessControlRole
             self.host = host
+            self.oAuthParameters = oAuthParameters
             self.port = port
             self.productType = productType
         }
@@ -20143,23 +20245,6 @@ extension QuickSightClientTypes {
         )
         {
             self.disableSsl = disableSsl
-        }
-    }
-}
-
-extension QuickSightClientTypes {
-
-    /// VPC connection properties.
-    public struct VpcConnectionProperties: Swift.Sendable {
-        /// The Amazon Resource Name (ARN) for the VPC connection.
-        /// This member is required.
-        public var vpcConnectionArn: Swift.String?
-
-        public init(
-            vpcConnectionArn: Swift.String? = nil
-        )
-        {
-            self.vpcConnectionArn = vpcConnectionArn
         }
     }
 }
@@ -61337,8 +61422,11 @@ extension QuickSightClientTypes.StarburstParameters {
 
     static func write(value: QuickSightClientTypes.StarburstParameters?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["AuthenticationType"].write(value.authenticationType)
         try writer["Catalog"].write(value.catalog)
+        try writer["DatabaseAccessControlRole"].write(value.databaseAccessControlRole)
         try writer["Host"].write(value.host)
+        try writer["OAuthParameters"].write(value.oAuthParameters, with: QuickSightClientTypes.OAuthParameters.write(value:to:))
         try writer["Port"].write(value.port)
         try writer["ProductType"].write(value.productType)
     }
@@ -61350,6 +61438,30 @@ extension QuickSightClientTypes.StarburstParameters {
         value.port = try reader["Port"].readIfPresent() ?? 0
         value.catalog = try reader["Catalog"].readIfPresent() ?? ""
         value.productType = try reader["ProductType"].readIfPresent()
+        value.databaseAccessControlRole = try reader["DatabaseAccessControlRole"].readIfPresent()
+        value.authenticationType = try reader["AuthenticationType"].readIfPresent()
+        value.oAuthParameters = try reader["OAuthParameters"].readIfPresent(with: QuickSightClientTypes.OAuthParameters.read(from:))
+        return value
+    }
+}
+
+extension QuickSightClientTypes.OAuthParameters {
+
+    static func write(value: QuickSightClientTypes.OAuthParameters?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["IdentityProviderResourceUri"].write(value.identityProviderResourceUri)
+        try writer["IdentityProviderVpcConnectionProperties"].write(value.identityProviderVpcConnectionProperties, with: QuickSightClientTypes.VpcConnectionProperties.write(value:to:))
+        try writer["OAuthScope"].write(value.oAuthScope)
+        try writer["TokenProviderUrl"].write(value.tokenProviderUrl)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> QuickSightClientTypes.OAuthParameters {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = QuickSightClientTypes.OAuthParameters()
+        value.tokenProviderUrl = try reader["TokenProviderUrl"].readIfPresent() ?? ""
+        value.oAuthScope = try reader["OAuthScope"].readIfPresent()
+        value.identityProviderVpcConnectionProperties = try reader["IdentityProviderVpcConnectionProperties"].readIfPresent(with: QuickSightClientTypes.VpcConnectionProperties.read(from:))
+        value.identityProviderResourceUri = try reader["IdentityProviderResourceUri"].readIfPresent()
         return value
     }
 }
@@ -61481,8 +61593,11 @@ extension QuickSightClientTypes.SnowflakeParameters {
 
     static func write(value: QuickSightClientTypes.SnowflakeParameters?, to writer: SmithyJSON.Writer) throws {
         guard let value else { return }
+        try writer["AuthenticationType"].write(value.authenticationType)
         try writer["Database"].write(value.database)
+        try writer["DatabaseAccessControlRole"].write(value.databaseAccessControlRole)
         try writer["Host"].write(value.host)
+        try writer["OAuthParameters"].write(value.oAuthParameters, with: QuickSightClientTypes.OAuthParameters.write(value:to:))
         try writer["Warehouse"].write(value.warehouse)
     }
 
@@ -61492,6 +61607,9 @@ extension QuickSightClientTypes.SnowflakeParameters {
         value.host = try reader["Host"].readIfPresent() ?? ""
         value.database = try reader["Database"].readIfPresent() ?? ""
         value.warehouse = try reader["Warehouse"].readIfPresent() ?? ""
+        value.authenticationType = try reader["AuthenticationType"].readIfPresent()
+        value.databaseAccessControlRole = try reader["DatabaseAccessControlRole"].readIfPresent()
+        value.oAuthParameters = try reader["OAuthParameters"].readIfPresent(with: QuickSightClientTypes.OAuthParameters.read(from:))
         return value
     }
 }

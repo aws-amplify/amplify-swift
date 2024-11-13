@@ -62,6 +62,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class EKSAuthClient: ClientRuntime.Client {
     public static let clientName = "EKSAuthClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: EKSAuthClient.EKSAuthClientConfiguration
     let serviceName = "EKS Auth"
@@ -250,7 +251,7 @@ extension EKSAuthClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<AssumeRoleForPodIdentityOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<AssumeRoleForPodIdentityOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<AssumeRoleForPodIdentityInput, AssumeRoleForPodIdentityOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<AssumeRoleForPodIdentityInput, AssumeRoleForPodIdentityOutput>(serviceID: serviceName, version: EKSAuthClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<AssumeRoleForPodIdentityOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<AssumeRoleForPodIdentityInput, AssumeRoleForPodIdentityOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<AssumeRoleForPodIdentityInput, AssumeRoleForPodIdentityOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

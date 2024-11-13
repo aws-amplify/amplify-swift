@@ -319,6 +319,35 @@ extension SyntheticsClientTypes {
 
 extension SyntheticsClientTypes {
 
+    public enum ProvisionedResourceCleanupSetting: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case automatic
+        case off
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [ProvisionedResourceCleanupSetting] {
+            return [
+                .automatic,
+                .off
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .automatic: return "AUTOMATIC"
+            case .off: return "OFF"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension SyntheticsClientTypes {
+
     /// A structure that contains information about a canary run.
     public struct CanaryRunConfigOutput: Swift.Sendable {
         /// Displays whether this canary run used active X-Ray tracing.
@@ -586,6 +615,8 @@ extension SyntheticsClientTypes {
         public var id: Swift.String?
         /// The name of the canary.
         public var name: Swift.String?
+        /// Specifies whether to also delete the Lambda functions and layers used by this canary when the canary is deleted. If it is AUTOMATIC, the Lambda functions and layers will be deleted when the canary is deleted. If the value of this parameter is OFF, then the value of the DeleteLambda parameter of the [DeleteCanary](https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DeleteCanary.html) operation determines whether the Lambda functions and layers will be deleted.
+        public var provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting?
         /// A structure that contains information about a canary run.
         public var runConfig: SyntheticsClientTypes.CanaryRunConfigOutput?
         /// Specifies the runtime version to use for the canary. For more information about runtime versions, see [ Canary Runtime Versions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html).
@@ -614,6 +645,7 @@ extension SyntheticsClientTypes {
             failureRetentionPeriodInDays: Swift.Int? = nil,
             id: Swift.String? = nil,
             name: Swift.String? = nil,
+            provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting? = nil,
             runConfig: SyntheticsClientTypes.CanaryRunConfigOutput? = nil,
             runtimeVersion: Swift.String? = nil,
             schedule: SyntheticsClientTypes.CanaryScheduleOutput? = nil,
@@ -633,6 +665,7 @@ extension SyntheticsClientTypes {
             self.failureRetentionPeriodInDays = failureRetentionPeriodInDays
             self.id = id
             self.name = name
+            self.provisionedResourceCleanup = provisionedResourceCleanup
             self.runConfig = runConfig
             self.runtimeVersion = runtimeVersion
             self.schedule = schedule
@@ -990,6 +1023,8 @@ public struct CreateCanaryInput: Swift.Sendable {
     /// The name for this canary. Be sure to give it a descriptive name that distinguishes it from other canaries in your account. Do not include secrets or proprietary information in your canary names. The canary name makes up part of the canary ARN, and the ARN is included in outbound calls over the internet. For more information, see [Security Considerations for Synthetics Canaries](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/servicelens_canaries_security.html).
     /// This member is required.
     public var name: Swift.String?
+    /// Specifies whether to also delete the Lambda functions and layers used by this canary when the canary is deleted. If you omit this parameter, the default of AUTOMATIC is used, which means that the Lambda functions and layers will be deleted when the canary is deleted. If the value of this parameter is OFF, then the value of the DeleteLambda parameter of the [DeleteCanary](https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DeleteCanary.html) operation determines whether the Lambda functions and layers will be deleted.
+    public var provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting?
     /// To have the tags that you apply to this canary also be applied to the Lambda function that the canary uses, specify this parameter with the value lambda-function. If you specify this parameter and don't specify any tags in the Tags parameter, the canary creation fails.
     public var resourcesToReplicateTags: [SyntheticsClientTypes.ResourceToTag]?
     /// A structure that contains the configuration for individual canary runs, such as timeout value and environment variables. The environment variables keys and values are not encrypted. Do not store sensitive information in this field.
@@ -1014,6 +1049,7 @@ public struct CreateCanaryInput: Swift.Sendable {
         executionRoleArn: Swift.String? = nil,
         failureRetentionPeriodInDays: Swift.Int? = nil,
         name: Swift.String? = nil,
+        provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting? = nil,
         resourcesToReplicateTags: [SyntheticsClientTypes.ResourceToTag]? = nil,
         runConfig: SyntheticsClientTypes.CanaryRunConfigInput? = nil,
         runtimeVersion: Swift.String? = nil,
@@ -1029,6 +1065,7 @@ public struct CreateCanaryInput: Swift.Sendable {
         self.executionRoleArn = executionRoleArn
         self.failureRetentionPeriodInDays = failureRetentionPeriodInDays
         self.name = name
+        self.provisionedResourceCleanup = provisionedResourceCleanup
         self.resourcesToReplicateTags = resourcesToReplicateTags
         self.runConfig = runConfig
         self.runtimeVersion = runtimeVersion
@@ -1117,7 +1154,7 @@ public struct CreateGroupOutput: Swift.Sendable {
 }
 
 public struct DeleteCanaryInput: Swift.Sendable {
-    /// Specifies whether to also delete the Lambda functions and layers used by this canary. The default is false. Type: Boolean
+    /// Specifies whether to also delete the Lambda functions and layers used by this canary. The default is false. Your setting for this parameter is used only if the canary doesn't have AUTOMATIC for its ProvisionedResourceCleanup field. If that field is set to AUTOMATIC, then the Lambda functions and layers will be deleted when this canary is deleted. Type: Boolean
     public var deleteLambda: Swift.Bool?
     /// The name of the canary that you want to delete. To find the names of your canaries, use [DescribeCanaries](https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DescribeCanaries.html).
     /// This member is required.
@@ -1756,6 +1793,8 @@ public struct UpdateCanaryInput: Swift.Sendable {
     /// The name of the canary that you want to update. To find the names of your canaries, use [DescribeCanaries](https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DescribeCanaries.html). You cannot change the name of a canary that has already been created.
     /// This member is required.
     public var name: Swift.String?
+    /// Specifies whether to also delete the Lambda functions and layers used by this canary when the canary is deleted. If the value of this parameter is OFF, then the value of the DeleteLambda parameter of the [DeleteCanary](https://docs.aws.amazon.com/AmazonSynthetics/latest/APIReference/API_DeleteCanary.html) operation determines whether the Lambda functions and layers will be deleted.
+    public var provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting?
     /// A structure that contains the timeout value that is used for each individual run of the canary. The environment variables keys and values are not encrypted. Do not store sensitive information in this field.
     public var runConfig: SyntheticsClientTypes.CanaryRunConfigInput?
     /// Specifies the runtime version to use for the canary. For a list of valid runtime versions and for more information about runtime versions, see [ Canary Runtime Versions](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Library.html).
@@ -1776,6 +1815,7 @@ public struct UpdateCanaryInput: Swift.Sendable {
         executionRoleArn: Swift.String? = nil,
         failureRetentionPeriodInDays: Swift.Int? = nil,
         name: Swift.String? = nil,
+        provisionedResourceCleanup: SyntheticsClientTypes.ProvisionedResourceCleanupSetting? = nil,
         runConfig: SyntheticsClientTypes.CanaryRunConfigInput? = nil,
         runtimeVersion: Swift.String? = nil,
         schedule: SyntheticsClientTypes.CanaryScheduleInput? = nil,
@@ -1790,6 +1830,7 @@ public struct UpdateCanaryInput: Swift.Sendable {
         self.executionRoleArn = executionRoleArn
         self.failureRetentionPeriodInDays = failureRetentionPeriodInDays
         self.name = name
+        self.provisionedResourceCleanup = provisionedResourceCleanup
         self.runConfig = runConfig
         self.runtimeVersion = runtimeVersion
         self.schedule = schedule
@@ -2042,6 +2083,7 @@ extension CreateCanaryInput {
         try writer["ExecutionRoleArn"].write(value.executionRoleArn)
         try writer["FailureRetentionPeriodInDays"].write(value.failureRetentionPeriodInDays)
         try writer["Name"].write(value.name)
+        try writer["ProvisionedResourceCleanup"].write(value.provisionedResourceCleanup)
         try writer["ResourcesToReplicateTags"].writeList(value.resourcesToReplicateTags, memberWritingClosure: SmithyReadWrite.WritingClosureBox<SyntheticsClientTypes.ResourceToTag>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["RunConfig"].write(value.runConfig, with: SyntheticsClientTypes.CanaryRunConfigInput.write(value:to:))
         try writer["RuntimeVersion"].write(value.runtimeVersion)
@@ -2151,6 +2193,7 @@ extension UpdateCanaryInput {
         try writer["Code"].write(value.code, with: SyntheticsClientTypes.CanaryCodeInput.write(value:to:))
         try writer["ExecutionRoleArn"].write(value.executionRoleArn)
         try writer["FailureRetentionPeriodInDays"].write(value.failureRetentionPeriodInDays)
+        try writer["ProvisionedResourceCleanup"].write(value.provisionedResourceCleanup)
         try writer["RunConfig"].write(value.runConfig, with: SyntheticsClientTypes.CanaryRunConfigInput.write(value:to:))
         try writer["RuntimeVersion"].write(value.runtimeVersion)
         try writer["Schedule"].write(value.schedule, with: SyntheticsClientTypes.CanaryScheduleInput.write(value:to:))
@@ -2873,6 +2916,7 @@ extension SyntheticsClientTypes.Canary {
         value.runtimeVersion = try reader["RuntimeVersion"].readIfPresent()
         value.vpcConfig = try reader["VpcConfig"].readIfPresent(with: SyntheticsClientTypes.VpcConfigOutput.read(from:))
         value.visualReference = try reader["VisualReference"].readIfPresent(with: SyntheticsClientTypes.VisualReferenceOutput.read(from:))
+        value.provisionedResourceCleanup = try reader["ProvisionedResourceCleanup"].readIfPresent()
         value.tags = try reader["Tags"].readMapIfPresent(valueReadingClosure: SmithyReadWrite.ReadingClosures.readString(from:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
         value.artifactConfig = try reader["ArtifactConfig"].readIfPresent(with: SyntheticsClientTypes.ArtifactConfigOutput.read(from:))
         return value

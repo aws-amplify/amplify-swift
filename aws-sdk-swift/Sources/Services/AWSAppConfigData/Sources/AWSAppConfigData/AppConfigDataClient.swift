@@ -64,6 +64,7 @@ import typealias SmithyHTTPAuthAPI.AuthSchemes
 
 public class AppConfigDataClient: ClientRuntime.Client {
     public static let clientName = "AppConfigDataClient"
+    public static let version = "1.0.39"
     let client: ClientRuntime.SdkHttpClient
     let config: AppConfigDataClient.AppConfigDataClientConfiguration
     let serviceName = "AppConfigData"
@@ -249,7 +250,7 @@ extension AppConfigDataClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<GetLatestConfigurationOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<GetLatestConfigurationOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetLatestConfigurationInput, GetLatestConfigurationOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<GetLatestConfigurationInput, GetLatestConfigurationOutput>(serviceID: serviceName, version: AppConfigDataClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<GetLatestConfigurationOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<GetLatestConfigurationInput, GetLatestConfigurationOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<GetLatestConfigurationInput, GetLatestConfigurationOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))
@@ -321,7 +322,7 @@ extension AppConfigDataClient {
         builder.applySigner(ClientRuntime.SignerMiddleware<StartConfigurationSessionOutput>())
         let endpointParams = EndpointParams(endpoint: config.endpoint, region: config.region, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false)
         builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<StartConfigurationSessionOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
-        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartConfigurationSessionInput, StartConfigurationSessionOutput>(serviceID: serviceName, version: "1.0", config: config))
+        builder.interceptors.add(AWSClientRuntime.UserAgentMiddleware<StartConfigurationSessionInput, StartConfigurationSessionOutput>(serviceID: serviceName, version: AppConfigDataClient.version, config: config))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<StartConfigurationSessionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkInvocationIdMiddleware<StartConfigurationSessionInput, StartConfigurationSessionOutput>())
         builder.interceptors.add(AWSClientRuntime.AmzSdkRequestMiddleware<StartConfigurationSessionInput, StartConfigurationSessionOutput>(maxRetries: config.retryStrategyOptions.maxRetriesBase))

@@ -362,7 +362,8 @@ public struct InternalErrorException: ClientRuntime.ModeledError, AWSClientRunti
 public struct InvalidParameterException: ClientRuntime.ModeledError, AWSClientRuntime.AWSServiceError, ClientRuntime.HTTPError, Swift.Error {
 
     public struct Properties {
-        public internal(set) var errorCode: Swift.String? = nil
+        /// The error code of the exception.
+        public internal(set) var exceptionErrorCode: Swift.String? = nil
         /// The message returned when the Amazon Cognito service throws an invalid parameter exception.
         public internal(set) var message: Swift.String? = nil
     }
@@ -377,11 +378,11 @@ public struct InvalidParameterException: ClientRuntime.ModeledError, AWSClientRu
     public internal(set) var requestID: Swift.String?
 
     public init(
-        errorCode: Swift.String? = nil,
+        exceptionErrorCode: Swift.String? = nil,
         message: Swift.String? = nil
     )
     {
-        self.properties.errorCode = errorCode
+        self.properties.exceptionErrorCode = exceptionErrorCode
         self.properties.message = message
     }
 }
@@ -4696,7 +4697,7 @@ public struct CreateManagedLoginBrandingInput: Swift.Sendable {
     public var clientId: Swift.String?
     /// A JSON file, encoded as a Document type, with the the settings that you want to apply to your style.
     public var settings: Smithy.Document?
-    /// When true, applies the default branding style options. This option reverts to a "blank" style that you can modify later in the branding designer.
+    /// When true, applies the default branding style options. This option reverts to default style options that are managed by Amazon Cognito. You can modify them later in the branding designer. When you specify true for this option, you must also omit values for Settings and Assets in the request.
     public var useCognitoProvidedValues: Swift.Bool?
     /// The ID of the user pool where you want to create a new branding style.
     /// This member is required.
@@ -4764,7 +4765,7 @@ extension CognitoIdentityProviderClientTypes {
 }
 
 public struct CreateManagedLoginBrandingOutput: Swift.Sendable {
-    ///
+    /// The details of the branding style that you created.
     public var managedLoginBranding: CognitoIdentityProviderClientTypes.ManagedLoginBrandingType?
 
     public init(
@@ -5651,6 +5652,38 @@ extension CognitoIdentityProviderClientTypes {
 
 extension CognitoIdentityProviderClientTypes {
 
+    public enum UserPoolTierType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case essentials
+        case lite
+        case plus
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [UserPoolTierType] {
+            return [
+                .essentials,
+                .lite,
+                .plus
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .essentials: return "ESSENTIALS"
+            case .lite: return "LITE"
+            case .plus: return "PLUS"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension CognitoIdentityProviderClientTypes {
+
     public enum DefaultEmailOptionType: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
         case confirmWithCode
         case confirmWithLink
@@ -5757,6 +5790,8 @@ public struct CreateUserPoolInput: Swift.Sendable {
     public var userPoolAddOns: CognitoIdentityProviderClientTypes.UserPoolAddOnsType?
     /// The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.
     public var userPoolTags: [Swift.String: Swift.String]?
+    /// The user pool [feature plan](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html), or tier. This parameter determines the eligibility of the user pool for features like managed login, access-token customization, and threat protection.
+    public var userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType?
     /// Specifies whether a user can use an email address or phone number as a username when they sign up.
     public var usernameAttributes: [CognitoIdentityProviderClientTypes.UsernameAttributeType]?
     /// Case sensitivity on the username input for the selected sign-in option. When case sensitivity is set to False (case insensitive), users can sign in with any combination of capital and lowercase letters. For example, username, USERNAME, or UserName, or for email, email@example.com or EMaiL@eXamplE.Com. For most use cases, set case sensitivity to False (case insensitive) as a best practice. When usernames and email addresses are case insensitive, Amazon Cognito treats any variation in case as the same user, and prevents a case variation from being assigned to the same attribute for a different user. This configuration is immutable after you set it. For more information, see [UsernameConfigurationType](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html).
@@ -5785,6 +5820,7 @@ public struct CreateUserPoolInput: Swift.Sendable {
         userAttributeUpdateSettings: CognitoIdentityProviderClientTypes.UserAttributeUpdateSettingsType? = nil,
         userPoolAddOns: CognitoIdentityProviderClientTypes.UserPoolAddOnsType? = nil,
         userPoolTags: [Swift.String: Swift.String]? = nil,
+        userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType? = nil,
         usernameAttributes: [CognitoIdentityProviderClientTypes.UsernameAttributeType]? = nil,
         usernameConfiguration: CognitoIdentityProviderClientTypes.UsernameConfigurationType? = nil,
         verificationMessageTemplate: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType? = nil
@@ -5810,6 +5846,7 @@ public struct CreateUserPoolInput: Swift.Sendable {
         self.userAttributeUpdateSettings = userAttributeUpdateSettings
         self.userPoolAddOns = userPoolAddOns
         self.userPoolTags = userPoolTags
+        self.userPoolTier = userPoolTier
         self.usernameAttributes = usernameAttributes
         self.usernameConfiguration = usernameConfiguration
         self.verificationMessageTemplate = verificationMessageTemplate
@@ -5916,6 +5953,8 @@ extension CognitoIdentityProviderClientTypes {
         public var userPoolAddOns: CognitoIdentityProviderClientTypes.UserPoolAddOnsType?
         /// The tags that are assigned to the user pool. A tag is a label that you can apply to user pools to categorize and manage them in different ways, such as by purpose, owner, environment, or other criteria.
         public var userPoolTags: [Swift.String: Swift.String]?
+        /// The user pool [feature plan](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html), or tier. This parameter determines the eligibility of the user pool for features like managed login, access-token customization, and threat protection.
+        public var userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType?
         /// Specifies whether a user can use an email address or phone number as a username when they sign up.
         public var usernameAttributes: [CognitoIdentityProviderClientTypes.UsernameAttributeType]?
         /// Case sensitivity of the username input for the selected sign-in option. When case sensitivity is set to False (case insensitive), users can sign in with any combination of capital and lowercase letters. For example, username, USERNAME, or UserName, or for email, email@example.com or EMaiL@eXamplE.Com. For most use cases, set case sensitivity to False (case insensitive) as a best practice. When usernames and email addresses are case insensitive, Amazon Cognito treats any variation in case as the same user, and prevents a case variation from being assigned to the same attribute for a different user. This configuration is immutable after you set it. For more information, see [UsernameConfigurationType](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html).
@@ -5954,6 +5993,7 @@ extension CognitoIdentityProviderClientTypes {
             userAttributeUpdateSettings: CognitoIdentityProviderClientTypes.UserAttributeUpdateSettingsType? = nil,
             userPoolAddOns: CognitoIdentityProviderClientTypes.UserPoolAddOnsType? = nil,
             userPoolTags: [Swift.String: Swift.String]? = nil,
+            userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType? = nil,
             usernameAttributes: [CognitoIdentityProviderClientTypes.UsernameAttributeType]? = nil,
             usernameConfiguration: CognitoIdentityProviderClientTypes.UsernameConfigurationType? = nil,
             verificationMessageTemplate: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType? = nil
@@ -5989,6 +6029,7 @@ extension CognitoIdentityProviderClientTypes {
             self.userAttributeUpdateSettings = userAttributeUpdateSettings
             self.userPoolAddOns = userPoolAddOns
             self.userPoolTags = userPoolTags
+            self.userPoolTier = userPoolTier
             self.usernameAttributes = usernameAttributes
             self.usernameConfiguration = usernameConfiguration
             self.verificationMessageTemplate = verificationMessageTemplate
@@ -6886,7 +6927,7 @@ public struct DescribeManagedLoginBrandingInput: Swift.Sendable {
     /// The ID of the managed login branding style that you want to get more information about.
     /// This member is required.
     public var managedLoginBrandingId: Swift.String?
-    /// Determines whether you want to return merged resources from your managed login branding style.
+    /// When true, returns values for branding options that are unchanged from Amazon Cognito defaults. When false or when you omit this parameter, returns only values that you customized in your branding style.
     public var returnMergedResources: Swift.Bool?
     /// The ID of the user pool that contains the managed login branding style that you want to get information about.
     /// This member is required.
@@ -6920,7 +6961,7 @@ public struct DescribeManagedLoginBrandingByClientInput: Swift.Sendable {
     /// The app client that's assigned to the branding style that you want more information about.
     /// This member is required.
     public var clientId: Swift.String?
-    /// Determines whether you want to return merged resources from your managed login branding style.
+    /// When true, returns values for branding options that are unchanged from Amazon Cognito defaults. When false or when you omit this parameter, returns only values that you customized in your branding style.
     public var returnMergedResources: Swift.Bool?
     /// The ID of the user pool that contains the app client where you want more information about the managed login branding style.
     /// This member is required.
@@ -9978,7 +10019,7 @@ public struct UpdateManagedLoginBrandingInput: Swift.Sendable {
     public var managedLoginBrandingId: Swift.String?
     /// A JSON file, encoded as a Document type, with the the settings that you want to apply to your style.
     public var settings: Smithy.Document?
-    /// When true, applies the default branding style options. This option reverts to a "blank" style that you can modify later in the branding designer.
+    /// When true, applies the default branding style options. This option reverts to default style options that are managed by Amazon Cognito. You can modify them later in the branding designer. When you specify true for this option, you must also omit values for Settings and Assets in the request.
     public var useCognitoProvidedValues: Swift.Bool?
     /// The ID of the user pool that contains the managed login branding style that you want to update.
     public var userPoolId: Swift.String?
@@ -10145,6 +10186,8 @@ public struct UpdateUserPoolInput: Swift.Sendable {
     public var userPoolId: Swift.String?
     /// The tag keys and values to assign to the user pool. A tag is a label that you can use to categorize and manage user pools in different ways, such as by purpose, owner, environment, or other criteria.
     public var userPoolTags: [Swift.String: Swift.String]?
+    /// The user pool [feature plan](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html), or tier. This parameter determines the eligibility of the user pool for features like managed login, access-token customization, and threat protection.
+    public var userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType?
     /// The template for verification messages.
     public var verificationMessageTemplate: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType?
 
@@ -10168,6 +10211,7 @@ public struct UpdateUserPoolInput: Swift.Sendable {
         userPoolAddOns: CognitoIdentityProviderClientTypes.UserPoolAddOnsType? = nil,
         userPoolId: Swift.String? = nil,
         userPoolTags: [Swift.String: Swift.String]? = nil,
+        userPoolTier: CognitoIdentityProviderClientTypes.UserPoolTierType? = nil,
         verificationMessageTemplate: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType? = nil
     )
     {
@@ -10190,6 +10234,7 @@ public struct UpdateUserPoolInput: Swift.Sendable {
         self.userPoolAddOns = userPoolAddOns
         self.userPoolId = userPoolId
         self.userPoolTags = userPoolTags
+        self.userPoolTier = userPoolTier
         self.verificationMessageTemplate = verificationMessageTemplate
     }
 }
@@ -11825,6 +11870,7 @@ extension CreateUserPoolInput {
         try writer["UserAttributeUpdateSettings"].write(value.userAttributeUpdateSettings, with: CognitoIdentityProviderClientTypes.UserAttributeUpdateSettingsType.write(value:to:))
         try writer["UserPoolAddOns"].write(value.userPoolAddOns, with: CognitoIdentityProviderClientTypes.UserPoolAddOnsType.write(value:to:))
         try writer["UserPoolTags"].writeMap(value.userPoolTags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["UserPoolTier"].write(value.userPoolTier)
         try writer["UsernameAttributes"].writeList(value.usernameAttributes, memberWritingClosure: SmithyReadWrite.WritingClosureBox<CognitoIdentityProviderClientTypes.UsernameAttributeType>().write(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["UsernameConfiguration"].write(value.usernameConfiguration, with: CognitoIdentityProviderClientTypes.UsernameConfigurationType.write(value:to:))
         try writer["VerificationMessageTemplate"].write(value.verificationMessageTemplate, with: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType.write(value:to:))
@@ -12560,6 +12606,7 @@ extension UpdateUserPoolInput {
         try writer["UserPoolAddOns"].write(value.userPoolAddOns, with: CognitoIdentityProviderClientTypes.UserPoolAddOnsType.write(value:to:))
         try writer["UserPoolId"].write(value.userPoolId)
         try writer["UserPoolTags"].writeMap(value.userPoolTags, valueWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), keyNodeInfo: "key", valueNodeInfo: "value", isFlattened: false)
+        try writer["UserPoolTier"].write(value.userPoolTier)
         try writer["VerificationMessageTemplate"].write(value.verificationMessageTemplate, with: CognitoIdentityProviderClientTypes.VerificationMessageTemplateType.write(value:to:))
     }
 }
@@ -16273,7 +16320,7 @@ extension InvalidParameterException {
     static func makeError(baseError: AWSClientRuntime.AWSJSONError) throws -> InvalidParameterException {
         let reader = baseError.errorBodyReader
         var value = InvalidParameterException()
-        value.properties.errorCode = try reader["errorCode"].readIfPresent()
+        value.properties.exceptionErrorCode = try reader["exceptionErrorCode"].readIfPresent()
         value.properties.message = try reader["message"].readIfPresent()
         value.httpResponse = baseError.httpResponse
         value.requestID = baseError.requestID
@@ -17263,6 +17310,7 @@ extension CognitoIdentityProviderClientTypes.UserPoolType {
         value.usernameConfiguration = try reader["UsernameConfiguration"].readIfPresent(with: CognitoIdentityProviderClientTypes.UsernameConfigurationType.read(from:))
         value.arn = try reader["Arn"].readIfPresent()
         value.accountRecoverySetting = try reader["AccountRecoverySetting"].readIfPresent(with: CognitoIdentityProviderClientTypes.AccountRecoverySettingType.read(from:))
+        value.userPoolTier = try reader["UserPoolTier"].readIfPresent()
         return value
     }
 }

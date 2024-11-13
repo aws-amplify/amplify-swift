@@ -936,6 +936,55 @@ public struct CompleteLifecycleActionOutput: Swift.Sendable {
 
 extension AutoScalingClientTypes {
 
+    public enum CapacityDistributionStrategy: Swift.Sendable, Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Hashable {
+        case balancedBestEffort
+        case balancedOnly
+        case sdkUnknown(Swift.String)
+
+        public static var allCases: [CapacityDistributionStrategy] {
+            return [
+                .balancedBestEffort,
+                .balancedOnly
+            ]
+        }
+
+        public init?(rawValue: Swift.String) {
+            let value = Self.allCases.first(where: { $0.rawValue == rawValue })
+            self = value ?? Self.sdkUnknown(rawValue)
+        }
+
+        public var rawValue: Swift.String {
+            switch self {
+            case .balancedBestEffort: return "balanced-best-effort"
+            case .balancedOnly: return "balanced-only"
+            case let .sdkUnknown(s): return s
+            }
+        }
+    }
+}
+
+extension AutoScalingClientTypes {
+
+    /// Describes an Availability Zone distribution.
+    public struct AvailabilityZoneDistribution: Swift.Sendable {
+        /// If launches fail in an Availability Zone, the following strategies are available. The default is balanced-best-effort.
+        ///
+        /// * balanced-only - If launches fail in an Availability Zone, Auto Scaling will continue to attempt to launch in the unhealthy zone to preserve a balanced distribution.
+        ///
+        /// * balanced-best-effort - If launches fail in an Availability Zone, Auto Scaling will attempt to launch in another healthy Availability Zone instead.
+        public var capacityDistributionStrategy: AutoScalingClientTypes.CapacityDistributionStrategy?
+
+        public init(
+            capacityDistributionStrategy: AutoScalingClientTypes.CapacityDistributionStrategy? = nil
+        )
+        {
+            self.capacityDistributionStrategy = capacityDistributionStrategy
+        }
+    }
+}
+
+extension AutoScalingClientTypes {
+
     /// Describes an instance maintenance policy. For more information, see [Set instance maintenance policy](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-instance-maintenance-policy.html) in the Amazon EC2 Auto Scaling User Guide.
     public struct InstanceMaintenancePolicy: Swift.Sendable {
         /// Specifies the upper threshold as a percentage of the desired capacity of the Auto Scaling group. It represents the maximum percentage of the group that can be in service and healthy, or pending, to support your workload when replacing instances. Value range is 100 to 200. To clear a previously set value, specify a value of -1. Both MinHealthyPercentage and MaxHealthyPercentage must be specified, and the difference between them cannot be greater than 100. A large range increases the number of instances that can be replaced at the same time.
@@ -1677,6 +1726,8 @@ public struct CreateAutoScalingGroupInput: Swift.Sendable {
     /// The name of the Auto Scaling group. This name must be unique per Region per account. The name can contain any ASCII character 33 to 126 including most punctuation characters, digits, and upper and lowercased letters. You cannot use a colon (:) in the name.
     /// This member is required.
     public var autoScalingGroupName: Swift.String?
+    /// The instance capacity distribution across Availability Zones.
+    public var availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution?
     /// A list of Availability Zones where instances in the Auto Scaling group can be created. Used for launching into the default VPC subnet in each Availability Zone when not using the VPCZoneIdentifier property, or for attaching a network interface when an existing network interface ID is specified in a launch template.
     public var availabilityZones: [Swift.String]?
     /// Indicates whether Capacity Rebalancing is enabled. Otherwise, Capacity Rebalancing is disabled. When you turn on Capacity Rebalancing, Amazon EC2 Auto Scaling attempts to launch a Spot Instance whenever Amazon EC2 notifies that a Spot Instance is at an elevated risk of interruption. After launching a new instance, it then terminates an old instance. For more information, see [Use Capacity Rebalancing to handle Amazon EC2 Spot Interruptions](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html) in the in the Amazon EC2 Auto Scaling User Guide.
@@ -1736,6 +1787,7 @@ public struct CreateAutoScalingGroupInput: Swift.Sendable {
 
     public init(
         autoScalingGroupName: Swift.String? = nil,
+        availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution? = nil,
         availabilityZones: [Swift.String]? = nil,
         capacityRebalance: Swift.Bool? = nil,
         context: Swift.String? = nil,
@@ -1766,6 +1818,7 @@ public struct CreateAutoScalingGroupInput: Swift.Sendable {
     )
     {
         self.autoScalingGroupName = autoScalingGroupName
+        self.availabilityZoneDistribution = availabilityZoneDistribution
         self.availabilityZones = availabilityZones
         self.capacityRebalance = capacityRebalance
         self.context = context
@@ -2767,6 +2820,8 @@ extension AutoScalingClientTypes {
         /// The name of the Auto Scaling group.
         /// This member is required.
         public var autoScalingGroupName: Swift.String?
+        /// The instance capacity distribution across Availability Zones.
+        public var availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution?
         /// One or more Availability Zones for the group.
         /// This member is required.
         public var availabilityZones: [Swift.String]?
@@ -2844,6 +2899,7 @@ extension AutoScalingClientTypes {
         public init(
             autoScalingGroupARN: Swift.String? = nil,
             autoScalingGroupName: Swift.String? = nil,
+            availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution? = nil,
             availabilityZones: [Swift.String]? = nil,
             capacityRebalance: Swift.Bool? = nil,
             context: Swift.String? = nil,
@@ -2881,6 +2937,7 @@ extension AutoScalingClientTypes {
         {
             self.autoScalingGroupARN = autoScalingGroupARN
             self.autoScalingGroupName = autoScalingGroupName
+            self.availabilityZoneDistribution = availabilityZoneDistribution
             self.availabilityZones = availabilityZones
             self.capacityRebalance = capacityRebalance
             self.context = context
@@ -6308,6 +6365,8 @@ public struct UpdateAutoScalingGroupInput: Swift.Sendable {
     /// The name of the Auto Scaling group.
     /// This member is required.
     public var autoScalingGroupName: Swift.String?
+    /// The instance capacity distribution across Availability Zones.
+    public var availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution?
     /// One or more Availability Zones for the group.
     public var availabilityZones: [Swift.String]?
     /// Enables or disables Capacity Rebalancing. For more information, see [Use Capacity Rebalancing to handle Amazon EC2 Spot Interruptions](https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-capacity-rebalancing.html) in the Amazon EC2 Auto Scaling User Guide.
@@ -6353,6 +6412,7 @@ public struct UpdateAutoScalingGroupInput: Swift.Sendable {
 
     public init(
         autoScalingGroupName: Swift.String? = nil,
+        availabilityZoneDistribution: AutoScalingClientTypes.AvailabilityZoneDistribution? = nil,
         availabilityZones: [Swift.String]? = nil,
         capacityRebalance: Swift.Bool? = nil,
         context: Swift.String? = nil,
@@ -6377,6 +6437,7 @@ public struct UpdateAutoScalingGroupInput: Swift.Sendable {
     )
     {
         self.autoScalingGroupName = autoScalingGroupName
+        self.availabilityZoneDistribution = availabilityZoneDistribution
         self.availabilityZones = availabilityZones
         self.capacityRebalance = capacityRebalance
         self.context = context
@@ -6951,6 +7012,7 @@ extension CreateAutoScalingGroupInput {
     static func write(value: CreateAutoScalingGroupInput?, to writer: SmithyFormURL.Writer) throws {
         guard let value else { return }
         try writer["AutoScalingGroupName"].write(value.autoScalingGroupName)
+        try writer["AvailabilityZoneDistribution"].write(value.availabilityZoneDistribution, with: AutoScalingClientTypes.AvailabilityZoneDistribution.write(value:to:))
         try writer["AvailabilityZones"].writeList(value.availabilityZones, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["CapacityRebalance"].write(value.capacityRebalance)
         try writer["Context"].write(value.context)
@@ -7667,6 +7729,7 @@ extension UpdateAutoScalingGroupInput {
     static func write(value: UpdateAutoScalingGroupInput?, to writer: SmithyFormURL.Writer) throws {
         guard let value else { return }
         try writer["AutoScalingGroupName"].write(value.autoScalingGroupName)
+        try writer["AvailabilityZoneDistribution"].write(value.availabilityZoneDistribution, with: AutoScalingClientTypes.AvailabilityZoneDistribution.write(value:to:))
         try writer["AvailabilityZones"].writeList(value.availabilityZones, memberWritingClosure: SmithyReadWrite.WritingClosures.writeString(value:to:), memberNodeInfo: "member", isFlattened: false)
         try writer["CapacityRebalance"].write(value.capacityRebalance)
         try writer["Context"].write(value.context)
@@ -9491,6 +9554,22 @@ extension AutoScalingClientTypes.AutoScalingGroup {
         value.defaultInstanceWarmup = try reader["DefaultInstanceWarmup"].readIfPresent()
         value.trafficSources = try reader["TrafficSources"].readListIfPresent(memberReadingClosure: AutoScalingClientTypes.TrafficSourceIdentifier.read(from:), memberNodeInfo: "member", isFlattened: false)
         value.instanceMaintenancePolicy = try reader["InstanceMaintenancePolicy"].readIfPresent(with: AutoScalingClientTypes.InstanceMaintenancePolicy.read(from:))
+        value.availabilityZoneDistribution = try reader["AvailabilityZoneDistribution"].readIfPresent(with: AutoScalingClientTypes.AvailabilityZoneDistribution.read(from:))
+        return value
+    }
+}
+
+extension AutoScalingClientTypes.AvailabilityZoneDistribution {
+
+    static func write(value: AutoScalingClientTypes.AvailabilityZoneDistribution?, to writer: SmithyFormURL.Writer) throws {
+        guard let value else { return }
+        try writer["CapacityDistributionStrategy"].write(value.capacityDistributionStrategy)
+    }
+
+    static func read(from reader: SmithyXML.Reader) throws -> AutoScalingClientTypes.AvailabilityZoneDistribution {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = AutoScalingClientTypes.AvailabilityZoneDistribution()
+        value.capacityDistributionStrategy = try reader["CapacityDistributionStrategy"].readIfPresent()
         return value
     }
 }

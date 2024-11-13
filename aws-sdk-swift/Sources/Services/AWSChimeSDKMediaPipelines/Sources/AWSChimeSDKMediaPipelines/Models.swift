@@ -393,7 +393,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
         public var filterPartialResults: Swift.Bool
         /// Turns language identification on or off.
         public var identifyLanguage: Swift.Bool
-        /// Turns language identification on or off for multiple languages.
+        /// Turns language identification on or off for multiple languages. Calls to this API must include a LanguageCode, IdentifyLanguage, or IdentifyMultipleLanguages parameter. If you include more than one of those parameters, your transcription job fails.
         public var identifyMultipleLanguages: Swift.Bool
         /// The language code that represents the language spoken in your audio. If you're unsure of the language spoken in your audio, consider using IdentifyLanguage to enable automatic language identification. For a list of languages that real-time Call Analytics supports, see the [Supported languages table](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html) in the Amazon Transcribe Developer Guide.
         public var languageCode: ChimeSDKMediaPipelinesClientTypes.CallAnalyticsLanguageCode?
@@ -1831,6 +1831,45 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes {
 
+    /// Contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.
+    public struct SseAwsKeyManagementParams: Swift.Sendable {
+        /// Base64-encoded string of a UTF-8 encoded JSON, which contains the encryption context as non-secret key-value pair known as encryption context pairs, that provides an added layer of security for your data. For more information, see [KMS encryption context](https://docs.aws.amazon.com/kms/latest/developerguide/encrypt_context.html) and [Asymmetric keys in KMS](https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html) in the Key Management Service Developer Guide.
+        public var awsKmsEncryptionContext: Swift.String?
+        /// The KMS key you want to use to encrypt your media pipeline output. Decryption is required for concatenation pipeline. If using a key located in the current Amazon Web Services account, you can specify your KMS key in one of four ways:
+        ///
+        /// * Use the KMS key ID itself. For example, 1234abcd-12ab-34cd-56ef-1234567890ab.
+        ///
+        /// * Use an alias for the KMS key ID. For example, alias/ExampleAlias.
+        ///
+        /// * Use the Amazon Resource Name (ARN) for the KMS key ID. For example, arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab.
+        ///
+        /// * Use the ARN for the KMS key alias. For example, arn:aws:kms:region:account-ID:alias/ExampleAlias.
+        ///
+        ///
+        /// If using a key located in a different Amazon Web Services account than the current Amazon Web Services account, you can specify your KMS key in one of two ways:
+        ///
+        /// * Use the ARN for the KMS key ID. For example, arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab.
+        ///
+        /// * Use the ARN for the KMS key alias. For example, arn:aws:kms:region:account-ID:alias/ExampleAlias.
+        ///
+        ///
+        /// If you don't specify an encryption key, your output is encrypted with the default Amazon S3 key (SSE-S3). Note that the role specified in the SinkIamRoleArn request parameter must have permission to use the specified KMS key.
+        /// This member is required.
+        public var awsKmsKeyId: Swift.String?
+
+        public init(
+            awsKmsEncryptionContext: Swift.String? = nil,
+            awsKmsKeyId: Swift.String? = nil
+        )
+        {
+            self.awsKmsEncryptionContext = awsKmsEncryptionContext
+            self.awsKmsKeyId = awsKmsKeyId
+        }
+    }
+}
+
+extension ChimeSDKMediaPipelinesClientTypes {
+
     /// A key/value pair that grants users access to meeting resources.
     public struct Tag: Swift.Sendable {
         /// The key half of a tag.
@@ -1859,6 +1898,8 @@ public struct CreateMediaCapturePipelineInput: Swift.Sendable {
     /// The ARN of the sink type.
     /// This member is required.
     public var sinkArn: Swift.String?
+    /// The Amazon Resource Name (ARN) of the sink role to be used with AwsKmsKeyId in SseAwsKeyManagementParams. Can only interact with S3Bucket sink type. The role must belong to the caller’s account and be able to act on behalf of the caller during the API call. All minimum policy permissions requirements for the caller to perform sink-related actions are the same for SinkIamRoleArn. Additionally, the role must have permission to kms:GenerateDataKey using KMS key supplied as AwsKmsKeyId in SseAwsKeyManagementParams. If media concatenation will be required later, the role must also have permission to kms:Decrypt for the same KMS key.
+    public var sinkIamRoleArn: Swift.String?
     /// Destination type to which the media artifacts are saved. You must use an S3 bucket.
     /// This member is required.
     public var sinkType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSinkType?
@@ -1868,6 +1909,8 @@ public struct CreateMediaCapturePipelineInput: Swift.Sendable {
     /// Source type from which the media artifacts are captured. A Chime SDK Meeting is the only supported source.
     /// This member is required.
     public var sourceType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSourceType?
+    /// An object that contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.
+    public var sseAwsKeyManagementParams: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams?
     /// The tag key-value pairs.
     public var tags: [ChimeSDKMediaPipelinesClientTypes.Tag]?
 
@@ -1875,25 +1918,29 @@ public struct CreateMediaCapturePipelineInput: Swift.Sendable {
         chimeSdkMeetingConfiguration: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConfiguration? = nil,
         clientRequestToken: Swift.String? = nil,
         sinkArn: Swift.String? = nil,
+        sinkIamRoleArn: Swift.String? = nil,
         sinkType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSinkType? = nil,
         sourceArn: Swift.String? = nil,
         sourceType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSourceType? = nil,
+        sseAwsKeyManagementParams: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams? = nil,
         tags: [ChimeSDKMediaPipelinesClientTypes.Tag]? = nil
     )
     {
         self.chimeSdkMeetingConfiguration = chimeSdkMeetingConfiguration
         self.clientRequestToken = clientRequestToken
         self.sinkArn = sinkArn
+        self.sinkIamRoleArn = sinkIamRoleArn
         self.sinkType = sinkType
         self.sourceArn = sourceArn
         self.sourceType = sourceType
+        self.sseAwsKeyManagementParams = sseAwsKeyManagementParams
         self.tags = tags
     }
 }
 
 extension CreateMediaCapturePipelineInput: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "CreateMediaCapturePipelineInput(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", sinkArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
+        "CreateMediaCapturePipelineInput(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), sseAwsKeyManagementParams: \(Swift.String(describing: sseAwsKeyManagementParams)), tags: \(Swift.String(describing: tags)), clientRequestToken: \"CONTENT_REDACTED\", sinkArn: \"CONTENT_REDACTED\", sinkIamRoleArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
 }
 
 extension ChimeSDKMediaPipelinesClientTypes {
@@ -1954,12 +2001,16 @@ extension ChimeSDKMediaPipelinesClientTypes {
         public var mediaPipelineId: Swift.String?
         /// ARN of the destination to which the media artifacts are saved.
         public var sinkArn: Swift.String?
+        /// The Amazon Resource Name (ARN) of the sink role to be used with AwsKmsKeyId in SseAwsKeyManagementParams.
+        public var sinkIamRoleArn: Swift.String?
         /// Destination type to which the media artifacts are saved. You must use an S3 Bucket.
         public var sinkType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSinkType?
         /// ARN of the source from which the media artifacts are saved.
         public var sourceArn: Swift.String?
         /// Source type from which media artifacts are saved. You must use ChimeMeeting.
         public var sourceType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSourceType?
+        /// An object that contains server side encryption parameters to be used by media capture pipeline. The parameters can also be used by media concatenation pipeline taking media capture pipeline as a media source.
+        public var sseAwsKeyManagementParams: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams?
         /// The status of the media pipeline.
         public var status: ChimeSDKMediaPipelinesClientTypes.MediaPipelineStatus?
         /// The time at which the pipeline was updated, in ISO 8601 format.
@@ -1971,9 +2022,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             mediaPipelineArn: Swift.String? = nil,
             mediaPipelineId: Swift.String? = nil,
             sinkArn: Swift.String? = nil,
+            sinkIamRoleArn: Swift.String? = nil,
             sinkType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSinkType? = nil,
             sourceArn: Swift.String? = nil,
             sourceType: ChimeSDKMediaPipelinesClientTypes.MediaPipelineSourceType? = nil,
+            sseAwsKeyManagementParams: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams? = nil,
             status: ChimeSDKMediaPipelinesClientTypes.MediaPipelineStatus? = nil,
             updatedTimestamp: Foundation.Date? = nil
         )
@@ -1983,9 +2036,11 @@ extension ChimeSDKMediaPipelinesClientTypes {
             self.mediaPipelineArn = mediaPipelineArn
             self.mediaPipelineId = mediaPipelineId
             self.sinkArn = sinkArn
+            self.sinkIamRoleArn = sinkIamRoleArn
             self.sinkType = sinkType
             self.sourceArn = sourceArn
             self.sourceType = sourceType
+            self.sseAwsKeyManagementParams = sseAwsKeyManagementParams
             self.status = status
             self.updatedTimestamp = updatedTimestamp
         }
@@ -1994,7 +2049,7 @@ extension ChimeSDKMediaPipelinesClientTypes {
 
 extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline: Swift.CustomDebugStringConvertible {
     public var debugDescription: Swift.String {
-        "MediaCapturePipeline(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), mediaPipelineArn: \(Swift.String(describing: mediaPipelineArn)), mediaPipelineId: \(Swift.String(describing: mediaPipelineId)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), status: \(Swift.String(describing: status)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), sinkArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
+        "MediaCapturePipeline(chimeSdkMeetingConfiguration: \(Swift.String(describing: chimeSdkMeetingConfiguration)), createdTimestamp: \(Swift.String(describing: createdTimestamp)), mediaPipelineArn: \(Swift.String(describing: mediaPipelineArn)), mediaPipelineId: \(Swift.String(describing: mediaPipelineId)), sinkType: \(Swift.String(describing: sinkType)), sourceType: \(Swift.String(describing: sourceType)), sseAwsKeyManagementParams: \(Swift.String(describing: sseAwsKeyManagementParams)), status: \(Swift.String(describing: status)), updatedTimestamp: \(Swift.String(describing: updatedTimestamp)), sinkArn: \"CONTENT_REDACTED\", sinkIamRoleArn: \"CONTENT_REDACTED\", sourceArn: \"CONTENT_REDACTED\")"}
 }
 
 public struct CreateMediaCapturePipelineOutput: Swift.Sendable {
@@ -5321,9 +5376,11 @@ extension CreateMediaCapturePipelineInput {
         try writer["ChimeSdkMeetingConfiguration"].write(value.chimeSdkMeetingConfiguration, with: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConfiguration.write(value:to:))
         try writer["ClientRequestToken"].write(value.clientRequestToken)
         try writer["SinkArn"].write(value.sinkArn)
+        try writer["SinkIamRoleArn"].write(value.sinkIamRoleArn)
         try writer["SinkType"].write(value.sinkType)
         try writer["SourceArn"].write(value.sourceArn)
         try writer["SourceType"].write(value.sourceType)
+        try writer["SseAwsKeyManagementParams"].write(value.sseAwsKeyManagementParams, with: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams.write(value:to:))
         try writer["Tags"].writeList(value.tags, memberWritingClosure: ChimeSDKMediaPipelinesClientTypes.Tag.write(value:to:), memberNodeInfo: "member", isFlattened: false)
     }
 }
@@ -6578,6 +6635,25 @@ extension ChimeSDKMediaPipelinesClientTypes.MediaCapturePipeline {
         value.createdTimestamp = try reader["CreatedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.updatedTimestamp = try reader["UpdatedTimestamp"].readTimestampIfPresent(format: SmithyTimestamps.TimestampFormat.dateTime)
         value.chimeSdkMeetingConfiguration = try reader["ChimeSdkMeetingConfiguration"].readIfPresent(with: ChimeSDKMediaPipelinesClientTypes.ChimeSdkMeetingConfiguration.read(from:))
+        value.sseAwsKeyManagementParams = try reader["SseAwsKeyManagementParams"].readIfPresent(with: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams.read(from:))
+        value.sinkIamRoleArn = try reader["SinkIamRoleArn"].readIfPresent()
+        return value
+    }
+}
+
+extension ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams {
+
+    static func write(value: ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams?, to writer: SmithyJSON.Writer) throws {
+        guard let value else { return }
+        try writer["AwsKmsEncryptionContext"].write(value.awsKmsEncryptionContext)
+        try writer["AwsKmsKeyId"].write(value.awsKmsKeyId)
+    }
+
+    static func read(from reader: SmithyJSON.Reader) throws -> ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams {
+        guard reader.hasContent else { throw SmithyReadWrite.ReaderError.requiredValueNotPresent }
+        var value = ChimeSDKMediaPipelinesClientTypes.SseAwsKeyManagementParams()
+        value.awsKmsKeyId = try reader["AwsKmsKeyId"].readIfPresent() ?? ""
+        value.awsKmsEncryptionContext = try reader["AwsKmsEncryptionContext"].readIfPresent()
         return value
     }
 }
