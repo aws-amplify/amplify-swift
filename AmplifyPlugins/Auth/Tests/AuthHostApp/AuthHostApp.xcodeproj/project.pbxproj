@@ -77,9 +77,9 @@
 		48BCE8942A54564C0012C3CD /* MFASignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48599D492A429893009DE21C /* MFASignInTests.swift */; };
 		48BCE8952A54564C0012C3CD /* MFAPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */; };
 		48BCE8962A5456600012C3CD /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
-		48DEF59A2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift */; };
-		48DEF59B2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift */; };
-		48DEF59C2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift */; };
+		48DEF59A2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */; };
+		48DEF59B2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */; };
+		48DEF59C2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */; };
 		48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */; };
 		681B76952A3CB8DA004B59D9 /* AuthHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */; };
 		681B76962A3CB8DD004B59D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53F27B614CE006CCEC7 /* ContentView.swift */; };
@@ -215,7 +215,7 @@
 		48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPSetupWhenAuthenticatedTests.swift; sourceTree = "<group>"; };
 		48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPHelper.swift; sourceTree = "<group>"; };
 		48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFAPreferenceTests.swift; sourceTree = "<group>"; };
-		48DEF5992CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInWithPasswordUsingUserAuthTests.swift; sourceTree = "<group>"; };
+		48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordlessSignInTests.swift; sourceTree = "<group>"; };
 		48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCurrentUserTests.swift; sourceTree = "<group>"; };
 		681B76802A3CB86B004B59D9 /* AuthWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		681B76C42A3CBBAE004B59D9 /* AuthIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -424,7 +424,7 @@
 		485CB5C327B61F4A006CCEC7 /* SignInTests */ = {
 			isa = PBXGroup;
 			children = (
-				48DEF5992CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift */,
+				48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */,
 				485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */,
 				4821B2F328737130000EC1D7 /* AuthCustomSignInTests.swift */,
 			);
@@ -879,7 +879,7 @@
 				21F762BD2BD6B1AA0048845A /* AuthResetPasswordTests.swift in Sources */,
 				21F762BE2BD6B1AA0048845A /* AuthUserAttributesTests.swift in Sources */,
 				21F762BF2BD6B1AA0048845A /* MFASignInTests.swift in Sources */,
-				48DEF59B2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */,
+				48DEF59B2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */,
 				21F762C02BD6B1AA0048845A /* SignedInAuthSessionTests.swift in Sources */,
 				21F762C12BD6B1AA0048845A /* AuthSignUpTests.swift in Sources */,
 				487C40252CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */,
@@ -906,7 +906,7 @@
 				487C403F2CADE8DA009CF221 /* EmailMFAOnlyTests.swift in Sources */,
 				681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */,
 				485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */,
-				48DEF59A2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */,
+				48DEF59A2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */,
 				9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */,
 				B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */,
 				48916F3C2A42333E00E3E1B1 /* MFAPreferenceTests.swift in Sources */,
@@ -983,7 +983,7 @@
 				681B76B72A3CBBAE004B59D9 /* AuthResetPasswordTests.swift in Sources */,
 				681B76B82A3CBBAE004B59D9 /* AuthUserAttributesTests.swift in Sources */,
 				681B76B92A3CBBAE004B59D9 /* SignedInAuthSessionTests.swift in Sources */,
-				48DEF59C2CDB1FF500BDB995 /* AuthSignInWithPasswordUsingUserAuthTests.swift in Sources */,
+				48DEF59C2CDB1FF500BDB995 /* PasswordlessSignInTests.swift in Sources */,
 				681B76BA2A3CBBAE004B59D9 /* AuthSignUpTests.swift in Sources */,
 				681B76BB2A3CBBAE004B59D9 /* AuthConfirmResetPasswordTests.swift in Sources */,
 				487C40242CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */,

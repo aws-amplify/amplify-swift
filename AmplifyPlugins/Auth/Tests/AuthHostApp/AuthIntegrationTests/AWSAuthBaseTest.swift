@@ -51,6 +51,7 @@ class AWSAuthBaseTest: XCTestCase {
     override func tearDown() async throws {
         try await super.tearDown()
         subscription?.cancel()
+        usernameOTPDictionary = [:]
         await Amplify.reset()
     }
 
@@ -192,8 +193,7 @@ class AWSAuthBaseTest: XCTestCase {
             subscription?.cancel()
             return nil
         }
-
-        subscription?.cancel()
+        usernameOTPDictionary.removeValue(forKey: username)
         return try await task.value
     }
 }
