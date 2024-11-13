@@ -345,7 +345,7 @@ extension AWSCognitoIdentityProvider.WebAuthnChallengeNotFoundException: AuthErr
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnChallengeNotFound,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnChallengeNotFound
         )
     }
 }
@@ -357,7 +357,7 @@ extension AWSCognitoIdentityProvider.WebAuthnClientMismatchException: AuthErrorC
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnClientMismatch,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnClientMismatch
         )
     }
 }
@@ -369,7 +369,7 @@ extension AWSCognitoIdentityProvider.WebAuthnCredentialNotSupportedException: Au
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnCredentialNotSupported,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnNotSupported
         )
     }
 }
@@ -381,7 +381,7 @@ extension AWSCognitoIdentityProvider.WebAuthnNotEnabledException: AuthErrorConve
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnNotEnabled,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnNotEnabled
         )
     }
 }
@@ -393,7 +393,7 @@ extension AWSCognitoIdentityProvider.WebAuthnOriginNotAllowedException: AuthErro
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnOriginNotAllowed,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnOriginNotAllowed
         )
     }
 }
@@ -405,7 +405,7 @@ extension AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException: Auth
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnRelyingPartyMismatch,
-            AWSCognitoAuthError.webAuthn
+            AWSCognitoAuthError.webAuthnRelyingPartyMismatch
         )
     }
 }
@@ -417,7 +417,7 @@ extension AWSCognitoIdentityProvider.WebAuthnConfigurationMissingException: Auth
         .service(
             message ?? fallbackDescription,
             AuthPluginErrorConstants.webAuthnConfigurationMissing,
-            nil
+            AWSCognitoAuthError.webAuthnConfigurationMissing
         )
     }
 }

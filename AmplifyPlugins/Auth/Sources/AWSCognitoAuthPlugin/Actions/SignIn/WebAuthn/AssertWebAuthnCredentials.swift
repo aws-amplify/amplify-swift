@@ -52,23 +52,26 @@ struct AssertWebAuthnCredentials: Action {
             ))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             await dispatcher.send(event)
-        } catch let error as WebAuthnError {
-            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = WebAuthnEvent(
-                eventType: .error(error, respondToAuthChallenge)
-            )
-            await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let webAuthnError = WebAuthnError.unknown(
-                message: "Unable to assert WebAuthn credentials",
-                error: error
-            )
             let event = WebAuthnEvent(
-                eventType: .error(webAuthnError, respondToAuthChallenge)
+                eventType: .error(webAuthnError(from: error), respondToAuthChallenge)
             )
             await dispatcher.send(event)
         }
+    }
+
+    private func webAuthnError(from error: Error) -> WebAuthnError {
+        if let webAuthnError = error as? WebAuthnError {
+            return webAuthnError
+        }
+        if let authError = error as? AuthErrorConvertible {
+            return .service(error: authError.authError)
+        }
+        return .unknown(
+            message: "Unable to assert WebAuthn credentials",
+            error: error
+        )
     }
 }
 

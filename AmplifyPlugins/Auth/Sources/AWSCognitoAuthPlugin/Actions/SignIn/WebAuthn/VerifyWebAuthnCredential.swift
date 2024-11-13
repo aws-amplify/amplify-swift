@@ -70,15 +70,24 @@ struct VerifyWebAuthnCredential: Action {
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let webAuthnError = WebAuthnError.unknown(
-                message: "Unable to verify WebAuthn credential",
-                error: error
-            )
             let event = WebAuthnEvent(
-                eventType: .error(webAuthnError, respondToAuthChallenge)
+                eventType: .error(webAuthnError(from: error), respondToAuthChallenge)
             )
             await dispatcher.send(event)
         }
+    }
+
+    private func webAuthnError(from error: Error) -> WebAuthnError {
+        if let webAuthnError = error as? WebAuthnError {
+            return webAuthnError
+        }
+        if let authError = error as? AuthErrorConvertible {
+            return .service(error: authError.authError)
+        }
+        return .unknown(
+            message: "Unable to verify WebAuthn credential",
+            error: error
+        )
     }
 }
 

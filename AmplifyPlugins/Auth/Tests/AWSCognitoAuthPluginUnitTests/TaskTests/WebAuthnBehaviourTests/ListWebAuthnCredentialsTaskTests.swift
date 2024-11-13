@@ -8,7 +8,7 @@
 @testable import AWSCognitoAuthPlugin
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
-import struct AWSCognitoIdentityProvider.ForbiddenException
+import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
 import XCTest
 
 class ListWebAuthnCredentialsTaskTests: XCTestCase {
@@ -109,17 +109,18 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase {
 
     func testExecute_withServiceError_shouldFailWithServiceError() async {
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
-            throw ForbiddenException(message: "Operation is forbidden")
+            throw WebAuthnRelyingPartyMismatchException(message: "Operation is forbidden")
         }
 
         do {
             _ = try await task.execute()
             XCTFail("Task should have failed")
         } catch let error as AuthError {
-            guard case .service = error else {
+            guard case .service(_, _, let underlyingError) = error else {
                 XCTFail("Expected AuthError.service error, got \(error)")
                 return
             }
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnRelyingPartyMismatch)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }

@@ -160,7 +160,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase {
                 return
             }
 
-            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthn)
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
             XCTAssertEqual(credentialRegistrant.createCallCount, 0)
             XCTAssertEqual(completeWebAuthnRegistrationCallCount, 0)
         } catch {
@@ -216,7 +216,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase {
                 return
             }
 
-            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthn)
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
             XCTAssertEqual(startWebAuthnRegistrationCallCount, 1)
             XCTAssertEqual(credentialRegistrant.createCallCount, 1)
         } catch {

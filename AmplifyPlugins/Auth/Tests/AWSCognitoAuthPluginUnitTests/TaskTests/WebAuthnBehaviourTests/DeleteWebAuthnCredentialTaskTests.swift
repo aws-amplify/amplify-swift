@@ -8,7 +8,7 @@
 @testable import AWSCognitoAuthPlugin
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
-import struct AWSCognitoIdentityProvider.ForbiddenException
+import struct AWSCognitoIdentityProvider.WebAuthnClientMismatchException
 import XCTest
 
 class DeleteWebAuthnCredentialTaskTests: XCTestCase {
@@ -83,17 +83,18 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase {
 
     func testExecute_withServiceError_shouldFailWithServiceError() async {
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in
-            throw ForbiddenException(message: "Operation is forbidden")
+            throw WebAuthnClientMismatchException(message: "Client mismatch")
         }
 
         do {
             _ = try await task.execute()
             XCTFail("Task should have failed")
         } catch let error as AuthError {
-            guard case .service = error else {
+            guard case .service(_, _, let underlyingError) = error else {
                 XCTFail("Expected AuthError.service error, got \(error)")
                 return
             }
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnClientMismatch)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
