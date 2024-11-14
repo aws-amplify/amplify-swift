@@ -13,7 +13,12 @@ open class APIAuthProviderFactory {
     /// Empty public initializer
     public init() {
     }
-
+    
+    /// Retrieve the UserPools auth provider
+    open func userPoolsAuthProvider() -> AmplifyUserPoolsAuthProvider? {
+        return nil
+    }
+    
     /// Retrieve the OIDC auth provider
     open func oidcAuthProvider() -> AmplifyOIDCAuthProvider? {
         return nil
@@ -29,6 +34,9 @@ public protocol AmplifyAuthTokenProvider {
 
     func getLatestAuthToken() async throws -> String
 }
+
+/// Amplify CognitoUserPools Auth Provider
+public protocol AmplifyUserPoolsAuthProvider: AmplifyAuthTokenProvider {}
 
 /// Amplify OIDC Auth Provider
 public protocol AmplifyOIDCAuthProvider: AmplifyAuthTokenProvider {}
