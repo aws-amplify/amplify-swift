@@ -281,7 +281,7 @@ extension SignInState {
                         actions: [action])
                 }
 
-            #if os(iOS) || os(macOS)
+            #if os(iOS) || os(macOS) || os(visionOS)
                 if let signInEvent = event as? SignInEvent,
                    case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
@@ -466,7 +466,7 @@ extension SignInState {
                     ), actions: [action])
                 }
 
-            #if os(iOS) || os(macOS)
+            #if os(iOS) || os(macOS) || os(visionOS)
                 if let signInEvent = event as? SignInEvent,
                    case .initiateWebAuthnSignIn(let data, let respondToAuthChallenge) = signInEvent.eventType {
                     let action = InitializeWebAuthn(
@@ -504,7 +504,7 @@ extension SignInState {
                 }
                 return .from(oldState)
             case .signingInWithWebAuthn(let webAuthnState):
-            #if os(iOS) || os(macOS)
+            #if os(iOS) || os(macOS) || os(visionOS)
                 if #available(iOS 17.4, macOS 13.5, *) {
                     if case .throwAuthError(let error) = event.isSignInEvent {
                         let action = ThrowSignInError(error: error)

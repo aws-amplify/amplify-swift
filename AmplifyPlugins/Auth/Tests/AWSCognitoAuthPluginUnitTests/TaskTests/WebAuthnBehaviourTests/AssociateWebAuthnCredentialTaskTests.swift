@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 @testable import AWSCognitoAuthPlugin
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes

@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
 import AWSCognitoIdentityProvider
 import Foundation
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredentialTask, DefaultLogger {
     private let request: AuthAssociateWebAuthnCredentialRequest
     private let authStateMachine: AuthStateMachine

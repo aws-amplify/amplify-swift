@@ -145,9 +145,15 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
+#if os(iOS) || os(macOS)
     func associateWebAuthnCredential(presentationAnchor: AuthUIPresentationAnchor?, options: AuthAssociateWebAuthnCredentialRequest.Options?) async throws {
         fatalError()
     }
+#elseif os(visionOS)
+    func associateWebAuthnCredential(presentationAnchor: AuthUIPresentationAnchor, options: AuthAssociateWebAuthnCredentialRequest.Options?) async throws {
+        fatalError()
+    }
+#endif
 
     func listWebAuthnCredentials(options: AuthListWebAuthnCredentialsRequest.Options?) async throws -> AuthListWebAuthnCredentialsResult {
         fatalError()

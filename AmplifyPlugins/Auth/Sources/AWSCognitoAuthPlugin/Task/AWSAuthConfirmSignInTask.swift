@@ -189,7 +189,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
         let presentationAnchor: AuthUIPresentationAnchor?
-    #if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
         presentationAnchor = request.options.presentationAnchorForWebAuthn
     #else
         presentationAnchor = nil

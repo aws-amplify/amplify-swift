@@ -86,7 +86,7 @@ extension StateMachineEvent {
         return event
     }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
     var isWebAuthnEvent: WebAuthnEvent.EventType? {
         guard let event = (self as? WebAuthnEvent)?.eventType else {
             return nil

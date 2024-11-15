@@ -19,6 +19,16 @@ extension AuthCategory: AuthCategoryWebAuthnBehaviour {
             options: options
         )
     }
+#elseif os(visionOS)
+    public func associateWebAuthnCredential(
+        presentationAnchor: AuthUIPresentationAnchor,
+        options: AuthAssociateWebAuthnCredentialRequest.Options? = nil
+    ) async throws {
+        try await plugin.associateWebAuthnCredential(
+            presentationAnchor:presentationAnchor,
+            options: options
+        )
+    }
 #endif
 
     public func listWebAuthnCredentials(

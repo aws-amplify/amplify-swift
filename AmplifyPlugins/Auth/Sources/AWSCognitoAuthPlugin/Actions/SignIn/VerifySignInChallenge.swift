@@ -230,7 +230,7 @@ struct VerifySignInChallenge: Action {
     }
 
     private func isWebAuthn(_ factorType: AuthFactorType?) -> Bool {
-    #if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, *) {
             return .webAuthn == factorType
         }

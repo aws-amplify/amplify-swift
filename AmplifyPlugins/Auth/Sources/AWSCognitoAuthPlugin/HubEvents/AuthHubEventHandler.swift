@@ -52,7 +52,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
 
-        #if os(iOS) || os(macOS)
+        #if os(iOS) || os(macOS) || os(visionOS)
             case HubPayload.EventName.Auth.webUISignInAPI:
                 guard let event = payload.data as? AWSAuthWebUISignInTask.AmplifyAuthTaskResult,
                       case let .success(result) = event else {

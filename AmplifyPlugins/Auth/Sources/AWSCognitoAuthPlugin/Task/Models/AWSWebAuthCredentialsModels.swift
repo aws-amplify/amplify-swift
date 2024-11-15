@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 import Foundation
 import Smithy
@@ -51,7 +51,7 @@ struct CredentialAssertionOptions: Codable, Equatable {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 struct CredentialAssertionPayload: Codable {
     private struct Response: Codable {
         let authenticatorData: String
@@ -176,7 +176,7 @@ struct CredentialCreationOptions {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 struct CredentialRegistrationPayload: Codable {
     private struct Response: Codable {
         let attestationObject: String

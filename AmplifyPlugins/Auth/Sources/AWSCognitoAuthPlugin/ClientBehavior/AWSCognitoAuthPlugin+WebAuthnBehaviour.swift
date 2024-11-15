@@ -29,6 +29,25 @@ extension AWSCognitoAuthPlugin: AuthCategoryWebAuthnBehaviour {
             try await task.value
         }
     }
+#elseif os(visionOS)
+    public func associateWebAuthnCredential(
+        presentationAnchor: AuthUIPresentationAnchor,
+        options: AuthAssociateWebAuthnCredentialRequest.Options? = nil
+    ) async throws {
+        let request = AuthAssociateWebAuthnCredentialRequest(
+            presentationAnchor: presentationAnchor,
+            options: options ?? .init()
+        )
+        let task = AssociateWebAuthnCredentialTask(
+            request: request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
+
+        _ = try await taskQueue.sync {
+            try await task.value
+        }
+    }
 #endif
 
     public func listWebAuthnCredentials(

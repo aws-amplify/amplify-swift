@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import enum Amplify.AuthFactorType
 import Foundation
 
 extension WebAuthnSignInState {
 
-    @available(iOS 17.4, macOS 13.5, *)
+    @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     struct Resolver: StateMachineResolver {
 
         typealias StateType = WebAuthnSignInState

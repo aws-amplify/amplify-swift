@@ -5,28 +5,27 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
 import Foundation
 
-@available(iOS 17.4, macOS 13.5, *)
 protocol WebAuthnCredentialsProtocol {
     var presentationAnchor: AuthUIPresentationAnchor? { get }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 protocol CredentialRegistrantProtocol: WebAuthnCredentialsProtocol {
     func create(with options: CredentialCreationOptions) async throws -> CredentialRegistrationPayload
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 protocol CredentialAsserterProtocol: WebAuthnCredentialsProtocol {
     func assert(with options: CredentialAssertionOptions) async throws -> CredentialAssertionPayload
 }
 
 // - MARK: WebAuthnCredentialsProtocol
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 class PlatformWebAuthnCredentials: NSObject, WebAuthnCredentialsProtocol {
     private enum OperationType: String {
         case assert
@@ -43,7 +42,7 @@ class PlatformWebAuthnCredentials: NSObject, WebAuthnCredentialsProtocol {
 }
 
 // - MARK: CredentialAsserterProtocol
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension PlatformWebAuthnCredentials: CredentialAsserterProtocol{
     func assert(with options: CredentialAssertionOptions) async throws -> CredentialAssertionPayload {
         guard assertionContinuation == nil else {
@@ -96,7 +95,7 @@ extension PlatformWebAuthnCredentials: CredentialAsserterProtocol{
 }
 
 // - MARK: CredentialRegistrantProtocol
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension PlatformWebAuthnCredentials: CredentialRegistrantProtocol {
     func create(with options: CredentialCreationOptions) async throws -> CredentialRegistrationPayload {
         guard registrationContinuation == nil else {
@@ -130,11 +129,11 @@ extension PlatformWebAuthnCredentials: CredentialRegistrantProtocol {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension PlatformWebAuthnCredentials: DefaultLogger {}
 
 // - MARK: ASAuthorizationControllerDelegate
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension PlatformWebAuthnCredentials: ASAuthorizationControllerDelegate {
     func authorizationController(
         controller: ASAuthorizationController,
@@ -230,7 +229,7 @@ extension PlatformWebAuthnCredentials: ASAuthorizationControllerDelegate {
 }
 
 // - MARK: ASAuthorizationControllerPresentationContextProviding
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension PlatformWebAuthnCredentials: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return presentationAnchor ?? ASPresentationAnchor()

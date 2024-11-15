@@ -7,7 +7,7 @@
 
 import Foundation
 import AWSCognitoIdentityProvider
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import typealias Amplify.AuthUIPresentationAnchor
 #endif
 

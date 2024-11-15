@@ -19,9 +19,9 @@ public enum AuthFactorType: String {
     /// An auth factor that uses Email OTP
     case emailOTP
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
     /// An auth factor that uses WebAuthn
-    @available(iOS 17.4, macOS 13.5, *)
+    @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     case webAuthn
 #endif
 }

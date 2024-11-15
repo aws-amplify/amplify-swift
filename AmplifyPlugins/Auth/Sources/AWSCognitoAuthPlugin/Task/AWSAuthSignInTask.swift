@@ -134,7 +134,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {
         var presentationAnchor: AuthUIPresentationAnchor? = nil
-    #if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
         presentationAnchor = request.options.presentationAnchorForWebAuthn
     #endif
         let signInData = SignInEventData(

@@ -20,7 +20,7 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType {
         case .smsOtp:
             return .smsOTP
         case .webAuthn:
-        #if os(iOS) || os(macOS)
+        #if os(iOS) || os(macOS) || os(visionOS)
             if #available(iOS 17.4, macOS 13.5, *) {
                 return .webAuthn
             }

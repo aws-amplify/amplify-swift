@@ -16,7 +16,7 @@ extension AuthFactorType: DefaultLogger {
         case "SMS_OTP": self = .smsOTP
         case "EMAIL_OTP": self = .emailOTP
         case "WEB_AUTHN":
-        #if os(iOS) || os(macOS)
+        #if os(iOS) || os(macOS) || os(visionOS)
             if #available(iOS 17.4, macOS 13.5, *) {
                 self = .webAuthn
             } else {
@@ -45,7 +45,7 @@ extension AuthFactorType: DefaultLogger {
         case .password: return "PASSWORD"
         case .smsOTP: return "SMS_OTP"
         case .emailOTP: return "EMAIL_OTP"
-    #if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
         case .webAuthn: return "WEB_AUTHN"
     #endif
         }

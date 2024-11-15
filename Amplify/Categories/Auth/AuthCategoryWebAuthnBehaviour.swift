@@ -15,6 +15,11 @@ public protocol AuthCategoryWebAuthnBehaviour: AnyObject {
         presentationAnchor: AuthUIPresentationAnchor?,
         options: AuthAssociateWebAuthnCredentialRequest.Options?
     ) async throws
+#elseif os(visionOS)
+    func associateWebAuthnCredential(
+        presentationAnchor: AuthUIPresentationAnchor,
+        options: AuthAssociateWebAuthnCredentialRequest.Options?
+    ) async throws
 #endif
 
     /// - Tag: AuthCategoryWebAuthnBehaviour.list

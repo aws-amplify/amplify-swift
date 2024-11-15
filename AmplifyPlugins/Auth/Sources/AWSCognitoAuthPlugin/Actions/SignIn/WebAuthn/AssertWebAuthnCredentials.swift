@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import Foundation
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 struct AssertWebAuthnCredentials: Action {
     let identifier = "AssertWebAuthnCredentials"
     let username: String
@@ -75,10 +75,10 @@ struct AssertWebAuthnCredentials: Action {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension AssertWebAuthnCredentials: DefaultLogger { }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension AssertWebAuthnCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
@@ -90,7 +90,7 @@ extension AssertWebAuthnCredentials: CustomDebugDictionaryConvertible {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension AssertWebAuthnCredentials: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription

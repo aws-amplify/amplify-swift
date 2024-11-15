@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AWSCognitoIdentityProvider
 import Foundation
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 struct VerifyWebAuthnCredential: Action {
     let identifier = "VerifyWebAuthnCredential"
     let username: String
@@ -91,10 +91,10 @@ struct VerifyWebAuthnCredential: Action {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension VerifyWebAuthnCredential: DefaultLogger { }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension VerifyWebAuthnCredential: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
@@ -106,7 +106,7 @@ extension VerifyWebAuthnCredential: CustomDebugDictionaryConvertible {
     }
 }
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 extension VerifyWebAuthnCredential: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription

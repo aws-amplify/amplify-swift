@@ -33,7 +33,7 @@ public extension AuthConfirmSignInRequest {
         /// key/values
         public let pluginOptions: Any?
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
         /// Provide a presentation anchor if you are confirming sign in with WebAuthn. The WebAuthn assertion will be presented
         /// in the presentation anchor provided.
         public let presentationAnchorForWebAuthn: AuthUIPresentationAnchor?
