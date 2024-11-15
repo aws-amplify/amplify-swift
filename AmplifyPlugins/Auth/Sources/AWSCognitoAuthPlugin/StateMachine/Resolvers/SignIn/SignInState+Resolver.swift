@@ -555,6 +555,14 @@ extension SignInState {
                     return .init(newState: .signedIn(signedInData),
                                  actions: [SignInComplete(signedInData: signedInData)])
                 }
+                
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+                
                 if let signInEvent = event as? SignInEvent,
                    case .throwAuthError(let error) = signInEvent.eventType {
                     let action = ThrowSignInError(error: error)

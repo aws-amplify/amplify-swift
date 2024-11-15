@@ -12,7 +12,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class AutoSignInTests: BasePluginTest {
+class AWSAuthAutoSignInTests: BasePluginTest {
     
     override var initialState: AuthState {
         AuthState.configured(
@@ -46,6 +46,79 @@ class AutoSignInTests: BasePluginTest {
         
         do {
             let result = try await plugin.autoSignIn()
+            guard case .done = result.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
+            }
+            XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+    
+    /// Test auto sign in success
+    ///
+    /// - Given: Given an auth plugin with mocked service and in `.signingIn` authentication state and
+    /// `.signedUp` sign up state
+    ///
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a successful result with tokens
+    ///
+    func testAutoSignInSuccessFromSigningInAuthenticationState() async {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: "jeffb@amazon.com"
+                    ),
+                    userConfirmed: false,
+                    userSub: "userSub"
+                )
+            },
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""))
+            },
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
+                return .init(session: "session")
+            }
+        )
+        
+        let initialStateSigningIn = AuthState.configured(
+            .signingIn(.resolvingChallenge(
+                .waitingForAnswer(
+                    .init(
+                        challenge: .emailOtp,
+                        availableChallenges: [.emailOtp],
+                        username: "jeffb",
+                        session: nil,
+                        parameters: nil),
+                    .apiBased(.userAuth),
+                    .confirmSignInWithOTP(.init(destination: .email("jeffb@amazon.com")))),
+                .emailOTP,
+                .apiBased(.userAuth))),
+            .configured,
+            .signedUp(
+                .init(username: "jeffb", session: "session"),
+                .init(.completeAutoSignIn("session"))))
+        
+        let authPluginSigningIn = configureCustomPluginWith(userPool: { mockIdentityProvider },
+                                                        initialState: initialStateSigningIn)
+        
+        do {
+            let result = try await authPluginSigningIn.autoSignIn()
             guard case .done = result.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -330,7 +403,6 @@ class AutoSignInTests: BasePluginTest {
             XCTAssertNotNil(error)
         }
     }
-    
     
     // MARK: - Service error for initiateAuth
     

@@ -49,6 +49,7 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
             log.verbose("Received result")
             return result
         } catch {
+            await waitForSignInCancel()
             throw error
         }
     }
@@ -76,7 +77,8 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
                     AuthPluginErrorConstants.invalidStateError, nil)
                 throw error
             case .signingIn:
-                continue
+                log.verbose("Cancelling existing signIn flow")
+                await sendCancelSignInEvent()
             case .configured, .signedOut:
                 return
             default: continue
@@ -85,10 +87,11 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
     }
 
     private func doAutoSignIn() async throws -> AuthSignInResult {
-        let stateSequences = await authStateMachine.listen()
         log.verbose("Sending autoSignIn event")
         try await sendAutoSignInEvent()
+        
         log.verbose("Waiting for autoSignIn to complete")
+        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, let authZState, _) = state else { continue }
             
@@ -113,7 +116,28 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
         }
         throw AuthError.unknown("Sign in reached an error state")
     }
-
+    
+    private func sendCancelSignInEvent() async {
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
+        await authStateMachine.send(event)
+    }
+    
+    private func waitForSignInCancel() async {
+        await sendCancelSignInEvent()
+        let stateSequences = await authStateMachine.listen()
+        log.verbose("Wait for signIn to cancel")
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _, _) = state else {
+                continue
+            }
+            switch authenticationState {
+            case .signedOut:
+                return
+            default: continue
+            }
+        }
+    }
+    
     private func sendAutoSignInEvent() async throws {
         let currentState = await authStateMachine.currentState
         guard case .configured(_, _, let signUpState) = currentState  else {
