@@ -22,11 +22,11 @@ extension SignUpState {
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: signUpEvent, from: oldState)
-            case .initiatingSignUp(_):
+            case .initiatingSignUp:
                 return resolveInitiatingSignUp(byApplying: signUpEvent, from: oldState)
             case .awaitingUserConfirmation:
                 return resolveAwaitingUserConfirmation(byApplying: signUpEvent, from: oldState)
-            case .confirmingSignUp(_):
+            case .confirmingSignUp:
                 return resolveConfirmingSignUp(byApplying: signUpEvent, from: oldState)
             case .signedUp:
                 return resolveSignedUp(byApplying: signUpEvent, from: oldState)

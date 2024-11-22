@@ -12,8 +12,8 @@ import Foundation
 protocol AuthAssociateWebAuthnCredentialTask: AmplifyAuthTask where
     Request == AuthAssociateWebAuthnCredentialRequest,
     Success == Void,
-    Failure == AuthError
-{}
+    Failure == AuthError {        
+}
 
 public extension HubPayload.EventName.Auth {
     static let associateWebAuthnCredentialAPI = "Auth.associateWebAuthnCredentialAPI"

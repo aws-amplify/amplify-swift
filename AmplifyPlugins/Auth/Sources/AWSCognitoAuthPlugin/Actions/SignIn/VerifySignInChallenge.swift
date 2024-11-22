@@ -33,7 +33,7 @@ struct VerifySignInChallenge: Action {
                     environment: environment,
                     username: username)
                 return
-            } else if case .continueSignInWithFirstFactorSelection(_) = currentSignInStep,
+            } else if case .continueSignInWithFirstFactorSelection = currentSignInStep,
                       let authFactorType = AuthFactorType(rawValue: confirmSignEventData.answer) {
                 if (authFactorType == .password || authFactorType == .passwordSRP) {
                     try await handleContinueSignInWithPassword(

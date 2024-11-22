@@ -11,8 +11,8 @@ import Foundation
 protocol AuthListWebAuthnCredentialsTask: AmplifyAuthTask where
     Request == AuthListWebAuthnCredentialsRequest,
     Success == AuthListWebAuthnCredentialsResult,
-    Failure == AuthError
-{}
+    Failure == AuthError {
+}
 
 public extension HubPayload.EventName.Auth {
     static let listWebAuthnCredentialsAPI = "Auth.listWebAuthnCredentialsAPI"

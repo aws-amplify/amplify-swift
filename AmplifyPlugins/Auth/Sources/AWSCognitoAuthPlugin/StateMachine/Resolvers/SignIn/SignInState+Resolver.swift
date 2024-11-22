@@ -6,6 +6,7 @@
 //
 import Foundation
 
+// swiftlint:disable type_body_length
 extension SignInState {
 
     // swiftlint:disable:next nesting

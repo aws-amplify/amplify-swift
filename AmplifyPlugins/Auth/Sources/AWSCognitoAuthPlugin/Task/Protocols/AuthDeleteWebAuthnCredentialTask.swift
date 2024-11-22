@@ -11,8 +11,8 @@ import Foundation
 protocol AuthDeleteWebAuthnCredentialTask: AmplifyAuthTask where
     Request == AuthDeleteWebAuthnCredentialRequest,
     Success == Void,
-    Failure == AuthError
-{}
+    Failure == AuthError {
+}
 
 public extension HubPayload.EventName.Auth {
     static let deleteWebAuthnCredentialAPI = "Auth.deleteWebAuthnCredentialAPI"
