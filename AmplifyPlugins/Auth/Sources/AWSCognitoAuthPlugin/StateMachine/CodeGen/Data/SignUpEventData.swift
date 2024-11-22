@@ -14,8 +14,8 @@ struct SignUpEventData {
     var session: String?
     
     init(username: String, 
-         clientMetadata: [String : String]? = nil,
-         validationData: [String : String]? = nil,
+         clientMetadata: [String: String]? = nil,
+         validationData: [String: String]? = nil,
          session: String? = nil) {
         self.username = username
         self.clientMetadata = clientMetadata
@@ -31,9 +31,9 @@ extension SignUpEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "clientMetadata" : clientMetadata ?? "",
-            "validationData" : validationData ?? "",
-            "session" : session?.masked() ?? ""
+            "clientMetadata": clientMetadata ?? "",
+            "validationData": validationData ?? "",
+            "session": session?.masked() ?? ""
         ]
     }
 }

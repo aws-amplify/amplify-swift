@@ -16,7 +16,7 @@ enum WebAuthnCredentialError<T>: Error {
 }
 
 struct CredentialAssertionOptions: Codable, Equatable {
-    private enum CodingKeys : String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case challengeString = "challenge", relyingPartyId = "rpId"
     }
     private let challengeString: String

@@ -43,7 +43,7 @@ class PlatformWebAuthnCredentials: NSObject, WebAuthnCredentialsProtocol {
 
 // - MARK: CredentialAsserterProtocol
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-extension PlatformWebAuthnCredentials: CredentialAsserterProtocol{
+extension PlatformWebAuthnCredentials: CredentialAsserterProtocol {
     func assert(with options: CredentialAssertionOptions) async throws -> CredentialAssertionPayload {
         guard assertionContinuation == nil else {
             throw WebAuthnError.unknown(

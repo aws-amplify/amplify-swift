@@ -15,7 +15,7 @@ extension AuthCategory: AuthCategoryWebAuthnBehaviour {
         options: AuthAssociateWebAuthnCredentialRequest.Options? = nil
     ) async throws {
         try await plugin.associateWebAuthnCredential(
-            presentationAnchor:presentationAnchor,
+            presentationAnchor: presentationAnchor,
             options: options
         )
     }
@@ -25,7 +25,7 @@ extension AuthCategory: AuthCategoryWebAuthnBehaviour {
         options: AuthAssociateWebAuthnCredentialRequest.Options? = nil
     ) async throws {
         try await plugin.associateWebAuthnCredential(
-            presentationAnchor:presentationAnchor,
+            presentationAnchor: presentationAnchor,
             options: options
         )
     }
