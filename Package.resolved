@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "aws-sdk-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-sdk-swift",
+      "state" : {
+        "revision" : "c6c1064da9bfccb119a7a8ab9ba636fb3bbfa6f5",
+        "version" : "1.0.47"
+      }
+    },
+    {
       "identity" : "cwlcatchexception",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattgallagher/CwlCatchException.git",
@@ -41,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smithy-lang/smithy-swift",
       "state" : {
-        "revision" : "697ab725e92622427f536c2f2a176f0dbecb3776",
-        "version" : "0.90.0"
+        "revision" : "3cd9f181b3ba8ff71da43bf53c09f8de6790a4ad",
+        "version" : "0.96.0"
       }
     },
     {

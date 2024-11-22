@@ -1,7 +1,0 @@
-[default]
-retry_mode = adaptive
-max_attempts = 10
-
-[profile retry-config-test]
-retry_mode = legacy
-max_attempts = 20

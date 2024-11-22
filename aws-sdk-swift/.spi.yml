@@ -1,5 +1,0 @@
-version: 1
-builder:
-  configs:
-  - target: AWSSTS
-    scheme: AWSSTS

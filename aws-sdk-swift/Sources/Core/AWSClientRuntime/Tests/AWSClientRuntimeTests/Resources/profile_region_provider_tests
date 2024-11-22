@@ -1,5 +1,0 @@
-[default]
-region = us-east-2
-
-[profile west]
-region = us-west-2
