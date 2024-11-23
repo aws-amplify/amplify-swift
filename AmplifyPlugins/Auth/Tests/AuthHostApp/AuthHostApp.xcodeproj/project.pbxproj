@@ -61,6 +61,12 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		486D622F2CF23FA6001FD075 /* PasswordlessSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */; };
+		486D62302CF23FA6001FD075 /* PasswordlessConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */; };
+		486D62312CF23FA6001FD075 /* PasswordlessAutoSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */; };
+		486D62322CF23FA6001FD075 /* PasswordlessAutoSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */; };
+		486D62332CF23FA6001FD075 /* PasswordlessConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */; };
+		486D62342CF23FA6001FD075 /* PasswordlessSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */; };
 		487C40232CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
 		487C40242CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
 		487C40252CACF303009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487C40222CACF2FD009CF221 /* EmailMFAWithAllMFATypesRequiredTests.swift */; };
@@ -424,7 +430,6 @@
 		485CB5C327B61F4A006CCEC7 /* SignInTests */ = {
 			isa = PBXGroup;
 			children = (
-				48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */,
 				485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */,
 				4821B2F328737130000EC1D7 /* AuthCustomSignInTests.swift */,
 			);
@@ -515,6 +520,7 @@
 				979D8A572CE283CA00E9B28F /* PasswordlessSignUpTests.swift */,
 				979D8A592CE283DD00E9B28F /* PasswordlessConfirmSignUpTests.swift */,
 				979D8A5B2CE283E900E9B28F /* PasswordlessAutoSignInTests.swift */,
+				48DEF5992CDB1FF500BDB995 /* PasswordlessSignInTests.swift */,
 			);
 			path = PasswordlessTests;
 			sourceTree = "<group>";
@@ -852,6 +858,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				21F762A52BD6B1AA0048845A /* AuthSessionHelper.swift in Sources */,
+				486D62322CF23FA6001FD075 /* PasswordlessAutoSignInTests.swift in Sources */,
+				486D62332CF23FA6001FD075 /* PasswordlessConfirmSignUpTests.swift in Sources */,
+				486D62342CF23FA6001FD075 /* PasswordlessSignUpTests.swift in Sources */,
 				21F762A62BD6B1AA0048845A /* AsyncTesting.swift in Sources */,
 				21F762A72BD6B1AA0048845A /* AuthSRPSignInTests.swift in Sources */,
 				21F762A82BD6B1AA0048845A /* AuthForgetDeviceTests.swift in Sources */,
@@ -964,6 +973,9 @@
 				681B76A92A3CBBAE004B59D9 /* AuthFetchDeviceTests.swift in Sources */,
 				48BCE8922A5456460012C3CD /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
 				48BCE8962A5456600012C3CD /* TOTPHelper.swift in Sources */,
+				486D622F2CF23FA6001FD075 /* PasswordlessSignUpTests.swift in Sources */,
+				486D62302CF23FA6001FD075 /* PasswordlessConfirmSignUpTests.swift in Sources */,
+				486D62312CF23FA6001FD075 /* PasswordlessAutoSignInTests.swift in Sources */,
 				681B76AA2A3CBBAE004B59D9 /* AsyncExpectation.swift in Sources */,
 				48BCE8932A54564C0012C3CD /* TOTPSetupWhenUnauthenticatedTests.swift in Sources */,
 				681B76AB2A3CBBAE004B59D9 /* GetCurrentUserTests.swift in Sources */,

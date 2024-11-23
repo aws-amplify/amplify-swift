@@ -13,8 +13,11 @@ import AWSAPIPlugin
 class PasswordlessAutoSignInTests: AWSAuthBaseTest {
 
     override func setUp() async throws {
+        // Only run these tests with Gen2 configuration
+        onlyUseGen2Configuration = true
+
         // Use a custom configuration these tests
-        amplifyConfigurationFile = "testconfiguration/AWSCognitoPluginPasswordlessIntegrationTests-amplifyconfiguration"
+        amplifyOutputsFile = "testconfiguration/AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs"
 
         // Add API plugin to Amplify
         let awsApiPlugin = AWSAPIPlugin()
