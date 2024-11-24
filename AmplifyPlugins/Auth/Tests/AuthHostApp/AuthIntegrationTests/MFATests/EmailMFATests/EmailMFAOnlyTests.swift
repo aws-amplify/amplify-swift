@@ -60,7 +60,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
     func testSuccessfulEmailMFASetupStep() async {
         do {
             // Step 1: Set up a subscription to receive MFA codes
-            subscribeToOTPCreation()
+            await subscribeToOTPCreation()
 
             // Step 2: Sign up a new user
             let uniqueId = UUID().uuidString
@@ -144,7 +144,7 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
     func testSuccessfulEmailMFAWithIncorrectCodeFirstAndThenValidOne() async {
         do {
             // Step 1: Set up a subscription to receive MFA codes
-            subscribeToOTPCreation()
+            await subscribeToOTPCreation()
 
             // Step 2: Sign up a new user
             let uniqueId = UUID().uuidString

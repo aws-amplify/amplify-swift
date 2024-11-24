@@ -30,7 +30,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
         try await super.setUp()
         AuthSessionHelper.clearSession()
 
-        subscribeToOTPCreation()
+        await subscribeToOTPCreation()
     }
 
     override func tearDown() async throws {

@@ -65,7 +65,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
     ///
     func testSuccessfulPasswordlessSignUpAndAutoSignInEndtoEnd() async throws {
 
-        subscribeToOTPCreation()
+        await subscribeToOTPCreation()
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
@@ -114,7 +114,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
     ///
     func testFailureMultipleAutoSignInWithSameSession() async throws {
         
-        subscribeToOTPCreation()
+        await subscribeToOTPCreation()
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(

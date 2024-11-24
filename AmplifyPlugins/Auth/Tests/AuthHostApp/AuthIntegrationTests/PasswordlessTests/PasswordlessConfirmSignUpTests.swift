@@ -127,7 +127,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
     ///
     func testSuccessfulPasswordlessSignUpAndConfirmSignUpEndtoEnd() async throws {
 
-        subscribeToOTPCreation()
+        await subscribeToOTPCreation()
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
