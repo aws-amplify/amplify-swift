@@ -455,7 +455,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
     ///    - I invoke Amplify.Auth.signIn with the username and password, using userAuth flow with an unsupported preferred factor
     /// - Then:
     ///    - I should get a SELECT_CHALLENGE step.
-    @available(iOS 17.4, *)
+#if os(iOS) || os(macOS) || os(visionOS)
+    @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
     func testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "Pp123@\(UUID().uuidString)"
@@ -477,7 +478,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
         }
     }
-
+#endif
     /// Test signIn with EMAIL_OTP preference triggers Confirm OTP flow
     ///
     /// - Given: A user registered in Cognito user pool
