@@ -12,7 +12,7 @@ import SwiftUI
 @main
 struct AuthWebAuthnAppApp: App {
 
-    private let amplifyOutputsFilePath = "testconfiguration/AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs"
+    private let amplifyOutputsFilePath = "testconfiguration/AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
 
     init() {
         do {

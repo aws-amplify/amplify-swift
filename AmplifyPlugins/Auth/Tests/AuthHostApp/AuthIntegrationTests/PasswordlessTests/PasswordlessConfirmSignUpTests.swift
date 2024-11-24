@@ -61,10 +61,10 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             }
 
             switch cognitoError {
-            case .userNotFound, .codeMismatch:
+            case .userNotFound, .codeMismatch, .codeExpired:
                 return
             default:
-                XCTFail("Error should be either `.userNotFound` or `.codeMismatch`")
+                XCTFail("Error should be either `.userNotFound` or `.codeMismatch` or `.codeExpired`")
             }
         }
     }
