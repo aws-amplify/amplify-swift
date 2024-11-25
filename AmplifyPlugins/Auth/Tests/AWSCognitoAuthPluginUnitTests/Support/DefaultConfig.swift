@@ -207,7 +207,7 @@ enum Defaults {
 
         let authNState: AuthenticationState = .signedIn(signedInData)
         let authZState: AuthorizationState = .configured
-        let authState: AuthState = .configured(authNState, authZState)
+        let authState: AuthState = .configured(authNState, authZState, .notStarted)
 
         return authState
     }

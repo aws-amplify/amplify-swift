@@ -27,7 +27,8 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                     ),
                     .selectMFAType,
                     .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+            AuthorizationState.sessionEstablished(.testData),
+            .notStarted)
     }
 
     /// Test a successful confirmSignIn call with .confirmSignInWithSMSMFACode as next step

@@ -18,7 +18,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
     let networkTimeout = TimeInterval(5)
     var mockIdentityProvider: CognitoUserPoolBehavior!
-    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
     var plugin: AWSCognitoAuthPlugin!
 
     override func setUp() {

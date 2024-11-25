@@ -27,7 +27,7 @@ class AuthGetCurrentUserTests: XCTestCase {
 
     func testGetCurrentUserWhileSignedOut() async throws {
 
-        let authState = AuthState.configured(.signedOut(.testData), .notConfigured)
+        let authState = AuthState.configured(.signedOut(.testData), .notConfigured, .notStarted)
         let plugin = try createPlugin(authState: authState)
 
         do {
@@ -43,7 +43,7 @@ class AuthGetCurrentUserTests: XCTestCase {
 
     func testGetCurrentUserWhileNotConfigured() async throws {
 
-        let authState = AuthState.configured(.notConfigured, .notConfigured)
+        let authState = AuthState.configured(.notConfigured, .notConfigured, .notStarted)
         let plugin = try createPlugin(authState: authState)
 
         do {
@@ -59,7 +59,7 @@ class AuthGetCurrentUserTests: XCTestCase {
 
     func testGetCurrentUserWithInvalidState() async throws {
 
-        let authState = AuthState.configured(.signingIn(.notStarted), .notConfigured)
+        let authState = AuthState.configured(.signingIn(.notStarted), .notConfigured, .notStarted)
         let plugin = try createPlugin(authState: authState)
 
         do {

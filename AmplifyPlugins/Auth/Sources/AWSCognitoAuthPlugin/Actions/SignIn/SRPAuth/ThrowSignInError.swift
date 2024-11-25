@@ -18,7 +18,7 @@ struct ThrowSignInError: Action {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(
-            eventType: .error(.service(message: "\(error)")))
+            eventType: .error(.service(message: "\(error)", error: error)))
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
         await dispatcher.send(event)
 

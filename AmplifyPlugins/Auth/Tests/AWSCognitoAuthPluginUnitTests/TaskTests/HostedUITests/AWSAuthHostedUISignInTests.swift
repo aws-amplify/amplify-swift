@@ -33,7 +33,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         scopes: ["name"],
         signInRedirectURI: "myapp://",
         signOutRedirectURI: "myapp://"))
-    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
 
     func urlSessionMock() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral

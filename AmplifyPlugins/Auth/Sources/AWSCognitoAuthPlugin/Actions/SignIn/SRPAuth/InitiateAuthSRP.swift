@@ -18,17 +18,20 @@ struct InitiateAuthSRP: Action {
     let authFlowType: AuthFlowType
     let deviceMetadata: DeviceMetadata
     let clientMetadata: [String: String]
+    let respondToAuthChallenge: RespondToAuthChallenge?
 
     init(username: String,
          password: String,
          authFlowType: AuthFlowType = .userSRP,
          deviceMetadata: DeviceMetadata = .noData,
-         clientMetadata: [String: String] = [:]) {
+         clientMetadata: [String: String] = [:],
+         respondToAuthChallenge: RespondToAuthChallenge?) {
         self.username = username
         self.password = password
         self.authFlowType = authFlowType
         self.deviceMetadata = deviceMetadata
         self.clientMetadata = clientMetadata
+        self.respondToAuthChallenge = respondToAuthChallenge
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -56,18 +59,39 @@ struct InitiateAuthSRP: Action {
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
 
-            let request = await InitiateAuthInput.srpInput(
-                username: username,
-                publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
-                authFlowType: authFlowType,
-                clientMetadata: clientMetadata,
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
+            let responseEvent: SignInEvent
+            if case .userAuth = authFlowType,
+               let session = respondToAuthChallenge?.session {
+                let request = await RespondToAuthChallengeInput.srpInputForUserAuth(
+                    username: username,
+                    publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
+                    session: session,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
 
-            let responseEvent = try await sendRequest(request: request,
-                                                      environment: userPoolEnv,
-                                                      srpStateData: srpStateData)
+                responseEvent = try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv,
+                    srpStateData: srpStateData)
+            } else {
+                let request = await InitiateAuthInput.srpInput(
+                    username: username,
+                    publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
+                    authFlowType: authFlowType,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
+
+                responseEvent = try await sendRequest(
+                    request: request,
+                    environment: userPoolEnv,
+                    srpStateData: srpStateData)
+            }
+
+
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
             await dispatcher.send(responseEvent)
 
@@ -86,6 +110,17 @@ struct InitiateAuthSRP: Action {
 
     }
 
+    private func sendRequest(request: RespondToAuthChallengeInput,
+                             environment: UserPoolEnvironment,
+                             srpStateData: SRPStateData) async throws -> SignInEvent {
+
+        let cognitoClient = try environment.cognitoUserPoolFactory()
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+        let response = try await cognitoClient.respondToAuthChallenge(input: request)
+        logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
+        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
+    }
+
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
                              srpStateData: SRPStateData) async throws -> SignInEvent {
@@ -99,6 +134,7 @@ struct InitiateAuthSRP: Action {
             let username = parameters?["USERNAME"] ?? username
             let respondToAuthChallenge = RespondToAuthChallenge(
                 challenge: .customChallenge,
+                availableChallenges: [],
                 username: username,
                 session: response.session,
                 parameters: parameters)

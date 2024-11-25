@@ -6,6 +6,7 @@
 //
 
 public typealias UserId = String
+public typealias Session = String
 
 /// SignUp step to be followed.
 public enum AuthSignUpStep {
@@ -16,6 +17,10 @@ public enum AuthSignUpStep {
         AdditionalInfo? = nil,
         UserId? = nil)
 
+    /// Sign Up successfully completed  
+    /// The customers can use this step to determine if they want to complete sign in
+    case completeAutoSignIn(Session)
+    
     /// Sign up is complete
     case done
 }

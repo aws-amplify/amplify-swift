@@ -1,0 +1,101 @@
+name: Integration Tests | Auth - WebAuthn
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  auth-webauthn-integration-tests:
+    name: iOS Tests | AuthWebAuthnApp
+    runs-on: macos-15
+    timeout-minutes: 30
+    environment: IntegrationTest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Get build parameters for iOS
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: iOS
+
+      - name: Create the test configuration directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Download the Integration Test configurations
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: auth
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          destination: ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Set up node
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 16.x
+
+      - name: Attempt to use the dependencies cache
+        id: dependencies-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+
+      - name: Attempt to restore the build cache
+        id: build-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: Amplify-iOS-build-cache
+
+      - name: Run Local Server
+        run: |
+          cd ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer
+          npm install
+          npm start &
+        shell: bash
+
+      - name: Run iOS Integration Tests
+        id: run-tests
+        continue-on-error: true
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AuthWebAuthnApp
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          project_path: ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp
+          generate_coverage: false
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+
+      - name: Retry iOS Integration Tests
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AuthWebAuthnApp
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          project_path: ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp
+          generate_coverage: false
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true

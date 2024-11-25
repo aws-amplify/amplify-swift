@@ -107,6 +107,15 @@ private class MockLogAgent: LogAgent {
     let name = "MockLogAgent"
     var level: LogAgentLevel = .info
 
-    func log(level: LogAgentLevel, message: String, metadata: [String : String]?, source: String, file: String, function: String, line: UInt) {
+    func log(
+        level: Smithy.LogAgentLevel,
+        message: @autoclosure () -> String,
+        metadata: @autoclosure () -> [String : String]?,
+        source: @autoclosure () -> String,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        print("MockLogAgent")
     }
 }

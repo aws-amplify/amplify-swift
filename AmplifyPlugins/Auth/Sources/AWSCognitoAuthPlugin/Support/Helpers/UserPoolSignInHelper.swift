@@ -43,7 +43,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingChallenge(let challengeState, _, _) = signInState,
                   case .waitingForAnswer(_, _, let signInStep) = challengeState {
             return .init(nextStep: signInStep)
-            
+
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
                   case .error(_, let signInError) = totpSetupState {
             return try validateError(signInError: signInError)
@@ -52,6 +52,9 @@ struct UserPoolSignInHelper: DefaultLogger {
                   case .waitingForAnswer(let totpSetupData) = totpSetupState {
             return .init(nextStep: .continueSignInWithTOTPSetup(
                 .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
+        } else if case .signingInWithWebAuthn(let webAuthnState) = signInState,
+                  case .error(let signInError, _) = webAuthnState {
+            return try validateError(signInError: signInError)
         }
         return nil
     }
@@ -81,17 +84,20 @@ struct UserPoolSignInHelper: DefaultLogger {
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) -> StateMachineEvent {
+        signInMethod: SignInMethod,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        srpStateData: SRPStateData? = nil
+    ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
                let refreshToken = authenticationResult.refreshToken {
-
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: authenticationResult.expiresIn)
+                let userPoolTokens = AWSCognitoUserPoolTokens(
+                    idToken: idToken,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiresIn: authenticationResult.expiresIn)
                 let signedInData = SignedInData(
                     signedInDate: Date(),
                     signInMethod: signInMethod,
@@ -109,15 +115,31 @@ struct UserPoolSignInHelper: DefaultLogger {
                 let parameters = response.challengeParameters
                 let respondToAuthChallenge = RespondToAuthChallenge(
                     challenge: challengeName,
+                    availableChallenges: response.availableChallenges ?? [],
                     username: username,
                     session: response.session,
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .emailOtp:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType, .smsOtp, .emailOtp, .selectChallenge:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
+                case .passwordVerifier:
+                    guard let srpStateData else {
+                        let message = "Unable to extract SRP state data to continue with password verification."
+                        let error = SignInError.invalidServiceResponse(message: message)
+                        return SignInEvent(eventType: .throwAuthError(error))
+                    }
+                    return SignInEvent(
+                        eventType: .respondPasswordVerifier(srpStateData, response, [:])
+                    )
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
+                case .webAuthn:
+                    let signInData = WebAuthnSignInData(
+                        username: username,
+                        presentationAnchor: presentationAnchor
+                    )
+                    return SignInEvent(eventType: .initiateWebAuthnSignIn(signInData, respondToAuthChallenge))
                 case .mfaSetup:
                     let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
                     if allowedMFATypesForSetup.contains(.totp) && allowedMFATypesForSetup.contains(.email) {

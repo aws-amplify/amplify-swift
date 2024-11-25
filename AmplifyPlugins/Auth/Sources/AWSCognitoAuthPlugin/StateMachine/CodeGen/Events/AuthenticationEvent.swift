@@ -7,6 +7,7 @@
 
 import Foundation
 
+typealias InitiateAutoSignIn = Bool
 struct AuthenticationEvent: StateMachineEvent {
     enum EventType: Equatable {
 
@@ -32,7 +33,7 @@ struct AuthenticationEvent: StateMachineEvent {
         case signInCompleted(SignedInData)
 
         /// Emitted when a user sign in is requested
-        case signInRequested(SignInEventData)
+        case signInRequested(SignInEventData, InitiateAutoSignIn = false)
 
         /// Emitted when we should cancel the signIn
         case cancelSignIn

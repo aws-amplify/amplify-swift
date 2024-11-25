@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS) || os(visionOS)
+import typealias Amplify.AuthUIPresentationAnchor
+#endif
 import Foundation
 
 struct ConfirmSignInEventData {
@@ -13,6 +16,7 @@ struct ConfirmSignInEventData {
     let attributes: [String: String]
     let metadata: [String: String]?
     let friendlyDeviceName: String?
+    let presentationAnchor: AuthUIPresentationAnchor?
 
 }
 

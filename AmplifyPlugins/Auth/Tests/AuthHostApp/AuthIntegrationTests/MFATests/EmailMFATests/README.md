@@ -10,31 +10,14 @@ The following steps demonstrate how to setup the integration tests for auth plug
 
 At the time this was written, it follows the steps from here https://docs.amplify.aws/gen2/deploy-and-host/fullstack-branching/mono-and-multi-repos/
 
-1. From a new folder, run `npm create amplify@latest`. This uses the following versions of the Amplify CLI, see `package.json` file below.
+1. From a new folder, run `npm create amplify@latest`. This will create a new amplify project with the latest version of the Amplify CLI.
 
-```json
-{
-  ...
-  "devDependencies": {
-    "@aws-amplify/backend": "^0.15.0",
-    "@aws-amplify/backend-cli": "^0.15.0",
-    "aws-cdk": "^2.139.0",
-    "aws-cdk-lib": "^2.139.0",
-    "constructs": "^10.3.0",
-    "esbuild": "^0.20.2",
-    "tsx": "^4.7.3",
-    "typescript": "^5.4.5"
-  },
-  "dependencies": {
-    "aws-amplify": "^6.2.0"
-  },
-}
-```
-
-2. Update `amplify/auth/resource.ts`. The resulting file should look like this
+2. Update `amplify/auth/resource.ts`. The resulting file should look like this. Replace `<your_verified_email>` with your verified email address.
 
 ```ts
-import { defineAuth, defineFunction } from "@aws-amplify/backend";
+import { defineAuth } from '@aws-amplify/backend';
+
+const fromEmail = '<your_verified_email>';
 
 /**
  * Define and configure your auth resource
@@ -73,6 +56,8 @@ export const auth = defineAuth({
 });
 ```
 
+3. Create a file `amplify/functions/cognito-triggers/pre-sign-up-handler.ts` with the following content
+
 ```ts
 import type { PreSignUpTriggerHandler } from "aws-lambda";
 
@@ -92,7 +77,8 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
   return event;
 };
 ```
-Create a file `amplify/data/mfa/index.graphql` with the following content
+
+4. Create a file `amplify/data/mfa/index.graphql` with the following content
 
 ```graphql
 # A Graphql Schema for creating Mfa info such as code and username.
@@ -123,7 +109,7 @@ type MfaInfo {
 }
 ```
 
-Update `amplify/data/mfa/index.ts`. The resulting file should look like this
+5. Update `amplify/data/mfa/index.ts`. The resulting file should look like this
 
 ```ts
 import { Duration, Expiration, RemovalPolicy, Stack } from "aws-cdk-lib";
@@ -311,9 +297,7 @@ cfnUserPool.addPropertyOverride("DeviceConfiguration", {
 });
 ```
 
-The triggers should look as follows:
-
-Common
+6. Create a file `amplify/functions/cognito-triggers/common.ts` with the following content
 
 ```ts
 // Code adapted from:
@@ -390,7 +374,7 @@ export const decryptAndBroadcastCode = async (
 };
 ```
 
-custom-email-sender
+7. Create a file `amplify/functions/cognito-triggers/custom-email-sender.ts` with the following content
 
 ```ts
 import { CustomEmailSenderTriggerHandler } from "aws-lambda";
@@ -416,7 +400,8 @@ export const handler: CustomEmailSenderTriggerHandler = async (event) => {
 };
 ```
 
-custom-sms-sender
+8. Create a file `amplify/functions/cognito-triggers/custom-sms-sender.ts` with the following content
+
 
 ```ts
 import { CustomSMSSenderTriggerHandler } from "aws-lambda";
@@ -439,7 +424,7 @@ export const handler: CustomSMSSenderTriggerHandler = async (event) => {
 };
 ```
 
-4. Deploy the backend with npx amplify sandbox
+9. Deploy the backend with npx amplify sandbox
 
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
@@ -447,7 +432,7 @@ For example, this deploys to a sandbox env and generates the amplify_outputs.jso
 npx ampx sandbox --identifier mfa-req-email  --outputs-out-dir amplify_outputs/mfa-req-email
 ```
 
-5. Copy the `amplify_outputs.json` file over to the test directory as `XYZ-amplify_outputs.json` (replace xyz with the name of the file your test is expecting). The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+10. Copy the `amplify_outputs.json` file over to the test directory as `XYZ-amplify_outputs.json` (replace xyz with the name of the file your test is expecting). The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
 
 ```
 cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/XYZ-amplify_outputs.json

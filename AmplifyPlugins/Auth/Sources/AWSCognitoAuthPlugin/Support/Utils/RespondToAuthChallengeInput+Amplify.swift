@@ -10,6 +10,77 @@ import AWSCognitoIdentityProvider
 
 extension RespondToAuthChallengeInput {
 
+    static func srpInputForUserAuth(username: String,
+                                    publicSRPAHexValue: String,
+                                    session: String,
+                                    clientMetadata: [String: String],
+                                    asfDeviceId: String,
+                                    deviceMetadata: DeviceMetadata,
+                                    environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+        let challengeResponses = [
+            "USERNAME": username,
+            "SRP_A": publicSRPAHexValue,
+            "ANSWER": "PASSWORD_SRP"
+        ]
+
+        return await buildInput(
+            username: username,
+            challengeType: .selectChallenge,
+            challengeResponses: challengeResponses,
+            session: session,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment)
+    }
+
+    static func userPasswordInputForUserAuth(username: String,
+                                             password: String,
+                                             session: String,
+                                             clientMetadata: [String: String],
+                                             asfDeviceId: String,
+                                             deviceMetadata: DeviceMetadata,
+                                             environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+        let challengeResponses = [
+            "USERNAME": username,
+            "PASSWORD": password,
+            "ANSWER": "PASSWORD"
+        ]
+
+        return await buildInput(
+            username: username,
+            challengeType: .selectChallenge,
+            challengeResponses: challengeResponses,
+            session: session,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment)
+    }
+
+    static func webAuthnInput(username: String,
+                              session: String?,
+                              asfDeviceId: String,
+                              deviceMetadata: DeviceMetadata,
+                              environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
+        let challengeResponses = [
+            "USERNAME": username,
+            "ANSWER": "WEB_AUTHN"
+        ]
+
+        return await buildInput(
+            username: username,
+            challengeType: .selectChallenge,
+            challengeResponses: challengeResponses,
+            session: session,
+            clientMetadata: [:],
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
+    }
+
     // swiftlint:disable:next function_parameter_count
     static func passwordVerifier(username: String,
                                  stateData: SRPStateData,
@@ -117,6 +188,30 @@ extension RespondToAuthChallengeInput {
                 deviceMetadata: deviceMetadata,
                 environment: environment)
         }
+
+    static func verifyWebauthCredential(
+        username: String,
+        credential: String,
+        session: String?,
+        asfDeviceId: String,
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
+        let challengeResponses = [
+            "USERNAME": username,
+            "CREDENTIAL": credential
+        ]
+
+        return await buildInput(
+            username: username,
+            challengeType: .webAuthn,
+            challengeResponses: challengeResponses,
+            session: session,
+            clientMetadata: [:],
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: .noData,
+            environment: environment
+        )
+    }
 
     static func buildInput(
         username: String,

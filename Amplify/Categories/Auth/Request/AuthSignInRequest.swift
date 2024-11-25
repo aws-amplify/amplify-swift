@@ -35,8 +35,22 @@ public extension AuthSignInRequest {
         /// key/values
         public let pluginOptions: Any?
 
+#if os(iOS) || os(macOS) || os(visionOS)
+        /// Provide a presentation anchor if you are signing in with WebAuthn. The WebAuthn assertion will be presented
+        /// in the presentation anchor provided.
+        public let presentationAnchorForWebAuthn: AuthUIPresentationAnchor?
+
+        public init(
+            presentationAnchorForWebAuthn: AuthUIPresentationAnchor? = nil,
+            pluginOptions: Any? = nil
+        ) {
+            self.presentationAnchorForWebAuthn = presentationAnchorForWebAuthn
+            self.pluginOptions = pluginOptions
+        }
+#else
         public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }
+#endif
     }
 }

@@ -36,7 +36,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
     public func execute() async throws -> FederateToIdentityPoolResult {
         await taskHelper.didStateMachineConfigured()
         let state = await authStateMachine.currentState
-        guard case .configured(let authNState, let authZState) = state  else {
+        guard case .configured(let authNState, let authZState, _) = state  else {
             throw AuthError.invalidState(
                 "Federation could not be completed.",
                 AuthPluginErrorConstants.invalidStateError, nil)
@@ -57,7 +57,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for federation to complete")
         for await state in stateSequences {
-            guard  case .configured(let authNState, let authZState) = state else {
+            guard  case .configured(let authNState, let authZState, _) = state else {
                 continue
             }
 

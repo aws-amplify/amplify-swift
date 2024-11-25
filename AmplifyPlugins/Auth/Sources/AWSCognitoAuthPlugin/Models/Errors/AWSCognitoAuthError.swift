@@ -88,4 +88,25 @@ public enum AWSCognitoAuthError: Error {
 
     /// Thrown when a user tries to use a login which is already linked to another account.
     case resourceConflictException
+
+    /// The WebAuthn credentials don't match an existing request
+    case webAuthnChallengeNotFound
+
+    /// The client doesn't support WebAuhn authentication
+    case webAuthnClientMismatch
+
+    /// WebAuthn is not supported on this device
+    case webAuthnNotSupported
+
+    /// WebAuthn is not enabled
+    case webAuthnNotEnabled
+
+    /// The device origin is not registered as an allowed origin
+    case webAuthnOriginNotAllowed
+
+    /// The relying party ID doesn't match
+    case webAuthnRelyingPartyMismatch
+
+    /// The WebAuthm configuration is missing or incomplete
+    case webAuthnConfigurationMissing
 }

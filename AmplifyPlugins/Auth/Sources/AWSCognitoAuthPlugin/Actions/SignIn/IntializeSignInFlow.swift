@@ -13,6 +13,8 @@ struct InitializeSignInFlow: Action {
     var identifier: String = "IntializeSignInFlow"
 
     let signInEventData: SignInEventData
+    
+    let autoSignIn: Bool
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -54,18 +56,23 @@ struct InitializeSignInFlow: Action {
                      with deviceMetadata: DeviceMetadata) -> SignInEvent {
         switch authflow {
         case .userSRP:
-            return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))
+            return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata, nil))
         case .customWithoutSRP:
             return .init(eventType: .initiateCustomSignIn(signInEventData, deviceMetadata))
         case .customWithSRP:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
         case .userPassword:
-            return .init(eventType: .initiateMigrateAuth(signInEventData, deviceMetadata))
+            return .init(eventType: .initiateMigrateAuth(signInEventData, deviceMetadata, nil))
         // Using `custom` here to keep the legacy behaviour from V1 intact,
         // which is custom flow type will start with SRP_A flow.
         case .custom:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
-
+        case .userAuth:
+            if autoSignIn {
+                return .init(eventType: .initiateAutoSignIn(signInEventData, deviceMetadata))
+            } else {
+                return .init(eventType: .initiateUserAuth(signInEventData, deviceMetadata))
+            }
         }
     }
 }

@@ -21,7 +21,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             AuthenticationState.signingIn(
                 .resolvingChallenge(.waitingForAnswer(.testData(), .apiBased(.userSRP), .confirmSignInWithTOTPCode),
                                     .smsMfa, .apiBased(.userSRP))),
-            AuthorizationState.sessionEstablished(.testData))
+            AuthorizationState.sessionEstablished(.testData),
+            .notStarted)
     }
     
     /// Test a successful confirmSignIn call with .done as next step

@@ -15,9 +15,11 @@ struct StartSRPFlow: Action {
 
     let deviceMetadata: DeviceMetadata
 
+    let respondToAuthChallenge: RespondToAuthChallenge?
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Start execution", environment: environment)
-        let event = SignInEvent(id: UUID().uuidString, eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))
+        let event = SignInEvent(id: UUID().uuidString, eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata, respondToAuthChallenge))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }
