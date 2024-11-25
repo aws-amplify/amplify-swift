@@ -35,11 +35,19 @@ class MockEndPointResolver: EndpointResolver {
 }
 
 class MockLogAgent: LogAgent {
+    func log(
+        level: Smithy.LogAgentLevel,
+        message: @autoclosure () -> String,
+        metadata: @autoclosure () -> [String : String]?,
+        source: @autoclosure () -> String,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        print("MockLogAgent")
+    }
+    
     var name: String = ""
 
     var level: LogAgentLevel = .debug
-
-    func log(level: LogAgentLevel, message: String, metadata: [String: String]?, source: String, file: String, function: String, line: UInt) {
-        print("MockLogAgent")
-    }
 }

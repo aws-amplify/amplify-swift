@@ -27,7 +27,7 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
     func execute() async -> AuthSignOutResult {
         await taskHelper.didStateMachineConfigured()
 
-        guard case .configured(let authNState, _) = await authStateMachine.currentState else {
+        guard case .configured(let authNState, _, _) = await authStateMachine.currentState else {
             return invalidStateResult()
         }
 

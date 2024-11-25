@@ -58,3 +58,9 @@ jobs:
       resource_subfolder: auth
       timeout-minutes: 30
     secrets: inherit
+
+  # Disabling the integration test because the job is not able to connect to the local server
+  # auth-webauthn-integration-test-iOS:
+  #   name: Auth WebAuthn Integration Tests (iOS)
+  #   uses: ./.github/workflows/integ_test_auth_webauthn.yml
+  #   secrets: inherit

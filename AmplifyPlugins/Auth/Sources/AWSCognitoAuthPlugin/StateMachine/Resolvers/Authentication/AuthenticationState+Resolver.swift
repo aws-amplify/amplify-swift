@@ -86,11 +86,11 @@ extension AuthenticationState {
                     return .init(newState: .federatedToIdentityPool)
                 case .throwError(let authZError):
                     let authNError = AuthenticationError.service(
-                        message: "Authorization error: \(authZError)")
+                        message: "Authorization error: \(authZError)", error: authZError)
                     return .init(newState: .error(authNError))
                 case .receivedSessionError(let sessionError):
                     let authNError = AuthenticationError.service(
-                        message: "Session error: \(sessionError)")
+                        message: "Session error: \(sessionError)", error: sessionError)
                     return .init(newState: .error(authNError))
                 default:
                     return .from(oldState)
@@ -164,6 +164,10 @@ extension AuthenticationState {
                 return .from(.signedOut(signedOutData))
             case .initializedFederated:
                 return .from(.federatedToIdentityPool)
+            /// for auto signing up case from sign up
+            case .signInRequested(let signInData, let autoSignIn):
+                let action = InitializeSignInFlow(signInEventData: signInData, autoSignIn: autoSignIn)
+                return .init(newState: .signingIn(.notStarted), actions: [action])
             default:
                 return .from(.configured)
             }
@@ -174,8 +178,8 @@ extension AuthenticationState {
             to currentSignedOutData: SignedOutData
         ) -> StateResolution<StateType> {
             switch authEvent.eventType {
-            case .signInRequested(let signInData):
-                let action = InitializeSignInFlow(signInEventData: signInData)
+            case .signInRequested(let signInData, let autoSignIn):
+                let action = InitializeSignInFlow(signInEventData: signInData, autoSignIn: autoSignIn)
                 return .init(newState: .signingIn(.notStarted), actions: [action])
             case .signOutRequested(let eventData):
                 let action = InitiateGuestSignOut(signOutEventData: eventData)

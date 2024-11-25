@@ -338,6 +338,90 @@ extension AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException: AuthErrorC
     }
 }
 
+extension AWSCognitoIdentityProvider.WebAuthnChallengeNotFoundException: AuthErrorConvertible {
+    var fallbackDescription: String { "The credentials provided don't match an existing request" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnChallengeNotFound,
+            AWSCognitoAuthError.webAuthnChallengeNotFound
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnClientMismatchException: AuthErrorConvertible {
+    var fallbackDescription: String { "The App client doesn't support WebAuthn authentication" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnClientMismatch,
+            AWSCognitoAuthError.webAuthnClientMismatch
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnCredentialNotSupportedException: AuthErrorConvertible {
+    var fallbackDescription: String { "The device is unsupported" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnCredentialNotSupported,
+            AWSCognitoAuthError.webAuthnNotSupported
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnNotEnabledException: AuthErrorConvertible {
+    var fallbackDescription: String { "WebAuthn authentication is not enabled" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnNotEnabled,
+            AWSCognitoAuthError.webAuthnNotEnabled
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnOriginNotAllowedException: AuthErrorConvertible {
+    var fallbackDescription: String { "The device origin is not registered as an allowed origin" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnOriginNotAllowed,
+            AWSCognitoAuthError.webAuthnOriginNotAllowed
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException: AuthErrorConvertible {
+    var fallbackDescription: String { "The credential does not match the relying party ID" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnRelyingPartyMismatch,
+            AWSCognitoAuthError.webAuthnRelyingPartyMismatch
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.WebAuthnConfigurationMissingException: AuthErrorConvertible {
+    var fallbackDescription: String { "The WebAuthm configuration is missing" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.webAuthnConfigurationMissing,
+            AWSCognitoAuthError.webAuthnConfigurationMissing
+        )
+    }
+}
+
 extension AWSClientRuntime.UnknownAWSHTTPServiceError: AuthErrorConvertible {
     var fallbackDescription: String { "" }
 

@@ -51,6 +51,7 @@ class AWSAuthBaseTest: XCTestCase {
     override func tearDown() async throws {
         try await super.tearDown()
         subscription?.cancel()
+        usernameOTPDictionary = [:]
         await Amplify.reset()
     }
 
@@ -119,8 +120,8 @@ class AWSAuthBaseTest: XCTestCase {
         }
     }
 
-    // Dictionary to store MFA codes with usernames as keys
-    var mfaCodeDictionary: [String: String] = [:]
+    // Dictionary to store OTP with usernames as keys
+    var usernameOTPDictionary: [String: String] = [:]
     var subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<[String: JSONValue]>>? = nil
 
     let document: String = """
@@ -133,26 +134,44 @@ class AWSAuthBaseTest: XCTestCase {
     }
     """
 
-    /// Function to create a subscription and store MFA codes in a dictionary
-    func createMFASubscription() {
+    /// Function to create a subscription and store OTP codes in a dictionary
+    func subscribeToOTPCreation() async {
         subscription = Amplify.API.subscribe(request: .init(document: document, responseType: [String: JSONValue].self))
 
-        // Create the subscription and listen for MFA code events
+        func waitForSubscriptionConnection(
+            subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<[String: JSONValue]>>
+        ) async throws {
+            for try await subscriptionEvent in subscription {
+                if case .connection(let subscriptionConnectionState) = subscriptionEvent {
+                    print("Subscription connect state is \(subscriptionConnectionState)")
+                    if subscriptionConnectionState == .connected {
+                        return
+                    }
+                }
+            }
+        }
+
+        guard let subscription = subscription else { return }
+
+        await wait(name: "Subscription Connection Waiter", timeout: 5.0) {
+            try await waitForSubscriptionConnection(subscription: subscription)
+        }
+
+        // Create the subscription and listen for OTP code events
         Task {
             do {
-                guard let subscription = subscription else { return }
                 for try await subscriptionEvent in subscription {
                     switch subscriptionEvent {
                     case .connection(let subscriptionConnectionState):
                         print("Subscription connect state is \(subscriptionConnectionState)")
                     case .data(let result):
                         switch result {
-                        case .success(let mfaCodeResult):
-                            print("Successfully got MFA code from subscription: \(mfaCodeResult)")
-                            if let eventUsername = mfaCodeResult["onCreateMfaInfo"]?.asObject?["username"]?.stringValue,
-                               let code = mfaCodeResult["onCreateMfaInfo"]?.asObject?["code"]?.stringValue {
+                        case .success(let otpResult):
+                            print("Successfully got OTP code from subscription: \(otpResult)")
+                            if let eventUsername = otpResult["onCreateMfaInfo"]?.asObject?["username"]?.stringValue,
+                               let code = otpResult["onCreateMfaInfo"]?.asObject?["code"]?.stringValue {
                                 // Store the code in the dictionary for the given username
-                                mfaCodeDictionary[eventUsername] = code
+                                usernameOTPDictionary[eventUsername.lowercased()] = code
                             }
                         case .failure(let error):
                             print("Got failed result with \(error.errorDescription)")
@@ -165,16 +184,17 @@ class AWSAuthBaseTest: XCTestCase {
         }
     }
 
-    /// Test that waits for the MFA code using XCTestExpectation
-    func waitForMFACode(for username: String) async throws -> String? {
-        let expectation = XCTestExpectation(description: "Wait for MFA code")
+    /// Test that waits for the OTP code using XCTestExpectation
+    func otp(for username: String) async throws -> String? {
+        let lowerCasedUsername = username.lowercased()
+        let expectation = XCTestExpectation(description: "Wait for OTP")
         expectation.expectedFulfillmentCount = 1
         
         let task = Task { () -> String? in
             var code: String?
             for _ in 0..<30 { // Poll for the code, max 30 times (once per second)
-                if let mfaCode = mfaCodeDictionary[username] {
-                    code = mfaCode
+                if let otp = usernameOTPDictionary[lowerCasedUsername] {
+                    code = otp
                     expectation.fulfill() // Fulfill the expectation when the value is found
                     break
                 }
@@ -189,11 +209,9 @@ class AWSAuthBaseTest: XCTestCase {
         if result == .timedOut {
             // Task cancels if timed out
             task.cancel()
-            subscription?.cancel()
             return nil
         }
-
-        subscription?.cancel()
+        usernameOTPDictionary.removeValue(forKey: lowerCasedUsername)
         return try await task.value
     }
 }

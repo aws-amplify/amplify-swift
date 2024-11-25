@@ -27,32 +27,39 @@ struct VerifySignInChallenge: Action {
         var deviceMetadata = DeviceMetadata.noData
 
         do {
-
             if case .continueSignInWithMFASetupSelection = currentSignInStep {
-                let newChallenge = RespondToAuthChallenge(
-                    challenge: .mfaSetup,
-                    username: challenge.username,
-                    session: challenge.session,
-                    parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"])
-
-                let event: SignInEvent
-                guard let mfaType = MFAType(rawValue: confirmSignEventData.answer) else {
-                    throw SignInError.inputValidation(field: "Unknown MFA type")
+                try await handleContinueSignInWithMFASetupSelection(
+                    withDispatcher: dispatcher,
+                    environment: environment,
+                    username: username)
+                return
+            } else if case .continueSignInWithFirstFactorSelection = currentSignInStep,
+                      let authFactorType = AuthFactorType(rawValue: confirmSignEventData.answer) {
+                if (authFactorType == .password || authFactorType == .passwordSRP) {
+                    try await handleContinueSignInWithPassword(
+                        withDispatcher: dispatcher,
+                        environment: environment,
+                        username: username,
+                        authFactorType: authFactorType)
+                    return
+                } else if isWebAuthn(authFactorType) {
+                    let signInData = WebAuthnSignInData(
+                        username: username,
+                        presentationAnchor: confirmSignEventData.presentationAnchor
+                    )
+                    let event = SignInEvent(eventType: .initiateWebAuthnSignIn(signInData, challenge))
+                    logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                    await dispatcher.send(event)
+                    return
                 }
-
-                switch mfaType {
-                case .email:
-                    event = SignInEvent(eventType: .receivedChallenge(newChallenge))
-                case .totp:
-                    event = SignInEvent(eventType: .initiateTOTPSetup(username, newChallenge))
-                default:
-                    throw SignInError.unknown(message: "MFA Type not supported for setup")
-                }
-
-                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                await dispatcher.send(event)
+            } else if case .confirmSignInWithPassword = currentSignInStep {
+                try await handleConfirmSignInWithPassword(
+                    withDispatcher: dispatcher,
+                    environment: environment,
+                    username: username)
                 return
             }
+
 
             let userpoolEnv = try environment.userPoolEnvironment()
             let username = challenge.username
@@ -111,6 +118,107 @@ struct VerifySignInChallenge: Action {
         }
     }
 
+    func handleConfirmSignInWithPassword(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment,
+        username: String
+    ) async throws {
+
+        let newDeviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+            for: username,
+            with: environment)
+        if challenge.challenge == .password {
+
+            let event = SignInEvent(
+                eventType: .initiateMigrateAuth(
+                    .init(username: username,
+                          password: confirmSignEventData.answer,
+                          signInMethod: signInMethod),
+                    newDeviceMetadata,
+                    challenge))
+
+            await dispatcher.send(event)
+        } else if challenge.challenge == .passwordSrp {
+            let event = SignInEvent(
+                eventType: .initiateSignInWithSRP(
+                    .init(username: username,
+                          password: confirmSignEventData.answer,
+                          signInMethod: signInMethod),
+                    newDeviceMetadata,
+                    challenge))
+            await dispatcher.send(event)
+        } else {
+            throw SignInError.unknown(
+                message: "confirmSignInWithPassword received an unknown challenge type. Received: \(challenge.challenge)")
+        }
+    }
+
+    func handleContinueSignInWithPassword(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment,
+        username: String,
+        authFactorType: AuthFactorType
+    ) async throws {
+
+        let authFactorType = AuthFactorType(rawValue: confirmSignEventData.answer)
+        var challengeType: CognitoIdentityProviderClientTypes.ChallengeNameType? = nil
+
+        if case .password = authFactorType {
+            challengeType = .password
+        } else if case .passwordSRP = authFactorType {
+            challengeType = .passwordSrp
+        } else if isWebAuthn(authFactorType) {
+            throw SignInError.unknown(
+                message: "This code path only supports password and password SRP. Received: \(challenge.challenge)")
+        }
+
+        guard let challengeType = challengeType else {
+            throw SignInError.unknown(
+                message: "Unable to determine challenge type from \(String(describing: authFactorType))")
+        }
+
+        let newChallenge = RespondToAuthChallenge(
+            challenge: challengeType,
+            availableChallenges: [],
+            username: challenge.username,
+            session: challenge.session,
+            parameters: [:])
+
+        let event = SignInEvent(eventType: .receivedChallenge(newChallenge))
+        logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+        await dispatcher.send(event)
+    }
+
+    func handleContinueSignInWithMFASetupSelection(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment,
+        username: String
+    ) async throws {
+        let newChallenge = RespondToAuthChallenge(
+            challenge: .mfaSetup,
+            availableChallenges: [],
+            username: challenge.username,
+            session: challenge.session,
+            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"])
+
+        let event: SignInEvent
+        guard let mfaType = MFAType(rawValue: confirmSignEventData.answer) else {
+            throw SignInError.inputValidation(field: "Unknown MFA type")
+        }
+
+        switch mfaType {
+        case .email:
+            event = SignInEvent(eventType: .receivedChallenge(newChallenge))
+        case .totp:
+            event = SignInEvent(eventType: .initiateTOTPSetup(username, newChallenge))
+        default:
+            throw SignInError.unknown(message: "MFA Type not supported for setup")
+        }
+
+        logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+        await dispatcher.send(event)
+    }
+
     func deviceNotFound(error: Error, deviceMetadata: DeviceMetadata) -> Bool {
 
         // If deviceMetadata was not send, the error returned is not from device not found.
@@ -121,6 +229,14 @@ struct VerifySignInChallenge: Action {
         return error is AWSCognitoIdentityProvider.ResourceNotFoundException
     }
 
+    private func isWebAuthn(_ factorType: AuthFactorType?) -> Bool {
+    #if os(iOS) || os(macOS) || os(visionOS)
+        if #available(iOS 17.4, macOS 13.5, *) {
+            return .webAuthn == factorType
+        }
+    #endif
+        return false
+    }
 }
 
 extension VerifySignInChallenge: CustomDebugDictionaryConvertible {

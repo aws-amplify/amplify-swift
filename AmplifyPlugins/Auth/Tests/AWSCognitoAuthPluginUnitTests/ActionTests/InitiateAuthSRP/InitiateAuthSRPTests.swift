@@ -25,7 +25,7 @@ class InitiateAuthSRPTests: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
-        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword", respondToAuthChallenge: nil)
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -51,7 +51,7 @@ class InitiateAuthSRPTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword", respondToAuthChallenge: nil)
 
         let errorEventSent = expectation(description: "errorEventSent")
         let dispatcher = MockDispatcher { event in
@@ -91,7 +91,7 @@ class InitiateAuthSRPTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
+        let action = InitiateAuthSRP(username: "testUser", password: "testPassword", respondToAuthChallenge: nil)
 
         let successEventSent = expectation(description: "successEventSent")
 

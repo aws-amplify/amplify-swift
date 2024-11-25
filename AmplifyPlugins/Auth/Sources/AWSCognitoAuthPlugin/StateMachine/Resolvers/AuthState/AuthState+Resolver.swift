@@ -76,10 +76,10 @@ extension AuthState {
                     return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
                 }
 
-                let newState = AuthState.configured(authNresolution.newState, authZresolution.newState)
+                let newState = AuthState.configured(authNresolution.newState, authZresolution.newState, .notStarted)
                 return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
 
-            case .configured(let authenticationState, let authorizationState):
+            case .configured(let authenticationState, let authorizationState, let signUpState):
                 if case .reconfigure(let authConfiguration) = isAuthEvent(event)?.eventType {
                     let newState = AuthState.configuringAuth
                     let action = InitializeAuthConfiguration(authConfiguration: authConfiguration)
@@ -87,10 +87,12 @@ extension AuthState {
                 }
                 let authenticationResolver = AuthenticationState.Resolver()
                 let authorizationResolver = AuthorizationState.Resolver()
+                let signUpResolver = SignUpState.Resolver()
                 let authNresolution = authenticationResolver.resolve(oldState: authenticationState, byApplying: event)
                 let authZresolution = authorizationResolver.resolve(oldState: authorizationState, byApplying: event)
-                let newState = AuthState.configured(authNresolution.newState, authZresolution.newState)
-                return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
+                let signUpResolution = signUpResolver.resolve(oldState: signUpState, byApplying: event)
+                let newState = AuthState.configured(authNresolution.newState, authZresolution.newState, signUpResolution.newState)
+                return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions + signUpResolution.actions)
             }
         }
 

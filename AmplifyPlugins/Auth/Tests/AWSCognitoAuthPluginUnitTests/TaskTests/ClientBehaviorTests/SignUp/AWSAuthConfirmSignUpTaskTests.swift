@@ -19,60 +19,54 @@ import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmSignUpTaskTests: XCTestCase {
+class AWSAuthConfirmSignUpTaskTests: BasePluginTest {
 
-    var queue: OperationQueue?
-
-    override func setUp() {
-        super.setUp()
-        queue = OperationQueue()
-        queue?.maxConcurrentOperationCount = 1
+    let signUpData = SignUpEventData(username: "jeffb")
+    let signUpResult = AuthSignUpResult(.confirmUser())
+    
+    override var initialState: AuthState {
+        AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured, 
+            .awaitingUserConfirmation(signUpData, signUpResult))
     }
 
     func testConfirmSignUpOperationSuccess() async throws {
-        let functionExpectation = expectation(description: "API call should be invoked")
-        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
-            functionExpectation.fulfill()
-            return .init()
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { _ in
+                return .init()
+            }
+        )
+        
+        let confirmSignUpResult = try await plugin.confirmSignUp(for: "jeffb",
+                                                                 confirmationCode: "213", 
+                                                                 options: AuthConfirmSignUpRequest.Options())
+        XCTAssertTrue(confirmSignUpResult.isSignUpComplete)
+        guard case .done = confirmSignUpResult.nextStep else {
+            XCTFail("Next step should be done")
+            return
         }
-
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
-            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
-
-        let request = AuthConfirmSignUpRequest(username: "jeffb",
-                                               code: "213",
-                                               options: AuthConfirmSignUpRequest.Options())
-        let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
-        let confirmSignUpResult = try await task.value
-        print("Confirm Sign Up Result: \(confirmSignUpResult)")
-        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 
     func testConfirmSignUpOperationFailure() async throws {
-        let functionExpectation = expectation(description: "API call should be invoked")
-        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
-            functionExpectation.fulfill()
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: MockHttpResponse.ok,
-                message: nil,
-                requestID: nil,
-                typeName: nil
-            )
-        }
-
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
-            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
-
-        let request = AuthConfirmSignUpRequest(username: "jeffb",
-                                               code: "213",
-                                               options: AuthConfirmSignUpRequest.Options())
-
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { _ in
+                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                    httpResponse: MockHttpResponse.ok,
+                    message: nil,
+                    requestID: nil,
+                    typeName: nil
+                )
+            }
+        )
+        
         do {
-            let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
-            _ = try await task.value
-            XCTFail("Should not produce success response")
-        } catch {
+            let _ = try await plugin.confirmSignUp(for: "jeffb",
+                                                   confirmationCode: "213",
+                                                   options: AuthConfirmSignUpRequest.Options())
+            XCTFail("Should result in failure")
+        } catch(let error) {
+            XCTAssertNotNil(error)
         }
-        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 }

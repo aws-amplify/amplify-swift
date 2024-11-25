@@ -61,6 +61,10 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
         fatalError()
     }
+    
+    func autoSignIn() async throws -> AuthSignInResult {
+        fatalError()
+    }
 
     public func deleteUser() async throws {
         fatalError()
@@ -138,6 +142,24 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
     public func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
+        fatalError()
+    }
+
+#if os(iOS) || os(macOS)
+    func associateWebAuthnCredential(presentationAnchor: AuthUIPresentationAnchor?, options: AuthAssociateWebAuthnCredentialRequest.Options?) async throws {
+        fatalError()
+    }
+#elseif os(visionOS)
+    func associateWebAuthnCredential(presentationAnchor: AuthUIPresentationAnchor, options: AuthAssociateWebAuthnCredentialRequest.Options?) async throws {
+        fatalError()
+    }
+#endif
+
+    func listWebAuthnCredentials(options: AuthListWebAuthnCredentialsRequest.Options?) async throws -> AuthListWebAuthnCredentialsResult {
+        fatalError()
+    }
+
+    func deleteWebAuthnCredential(credentialId: String, options: AuthDeleteWebAuthnCredentialRequest.Options?) async throws {
         fatalError()
     }
 

@@ -68,25 +68,31 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataWithExpiredAWSCredentials)),
+                    AmplifyCredentials.testDataWithExpiredAWSCredentials),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.notConfigured,
-                AuthorizationState.configured),
+                AuthorizationState.configured,
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.error(.testData),
-                AuthorizationState.configured),
+                AuthorizationState.configured,
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.error(.sessionExpired(
-                    error: NotAuthorizedException(message: "message"))))
+                    error: NotAuthorizedException(message: "message"))),
+                .notStarted)
         ]
 
         for initialState in statesToTest {
@@ -160,7 +166,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+            .notStarted)
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
@@ -220,10 +227,12 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let statesToTest = [
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
-                AuthorizationState.notConfigured),
+                AuthorizationState.notConfigured,
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.signedIn(.testData),
-                AuthorizationState.configured)
+                AuthorizationState.configured,
+                .notStarted)
         ]
 
         for initialState in statesToTest {
@@ -283,7 +292,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             },
             initialState: AuthState.configured(
                 AuthenticationState.error(.testData),
-                AuthorizationState.error(.invalidState(message: ""))))
+                AuthorizationState.error(.invalidState(message: "")),
+                .notStarted))
         do {
             // Should setup the plugin with a token
             shouldThrowError = false
@@ -334,10 +344,12 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.sessionEstablished(.identityPoolWithFederation(
                     federatedToken: .testData,
                     identityID: "identityId",
-                    credentials: .testData))),
+                    credentials: .testData)),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.error(.testData),
-                AuthorizationState.error(.invalidState(message: "")))
+                AuthorizationState.error(.invalidState(message: "")),
+                .notStarted)
         ]
 
         for initialState in statesToTest {
@@ -382,13 +394,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let statesToTest = [
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
-                AuthorizationState.configured),
+                AuthorizationState.configured,
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.configured,
                 AuthorizationState.sessionEstablished(.identityPoolWithFederation(
                     federatedToken: .testData,
                     identityID: "identityId",
-                    credentials: .testData)))
+                    credentials: .testData)),
+                .notStarted)
         ]
 
         for initialState in statesToTest {
@@ -464,7 +478,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)))
+                    credentials: .expiredTestData)),
+            .notStarted)
 
         let plugin = configurePluginWith(
             identityPool: {
@@ -544,7 +559,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .testData)))
+                    credentials: .testData)),
+            .notStarted)
 
         let plugin = configurePluginWith(
             identityPool: {
@@ -635,7 +651,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)))
+                    credentials: .expiredTestData)),
+            .notStarted)
 
         let plugin = configurePluginWith(
             identityPool: {
@@ -719,18 +736,22 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
                 AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataWithExpiredAWSCredentials)),
+                    AmplifyCredentials.testDataWithExpiredAWSCredentials),
+                .notStarted),
             AuthState.configured(
                 AuthenticationState.notConfigured,
-                AuthorizationState.configured)
+                AuthorizationState.configured,
+                .notStarted)
         ]
 
         for initialState in statesToTest {
@@ -797,7 +818,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
+            .notStarted)
 
         let plugin = configurePluginWith(
             identityPool: {
@@ -877,7 +899,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)))
+                    credentials: .expiredTestData)),
+            .notStarted)
 
         let plugin = configurePluginWith(
             identityPool: {

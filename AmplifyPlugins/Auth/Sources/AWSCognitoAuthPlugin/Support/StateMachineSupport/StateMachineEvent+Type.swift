@@ -57,6 +57,13 @@ extension StateMachineEvent {
         }
         return event
     }
+    
+    var isSignUpEvent: SignUpEvent.EventType? {
+        guard let event = (self as? SignUpEvent)?.eventType else {
+            return nil
+        }
+        return event
+    }
 
     var isChallengeEvent: SignInChallengeEvent.EventType? {
         guard let event = (self as? SignInChallengeEvent)?.eventType else {
@@ -78,5 +85,14 @@ extension StateMachineEvent {
         }
         return event
     }
+
+#if os(iOS) || os(macOS) || os(visionOS)
+    var isWebAuthnEvent: WebAuthnEvent.EventType? {
+        guard let event = (self as? WebAuthnEvent)?.eventType else {
+            return nil
+        }
+        return event
+    }
+#endif
 
 }

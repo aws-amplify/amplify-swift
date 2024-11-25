@@ -89,4 +89,68 @@ protocol CognitoUserPoolBehavior {
     /// Throws SetUserMFAPreferenceOutputError
     func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutput
 
+    /// Lists the WebAuthn credentials
+    ///
+    /// - Parameter input: A `ListWebAuthnCredentialsInput` that contains the access token
+    /// - Returns: a `ListWebAuthnCredentialsOutput` that contains the list of WebAuthn credentials
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    func listWebAuthnCredentials(input: ListWebAuthnCredentialsInput) async throws -> ListWebAuthnCredentialsOutput
+
+    /// Deletes a WebAuthn credential.
+    ///
+    /// - Parameter input: A `DeleteWebAuthnCredentialInput` that contains the access token and the ID of the credential to delete
+    /// - Returns: An empty `DeleteWebAuthnCredentialOutput`.
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `ResourceNotFoundException` : The Amazon Cognito service couldn't find the requested resource.
+    func deleteWebAuthnCredential(input: DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
+
+
+    /// Starts the registration of a new WebAuthn credential
+    ///
+    /// - Parameter input: A `GetWebAuthnRegistrationOptionsInput` that contains the access token
+    /// - Returns: A `GetWebAuthnRegistrationOptionsOutput` that contains the credential creation options
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `LimitExceededException` : The user has exceeded the limit for a this resource.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `TooManyRequestsException` : The user has made too many requests for this operation
+    /// - `WebAuthnConfigurationMissingException` : The user presented passkey credentials from an unregistered device.
+    /// - `WebAuthnNotEnabledException` : The user selected passkey authentication but it's not enabled.
+    func startWebAuthnRegistration(input: StartWebAuthnRegistrationInput) async throws -> StartWebAuthnRegistrationOutput
+
+    /// Completes the registration of a WebAuthn credential.
+    ///
+    /// - Parameter input: A `VerifyWebAuthnRegistrationResultInput` that contains the access token and the credential to verify
+    /// - Returns: An empty `VerifyWebAuthnRegistrationResultOutput`
+    /// - Throws: See  __Possible Errors__ bellow.
+    ///
+    /// __Possible Errors:__
+    /// - `ForbiddenException` :  WAF rejected the request based on a web ACL associated with the user pool.
+    /// - `InternalErrorException` : Amazon Cognito encountered an internal error.
+    /// - `InvalidParameterException` : Amazon Cognito encountered an invalid parameter.
+    /// - `NotAuthorizedException` :  The user isn't authorized.
+    /// - `TooManyRequestsException` : The user has made too many requests for this operation.
+    /// - `WebAuthnChallengeNotFoundException` : Passkey credentials were sent to a challenge that doesn't match an existing request.
+    /// - `WebAuthnClientMismatchException` : The user attempted to sign in with a passkey with an app client that doesn't support passkey authentication.
+    /// - `WebAuthnCredentialNotSupportedException` : The user presented passkey credentials from an unsupported device.
+    /// - `WebAuthnNotEnabledException` : The user selected passkey authentication but it's not enabled.
+    /// - `WebAuthnOriginNotAllowedException` : The user presented passkey credentials from a device origin that isn't registered as an allowed origin. Registering allowed origins is optional.
+    /// - `WebAuthnRelyingPartyMismatchException` : The user's passkey didn't have an entry for the current relying party ID.
+    func completeWebAuthnRegistration(input: CompleteWebAuthnRegistrationInput) async throws -> CompleteWebAuthnRegistrationOutput
 }

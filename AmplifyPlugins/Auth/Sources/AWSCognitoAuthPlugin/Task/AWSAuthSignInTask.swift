@@ -58,7 +58,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         let stateSequences = await authStateMachine.listen()
         log.verbose("Validating current state")
         for await state in stateSequences {
-            guard case .configured(let authenticationState, _) = state else {
+            guard case .configured(let authenticationState, _, _) = state else {
                 continue
             }
 
@@ -79,13 +79,13 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     }
 
     private func doSignIn(authflowType: AuthFlowType) async throws -> AuthSignInResult {
-        let stateSequences = await authStateMachine.listen()
         log.verbose("Sending signIn event")
         await sendSignInEvent(authflowType: authflowType)
+        
         log.verbose("Waiting for signin to complete")
+        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
-            guard case .configured(let authNState,
-                                   let authZState) = state else { continue }
+            guard case .configured(let authNState, let authZState, _) = state else { continue }
 
             switch authNState {
 
@@ -121,7 +121,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         let stateSequences = await authStateMachine.listen()
         log.verbose("Wait for signIn to cancel")
         for await state in stateSequences {
-            guard case .configured(let authenticationState, _) = state else {
+            guard case .configured(let authenticationState, _, _) = state else {
                 continue
             }
             switch authenticationState {
@@ -133,11 +133,16 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     }
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {
+        var presentationAnchor: AuthUIPresentationAnchor? = nil
+    #if os(iOS) || os(macOS) || os(visionOS)
+        presentationAnchor = request.options.presentationAnchorForWebAuthn
+    #endif
         let signInData = SignInEventData(
             username: request.username,
             password: request.password,
             clientMetadata: clientMetadata(),
-            signInMethod: .apiBased(authflowType)
+            signInMethod: .apiBased(authflowType),
+            presentationAnchor: presentationAnchor
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         await authStateMachine.send(event)

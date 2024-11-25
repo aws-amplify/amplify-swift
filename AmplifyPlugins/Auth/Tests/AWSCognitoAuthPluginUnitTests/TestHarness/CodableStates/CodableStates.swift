@@ -161,6 +161,9 @@ extension SignInError: Codable {
             fatalError("service error decoding not supported")
         case .service(_):
             fatalError("service error decoding not supported")
+        case .webAuthn(_):
+            //TODO: Fix the decoding if needed, or throw fatalError
+            fatalError("service error decoding not supported")
         case .unknown(message: let message):
             try container.encode(message, forKey: .unknown)
         }

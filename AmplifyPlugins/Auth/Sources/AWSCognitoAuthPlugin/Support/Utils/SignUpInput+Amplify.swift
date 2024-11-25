@@ -16,7 +16,7 @@ import UIKit
 extension SignUpInput {
     typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
     init(username: String,
-         password: String,
+         password: String?,
          clientMetadata: [String: String]?,
          validationData: [String: String]?,
          attributes: [String: String],

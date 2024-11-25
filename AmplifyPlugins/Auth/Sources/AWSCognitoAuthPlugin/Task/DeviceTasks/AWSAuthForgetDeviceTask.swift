@@ -49,7 +49,7 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
 
     func getCurrentUsername() async throws -> String {
         let authState = await authStateMachine.currentState
-        if case .configured(let authenticationState, _) = authState,
+        if case .configured(let authenticationState, _, _) = authState,
            case .signedIn(let signInData) = authenticationState {
            return signInData.username
         }

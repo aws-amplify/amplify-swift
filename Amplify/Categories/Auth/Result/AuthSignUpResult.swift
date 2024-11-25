@@ -12,7 +12,7 @@ public struct AuthSignUpResult {
     /// Indicate whether the signUp flow is completed.
     public var isSignUpComplete: Bool {
         switch nextStep {
-        case .done:
+        case .completeAutoSignIn, .done:
             return true
         default:
             return false

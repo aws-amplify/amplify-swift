@@ -7,6 +7,9 @@
 
 import Foundation
 import AWSCognitoIdentityProvider
+#if os(iOS) || os(macOS) || os(visionOS)
+import typealias Amplify.AuthUIPresentationAnchor
+#endif
 
 typealias Username = String
 typealias Password = String
@@ -18,7 +21,7 @@ struct SignInEvent: StateMachineEvent {
 
     enum EventType {
 
-        case initiateSignInWithSRP(SignInEventData, DeviceMetadata)
+        case initiateSignInWithSRP(SignInEventData, DeviceMetadata, RespondToAuthChallenge?)
 
         case initiateCustomSignIn(SignInEventData, DeviceMetadata)
 
@@ -26,11 +29,17 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateHostedUISignIn(HostedUIOptions)
 
-        case initiateMigrateAuth(SignInEventData, DeviceMetadata)
+        case initiateMigrateAuth(SignInEventData, DeviceMetadata, RespondToAuthChallenge?)
 
-        case respondPasswordVerifier(SRPStateData, InitiateAuthOutput, ClientMetadata)
+        case initiateUserAuth(SignInEventData, DeviceMetadata)
 
-        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutput, ClientMetadata)
+        case initiateWebAuthnSignIn(WebAuthnSignInData, RespondToAuthChallenge)
+        
+        case initiateAutoSignIn(SignInEventData, DeviceMetadata)
+
+        case respondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)
+
+        case retryRespondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)
 
         case initiateDeviceSRP(Username, SignInResponseBehavior)
 
@@ -66,7 +75,9 @@ struct SignInEvent: StateMachineEvent {
         case .initiateCustomSignInWithSRP: return "SignInEvent.initiateCustomSignInWithSRP"
         case .initiateHostedUISignIn: return "SignInEvent.initiateHostedUISignIn"
         case .initiateMigrateAuth: return "SignInEvent.initiateMigrateAuth"
+        case .initiateUserAuth: return "SignInEvent.initiateUserAuth"
         case .initiateDeviceSRP: return "SignInEvent.initiateDeviceSRP"
+        case .initiateAutoSignIn: return "SignInEvent.initiateAutoSignIn"
         case .respondDeviceSRPChallenge: return "SignInEvent.respondDeviceSRPChallenge"
         case .respondDevicePasswordVerifier: return "SignInEvent.respondDevicePasswordVerifier"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
@@ -79,6 +90,7 @@ struct SignInEvent: StateMachineEvent {
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
         case .retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
         case .initiateTOTPSetup: return "SignInEvent.initiateTOTPSetup"
+        case .initiateWebAuthnSignIn: return "SignInEvent.initiateWebAuthnSignIn"
         }
     }
 

@@ -19,7 +19,7 @@ enum AuthState: State {
 
     case configuringAuthorization(AuthenticationState, AuthorizationState)
 
-    case configured(AuthenticationState, AuthorizationState)
+    case configured(AuthenticationState, AuthorizationState, SignUpState)
 
 }
 

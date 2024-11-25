@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "9E5E8742-0597-476D-8056-6CC7EF9032B1",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AuthWebAuthnApp.xcodeproj",
+        "identifier" : "680627C62CDEC30900AA7822",
+        "name" : "AuthWebAuthnAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

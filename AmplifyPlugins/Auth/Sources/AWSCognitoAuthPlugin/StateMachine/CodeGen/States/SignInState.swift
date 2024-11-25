@@ -13,9 +13,12 @@ enum SignInState: State {
     case signingInWithSRPCustom(SRPSignInState, SignInEventData)
     case signingInWithCustom(CustomSignInState, SignInEventData)
     case signingInViaMigrateAuth(MigrateSignInState, SignInEventData)
+    case signingInWithUserAuth(SignInEventData)
+    case signingInWithWebAuthn(WebAuthnSignInState)
     case resolvingChallenge(SignInChallengeState, AuthChallengeType, SignInMethod)
     case resolvingTOTPSetup(SignInTOTPSetupState, SignInEventData)
     case signingInWithHostedUI(HostedUISignInState)
+    case autoSigningIn(SignInEventData)
     case confirmingDevice
     case resolvingDeviceSrpa(DeviceSRPState)
     case signedIn(SignedInData)
@@ -32,12 +35,15 @@ extension SignInState {
         case .signingInWithSRPCustom: return "SignInState.signingInWithSRPCustom"
         case .signingInWithCustom: return "SignInState.signingInWithCustom"
         case .signingInViaMigrateAuth: return "SignInState.signingInViaMigrateAuth"
+        case .signingInWithUserAuth: return "SignInState.signingInWithUserAuth"
+        case .autoSigningIn: return "SignInState.autoSigningIn"
         case .resolvingChallenge: return "SignInState.resolvingChallenge"
         case .resolvingTOTPSetup: return "SignInState.resolvingTOTPSetup"
         case .confirmingDevice: return "SignInState.confirmingDevice"
         case .resolvingDeviceSrpa: return "SignInState.resolvingDeviceSrpa"
         case .signedIn: return "SignInState.signedIn"
         case .error: return "SignInState.error"
+        case .signingInWithWebAuthn: return "SignInState.signingInWithWebAuthn"
         }
     }
 }

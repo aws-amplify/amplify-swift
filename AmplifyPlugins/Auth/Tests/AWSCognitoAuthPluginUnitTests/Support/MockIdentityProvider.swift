@@ -77,6 +77,14 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     typealias MockVerifySoftwareTokenResponse = (VerifySoftwareTokenInput) async throws
     -> VerifySoftwareTokenOutput
 
+    typealias MockListWebAuthnCredentialsResponse = (ListWebAuthnCredentialsInput) async throws -> ListWebAuthnCredentialsOutput
+
+    typealias MockDeleteWebAuthnCredentialResponse = (DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
+
+    typealias MockStartWebAuthnRegistrationResponse = (StartWebAuthnRegistrationInput) async throws -> StartWebAuthnRegistrationOutput
+
+    typealias MockCompletetWebAuthnRegistrationResponse = (CompleteWebAuthnRegistrationInput) async throws -> CompleteWebAuthnRegistrationOutput
+
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
     let mockInitiateAuthResponse: MockInitiateAuthResponse?
@@ -99,6 +107,10 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockSetUserMFAPreferenceResponse: MockSetUserMFAPreferenceResponse?
     let mockAssociateSoftwareTokenResponse: MockAssociateSoftwareTokenResponse?
     let mockVerifySoftwareTokenResponse: MockVerifySoftwareTokenResponse?
+    var mockListWebAuthnCredentialsResponse: MockListWebAuthnCredentialsResponse?
+    var mockDeleteWebAuthnCredentialResponse: MockDeleteWebAuthnCredentialResponse?
+    var mockStartWebAuthnRegistrationResponse: MockStartWebAuthnRegistrationResponse?
+    var mockCompleteWebAuthnRegistrationResponse: MockCompletetWebAuthnRegistrationResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -243,4 +255,21 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutput {
         return try await mockSetUserMFAPreferenceResponse!(input)
     }
+
+    func listWebAuthnCredentials(input: AWSCognitoIdentityProvider.ListWebAuthnCredentialsInput) async throws -> AWSCognitoIdentityProvider.ListWebAuthnCredentialsOutput {
+        return try await mockListWebAuthnCredentialsResponse!(input)
+    }
+
+    func deleteWebAuthnCredential(input: AWSCognitoIdentityProvider.DeleteWebAuthnCredentialInput) async throws -> AWSCognitoIdentityProvider.DeleteWebAuthnCredentialOutput {
+        return try await mockDeleteWebAuthnCredentialResponse!(input)
+    }
+
+    func startWebAuthnRegistration(input: AWSCognitoIdentityProvider.StartWebAuthnRegistrationInput) async throws -> AWSCognitoIdentityProvider.StartWebAuthnRegistrationOutput {
+        return try await mockStartWebAuthnRegistrationResponse!(input)
+    }
+
+    func completeWebAuthnRegistration(input: AWSCognitoIdentityProvider.CompleteWebAuthnRegistrationInput) async throws -> AWSCognitoIdentityProvider.CompleteWebAuthnRegistrationOutput {
+        return try await mockCompleteWebAuthnRegistrationResponse!(input)
+    }
+
 }

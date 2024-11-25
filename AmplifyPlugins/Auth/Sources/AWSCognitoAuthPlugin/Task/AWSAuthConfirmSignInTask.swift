@@ -27,7 +27,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.authConfiguration = configuration
     }
-
+    
     func execute() async throws -> AuthSignInResult {
         await taskHelper.didStateMachineConfigured()
 
@@ -47,39 +47,17 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             "User is not attempting signIn operation",
             AuthPluginErrorConstants.invalidStateError, nil)
 
-        guard case .configured(let authNState, _) = await authStateMachine.currentState,
+        guard case .configured(let authNState, _, _) = await authStateMachine.currentState,
               case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
 
-        if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState {
-
-            // Validate if request valid MFA selection
-            if challengeType == .selectMFAType {
-                try validateRequestForMFASelection()
-            }
-
-            switch challengeState {
-            case .waitingForAnswer, .error:
-                log.verbose("Sending confirm signIn event: \(challengeState)")
-                await sendConfirmSignInEvent()
-            default:
-                throw invalidStateError
-            }
-        } else if case .resolvingTOTPSetup(let resolvingSetupTokenState, _) = signInState {
-            switch resolvingSetupTokenState {
-            case .waitingForAnswer, .error:
-                log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
-                await sendConfirmTOTPSetupEvent()
-            default:
-                throw invalidStateError
-            }
-        }
+        try await analyzeCurrentStateAndCreateEvent(signInState, invalidStateError)
 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for response")
         for await state in stateSequences {
-               guard case .configured(let authNState, let authZState) = state else {
+               guard case .configured(let authNState, let authZState, _) = state else {
                    continue
                }
                switch authNState {
@@ -108,6 +86,65 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         throw invalidStateError
     }
 
+    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: (SignInState), _ invalidStateError: AuthError) async throws {
+        switch signInState {
+        case .resolvingChallenge(let challengeState, let challengeType, _):
+            // Validate if request valid MFA selection
+            if challengeType == .selectMFAType {
+                try validateRequestForMFASelection()
+            }
+
+            // Validate if request has valid factor selection
+            if challengeType == .selectAuthFactor {
+                try validateRequestForFactorSelection()
+            }
+
+            switch challengeState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(challengeState)")
+                await sendConfirmSignInEvent()
+            default:
+                throw invalidStateError
+            }
+        case .resolvingTOTPSetup(let resolvingSetupTokenState, _):
+            switch resolvingSetupTokenState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
+                await sendConfirmTOTPSetupEvent()
+            default:
+                throw invalidStateError
+            }
+        case .signingInWithWebAuthn(let webAuthnState):
+            switch webAuthnState {
+            case .error:
+                log.verbose("Sending initiate webAuthn signIn event: \(webAuthnState)")
+                await sendConfirmSignInEvent()
+            default:
+                throw invalidStateError
+            }
+        case .signingInViaMigrateAuth(let migratedAuthState, _):
+            switch migratedAuthState {
+            case .error:
+                throw AuthError.invalidState(
+                    "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
+                    AuthPluginErrorConstants.invalidStateError, nil)
+            default:
+                throw invalidStateError
+            }
+        case .signingInWithSRP(let srpState, _):
+            switch srpState {
+            case .error:
+                throw AuthError.invalidState(
+                    "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
+                    AuthPluginErrorConstants.invalidStateError, nil)
+            default:
+                throw invalidStateError
+            }
+        default:
+            throw invalidStateError
+        }
+    }
+
     func validateRequestForMFASelection() throws {
         let challengeResponse = request.challengeResponse
 
@@ -116,6 +153,17 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+        }
+    }
+
+    func validateRequestForFactorSelection() throws {
+        let challengeResponse = request.challengeResponse
+
+        guard let _ = AuthFactorType(rawValue: challengeResponse) else {
+            throw AuthError.validation(
+                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.field,
+                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.errorDescription,
+                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion)
         }
     }
 
@@ -140,11 +188,20 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             into: [String: String]()) {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
+        let presentationAnchor: AuthUIPresentationAnchor?
+    #if os(iOS) || os(macOS) || os(visionOS)
+        presentationAnchor = request.options.presentationAnchorForWebAuthn
+    #else
+        presentationAnchor = nil
+    #endif
+
         return ConfirmSignInEventData(
             answer: self.request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
-            friendlyDeviceName: pluginOptions?.friendlyDeviceName)
+            friendlyDeviceName: pluginOptions?.friendlyDeviceName,
+            presentationAnchor: presentationAnchor
+        )
     }
 
 }

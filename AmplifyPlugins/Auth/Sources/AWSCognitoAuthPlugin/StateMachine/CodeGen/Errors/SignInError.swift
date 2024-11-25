@@ -14,6 +14,7 @@ enum SignInError: Error {
     case invalidServiceResponse(message: String)
     case calculation(SRPError)
     case hostedUI(HostedUIError)
+    case webAuthn(WebAuthnError)
     case unknown(message: String)
 }
 

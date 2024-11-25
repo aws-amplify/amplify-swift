@@ -27,7 +27,8 @@ class ClientSecretConfigurationTests: XCTestCase {
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
                     cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
-            AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
+            .notStarted)
     }
 
     override func setUp() {
