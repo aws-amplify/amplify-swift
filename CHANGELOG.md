@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.45.0 (2024-11-25)
+
+### Features
+
+- Adding visionOS support to the WebAuthn APIs (#171)
+- **auth**: adding an initial passwordless integration test with resources defined (#163)
+- **auth**: adding passwordless sign in preferred flows (#162)
+- **auth**: add support for passwordless sign up and auto sign in (#160)
+- **WebAuthn**: Adding support for retrying a confirmSignIn with WebAuthn request, if the first one fails (#158)
+- **Auth**: Adding WebAuthn support to signIn and confirmSignIn APIs (#155)
+- **auth**: add passwordless sign with otp (#151)
+- **Auth**: Adding WebAuthn APIs (#153)
+- **auth**: adding support for email mfa (#3892)
+
+### Bug Fixes
+
+- **auth**: fix resolvers and tasks for auto sign in when state machine is in signing in state (#172)
+- Fixing service errors being reported as .unknown when sign in fails (#170)
+- Fixing build errors in watchOS/tvOS due to missing prechecks.
+- Fixing build issue when iOS 18/macOS 15 are not installed
+
 ## 2.44.0 (2024-10-31)
 
 ### Features
