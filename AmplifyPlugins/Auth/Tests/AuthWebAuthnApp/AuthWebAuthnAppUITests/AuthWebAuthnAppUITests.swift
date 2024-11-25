@@ -21,21 +21,9 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     private var springboard: XCUIApplication!
     private var continueButton: XCUIElement!
 
-    private lazy var deviceIdentifier: String = {
-        let paths = Bundle.main.bundleURL.pathComponents
-        guard let index = paths.firstIndex(where: { $0 == "Devices" }),
-              let identifier = paths.dropFirst(index + 1).first
-        else {
-            fatalError("Failed to get device identifier")
-        }
-
-        return identifier
-    }()
-
     @MainActor
     override func setUp() async throws {
         continueAfterFailure = false
-        try await bootDevice()
         try await enrollBiometrics()
         if ProcessInfo.processInfo.arguments.contains("GEN2") {
             app.launchArguments.append("GEN2")
@@ -162,25 +150,25 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     }
 
     private func bootDevice() async throws {
-        let request = LocalServer.boot(deviceIdentifier).urlRequest
+        let request = LocalServer.boot.urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to boot the device")
     }
 
     private func enrollBiometrics() async throws {
-        let request = LocalServer.enroll(deviceIdentifier).urlRequest
+        let request = LocalServer.enroll.urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to enroll biometrics in the device")
     }
 
     private func matchBiometrics() async throws {
-        let request = LocalServer.match(deviceIdentifier).urlRequest
+        let request = LocalServer.match.urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to match biometrics in the device")
     }
 
     private func uninstallApp() async throws {
-        let request = LocalServer.uninstall(deviceIdentifier).urlRequest
+        let request = LocalServer.uninstall.urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to uninstall the App")
     }

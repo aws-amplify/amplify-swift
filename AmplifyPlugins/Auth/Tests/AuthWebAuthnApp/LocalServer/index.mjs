@@ -19,10 +19,21 @@ const run = (cmd) => {
     })
 }
 
+const getDeviceId = async () => {
+    const cmd = `xcrun simctl list | grep "iPhone" | grep "Booted" | awk -F '[()]' '{print $2}' | uniq`
+    try {
+        const deviceId = await run(cmd)
+        return deviceId.trim()
+    } catch (error) {
+        console.error("Failed to retrieve deviceId", error)
+        throw new Error("Failed to retrieve deviceId")
+    }
+}
+
 app.post('/uninstall', async (req, res) => {
     console.log("POST /uninstall ")
-    const { deviceId } = req.body
     try {
+        const deviceId = await getDeviceId()
         const cmd = `xcrun simctl uninstall ${deviceId} ${bundleId}`
         await run(cmd)
         res.send("Done")
@@ -34,8 +45,8 @@ app.post('/uninstall', async (req, res) => {
 
 app.post('/boot', async (req, res) => {
     console.log("POST /boot ")
-    const { deviceId } = req.body
     try {
+        const deviceId = await getDeviceId()
         const cmd = `xcrun simctl bootstatus ${deviceId} -b`
         await run(cmd)
         res.send("Done")
@@ -47,8 +58,8 @@ app.post('/boot', async (req, res) => {
 
 app.post('/enroll', async (req, res) => {
     console.log("POST /enroll ")
-    const { deviceId } = req.body
     try {
+        const deviceId = await getDeviceId()
         const cmd = `xcrun simctl spawn ${deviceId} notifyutil -s com.apple.BiometricKit.enrollmentChanged '1' && xcrun simctl spawn ${deviceId} notifyutil -p com.apple.BiometricKit.enrollmentChanged`
         await run(cmd)
         res.send("Done")
@@ -58,20 +69,17 @@ app.post('/enroll', async (req, res) => {
     }
 })
 
-
 app.post('/match', async (req, res) => {
     console.log("POST /match ")
-    const { deviceId } = req.body
     try {
+        const deviceId = await getDeviceId()
         const cmd = `xcrun simctl spawn ${deviceId} notifyutil -p com.apple.BiometricKit_Sim.fingerTouch.match`
         await run(cmd)
         res.send("Done")
     } catch (error) {
-        console.error("Failed to match biometrics", error)
+        console.error("Failed to match biometrics in the device", error)
         res.sendStatus(500)
     }
 })
 
-app.listen(9293, () => {
-    console.log("Simulator server started!")
-})
+export default app

@@ -10,10 +10,10 @@ import Foundation
 enum LocalServer {
     static let endpoint = "http://127.0.0.1:9293"
     
-    case boot(String)
-    case enroll(String)
-    case match(String)
-    case uninstall(String)
+    case boot
+    case enroll
+    case match
+    case uninstall
 }
 
 extension LocalServer {
@@ -32,11 +32,11 @@ extension LocalServer {
 
     var payload: Data? {
         switch self {
-        case .boot(let deviceId),
-             .enroll(let deviceId),
-             .match(let deviceId),
-             .uninstall(let deviceId):
-            return try? JSONEncoder().encode(["deviceId": deviceId])
+        case .boot,
+             .enroll,
+             .match,
+             .uninstall:
+            return try? JSONEncoder().encode(["deviceId": ""])
         }
     }
 
