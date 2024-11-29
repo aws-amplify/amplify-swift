@@ -3,29 +3,11 @@
     "pins": [
       {
         "package": "AEXML",
-        "repositoryURL": "https://github.com/tadija/AEXML",
+        "repositoryURL": "https://github.com/tadija/AEXML.git",
         "state": {
           "branch": null,
           "revision": "38f7d00b23ecd891e1ee656fa6aeebd6ba04ecc3",
           "version": "4.6.1"
-        }
-      },
-      {
-        "package": "GraphViz",
-        "repositoryURL": "https://github.com/SwiftDocOrg/GraphViz.git",
-        "state": {
-          "branch": null,
-          "revision": "70bebcf4597b9ce33e19816d6bbd4ba9b7bdf038",
-          "version": "0.2.0"
-        }
-      },
-      {
-        "package": "JSONUtilities",
-        "repositoryURL": "https://github.com/yonaskolb/JSONUtilities.git",
-        "state": {
-          "branch": null,
-          "revision": "128d2ffc22467f69569ef8ff971683e2393191a0",
-          "version": "4.2.0"
         }
       },
       {
@@ -35,15 +17,6 @@
           "branch": null,
           "revision": "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
           "version": "1.0.1"
-        }
-      },
-      {
-        "package": "Rainbow",
-        "repositoryURL": "https://github.com/onevcat/Rainbow.git",
-        "state": {
-          "branch": null,
-          "revision": "626c3d4b6b55354b4af3aa309f998fae9b31a3d9",
-          "version": "3.2.0"
         }
       },
       {
@@ -60,35 +33,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "92646c0cdbaca076c8d3d0207891785b3379cbff",
-          "version": "0.3.1"
-        }
-      },
-      {
-        "package": "SwiftCLI",
-        "repositoryURL": "https://github.com/jakeheis/SwiftCLI.git",
-        "state": {
-          "branch": null,
-          "revision": "2e949055d9797c1a6bddcda0e58dada16cc8e970",
-          "version": "6.0.3"
-        }
-      },
-      {
-        "package": "Version",
-        "repositoryURL": "https://github.com/mxcl/Version",
-        "state": {
-          "branch": null,
-          "revision": "a94b48f36763c05629fc102837398505032dead9",
-          "version": "2.0.0"
-        }
-      },
-      {
-        "package": "XcodeGen",
-        "repositoryURL": "https://github.com/yonaskolb/XcodeGen",
-        "state": {
-          "branch": null,
-          "revision": "ee60884b132078035d30f9892eb8e3e91ba2382c",
-          "version": "2.35.0"
+          "revision": "6b2aa2748a7881eebb9f84fb10c01293e15b52ca",
+          "version": "0.5.0"
         }
       },
       {
@@ -96,17 +42,8 @@
         "repositoryURL": "https://github.com/tuist/xcodeproj",
         "state": {
           "branch": null,
-          "revision": "5fdac93cb4a7fd4bad5ac2da34e5bc878263043f",
-          "version": "8.10.0"
-        }
-      },
-      {
-        "package": "Yams",
-        "repositoryURL": "https://github.com/jpsim/Yams.git",
-        "state": {
-          "branch": null,
-          "revision": "0d9ee7ea8c4ebd4a489ad7a73d5c6cad55d6fed3",
-          "version": "5.0.6"
+          "revision": "9f26d78d72ef40dd2e35f624bbcde1e3b28762cf",
+          "version": "8.24.11"
         }
       }
     ]
