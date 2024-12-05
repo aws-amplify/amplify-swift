@@ -81,14 +81,21 @@ struct AWSAPIEndpointInterceptors {
                                                        endpointType: endpointType)
             postludeInterceptors.append(interceptor)
         case .amazonCognitoUserPools:
-            guard let authService = authService else {
-                throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
-                                                           "")
+            if let userPoolsAuthProvider = apiAuthProviderFactory.userPoolsAuthProvider() {
+                let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: userPoolsAuthProvider)
+                let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider,
+                                                                 isTokenExpired: expiryValidator)
+                preludeInterceptors.append(interceptor)
+            } else {
+                guard let authService = authService else {
+                    throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
+                                                               "")
+                }
+                let provider = BasicUserPoolTokenProvider(authService: authService)
+                let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider,
+                                                                 isTokenExpired: expiryValidator)
+                preludeInterceptors.append(interceptor)
             }
-            let provider = BasicUserPoolTokenProvider(authService: authService)
-            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider,
-                                                             isTokenExpired: expiryValidator)
-            preludeInterceptors.append(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw PluginError.pluginConfigurationError("AuthService not set for OIDC",
