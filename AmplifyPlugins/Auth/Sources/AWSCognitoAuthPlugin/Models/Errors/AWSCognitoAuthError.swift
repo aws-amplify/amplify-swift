@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 public enum AWSCognitoAuthError: Error {
 
     /// User not found in the system.
@@ -111,8 +113,8 @@ public enum AWSCognitoAuthError: Error {
     case webAuthnConfigurationMissing
 }
 
-extension AWSCognitoAuthError {
-    public var localizedDescription: String {
+extension AWSCognitoAuthError: LocalizedError {
+    public var errorDescription: String? {
         var message: String = ""
         switch self {
         case .userNotFound:
