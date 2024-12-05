@@ -172,6 +172,95 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
     /// - Given: A user registered in Cognito user pool
     /// - When:
     ///    - I invoke Amplify.Auth.signIn with the username and password, using userAuth flow
+    ///    - Retry confirm sign in after a wrong password attempt is not supposed to work in `userAuth` flow. Cognito doesn't support this flow.
+    ///    - Re-initiation of sign in should work correctly after a incorrect attempt
+    /// - Then:
+    ///    - I should get a completed signIn flow.
+    ///
+    func testSignInWithPasswordSRP_givenValidUser_expectErrorOnWrongPassword() async throws {
+
+        let username = "integTest\(UUID().uuidString)"
+        let password = "Pp123@\(UUID().uuidString)"
+
+        try await signUp(username: username, password: password)
+
+        do {
+            let pluginOptions = AWSAuthSignInOptions(
+                authFlowType: .userAuth)
+            var signInResult = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: .init(pluginOptions: pluginOptions))
+            guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
+                XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
+                return
+            }
+            XCTAssert(availableFactors.contains(.passwordSRP))
+            var confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                challengeResponse: AuthFactorType.passwordSRP.challengeResponse)
+
+            guard case .confirmSignInWithPassword = confirmSignInResult.nextStep else {
+                XCTFail("ConfirmSignIn should return a .confirmSignInWithPassword")
+                return
+            }
+
+            // Try confirming with wrong password and it should fail
+
+            do {
+                confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                    challengeResponse: "wrong-password")
+            } catch {
+                guard let error = error as? AuthError else {
+                    XCTFail("Error should be of type AuthError instead got: \(error)")
+                    return
+                }
+                guard case .notAuthorized = error else {
+                    XCTFail("Error should be .notAuthorized instead got: \(error)")
+                    return
+                }
+            }
+
+            // Try confirming with password again and it should fail saying that re-initiation is needed
+
+            do {
+                confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                    challengeResponse: password)
+            } catch {
+                guard let error = error as? AuthError else {
+                    XCTFail("Error should be of type AuthError instead got: \(error)")
+                    return
+                }
+                guard case .invalidState = error else {
+                    XCTFail("Error should be .invalidState instead got: \(error)")
+                    return
+                }
+            }
+
+            // After all the errors re-initiation of sign in should work
+
+            // Sign in
+            _ = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: .init(pluginOptions: pluginOptions))
+            // Select passwordSRP
+            _ = try await Amplify.Auth.confirmSignIn(
+                challengeResponse: AuthFactorType.passwordSRP.challengeResponse)
+            // Complete sign in
+            confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                challengeResponse: password)
+
+            XCTAssertTrue(confirmSignInResult.isSignedIn, "SignIn should be complete")
+        } catch {
+            XCTFail("SignIn with a valid username/password should not fail \(error)")
+        }
+    }
+
+    /// Test successful signIn of a valid user
+    ///
+    /// - Given: A user registered in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn with the username and password, using userAuth flow
     /// - Then:
     ///    - I should get a completed signIn flow.
     ///
