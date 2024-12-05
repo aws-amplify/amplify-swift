@@ -57,7 +57,7 @@ public enum AWSCognitoAuthError: Error {
     /// The user has made too many requests for a given operation.
     case requestLimitExceeded
 
-    /// Amazon Cognito service encounters an invalid AWS Lambda response or encounters an
+    /// Amazon Cognito service encountered an invalid AWS Lambda response or encountered an
     /// unexpected exception with the AWS Lambda service.
     case lambda
 
@@ -73,7 +73,7 @@ public enum AWSCognitoAuthError: Error {
     /// Requested resource is not available with the current account setup.
     case invalidAccountTypeException
 
-    /// Request was not completed because of any network related issue
+    /// Request was not completed because of a network related issue
     case network
 
     /// SMS role related issue
@@ -109,7 +109,7 @@ public enum AWSCognitoAuthError: Error {
     /// The relying party ID doesn't match
     case webAuthnRelyingPartyMismatch
 
-    /// The WebAuthm configuration is missing or incomplete
+    /// The WebAuthn configuration is missing or incomplete
     case webAuthnConfigurationMissing
 }
 
@@ -150,7 +150,7 @@ extension AWSCognitoAuthError: LocalizedError {
         case .requestLimitExceeded:
             message = "The user has made too many requests for a given operation."
         case .lambda:
-            message = "Amazon Cognito service encounters an invalid AWS Lambda response or encounters an unexpected exception with the AWS Lambda service."
+            message = "Amazon Cognito service encountered an invalid AWS Lambda response or encountered an unexpected exception with the AWS Lambda service."
         case .deviceNotTracked:
             message = "Device is not tracked."
         case .errorLoadingUI:
@@ -160,7 +160,7 @@ extension AWSCognitoAuthError: LocalizedError {
         case .invalidAccountTypeException:
             message = "Requested resource is not available with the current account setup."
         case .network:
-            message = "Request was not completed because of any network related issue."
+            message = "Request was not completed because of a network related issue."
         case .smsRole:
             message = "SMS role related issue."
         case .emailRole:
@@ -184,7 +184,7 @@ extension AWSCognitoAuthError: LocalizedError {
         case .webAuthnRelyingPartyMismatch:
             message = "The relying party ID doesn't match."
         case .webAuthnConfigurationMissing:
-            message = "The WebAuthm configuration is missing or incomplete."
+            message = "The WebAuthn configuration is missing or incomplete."
         }
         return "\(String(describing: Self.self)).\(self): \(message)"
     }
