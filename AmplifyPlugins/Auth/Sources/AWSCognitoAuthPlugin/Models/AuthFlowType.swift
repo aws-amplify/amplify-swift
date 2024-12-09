@@ -34,6 +34,21 @@ public enum AuthFlowType {
     /// - `preferredFirstFactor`: the auth factor type the user should begin signing with if available. If the preferred first factor is not available, the flow would fallback to provide available first factors.
     case userAuth(preferredFirstFactor: AuthFactorType?)
 
+    internal init?(rawValue: String) {
+        switch rawValue {
+        case "CUSTOM_AUTH":
+            self = .customWithSRP
+        case "USER_SRP_AUTH":
+            self = .userSRP
+        case "USER_PASSWORD_AUTH":
+            self = .userPassword
+        case "USER_AUTH":
+            self = .userAuth
+        default:
+            return nil
+        }
+    }
+
     var rawValue: String {
         switch self {
         case .custom, .customWithSRP, .customWithoutSRP:

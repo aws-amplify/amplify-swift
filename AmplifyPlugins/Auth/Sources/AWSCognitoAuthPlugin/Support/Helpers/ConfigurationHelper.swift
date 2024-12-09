@@ -47,14 +47,17 @@ struct ConfigurationHelper {
 
         // parse `authFlowType`
         var authFlowType: AuthFlowType
+
+        // If Migration path is enabled, auth flow type should always be set to USER_PASSWORD_AUTH
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {
             authFlowType = .userPassword
         } else if let authJson = config.value(at: "Auth.Default"),
-                  case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType"),
-                  authFlowTypeJSON == "CUSTOM_AUTH" {
-            authFlowType = .customWithSRP
+                  case .string(let authFlowTypeConfigValue) = authJson.value(at: "authenticationFlowType"),
+                  let authFlowTypeFromConfig = AuthFlowType(rawValue: authFlowTypeConfigValue) {
+            authFlowType = authFlowTypeFromConfig
         } else {
+            // if the auth flow type is not found from config, default to SRP
             authFlowType = .userSRP
         }
 
