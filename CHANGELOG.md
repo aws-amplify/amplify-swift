@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.45.1 (2024-12-09)
+
+### Bug Fixes
+
+- **auth**: add localized description to AWSCognitoAuthError (#3929)
+- **auth**: use auth flow type correctly from amplifyconfiguraiton.json (#3928)
+- **amplify-xode**: updated to support Xcode 16 (#3925)
+
 ## 2.45.0 (2024-11-25)
 
 ### Features
