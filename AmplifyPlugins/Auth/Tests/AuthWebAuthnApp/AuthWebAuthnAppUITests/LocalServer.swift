@@ -8,7 +8,7 @@
 import Foundation
 
 enum LocalServer {
-    static let endpoint = "http://127.0.0.1:9293"
+    static let endpoint = "http://127.0.0.1:9294"
     
     case boot(String)
     case enroll(String)
