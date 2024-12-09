@@ -11,7 +11,7 @@ import Foundation
 /// Represents domain-specific errors within the AWSCloudWatchLogPlugin subsystem.
 struct AWSCloudWatchLoggingError: AmplifyError {
 
-    var errorDescription: String
+    var errorDescription: String?
 
     var recoverySuggestion: String
 

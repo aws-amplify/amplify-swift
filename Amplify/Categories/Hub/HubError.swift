@@ -12,7 +12,7 @@ public enum HubError {
 }
 
 extension HubError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .configuration(let description, _, _),
              .unknownError(let description, _, _):

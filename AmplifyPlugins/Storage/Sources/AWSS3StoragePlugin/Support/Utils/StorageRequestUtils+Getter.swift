@@ -27,7 +27,7 @@ extension StorageRequestUtils {
 
     static func getSize(_ file: URL) throws -> UInt64 {
         if let error = validateFileExists(file) {
-            throw StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion)
+            throw StorageError.localFileNotFound(error.errorDescription ?? "", error.recoverySuggestion)
         }
 
         do {

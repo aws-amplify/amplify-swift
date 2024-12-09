@@ -22,7 +22,7 @@ public enum PluginError {
 }
 
 extension PluginError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .mismatchedPlugin(let description, _, _),
              .noSuchPlugin(let description, _, _),

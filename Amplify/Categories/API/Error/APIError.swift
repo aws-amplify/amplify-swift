@@ -54,7 +54,7 @@ extension APIError: AmplifyError {
         }
     }
 
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .unknown(let errorDescription, _, _):
             return "Unexpected error occurred with message: \(errorDescription)"

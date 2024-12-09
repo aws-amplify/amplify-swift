@@ -17,7 +17,7 @@ public enum AnalyticsError {
 
 extension AnalyticsError: AmplifyError {
     /// Error Description
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription

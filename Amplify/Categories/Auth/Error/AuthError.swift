@@ -51,20 +51,20 @@ extension AuthError: AmplifyError {
         }
     }
 
-    public var errorDescription: ErrorDescription {
-        switch self {
-        case .configuration(let errorDescription, _, _),
-             .service(let errorDescription, _, _),
-             .validation(_, let errorDescription, _, _),
-             .notAuthorized(let errorDescription, _, _),
-             .signedOut(let errorDescription, _, _),
-             .sessionExpired(let errorDescription, _, _),
-             .invalidState(let errorDescription, _, _):
-            return errorDescription
-        case .unknown(let errorDescription, _):
-            return "Unexpected error occurred with message: \(errorDescription)"
-        }
-    }
+//    public var errorDescription: ErrorDescription? {
+//        switch self {
+//        case .configuration(let errorDescription, _, _),
+//             .service(let errorDescription, _, _),
+//             .validation(_, let errorDescription, _, _),
+//             .notAuthorized(let errorDescription, _, _),
+//             .signedOut(let errorDescription, _, _),
+//             .sessionExpired(let errorDescription, _, _),
+//             .invalidState(let errorDescription, _, _):
+//            return errorDescription
+//        case .unknown(let errorDescription, _):
+//            return "Unexpected error occurred with message: \(errorDescription)"
+//        }
+//    }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
@@ -111,5 +111,54 @@ extension AuthError: Equatable {
         default:
             return false
         }
+    }
+}
+
+extension AuthError {
+    public var errorDescription: ErrorDescription? {
+        var message  = ""
+        switch self {
+        case .configuration(let errorDescription, let recoverySuggestion, let error):
+            message = "Configuration error: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .service(let errorDescription, let recoverySuggestion, let error):
+            message = "Service error: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .unknown(let errorDescription, let error):
+            message = "Unknown error: \(errorDescription)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .validation(let field, let errorDescription, let recoverySuggestion, let error):
+            message = "Validation error for field: \(field). \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .notAuthorized(let errorDescription, let recoverySuggestion, let error):
+            message = "Not authorized error: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .signedOut(let errorDescription, let recoverySuggestion, let error):
+            message = "Signed out: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .sessionExpired(let errorDescription, let recoverySuggestion, let error):
+            message = "Session expired: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        case .invalidState(let errorDescription, let recoverySuggestion, let error):
+            message = "Invalid state: \(errorDescription). \(recoverySuggestion)"
+            if let error = error {
+                message += " Underlying error: \(error.localizedDescription)"
+            }
+        }
+        return "\(String(describing: Self.self)): \(message)"
     }
 }

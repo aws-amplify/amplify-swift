@@ -33,7 +33,7 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
     /// An unknown error occurred
     case unknown(ErrorDescription, RecoverySuggestion, Error?)
 
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .error(let errors):
             return "GraphQL service returned a successful response containing errors: \(errors)"

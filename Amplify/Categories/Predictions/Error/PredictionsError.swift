@@ -16,7 +16,7 @@ public enum PredictionsError {
 }
 
 extension PredictionsError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .client(let clientError):
             return "A client error occurred with message:\(clientError.description)"

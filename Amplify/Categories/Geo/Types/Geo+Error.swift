@@ -40,7 +40,7 @@ extension Geo.Error: AmplifyError {
     }
 
     /// Error Description
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .invalidConfiguration(let errorDescription, _, _),
              .networkError(let errorDescription, _, _),

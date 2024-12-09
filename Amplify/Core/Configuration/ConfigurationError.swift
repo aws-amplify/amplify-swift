@@ -39,7 +39,7 @@ public enum ConfigurationError {
 
 extension ConfigurationError: AmplifyError {
     /// - Tag: ConfigurationError.errorDescription
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .amplifyAlreadyConfigured(let description, _, _),
              .invalidAmplifyConfigurationFile(let description, _, _),
