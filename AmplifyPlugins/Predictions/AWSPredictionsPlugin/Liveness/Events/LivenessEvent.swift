@@ -23,8 +23,9 @@ public enum LivenessEventKind {
             self.rawValue = rawValue
         }
 
-        public static let challenge = Self(rawValue: "ServerSessionInformationEvent")
+        public static let sessionInformation = Self(rawValue: "ServerSessionInformationEvent")
         public static let disconnect = Self(rawValue: "DisconnectionEvent")
+        public static let challenge = Self(rawValue: "ChallengeEvent")
     }
     case server(Server)
 
@@ -60,6 +61,7 @@ extension LivenessEventKind: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .server(.challenge): return ".server(.challenge)"
+        case .server(.sessionInformation): return ".server(.sessionInformation)"
         case .server(.disconnect): return ".server(.disconnect)"
         case .client(.initialFaceDetected): return ".client(.initialFaceDetected)"
         case .client(.video): return ".client(.video)"
