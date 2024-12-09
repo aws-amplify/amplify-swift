@@ -22,6 +22,11 @@ on:
         required: true
         default: true
         type: boolean
+      webauthn-ios:
+        description: '🔐 WebAuthn iOS'
+        required: true
+        default: true
+        type: boolean
   workflow_call:
 
 permissions:
@@ -59,8 +64,8 @@ jobs:
       timeout-minutes: 30
     secrets: inherit
 
-  # Disabling the integration test because the job is not able to connect to the local server
-  # auth-webauthn-integration-test-iOS:
-  #   name: Auth WebAuthn Integration Tests (iOS)
-  #   uses: ./.github/workflows/integ_test_auth_webauthn.yml
-  #   secrets: inherit
+  auth-webauthn-integration-test-iOS:
+    if: ${{ inputs.webauthn-ios != 'false' }}
+    name: Auth WebAuthn Integration Tests (iOS)
+    uses: ./.github/workflows/integ_test_auth_webauthn.yml
+    secrets: inherit

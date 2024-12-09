@@ -19,7 +19,9 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     private var deleteButton: XCUIElement!
     private var deleteUserButton: XCUIElement!
     private var springboard: XCUIApplication!
-    private var continueButton: XCUIElement!
+    private var continueButton: XCUIElement! {
+        springboard.otherElements["ASAuthorizationControllerContinueButton"]
+    }
 
     private lazy var deviceIdentifier: String = {
         let paths = Bundle.main.bundleURL.pathComponents
@@ -57,7 +59,6 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         signInButton = nil
         deleteButton = nil
         deleteUserButton = nil
-        continueButton = nil
         springboard = nil
         try await uninstallApp()
     }
@@ -233,9 +234,6 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         signOutButton = app.buttons["SignOut"]
 
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        // The Continue button only appears when a FaceID operation is triggered,
-        // so we're also not checking for its existance
-        continueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
     }
 
     @MainActor
