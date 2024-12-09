@@ -71,7 +71,9 @@ public final class FaceLivenessSession: LivenessService {
     }
 
     public func closeSocket(with code: URLSessionWebSocketTask.CloseCode) {
-        websocket.close(with: code)
+        livenessServiceDispatchQueue.async {
+            self.websocket.close(with: code)
+        }
     }
 
     public func initializeLivenessStream(withSessionID sessionID: String, userAgent: String = "") throws {
@@ -89,14 +91,16 @@ public final class FaceLivenessSession: LivenessService {
 
         savedURLForReconnect = url
         let signedConnectionURL = signer.sign(url: url)
-        websocket.open(url: signedConnectionURL)
+        livenessServiceDispatchQueue.async {
+            self.websocket.open(url: signedConnectionURL)
+        }
     }
 
     public func send<T>(
         _ event: LivenessEvent<T>,
         eventDate: @escaping () -> Date = Date.init
     ) {
-        livenessServiceDispatchQueue.sync {
+        livenessServiceDispatchQueue.async {
             let encodedPayload = self.eventStreamEncoder.encode(
                 payload: event.payload,
                 headers: [
@@ -107,7 +111,7 @@ public final class FaceLivenessSession: LivenessService {
             )
 
             let dateForSigning: Date
-            if let serverDate = serverDate {
+            if let serverDate = self.serverDate {
                 dateForSigning = serverDate
             } else {
                 dateForSigning = eventDate()
