@@ -20,7 +20,7 @@ public enum PushNotificationsError {
 }
 
 extension PushNotificationsError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .configuration(let description, _, _),
              .network(let description, _, _),

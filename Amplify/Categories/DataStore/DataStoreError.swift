@@ -27,7 +27,7 @@ public enum DataStoreError: Error {
 // MARK: - AmplifyError
 
 extension DataStoreError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .api(let error, _):
             return error.errorDescription

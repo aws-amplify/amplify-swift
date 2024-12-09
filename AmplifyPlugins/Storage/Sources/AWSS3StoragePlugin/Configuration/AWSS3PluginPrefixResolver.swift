@@ -56,7 +56,7 @@ extension StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
             guard let authError = error as? AuthError else {
                 throw StorageError.unknown("Unknown Auth Error", error)
             }
-            throw StorageError.authError(authError.errorDescription, authError.recoverySuggestion)
+            throw StorageError.authError(authError.errorDescription ?? "", authError.recoverySuggestion)
         }
     }
 }

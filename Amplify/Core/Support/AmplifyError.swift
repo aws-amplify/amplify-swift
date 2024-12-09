@@ -34,12 +34,12 @@ public typealias TargetIdentityId = String
 /// recovery suggestions and error messages.
 ///
 /// - Tag: AmplifyError
-public protocol AmplifyError: Error, CustomDebugStringConvertible {
+public protocol AmplifyError: LocalizedError, CustomDebugStringConvertible {
 
     /// A localized message describing what error occurred.
     ///
     /// - Tag: AmplifyError.errorDescription
-    var errorDescription: ErrorDescription { get }
+    var errorDescription: ErrorDescription? { get }
 
     /// A localized message describing how one might recover from the failure.
     ///
@@ -66,7 +66,7 @@ public extension AmplifyError {
     var debugDescription: String {
         let errorType = type(of: self)
 
-        var components = ["\(errorType): \(errorDescription)"]
+        var components = ["\(errorType): \(errorDescription ?? "")"]
 
         if !recoverySuggestion.isEmpty {
             components.append("Recovery suggestion: \(recoverySuggestion)")

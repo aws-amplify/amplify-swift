@@ -11,7 +11,7 @@ public enum LoggingError {
 }
 
 extension LoggingError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription

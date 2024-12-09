@@ -12,7 +12,7 @@ public enum AWSAPICategoryPluginError {
 }
 
 extension AWSAPICategoryPluginError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription

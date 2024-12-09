@@ -99,6 +99,7 @@ public extension AWSCognitoAuthPlugin {
     }
 
     func getCurrentUser() async throws -> AuthUser {
+        print(AuthError.service("test", "test", AWSCognitoAuthError.aliasExists))
         let taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         return try await taskHelper.getCurrentUser()
     }

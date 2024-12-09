@@ -335,7 +335,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             }
 
             if case .failure(let dataStoreError) = result {
-                self.log.error(dataStoreError.errorDescription)
+                self.log.error(dataStoreError.errorDescription ?? "")
                 self.log.error(dataStoreError.recoverySuggestion)
                 if let underlyingError = dataStoreError.underlyingError {
                     self.log.error("\(underlyingError)")

@@ -23,7 +23,7 @@ public enum CoreError {
 
 extension CoreError: AmplifyError {
     /// - Tag: CoreError.errorDescription
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .listOperation(let errorDescription, _, _),
              .clientValidation(let errorDescription, _, _):

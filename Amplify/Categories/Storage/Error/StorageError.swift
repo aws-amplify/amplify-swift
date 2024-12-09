@@ -59,7 +59,7 @@ public enum StorageError {
 }
 
 extension StorageError: AmplifyError {
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .accessDenied(let errorDescription, _, _),
              .authError(let errorDescription, _, _),

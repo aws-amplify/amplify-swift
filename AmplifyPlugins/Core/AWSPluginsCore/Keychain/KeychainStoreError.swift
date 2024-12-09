@@ -47,7 +47,7 @@ extension KeychainStoreError: AmplifyError {
     }
 
     /// Error Description
-    public var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription? {
         switch self {
         case .conversionError(let errorDescription, _), .codingError(let errorDescription, _):
             return errorDescription

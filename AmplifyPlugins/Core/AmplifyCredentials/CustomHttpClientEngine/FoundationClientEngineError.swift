@@ -10,7 +10,7 @@ import Amplify
 import SmithyHTTPAPI
 
 struct FoundationClientEngineError: AmplifyError {
-    let errorDescription: ErrorDescription
+    let errorDescription: ErrorDescription?
     let recoverySuggestion: RecoverySuggestion
     let underlyingError: Error?
 

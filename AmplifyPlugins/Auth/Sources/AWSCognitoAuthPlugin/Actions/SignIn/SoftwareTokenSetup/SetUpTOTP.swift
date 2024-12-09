@@ -44,14 +44,14 @@ struct SetUpTOTP: Action {
                        environment: environment)
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
-            logError(error.authError.errorDescription, environment: environment)
+            logError(error.authError.errorDescription ?? "", environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
-            logError(error.authError.errorDescription, environment: environment)
+            logError(error.authError.errorDescription ?? "", environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
