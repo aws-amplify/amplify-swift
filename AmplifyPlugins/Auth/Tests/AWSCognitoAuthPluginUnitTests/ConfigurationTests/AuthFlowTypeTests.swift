@@ -49,8 +49,8 @@ class AuthFlowTypeTests: XCTestCase {
         XCTAssertEqual(String(data: userPassword, encoding: .utf8), "{\"type\":\"USER_PASSWORD_AUTH\"}")
 
         let userAuth = try encoder.encode(AuthFlowType.userAuth(preferredFirstFactor: nil))
-        XCTAssertTrue(String(data: userAuth, encoding: .utf8)?.contains("\"preferredFirstFactor\":null"))
-        XCTAssertTrue(String(data: userAuth, encoding: .utf8)?.contains("\"type\":\"USER_AUTH\""))
+        XCTAssertTrue(String(data: userAuth, encoding: .utf8)?.contains("\"preferredFirstFactor\":null") == true)
+        XCTAssertTrue(String(data: userAuth, encoding: .utf8)?.contains("\"type\":\"USER_AUTH\"") == true)
     }
 
     func testDecoding() throws {
