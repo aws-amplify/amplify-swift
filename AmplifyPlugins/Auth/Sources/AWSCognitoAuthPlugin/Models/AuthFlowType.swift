@@ -164,14 +164,17 @@ extension AuthFlowType: Codable {
         case "USER_PASSWORD_AUTH":
             self = .userPassword
         case "USER_AUTH":
-            let preferredFirstFactorString = try container.decode(String.self, forKey: .preferredFirstFactor)
-            if let preferredFirstFactor = AuthFactorType(rawValue: preferredFirstFactorString) {
-                self = .userAuth(preferredFirstFactor: preferredFirstFactor)
+            if let preferredFirstFactorString = try container.decodeIfPresent(String.self, forKey: .preferredFirstFactor) {
+                if  let preferredFirstFactor = AuthFactorType(rawValue: preferredFirstFactorString) {
+                    self = .userAuth(preferredFirstFactor: preferredFirstFactor)
+                } else {
+                    throw DecodingError.dataCorruptedError(
+                        forKey: .preferredFirstFactor,
+                        in: container,
+                        debugDescription: "Unable to decode preferredFirstFactor value")
+                }
             } else {
-                throw DecodingError.dataCorruptedError(
-                    forKey: .preferredFirstFactor,
-                    in: container,
-                    debugDescription: "Unable to decode preferredFirstFactor value")
+                self = .userAuth(preferredFirstFactor: nil)
             }
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid AuthFlowType value")
