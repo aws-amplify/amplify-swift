@@ -133,8 +133,8 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     func retrieveCredential() throws -> AmplifyCredentials {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let authCredentialData = try keychain._getData(authCredentialStoreKey)
-        let awsCredential: AmplifyCredentials = try decode(data: authCredentialData)
-        return awsCredential
+        let amplifyCredential: AmplifyCredentials = try decode(data: authCredentialData)
+        return amplifyCredential
     }
 
     func deleteCredential() throws {
@@ -191,7 +191,7 @@ private extension AWSCognitoAuthCredentialStore {
         do {
             return try JSONEncoder().encode(object)
         } catch {
-            throw KeychainStoreError.codingError("Error occurred while encoding AWSCredentials", error)
+            throw KeychainStoreError.codingError("Error occurred while encoding credentials", error)
         }
     }
 
@@ -199,7 +199,7 @@ private extension AWSCognitoAuthCredentialStore {
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw KeychainStoreError.codingError("Error occurred while decoding AWSCredentials", error)
+            throw KeychainStoreError.codingError("Error occurred while decoding credentials", error)
         }
     }
 

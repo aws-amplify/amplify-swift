@@ -38,6 +38,8 @@ public enum AuthFlowType {
         switch rawValue {
         case "CUSTOM_AUTH":
             self = .customWithSRP
+        case "CUSTOM_AUTH_WITHOUT_SRP":
+            self = .customWithoutSRP
         case "USER_SRP_AUTH":
             self = .userSRP
         case "USER_PASSWORD_AUTH":
@@ -51,14 +53,33 @@ public enum AuthFlowType {
 
     var rawValue: String {
         switch self {
-        case .custom, .customWithSRP, .customWithoutSRP:
+        case .custom, .customWithSRP:
             return "CUSTOM_AUTH"
+        case .customWithoutSRP:
+            return "CUSTOM_AUTH_WITHOUT_SRP"
         case .userSRP:
             return "USER_SRP_AUTH"
         case .userPassword:
             return "USER_PASSWORD_AUTH"
         case .userAuth:
             return "USER_AUTH"
+        }
+    }
+
+    internal static func legacyInit(rawValue: String) -> Self? {
+        switch rawValue {
+        case "userSRP":
+            return .userSRP
+        case "userPassword":
+            return .userPassword
+        case "custom":
+            return .custom
+        case "customWithSRP":
+            return .customWithSRP
+        case "customWithoutSRP":
+            return .customWithoutSRP
+        default:
+            return nil
         }
     }
 
@@ -110,9 +131,21 @@ extension AuthFlowType: Codable {
 
     // Decoding the enum
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container: KeyedDecodingContainer<CodingKeys>
+        do {
+            container = try decoder.container(keyedBy: CodingKeys.self)
+        } catch DecodingError.typeMismatch {
+            let legacyContainer = try decoder.singleValueContainer()
+            let type = try legacyContainer.decode(String.self)
+            guard let authFlowType = AuthFlowType.legacyInit(rawValue: type) else {
+                throw DecodingError.dataCorruptedError(in: legacyContainer, debugDescription: "Invalid AuthFlowType value")
+            }
+            self = authFlowType
+            return
+        } catch {
+            throw error
+        }
 
-        // Decode the type (raw value)
         let type = try container.decode(String.self, forKey: .type)
 
         // Initialize based on the type
@@ -130,7 +163,7 @@ extension AuthFlowType: Codable {
             if let preferredFirstFactor = AuthFactorType(rawValue: preferredFirstFactorString) {
                 self = .userAuth(preferredFirstFactor: preferredFirstFactor)
             } else {
-                throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Unable to decode preferredFirstFactor value")
+                throw DecodingError.dataCorruptedError(forKey: .preferredFirstFactor, in: container, debugDescription: "Unable to decode preferredFirstFactor value")
             }
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid AuthFlowType value")
@@ -152,5 +185,4 @@ extension AuthFlowType {
             return .userAuth
         }
     }
-
 }
