@@ -19,9 +19,6 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     private var deleteButton: XCUIElement!
     private var deleteUserButton: XCUIElement!
     private var springboard: XCUIApplication!
-    private var continueButton: XCUIElement! {
-        springboard.otherElements["ASAuthorizationControllerContinueButton"]
-    }
 
     private lazy var deviceIdentifier: String = {
         let paths = Bundle.main.bundleURL.pathComponents
@@ -81,35 +78,36 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         }
 
         guard associateAttempt else {
-            XCTFail("Failed to trigger the Associate WebAuthn Credential workflow")
+            XCTFail("Failed to trigger the Associate WebAuthn Credential workflow: \(lastResult)")
             return
         }
 
         // Wait for the "Continue" button to appear in the FaceID popover and tap it
-        guard continueButton.waitForExistence(timeout: timeout) else {
-            XCTFail("Failed to find 'Continue' button")
+        let associateContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
+        guard associateContinueButton.waitForExistence(timeout: timeout) else {
+            XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential")
             return
         }
-        continueButton.tap()
+        associateContinueButton.tap()
 
         // Trigger a matching face
         try await matchBiometrics()
         guard waitForResult("WebAuthn credential was associated") else {
-            XCTFail("Failed to associate credential")
+            XCTFail("Failed to associate credential: \(lastResult)")
             return
         }
 
         // 2. List existing credentials
         listButton.tap()
         guard waitForResult("WebAuthn Credentials: 1") else {
-            XCTFail("Failed to list credentials")
+            XCTFail("Failed to list credentials: \(lastResult)")
             return
         }
 
         // 3. Sign Out
         signOutButton.tap()
         guard waitForResult("User is signed out"), signInButton.exists else {
-            XCTFail("Failed to sign out user")
+            XCTFail("Failed to sign out user: \(lastResult)")
             return
         }
 
@@ -120,13 +118,14 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         }
 
         guard signInAttempt else {
-            XCTFail("Failed to trigger the Assert WebAuthn Credential workflow")
+            XCTFail("Failed to trigger the Assert WebAuthn Credential workflow: \(lastResult)")
             return
         }
 
         // Wait for the "Continue" button to appear in the FaceID popover
-        guard continueButton.waitForExistence(timeout: timeout) else {
-            XCTFail("Failed to find 'Continue' button")
+        let signInContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
+        guard signInContinueButton.waitForExistence(timeout: timeout) else {
+            XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn")
             return
         }
 
@@ -137,27 +136,27 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         }
 
         // Tap the "Continue" button
-        continueButton.tap()
+        signInContinueButton.tap()
 
         // Trigger a matching face
         try await matchBiometrics()
 
         guard waitForResult("User is signed in") else {
-            XCTFail("Failed to Sign In with WebAuthn")
+            XCTFail("Failed to Sign In with WebAuthn: \(lastResult)")
             return
         }
 
         // 5. Delete credential
         deleteButton.tap()
         guard waitForResult("WebAuthn credential was deleted") else {
-            XCTFail("Failed to delete credential")
+            XCTFail("Failed to delete credential: \(lastResult)")
             return
         }
 
         // 6. Verify deletion
         listButton.tap()
         guard waitForResult("WebAuthn Credentials: 0") else {
-            XCTFail("Failed to list credentials")
+            XCTFail("Failed to list credentials: \(lastResult)")
             return
         }
     }
@@ -194,7 +193,7 @@ final class AuthWebAuthnAppUITests: XCTestCase {
             return
         }
 
-        username = usernameElement.label
+        username = usernameElement.label.lowercased()
 
         // Once the Username label exists, all these button are expected to visible as well,
         // so we don't wait for them and instead just check for their existence
@@ -240,7 +239,7 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     private func signUpAndSignInUser() {
         signUpButton.tap()
         guard waitForResult("User is signed in"), signOutButton.exists else {
-            XCTFail("Failed to Sign Up and Sign In")
+            XCTFail("Failed to Sign Up and Sign In: \(lastResult)")
             return
         }
     }
@@ -253,7 +252,7 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         }
         deleteUserButton.tap()
         guard waitForResult("User was deleted"), signUpButton.exists else {
-            XCTFail("Failed to delete the user")
+            XCTFail("Failed to delete the user: \(lastResult)")
             return
         }
     }
@@ -274,5 +273,9 @@ final class AuthWebAuthnAppUITests: XCTestCase {
             return await attempt(times: times - 1, action)
         }
         return result
+    }
+
+    private var lastResult: String {
+        app.staticTexts["LastResult"].label
     }
 }
