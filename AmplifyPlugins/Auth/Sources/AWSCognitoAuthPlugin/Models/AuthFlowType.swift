@@ -137,7 +137,8 @@ extension AuthFlowType: Codable {
             container = try decoder.container(keyedBy: CodingKeys.self)
         } catch DecodingError.typeMismatch {
             // The type mismatch has been added to handle a scenario where the user is migrating passwordless flows.
-            // Passwordless flow added a new enum case with a associated type. The association resulted in encoding structure changes that is different from the non-passwordless flows.
+            // Passwordless flow added a new enum case with a associated type.
+            // The association resulted in encoding structure changes that is different from the non-passwordless flows.
             // The structure change causes the type mismatch exception and this code block tries to retrieve the legacy structure and decode it.
             let legacyContainer = try decoder.singleValueContainer()
             let type = try legacyContainer.decode(String.self)
@@ -167,7 +168,10 @@ extension AuthFlowType: Codable {
             if let preferredFirstFactor = AuthFactorType(rawValue: preferredFirstFactorString) {
                 self = .userAuth(preferredFirstFactor: preferredFirstFactor)
             } else {
-                throw DecodingError.dataCorruptedError(forKey: .preferredFirstFactor, in: container, debugDescription: "Unable to decode preferredFirstFactor value")
+                throw DecodingError.dataCorruptedError(
+                    forKey: .preferredFirstFactor,
+                    in: container,
+                    debugDescription: "Unable to decode preferredFirstFactor value")
             }
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid AuthFlowType value")
