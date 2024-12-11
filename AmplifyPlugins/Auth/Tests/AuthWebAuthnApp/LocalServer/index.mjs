@@ -72,6 +72,6 @@ app.post('/match', async (req, res) => {
     }
 })
 
-app.listen(9293, () => {
+app.listen(9294, () => {
     console.log("Simulator server started!")
 })
