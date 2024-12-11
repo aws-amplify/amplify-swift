@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.45.2 (2024-12-11)
+
+### Bug Fixes
+
+- **auth**: fix credential decoding
+- Fixing the WebAuthn integration tests (#3933)
+
 ## 2.45.1 (2024-12-09)
 
 ### Bug Fixes
