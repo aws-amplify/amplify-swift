@@ -36,7 +36,7 @@ public enum AuthFlowType {
 
     internal init?(rawValue: String) {
         switch rawValue {
-        case "CUSTOM_AUTH":
+        case "CUSTOM_AUTH", "CUSTOM_AUTH_WITH_SRP":
             self = .customWithSRP
         case "CUSTOM_AUTH_WITHOUT_SRP":
             self = .customWithoutSRP
@@ -54,7 +54,7 @@ public enum AuthFlowType {
     var rawValue: String {
         switch self {
         case .custom, .customWithSRP:
-            return "CUSTOM_AUTH"
+            return "CUSTOM_AUTH_WITH_SRP"
         case .customWithoutSRP:
             return "CUSTOM_AUTH_WITHOUT_SRP"
         case .userSRP:
@@ -66,6 +66,7 @@ public enum AuthFlowType {
         }
     }
 
+    // This initializer has been added to migrate credentials that were created in the pre-passwordless era
     internal static func legacyInit(rawValue: String) -> Self? {
         switch rawValue {
         case "userSRP":
@@ -135,6 +136,9 @@ extension AuthFlowType: Codable {
         do {
             container = try decoder.container(keyedBy: CodingKeys.self)
         } catch DecodingError.typeMismatch {
+            // The type mismatch has been added to handle a scenario where the user is migrating passwordless flows.
+            // Passwordless flow added a new enum case with a associated type. The association resulted in encoding structure changes that is different from the non-passwordless flows.
+            // The structure change causes the type mismatch exception and this code block tries to retrieve the legacy structure and decode it.
             let legacyContainer = try decoder.singleValueContainer()
             let type = try legacyContainer.decode(String.self)
             guard let authFlowType = AuthFlowType.legacyInit(rawValue: type) else {
@@ -152,10 +156,10 @@ extension AuthFlowType: Codable {
         switch type {
         case "USER_SRP_AUTH":
             self = .userSRP
-        case "CUSTOM_AUTH":
-            // Depending on your needs, choose either `.custom`, `.customWithSRP`, or `.customWithoutSRP`
-            // In this case, we'll default to `.custom`
-            self = .custom
+        case "CUSTOM_AUTH", "CUSTOM_AUTH_WITH_SRP":
+            self = .customWithSRP
+        case "CUSTOM_AUTH_WITHOUT_SRP":
+            self = .customWithoutSRP
         case "USER_PASSWORD_AUTH":
             self = .userPassword
         case "USER_AUTH":
