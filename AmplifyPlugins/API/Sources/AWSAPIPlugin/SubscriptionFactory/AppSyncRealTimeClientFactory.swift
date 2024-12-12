@@ -136,7 +136,7 @@ extension AppSyncRealTimeClientFactory {
             return url
         }
 
-        guard host.hasSuffix("amazonaws.com") else {
+        guard host.hasSuffix("amazonaws.com") || host.hasSuffix("amazonaws.com.cn") else {
             return url.appendingPathComponent("realtime")
         }
 
@@ -163,7 +163,7 @@ extension AppSyncRealTimeClientFactory {
             return url
         }
 
-        guard host.hasSuffix("amazonaws.com") else {
+        guard host.hasSuffix("amazonaws.com") || host.hasSuffix("amazonaws.com.cn") else {
             if url.lastPathComponent == "realtime" {
                 return url.deletingLastPathComponent()
             }
