@@ -15,13 +15,19 @@ final class WebSocketSession {
     private var receiveMessage: ((Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult)?
     private var onSocketClosed: ((URLSessionWebSocketTask.CloseCode) -> Void)?
     private var onServerDateReceived: ((Date?) -> Void)?
+    private let delegateQueue: OperationQueue
 
     init() {
+        self.delegateQueue = OperationQueue()
+        self.delegateQueue.maxConcurrentOperationCount = 1
+        self.delegateQueue.qualityOfService = .userInteractive
+        
         self.urlSessionWebSocketDelegate = Delegate()
+
         self.session = URLSession(
             configuration: .default,
             delegate: urlSessionWebSocketDelegate,
-            delegateQueue: .init()
+            delegateQueue: delegateQueue
         )
     }
 
