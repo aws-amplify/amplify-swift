@@ -17,6 +17,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
             URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")
         )
+
+        let appSyncEndpointCN = URL(string: "https://abc.appsync-api.amazonaws.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpointCN),
+            URL(string: "wss://abc.appsync-realtime-api.amazonaws.com.cn/graphql")
+        )
     }
 
     func testAppSyncRealTimeEndpoint_withAWSAppSyncRealTimeDomain_returnTheSameDomain() {
@@ -24,6 +30,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
             URL(string: "wss://abc.appsync-realtime-api.amazonaws.com/graphql")
+        )
+
+        let appSyncEndpointCN = URL(string: "wss://abc.appsync-realtime-api.amazonaws.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpointCN),
+            URL(string: "wss://abc.appsync-realtime-api.amazonaws.com.cn/graphql")
         )
     }
 
@@ -33,6 +45,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
             AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpoint),
             URL(string: "https://test.example.com/graphql/realtime")
         )
+
+        let appSyncEndpointCN = URL(string: "https://test.example.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(appSyncEndpointCN),
+            URL(string: "https://test.example.com.cn/graphql/realtime")
+        )
     }
 
     func testAppSyncApiEndpoint_withAWSAppSyncRealTimeDomain_returnCorrectApiDomain() {
@@ -40,6 +58,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
             URL(string: "https://abc.appsync-api.amazonaws.com/graphql")
+        )
+
+        let appSyncEndpointCN = URL(string: "wss://abc.appsync-realtime-api.amazonaws.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpointCN),
+            URL(string: "https://abc.appsync-api.amazonaws.com.cn/graphql")
         )
     }
 
@@ -49,6 +73,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
             AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
             URL(string: "https://abc.appsync-api.amazonaws.com/graphql")
         )
+
+        let appSyncEndpointCN = URL(string: "https://abc.appsync-api.amazonaws.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpointCN),
+            URL(string: "https://abc.appsync-api.amazonaws.com.cn/graphql")
+        )
     }
 
     func testAppSyncApiEndpoint_withCustomDomain_returnCorrectRealtimePath() {
@@ -56,6 +86,12 @@ class AppSyncRealTimeClientFactoryTests: XCTestCase {
         XCTAssertEqual(
             AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpoint),
             URL(string: "https://test.example.com/graphql")
+        )
+
+        let appSyncEndpointCN = URL(string: "https://test.example.com.cn/graphql")!
+        XCTAssertEqual(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(appSyncEndpointCN),
+            URL(string: "https://test.example.com.cn/graphql")
         )
     }
 }
