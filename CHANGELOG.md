@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.45.3 (2025-01-02)
+
+### Bug Fixes
+
+- **API**: Fixing issue with CN endpoints (#3941)
+
 ## 2.45.2 (2024-12-11)
 
 ### Bug Fixes
