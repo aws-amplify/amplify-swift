@@ -100,7 +100,7 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report
