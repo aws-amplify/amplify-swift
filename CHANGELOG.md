@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.45.4 (2025-01-13)
+
+### Bug Fixes
+
+- **predictions**: use serial queue for WebSocketSession delegate queue (#3935)
+
 ## 2.45.3 (2025-01-02)
 
 ### Bug Fixes
