@@ -40,15 +40,15 @@ struct InitiateSignOut: Action {
             let data = try await credentialStoreClient?.fetchData(
                 type: .amplifyCredentials
             )
-            guard case .amplifyCredentials(var credentials) = data else {
+            guard case .amplifyCredentials(let credentials) = data else {
                 return signedInData
             }
 
             // Update SignedInData based on credential type
             switch credentials {
-            case .userPoolOnly(var updatedSignedInData):
+            case .userPoolOnly(let updatedSignedInData):
                 return updatedSignedInData
-            case .userPoolAndIdentityPool(var updatedSignedInData, _, _):
+            case .userPoolAndIdentityPool(let updatedSignedInData, _, _):
                 return updatedSignedInData
             case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
                 return signedInData
