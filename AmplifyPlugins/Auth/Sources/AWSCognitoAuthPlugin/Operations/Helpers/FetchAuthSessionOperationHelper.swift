@@ -7,10 +7,12 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 class FetchAuthSessionOperationHelper {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
+    var environment: Environment? = nil
 
     func fetch(_ authStateMachine: AuthStateMachine,
                forceRefresh: Bool = false) async throws -> AuthSession {
@@ -98,7 +100,7 @@ class FetchAuthSessionOperationHelper {
             case .sessionEstablished(let credentials):
                 return credentials.cognitoSession
             case .error(let authorizationError):
-                return try sessionResultWithError(
+                return try await sessionResultWithError(
                     authorizationError,
                     authenticationState: authenticationState)
             default: continue
@@ -111,7 +113,7 @@ class FetchAuthSessionOperationHelper {
     func sessionResultWithError(
         _ error: AuthorizationError,
         authenticationState: AuthenticationState
-    ) throws -> AuthSession {
+    ) async throws -> AuthSession {
         log.verbose("Received fetch auth session error - \(error)")
 
         var isSignedIn = false
@@ -129,8 +131,10 @@ class FetchAuthSessionOperationHelper {
                 authError = fetchError.authError
             }
         case .sessionExpired(let error):
+            await setRefreshTokenExpiredInSignedInData()
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession(
                 underlyingError: error)
+
             return session
         default:
             break
@@ -142,6 +146,43 @@ class FetchAuthSessionOperationHelper {
             awsCredentialsResult: .failure(authError),
             cognitoTokensResult: .failure(authError))
         return session
+    }
+
+    func setRefreshTokenExpiredInSignedInData() async {
+        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
+        do {
+            let data = try await credentialStoreClient?.fetchData(
+                type: .amplifyCredentials
+            )
+            guard case .amplifyCredentials(var credentials) = data else {
+                return
+            }
+
+            // Update SignedInData based on credential type
+            switch credentials {
+            case .userPoolOnly(var signedInData):
+                signedInData.isRefreshTokenExpired = true
+                credentials = .userPoolOnly(signedInData: signedInData)
+
+            case .userPoolAndIdentityPool(var signedInData, let identityId, let awsCredentials):
+                signedInData.isRefreshTokenExpired = true
+                credentials = .userPoolAndIdentityPool(
+                    signedInData: signedInData,
+                    identityID: identityId,
+                    credentials: awsCredentials)
+
+            case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
+                return
+            }
+
+            try await credentialStoreClient?.storeData(data: .amplifyCredentials(credentials))
+        } catch KeychainStoreError.itemNotFound {
+            let logger = (environment as? LoggerProvider)?.logger
+            logger?.info("No existing credentials found.")
+        } catch {
+            let logger = (environment as? LoggerProvider)?.logger
+            logger?.error("Unable to update credentials with error: \(error)")
+        }
     }
 }
 
