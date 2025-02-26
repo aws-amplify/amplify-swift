@@ -47,8 +47,6 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql/config.yml
-        debug: true
-        debug-artifact-name: debug-artifact-${{ github.run_id }}-${{ github.run_attempt }}
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@b56ba49b26e50535fa1e7f7db0f4f7b4bf65d80d
