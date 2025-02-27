@@ -41,7 +41,7 @@ runs:
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=16.0.0
+        LATEST_XCODE_VERSION=16.2.0
         MINIMUM_XCODE_VERSION=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
@@ -67,15 +67,15 @@ runs:
         case $INPUT_PLATFORM/$INPUT_XCODE_VERSION in
           iOS/latest) 
             DEVICE="iPhone 16"
-            OS_VERSION="18.0"
+            OS_VERSION="18.2"
             ;;
           iOS/*)
-            DEVICE="iPhone 14"
-            OS_VERSION="17.0.1"
+            DEVICE="iPhone 15"
+            OS_VERSION="17.0"
             ;;
           tvOS/latest)
             DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="18.0"
+            OS_VERSION="18.2"
             ;;
           tvOS/*)
             DEVICE="Apple TV 4K (3rd generation)"
@@ -83,15 +83,15 @@ runs:
             ;;
           watchOS/latest)
             DEVICE="Apple Watch Series 10 (46mm)"
-            OS_VERSION="11.0"
+            OS_VERSION="11.2"
             ;;
           watchOS/*)
-            DEVICE="Apple Watch Series 8 (45mm)"
+            DEVICE="Apple Watch Series 7 (45mm)"
             OS_VERSION="10.0"
             ;;
           visionOS/latest)
             DEVICE="Apple Vision Pro"
-            OS_VERSION="2.0"
+            OS_VERSION="2.2"
             ;;
           visionOS/*)
             DEVICE="Apple Vision Pro"
