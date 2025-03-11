@@ -128,7 +128,9 @@ final class WebSocketSession {
             }
             
             let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
             dateFormatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss z"
+            dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
             guard let serverDate = dateFormatter.date(from: dateString) else {
                 Amplify.log.verbose("\(#function): Error parsing Date header in expected format")
                 onServerDateReceived(nil)
