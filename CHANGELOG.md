@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.46.0 (2025-02-27)
+
+### Features
+
+- **auth**: adding support for keychain sharing using app groups (#3947)
+
 ## 2.45.4 (2025-01-13)
 
 ### Bug Fixes

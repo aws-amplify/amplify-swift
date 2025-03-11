@@ -52,6 +52,7 @@ public protocol KeychainStoreBehavior {
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     func _removeAll() throws
+    
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -74,10 +75,12 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     public init(service: String, accessGroup: String? = nil) {
-        var attributes = KeychainStoreAttributes(service: service)
-        attributes.accessGroup = accessGroup
-        self.init(attributes: attributes)
-        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=\(accessGroup ?? "")")
+        attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
+        log.verbose(
+            "[KeychainStore] Initialized keychain with service=\(service), " +
+            "attributes=\(attributes), " +
+            "accessGroup=\(attributes.accessGroup ?? "No access group specified")"
+        )
     }
 
     @_spi(KeychainStore)
@@ -258,6 +261,7 @@ extension KeychainStore {
         /** Return Type Key Constants */
         static let ReturnData = String(kSecReturnData)
         static let ReturnAttributes = String(kSecReturnAttributes)
+        static let ReturnRef = String(kSecReturnRef)
 
         /** Value Type Key Constants */
         static let ValueData = String(kSecValueData)

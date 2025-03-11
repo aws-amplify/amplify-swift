@@ -114,10 +114,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
         let options = options ?? AuthFetchSessionRequest.Options()
         let request = AuthFetchSessionRequest(options: options)
-        let task = AWSAuthFetchSessionTask(
-            request,
-            environment: authEnvironment,
-            authStateMachine: authStateMachine)
+        let forceReconfigure = secureStoragePreferences?.accessGroup?.name != nil
+        let task = AWSAuthFetchSessionTask(request,
+                                           authStateMachine: authStateMachine,
+                                           configuration: authConfiguration,
+                                           forceReconfigure: forceReconfigure)
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSession

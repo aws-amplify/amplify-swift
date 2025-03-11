@@ -13,6 +13,7 @@ struct AWSCognitoAuthCredentialStore {
 
     // Credential store constants
     private let service = "com.amplify.awsCognitoAuthPlugin"
+    private let sharedService = "com.amplify.awsCognitoAuthPluginShared"
     private let sessionKey = "session"
     private let deviceMetadataKey = "deviceMetadata"
     private let deviceASFKey = "deviceASF"
@@ -25,14 +26,40 @@ struct AWSCognitoAuthCredentialStore {
     private var isKeychainConfiguredKey: String {
         "\(userDefaultsNameSpace).isKeychainConfigured"
     }
+    /// This UserDefaults Key is use to retrieve the stored access group to determine
+    /// which access group the migration should happen from
+    /// If none is found, the unshared service is used for migration and all items
+    /// under that service are queried
+    private var accessGroupKey: String {
+        "\(userDefaultsNameSpace).accessGroup"
+    }
 
     private let authConfiguration: AuthConfiguration
     private let keychain: KeychainStoreBehavior
     private let userDefaults = UserDefaults.standard
+    private let accessGroup: String?
 
-    init(authConfiguration: AuthConfiguration, accessGroup: String? = nil) {
+    init(
+        authConfiguration: AuthConfiguration,
+        accessGroup: String? = nil,
+        migrateKeychainItemsOfUserSession: Bool = false
+    ) {
         self.authConfiguration = authConfiguration
-        self.keychain = KeychainStore(service: service, accessGroup: accessGroup)
+        self.accessGroup = accessGroup
+        if let accessGroup {
+            self.keychain = KeychainStore(service: sharedService, accessGroup: accessGroup)
+        } else {
+            self.keychain = KeychainStore(service: service)
+        }
+        
+        let oldAccessGroup = retrieveStoredAccessGroup()
+        if migrateKeychainItemsOfUserSession {
+            try? migrateKeychainItemsToAccessGroup()
+        } else if oldAccessGroup == nil && oldAccessGroup != accessGroup {
+            try? KeychainStore(service: service)._removeAll()
+        }
+            
+        saveStoredAccessGroup()
 
         if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
             try? clearAllCredentials()
@@ -181,6 +208,39 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     private func clearAllCredentials() throws {
         try keychain._removeAll()
     }
+    
+    private func retrieveStoredAccessGroup() -> String? {
+        return userDefaults.string(forKey: accessGroupKey)
+    }
+    
+    private func saveStoredAccessGroup() {
+        if let accessGroup {
+            userDefaults.set(accessGroup, forKey: accessGroupKey)
+        } else {
+            userDefaults.removeObject(forKey: accessGroupKey)
+        }
+    }
+    
+    private func migrateKeychainItemsToAccessGroup() throws {
+        let oldAccessGroup = retrieveStoredAccessGroup()
+        
+        if oldAccessGroup == accessGroup {
+            log.info("[AWSCognitoAuthCredentialStore] Stored access group is the same as current access group, aborting migration")
+            return
+        }
+        
+        let oldService = oldAccessGroup != nil ? sharedService : service
+        let newService = accessGroup != nil ? sharedService : service
+        
+        do {
+            try KeychainStoreMigrator(oldService: oldService, newService: newService, oldAccessGroup: oldAccessGroup, newAccessGroup: accessGroup).migrate()
+        } catch {
+            log.error("[AWSCognitoAuthCredentialStore] Migration has failed")
+            return
+        }
+        
+        log.verbose("[AWSCognitoAuthCredentialStore] Migration of keychain items from old access group to new access group successful")
+    }
 
 }
 
@@ -204,3 +264,5 @@ private extension AWSCognitoAuthCredentialStore {
     }
 
 }
+
+extension AWSCognitoAuthCredentialStore: DefaultLogger { }
