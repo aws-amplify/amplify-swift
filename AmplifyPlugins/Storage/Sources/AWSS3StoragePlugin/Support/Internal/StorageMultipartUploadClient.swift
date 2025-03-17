@@ -146,6 +146,10 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             Task {
                 do {
                     let partialFileURL = try result.get()
+                    defer {
+                        // Clean up the temporary file after we're done with it
+                        self.fileSystem.removeFileIfExists(fileURL: partialFileURL)
+                    }
 
                     let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
