@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.46.1 (2025-03-18)
+
+### Bug Fixes
+
+- **predictions**: use UTC timezone in date formatter (#3965)
+
 ## 2.46.0 (2025-02-27)
 
 ### Features
