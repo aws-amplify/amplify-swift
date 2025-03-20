@@ -29,6 +29,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         self.request = request
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.fetchAuthSessionHelper.environment = environment
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.configuration = configuration
         self.forceReconfigure = forceReconfigure

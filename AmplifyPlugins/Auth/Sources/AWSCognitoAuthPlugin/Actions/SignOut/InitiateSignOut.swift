@@ -17,19 +17,47 @@ struct InitiateSignOut: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
+        let updatedSignedInData = await getUpdatedSignedInData(environment: environment)
         let event: SignOutEvent
         if case .hostedUI(let options) = signedInData.signInMethod,
            options.preferPrivateSession == false {
             event = SignOutEvent(eventType: .invokeHostedUISignOut(signOutEventData,
-                                                                   signedInData))
+                                                                   updatedSignedInData))
         } else if signOutEventData.globalSignOut {
-            event = SignOutEvent(eventType: .signOutGlobally(signedInData))
+            event = SignOutEvent(eventType: .signOutGlobally(updatedSignedInData))
         } else {
-            event = SignOutEvent(eventType: .revokeToken(signedInData))
+            event = SignOutEvent(eventType: .revokeToken(updatedSignedInData))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
+    }
+
+    private func getUpdatedSignedInData(
+        environment: Environment
+    ) async -> SignedInData {
+        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
+        do {
+            let data = try await credentialStoreClient?.fetchData(
+                type: .amplifyCredentials
+            )
+            guard case .amplifyCredentials(let credentials) = data else {
+                return signedInData
+            }
+
+            // Update SignedInData based on credential type
+            switch credentials {
+            case .userPoolOnly(let updatedSignedInData):
+                return updatedSignedInData
+            case .userPoolAndIdentityPool(let updatedSignedInData, _, _):
+                return updatedSignedInData
+            case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
+                return signedInData
+            }
+        } catch {
+            let logger = (environment as? LoggerProvider)?.logger
+            logger?.error("Unable to update credentials with error: \(error)")
+            return signedInData
+        }
     }
 
 }
