@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.46.2 (2025-04-09)
+
+### Bug Fixes
+
+- **storage**: clean up cached files upon completion (#3967)
+
 ## 2.46.1 (2025-03-18)
 
 ### Bug Fixes
