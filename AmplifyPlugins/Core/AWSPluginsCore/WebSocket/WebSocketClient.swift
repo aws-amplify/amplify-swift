@@ -201,15 +201,31 @@ public final actor WebSocketClient: NSObject {
             @unknown default:
                 break
             }
+            
+            // Only continue reading if no error occurred
+            await self.startReadMessage()
         } catch {
             if connection.state == .running {
-                subject.send(.error(error))
+                // Check specifically for ENOTCONN errors
+                let nsError = error as NSError
+                if nsError.domain == NSPOSIXErrorDomain, nsError.code == 57 { // ENOTCONN
+                    log.debug("[WebSocketClient] Socket is not connected (ENOTCONN), stopping read loop")
+                    self.subject.send(.error(WebSocketClient.Error.connectionLost))
+                    // Don't recursively call startReadMessage for ENOTCONN
+                    return
+                } else {
+                    subject.send(.error(error))
+                }
             } else {
                 log.debug("[WebSocketClient] read message failed with connection state \(connection.state), error \(error)")
             }
+            
+            // For other errors, we can try again with a small delay to avoid tight loops
+            Task {
+                try? await Task.sleep(nanoseconds: 100_000_000) // 100ms delay
+                await self.startReadMessage()
+            }
         }
-
-        await self.startReadMessage()
     }
 }
 
@@ -249,7 +265,8 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         let nsError = error as NSError
         switch (nsError.domain, nsError.code) {
         case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
-             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground
+             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)), // background to foreground
+             (NSPOSIXErrorDomain.self, 57): // ENOTCONN - Socket is not connected
             self.subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
                 await self?.networkMonitor.updateState(.offline)
