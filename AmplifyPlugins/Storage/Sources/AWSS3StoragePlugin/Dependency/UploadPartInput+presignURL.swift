@@ -7,7 +7,7 @@
 import Foundation
 import AWSS3
 @_spi(SmithyReadWrite) import ClientRuntime
-@_spi(UnknownAWSHTTPServiceError) @_spi(SmithyReadWrite) import AWSClientRuntime
+@_spi(UnknownAWSHTTPServiceError) @_spi(SmithyReadWrite) @_spi(AWSEndpointResolverMiddleware) import AWSClientRuntime
 import Smithy
 import SmithyHTTPAPI
 import SmithyRetries
@@ -60,12 +60,14 @@ extension UploadPartInput {
         builder.retryStrategy(SmithyRetries.DefaultRetryStrategy(options: config.retryStrategyOptions))
         builder.retryErrorInfoProvider(AWSClientRuntime.AWSRetryErrorInfoProvider.errorInfo(for:))
         builder.applySigner(ClientRuntime.SignerMiddleware<UploadPartOutput>())
-        let endpointParams = EndpointParams(accelerate: config.accelerate ?? false, bucket: input.bucket, disableMultiRegionAccessPoints: config.disableMultiRegionAccessPoints ?? false, disableS3ExpressSessionAuth: config.disableS3ExpressSessionAuth, endpoint: config.endpoint, forcePathStyle: config.forcePathStyle ?? false, key: input.key, region: config.region, useArnRegion: config.useArnRegion, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false, useGlobalEndpoint: config.useGlobalEndpoint ?? false)
-        context.set(key: Smithy.AttributeKey<EndpointParams>(name: "EndpointParams"), value: endpointParams)
-        builder.applyEndpoint(AWSClientRuntime.EndpointResolverMiddleware<UploadPartOutput, EndpointParams>(endpointResolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }, endpointParams: endpointParams))
+        let endpointParamsBlock = { [config] (context: Smithy.Context) in
+            EndpointParams(accelerate: config.accelerate ?? false, bucket: input.bucket, disableMultiRegionAccessPoints: config.disableMultiRegionAccessPoints ?? false, disableS3ExpressSessionAuth: config.disableS3ExpressSessionAuth, endpoint: config.endpoint, forcePathStyle: config.forcePathStyle ?? false, key: input.key, region: config.region, useArnRegion: config.useArnRegion, useDualStack: config.useDualStack ?? false, useFIPS: config.useFIPS ?? false, useGlobalEndpoint: config.useGlobalEndpoint ?? false)
+        }
+        context.set(key: Smithy.AttributeKey<EndpointParams>(name: "EndpointParams"), value: endpointParamsBlock(context))
+        builder.applyEndpoint(AWSClientRuntime.AWSEndpointResolverMiddleware<UploadPartOutput, EndpointParams>(paramsBlock: endpointParamsBlock, resolverBlock: { [config] in try config.endpointResolver.resolve(params: $0) }))
         builder.selectAuthScheme(ClientRuntime.AuthSchemeMiddleware<UploadPartOutput>())
         builder.interceptors.add(AWSClientRuntime.AWSS3ErrorWith200StatusXMLMiddleware<UploadPartInput, UploadPartOutput>())
-        builder.interceptors.add(AWSClientRuntime.FlexibleChecksumsRequestMiddleware<UploadPartInput, UploadPartOutput>(checksumAlgorithm: input.checksumAlgorithm?.rawValue))
+        builder.interceptors.add(AWSClientRuntime.FlexibleChecksumsRequestMiddleware<UploadPartInput, UploadPartOutput>(requestChecksumRequired: false, checksumAlgorithm: input.checksumAlgorithm?.rawValue, checksumAlgoHeaderName: "x-amz-sdk-checksum-algorithm"))
         builder.serialize(UploadPartPresignedMiddleware())
         var metricsAttributes = Smithy.Attributes()
         metricsAttributes.set(key: ClientRuntime.OrchestratorMetricsAttributesKeys.service, value: "S3")
