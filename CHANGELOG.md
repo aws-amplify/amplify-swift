@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.47.0 (2025-04-24)
+
+### Features
+
+- bumping the sdk version to 1.2.59 (#3979)
+
 ## 2.46.2 (2025-04-09)
 
 ### Bug Fixes
