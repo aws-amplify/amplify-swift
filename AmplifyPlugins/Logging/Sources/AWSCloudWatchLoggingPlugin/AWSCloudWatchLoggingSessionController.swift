@@ -132,14 +132,19 @@ final class AWSCloudWatchLoggingSessionController {
         }
         self.batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
             guard self?.networkMonitor.isOnline == true else { return }
+            
+            // Capture strong references to consumer and batch before the async task
+            let strongConsumer = consumer
+            let strongBatch = batch
+            
             Task {
                 do {
-                    try await consumer.consume(batch: batch)
+                    try await strongConsumer.consume(batch: strongBatch)
                 } catch {
                     Amplify.Logging.default.error("Error flushing logs with error \(error.localizedDescription)")
                     let payload = HubPayload(eventName: HubPayload.EventName.Logging.flushLogFailure, context: error.localizedDescription)
                     Amplify.Hub.dispatch(to: HubChannel.logging, payload: payload)
-                    try batch.complete()
+                    try strongBatch.complete()
                 }
             }
         }
@@ -178,8 +183,15 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     private func consumeLogBatch(_ batch: LogBatch) async throws {
+        // Check if consumer exists before trying to use it
+        guard let consumer = self.consumer else {
+            // If consumer is nil, still mark the batch as completed to prevent memory leaks
+            try batch.complete()
+            return
+        }
+        
         do {
-            try await consumer?.consume(batch: batch)
+            try await consumer.consume(batch: batch)
         } catch {
             Amplify.Logging.default.error("Error flushing logs with error \(error.localizedDescription)")
             let payload = HubPayload(eventName: HubPayload.EventName.Logging.flushLogFailure, context: error.localizedDescription)
