@@ -18,7 +18,12 @@ class CloudWatchLoggingConsumer {
     private let logGroupName: String
     private var logStreamName: String?
     private var ensureLogStreamExistsComplete: Bool = false
-    private let encoder = JSONEncoder()
+    private let encoderLock = NSLock()
+    private let encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .millisecondsSince1970
+        return encoder
+    }()
 
     init(
         client: CloudWatchLogsClientProtocol,
@@ -28,6 +33,12 @@ class CloudWatchLoggingConsumer {
         self.client = client
         self.formatter = CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier)
         self.logGroupName = logGroupName
+    }
+
+    private func safeEncode<T: Encodable>(_ value: T) throws -> Data {
+        return try encoderLock.withLock {
+            return try encoder.encode(value)
+        }
     }
 }
 
@@ -47,22 +58,23 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
 
-        // Wrap encoding in do-catch to prevent crashes
+        // Create a strong reference to entries to prevent deallocation during encoding
+        let entriesCopy = entries
+        
         var batchByteSize: Int
         do {
-            batchByteSize = try encoder.encode(entries).count
+            batchByteSize = try safeEncode(entriesCopy).count
         } catch {
             Amplify.Logging.error("Failed to encode log entries: \(error)")
             try batch.complete()
             return
         }
         
-        if entries.count > AWSCloudWatchConstants.maxLogEvents {
-            let smallerEntries = entries.chunked(into: AWSCloudWatchConstants.maxLogEvents)
+        if entriesCopy.count > AWSCloudWatchConstants.maxLogEvents {
+            let smallerEntries = entriesCopy.chunked(into: AWSCloudWatchConstants.maxLogEvents)
             for entries in smallerEntries {
-                // Wrap in do-catch to prevent crashes
                 do {
-                    let entrySize = try encoder.encode(entries).count
+                    let entrySize = try safeEncode(entries).count
                     if entrySize > AWSCloudWatchConstants.maxBatchByteSize {
                         let chunks = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
                         for chunk in chunks {
@@ -78,7 +90,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             }
         } else if batchByteSize > AWSCloudWatchConstants.maxBatchByteSize {
             do {
-                let smallerEntries = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
+                let smallerEntries = try chunk(entriesCopy, into: AWSCloudWatchConstants.maxBatchByteSize)
                 for entries in smallerEntries {
                     try await sendLogEvents(entries)
                 }
@@ -86,7 +98,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 Amplify.Logging.error("Error chunking log entries: \(error)")
             }
         } else {
-            try await sendLogEvents(entries)
+            try await sendLogEvents(entriesCopy)
         }
 
         try batch.complete()
@@ -262,6 +274,14 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         return chunks
     }
     // swiftlint:enable shorthand_operator
+}
+
+private extension NSLock {
+    func withLock<T>(_ block: () throws -> T) throws -> T {
+        lock()
+        defer { unlock() }
+        return try block()
+    }
 }
 
 
