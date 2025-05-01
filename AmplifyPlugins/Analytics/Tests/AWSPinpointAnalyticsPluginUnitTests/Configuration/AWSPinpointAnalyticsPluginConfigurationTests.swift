@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@testable import Amplify
 import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
@@ -339,7 +339,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         }
     }
 
-    func testThrowsOnMissingConfig() throws {
+    func testThrowsOnMissingConfig() async throws {
         let plugin = AWSPinpointAnalyticsPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -354,6 +354,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 return
             }
         }
+
+        await Amplify.reset()
     }
 
 }
