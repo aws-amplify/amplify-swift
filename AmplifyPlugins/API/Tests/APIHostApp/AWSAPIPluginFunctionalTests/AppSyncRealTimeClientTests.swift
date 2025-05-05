@@ -125,7 +125,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
     }
 
     func testMaxSubscriptionReached_throwMaxSubscriptionsReachedError() async throws {
-        let numOfMaxSubscriptionCount = 100
+        let numOfMaxSubscriptionCount = 200
         let maxSubsctiptionsSuccess = expectation(description: "Client can subscribe to max subscription count")
         maxSubsctiptionsSuccess.expectedFulfillmentCount = numOfMaxSubscriptionCount
 
