@@ -24,6 +24,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         _ request: AuthFetchSessionRequest,
         authStateMachine: AuthStateMachine,
         configuration: AuthConfiguration,
+        environment: Environment,
         forceReconfigure: Bool = false
     ) {
         self.request = request
