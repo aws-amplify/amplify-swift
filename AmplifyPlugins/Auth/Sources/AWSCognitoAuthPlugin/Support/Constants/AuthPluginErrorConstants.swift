@@ -18,7 +18,7 @@ enum AuthPluginErrorConstants {
 
     static let protectedDataUnavailableError: AuthPluginErrorString = (
         "Protected data is not yet available",
-        "Delay Amplify calls until `UIApplication.shared.isProtectedDataAvailable` returns true or listen to `UIApplication.protectedDataDidBecomeAvailableNotification`"
+        "Delay Amplify calls until `UIApplication.shared.isProtectedDataAvailable` returns true"
     )
 
     static let decodeConfigurationError: AuthPluginErrorString = (
