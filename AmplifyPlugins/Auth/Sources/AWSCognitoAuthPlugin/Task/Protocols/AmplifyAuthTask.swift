@@ -7,6 +7,10 @@
 import Foundation
 import Amplify
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 protocol AmplifyAuthTask {
 
     associatedtype Success
@@ -30,6 +34,14 @@ extension AmplifyAuthTask where Self: DefaultLogger {
         get async throws {
             do {
                 log.info("Starting execution for \(eventName)")
+#if canImport(UIKit)
+                guard await UIApplication.shared.isProtectedDataAvailable else {
+                    throw AuthError.configuration(
+                        AuthPluginErrorConstants.protectedDataUnavailableError.errorDescription,
+                        AuthPluginErrorConstants.protectedDataUnavailableError.recoverySuggestion,
+                        AWSCognitoAuthError.protectedDataUnavailable)
+                }
+#endif
                 let valueReturned = try await execute()
                 log.info("Successfully completed execution for \(eventName) with result:\n\(valueReturned)")
                 dispatch(result: .success(valueReturned))
