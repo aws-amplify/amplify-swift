@@ -14,6 +14,7 @@ struct SignedInData {
     let signInMethod: SignInMethod
     let deviceMetadata: DeviceMetadata
     let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
+    var isRefreshTokenExpired: Bool?
 
     init(signedInDate: Date,
          signInMethod: SignInMethod,
@@ -27,6 +28,7 @@ struct SignedInData {
         self.signInMethod = signInMethod
         self.deviceMetadata = deviceMetadata
         self.cognitoUserPoolTokens = cognitoUserPoolTokens
+        self.isRefreshTokenExpired = false
     }
 }
 
@@ -42,7 +44,8 @@ extension SignedInData: CustomDebugDictionaryConvertible {
             "signedInDate": signedInDate,
             "signInMethod": signInMethod,
             "deviceMetadata": deviceMetadata,
-            "tokens": cognitoUserPoolTokens
+            "tokens": cognitoUserPoolTokens,
+            "refreshTokenExpired": isRefreshTokenExpired ?? false
         ]
     }
 }
