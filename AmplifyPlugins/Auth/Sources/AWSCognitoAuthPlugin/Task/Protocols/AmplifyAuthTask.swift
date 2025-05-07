@@ -7,7 +7,7 @@
 import Foundation
 import Amplify
 
-#if canImport(UIKit)
+#if os(iOS) && canImport(UIKit)
 import UIKit
 #endif
 
@@ -34,7 +34,7 @@ extension AmplifyAuthTask where Self: DefaultLogger {
         get async throws {
             do {
                 log.info("Starting execution for \(eventName)")
-#if canImport(UIKit)
+#if os(iOS) && canImport(UIKit)
                 guard await UIApplication.shared.isProtectedDataAvailable else {
                     throw AuthError.configuration(
                         AuthPluginErrorConstants.protectedDataUnavailableError.errorDescription,

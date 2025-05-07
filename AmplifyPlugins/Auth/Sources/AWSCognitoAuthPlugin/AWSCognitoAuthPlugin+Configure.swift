@@ -16,7 +16,7 @@ import AWSClientRuntime
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 import SmithyRetriesAPI
 import SmithyRetries
-#if canImport(UIKit)
+#if os(iOS) && canImport(UIKit)
 import UIKit
 #endif
 
@@ -41,7 +41,7 @@ extension AWSCognitoAuthPlugin {
                 AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
-#if canImport(UIKit)
+#if os(iOS) && canImport(UIKit)
         guard UIApplication.shared.isProtectedDataAvailable else {
             throw PluginError.pluginConfigurationError(
                 AuthPluginErrorConstants.protectedDataUnavailableError.errorDescription,
