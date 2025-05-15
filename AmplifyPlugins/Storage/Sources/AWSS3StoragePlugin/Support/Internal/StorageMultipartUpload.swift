@@ -229,14 +229,14 @@ enum StorageMultipartUpload {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
                 self = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot pause from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot pause upload: upload must be in progress")
             }
         case .resuming:
             switch self {
             case .paused(let uploadId, let uploadFile, let partSize, let parts):
                 self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot resume from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot resume upload: upload must be paused")
             }
             break
         case .completing(let taskIdentifier):
@@ -246,20 +246,20 @@ enum StorageMultipartUpload {
             case .parts:
                 self = .completed(uploadId: uploadId)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot complete from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot complete upload: upload must be in progress")
             }
         case .aborting(let error):
             if let uploadId = uploadId {
                 self = .aborting(uploadId: uploadId, error: error)
             } else {
-                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot abort upload: no upload ID available")
             }
         case .aborted(let uploadId, let error):
             switch self {
             case .created, .parts, .aborting:
                 self = .aborted(uploadId: uploadId, error: error)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot abort upload: upload must be in progress or created")
             }
         case .failed(let uploadId, let error):
             switch self {
@@ -268,7 +268,7 @@ enum StorageMultipartUpload {
             case .parts(_, _, _, let parts):
                 self = .failed(uploadId: uploadId, parts: parts, error: error)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot fail from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot fail upload: invalid state for failure")
             }
         }
     }
@@ -277,7 +277,7 @@ enum StorageMultipartUpload {
     mutating func transition(uploadPartEvent: StorageUploadPartEvent) throws {
         guard !isAborting, !isAborted else { return }
         guard case .parts(let uploadId, let uploadFile, let partSize, var parts) = self else {
-            throw Failure.invalidStateTransition(reason: "Parts are required for this transition: \(uploadPartEvent)")
+            throw Failure.invalidStateTransition(reason: "Cannot process part event: upload must be in progress")
         }
 
         let partNumber = uploadPartEvent.number
@@ -297,12 +297,12 @@ enum StorageMultipartUpload {
             parts[index] = .inProgress(bytes: part.bytes, bytesTransferred: 0, taskIdentifier: taskIdentifier)
         case .progressUpdated(_, let bytesTransferred, _):
             guard case .inProgress(let bytes, _, let taskIdentifier) = part else {
-                throw Failure.invalidStateTransition(reason: "Part cannot update progress in current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot update progress: part must be in progress")
             }
             parts[index] = .inProgress(bytes: bytes, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier)
         case .completed(_, let eTag, _):
             guard case .inProgress(let bytes, _, _) = part else {
-                throw Failure.invalidStateTransition(reason: "Part cannot be completed in current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot complete part: part must be in progress")
             }
             parts[index] = StorageUploadPart.completed(bytes: bytes, eTag: eTag)
         case .failed:
