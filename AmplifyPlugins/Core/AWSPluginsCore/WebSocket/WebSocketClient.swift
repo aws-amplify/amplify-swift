@@ -248,13 +248,18 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
         let nsError = error as NSError
         switch (nsError.domain, nsError.code) {
-        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
-             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground
+        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost (-1005)
+             (NSURLErrorDomain.self, NSURLErrorCannotConnectToHost), // -1004 should be -1001, but -1004 is CannotConnectToHost
+             (NSURLErrorDomain.self, NSURLErrorTimedOut), // -1001
+             (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet), // -1009
+             (NSURLErrorDomain.self, NSURLErrorDataNotAllowed), // -1020
+             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)), // background to foreground
+             (NSPOSIXErrorDomain.self, 57): // Socket is not connected (ENOTCONN)
             self.subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
                 await self?.networkMonitor.updateState(.offline)
             }
-        case (NSURLErrorDomain.self, NSURLErrorCancelled):
+        case (NSURLErrorDomain.self, NSURLErrorCancelled): // -999
             log.debug("Skipping NSURLErrorCancelled error")
             self.subject.send(.error(WebSocketClient.Error.connectionCancelled))
         default:
@@ -283,11 +288,11 @@ extension WebSocketClient {
         }
 
         switch stateChange {
-        case (.online, .offline):
-            log.debug("[WebSocketClient] NetworkMonitor - Device went offline")
+        case (.online, .offline), (.none, .offline), (.online, .none):
+            log.debug("[WebSocketClient] NetworkMonitor - Device went offline or network status became unknown")
             self.connection?.cancel(with: .invalid, reason: nil)
             self.subject.send(.disconnected(.invalid, nil))
-        case (.offline, .online):
+        case (.offline, .online), (.none, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
             await self.createConnectionAndRead()
         default:
@@ -335,13 +340,19 @@ extension WebSocketClient {
         }
 
         switch closeCode {
-        case .internalServerError:
+        case .internalServerError,
+             .abnormalClosure,
+             .invalid,
+             .policyViolation:
+            log.debug("[WebSocketClient] Retrying on closeCode: \(closeCode)")
             let delayInMs = await retryWithJitter.next()
             Task { [weak self] in
                 try await Task.sleep(nanoseconds: UInt64(delayInMs) * 1_000_000)
                 await self?.createConnectionAndRead()
             }
-        default: break
+        default:
+            log.debug("[WebSocketClient] Not retrying for closeCode: \(closeCode)")
+            break
         }
 
     }
