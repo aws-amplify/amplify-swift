@@ -248,18 +248,18 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
         let nsError = error as NSError
         switch (nsError.domain, nsError.code) {
-        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost (-1005)
-             (NSURLErrorDomain.self, NSURLErrorCannotConnectToHost), // -1004 should be -1001, but -1004 is CannotConnectToHost
-             (NSURLErrorDomain.self, NSURLErrorTimedOut), // -1001
-             (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet), // -1009
-             (NSURLErrorDomain.self, NSURLErrorDataNotAllowed), // -1020
-             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)), // background to foreground
-             (NSPOSIXErrorDomain.self, 57): // Socket is not connected (ENOTCONN)
+        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost),
+             (NSURLErrorDomain.self, NSURLErrorCannotConnectToHost),
+             (NSURLErrorDomain.self, NSURLErrorTimedOut),
+             (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet),
+             (NSURLErrorDomain.self, NSURLErrorDataNotAllowed),
+             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)),
+             (NSPOSIXErrorDomain.self, 57):
             self.subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
                 await self?.networkMonitor.updateState(.offline)
             }
-        case (NSURLErrorDomain.self, NSURLErrorCancelled): // -999
+        case (NSURLErrorDomain.self, NSURLErrorCancelled):
             log.debug("Skipping NSURLErrorCancelled error")
             self.subject.send(.error(WebSocketClient.Error.connectionCancelled))
         default:
