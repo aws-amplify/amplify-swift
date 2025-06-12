@@ -39,3 +39,5 @@ public extension AuthForgetDeviceRequest {
         }
     }
 }
+
+extension AuthForgetDeviceRequest.Options: @unchecked Sendable { }

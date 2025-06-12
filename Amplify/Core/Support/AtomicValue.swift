@@ -8,7 +8,7 @@
 import Foundation
 
 /// A class that wraps access to its underlying value with an NSLocking instance.
-public final class AtomicValue<Value> {
+public final class AtomicValue<Value>: @unchecked Sendable {
     let lock: NSLocking
     var value: Value
 

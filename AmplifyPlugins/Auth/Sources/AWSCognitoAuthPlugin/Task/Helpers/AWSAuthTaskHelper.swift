@@ -72,17 +72,11 @@ class AWSAuthTaskHelper: DefaultLogger {
             throw AuthError.unknown("Unable to fetch auth session", nil)
         }
 
-        do {
-            let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-            return tokens.accessToken
-        } catch let error as AuthError {
-            throw error
-        } catch {
-            throw AuthError.unknown("Unable to fetch auth session", error)
-        }
+        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+        return tokens.accessToken
     }
 
-    func getCurrentUser() async throws -> AuthUser {
+    func getCurrentUser() async throws -> any AuthUser {
         await didStateMachineConfigured()
         let authState = await authStateMachine.currentState
 

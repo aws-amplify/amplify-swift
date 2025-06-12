@@ -39,3 +39,5 @@ public extension AuthAttributeResendConfirmationCodeRequest {
         }
     }
 }
+
+extension AuthAttributeResendConfirmationCodeRequest.Options: @unchecked Sendable { }

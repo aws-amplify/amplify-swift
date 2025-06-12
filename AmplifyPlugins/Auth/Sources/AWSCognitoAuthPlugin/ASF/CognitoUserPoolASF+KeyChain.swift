@@ -37,7 +37,7 @@ extension CognitoUserPoolASF {
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 
         do {
-            return try asfClient.userContextData(
+            return try await asfClient.userContextData(
                 for: username,
                 deviceInfo: deviceInfo,
                 appInfo: appInfo,

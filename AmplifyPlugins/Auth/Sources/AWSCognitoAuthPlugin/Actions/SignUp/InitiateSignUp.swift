@@ -82,7 +82,7 @@ extension InitiateSignUp: CustomDebugDictionaryConvertible {
         [
             "identifier": identifier,
             "signUpEventData": data.debugDictionary,
-            "attributes": attributes
+            "attributes": attributes as Any
         ]
     }
 }

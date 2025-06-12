@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol AuthSignOutResult {
+public protocol AuthSignOutResult: Sendable {
 
 }

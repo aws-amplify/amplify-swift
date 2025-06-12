@@ -39,3 +39,5 @@ public extension AuthSendUserAttributeVerificationCodeRequest {
         }
     }
 }
+
+extension AuthSendUserAttributeVerificationCodeRequest.Options: @unchecked Sendable { }

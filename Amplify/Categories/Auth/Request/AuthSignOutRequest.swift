@@ -54,6 +54,8 @@ public extension AuthSignOutRequest {
 
 }
 
+extension AuthSignOutRequest.Options: @unchecked Sendable { }
+
 #if os(iOS) || os(macOS) || os(visionOS)
 extension AuthSignOutRequest.Options {
     public static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {

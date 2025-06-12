@@ -52,7 +52,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         }
 
         // Get the current user for passing in the result, so that TOTP URI could constructed
-        let authUser: AuthUser
+        let authUser: any AuthUser
 
         let currentState = await authStateMachine.currentState
         if case .configured(let authNState, _, _) = currentState,

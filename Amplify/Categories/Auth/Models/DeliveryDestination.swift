@@ -24,3 +24,5 @@ public enum DeliveryDestination {
 }
 
 extension DeliveryDestination: Equatable { }
+
+extension DeliveryDestination: Sendable { }

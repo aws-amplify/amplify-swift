@@ -77,3 +77,5 @@ public enum AuthSignInStep {
 }
 
 extension AuthSignInStep: Equatable { }
+
+extension AuthSignInStep: Sendable { }

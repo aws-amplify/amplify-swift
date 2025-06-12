@@ -25,3 +25,5 @@ public enum AuthFactorType: String {
     case webAuthn
 #endif
 }
+
+extension AuthFactorType: Sendable { }

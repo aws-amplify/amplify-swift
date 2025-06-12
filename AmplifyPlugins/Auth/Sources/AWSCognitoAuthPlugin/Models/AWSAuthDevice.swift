@@ -42,3 +42,5 @@ public struct AWSAuthDevice: AuthDevice {
         self.lastModifiedDate = lastModifiedDate
     }
 }
+
+extension AWSAuthDevice: Sendable { }

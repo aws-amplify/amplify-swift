@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 #if os(iOS) || os(macOS) || os(visionOS)
-import AuthenticationServices
+@preconcurrency import AuthenticationServices
 #endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
