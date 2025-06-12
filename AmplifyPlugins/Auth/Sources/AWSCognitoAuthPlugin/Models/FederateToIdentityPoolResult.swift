@@ -15,3 +15,5 @@ public struct FederateToIdentityPoolResult {
     public let identityId: String
 
 }
+
+extension FederateToIdentityPoolResult: Sendable { }

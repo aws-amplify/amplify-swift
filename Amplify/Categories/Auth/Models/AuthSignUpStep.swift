@@ -24,3 +24,5 @@ public enum AuthSignUpStep {
     /// Sign up is complete
     case done
 }
+
+extension AuthSignUpStep: Sendable { }

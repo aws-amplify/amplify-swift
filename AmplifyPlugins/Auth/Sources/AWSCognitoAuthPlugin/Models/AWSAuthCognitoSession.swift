@@ -165,3 +165,5 @@ extension AWSAuthCognitoSession: CustomDebugStringConvertible {
         (debugDictionary as AnyObject).description
     }
 }
+
+extension AWSAuthCognitoSession: Sendable { }

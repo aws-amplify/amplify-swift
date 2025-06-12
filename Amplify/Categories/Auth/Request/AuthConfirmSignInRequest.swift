@@ -52,3 +52,5 @@ public extension AuthConfirmSignInRequest {
 #endif
     }
 }
+
+extension AuthConfirmSignInRequest.Options: @unchecked Sendable { }

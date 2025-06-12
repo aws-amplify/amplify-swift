@@ -35,9 +35,11 @@ public struct AuthListWebAuthnCredentialsResult {
     }
 }
 
+extension AuthListWebAuthnCredentialsResult: Sendable { }
+
 /// Defines a WebAuthn credential
 /// - Tag: AuthWebAuthnCredential
-public protocol AuthWebAuthnCredential {
+public protocol AuthWebAuthnCredential: Sendable {
     /// The credential's ID
     var credentialId: String { get }
 

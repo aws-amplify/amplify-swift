@@ -42,3 +42,5 @@ public extension AuthConfirmUserAttributeRequest {
         }
     }
 }
+
+extension AuthConfirmUserAttributeRequest.Options: @unchecked Sendable { }

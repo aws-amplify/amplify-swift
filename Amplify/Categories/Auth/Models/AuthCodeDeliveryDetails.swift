@@ -26,3 +26,5 @@ public struct AuthCodeDeliveryDetails {
 }
 
 extension AuthCodeDeliveryDetails: Equatable {}
+
+extension AuthCodeDeliveryDetails: Sendable {}

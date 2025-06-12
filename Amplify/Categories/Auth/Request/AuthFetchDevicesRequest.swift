@@ -32,3 +32,5 @@ public extension AuthFetchDevicesRequest {
         }
     }
 }
+
+extension AuthFetchDevicesRequest.Options: @unchecked Sendable { }

@@ -16,3 +16,5 @@ public enum MFAType: String {
     /// Email Service linked with an email
     case email
 }
+
+extension MFAType: Sendable { }

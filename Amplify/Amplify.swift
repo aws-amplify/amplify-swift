@@ -20,44 +20,83 @@ import Foundation
 /// available at initialization.
 ///
 /// - Tag: Amplify
-public class Amplify {
+public class Amplify: @unchecked Sendable {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
     ///
     /// - Tag: Amplify.isConfigured
-    static var isConfigured = false
+    private static let isConfiguredAtomic = AtomicValue<Bool>(initialValue: false)
+    static var isConfigured: Bool {
+        get { isConfiguredAtomic.get() }
+        set { isConfiguredAtomic.set(newValue) }
+    }
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
-    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
-    // ease of testing.
+    // All category properties are protected with AtomicValue for thread safety.
 
     /// - Tag: Amplify.Analytics
-    public static internal(set) var Analytics = AnalyticsCategory()
+    private static let analyticsAtomic = AtomicValue<AnalyticsCategory>(initialValue: AnalyticsCategory())
+    public static internal(set) var Analytics: AnalyticsCategory {
+        get { analyticsAtomic.get() }
+        set { analyticsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.API
-    public static internal(set) var API: APICategory = APICategory()
+    private static let apiAtomic = AtomicValue<APICategory>(initialValue: APICategory())
+    public static internal(set) var API: APICategory {
+        get { apiAtomic.get() }
+        set { apiAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Auth
-    public static internal(set) var Auth = AuthCategory()
+    private static let authAtomic = AtomicValue<AuthCategory>(initialValue: AuthCategory())
+    public static internal(set) var Auth: AuthCategory {
+        get { authAtomic.get() }
+        set { authAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.DataStore
-    public static internal(set) var DataStore = DataStoreCategory()
+    private static let dataStoreAtomic = AtomicValue<DataStoreCategory>(initialValue: DataStoreCategory())
+    public static internal(set) var DataStore: DataStoreCategory {
+        get { dataStoreAtomic.get() }
+        set { dataStoreAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Geo
-    public static internal(set) var Geo = GeoCategory()
+    private static let geoAtomic = AtomicValue<GeoCategory>(initialValue: GeoCategory())
+    public static internal(set) var Geo: GeoCategory {
+        get { geoAtomic.get() }
+        set { geoAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Hub
-    public static internal(set) var Hub = HubCategory()
+    private static let hubAtomic = AtomicValue<HubCategory>(initialValue: HubCategory())
+    public static internal(set) var Hub: HubCategory {
+        get { hubAtomic.get() }
+        set { hubAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Notifications
-    public static internal(set) var Notifications = NotificationsCategory()
+    private static let notificationsAtomic = AtomicValue<NotificationsCategory>(initialValue: NotificationsCategory())
+    public static internal(set) var Notifications: NotificationsCategory {
+        get { notificationsAtomic.get() }
+        set { notificationsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Predictions
-    public static internal(set) var Predictions = PredictionsCategory()
+    private static let predictionsAtomic = AtomicValue<PredictionsCategory>(initialValue: PredictionsCategory())
+    public static internal(set) var Predictions: PredictionsCategory {
+        get { predictionsAtomic.get() }
+        set { predictionsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Storage
-    public static internal(set) var Storage = StorageCategory()
+    private static let storageAtomic = AtomicValue<StorageCategory>(initialValue: StorageCategory())
+    public static internal(set) var Storage: StorageCategory {
+        get { storageAtomic.get() }
+        set { storageAtomic.set(newValue) }
+    }
 
     /// Special case category. We protect this with an AtomicValue because it is used by reset()
     /// methods during setup & teardown of tests

@@ -76,7 +76,7 @@ class AWSAuthTaskHelper: DefaultLogger {
         return tokens.accessToken
     }
 
-    func getCurrentUser() async throws -> AuthUser {
+    func getCurrentUser() async throws -> any AuthUser {
         await didStateMachineConfigured()
         let authState = await authStateMachine.currentState
 

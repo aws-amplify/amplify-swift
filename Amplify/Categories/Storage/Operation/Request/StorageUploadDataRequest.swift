@@ -139,3 +139,5 @@ public extension StorageUploadDataRequest {
         }
     }
 }
+
+extension StorageUploadDataRequest.Options: @unchecked Sendable { }
