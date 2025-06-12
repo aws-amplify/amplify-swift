@@ -38,3 +38,5 @@ public extension VerifyTOTPSetupRequest {
         }
     }
 }
+
+extension VerifyTOTPSetupRequest.Options: @unchecked Sendable { }

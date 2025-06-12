@@ -98,7 +98,7 @@ public extension AWSCognitoAuthPlugin {
         }
     }
 
-    func getCurrentUser() async throws -> AuthUser {
+    func getCurrentUser() async throws -> any AuthUser {
         let taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         return try await taskHelper.getCurrentUser()
     }

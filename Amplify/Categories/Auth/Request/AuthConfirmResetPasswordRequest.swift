@@ -47,3 +47,5 @@ public extension AuthConfirmResetPasswordRequest {
         }
     }
 }
+
+extension AuthConfirmResetPasswordRequest.Options: @unchecked Sendable { }

@@ -169,3 +169,6 @@ public extension StorageListRequest.Options {
         }
     }
 }
+
+extension StorageListRequest.Options: @unchecked Sendable { }
+extension StorageListRequest.Options.SubpathStrategy: Sendable { }

@@ -40,3 +40,5 @@ public extension AuthConfirmSignUpRequest {
         }
     }
 }
+
+extension AuthConfirmSignUpRequest.Options: @unchecked Sendable { }

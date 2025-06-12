@@ -60,3 +60,5 @@ public extension AuthListWebAuthnCredentialsRequest {
         }
     }
 }
+
+extension AuthListWebAuthnCredentialsRequest.Options: @unchecked Sendable { }

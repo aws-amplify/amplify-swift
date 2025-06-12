@@ -42,3 +42,5 @@ public struct TOTPSetupDetails {
 }
 
 extension TOTPSetupDetails: Equatable { }
+
+extension TOTPSetupDetails: Sendable { }

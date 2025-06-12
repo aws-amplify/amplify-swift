@@ -37,4 +37,6 @@ public extension AuthAssociateWebAuthnCredentialRequest {
         }
     }
 }
+
+extension AuthAssociateWebAuthnCredentialRequest.Options: @unchecked Sendable { }
 #endif

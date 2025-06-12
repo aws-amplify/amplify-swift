@@ -37,3 +37,5 @@ public extension AuthUpdateUserAttributesRequest {
         }
     }
 }
+
+extension AuthUpdateUserAttributesRequest.Options: @unchecked Sendable { }
