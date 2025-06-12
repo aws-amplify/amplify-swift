@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.48.1 (2025-06-12)
+
+### Bug Fixes
+
+- **api**: fix subscription failures (#3998)
+- **storage**: avoid using self in failure messages (#3994)
+
 ## 2.48.0 (2025-05-12)
 
 ### Features
