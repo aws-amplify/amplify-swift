@@ -66,7 +66,7 @@ extension ConfirmSignUp: CustomDebugDictionaryConvertible {
             "identifier": identifier,
             "signUpEventData": data.debugDictionary,
             "confirmationCode": confirmationCode.masked(),
-            "forceAliasCreation": forceAliasCreation
+            "forceAliasCreation": forceAliasCreation as Any
         ]
     }
 }

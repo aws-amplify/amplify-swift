@@ -30,9 +30,9 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     func userContextData(for username: String = "unknown",
                          deviceInfo: ASFDeviceBehavior,
                          appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String {
+                         configuration: UserPoolConfigurationData) async throws -> String {
 
-        let contextData = prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
+        let contextData = await prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
         let payload = try prepareJsonPayload(username: username,
                                              contextData: contextData,
                                              userPoolId: configuration.poolId)
@@ -43,31 +43,31 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     }
 
     func prepareUserContextData(deviceInfo: ASFDeviceBehavior,
-                                appInfo: ASFAppInfoBehavior) -> [String: String] {
+                                appInfo: ASFAppInfoBehavior) async -> [String: String] {
         var build = "release"
 #if DEBUG
         build = "debug"
 #endif
-        let fingerPrint = deviceInfo.deviceInfo()
+        let fingerPrint = await deviceInfo.deviceInfo()
         var contextData: [String: String] = [
             Self.targetSDKKey: appInfo.targetSDK,
             Self.appVersionKey: appInfo.version,
-            Self.deviceNameKey: deviceInfo.name,
-            Self.phoneTypeKey: deviceInfo.type,
+            Self.deviceNameKey: await deviceInfo.name,
+            Self.phoneTypeKey: await deviceInfo.type,
             Self.deviceIdKey: deviceInfo.id,
-            Self.releaseVersionKey: deviceInfo.version,
-            Self.platformKey: deviceInfo.platform,
+            Self.releaseVersionKey: await deviceInfo.version,
+            Self.platformKey: await deviceInfo.platform,
             Self.buildTypeKey: build,
             Self.timezoneKey: timeZoneOffet(),
-            Self.deviceHeightKey: deviceInfo.height,
-            Self.deviceWidthKey: deviceInfo.width,
-            Self.deviceLanguageKey: deviceInfo.locale,
+            Self.deviceHeightKey: await deviceInfo.height,
+            Self.deviceWidthKey: await deviceInfo.width,
+            Self.deviceLanguageKey: await deviceInfo.locale,
             Self.deviceFingerPrintKey: fingerPrint
         ]
         if let appName = appInfo.name {
             contextData[Self.appNameKey] = appName
         }
-        if let thirdPartyDeviceIdKey = deviceInfo.thirdPartyId {
+        if let thirdPartyDeviceIdKey = await deviceInfo.thirdPartyId {
             contextData[Self.thirdPartyDeviceIdKey] = thirdPartyDeviceIdKey
         }
         return contextData

@@ -32,7 +32,7 @@ extension SRPSignInState {
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: srpSignInEvent)
-            case .initiatingSRPA(let signInEventData):
+            case .initiatingSRPA(_):
                 return resolveInitiatingSRPA(
                     byApplying: srpSignInEvent,
                     from: oldState)
