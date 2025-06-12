@@ -16,7 +16,7 @@ typealias ConfigureOperation = AmplifyOperation<
     Void,
     AuthError>
 
-class AuthConfigureOperation: ConfigureOperation {
+class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
 
     let authConfiguration: AuthConfiguration
     let authStateMachine: AuthStateMachine
