@@ -32,7 +32,7 @@ class HubClientAPITests: XCTestCase {
             }
         }
 
-        Amplify.Hub.dispatch(to: .storage, payload: HubPayload(eventName: ""))
+        Amplify.Hub.dispatch(to: .storage, payload: HubPayload(eventName: "dispatch"))
 
         await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
