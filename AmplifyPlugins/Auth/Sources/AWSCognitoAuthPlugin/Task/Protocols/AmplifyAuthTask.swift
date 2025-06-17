@@ -34,6 +34,7 @@ extension AmplifyAuthTask where Self: DefaultLogger {
         get async throws {
             do {
                 log.info("Starting execution for \(eventName)")
+
 #if os(iOS) && canImport(UIKit)
                 guard await UIApplication.shared.isProtectedDataAvailable else {
                     throw AuthError.configuration(
@@ -42,6 +43,7 @@ extension AmplifyAuthTask where Self: DefaultLogger {
                         AWSCognitoAuthError.protectedDataUnavailable)
                 }
 #endif
+
                 let valueReturned = try await execute()
                 log.info("Successfully completed execution for \(eventName) with result:\n\(valueReturned)")
                 dispatch(result: .success(valueReturned))
