@@ -23,6 +23,15 @@ struct UserPoolConfigurationData: Equatable {
     let usernameAttributes: [UsernameAttribute]
     let signUpAttributes: [SignUpAttributeType]
     let verificationMechanisms: [VerificationMechanism]
+    
+    // Custom Equatable implementation that excludes endpoint and more things
+    static func == (lhs: UserPoolConfigurationData, rhs: UserPoolConfigurationData) -> Bool {
+        return lhs.poolId == rhs.poolId &&
+               lhs.clientId == rhs.clientId &&
+               lhs.region == rhs.region &&
+               lhs.clientSecret == rhs.clientSecret &&
+               lhs.hostedUIConfig == rhs.hostedUIConfig
+    }
 
     init(
         poolId: String,
