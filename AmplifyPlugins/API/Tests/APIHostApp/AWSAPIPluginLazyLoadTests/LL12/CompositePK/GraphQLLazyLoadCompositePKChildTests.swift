@@ -121,4 +121,81 @@ extension GraphQLLazyLoadCompositePKTests {
         }
         assertList(queriedChild, state: .isLoaded(count: 1))
     }
+
+    /*
+     - Given: Api category setup with CompositePKModels
+     - When:
+        - Subscribe onCreate events of CompositePKChild
+        - Create new CompositePKChild instance with API
+     - Then:
+        - the newly created instance is successfully created through API. onCreate event is received.
+     */
+    func testSubscribeCompositePKChildOnCreate() async throws {
+        await setup(withModels: CompositePKModels())
+
+        let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString)
+        let (onCreate, subscription) = try await subscribe(of: CompositePKChild.self, type: .onCreate) { createdChild in
+            createdChild.identifier == child.identifier
+        }
+
+        try await mutate(.create(child))
+        await waitForExpectations([onCreate], timeout: 10)
+        subscription.cancel()
+    }
+
+    /*
+     - Given: Api category setup with CompositePKModels
+     - When:
+        - Subscribe onCreate events of CompositePKChild
+        - Create new CompositePKChild instance with API
+        - Create new CompositePKParent instance with API
+        - Update newly created CompositePKParent instance with API
+     - Then:
+        - the newly created instance is successfully updated through API. onUpdate event is received.
+     */
+    func testSubscribeCompositePKChildOnUpdate() async throws {
+        await setup(withModels: CompositePKModels())
+
+        let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString)
+        let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
+        let (onUpdate, subscription) = try await subscribe(of: CompositePKChild.self, type: .onUpdate) { updatedChild in
+            if let associatedParent = try await updatedChild.parent {
+                return associatedParent.identifier == parent.identifier
+                && updatedChild.identifier == child.identifier
+            }
+            return false
+        }
+
+        try await mutate(.create(child))
+        try await mutate(.create(parent))
+
+        var updatingChild = child
+        updatingChild.setParent(parent)
+        try await mutate(.update(updatingChild))
+        await waitForExpectations([onUpdate], timeout: 10)
+        subscription.cancel()
+    }
+
+    /*
+     - Given: Api category setup with CompositePKModels
+     - When:
+        - Subscribe onCreate events of CompositePKChild
+        - Create new CompositePKChild instance with API
+        - Delete newly created CompositePKChild with API
+     - Then:
+        - the newly created instance is successfully deleted through API. onDelete event is received.
+     */
+    func testSubscribeCompositePKChildOnDelete() async throws {
+        await setup(withModels: CompositePKModels())
+
+        let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString)
+        let (onDelete, subscription) = try await subscribe(of: CompositePKChild.self, type: .onDelete) { deletedChild in
+            deletedChild.identifier == child.identifier
+        }
+
+        try await mutate(.create(child))
+        try await mutate(.delete(child))
+        await waitForExpectations([onDelete], timeout: 10)
+        subscription.cancel()
+    }
 }
