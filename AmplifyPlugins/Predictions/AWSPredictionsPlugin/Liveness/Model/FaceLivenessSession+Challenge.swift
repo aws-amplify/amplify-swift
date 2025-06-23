@@ -9,7 +9,7 @@ import Foundation
 
 extension FaceLivenessSession {
     public static let supportedChallenges: [Challenge] = [
-        Challenge(version: "2.0.0", type: .faceMovementAndLightChallenge),
-        Challenge(version: "1.0.0", type: .faceMovementChallenge)
+        .faceMovementAndLightChallenge("2.0.0"),
+        .faceMovementChallenge("1.0.0")
     ]
 }

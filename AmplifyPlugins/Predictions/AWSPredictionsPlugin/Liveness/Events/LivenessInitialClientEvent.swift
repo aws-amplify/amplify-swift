@@ -36,7 +36,7 @@ extension LivenessEvent where T == InitialClientEvent {
         )
 
         let clientChallengeType: ClientChallenge.ChallengeType
-        switch challenge.type {
+        switch challenge {
         case .faceMovementAndLightChallenge:
             clientChallengeType = .faceMovementAndLightChallenge(
                 challenge: .init(

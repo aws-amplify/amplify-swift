@@ -29,7 +29,7 @@ extension LivenessEvent where T == FinalClientEvent {
     public static func final(event: FinalClientEvent,
                              challenge: Challenge) throws -> Self {
         let clientChallengeType: ClientChallenge.ChallengeType
-        switch challenge.type {
+        switch challenge {
         case .faceMovementAndLightChallenge:
             clientChallengeType = .faceMovementAndLightChallenge(
                 challenge: .init(

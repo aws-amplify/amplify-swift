@@ -13,12 +13,12 @@ import Amplify
 class LivenessChallengeTests: XCTestCase {
     
     func testFaceMovementChallengeQueryParamterString() {
-        let challenge = Challenge(version: "1.0.0", type: .faceMovementChallenge)
+        let challenge: Challenge = .faceMovementChallenge("1.0.0")
         XCTAssertEqual(challenge.queryParameterString(), "FaceMovementChallenge_1.0.0")
     }
     
     func testFaceMovementAndLightChallengeQueryParamterString() {
-        let challenge = Challenge(version: "2.0.0", type: .faceMovementAndLightChallenge)
+        let challenge: Challenge = .faceMovementAndLightChallenge("2.0.0")
         XCTAssertEqual(challenge.queryParameterString(), "FaceMovementAndLightChallenge_2.0.0")
     }
 }

@@ -156,8 +156,8 @@ public final class FaceLivenessSession: LivenessService {
             let sessionConfiguration = sessionConfiguration(from: payload)
             self.serverEventListeners[.challenge]?(sessionConfiguration)
         } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
-            let challengeType = challengeType(from: payload)
-            self.challengeTypeListeners[.challenge]?(challengeType)
+            let challenge = challenge(from: payload)
+            self.challengeTypeListeners[.challenge]?(challenge)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return .stopAndInvalidateSession
@@ -179,8 +179,8 @@ public final class FaceLivenessSession: LivenessService {
                         let payload = try JSONDecoder().decode(
                             ChallengeEvent.self, from: message.payload
                         )
-                        let challengeType = challengeType(from: payload)
-                        challengeTypeListeners[.challenge]?(challengeType)
+                        let challenge = challenge(from: payload)
+                        challengeTypeListeners[.challenge]?(challenge)
                         return .continueToReceive
                     case .sessionInformation:
                         // :event-type ServerSessionInformationEvent

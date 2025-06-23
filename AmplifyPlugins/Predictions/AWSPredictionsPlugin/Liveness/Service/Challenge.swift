@@ -6,24 +6,31 @@
 //
 
 import Foundation
+public typealias Version = String
 
 @_spi(PredictionsFaceLiveness)
-public struct Challenge: Codable {
-    public let version: String
-    public let type: ChallengeType
-    
-    public init(version: String, type: ChallengeType) {
-        self.version = version
-        self.type = type
-    }
+public enum Challenge: Equatable {
+    case faceMovementChallenge(Version)
+    case faceMovementAndLightChallenge(Version)
     
     public func queryParameterString() -> String {
-        return self.type.rawValue + "_" + self.version
+        switch(self) {
+        case .faceMovementChallenge(let version):
+            return "FaceMovementChallenge" + "_" + version
+        case .faceMovementAndLightChallenge(let version):
+            return "FaceMovementAndLightChallenge" + "_" + version
+        }
     }
     
-    enum CodingKeys: String, CodingKey {
-        case version = "Version"
-        case type = "Type"
+    public static func ==(lhs: Challenge, rhs: Challenge) -> Bool {
+        switch (lhs, rhs) {
+        case (.faceMovementChallenge(let lhsVersion), .faceMovementChallenge(let rhsVersion)):
+            return lhsVersion == rhsVersion
+        case (.faceMovementAndLightChallenge(let lhsVersion), .faceMovementAndLightChallenge(let rhsVersion)):
+            return lhsVersion == rhsVersion
+        default:
+            return false
+        }
     }
 }
 
