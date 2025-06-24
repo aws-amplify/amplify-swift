@@ -17,12 +17,13 @@ final class LogRotation {
     }
 
     static let minimumFileSizeLimitInBytes = 1024 /* 1KB */
+    static let fileCountLimit: Int = 5
 
     /// The name pattern of files managed by `LogRotation`.
     private static let filePattern = #"amplify[.]([0-9])[.]log"#
 
     let directory: URL
-    let fileCountLimit: Int = 5
+
     let fileSizeLimitInBytes: UInt64
 
     private(set) var currentLogFile: LogFile {
@@ -40,7 +41,7 @@ final class LogRotation {
         self.directory = directory.absoluteURL
         self.fileSizeLimitInBytes = UInt64(fileSizeLimitInBytes)
         self.currentLogFile = try Self.selectNextLogFile(from: self.directory,
-                                                         fileCountLimit: fileCountLimit,
+                                                         fileCountLimit: Self.fileCountLimit,
                                                          fileSizeLimitInBytes: self.fileSizeLimitInBytes)
     }
 
@@ -55,7 +56,7 @@ final class LogRotation {
     /// 3. If no files matching #1 are present, the file with the oldest last modified date is cleared and selected.
     func rotate() throws {
         self.currentLogFile = try Self.selectNextLogFile(from: self.directory,
-                                                         fileCountLimit: self.fileCountLimit,
+                                                         fileCountLimit: Self.fileCountLimit,
                                                          fileSizeLimitInBytes: self.fileSizeLimitInBytes)
     }
 

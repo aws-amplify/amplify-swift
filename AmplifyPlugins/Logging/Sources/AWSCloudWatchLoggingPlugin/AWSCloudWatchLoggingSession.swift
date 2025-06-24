@@ -48,8 +48,11 @@ final class AWSCloudWatchLoggingSession {
         // Use a reasonable file size limit that's a fraction of the total cache size
         // Ensure it meets the minimum requirement of 1KB
         let totalCacheSizeInBytes = localStoreMaxSizeInMB * 1048576
-        let fileSizeLimitInBytes = max(LogRotation.minimumFileSizeLimitInBytes, totalCacheSizeInBytes / 5)
-        
+        let fileSizeLimitInBytes = max(
+            LogRotation.minimumFileSizeLimitInBytes,
+            totalCacheSizeInBytes / LogRotation.fileCountLimit
+        )
+
         return try RotatingLogger(directory: directory,
                                   category: category,
                                   namespace: namespace,
