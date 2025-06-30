@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.49.0 (2025-06-30)
+
+### Features
+
+- **predictions**: No-Light/FaceMovementOnly challenge support (#3622)
+
 ## 2.48.2 (2025-06-30)
 
 ### Bug Fixes
