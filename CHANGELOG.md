@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.48.2 (2025-06-30)
+
+### Bug Fixes
+
+- **api**: fixing mis-classified errors (#4012)
+- **logging**: crash on release builds in rotation logger (#4009)
+
 ## 2.48.1 (2025-06-12)
 
 ### Bug Fixes
