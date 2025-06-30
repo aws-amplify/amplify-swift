@@ -19,10 +19,18 @@ public protocol LivenessService {
 
     func register(onComplete: @escaping (ServerDisconnection) -> Void)
 
-    func initializeLivenessStream(withSessionID sessionID: String, userAgent: String) throws
+    func initializeLivenessStream(withSessionID sessionID: String, 
+                                  userAgent: String,
+                                  challenges: [Challenge],
+                                  options: FaceLivenessSession.Options) throws
 
     func register(
         listener: @escaping (FaceLivenessSession.SessionConfiguration) -> Void,
+        on event: LivenessEventKind.Server
+    )
+    
+    func register(
+        listener: @escaping (Challenge) -> Void,
         on event: LivenessEventKind.Server
     )
 
