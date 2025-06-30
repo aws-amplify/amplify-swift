@@ -250,9 +250,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         switch (nsError.domain, nsError.code) {
         case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost),
              (NSURLErrorDomain.self, NSURLErrorCannotConnectToHost),
-             (NSURLErrorDomain.self, NSURLErrorTimedOut),
              (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet),
-             (NSURLErrorDomain.self, NSURLErrorDataNotAllowed),
              (NSPOSIXErrorDomain.self, Int(ECONNABORTED)),
              (NSPOSIXErrorDomain.self, 57):
             self.subject.send(.error(WebSocketClient.Error.connectionLost))
