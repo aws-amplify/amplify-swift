@@ -15,7 +15,6 @@ extension AWSPredictionsPlugin {
         withID sessionID: String,
         credentialsProvider: AWSCredentialsProvider? = nil,
         region: String,
-        options: FaceLivenessSession.Options,
         completion: @escaping (Result<Void, FaceLivenessSessionError>) -> Void
     ) async throws -> FaceLivenessSession {
 
@@ -48,7 +47,16 @@ extension AWSPredictionsPlugin {
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct Options {
-        public init() {}
+        public let attemptCount: Int
+        public let preCheckViewEnabled: Bool
+        
+        public init(
+            attemptCount: Int,
+            preCheckViewEnabled: Bool
+        ) {
+            self.attemptCount = attemptCount
+            self.preCheckViewEnabled = preCheckViewEnabled
+        }
     }
 }
 

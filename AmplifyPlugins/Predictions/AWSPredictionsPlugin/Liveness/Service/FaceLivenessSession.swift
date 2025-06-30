@@ -16,6 +16,7 @@ public final class FaceLivenessSession: LivenessService {
     let signer: SigV4Signer
     let baseURL: URL
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
+    var challengeTypeListeners: [LivenessEventKind.Server: (Challenge) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
     var serverDate: Date?
     var savedURLForReconnect: URL?
@@ -69,6 +70,10 @@ public final class FaceLivenessSession: LivenessService {
     ) {
         serverEventListeners[event] = listener
     }
+    
+    public func register(listener: @escaping (Challenge) -> Void, on event: LivenessEventKind.Server) {
+        challengeTypeListeners[event] = listener
+    }
 
     public func closeSocket(with code: URLSessionWebSocketTask.CloseCode) {
         livenessServiceDispatchQueue.async {
@@ -76,11 +81,17 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
-    public func initializeLivenessStream(withSessionID sessionID: String, userAgent: String = "") throws {
+    public func initializeLivenessStream(withSessionID sessionID: String, 
+                                         userAgent: String = "",
+                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
+                                         options: FaceLivenessSession.Options) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
-            URLQueryItem(name: "challenge-versions", value: "FaceMovementAndLightChallenge_1.0.0"),
+            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
+            URLQueryItem(name: "attempt-count", value: String(options.attemptCount)),
+            URLQueryItem(name: "challenge-versions",
+                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)
@@ -144,6 +155,9 @@ public final class FaceLivenessSession: LivenessService {
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
             self.serverEventListeners[.challenge]?(sessionConfiguration)
+        } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
+            let challenge = challenge(from: payload)
+            self.challengeTypeListeners[.challenge]?(challenge)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return .stopAndInvalidateSession
@@ -161,6 +175,14 @@ public final class FaceLivenessSession: LivenessService {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
                     switch serverEvent {
                     case .challenge:
+                        // :event-type ChallengeEvent
+                        let payload = try JSONDecoder().decode(
+                            ChallengeEvent.self, from: message.payload
+                        )
+                        let challenge = challenge(from: payload)
+                        challengeTypeListeners[.challenge]?(challenge)
+                        return .continueToReceive
+                    case .sessionInformation:
                         // :event-type ServerSessionInformationEvent
                         let payload = try JSONDecoder().decode(
                             ServerSessionInformationEvent.self, from: message.payload
