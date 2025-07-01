@@ -16,6 +16,9 @@ import AWSClientRuntime
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 import SmithyRetriesAPI
 import SmithyRetries
+#if os(iOS) && canImport(UIKit)
+import UIKit
+#endif
 
 extension AWSCognitoAuthPlugin {
 
@@ -37,6 +40,15 @@ extension AWSCognitoAuthPlugin {
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                 AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
+
+#if os(iOS) && canImport(UIKit)
+        guard UIApplication.shared.isProtectedDataAvailable else {
+            throw PluginError.pluginConfigurationError(
+                AuthPluginErrorConstants.protectedDataUnavailableError.errorDescription,
+                AuthPluginErrorConstants.protectedDataUnavailableError.recoverySuggestion,
+                AWSCognitoAuthError.protectedDataUnavailable)
+        }
+#endif
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
