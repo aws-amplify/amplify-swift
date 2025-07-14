@@ -1,13 +1,21 @@
-#include <Availability.h>
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+#ifndef AmplifyAvailability_h
+#define AmplifyAvailability_h
+
+#include <TargetConditionals.h>
 
 #if TARGET_OS_IOS || TARGET_OS_WATCH || TARGET_OS_TV
-static inline int getIOSVersionMinRequired(void) {
-    return __IPHONE_OS_VERSION_MIN_REQUIRED;
-}
+int getIOSVersionMinRequired(void);
 #endif
 
 #if TARGET_OS_OSX
-static inline int getMACOSXVersionMinRequired(void) {
-    return __MAC_OS_X_VERSION_MIN_REQUIRED;
-}
+int getMACOSXVersionMinRequired(void);
 #endif
+
+#endif /* AmplifyAvailability_h */

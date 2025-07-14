@@ -1,4 +1,4 @@
-module AmplifyAvailability [system] {
+module AmplifyAvailability {
     header "include/AmplifyAvailability.h"
     export *
 }

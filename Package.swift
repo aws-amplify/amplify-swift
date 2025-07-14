@@ -192,9 +192,10 @@ let authTargets: [Target] = [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
-    .systemLibrary(
+    .target(
         name: "AmplifyAvailability",
-        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability"
+        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
+        publicHeadersPath: "include"
     ),
     .target(
         name: "libtommathAmplify",
