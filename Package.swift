@@ -179,6 +179,7 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
+            .target(name: "AmplifyAvailability"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
@@ -190,6 +191,11 @@ let authTargets: [Target] = [
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
+    ),
+    .target(
+        name: "AmplifyAvailability",
+        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
+        publicHeadersPath: "include"
     ),
     .target(
         name: "libtommathAmplify",

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyAvailability
 import Foundation
 
 struct ASFAppInfo: ASFAppInfoBehavior {
@@ -16,9 +17,9 @@ struct ASFAppInfo: ASFAppInfoBehavior {
     var targetSDK: String {
         var targetSDK: String = ""
 #if os(iOS) || os(watchOS) || os(tvOS)
-        targetSDK = "\(__IPHONE_OS_VERSION_MIN_REQUIRED)"
+        targetSDK = "\(getIOSVersionMinRequired())"
 #elseif os(macOS)
-        targetSDK = "\(__MAC_OS_X_VERSION_MIN_REQUIRED)"
+        targetSDK = "\(getMACOSXVersionMinRequired())"
 #else
         targetSDK = "Unknown"
 #endif
