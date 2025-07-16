@@ -140,20 +140,14 @@ See runnable examples in the [aws‑doc‑sdk‑examples/swift](https://github.
 
 ## FAQ
 
-> **Can I mix AWS Mobile SDK for iOS and Amplify Swift (Amplify v2) in the same app?**
->
-> **No.** AWS Amplify explicitly does **not** support using the AWS Mobile SDK for iOS and Amplify Swift (Amplify v2) together in the same app. This is due to overlapping implementations, conflicting dependencies, and import issues. Attempting to use both in the same project can result in unpredictable behavior, build errors, and runtime issues.
->
-> For a successful migration, you must **fully remove** the AWS Mobile SDK for iOS from your project before integrating Amplify Swift (Amplify v2).
+**Can I mix AWS Mobile SDK for iOS and Amplify Swift (Amplify v2) in the same app?**
 
-**Will my users be forced to sign in again?**\
-No. When Amplify is pointed at the same Cognito User Pool and key‑chain location, it detects cached refresh tokens and continues the session automatically.
+  - **No.** AWS Amplify explicitly does **not** support using the AWS Mobile SDK for iOS and Amplify Swift (Amplify v2) together in the same app. This is due to overlapping implementations, conflicting dependencies, and import issues. Attempting to use both in the same project can result in unpredictable behavior, build errors, and runtime issues.
 
-**Does Amplify Storage support background transfers?**\
-Yes. The S3 plugin internally uses `TransferUtility` and automatically resumes incomplete uploads/downloads.
+    For a successful migration, you must **fully remove** the AWS Mobile SDK for iOS from your project before integrating Amplify Swift (Amplify v2).
 
-**Can I mix Amplify Gen 1 and Gen 2 code?**\
-Yes, but prefer a single generation in production apps to avoid redundant dependencies. Gen 2 currently focuses on web & React; mobile Gen 2 is in preview.
+**Will my users be forced to sign in again?**
+- No. When Amplify is pointed at the same Cognito User Pool and key‑chain location, it detects cached refresh tokens and continues the session automatically.
 
 ---
 
