@@ -83,14 +83,28 @@ struct AWSCognitoAuthCredentialStore {
         let oldUserPoolConfiguration = oldAuthConfigData.getUserPoolConfiguration()
         let oldIdentityPoolConfiguration = oldAuthConfigData.getIdentityPoolConfiguration()
         let newIdentityConfigData = currentAuthConfig.getIdentityPoolConfiguration()
+        let newUserPoolConfiguration = currentAuthConfig.getUserPoolConfiguration()
 
-        /// Only migrate if
+        /// Migrate if
         ///  - Old User Pool Config didn't exist
         ///  - New Identity Config Data exists
         ///  - Old Identity Pool Config == New Identity Pool Config
         if oldUserPoolConfiguration == nil &&
             newIdentityConfigData != nil &&
             oldIdentityPoolConfiguration == newIdentityConfigData {
+            // retrieve data from the old namespace and save with the new namespace
+            if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
+                try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
+            }
+        /// Migrate if
+        ///  - Old config and new config are different
+        ///  - Old Userpool Existed
+        ///  - Old and new user pool namespacing is the same
+        } else if oldAuthConfigData != currentAuthConfig &&
+                    oldUserPoolConfiguration != nil &&
+                    UserPoolConfigurationData.isNamespacingEqual(
+                        lhs: oldUserPoolConfiguration,
+                        rhs: newUserPoolConfiguration) {
             // retrieve data from the old namespace and save with the new namespace
             if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
                 try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
