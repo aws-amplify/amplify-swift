@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.49.1 (2025-07-17)
+
+### Bug Fixes
+
+- **auth**: allow removing and adding identity pool for an already deployed app (#4022)
+- accessing Availability.h macros in Swift (Xcode 26 support) (#4013)
+
 ## 2.49.0 (2025-06-30)
 
 ### Features
