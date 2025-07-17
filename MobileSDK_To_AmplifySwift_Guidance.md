@@ -8,8 +8,18 @@ This guide helps you migrate your iOS app from the legacy AWS SDK for iOS to the
 
 - **Amplify Swift** is the recommended library for all new iOS/macOS/watchOS/tvOS development.
 - For any AWS service not yet supported by Amplify, you can use the [AWS SDK for Swift](https://github.com/awslabs/aws-sdk-swift) or reference [Swift SDK code examples](https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/swift).
-- For IoT, migrate to the [AWS IoT Device SDK for Swift](https://github.com/aws/aws-iot-device-sdk-swift/blob/main/Package.swift).
+- For IoT, migrate to the [AWS IoT Device SDK for Swift](https://github.com/aws/aws-iot-device-sdk-swift).
 - Amplify will make a best-effort attempt to preserve user auth sessions during migration, but some users may need to re-authenticate.
+
+## Choose Your Migration Path
+
+### If you have an **existing Amplify Gen1 project**:
+Continue using **Amplify Gen1** and follow the migration tables below. Your existing backend configuration and resources will work seamlessly with Amplify Swift.
+
+### If you **don't have an Amplify project** or are starting fresh:
+We recommend using **[Amplify Gen2](https://docs.amplify.aws/react/start/quickstart/)** for new projects. Gen2 provides a modern fullstack TypeScript developer experience with improved performance and simplified deployment.
+
+> **Note**: This guide focuses on migrating to Amplify Gen1 to maintain compatibility with existing Amplify backends. For Gen2 migration guidance, see the [Gen2 documentation](https://docs.amplify.aws/react/start/quickstart/).
 
 ---
 
@@ -77,7 +87,7 @@ This guide helps you migrate your iOS app from the legacy AWS SDK for iOS to the
 
 ### Push Notifications
 
-> **Pinpoint deprecation notice** – Pinpoint will be retired Oct 30 2026. AWS End User Messaging is the recommended successor. Plan migrations accordingly.
+> **Pinpoint deprecation notice** – Pinpoint will be retired Oct 30 2026. Plan migrations accordingly.
 
 | AWS SDK for iOS                                                                                                                      | Amplify Swift                                                                                                                        |
 |-------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
@@ -90,7 +100,7 @@ This guide helps you migrate your iOS app from the legacy AWS SDK for iOS to the
 
 ### Analytics
 
-> **Pinpoint deprecation notice** – Pinpoint will be retired Oct 30 2026. AWS End User Messaging is the recommended successor. Plan migrations accordingly.
+> **Pinpoint deprecation notice** – Pinpoint will be retired Oct 30 2026. Plan migrations accordingly.
 
 | AWS SDK for iOS                                                                                                   | Amplify Swift                                                                                                                        |
 |-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
@@ -125,8 +135,10 @@ See runnable examples in the [aws‑doc‑sdk‑examples/swift](https://github.c
 ## Migration checklist
 
 1. **Remove** SDK pods / SPM packages for `AWSMobileClient`, `AWSS3TransferUtility`, etc.
-2. **Create or import** your backend in **Amplify Gen 2** console and download the generated configuration (or run `amplify pull`).
-3. **Add** Amplify libraries and required plugins via SPM.
+2. **Backend setup**:
+   - **Existing Amplify Gen1 project**: Run `amplify pull` to download your configuration
+   - **New project**: Set up [Amplify Gen2](https://docs.amplify.aws/react/start/quickstart/) or use existing AWS resources
+3. **Add** Amplify Swift libraries and required plugins via SPM.
 4. Initialize Amplify in your App's entry point.
 5. Replace legacy calls using the tables above.
 6. Build & test: verify
