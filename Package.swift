@@ -4,7 +4,7 @@ import PackageDescription
 
 let platforms: [SupportedPlatform] = [
     .iOS(.v13),
-    .macOS(.v10_15),
+    .macOS(.v12),
     .tvOS(.v13),
     .watchOS(.v9)
 ]
