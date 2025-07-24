@@ -30,7 +30,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | Platform  | Versions  | Support Level |
 | ---------: | -------:  | :-----------: |
 | iOS       | 13+       | GA            |
-| macOS     | 10.15+    | GA            |
+| macOS     | 12+    | GA            |
 | tvOS      | 13+       | GA            |
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |

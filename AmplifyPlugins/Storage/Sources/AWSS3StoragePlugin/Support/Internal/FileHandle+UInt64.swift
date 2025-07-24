@@ -34,7 +34,7 @@ extension FileHandle {
     }
 
     private func readData(upToCount length: Int) throws -> Data? {
-        if #available(iOS 13.4, macOS 10.15.4, tvOS 13.4, *) {
+        if #available(iOS 13.4, macOS 12.0, tvOS 13.4, *) {
             return try read(upToCount: length)
         } else {
             return readData(ofLength: length)

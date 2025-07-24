@@ -62,7 +62,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
             DispatchQueue.main.async {
                 var canStart = true
-                if #available(macOS 10.15.4, iOS 13.4, *) {
+                if #available(macOS 12.0, iOS 13.4, *) {
                     canStart = aswebAuthenticationSession.canStart
                 }
                 if canStart {
