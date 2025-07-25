@@ -29,7 +29,7 @@ final class LogFile {
         self.fileURL = fileURL
         self.sizeLimitInBytes = sizeLimitInBytes
         self.handle = try FileHandle(forUpdating: fileURL)
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+        if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             self.count = try self.handle.offset()
         } else {
             self.count = self.handle.offsetInFile
@@ -67,7 +67,7 @@ final class LogFile {
     /// Writes the given **single line of text** represented as a
     /// Data  to the underlying log file.
     func write(data: Data) throws {
-        if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
+        if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             try self.handle.write(contentsOf: data)
         } else {
             self.handle.write(data)
