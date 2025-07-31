@@ -12,7 +12,7 @@ import Foundation
 /// from the OperationQueue after it has completed all its work. This class is not inherently thread safe. Although it
 /// is a subclass of Foundation's Operation, it contains private state to support pausing, resuming, and finishing, that
 /// must be managed by callers.
-open class AsynchronousOperation: Operation {
+open class AsynchronousOperation: Operation, @unchecked Sendable {
 
     /// State for this operation.
     @objc private enum OperationState: Int {

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Foundation
 
 public struct FederateToIdentityPoolResult {

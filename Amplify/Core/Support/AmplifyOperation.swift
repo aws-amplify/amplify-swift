@@ -16,7 +16,7 @@ import Foundation
 /// implementation of a `dispatch` method that sends a contextualized payload to the Hub.
 ///
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
-open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
+open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation, @unchecked Sendable {
 
     /// The concrete Request associated with this operation
     public typealias Request = Request

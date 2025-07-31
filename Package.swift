@@ -25,6 +25,9 @@ let amplifyTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .target(
@@ -38,6 +41,9 @@ let amplifyTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .target(
@@ -50,6 +56,9 @@ let amplifyTargets: [Target] = [
         path: "AmplifyPlugins/Core/AmplifyCredentials",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .target(
@@ -69,6 +78,9 @@ let amplifyTargets: [Target] = [
             "Models/Collection/connection-schema.graphql",
             "Models/TransformerV2/schema.graphql",
             "Models/CustomPrimaryKey/primarykey_schema.graphql"
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -88,6 +100,9 @@ let amplifyTargets: [Target] = [
         name: "AmplifyAsyncTesting",
         dependencies: [],
         path: "AmplifyAsyncTesting/Sources/AsyncTesting",
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
+        ],
         linkerSettings: [.linkedFramework("XCTest")]
     ),
     .testTarget(
@@ -106,6 +121,9 @@ let amplifyTargets: [Target] = [
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
         exclude: [
             "Info.plist"
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -144,6 +162,9 @@ let apiTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -173,7 +194,10 @@ let authTargets: [Target] = [
         dependencies: [
             .target(name: "AmplifyBigInteger")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
+        path: "AmplifyPlugins/Auth/Sources/AmplifySRP",
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
+        ]
     ),
     .target(
         name: "AWSCognitoAuthPlugin",
@@ -190,12 +214,18 @@ let authTargets: [Target] = [
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .target(
         name: "AmplifyAvailability",
         path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
-        publicHeadersPath: "include"
+        publicHeadersPath: "include",
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
+        ]
     ),
     .target(
         name: "libtommathAmplify",
@@ -204,6 +234,9 @@ let authTargets: [Target] = [
             "changes.txt",
             "LICENSE",
             "README.md"
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -239,6 +272,9 @@ let dataStoreTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -269,6 +305,9 @@ let storageTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -300,6 +339,9 @@ let geoTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -332,6 +374,9 @@ let internalPinpointTargets: [Target] = [
         path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -354,6 +399,9 @@ let analyticsTargets: [Target] = [
         path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -375,6 +423,9 @@ let pushNotificationsTargets: [Target] = [
         path: "AmplifyPlugins/Notifications/Push/Sources/AWSPinpointPushNotificationsPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -406,6 +457,9 @@ let predictionsTargets: [Target] = [
         exclude: [],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -425,6 +479,9 @@ let predictionsTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(
@@ -450,6 +507,9 @@ let loggingTargets: [Target] = [
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+          .enableExperimentalFeature("DynamicActorIsolation")
         ]
     ),
     .testTarget(

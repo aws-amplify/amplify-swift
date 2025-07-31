@@ -183,7 +183,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 }
 
 // Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
-final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
+final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R>, @unchecked Sendable {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
