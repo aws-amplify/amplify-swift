@@ -63,7 +63,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 15.0 or later for all the supported platforms.
+Amplify requires Xcode 16.0 or later for all the supported platforms.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|

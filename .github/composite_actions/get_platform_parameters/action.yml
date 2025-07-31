@@ -42,7 +42,7 @@ runs:
     - id: get-xcode-version
       run: |
         LATEST_XCODE_VERSION=16.2.0
-        MINIMUM_XCODE_VERSION=15.0.1
+        MINIMUM_XCODE_VERSION=16.1.0
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
