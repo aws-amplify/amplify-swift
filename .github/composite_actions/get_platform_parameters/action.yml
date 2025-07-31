@@ -71,7 +71,7 @@ runs:
             ;;
           iOS/*)
             DEVICE="iPhone 15"
-            OS_VERSION="17.0"
+            OS_VERSION="17.0.1"
             ;;
           tvOS/latest)
             DEVICE="Apple TV 4K (3rd generation)"
