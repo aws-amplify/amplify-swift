@@ -65,7 +65,7 @@ public struct AWSAuthCognitoSession: AuthSession,
                             AuthPluginErrorConstants.userSubSignOutError.errorDescription,
                             AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
         } catch {
-            return .failure(error)
+            return .failure(AuthError.unknown("Unknown error.", error))
         }
     }
 
