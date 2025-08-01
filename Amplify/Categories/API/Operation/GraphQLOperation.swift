@@ -10,7 +10,7 @@ open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     GraphQLResponse<R>,
     APIError
-> { }
+>, @unchecked Sendable { }
 
 /// GraphQL Subscription Operation
 open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReportingOperation<
@@ -18,7 +18,7 @@ open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReporting
     GraphQLSubscriptionEvent<R>,
     Void,
     APIError
-> { }
+>, @unchecked Sendable { }
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation

@@ -274,7 +274,7 @@ class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     }
 }
 
-class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
+class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R>, @unchecked Sendable {
     override func pause() {
     }
 
@@ -289,7 +289,7 @@ class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     }
 }
 
-class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
+class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperation<R>, @unchecked Sendable {
 
     override func pause() {
     }
@@ -305,7 +305,7 @@ class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperati
     }
 }
 
-class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Data, APIError>, RESTOperation {
+class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Data, APIError>, RESTOperation, @unchecked Sendable {
     override func pause() {
     }
 

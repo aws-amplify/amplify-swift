@@ -18,7 +18,7 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
     StorageRemoveRequest,
     String,
     StorageError
->, StorageRemoveOperation {
+>, StorageRemoveOperation, @unchecked Sendable {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageService: AWSS3StorageServiceBehavior

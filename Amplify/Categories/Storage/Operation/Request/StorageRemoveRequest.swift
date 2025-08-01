@@ -89,3 +89,5 @@ public extension StorageRemoveRequest {
         }
     }
 }
+
+extension StorageRemoveRequest.Options: @unchecked Sendable { }

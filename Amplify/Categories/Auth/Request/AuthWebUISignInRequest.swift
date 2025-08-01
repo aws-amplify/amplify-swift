@@ -50,4 +50,6 @@ public extension AuthWebUISignInRequest {
         }
     }
 }
+
+extension AuthWebUISignInRequest.Options: @unchecked Sendable { }
 #endif

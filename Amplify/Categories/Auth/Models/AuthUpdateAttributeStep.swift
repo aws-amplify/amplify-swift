@@ -18,3 +18,5 @@ public enum AuthUpdateAttributeStep {
     /// Update Attribute step is `done` when the update attribute flow is complete.
     case done
 }
+
+extension AuthUpdateAttributeStep: Sendable { }

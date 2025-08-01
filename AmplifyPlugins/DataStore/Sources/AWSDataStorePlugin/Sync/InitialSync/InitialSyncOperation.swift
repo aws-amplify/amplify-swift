@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-final class InitialSyncOperation: AsynchronousOperation {
+final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
     private weak var api: APICategoryGraphQLBehavior?

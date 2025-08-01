@@ -22,3 +22,5 @@ public struct AuthUpdateAttributeResult {
         self.nextStep = nextStep
     }
 }
+
+extension AuthUpdateAttributeResult: Sendable { }

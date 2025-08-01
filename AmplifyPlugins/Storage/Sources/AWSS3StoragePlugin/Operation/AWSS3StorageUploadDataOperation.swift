@@ -19,7 +19,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     Progress,
     String,
     StorageError
->, StorageUploadDataOperation {
+>, StorageUploadDataOperation, @unchecked Sendable {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageServiceProvider: AWSS3StorageServiceProvider

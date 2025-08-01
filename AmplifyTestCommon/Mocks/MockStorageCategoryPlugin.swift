@@ -251,7 +251,7 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
 }
 
 class MockStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, URL, StorageError>,
-                                  StorageGetURLOperation {
+                                  StorageGetURLOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -270,7 +270,7 @@ StorageDownloadDataRequest,
 Progress,
 Data,
 StorageError
->, StorageDownloadDataOperation {
+>, StorageDownloadDataOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -289,7 +289,7 @@ StorageDownloadFileRequest,
 Progress,
 Void,
 StorageError
->, StorageDownloadFileOperation {
+>, StorageDownloadFileOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -308,7 +308,7 @@ StorageUploadDataRequest,
 Progress,
 String,
 StorageError
->, StorageUploadDataOperation {
+>, StorageUploadDataOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -327,7 +327,7 @@ StorageUploadFileRequest,
 Progress,
 String,
 StorageError
->, StorageUploadFileOperation {
+>, StorageUploadFileOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -342,7 +342,7 @@ StorageError
 }
 
 class MockStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, String, StorageError>,
-                                  StorageRemoveOperation {
+                                  StorageRemoveOperation, @unchecked Sendable {
     override func pause() {
     }
 
@@ -357,7 +357,7 @@ class MockStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, String,
 }
 
 class MockStorageListOperation: AmplifyOperation<StorageListRequest, StorageListResult, StorageError>,
-                                StorageListOperation {
+                                StorageListOperation, @unchecked Sendable {
     override func pause() {
     }
 

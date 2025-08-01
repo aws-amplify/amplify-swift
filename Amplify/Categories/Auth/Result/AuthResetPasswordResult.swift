@@ -26,6 +26,8 @@ public struct AuthResetPasswordResult {
 
 extension AuthResetPasswordResult: Equatable {}
 
+extension AuthResetPasswordResult: Sendable {}
+
 /// The next step in Auth.resetPassword api
 public enum AuthResetPasswordStep {
 
@@ -42,3 +44,5 @@ public enum AuthResetPasswordStep {
 }
 
 extension AuthResetPasswordStep: Equatable {}
+
+extension AuthResetPasswordStep: Sendable {}

@@ -26,3 +26,5 @@ public struct AWSCognitoWebAuthnCredential: AuthWebAuthnCredential {
         self.relyingPartyId = relyingPartyId
     }
 }
+
+extension AWSCognitoWebAuthnCredential: Sendable { }

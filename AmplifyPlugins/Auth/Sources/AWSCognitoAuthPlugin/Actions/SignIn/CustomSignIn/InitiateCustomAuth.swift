@@ -67,9 +67,9 @@ struct InitiateCustomAuth: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.initiateAuth(input: request)
-        return try UserPoolSignInHelper.parseResponse(response,
-                                                      for: username,
-                                                      signInMethod: .apiBased(.customWithoutSRP))
+        return UserPoolSignInHelper.parseResponse(response,
+                                                  for: username,
+                                                  signInMethod: .apiBased(.customWithoutSRP))
     }
 
 }

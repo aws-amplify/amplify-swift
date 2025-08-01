@@ -197,3 +197,5 @@ extension AuthFlowType {
         }
     }
 }
+
+extension AuthFlowType: Sendable { }

@@ -90,3 +90,7 @@ public enum AuthUserAttributeKey {
 extension AuthUserAttributeKey: Hashable {}
 
 extension AuthUserAttributeKey: Equatable {}
+
+extension AuthUserAttributeKey: Sendable {}
+
+extension AuthUserAttribute: Sendable {}

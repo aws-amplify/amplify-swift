@@ -28,7 +28,7 @@ public final actor WebSocketClient: NSObject {
     /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
     /// Internal wriable WebSocketEvent data stream
-    private let subject = PassthroughSubject<WebSocketEvent, Never>()
+    nonisolated private let subject = PassthroughSubject<WebSocketEvent, Never>()
 
     private let retryWithJitter = RetryWithJitter()
 

@@ -22,7 +22,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     Progress,
     Void,
     StorageError
->, StorageDownloadFileOperation {
+>, StorageDownloadFileOperation, @unchecked Sendable {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageServiceProvider: AWSS3StorageServiceProvider

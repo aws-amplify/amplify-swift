@@ -21,7 +21,7 @@ import Combine
 /// 3. Delete the original queried items from local store. This performs a cascade delete by default (See
 ///    **CreateTableStatement** for more details, `on delete cascade` when creating the SQL table enables this behavior).
 ///    4. If sync is enabled, then submit the delete mutations to the sync engine, in the order of children to parent models.
-public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
+public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked Sendable {
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
     let modelType: M.Type

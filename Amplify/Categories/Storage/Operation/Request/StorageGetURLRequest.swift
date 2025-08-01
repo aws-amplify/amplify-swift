@@ -128,3 +128,5 @@ public extension StorageGetURLRequest {
         }
     }
 }
+
+extension StorageGetURLRequest.Options: @unchecked Sendable { }

@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-final class CancelAwareBlockOperation: Operation {
+final class CancelAwareBlockOperation: Operation, @unchecked Sendable {
     private let block: BasicClosure
     init(block: @escaping BasicClosure) {
         self.block = block

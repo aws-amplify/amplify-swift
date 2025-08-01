@@ -54,3 +54,5 @@ public extension AuthSignInRequest {
 #endif
     }
 }
+
+extension AuthSignInRequest.Options: @unchecked Sendable { }

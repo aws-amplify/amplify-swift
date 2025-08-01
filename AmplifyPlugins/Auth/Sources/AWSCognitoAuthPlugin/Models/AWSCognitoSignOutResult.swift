@@ -26,16 +26,24 @@ public enum AWSCognitoSignOutResult: AuthSignOutResult {
     case failed(AuthError)
 }
 
+extension AWSCognitoSignOutResult: Sendable { }
+
 public struct AWSCognitoRevokeTokenError {
     public let refreshToken: String
     public let error: AuthError
 }
+
+extension AWSCognitoRevokeTokenError: Sendable { }
 
 public struct AWSCognitoGlobalSignOutError {
     public let accessToken: String
     public let error: AuthError
 }
 
+extension AWSCognitoGlobalSignOutError: Sendable { }
+
 public struct AWSCognitoHostedUIError {
     public let error: AuthError
 }
+
+extension AWSCognitoHostedUIError: Sendable { }

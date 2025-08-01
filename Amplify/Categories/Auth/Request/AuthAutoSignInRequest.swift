@@ -32,3 +32,5 @@ public extension AuthAutoSignInRequest {
         }
     }
 }
+
+extension AuthAutoSignInRequest.Options: @unchecked Sendable { }

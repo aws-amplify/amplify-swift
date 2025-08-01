@@ -9,9 +9,10 @@ import Foundation
 
 public protocol AuthCategoryUserBehavior: AnyObject {
 
-    /// Returns the currently logged in user.
+    /// Retrieve the current logged in user
     ///
-    func getCurrentUser() async throws -> AuthUser
+    /// - Returns: Current logged in user
+    func getCurrentUser() async throws -> any AuthUser
 
     /// Fetch user attributes for the current user.
     ///

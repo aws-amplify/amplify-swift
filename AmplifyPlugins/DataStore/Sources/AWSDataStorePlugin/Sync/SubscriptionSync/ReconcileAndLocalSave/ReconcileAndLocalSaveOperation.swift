@@ -13,7 +13,7 @@ import AWSPluginsCore
 // swiftlint:disable type_body_length file_length
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
-class ReconcileAndLocalSaveOperation: AsynchronousOperation {
+class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable {
 
     /// Disambiguation for the version of the model incoming from the remote API
     typealias RemoteModel = MutationSync<AnyModel>

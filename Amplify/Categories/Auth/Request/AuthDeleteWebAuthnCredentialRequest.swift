@@ -36,3 +36,5 @@ public extension AuthDeleteWebAuthnCredentialRequest {
         }
     }
 }
+
+extension AuthDeleteWebAuthnCredentialRequest.Options: @unchecked Sendable { }

@@ -45,3 +45,5 @@ public extension AuthSignUpRequest {
         }
     }
 }
+
+extension AuthSignUpRequest.Options: @unchecked Sendable { }

@@ -15,7 +15,7 @@ import AWSPluginsCore
 /// 1. When there is an APIError which is for an unauthenticated user, call the error handler.
 /// 2. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
 /// 3. When there is a "conflict unahandled" error, trigger the conflict handler and reconcile the state of the system.
-class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
+class ProcessMutationErrorFromCloudOperation: AsynchronousOperation, @unchecked Sendable {
 
     typealias MutationSyncAPIRequest = GraphQLRequest<MutationSyncResult>
     typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult

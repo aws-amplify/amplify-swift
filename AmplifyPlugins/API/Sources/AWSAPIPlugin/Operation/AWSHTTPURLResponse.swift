@@ -23,7 +23,7 @@ import Foundation
 /// **Note**: The class inheritance to `HTTPURLResponse` is to provide above mechanism, and actual
 /// implementation acts as a facade that stores an instance of `HTTPURLResponse` that delegates overidden methods to
 /// this stored property.
-public class AWSHTTPURLResponse: HTTPURLResponse {
+public class AWSHTTPURLResponse: HTTPURLResponse, @unchecked Sendable {
 
     /// The body of the response, if available
     public let body: Data?

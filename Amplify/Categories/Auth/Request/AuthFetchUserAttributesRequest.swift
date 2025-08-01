@@ -32,3 +32,5 @@ public extension AuthFetchUserAttributesRequest {
         }
     }
 }
+
+extension AuthFetchUserAttributesRequest.Options: @unchecked Sendable { }

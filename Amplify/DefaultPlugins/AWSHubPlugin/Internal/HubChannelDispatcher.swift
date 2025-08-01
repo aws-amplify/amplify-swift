@@ -85,7 +85,7 @@ protocol HubDispatchOperationDelegate: AnyObject {
     var listeners: [FilteredListener] { get }
 }
 
-final class HubDispatchOperation: Operation {
+final class HubDispatchOperation: Operation, @unchecked Sendable {
 
     private static let thresholdForConcurrentPerform = 500
 

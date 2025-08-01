@@ -25,6 +25,8 @@ public enum MFAPreference {
 
 }
 
+extension MFAPreference: Sendable { }
+
 extension MFAPreference {
 
     func smsSetting(isCurrentlyPreferred: Bool = false) -> CognitoIdentityProviderClientTypes.SMSMfaSettingsType {

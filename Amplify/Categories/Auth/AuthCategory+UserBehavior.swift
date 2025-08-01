@@ -9,7 +9,10 @@ import Foundation
 
 extension AuthCategory: AuthCategoryUserBehavior {
 
-    public func getCurrentUser() async throws -> AuthUser {
+    /// Retrieve the current logged in user
+    ///
+    /// - Returns: Current logged in user
+    public func getCurrentUser() async throws -> any AuthUser {
         try await plugin.getCurrentUser()
     }
 
