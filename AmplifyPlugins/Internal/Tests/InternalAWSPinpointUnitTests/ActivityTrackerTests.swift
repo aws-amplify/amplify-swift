@@ -80,8 +80,8 @@ class ActivityTrackerTests: XCTestCase {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
         
-        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
         await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
         
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)

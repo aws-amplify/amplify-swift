@@ -192,7 +192,7 @@ struct CognitoAPIDecodingHelper {
         switch responseType {
         case "failure":
             guard case .string(let errorType) = response["errorType"],
-                  case .string(let errorMessage) = response["errorType"] else {
+                  case .string(_) = response["errorType"] else {
                 fatalError()
             }
 

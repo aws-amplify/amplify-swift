@@ -29,7 +29,7 @@ public struct KeychainStoreMigrator {
             try? KeychainStore(service: newAttributes.service, accessGroup: newAttributes.accessGroup)._removeAll()
         }
         
-        var updateQuery = oldAttributes.defaultGetQuery()
+        let updateQuery = oldAttributes.defaultGetQuery()
 
         var updateAttributes = [String: Any]()
         updateAttributes[KeychainStore.Constants.AttributeService] = newAttributes.service

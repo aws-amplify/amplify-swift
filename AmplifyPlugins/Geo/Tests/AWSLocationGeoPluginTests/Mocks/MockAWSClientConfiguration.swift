@@ -34,7 +34,7 @@ class MockEndPointResolver: EndpointResolver {
     }
 }
 
-class MockLogAgent: LogAgent {
+class MockLogAgent: LogAgent, @unchecked Sendable {
     func log(
         level: Smithy.LogAgentLevel,
         message: @autoclosure () -> String,

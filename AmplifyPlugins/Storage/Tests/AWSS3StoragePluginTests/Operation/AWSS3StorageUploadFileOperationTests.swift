@@ -270,7 +270,6 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
         let options = StorageUploadFileRequest.Options(accessLevel: .protected,
@@ -316,7 +315,6 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
         let options = StorageUploadFileRequest.Options(accessLevel: .protected,
@@ -408,7 +406,6 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
         let options = StorageUploadFileRequest.Options(accessLevel: .protected,

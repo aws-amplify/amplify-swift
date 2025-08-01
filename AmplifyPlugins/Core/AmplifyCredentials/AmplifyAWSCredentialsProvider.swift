@@ -12,7 +12,7 @@ import Foundation
 import Smithy
 import SmithyIdentity
 
-public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProviding {
+public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProviding, @unchecked Sendable {
 
     public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
         let authSession = try await Amplify.Auth.fetchAuthSession()

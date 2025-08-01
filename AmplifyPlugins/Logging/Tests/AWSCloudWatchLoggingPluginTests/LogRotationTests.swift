@@ -178,7 +178,7 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.1.log")
         try systemUnderTest.rotate()
         
-        var rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(rotatedContents.map { $0.lastPathComponent }, [
             "amplify.2.log",
             "amplify.1.log",

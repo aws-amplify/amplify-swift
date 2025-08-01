@@ -9,7 +9,7 @@ import XCTest
 import Combine
 
 // Testable import b/c StateMachine is an internal type
-@testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSDataStorePlugin
 
 class StateMachineTests: XCTestCase {
 

@@ -11,8 +11,8 @@ import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
-@testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
+@testable @preconcurrency import AWSDataStorePlugin
 
 class ModelSyncedEventEmitterTests: XCTestCase {
 
