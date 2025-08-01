@@ -7,6 +7,7 @@
 
 import AWSCognitoIdentity
 import ClientRuntime
+import Foundation
 
 extension GetCredentialsForIdentityOutput: Codable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
