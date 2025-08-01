@@ -163,7 +163,7 @@ final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
             return
         }
 
-        guard let api = api else {
+        guard api != nil else {
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
         }

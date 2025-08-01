@@ -42,7 +42,7 @@ extension AuthenticationError: Codable {
         switch self {
         case .configuration(let message):
             try container.encode(message, forKey: .configuration)
-        case .service(let message, let error):
+        case .service(let message, _):
             try container.encode(message, forKey: .service)
         case .unknown(let message):
             try container.encode(message, forKey: .unknown)

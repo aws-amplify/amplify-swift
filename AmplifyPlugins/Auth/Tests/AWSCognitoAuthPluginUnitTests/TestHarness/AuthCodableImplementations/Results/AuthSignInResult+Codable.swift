@@ -30,7 +30,7 @@ extension AuthSignInResult: Codable {
     }
 }
 
-extension AuthSignInStep: Equatable {
+extension AuthSignInStep {
     public static func == (lhs: AuthSignInStep, rhs: AuthSignInStep) -> Bool {
         switch (lhs, rhs) {
         case (.confirmSignInWithSMSMFACode, .confirmSignInWithSMSMFACode),

@@ -11,7 +11,7 @@ import XCTest
 class ASFDeviceInfoTests: XCTestCase {
 
     func testdeviceInfo() async {
-        let asf = await ASFDeviceInfo(id: "mockID")
+        let asf = ASFDeviceInfo(id: "mockID")
         let deviceFingerPrint = await asf.deviceInfo()
         XCTAssertNotNil(deviceFingerPrint)
     }

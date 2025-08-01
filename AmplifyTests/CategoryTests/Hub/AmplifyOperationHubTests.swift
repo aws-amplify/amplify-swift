@@ -394,7 +394,7 @@ class MockDispatchingStorageDownloadFileOperation: AmplifyInProcessReportingOper
     Progress,
     Void,
     StorageError
->, StorageDownloadFileOperation {
+>, StorageDownloadFileOperation, @unchecked Sendable {
     init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,
@@ -418,7 +418,7 @@ class MockDispatchingStorageDownloadDataOperation: AmplifyInProcessReportingOper
     Progress,
     Data,
     StorageError
->, StorageDownloadDataOperation {
+>, StorageDownloadDataOperation, @unchecked Sendable {
     init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadData,
@@ -440,7 +440,7 @@ class MockDispatchingStorageGetURLOperation: AmplifyOperation<
     StorageGetURLRequest,
     URL,
     StorageError
->, StorageGetURLOperation {
+>, StorageGetURLOperation, @unchecked Sendable {
     init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.getURL,
@@ -457,7 +457,7 @@ class MockDispatchingStorageListOperation: AmplifyOperation<
     StorageListRequest,
     StorageListResult,
     StorageError
->, StorageListOperation {
+>, StorageListOperation, @unchecked Sendable {
     init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.list,
@@ -474,7 +474,7 @@ class MockDispatchingStorageRemoveOperation: AmplifyOperation<
     StorageRemoveRequest,
     String,
     StorageError
->, StorageRemoveOperation {
+>, StorageRemoveOperation, @unchecked Sendable {
     init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.remove,
@@ -493,7 +493,7 @@ class MockDispatchingStorageUploadDataOperation: AmplifyInProcessReportingOperat
     Progress,
     String,
     StorageError
->, StorageUploadDataOperation {
+>, StorageUploadDataOperation, @unchecked Sendable {
     init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.uploadData,
@@ -517,7 +517,7 @@ class MockDispatchingStorageUploadFileOperation: AmplifyInProcessReportingOperat
     Progress,
     String,
     StorageError
->, StorageUploadFileOperation {
+>, StorageUploadFileOperation, @unchecked Sendable {
     init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.uploadFile,
@@ -539,7 +539,7 @@ class NonListeningStorageListOperation: AmplifyOperation<
     StorageListRequest,
     StorageListResult,
     StorageError
->, StorageListOperation {
+>, StorageListOperation, @unchecked Sendable {
     init(request: Request) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,

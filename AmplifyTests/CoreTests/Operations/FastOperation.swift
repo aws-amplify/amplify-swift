@@ -69,7 +69,7 @@ public enum FastOperationError: AmplifyError {
 public typealias FastOperationResult = Result<FastOperationSuccess, FastOperationError>
 public typealias FastOperationResultListener = (FastOperationResult) -> Void
 
-public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError> {
+public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>
 #if canImport(Combine)
     public typealias ResultPublisher = AnyPublisher<Success, Failure>

@@ -39,7 +39,6 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     /// When: a flush log is called and fails to flush logs
     /// Then: a flushLogFailure Hub Event is sent to the Logging channel
     func testConsumeFailureSendsHubEvent() async throws {
-        throw XCTSkip("Temporarily disabling test which only fails on GitHub CI/CD")
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         unsubscribeToken = Amplify.Hub.listen(to: .logging) { payload in
             switch payload.eventName {

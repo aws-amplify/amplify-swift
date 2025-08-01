@@ -207,7 +207,7 @@ class LivenessDecodingTests: XCTestCase {
                 XCTFail("Input JSON is invalid")
                 return
             }
-            let serverSessionInformationEvent = try JSONDecoder().decode(
+            _ = try JSONDecoder().decode(
                 ServerSessionInformationEvent.self, from: data
             )
             

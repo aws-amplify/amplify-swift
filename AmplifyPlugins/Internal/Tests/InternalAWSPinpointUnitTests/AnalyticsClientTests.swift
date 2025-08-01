@@ -152,7 +152,7 @@ class AnalyticsClientTests: XCTestCase {
     }
 }
 
-private class MockTransaction: SKPaymentTransaction {
+private class MockTransaction: SKPaymentTransaction, @unchecked Sendable {
     private let _transactionId: String
     private let _payment: SKPayment
     private class MockPayment: SKPayment {
@@ -183,7 +183,7 @@ private class MockTransaction: SKPaymentTransaction {
     }
 }
 
-private class MockProduct: SKProduct {
+private class MockProduct: SKProduct, @unchecked Sendable {
     private let _productId: String
     private let _price: Double
 

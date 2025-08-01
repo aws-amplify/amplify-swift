@@ -19,7 +19,6 @@ class FileHandleTests: XCTestCase {
         let sourceFile = try createFile(from: sourceData)
         XCTAssertEqual(try StorageRequestUtils.getSize(sourceFile), UInt64(sourceString.count))
         
-        let fileSystem = FileSystem()
         let bytesReadLimit = 2
         
         let fileHandle = try FileHandle(forReadingFrom: sourceFile)

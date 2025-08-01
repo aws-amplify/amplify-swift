@@ -334,7 +334,6 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                       includes: IncludedAssociations<M> = { _ in [] },
                                       limit: Int? = nil,
                                       authMode: AWSAuthorizationType? = nil) -> GraphQLRequest<List<M>> {
-        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))

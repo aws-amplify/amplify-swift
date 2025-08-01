@@ -242,11 +242,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
         return queriedModels
     }
 
-    private func collapseResults<M: Model>(
-        queryResult: DataStoreResult<[M]>?,
-        deleteResult: DataStoreResult<[M]>?,
+    private func collapseResults<Q: Model>(
+        queryResult: DataStoreResult<[Q]>?,
+        deleteResult: DataStoreResult<[Q]>?,
         associatedModels: [(ModelName, Model)]
-    ) -> DataStoreResult<QueryAndDeleteResult<M>> {
+    ) -> DataStoreResult<QueryAndDeleteResult<Q>> {
 
         guard let queryResult = queryResult else {
             return .failure(.unknown("queryResult not set during transaction", "coding error", nil))
@@ -519,8 +519,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
 // MARK: - Supporting types
 extension CascadeDeleteOperation {
 
-    struct QueryAndDeleteResult<M: Model> {
-        let deletedModels: [M]
+    struct QueryAndDeleteResult<Q: Model> {
+        let deletedModels: [Q]
         let associatedModels: [(ModelName, Model)]
     }
 

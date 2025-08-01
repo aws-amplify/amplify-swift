@@ -152,7 +152,7 @@ class MockPublisherInProcessOperation: AmplifyInProcessReportingOperation<
     String,
     Int,
     APIError
-> {
+>, @unchecked Sendable {
     typealias Responder = (MockPublisherInProcessOperation) -> Void
     let responder: Responder
 

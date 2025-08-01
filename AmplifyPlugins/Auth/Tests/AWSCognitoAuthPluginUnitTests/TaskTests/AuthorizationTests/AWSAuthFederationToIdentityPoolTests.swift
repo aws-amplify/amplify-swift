@@ -505,7 +505,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
             }
-            catch let error as AuthError {
+            catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -585,7 +585,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
             }
-            catch let error as AuthError {
+            catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -678,7 +678,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
             }
-            catch let error as AuthError {
+            catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return

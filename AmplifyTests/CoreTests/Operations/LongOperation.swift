@@ -70,7 +70,7 @@ public typealias LongOperationResult = Result<LongOperationSuccess, LongOperatio
 public typealias LongOperationProgressListener = (Progress) -> Void
 public typealias LongOperationResultListener = (LongOperationResult) -> Void
 
-public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError> {
+public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
 #if canImport(Combine)
     public typealias ResultPublisher = AnyPublisher<Success, Failure>

@@ -407,7 +407,7 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
             GraphQLResponseError<R>.error(errors)
         )
 
-    case let errors as [WebSocketClient.Error]:
+    case _ as [WebSocketClient.Error]:
         return APIError.networkError("WebSocketClient connection aborted", nil, URLError(.networkConnectionLost))
     default:
         return APIError.operationError(

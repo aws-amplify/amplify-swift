@@ -20,7 +20,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutput: { _ in
-                try ListDevicesOutput()
+                ListDevicesOutput()
             }
         )
     }

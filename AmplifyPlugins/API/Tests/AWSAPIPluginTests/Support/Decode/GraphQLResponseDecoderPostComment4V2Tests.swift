@@ -320,7 +320,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase, SharedTestCasesPost
         XCTAssertEqual(input["postID"] as? String, post.id)
         
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
-        var graphQLData: [String: JSONValue] = [
+        let graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
                 "id": "id",
                 "content": "content",
