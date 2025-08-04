@@ -103,7 +103,7 @@ private class MockHttpClientEngine: HTTPClient {
     func close() async {}
 }
 
-private class MockLogAgent: LogAgent {
+private class MockLogAgent: LogAgent, @unchecked Sendable {
     let name = "MockLogAgent"
     var level: LogAgentLevel = .info
 

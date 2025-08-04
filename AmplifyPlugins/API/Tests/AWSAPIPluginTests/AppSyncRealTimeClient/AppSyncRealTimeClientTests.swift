@@ -554,7 +554,6 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
     func testReconnect_whenHeartBeatSignalIsNotReceived() async throws {
         var cancellables = Set<AnyCancellable>()
-        let timeout = 1.0
         let mockWebSocketClient = MockWebSocketClient()
         let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
         let appSyncClient = AppSyncRealTimeClient(

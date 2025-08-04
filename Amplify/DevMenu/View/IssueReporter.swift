@@ -97,11 +97,11 @@ struct IssueReporter: View {
     /// Open Amplify iOS issue logging screen on Github
     private func reportToGithub() {
         Task {
-            let issue = await IssueInfo(issueDescription: issueDescription,
+            let issue = IssueInfo(issueDescription: issueDescription,
                                         includeEnvInfo: includeEnvInfo,
                                         includeDeviceInfo: includeDeviceInfo)
             let issueDescriptionMarkdown =
-                await IssueInfoHelper.generateMarkdownForIssue(
+                IssueInfoHelper.generateMarkdownForIssue(
                     issue: issue)
 
             let urlString = amplifyIosNewIssueUrl + issueDescriptionMarkdown
@@ -122,10 +122,10 @@ struct IssueReporter: View {
     /// Copy issue as a markdown string to clipboard
     private func copyToClipboard() {
         Task {
-            let issue = await IssueInfo(issueDescription: issueDescription,
+            let issue = IssueInfo(issueDescription: issueDescription,
                                   includeEnvInfo: includeEnvInfo,
                                   includeDeviceInfo: includeDeviceInfo)
-            let value = await IssueInfoHelper.generateMarkdownForIssue(issue: issue)
+            let value = IssueInfoHelper.generateMarkdownForIssue(issue: issue)
             #if os(iOS)
             UIPasteboard.general.string = value
             #elseif canImport(AppKit)

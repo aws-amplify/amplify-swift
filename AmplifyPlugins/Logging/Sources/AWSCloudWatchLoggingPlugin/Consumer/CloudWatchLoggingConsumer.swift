@@ -113,20 +113,13 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         // to avoid potential race conditions with incomplete state
         
         if logStreamName == nil {
-            do {
-                // Explicitly capture self to avoid potential memory issues
-                let streamName = await self.formatter.formattedStreamName()
-                // Check if self is still valid and streamName is not nil before assigning
-                if !streamName.isEmpty {
-                    self.logStreamName = streamName
-                } else {
-                    // Fallback to a default if the stream name couldn't be determined
-                    self.logStreamName = "default.\(UUID().uuidString)"
-                }
-            } catch {
-                // Handle any potential errors from async call
-                Amplify.Logging.error("Failed to get formatted stream name: \(error)")
-                // Fallback to a default
+            // Explicitly capture self to avoid potential memory issues
+            let streamName = await self.formatter.formattedStreamName()
+            // Check if self is still valid and streamName is not nil before assigning
+            if !streamName.isEmpty {
+                self.logStreamName = streamName
+            } else {
+                // Fallback to a default if the stream name couldn't be determined
                 self.logStreamName = "default.\(UUID().uuidString)"
             }
         }
@@ -138,28 +131,22 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
         
-        do {
-            let stream = try? await self.client.describeLogStreams(input: DescribeLogStreamsInput(
+        let stream = try? await self.client.describeLogStreams(input: DescribeLogStreamsInput(
+            logGroupName: self.logGroupName,
+            logStreamNamePrefix: logStreamName
+        )).logStreams?.first(where: { stream in
+            return stream.logStreamName == logStreamName
+        })
+        
+        if stream == nil {
+            _ = try? await self.client.createLogStream(input: CreateLogStreamInput(
                 logGroupName: self.logGroupName,
-                logStreamNamePrefix: logStreamName
-            )).logStreams?.first(where: { stream in
-                return stream.logStreamName == logStreamName
-            })
-            
-            if stream == nil {
-                _ = try? await self.client.createLogStream(input: CreateLogStreamInput(
-                    logGroupName: self.logGroupName,
-                    logStreamName: logStreamName
-                ))
-            }
-            
-            // Mark as complete only after all operations finished
-            ensureLogStreamExistsComplete = true
-        } catch {
-            Amplify.Logging.error("Error ensuring log stream exists: \(error)")
-            // Still mark as complete to avoid getting stuck in a failed state
-            ensureLogStreamExistsComplete = true
+                logStreamName: logStreamName
+            ))
         }
+        
+        // Mark as complete only after all operations finished
+        ensureLogStreamExistsComplete = true
     }
 
     private func sendLogEvents(_ entries: [LogEntry]) async throws {

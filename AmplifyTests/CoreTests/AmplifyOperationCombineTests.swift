@@ -265,7 +265,7 @@ extension HubPayloadEventName {
     static var mockPublisherOperation = "MockPublisherOperation"
 }
 
-class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError> {
+class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError>, @unchecked Sendable {
     typealias Responder = (MockPublisherOperation) -> Void
     let responder: Responder
 
