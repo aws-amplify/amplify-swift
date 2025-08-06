@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.50.0 (2025-08-06)
+
+### Features
+
+- bump swift sdk version to 1.5.x (#4028)
+- update minimum supported macOS version to match Swift SDK (#4025)
+
 ## 2.49.1 (2025-07-17)
 
 ### Bug Fixes
