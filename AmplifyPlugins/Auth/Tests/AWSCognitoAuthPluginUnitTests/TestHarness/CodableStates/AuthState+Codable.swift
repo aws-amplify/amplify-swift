@@ -25,7 +25,6 @@ extension AuthState: Codable {
         if type == "AuthState.Configured" {
             let authenticationState = try values.decode(AuthenticationState.self, forKey: .authenticationState)
             let authorizationState = try values.decode(AuthorizationState.self, forKey: .authorizationState)
-            let signUpState = try values.decode(SignUpState.self, forKey: .signUpState)
             self = .configured(
                 authenticationState,
                 authorizationState,

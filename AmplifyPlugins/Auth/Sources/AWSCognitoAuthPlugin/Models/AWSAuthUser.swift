@@ -20,3 +20,5 @@ public struct AWSAuthUser: AuthUser {
     public var userId: String
 
 }
+
+extension AWSAuthUser: Sendable { }

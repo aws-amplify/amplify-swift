@@ -33,11 +33,11 @@ extension CognitoUserPoolASF {
                                asfDeviceId: String,
                                asfClient: AdvancedSecurityBehavior,
                                userPoolConfiguration: UserPoolConfigurationData) async -> String? {
-        let deviceInfo: ASFDeviceBehavior = await ASFDeviceInfo(id: asfDeviceId)
+        let deviceInfo: ASFDeviceBehavior = ASFDeviceInfo(id: asfDeviceId)
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 
         do {
-            return try asfClient.userContextData(
+            return try await asfClient.userContextData(
                 for: username,
                 deviceInfo: deviceInfo,
                 appInfo: appInfo,

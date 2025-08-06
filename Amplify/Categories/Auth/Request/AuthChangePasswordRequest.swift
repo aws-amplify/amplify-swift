@@ -42,3 +42,5 @@ public extension AuthChangePasswordRequest {
         }
     }
 }
+
+extension AuthChangePasswordRequest.Options: @unchecked Sendable { }

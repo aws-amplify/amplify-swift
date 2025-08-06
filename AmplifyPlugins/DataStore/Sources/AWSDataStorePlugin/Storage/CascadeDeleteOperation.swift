@@ -21,7 +21,7 @@ import Combine
 /// 3. Delete the original queried items from local store. This performs a cascade delete by default (See
 ///    **CreateTableStatement** for more details, `on delete cascade` when creating the SQL table enables this behavior).
 ///    4. If sync is enabled, then submit the delete mutations to the sync engine, in the order of children to parent models.
-public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
+public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked Sendable {
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
     let modelType: M.Type
@@ -242,11 +242,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         return queriedModels
     }
 
-    private func collapseResults<M: Model>(
-        queryResult: DataStoreResult<[M]>?,
-        deleteResult: DataStoreResult<[M]>?,
+    private func collapseResults<Q: Model>(
+        queryResult: DataStoreResult<[Q]>?,
+        deleteResult: DataStoreResult<[Q]>?,
         associatedModels: [(ModelName, Model)]
-    ) -> DataStoreResult<QueryAndDeleteResult<M>> {
+    ) -> DataStoreResult<QueryAndDeleteResult<Q>> {
 
         guard let queryResult = queryResult else {
             return .failure(.unknown("queryResult not set during transaction", "coding error", nil))
@@ -519,8 +519,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 // MARK: - Supporting types
 extension CascadeDeleteOperation {
 
-    struct QueryAndDeleteResult<M: Model> {
-        let deletedModels: [M]
+    struct QueryAndDeleteResult<Q: Model> {
+        let deletedModels: [Q]
         let associatedModels: [(ModelName, Model)]
     }
 

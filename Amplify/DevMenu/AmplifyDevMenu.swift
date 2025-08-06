@@ -13,7 +13,7 @@ import UIKit
 /// Presents a developer menu using the provided `DevMenuPresentationContextProvider`
 /// upon notification from a `TriggerRecognizer`. Default recognizer is a `LongPressGestureRecognizer`
 @MainActor
-public final class AmplifyDevMenu: DevMenuBehavior, TriggerDelegate {
+public final class AmplifyDevMenu: @preconcurrency DevMenuBehavior, @preconcurrency TriggerDelegate {
 
     weak var devMenuPresentationContextProvider: DevMenuPresentationContextProvider?
     var triggerRecognizer: TriggerRecognizer?

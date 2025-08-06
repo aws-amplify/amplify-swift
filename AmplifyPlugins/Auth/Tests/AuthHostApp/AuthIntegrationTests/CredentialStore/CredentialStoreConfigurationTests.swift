@@ -122,7 +122,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
     /// - When:
     ///    - We invoke a new Credential store with new Auth Configuration where identity user pool gets added
     /// - Then:
-    ///    - The keychain should be cleared
+    ///    - The keychain should be NOT be cleared
     ///
     func testCredentialsMigratedOnNotSupportedConfigurationChange() {
         // Given
@@ -147,7 +147,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
         // Then
         let credentials = try? newCredentialStore.retrieveCredential()
-        XCTAssertNil(credentials)
+        XCTAssertNotNil(credentials)
     }
 
     /// Test clearing of existing credentials when a configuration changes for identity pool
@@ -175,8 +175,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         }
 
         // When configuration changed
-        let newAuthConfig = AuthConfiguration.identityPools(IdentityPoolConfigurationData(poolId: "changed",
-                                                                                          region: "changed"))
+        let newAuthConfig = AuthConfiguration.identityPools(
+            IdentityPoolConfigurationData(
+                poolId: "changed",
+                region: "changed"))
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
 
         // Then

@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Foundation
 
 public struct AWSAuthCognitoSession: AuthSession,
@@ -64,12 +64,7 @@ public struct AWSAuthCognitoSession: AuthSession,
             return .failure(AuthError.signedOut(
                             AuthPluginErrorConstants.userSubSignOutError.errorDescription,
                             AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
-        } catch let error as AuthError {
-            return .failure(error)
         } catch {
-            let error = AuthError.unknown("""
-                            Could not retreive user sub from the fetched Cognito tokens.
-                            """)
             return .failure(error)
         }
     }
@@ -170,3 +165,5 @@ extension AWSAuthCognitoSession: CustomDebugStringConvertible {
         (debugDictionary as AnyObject).description
     }
 }
+
+extension AWSAuthCognitoSession: Sendable { }

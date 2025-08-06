@@ -53,7 +53,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                 expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = try await input.customPresignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
                 expiration: expiration)
         }

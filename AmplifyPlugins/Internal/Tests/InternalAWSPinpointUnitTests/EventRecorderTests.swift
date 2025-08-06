@@ -136,7 +136,7 @@ class EventRecorderTests: XCTestCase {
         storage.events = [ event1, event2 ]
         pinpointClient.putEventsResult = .failure(NonRetryableError())
         do {
-            let events = try await recorder.submitAllEvents()
+            _ = try await recorder.submitAllEvents()
             XCTFail("Expected error")
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
@@ -160,7 +160,7 @@ class EventRecorderTests: XCTestCase {
         storage.events = [ event1, event2 ]
         pinpointClient.putEventsResult = .failure(RetryableError())
         do {
-            let events = try await recorder.submitAllEvents()
+            _ = try await recorder.submitAllEvents()
             XCTFail("Expected error")
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
@@ -184,7 +184,7 @@ class EventRecorderTests: XCTestCase {
         storage.events = [ event1, event2 ]
         pinpointClient.putEventsResult = .failure(ConnectivityError())
         do {
-            let events = try await recorder.submitAllEvents()
+            _ = try await recorder.submitAllEvents()
             XCTFail("Expected error")
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
@@ -210,7 +210,7 @@ private struct NonRetryableError: Error, ModeledError {
     static var isThrottling = false
 }
 
-private class ConnectivityError: NSError {
+private class ConnectivityError: NSError, @unchecked Sendable {
     init() {
         super.init(
             domain: "ConnectivityError",

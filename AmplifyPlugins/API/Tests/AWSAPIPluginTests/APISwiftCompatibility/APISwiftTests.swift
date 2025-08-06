@@ -13,7 +13,6 @@ final class APISwiftTests: XCTestCase {
     func testCreateBlogMutation() {
         let file = S3ObjectInput(bucket: "bucket", key: "let", region: "region")
         let input = CreateBlogInput(name: "name", file: file)
-        let condition = ModelBlogConditionInput(name: .init(eq: "name"))
         let mutation = CreateBlogMutation(input: input)
         
         let request = GraphQLRequest<CreateBlogMutation.Data>(
@@ -21,7 +20,7 @@ final class APISwiftTests: XCTestCase {
             variables: mutation.variables?.jsonObject,
             responseType: CreateBlogMutation.Data.self)
         
-        var expectedDocument = """
+        let expectedDocument = """
         mutation CreateBlog($input: CreateBlogInput!, $condition: ModelBlogConditionInput) {
           createBlog(input: $input, condition: $condition) {
             __typename

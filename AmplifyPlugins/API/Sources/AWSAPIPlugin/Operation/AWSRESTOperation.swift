@@ -12,7 +12,7 @@ final public class AWSRESTOperation: AmplifyOperation<
     RESTOperationRequest,
     Data,
     APIError
->, RESTOperation {
+>, RESTOperation, @unchecked Sendable {
 
     // Data received by the operation
     var data = Data()

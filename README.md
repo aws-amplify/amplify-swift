@@ -30,7 +30,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | Platform  | Versions  | Support Level |
 | ---------: | -------:  | :-----------: |
 | iOS       | 13+       | GA            |
-| macOS     | 10.15+    | GA            |
+| macOS     | 12+    | GA            |
 | tvOS      | 13+       | GA            |
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |
@@ -63,7 +63,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 15.0 or later for all the supported platforms.
+Amplify requires Xcode 16.0 or later for all the supported platforms.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|

@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-final class InitialSyncOperation: AsynchronousOperation {
+final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
     private weak var api: APICategoryGraphQLBehavior?
@@ -163,7 +163,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        guard let api = api else {
+        guard api != nil else {
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
         }

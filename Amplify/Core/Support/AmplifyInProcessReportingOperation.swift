@@ -22,7 +22,7 @@ open class AmplifyInProcessReportingOperation<
     InProcess,
     Success,
     Failure: AmplifyError
->: AmplifyOperation<Request, Success, Failure> {
+>: AmplifyOperation<Request, Success, Failure>, @unchecked Sendable {
     public typealias InProcess = InProcess
 
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?

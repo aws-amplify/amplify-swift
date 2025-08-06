@@ -116,3 +116,5 @@ public extension StorageDownloadFileRequest {
         }
     }
 }
+
+extension StorageDownloadFileRequest.Options: @unchecked Sendable { }

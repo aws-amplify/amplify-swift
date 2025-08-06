@@ -31,7 +31,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
             Task {
-                if let callback = await responder.callback((model: model,
+                if let callback = responder.callback((model: model,
                                                       where: condition)) {
                     completion(callback)
                 }
@@ -52,7 +52,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
@@ -73,7 +73,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
@@ -96,7 +96,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
             Task {
-                if let result = await responder.callback((modelType: modelType,
+                if let result = responder.callback((modelType: modelType,
                                                     where: predicate,
                                                     sort: sortInput,
                                                     paginate: paginationInput)) {
@@ -113,7 +113,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
         
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = await responder.callback((modelType: modelType,
+            if let result = responder.callback((modelType: modelType,
                                                   where: predicate,
                                                   sort: sortInput,
                                                   paginate: paginationInput)) {
@@ -136,7 +136,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
            Task {
-               if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+               if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
                    completion(callback)
                }
            }
@@ -158,7 +158,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
@@ -180,7 +180,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
@@ -202,7 +202,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+                if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
                     completion(callback)
                 }
             }
@@ -222,7 +222,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, where: predicate)) {
+                if let callback = responder.callback((modelType: modelType, where: predicate)) {
                     completion(callback)
                 }
             }
@@ -241,7 +241,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
             Task {
-                if let callback = await responder.callback((model: model,
+                if let callback = responder.callback((model: model,
                                                       where: predicate)) {
                     completion(callback)
                 }
@@ -259,7 +259,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.clearListener] as? ClearResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }
@@ -275,7 +275,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.clearListener] as? ClearResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }
@@ -291,7 +291,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.stopListener] as? StopResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }

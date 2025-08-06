@@ -36,3 +36,5 @@ public extension AuthResendSignUpCodeRequest {
         }
     }
 }
+
+extension AuthResendSignUpCodeRequest.Options: @unchecked Sendable { }

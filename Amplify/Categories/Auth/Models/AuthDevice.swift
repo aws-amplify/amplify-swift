@@ -8,7 +8,7 @@
 import Foundation
 
 /// Device used by the user to sign in
-public protocol AuthDevice {
+public protocol AuthDevice: Sendable {
 
     /// Device id
     var id: String { get }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines the auth session behavior
-public protocol AuthSession {
+public protocol AuthSession: Sendable {
 
     /// True if the current user has signed in
     ///
