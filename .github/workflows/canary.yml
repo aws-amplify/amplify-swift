@@ -1,6 +1,7 @@
 name: Canary Test
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 16 * * *' # Everyday 16:00 UTC
 
@@ -15,14 +16,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            xcode-version: 15.3.0
-            device: iPhone 15
-            version: 17.4
-          - os: macos-latest
-            xcode-version: 15.0.1
-            device: iPhone 14
-            version: 17.0.1
+          - os: macos-15
+            xcode-version: '16.4.0'
+            device: 'iPhone 16 Pro Max'
+            version: '18.5'
+          - os: macos-15
+            xcode-version: '16.0.0'
+            device: 'iPhone 16 Pro Max'
+            version: '18.0'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -49,6 +50,12 @@ jobs:
         run: |
           sudo xcode-select -s "/Applications/Xcode_${{ matrix.xcode-version }}.app"
           xcodebuild -version
+
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ matrix.xcode-version }}
+          platform: iOS
 
       - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
         working-directory: ${{ github.workspace }}/canaries/example
