@@ -1,4 +1,5 @@
-name: Build with minimum Xcode version | Amplify Swift
+name: Build with Xcode Beta | Amplify Swift
+
 on:
   workflow_dispatch:
   pull_request:
@@ -14,21 +15,21 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.ref_name != 'main'}}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
-  build-amplify-with-minimum-supported-xcode:
+  build-amplify-with-xcode-beta:
     name: Build Amplify Swift for ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS]
+        platform: [macOS]
 
     uses: ./.github/workflows/build_scheme.yml
     with:
       scheme: Amplify-Build
       os-runner: 'macos-15'
-      xcode-version: 'minimum'
+      xcode-version: 'beta'
       platform: ${{ matrix.platform }}
       save_build_cache: false
 
@@ -36,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Confirm Passing Build Steps
     if: ${{ !cancelled() }}
-    needs: [ build-amplify-with-minimum-supported-xcode ]
+    needs: [build-amplify-with-xcode-beta]
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:

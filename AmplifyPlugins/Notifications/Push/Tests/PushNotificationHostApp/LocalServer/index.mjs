@@ -46,7 +46,7 @@ app.post("/notifications", async (req, res) => {
         data: data ?? {}
     }
     try {
-        const cmd = `echo '${JSON.stringify(apns)}' | xcrun simctl --set testing push ${deviceId} ${bundleId} -`
+        const cmd = `echo '${JSON.stringify(apns)}' | xcrun simctl push ${deviceId} ${bundleId} -`
         await run(cmd)
         res.send("Done")
     } catch (error) {
@@ -60,7 +60,7 @@ app.post('/uninstall', async (req, res) => {
     console.log("POST /uninstall ")
     const { deviceId } = req.body
     try {
-        const cmd = `xcrun simctl --set testing uninstall ${deviceId} ${bundleId}`
+        const cmd = `xcrun simctl uninstall ${deviceId} ${bundleId}`
         await run(cmd)
         res.send("Done")
     } catch (error) {
@@ -73,7 +73,7 @@ app.post('/boot', async (req, res) => {
     console.log("POST /boot ")
     const { deviceId } = req.body
     try {
-        const cmd = `xcrun simctl --set testing bootstatus ${deviceId} -b`
+        const cmd = `xcrun simctl bootstatus ${deviceId} -b`
         await run(cmd)
         res.send("Done")
     } catch (error) {
