@@ -11,7 +11,7 @@ import AWSPinpoint
 import Foundation
 
 actor MockEndpointClient: EndpointClientBehaviour {
-    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+    nonisolated let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
     var updateEndpointProfileCount = 0
     func updateEndpointProfile() async throws {

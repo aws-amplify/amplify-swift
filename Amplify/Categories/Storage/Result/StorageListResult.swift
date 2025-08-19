@@ -49,8 +49,6 @@ public struct StorageListResult {
     public let nextToken: String?
 }
 
-extension StorageListResult: Sendable { }
-
 extension StorageListResult {
 
     /// - Tag: StorageListResultItem
@@ -124,5 +122,3 @@ extension StorageListResult {
         }
     }
 }
-
-extension StorageListResult.Item: Sendable { }

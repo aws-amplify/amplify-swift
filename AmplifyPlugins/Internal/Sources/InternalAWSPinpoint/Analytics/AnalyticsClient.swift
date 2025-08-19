@@ -60,7 +60,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     }
 
     private let eventRecorder: AnalyticsEventRecording
-    private let sessionProvider: SessionProvider
+    private nonisolated let sessionProvider: SessionProvider
     private lazy var globalAttributes: PinpointEventAttributes = [:]
     private lazy var globalMetrics: PinpointEventMetrics = [:]
     private lazy var globalRemoteAttributes: [String: String] = [:]

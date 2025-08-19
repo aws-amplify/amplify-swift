@@ -12,7 +12,7 @@ import XCTest
 import AmplifyAsyncTesting
 
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
-    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+    nonisolated let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
     var addGlobalAttributeCalls = [(String, String)]()
     func addGlobalAttribute(_ attribute: String, forKey key: String) {
