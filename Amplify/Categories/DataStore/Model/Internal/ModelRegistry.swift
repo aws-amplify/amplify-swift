@@ -16,11 +16,11 @@ public struct ModelRegistry {
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
-    private static var modelTypes = [ModelName: Model.Type]()
+    nonisolated(unsafe) private static var modelTypes = [ModelName: Model.Type]()
 
-    private static var modelDecoders = [ModelName: ModelDecoder]()
+    nonisolated(unsafe) private static var modelDecoders = [ModelName: ModelDecoder]()
 
-    private static var modelSchemaMapping = [ModelName: ModelSchema]()
+    nonisolated(unsafe) private static var modelSchemaMapping = [ModelName: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {

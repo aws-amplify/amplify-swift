@@ -6,7 +6,7 @@
 //
 
 extension Predictions {
-    public struct LabelType: Equatable {
+    public struct LabelType: Equatable, @unchecked Sendable {
         let id: UInt8
 
         public static let all = Self(id: 0)

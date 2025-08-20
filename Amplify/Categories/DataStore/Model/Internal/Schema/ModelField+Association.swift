@@ -86,7 +86,7 @@ import Foundation
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelAssociation {
+public enum ModelAssociation : @unchecked Sendable {
     case hasMany(associatedFieldName: String?, associatedFieldNames: [String] = [])
     case hasOne(associatedFieldName: String?, associatedFieldNames: [String] = [], targetNames: [String])
     case belongsTo(associatedFieldName: String?, targetNames: [String])

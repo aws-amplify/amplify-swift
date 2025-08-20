@@ -19,7 +19,7 @@ import Foundation
 /// - Attention: **Don't** use `TimeUnit` to calculate dates, use `DateUnit` instead.
 ///   Also make sure to use the most applicable `Unit`, e.g. don't use `.minutes(60)` if you really want `.hours(1)`.
 ///   There are not always 24 hours in a day, 60 minutes in an hour, etc.
-public struct TimeUnit {
+public struct TimeUnit : @unchecked Sendable {
     public let calendarComponent: Calendar.Component
     public let value: Int
 

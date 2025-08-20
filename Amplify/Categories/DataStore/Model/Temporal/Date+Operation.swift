@@ -17,7 +17,7 @@ import Foundation
 ///
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
-public struct DateUnit {
+public struct DateUnit : @unchecked Sendable {
     let calendarComponent: Calendar.Component
     let value: Int
 
