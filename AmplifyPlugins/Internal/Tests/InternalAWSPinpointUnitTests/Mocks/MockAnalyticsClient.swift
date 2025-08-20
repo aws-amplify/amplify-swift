@@ -6,7 +6,7 @@
 //
 
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 import StoreKit
 import XCTest
 import AmplifyAsyncTesting

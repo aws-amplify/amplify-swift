@@ -30,7 +30,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
-    private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
+    private static let applicationWillMoveToForegoundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillEnterForegroundNotification
 #elseif canImport(UIKit)
@@ -40,7 +40,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
-    private static  var applicationWillTerminateNotification: Notification.Name = {
+    private static let applicationWillTerminateNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillResignActiveNotification
 #elseif canImport(UIKit)

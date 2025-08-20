@@ -9,7 +9,7 @@ import Foundation
 
 import XCTest
 @testable import Amplify
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
 import AwsCommonRuntimeKit

@@ -34,7 +34,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    private static var signer = {
+    nonisolated(unsafe) private static var signer = {
         return AWSSigV4Signer()
     }()
 

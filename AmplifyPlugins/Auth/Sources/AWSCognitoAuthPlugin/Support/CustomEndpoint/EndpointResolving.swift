@@ -20,7 +20,7 @@ extension EndpointResolving {
         try validationStep.validate(input)
     }
 
-    static let userPool = EndpointResolving { endpoint in
+    nonisolated(unsafe) static let userPool = EndpointResolving { endpoint in
         // We want to enforce that the endpoint is excluded from the
         // configuration so as not to give the impression that other
         // schemes are supported. While we could check for, and allow,

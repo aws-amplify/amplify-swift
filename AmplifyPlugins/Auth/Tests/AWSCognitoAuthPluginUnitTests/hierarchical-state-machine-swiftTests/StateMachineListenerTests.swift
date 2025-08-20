@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 class StateMachineListenerTests: XCTestCase {
 
