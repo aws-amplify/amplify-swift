@@ -267,7 +267,7 @@ public struct AmplifyOutputsData: Codable {
 // MARK: - Configure
 
 /// Represents helper methods to configure with Amplify CLI Gen2 configuration.
-public struct AmplifyOutputs : @unchecked Sendable {
+public struct AmplifyOutputs: @unchecked Sendable {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
     @_spi(InternalAmplifyConfiguration)
