@@ -6,9 +6,9 @@
 //
 
 import XCTest
-@testable import Amplify
+@testable @preconcurrency import Amplify
 import AWSPluginsCore
-@testable import AmplifyTestCommon
+@testable @preconcurrency import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
 // Decoder tests for ParentPost4V2 and ChildComment4V2

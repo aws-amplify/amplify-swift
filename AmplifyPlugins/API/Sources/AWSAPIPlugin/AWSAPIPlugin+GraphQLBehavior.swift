@@ -9,8 +9,8 @@ import Amplify
 
 public extension AWSAPIPlugin {
 
-    func query<R: Decodable>(request: GraphQLRequest<R>,
-                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
+    func query<R>(request: GraphQLRequest<R>,
+                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
                                             session: session,
                                             mapper: mapper,
@@ -20,7 +20,7 @@ public extension AWSAPIPlugin {
         return operation
     }
 
-    func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
+    func query<R>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success where R: Decodable, R: Sendable {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
                                             session: session,
                                             mapper: mapper,
@@ -31,8 +31,8 @@ public extension AWSAPIPlugin {
         return try await task.value
     }
 
-    func mutate<R: Decodable>(request: GraphQLRequest<R>,
-                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
+    func mutate<R>(request: GraphQLRequest<R>,
+                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .mutation),
                                             session: session,
                                             mapper: mapper,
@@ -42,7 +42,7 @@ public extension AWSAPIPlugin {
         return operation
     }
 
-    func mutate<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
+    func mutate<R>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success where R: Decodable, R: Sendable {
         let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .mutation),
                                             session: session,
                                             mapper: mapper,
@@ -53,7 +53,7 @@ public extension AWSAPIPlugin {
         return try await task.value
     }
 
-    func subscribe<R>(
+    func subscribe<R: Sendable>(
         request: GraphQLRequest<R>,
         valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
         completionListener: GraphQLSubscriptionOperation<R>.ResultListener?
