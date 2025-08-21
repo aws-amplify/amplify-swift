@@ -11,7 +11,7 @@ import Foundation
 @testable import AmplifyTestCommon
 
 class MockURLSessionTask: URLSessionDataTaskBehavior {
-    static var counter = AtomicValue(initialValue: 0)
+    nonisolated(unsafe) static var counter = AtomicValue(initialValue: 0)
 
     /// Mimics a URLSessionTask's Session context, for dispatching events to the
     /// session delegate. Rather than use the mock session as a broker, the tests

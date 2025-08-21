@@ -101,7 +101,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    private static var applicationWillTerminateNotification: Notification.Name = {
+    nonisolated(unsafe) private static var applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
         WKExtension.applicationWillResignActiveNotification

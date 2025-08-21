@@ -11,7 +11,7 @@ import Foundation
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 
 class InitialSyncOrchestratorTests: XCTestCase {
 
