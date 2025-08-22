@@ -46,8 +46,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutput()
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput()
                 }
             )
         }
@@ -80,8 +80,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutput(
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput(
                         authenticationResult: .init(
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
@@ -120,7 +120,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
+                mockGetTokensFromRefreshTokenResponse: { _ in
                     throw testError
                 }
             )

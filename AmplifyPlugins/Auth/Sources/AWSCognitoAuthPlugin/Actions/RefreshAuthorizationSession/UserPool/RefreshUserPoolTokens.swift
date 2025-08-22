@@ -28,7 +28,6 @@ struct RefreshUserPoolTokens: Action {
                 return
             }
 
-            let authEnv = try environment.authEnvironment()
             let config = environment.userPoolConfiguration
             let client = try? environment.cognitoUserPoolFactory()
             let existingTokens = existingSignedIndata.cognitoUserPoolTokens
@@ -47,14 +46,15 @@ struct RefreshUserPoolTokens: Action {
             let input = GetTokensFromRefreshTokenInput(
                 clientId: config.clientId,
                 clientMetadata: [:],
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: environment)
+                clientSecret: config.clientSecret,
+                deviceKey: deviceKey,
+                refreshToken: existingTokens.refreshToken
+            )
 
             logVerbose(
                 "\(#fileID) Starting get tokens from refresh token", environment: environment)
 
-            let response = try await client?.initiateAuth(input: input)
+            let response = try await client?.getTokensFromRefreshToken(input: input)
 
             logVerbose(
                 "\(#fileID) Get tokens from refresh token response received",
@@ -101,7 +101,7 @@ struct RefreshUserPoolTokens: Action {
             await dispatcher.send(event)
         }
 
-        logVerbose("\(#fileID) Initiate auth complete", environment: environment)
+        logVerbose("\(#fileID) Get tokens from refresh token complete", environment: environment)
     }
 }
 
