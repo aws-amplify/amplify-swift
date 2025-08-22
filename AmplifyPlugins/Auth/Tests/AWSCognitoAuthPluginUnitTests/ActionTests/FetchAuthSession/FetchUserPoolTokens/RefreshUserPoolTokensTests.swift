@@ -45,8 +45,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutput()
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput()
                 }
             )
         }
@@ -77,8 +77,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutput(
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput(
                         authenticationResult: .init(
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
@@ -114,7 +114,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
+                mockGetTokensFromRefreshTokenResponse: { _ in
                     throw testError
                 }
             )
@@ -137,6 +137,76 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 expectation.fulfill()
             }
         }, environment: environment)
+
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
+    }
+
+    func testRefreshTokenRotation() async {
+
+        let expectation = expectation(description: "refreshTokenRotation")
+        let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
+            MockIdentityProvider(
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput(
+                        authenticationResult: .init(
+                            accessToken: "accessTokenNew",
+                            expiresIn: 100,
+                            idToken: "idTokenNew",
+                            refreshToken: "refreshTokenRotated"))
+                }
+            )
+        }
+
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
+
+        await action.execute(withDispatcher: MockDispatcher { event in
+
+            if let userPoolEvent = event as? RefreshSessionEvent,
+               case let .refreshIdentityInfo(signedInData, _) = userPoolEvent.eventType {
+                XCTAssertEqual(signedInData.cognitoUserPoolTokens.refreshToken, "refreshTokenRotated")
+                expectation.fulfill()
+            }
+        }, environment: Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
+        )
+
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
+    }
+
+    func testRefreshTokenNoRotation() async {
+
+        let expectation = expectation(description: "refreshTokenNoRotation")
+        let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
+            MockIdentityProvider(
+                mockGetTokensFromRefreshTokenResponse: { _ in
+                    return GetTokensFromRefreshTokenOutput(
+                        authenticationResult: .init(
+                            accessToken: "accessTokenNew",
+                            expiresIn: 100,
+                            idToken: "idTokenNew",
+                            refreshToken: nil))
+                }
+            )
+        }
+
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
+
+        await action.execute(withDispatcher: MockDispatcher { event in
+
+            if let userPoolEvent = event as? RefreshSessionEvent,
+               case let .refreshIdentityInfo(signedInData, _) = userPoolEvent.eventType {
+                XCTAssertEqual(signedInData.cognitoUserPoolTokens.refreshToken, "refreshToken")
+                expectation.fulfill()
+            }
+        }, environment: Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
+        )
 
         await fulfillment(
             of: [expectation],
