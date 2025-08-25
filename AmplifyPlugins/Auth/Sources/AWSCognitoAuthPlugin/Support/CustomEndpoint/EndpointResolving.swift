@@ -8,7 +8,7 @@
 import Foundation
 import SmithyHTTPAPI
 
-struct EndpointResolving : @unchecked Sendable {
+struct EndpointResolving: @unchecked Sendable {
     let run: (String) throws -> SmithyHTTPAPI.Endpoint
 }
 
