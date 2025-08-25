@@ -81,6 +81,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
+    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -91,6 +92,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
 #endif
     }()
 
+    @MainActor
     private static let applicationWillMoveToForegoundNotification: Notification.Name = {
     #if canImport(WatchKit)
         WKExtension.applicationWillEnterForegroundNotification
@@ -101,7 +103,8 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    nonisolated(unsafe) private static var applicationWillTerminateNotification: Notification.Name = {
+    @MainActor
+    private static var applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
         WKExtension.applicationWillResignActiveNotification
@@ -112,6 +115,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
+    @MainActor
     private static let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
@@ -145,6 +149,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
         stateMachineSubscriberToken = stateMachine.subscribe(listener)
     }
 
+    @MainActor
     private func beginBackgroundTracking() {
         #if canImport(UIKit) && !os(watchOS)
         if backgroundTrackingTimeout > 0 {
@@ -161,6 +166,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
         }
     }
 
+    @MainActor
     private func stopBackgroundTracking() {
         backgroundTimer = nil
     #if canImport(UIKit) && !os(watchOS)
@@ -172,6 +178,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }
 
+    @MainActor
     @objc private func handleApplicationStateChange(_ notification: Notification) {
         switch notification.name {
         case Self.applicationDidMoveToBackgroundNotification:

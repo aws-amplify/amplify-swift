@@ -20,6 +20,7 @@ class ActivityTrackerTests: XCTestCase {
     private var stateMachine: MockStateMachine!
     private var timeout: TimeInterval = 1
 
+    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -30,6 +31,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
+    @MainActor
     private static let applicationWillMoveToForegoundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillEnterForegroundNotification
@@ -40,6 +42,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
+    @MainActor
     private static let applicationWillTerminateNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillResignActiveNotification
@@ -77,9 +80,9 @@ class ActivityTrackerTests: XCTestCase {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
         
-        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
-        NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
         
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
