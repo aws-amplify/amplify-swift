@@ -8,7 +8,7 @@
 import Foundation
 import SmithyHTTPAPI
 
-struct EndpointResolving {
+struct EndpointResolving : @unchecked Sendable {
     let run: (String) throws -> SmithyHTTPAPI.Endpoint
 }
 
@@ -20,7 +20,7 @@ extension EndpointResolving {
         try validationStep.validate(input)
     }
 
-    nonisolated(unsafe) static let userPool = EndpointResolving { endpoint in
+    static let userPool = EndpointResolving { endpoint in
         // We want to enforce that the endpoint is excluded from the
         // configuration so as not to give the impression that other
         // schemes are supported. While we could check for, and allow,
