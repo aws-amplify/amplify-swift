@@ -8,7 +8,7 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 @testable @preconcurrency import AWSDataStorePlugin
 
 final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {

@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
+public class AppSyncModelProvider<ModelType>: ModelProvider where ModelType: Model, ModelType: Sendable {
 
     let apiName: String?
     let authMode: AWSAuthorizationType?

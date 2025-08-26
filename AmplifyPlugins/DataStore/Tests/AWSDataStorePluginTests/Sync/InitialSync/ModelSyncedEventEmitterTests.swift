@@ -14,7 +14,7 @@ import Combine
 @testable @preconcurrency import AWSPluginsCore
 @testable @preconcurrency import AWSDataStorePlugin
 
-class ModelSyncedEventEmitterTests: XCTestCase {
+class ModelSyncedEventEmitterTests: XCTestCase, @unchecked Sendable {
 
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?

@@ -11,7 +11,7 @@ import Foundation
 enum AmplifyTesting {
 
     /// Instance factory to use during testing.
-    private static var instanceFactory: InstanceFactory?
+    nonisolated(unsafe) private static var instanceFactory: InstanceFactory?
 
     /// Indicates if XCTest is running.
     private static var isTesting: Bool {

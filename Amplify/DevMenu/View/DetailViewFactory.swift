@@ -11,6 +11,7 @@ import SwiftUI
 /// A factory to create detail views based on `DevMenuItemType`
 class DetailViewFactory {
 
+    @MainActor
     static func getDetailView(type: DevMenuItemType) -> AnyView {
         switch type {
         case .deviceInformation:

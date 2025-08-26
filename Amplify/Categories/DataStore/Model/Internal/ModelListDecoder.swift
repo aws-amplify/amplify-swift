@@ -15,7 +15,7 @@ import Foundation
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public struct ModelListDecoderRegistry {
-    public static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
+    nonisolated(unsafe) public static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
 
     /// Register a decoder during plugin configuration time, to allow runtime retrievals of list providers.
     public static func registerDecoder(_ listDecoder: ModelListDecoder.Type) {

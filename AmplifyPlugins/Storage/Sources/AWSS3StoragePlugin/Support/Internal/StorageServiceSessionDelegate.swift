@@ -7,7 +7,7 @@
 
 import Foundation
 
-import Amplify
+@preconcurrency import Amplify
 import AWSPluginsCore
 
 // MARK: - StorageServiceSessionDelegate -

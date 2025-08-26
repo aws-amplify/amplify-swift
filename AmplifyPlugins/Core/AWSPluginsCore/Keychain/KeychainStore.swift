@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+@preconcurrency import Foundation
 import Security
 import Amplify
 

@@ -7,7 +7,7 @@
 
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 @_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncWebSocketClientProtocol: AnyObject {

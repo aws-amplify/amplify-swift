@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import Combine
+@preconcurrency import Combine
 import Foundation
 
 final class RotatingLogger {

@@ -6,13 +6,13 @@
 //
 
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 import StoreKit
 import XCTest
 import AmplifyAsyncTesting
 
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
-    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+    nonisolated let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
     var addGlobalAttributeCalls = [(String, String)]()
     func addGlobalAttribute(_ attribute: String, forKey key: String) {

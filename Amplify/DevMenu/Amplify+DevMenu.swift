@@ -10,7 +10,7 @@ import Foundation
 /// Extension of `Amplify` for supporting Developer Menu feature
 extension Amplify {
 #if os(iOS) && !os(visionOS)
-    static var devMenu: AmplifyDevMenu?
+    nonisolated(unsafe) static var devMenu: AmplifyDevMenu?
 
     @MainActor
     public static func enableDevMenu(contextProvider: DevMenuPresentationContextProvider) {

@@ -60,6 +60,8 @@ extension JSONValue: Codable {
 
 extension JSONValue: Equatable { }
 
+extension JSONValue: @unchecked Sendable { }
+
 extension JSONValue: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: JSONValue...) {
         self = .array(elements)

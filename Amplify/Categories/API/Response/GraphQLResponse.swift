@@ -15,7 +15,7 @@ public typealias GraphQLResponse<ResponseType: Decodable> =
     Result<ResponseType, GraphQLResponseError<ResponseType>>
 
 /// An error response from a GraphQL API
-public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
+public enum GraphQLResponseError<ResponseType>: AmplifyError where ResponseType: Sendable, ResponseType: Decodable {
 
     /// An error response. The associated value will be an array of GraphQLError objects that contain service-specific
     /// error messages. https://graphql.github.io/graphql-spec/June2018/#sec-Errors

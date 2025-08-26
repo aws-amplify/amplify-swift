@@ -12,7 +12,7 @@ extension Predictions.Identify {
 }
 
 extension Predictions.Identify.Request where Output == Predictions.Identify.Celebrities.Result {
-    public static let celebrities = Self(
+    nonisolated(unsafe) public static let celebrities = Self(
         kind: .detectCelebrities(.lift)
     )
 }

@@ -14,7 +14,7 @@ import AWSPluginsCore
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 
-class AWSAPICategoryPluginReachabilityTests: XCTestCase {
+class AWSAPICategoryPluginReachabilityTests: XCTestCase, @unchecked Sendable {
 
     var apiPlugin: AWSAPIPlugin!
 

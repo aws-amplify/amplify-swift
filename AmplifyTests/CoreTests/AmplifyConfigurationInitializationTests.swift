@@ -13,7 +13,7 @@ import XCTest
 /// circumstances
 class AmplifyConfigurationInitializationTests: XCTestCase {
 
-    static var tempDir: URL = {
+    static let tempDir: URL = {
         let fileManager = FileManager.default
         let tempDir = fileManager.temporaryDirectory.appendingPathComponent("ConfigurationInternalsTests")
         return tempDir
