@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 @testable import AWSDataStorePlugin
 
 class OutgoingMutationQueueMockStateTest: XCTestCase {

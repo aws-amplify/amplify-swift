@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// A class for recognizing long press gesture which notifies a `TriggerDelegate` of the event
-class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecognizerDelegate {
+class LongPressGestureRecognizer: NSObject, @preconcurrency TriggerRecognizer, UIGestureRecognizerDelegate {
 
     weak var triggerDelegate: TriggerDelegate?
     weak var uiWindow: UIWindow?

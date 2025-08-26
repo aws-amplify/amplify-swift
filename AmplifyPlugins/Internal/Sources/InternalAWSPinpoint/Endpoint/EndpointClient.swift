@@ -13,7 +13,7 @@ import Foundation
 
 @_spi(InternalAWSPinpoint)
 public protocol EndpointClientBehaviour: Actor {
-    nonisolated var pinpointClient: PinpointClientProtocol { get }
+    var pinpointClient: PinpointClientProtocol { get }
 
     func currentEndpointProfile() async -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
@@ -28,7 +28,7 @@ actor EndpointClient: EndpointClientBehaviour {
         let isDebug: Bool
     }
 
-    let pinpointClient: PinpointClientProtocol
+    nonisolated let pinpointClient: PinpointClientProtocol
 
     private let configuration: EndpointClient.Configuration
     private let archiver: AmplifyArchiverBehaviour

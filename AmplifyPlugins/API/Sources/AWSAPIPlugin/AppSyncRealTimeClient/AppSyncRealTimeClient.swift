@@ -8,7 +8,7 @@
 
 import Foundation
 import Amplify
-import Combine
+@preconcurrency import Combine
 @_spi(WebSocket) import AWSPluginsCore
 
 /**
@@ -48,7 +48,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// WebSocketClient offering connections at the WebSocket protocol level
     internal var webSocketClient: AppSyncWebSocketClientProtocol
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
-    internal let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
+    internal nonisolated let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
 
     var isConnected: Bool {
         self.state.value == .connected

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+@preconcurrency import Combine
 
 /// Models, evolves, and processes effects for a system.
 ///

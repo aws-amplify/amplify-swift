@@ -9,8 +9,8 @@ import XCTest
 import AWSPinpoint
 import AwsCommonRuntimeKit
 @testable import Amplify
-import ClientRuntime
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@preconcurrency import ClientRuntime
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
 class EventRecorderTests: XCTestCase {
     var recorder: AnalyticsEventRecording!
@@ -197,17 +197,17 @@ class EventRecorderTests: XCTestCase {
 }
 
 private struct RetryableError: Error, ModeledError {
-    static var typeName = "RetriableError"
-    static var fault = ErrorFault.client
-    static var isRetryable = true
-    static var isThrottling = false
+    static let typeName = "RetriableError"
+    static let fault = ErrorFault.client
+    static let isRetryable = true
+    static let isThrottling = false
 }
 
 private struct NonRetryableError: Error, ModeledError {
-    static var typeName = "RetriableError"
-    static var fault = ErrorFault.client
-    static var isRetryable = false
-    static var isThrottling = false
+    static let typeName = "RetriableError"
+    static let fault = ErrorFault.client
+    static let isRetryable = false
+    static let isThrottling = false
 }
 
 private class ConnectivityError: NSError, @unchecked Sendable {

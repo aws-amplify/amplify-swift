@@ -12,7 +12,9 @@ import InternalAmplifyCredentials
 import Combine
 
 
-public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+public class AWSGraphQLSubscriptionTaskRunner<R>: InternalTaskRunner,
+                                                  InternalTaskAsyncThrowingSequence,
+                                                  InternalTaskThrowingChannel where R: Decodable, R: Sendable {
     public typealias Request = GraphQLOperationRequest<R>
     public typealias InProcess = GraphQLSubscriptionEvent<R>
 
@@ -183,7 +185,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 }
 
 // Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
-final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R>, @unchecked Sendable {
+final public class AWSGraphQLSubscriptionOperation<R>: GraphQLSubscriptionOperation<R>, @unchecked Sendable where R: Decodable, R: Sendable {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
@@ -383,7 +385,7 @@ fileprivate func encodeRequest(query: String, variables: [String: Any]?) -> Stri
     }
 }
 
-fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> APIError {
+fileprivate func toAPIError<R>(_ errors: [Error], type: R.Type) -> APIError where R: Decodable, R: Sendable {
     func errorDescription(_ hasAuthorizationError: Bool = false) -> String {
         "Subscription item event failed with error" +
         (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")

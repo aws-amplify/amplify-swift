@@ -8,7 +8,7 @@
 import Amplify
 import Combine
 import Foundation
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
 protocol OutgoingMutationQueueBehavior: AnyObject {

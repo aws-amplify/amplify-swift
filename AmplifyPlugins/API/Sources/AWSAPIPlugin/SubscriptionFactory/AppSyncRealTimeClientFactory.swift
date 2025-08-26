@@ -7,10 +7,10 @@
 
 
 import Foundation
-import Amplify
+@preconcurrency import Amplify
 import Combine
-import InternalAmplifyCredentials
-@_spi(WebSocket) import AWSPluginsCore
+@preconcurrency import InternalAmplifyCredentials
+@_spi(WebSocket) @preconcurrency import AWSPluginsCore
 
 protocol AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(

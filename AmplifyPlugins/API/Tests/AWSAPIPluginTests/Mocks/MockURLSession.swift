@@ -12,7 +12,7 @@ import Foundation
 class MockURLSession: URLSessionBehavior {
     weak var sessionBehaviorDelegate: URLSessionBehaviorDelegate?
 
-    static let defaultOnReset: ((BasicClosure?) -> Void) = { $0?() }
+    nonisolated(unsafe) static let defaultOnReset: ((BasicClosure?) -> Void) = { $0?() }
 
     var onTaskForRequest: (URLRequest) -> URLSessionDataTaskBehavior
     var onReset: ((BasicClosure?) -> Void)?

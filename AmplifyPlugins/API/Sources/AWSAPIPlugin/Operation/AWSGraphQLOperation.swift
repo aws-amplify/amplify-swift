@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R>, @unchecked Sendable {
+final public class AWSGraphQLOperation<R>: GraphQLOperation<R>, @unchecked Sendable where R: Decodable, R: Sendable {
 
     let session: URLSessionBehavior
     let mapper: OperationTaskMapper

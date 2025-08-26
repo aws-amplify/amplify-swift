@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 import AWSClientRuntime
 import AWSPinpoint
 import Foundation
 
 actor MockEndpointClient: EndpointClientBehaviour {
-    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+    nonisolated let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
     var updateEndpointProfileCount = 0
     func updateEndpointProfile() async throws {

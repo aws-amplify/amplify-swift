@@ -6,7 +6,7 @@
 //
 
 @testable import AmplifyTestCommon
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 import XCTest
 
 final class AWSPinpointFactoryTests: XCTestCase {

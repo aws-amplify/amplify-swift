@@ -7,7 +7,7 @@
 
 
 import Foundation
-import Combine
+@preconcurrency import Combine
 import Amplify
 
 extension AppSyncRealTimeClient {
