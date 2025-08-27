@@ -423,7 +423,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             .notStarted)
 
         let mockIdentityProvider = MockIdentityProvider(
-            mockInitiateAuthResponse: { _ in
+            mockGetTokensFromRefreshTokenResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
             })
 
