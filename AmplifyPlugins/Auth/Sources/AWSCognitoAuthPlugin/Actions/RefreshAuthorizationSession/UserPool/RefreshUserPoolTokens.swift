@@ -28,7 +28,6 @@ struct RefreshUserPoolTokens: Action {
                 return
             }
 
-            let authEnv = try environment.authEnvironment()
             let config = environment.userPoolConfiguration
             let client = try? environment.cognitoUserPoolFactory()
             let existingTokens = existingSignedIndata.cognitoUserPoolTokens
@@ -36,24 +35,27 @@ struct RefreshUserPoolTokens: Action {
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: existingSignedIndata.username,
                 with: environment)
+            
+            let deviceKey: String? = {
+                if case .metadata(let data) = deviceMetadata {
+                    return data.deviceKey
+                }
+                return nil
+            }()
 
-            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-                for: existingSignedIndata.username,
-                credentialStoreClient: authEnv.credentialsClient)
-
-            let input = await InitiateAuthInput.refreshAuthInput(
-                username: existingSignedIndata.username,
-                refreshToken: existingTokens.refreshToken,
+            let input = GetTokensFromRefreshTokenInput(
+                clientId: config.clientId,
                 clientMetadata: [:],
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: environment)
+                clientSecret: config.clientSecret,
+                deviceKey: deviceKey,
+                refreshToken: existingTokens.refreshToken
+            )
 
-            logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
+            logVerbose("\(#fileID) Starting get tokens from refresh token", environment: environment)
 
-            let response = try await client?.initiateAuth(input: input)
+            let response = try await client?.getTokensFromRefreshToken(input: input)
 
-            logVerbose("\(#fileID) Initiate auth response received", environment: environment)
+            logVerbose("\(#fileID) Get tokens from refresh token response received", environment: environment)
 
             guard let authenticationResult = response?.authenticationResult,
                   let idToken = authenticationResult.idToken,
@@ -69,8 +71,7 @@ struct RefreshUserPoolTokens: Action {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
-                refreshToken: existingTokens.refreshToken,
-                expiresIn: authenticationResult.expiresIn
+                refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
             )
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
@@ -96,7 +97,7 @@ struct RefreshUserPoolTokens: Action {
             await dispatcher.send(event)
         }
 
-        logVerbose("\(#fileID) Initiate auth complete", environment: environment)
+        logVerbose("\(#fileID) Get tokens from refresh token complete", environment: environment)
     }
 }
 
