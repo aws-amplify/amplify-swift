@@ -497,8 +497,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/aws-amplify/amplify-swift";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 2.0.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
