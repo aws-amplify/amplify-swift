@@ -59,5 +59,4 @@ jobs:
 
       - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
         working-directory: ${{ github.workspace }}/canaries/example
-        run: bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
-
+        run: bundle exec fastlane run_tests device:"${{ matrix.device }}" deployment_target_version:"${{ matrix.version }}"

@@ -94,4 +94,9 @@ platform :ios do
     sh('git', 'push', 'origin', 'release')
     sh('git', 'push', 'origin', 'release:main')
   end
+
+  desc "Run iOS tests"
+  lane :run_tests do
+    bundle exec fastlane scan --device options[:device] --deployment_target_version options[:deployment_target_version]
+  end
 end
