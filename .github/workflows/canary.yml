@@ -59,5 +59,7 @@ jobs:
 
       - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
         working-directory: ${{ github.workspace }}/canaries/example
-        run: bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
+        run: |
+          export FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT=120
+          bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
 
