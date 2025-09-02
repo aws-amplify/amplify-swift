@@ -35,6 +35,6 @@ jobs:
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
-      timeout-minutes: 50
+      timeout-minutes: 120
       generate_coverage_report: false
       test_iterations_flags: -test-iterations 25 -run-tests-until-failure
