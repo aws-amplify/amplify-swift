@@ -23,7 +23,7 @@ jobs:
           - os: macos-15
             xcode-version: '16.0.0'
             device: 'iPhone 16 Pro Max'
-            version: '18.0'
+            version: '18.4'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
