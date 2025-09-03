@@ -34,12 +34,20 @@ runs:
         
         echo "Installing simulators for $PLATFORM with Xcode 16.0.0..."
         
+        # Ensure we're using Xcode 16.0.0 for simulator downloads
+        echo "Switching to Xcode 16.0.0..."
+        sudo xcode-select -switch /Applications/Xcode_16.0.0.app/Contents/Developer
+        
+        # Verify the switch worked
+        echo "Current Xcode version:"
+        xcodebuild -version
+        
         # Show what's available before download
         echo "Simulators before download:"
         xcrun simctl list runtimes || true
         
-        # Download the platform - this will get the appropriate version for Xcode 16.0
-        echo "Downloading $PLATFORM platform for Xcode 16.0..."
+        # Download the platform runtime for Xcode 16.0.0
+        echo "Downloading $PLATFORM runtime for Xcode 16.0..."
         case $PLATFORM in
           iOS)
             sudo xcodebuild -downloadPlatform iOS || echo "Failed to download iOS platform"
