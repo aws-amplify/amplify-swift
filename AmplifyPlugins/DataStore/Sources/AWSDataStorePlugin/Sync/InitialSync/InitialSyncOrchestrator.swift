@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
 
@@ -189,7 +189,11 @@ extension AWSInitialSyncOrchestrator: DefaultLogger {
 extension AWSInitialSyncOrchestrator: Resettable {
     func reset() async {
         syncOperationQueue.cancelAllOperations()
-        syncOperationQueue.waitUntilAllOperationsAreFinished()
+        await withCheckedContinuation { continuation in
+            syncOperationQueue.addBarrierBlock {
+                continuation.resume()
+            }
+        }
     }
 }
 

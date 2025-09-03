@@ -8,7 +8,7 @@
 import XCTest
 import AWSCognitoIdentity
 @testable import Amplify
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
 

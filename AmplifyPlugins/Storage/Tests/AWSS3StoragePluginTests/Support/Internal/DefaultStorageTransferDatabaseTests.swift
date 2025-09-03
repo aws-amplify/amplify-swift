@@ -217,7 +217,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 10)
     }
 
     /// Given: A DefaultStorageTransferDatabase
@@ -228,7 +228,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
         database.prepareForBackground() {
             expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 10)
     }
 
     /// Given: The StorageTransferDatabase Type

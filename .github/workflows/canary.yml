@@ -40,7 +40,7 @@ jobs:
         run: amplify init --quickstart --frontend ios
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
+        uses: ruby/setup-ruby@efbf473cab83af4468e8606cc33eca9281bb213f # v1.256.0
         with:
           ruby-version: '3.2.1'
           bundler-cache: true
@@ -59,5 +59,7 @@ jobs:
 
       - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
         working-directory: ${{ github.workspace }}/canaries/example
-        run: bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
+        run: |
+          export FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT=120
+          bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
 

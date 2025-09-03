@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@preconcurrency import Amplify
 import AmplifyTestCommon
 @testable import AWSAPIPlugin
 

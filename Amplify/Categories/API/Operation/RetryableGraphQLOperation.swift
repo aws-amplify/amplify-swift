@@ -72,7 +72,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 
 }
 
-public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
+public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload: Decodable, Payload: Sendable {
 
     public typealias Payload = Payload
     public typealias SubscriptionEvents = GraphQLSubscriptionEvent<Payload>

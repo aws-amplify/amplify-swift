@@ -136,7 +136,7 @@ private class MockSRPClientBehavior: SRPClientBehavior {
         return "UHexValue"
     }
 
-    static var authenticationKey: Result<Data, Error> = .success(Data("AuthenticationKey".utf8))
+    nonisolated(unsafe) static var authenticationKey: Result<Data, Error> = .success(Data("AuthenticationKey".utf8))
     static func generateAuthenticationKey(
         sharedSecretHexValue: String,
         uHexValue: String

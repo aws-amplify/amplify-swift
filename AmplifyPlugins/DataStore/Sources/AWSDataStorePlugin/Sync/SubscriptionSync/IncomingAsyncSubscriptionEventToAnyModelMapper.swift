@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 
 enum IncomingAsyncSubscriptionEvent {

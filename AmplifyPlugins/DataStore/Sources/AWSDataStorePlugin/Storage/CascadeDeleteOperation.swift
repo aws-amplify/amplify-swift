@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@preconcurrency import Amplify
 import AWSPluginsCore
 import Combine
 

@@ -9,7 +9,7 @@ import Foundation
 
 extension Predictions {
     // swiftlint:disable file_length type_body_length
-    public struct Language: Equatable, Decodable {
+    public struct Language: Equatable, Decodable, @unchecked Sendable {
         public let code: String
 
         public init(code: String) {

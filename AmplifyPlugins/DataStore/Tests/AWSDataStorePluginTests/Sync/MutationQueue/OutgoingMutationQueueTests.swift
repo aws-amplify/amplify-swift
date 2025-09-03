@@ -10,7 +10,7 @@ import SQLite
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 @testable import AWSDataStorePlugin
 
 class OutgoingMutationQueueTests: SyncEngineTestBase {

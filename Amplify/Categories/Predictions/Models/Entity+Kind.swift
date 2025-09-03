@@ -8,7 +8,7 @@
 extension Predictions.Entity {
     /// Different entity types detected in a text as a result of
     /// interpret() API
-    public struct Kind: Equatable, Hashable {
+    public struct Kind: Equatable, Hashable, @unchecked Sendable {
         let id: UInt8
 
         public static let unknown = Self(id: 0)

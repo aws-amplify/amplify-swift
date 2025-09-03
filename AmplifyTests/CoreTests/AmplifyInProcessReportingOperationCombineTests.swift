@@ -144,7 +144,7 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
 }
 
 extension HubPayloadEventName {
-    static var mockPublisherInProcessReportingOperation = "mockPublisherInProcessReportingOperation"
+    static let mockPublisherInProcessReportingOperation = "mockPublisherInProcessReportingOperation"
 }
 
 class MockPublisherInProcessOperation: AmplifyInProcessReportingOperation<
