@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
-import Foundation
+import AWSPluginsCore
+import Amplify
 import ClientRuntime
+import Foundation
 
 struct RefreshUserPoolTokens: Action {
 
@@ -37,29 +37,34 @@ struct RefreshUserPoolTokens: Action {
                 for: existingSignedIndata.username,
                 with: environment)
 
-            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-                for: existingSignedIndata.username,
-                credentialStoreClient: authEnv.credentialsClient)
+            let deviceKey: String? = {
+                if case .metadata(let data) = deviceMetadata {
+                    return data.deviceKey
+                }
+                return nil
+            }()
 
-            let input = await InitiateAuthInput.refreshAuthInput(
-                username: existingSignedIndata.username,
-                refreshToken: existingTokens.refreshToken,
+            let input = GetTokensFromRefreshTokenInput(
+                clientId: config.clientId,
                 clientMetadata: [:],
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
                 environment: environment)
 
-            logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
+            logVerbose(
+                "\(#fileID) Starting get tokens from refresh token", environment: environment)
 
             let response = try await client?.initiateAuth(input: input)
 
-            logVerbose("\(#fileID) Initiate auth response received", environment: environment)
+            logVerbose(
+                "\(#fileID) Get tokens from refresh token response received",
+                environment: environment)
 
             guard let authenticationResult = response?.authenticationResult,
-                  let idToken = authenticationResult.idToken,
-                  let accessToken = authenticationResult.accessToken
+                let idToken = authenticationResult.idToken,
+                let accessToken = authenticationResult.accessToken,
+                let refreshToken = authenticationResult.refreshToken
             else {
-
                 let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                 await dispatcher.send(event)
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
@@ -69,9 +74,9 @@ struct RefreshUserPoolTokens: Action {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
-                refreshToken: existingTokens.refreshToken,
-                expiresIn: authenticationResult.expiresIn
+                refreshToken: refreshToken
             )
+            
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
@@ -102,7 +107,8 @@ struct RefreshUserPoolTokens: Action {
 
 extension RefreshUserPoolTokens: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+        Amplify.Logging.logger(
+            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
     public var log: Logger {
@@ -114,7 +120,7 @@ extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "existingSignedInData": existingSignedIndata
+            "existingSignedInData": existingSignedIndata,
         ]
     }
 }
