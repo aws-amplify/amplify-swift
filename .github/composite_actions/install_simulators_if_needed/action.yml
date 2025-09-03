@@ -38,8 +38,12 @@ runs:
         echo "Simulators before download:"
         xcrun simctl list runtimes || true
         
-        # Download the platform - this will get the appropriate version for Xcode 16.0
-        echo "Downloading $PLATFORM platform for Xcode 16.0..."
+        # List available downloadable content first
+        echo "Checking available downloadable content..."
+        xcodebuild -downloadableContentList || true
+        
+        # Download the platform runtime for Xcode 16.0.0
+        echo "Downloading $PLATFORM runtime for Xcode 16.0..."
         case $PLATFORM in
           iOS)
             sudo xcodebuild -downloadPlatform iOS || echo "Failed to download iOS platform"
