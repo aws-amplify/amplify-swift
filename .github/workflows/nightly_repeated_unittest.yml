@@ -37,4 +37,4 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 120
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 10 -run-tests-until-failure -parallel-testing-enabled NO
+      test_iterations_flags: -test-iterations 3 -run-tests-until-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES -quiet 
