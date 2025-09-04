@@ -21,6 +21,10 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
+      test_without_building:
+        required: false
+        type: boolean
+        default: false
       os-runner:
         description: 'runs-on input'
         type: string
@@ -49,4 +53,5 @@ jobs:
       generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
       timeout-minutes: ${{ inputs.timeout-minutes }}
       test_iterations_flags: ${{ inputs.test_iterations_flags }}
+      test_without_building: ${{ inputs.test_without_building }}
       os-runner: ${{ inputs.os-runner }}

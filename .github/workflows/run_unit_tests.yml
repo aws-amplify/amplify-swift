@@ -32,6 +32,10 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
+      test_without_building:
+        required: false
+        type: boolean
+        default: false
       os-runner:
         description: 'runs-on input'
         type: string
@@ -92,6 +96,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           other_flags: ${{ inputs.test_iterations_flags }}
+          test_without_building: ${{ inputs.test_without_building }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
         if: steps.run-tests.outcome=='failure'
@@ -108,6 +113,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           other_flags: ${{ inputs.test_iterations_flags }}
+          test_without_building: ${{ inputs.test_without_building }}
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}
