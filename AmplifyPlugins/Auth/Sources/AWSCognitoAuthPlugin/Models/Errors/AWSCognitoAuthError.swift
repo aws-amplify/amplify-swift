@@ -111,6 +111,9 @@ public enum AWSCognitoAuthError: Error {
 
     /// The WebAuthn configuration is missing or incomplete
     case webAuthnConfigurationMissing
+
+    /// Protected data is not yet available (iOS prewarming or locked state)
+    case protectedDataUnavailable
 }
 
 extension AWSCognitoAuthError: LocalizedError {
@@ -185,6 +188,8 @@ extension AWSCognitoAuthError: LocalizedError {
             message = "The relying party ID doesn't match."
         case .webAuthnConfigurationMissing:
             message = "The WebAuthn configuration is missing or incomplete."
+        case .protectedDataUnavailable:
+            message = "Protected data is not yet available."
         }
         return "\(String(describing: Self.self)).\(self): \(message)"
     }
