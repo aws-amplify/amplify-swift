@@ -30,10 +30,22 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
         try await super.setUp()
         AuthSessionHelper.clearSession()
 
-        // Stabilize network state before WebSocket operations
-        try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 seconds
-
-        await subscribeToOTPCreation()
+        // Retry subscription setup for CI stability
+        await setupSubscriptionWithRetry()
+    }
+    
+    private func setupSubscriptionWithRetry() async {
+        for attempt in 1...3 {
+            do {
+                await subscribeToOTPCreation()
+                return // Success, exit retry loop
+            } catch {
+                print("Subscription setup attempt \(attempt) failed: \(error)")
+                if attempt < 3 {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+                }
+            }
+        }
     }
 
     override func tearDown() async throws {
