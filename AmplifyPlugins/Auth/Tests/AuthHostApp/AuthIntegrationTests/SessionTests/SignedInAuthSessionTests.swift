@@ -33,8 +33,10 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     func testSuccessfulForceSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let firstCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(

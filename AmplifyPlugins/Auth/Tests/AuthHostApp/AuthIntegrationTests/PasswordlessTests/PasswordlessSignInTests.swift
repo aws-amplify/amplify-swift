@@ -30,10 +30,16 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
         try await super.setUp()
         AuthSessionHelper.clearSession()
 
+        // Stabilize network state before WebSocket operations
+        try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 seconds
+
         await subscribeToOTPCreation()
     }
 
     override func tearDown() async throws {
+        // Wait for WebSocket connections to fully disconnect
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+        
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
