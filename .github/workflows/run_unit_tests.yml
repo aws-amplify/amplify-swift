@@ -103,7 +103,7 @@ jobs:
           test_without_building: ${{ inputs.test_without_building }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
-        if: steps.run-tests.outcome=='failure' && ${{ inputs.retry_tests }}
+        if: ${{ (steps.run-tests.outcome == 'failure') && (inputs.retry_tests == true) }}
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
