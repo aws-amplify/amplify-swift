@@ -40,32 +40,32 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 120
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 5 | 
-        -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex |
-        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken |
-        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken |
-        -skip-testing InternalAWSPinpointUnitTests/EventRecorderTests/testSubmitAllEvents_withActiveAndStoppedSessions_shouldGenerateRightInput |
-        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testDeleteEvent |
-        -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests/testDownloadDataOperationDownloadDataFailed |
-        -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testLoadPersistableTasks |
-        -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testPrepareForBackground |
-        -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests.testUploadFileOperationStringStoragePathValidationError |
-        -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey |
-        -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testIdentifyUserDispatchesErrorForPinpointError |
-        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled |
-        -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testGenerateSnapshotOnObserveQueryWhenModelSynced |
-        -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testItemChangedWillGenerateSnapshot |
-        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueCreateSendsSync |
-        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst |
-        -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests/testObserve |
-        -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests/testRetryOnChangeReachability |
-        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithOnlyUserPool |
-        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithUserPoolAndIdentityPoolWithNetworkPreferencesAndSecureStoragePreferences |
-        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests/testDelegateIsInvokedOnInterval |
-        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests/testConsumeFailureSendsHubEvent |
-        -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests/testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow |
-        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests/testDecodingError |
-        -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests/testOperationCleanup |
-        -skip-testing AWSPluginsCoreTests/WebSocketClientTests/testAutoRetry_whenReceiveTransientFailureFromServer |
+      test_iterations_flags: -test-iterations 5 \ 
+        -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex \
+        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken \
+        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken \
+        -skip-testing InternalAWSPinpointUnitTests/EventRecorderTests/testSubmitAllEvents_withActiveAndStoppedSessions_shouldGenerateRightInput \
+        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testDeleteEvent \
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests/testDownloadDataOperationDownloadDataFailed \
+        -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testLoadPersistableTasks \
+        -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testPrepareForBackground \
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests.testUploadFileOperationStringStoragePathValidationError \
+        -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey \
+        -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testIdentifyUserDispatchesErrorForPinpointError \
+        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled \
+        -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testGenerateSnapshotOnObserveQueryWhenModelSynced \
+        -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testItemChangedWillGenerateSnapshot \
+        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueCreateSendsSync \
+        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst \
+        -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests/testObserve \
+        -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests/testRetryOnChangeReachability \
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithOnlyUserPool \
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithUserPoolAndIdentityPoolWithNetworkPreferencesAndSecureStoragePreferences \
+        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests/testDelegateIsInvokedOnInterval \
+        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests/testConsumeFailureSendsHubEvent \
+        -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests/testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow \
+        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests/testDecodingError \
+        -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests/testOperationCleanup \
+        -skip-testing AWSPluginsCoreTests/WebSocketClientTests/testAutoRetry_whenReceiveTransientFailureFromServer
       test_without_building: true
       retry_tests: false
