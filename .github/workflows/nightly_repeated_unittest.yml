@@ -42,3 +42,4 @@ jobs:
       generate_coverage_report: false
       test_iterations_flags: -test-iterations 5 -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex
       test_without_building: true
+      retry_tests: false

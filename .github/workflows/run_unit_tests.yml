@@ -36,6 +36,10 @@ on:
         required: false
         type: boolean
         default: false
+      retry_tests:
+        required: false
+        type: boolean
+        default: true
       os-runner:
         description: 'runs-on input'
         type: string
@@ -99,7 +103,7 @@ jobs:
           test_without_building: ${{ inputs.test_without_building }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
-        if: steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure' && ${{ inputs.retry_tests }}
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:

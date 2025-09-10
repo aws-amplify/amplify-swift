@@ -25,6 +25,10 @@ on:
         required: false
         type: boolean
         default: false
+      retry_tests:
+        required: false
+        type: boolean
+        default: true
       os-runner:
         description: 'runs-on input'
         type: string
@@ -55,3 +59,4 @@ jobs:
       test_iterations_flags: ${{ inputs.test_iterations_flags }}
       test_without_building: ${{ inputs.test_without_building }}
       os-runner: ${{ inputs.os-runner }}
+      retry_tests: ${{ inputs.retry_tests }}
