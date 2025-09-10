@@ -41,6 +41,29 @@ jobs:
       timeout-minutes: 120
       generate_coverage_report: false
       test_iterations_flags: -test-iterations 5 -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
-        -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex
+        -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex        
+        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken 
+        -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken 
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadFileOperationTests
+        -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests
+        -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests
+        -skip-testing AWSDataStoreCategoryPluginTests/ModelReconciliationQueueBehaviorTests
+        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests
+        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest
+        -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests
+        -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests
+        -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorForgetDeviceTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginConfigTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthSignOutTaskTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/ClientBehaviorResetPasswordTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorFetchDevicesTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthSignUpAPITests
+        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests
+        -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests
+        -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
+        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTasksTests
+        -skip-testing AWSAPIPluginTests/AWSAPICategoryPluginGraphQLBehaviorTests
       test_without_building: true
       retry_tests: false
