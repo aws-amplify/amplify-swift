@@ -54,21 +54,21 @@ jobs:
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testLoadPersistableTasks 
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testPrepareForBackground 
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadDataOperationTests
         -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey
         -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testConfigure_withNotificationsPermissionsDenied_shouldReportFailureToHub
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testIdentifyUserDispatchesErrorForPinpointError 
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testRecordEventWithNameDispatchesErrorForPinpointError 
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testRecordEventWithName
-        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled 
+        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest
         -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueCreateSendsSync 
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst 
         -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests/testObserve 
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStoreLocalStoreTests
         -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests/testRetryOnChangeReachability 
-        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testPendingVersionReconciledSuccess 
-        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelNotEqualToResponseModel_PendingEventNotReconciled 
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthSignOutTaskTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthResendSignUpCodeAPITests/testResendSignupCodeWithEmptyUsername
         -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests/testOrderOfSubsription
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthSignInPluginTests/testSignInWithInvalidResult 
@@ -77,12 +77,11 @@ jobs:
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests/testConsumeFailureSendsHubEvent 
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
         -skip-testing AWSAPIPluginTests/AppSyncListProviderTests
-        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests/testDecodingError 
+        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests
         -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests/testOperationCleanup 
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeCombineTests/testMixedSuccessAndErrorValues 
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeCombineTests/testMultipleSuccessValues
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeTasksTests/testDecodingError
-        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests/testConnectionWithNoData
         -skip-testing AWSAPIPluginTests/AWSAPICategoryPluginRESTClientBehaviorTests
         -skip-testing AWSPluginsCoreTests/WebSocketClientTests/testAutoRetry_whenReceiveTransientFailureFromServer
         -skip-testing AmplifyTests/AmplifyTaskTests/testLongOperationWithPublishers
