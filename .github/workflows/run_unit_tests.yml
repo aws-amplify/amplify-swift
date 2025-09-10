@@ -88,7 +88,7 @@ jobs:
 
       - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ inputs.retry_tests == true }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ inputs.scheme }}
