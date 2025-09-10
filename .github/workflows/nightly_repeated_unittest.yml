@@ -40,7 +40,7 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 120
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 5 
+      test_iterations_flags: -test-iterations 5 -parallel-testing-enabled NO
         -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex 
         -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken 
         -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken 
