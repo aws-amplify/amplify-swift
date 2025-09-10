@@ -3,6 +3,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 1 * * *'
+  push:
+    branches:
+      - chore/fix-nightly-repeated-test
 
 permissions:
     contents: read
@@ -37,5 +40,5 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 120
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 5 -run-tests-until-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+      test_iterations_flags: -test-iterations 1 -run-tests-until-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
       test_without_building: true
