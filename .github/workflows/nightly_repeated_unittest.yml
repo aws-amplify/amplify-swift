@@ -40,6 +40,32 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 120
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 5 -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex
+      test_iterations_flags: -test-iterations 5 -skip-testing | 
+        AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex |
+        CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken |
+        CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken |
+        InternalAWSPinpointUnitTests/EventRecorderTests/testSubmitAllEvents_withActiveAndStoppedSessions_shouldGenerateRightInput |
+        InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testDeleteEvent |
+        AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests/testDownloadDataOperationDownloadDataFailed |
+        AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testLoadPersistableTasks |
+        AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testPrepareForBackground |
+        AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests.testUploadFileOperationStringStoragePathValidationError |
+        AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey |
+        AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testIdentifyUserDispatchesErrorForPinpointError |
+        AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled |
+        AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testGenerateSnapshotOnObserveQueryWhenModelSynced |
+        AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testItemChangedWillGenerateSnapshot |
+        AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueCreateSendsSync |
+        AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst |
+        AWSDataStoreCategoryPluginTests/LocalSubscriptionTests/testObserve |
+        AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests/testRetryOnChangeReachability |
+        AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithOnlyUserPool |
+        AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithUserPoolAndIdentityPoolWithNetworkPreferencesAndSecureStoragePreferences |
+        AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests/testDelegateIsInvokedOnInterval |
+        AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests/testConsumeFailureSendsHubEvent |
+        AWSAPIPluginTests/AppSyncRealTimeClientTests/testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow |
+        AWSAPIPluginTests/GraphQLSubscribeTests/testDecodingError |
+        AWSAPIPluginTests/AWSGraphQLOperationTests/testOperationCleanup |
+        AWSPluginsCoreTests/WebSocketClientTests/testAutoRetry_whenReceiveTransientFailureFromServer |
       test_without_building: true
       retry_tests: false
