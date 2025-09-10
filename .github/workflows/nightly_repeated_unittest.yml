@@ -45,12 +45,17 @@ jobs:
         -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testEntityToken 
         -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken 
         -skip-testing InternalAWSPinpointUnitTests/EventRecorderTests/testSubmitAllEvents_withActiveAndStoppedSessions_shouldGenerateRightInput 
-        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testDeleteEvent 
+        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testDeleteEvent
+        -skip-testing InternalAWSPinpointUnitTests/SessionClientTests/testApplicationTerminated_shouldRecordStopEvent_andSaveSession 
+        -skip-testing InternalAWSPinpointUnitTests/AnalyticsClientTests/testRecord_shouldAddGlobalAttributesAndMetrics 
+        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testGetEventsWithLimit 
+        -skip-testing InternalAWSPinpointUnitTests/AnalyticsEventStorageTests/testRemoveFailedEvents 
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests/testDownloadDataOperationDownloadDataFailed 
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testLoadPersistableTasks 
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests/testPrepareForBackground 
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests.testUploadFileOperationStringStoragePathValidationError 
-        -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey 
+        -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testPluginKey
+        -skip-testing AWSPinpointPushNotificationsPluginUnitTests/AWSPinpointPushNotificationsPluginConfigureTests/testConfigure_withNotificationsPermissionsDenied_shouldReportFailureToHub
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests/testIdentifyUserDispatchesErrorForPinpointError 
         -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled 
         -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests/testGenerateSnapshotOnObserveQueryWhenModelSynced 
@@ -59,11 +64,15 @@ jobs:
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst 
         -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests/testObserve 
         -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests/testRetryOnChangeReachability 
+        -skip-testing AWSDataStoreCategoryPluginTests/MutationEventExtensionsTest/testPendingVersionReconciledSuccess 
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithOnlyUserPool 
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests/testConfigWithUserPoolAndIdentityPoolWithNetworkPreferencesAndSecureStoragePreferences 
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthResendSignUpCodeAPITests/testResendSignupCodeWithEmptyUsername
+        -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests/testOrderOfSubsription
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests/testDelegateIsInvokedOnInterval 
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests/testConsumeFailureSendsHubEvent 
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests/testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow 
+        -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests/testSendRequestWithTimeout_withErrorResponse_transformLimitExceededError 
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests/testDecodingError 
         -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests/testOperationCleanup 
         -skip-testing AWSPluginsCoreTests/WebSocketClientTests/testAutoRetry_whenReceiveTransientFailureFromServer

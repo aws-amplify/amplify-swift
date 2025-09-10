@@ -53,7 +53,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     ///    - I should get back correct tokens
     ///
     func testSyntaxToken() {
-        let text = "The Eiffel Tower is the tallest structure in Paris."
+        let text = "The ripe taste of cheese improves with age."
         let result = coreMLNaturalLanguageAdapter.getSyntaxTokens(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
         XCTAssertFalse(result.isEmpty, "Should return some value back")
@@ -90,7 +90,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     ///
 #if !os(watchOS)
     func testEntityToken() {
-        let text = "Yellowstone became the first national park in 1872."
+        let text = "The American Red Cross was established in Washington, D.C., by Clara Barton."
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
         XCTAssertFalse(result.isEmpty, "Should return some value back")
