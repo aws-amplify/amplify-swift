@@ -31,7 +31,7 @@ on:
         description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
         required: false
         type: string
-        default: '-test-iterations 3 -retry-tests-on-failure'
+        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
       retry_tests:
         required: false
         type: boolean
