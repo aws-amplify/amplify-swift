@@ -46,6 +46,9 @@ class EndpointInformationProviderTests: XCTestCase {
         #elseif os(watchOS)
         XCTAssertEqual(platformName, "watchOS")
         XCTAssertEqual(model, "Apple Watch")
+        #elseif os(visionOS)
+        XCTAssertEqual(platformName, "visionOS")
+        XCTAssertEqual(model, "Apple Vision Pro")
         #endif
     }
 }

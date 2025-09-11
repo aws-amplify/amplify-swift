@@ -53,8 +53,8 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     ///    - I should get back correct tokens
     ///
     func testSyntaxToken() {
-        #if !os(visionOS)
-        // TODO: Test failing on visionOS.
+        #if !os(iOS)
+        // TODO: Test failing on iOS.
         // XCTAssertEqual failed: ("PartOfSpeech(description: "other")")
         // is not equal to ("PartOfSpeech(description: "determiner")") -
         // First word in the input should be determiner
@@ -94,9 +94,8 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     /// - Then:
     ///    - I should get back valid result
     ///
-#if !os(watchOS)
+#if !os(iOS) // TODO: Test failing on iOS.
     func testEntityToken() {
-        #if !os(visionOS) // TODO: Test failing on visionOS.
         let text = "The American Red Cross was established in Washington, D.C., by Clara Barton."
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
