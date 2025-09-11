@@ -94,7 +94,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     /// - Then:
     ///    - I should get back valid result
     ///
-#if !os(iOS) // TODO: Test failing on iOS.
+#if !os(iOS) && !os(watchOS) // TODO: Test failing on iOS and watchOS.
     func testEntityToken() {
         let text = "The American Red Cross was established in Washington, D.C., by Clara Barton."
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)

@@ -32,6 +32,10 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
+      retry_tests:
+        required: false
+        type: boolean
+        default: true
       os-runner:
         description: 'runs-on input'
         type: string
@@ -94,7 +98,7 @@ jobs:
           other_flags: ${{ inputs.test_iterations_flags }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
-        if: steps.run-tests.outcome=='failure'
+        if: ${{ (steps.run-tests.outcome == 'failure') && (inputs.retry_tests == true) }}
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
