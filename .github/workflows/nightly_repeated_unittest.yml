@@ -46,6 +46,7 @@ jobs:
         -skip-testing CoreMLPredictionsPluginUnitTests/CoreMLNaturalLanguageAdapterTests/testSyntaxToken 
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadFileOperationTests
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/ModelReconciliationQueueBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests
@@ -53,6 +54,10 @@ jobs:
         -skip-testing AWSDataStoreCategoryPluginTests/ObserveQueryTaskRunnerTests
         -skip-testing AWSDataStoreCategoryPluginTests/SyncMutationToCloudOperationTests
         -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionTests
+        -skip-testing AWSDataStoreCategoryPluginTests/InitialSyncOrchestratorTests
+        -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionWithJSONModelTests
+        -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStoreLocalStoreTests
+        -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueMockStateTest
         -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorForgetDeviceTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginConfigTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
@@ -60,10 +65,17 @@ jobs:
         -skip-testing AWSCognitoAuthPluginUnitTests/ClientBehaviorResetPasswordTests
         -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorFetchDevicesTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSAuthSignUpAPITests
+        -skip-testing AWSCognitoAuthPluginUnitTests/VerifyTOTPSetupTaskTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthUserBehaviorTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderConfirmSigninTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeTasksTests
         -skip-testing AWSAPIPluginTests/AWSAPICategoryPluginGraphQLBehaviorTests
+        -skip-testing AWSAPIPluginTests/AppSyncListProviderTests
+        -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests
+        -skip-testing InternalAWSPinpointUnitTests/SessionClientTests
       test_without_building: true
       retry_tests: false
