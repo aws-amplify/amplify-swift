@@ -3,9 +3,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '30 1 * * *'
-  push:
-    branches:
-      - chore/fix-nightly-test
 
 permissions:
     contents: read
