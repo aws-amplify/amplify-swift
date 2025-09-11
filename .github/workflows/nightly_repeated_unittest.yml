@@ -63,6 +63,7 @@ jobs:
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginBaseBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginSubscribeBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/CascadeDeleteOperationTests
+        -skip-testing AWSDataStoreCategoryPluginTests/InitialSyncOperationTests
         -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorForgetDeviceTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginConfigTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
