@@ -58,6 +58,8 @@ jobs:
         -skip-testing AWSDataStoreCategoryPluginTests/LocalSubscriptionWithJSONModelTests
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStoreLocalStoreTests
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueMockStateTest
+        -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginBaseBehaviorTests
+        -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginSubscribeBehaviorTests
         -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorForgetDeviceTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginConfigTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
@@ -69,6 +71,7 @@ jobs:
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthUserBehaviorTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderConfirmSigninTests
         -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderDeleteUserTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
@@ -76,6 +79,9 @@ jobs:
         -skip-testing AWSAPIPluginTests/AWSAPICategoryPluginGraphQLBehaviorTests
         -skip-testing AWSAPIPluginTests/AppSyncListProviderTests
         -skip-testing AWSAPIPluginTests/AWSGraphQLOperationTests
+        -skip-testing AWSAPIPluginTests/GraphQLSubscribeCombineTests
+        -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests
+        -skip-testing AWSAPIPluginTests/AWSRESTOperationTests
         -skip-testing InternalAWSPinpointUnitTests/SessionClientTests
       test_without_building: true
       retry_tests: false
