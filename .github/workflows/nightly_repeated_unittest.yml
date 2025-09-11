@@ -47,6 +47,8 @@ jobs:
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadFileOperationTests
         -skip-testing AWSS3StoragePluginTests/DefaultStorageTransferDatabaseTests
         -skip-testing AWSS3StoragePluginTests/AWSS3StorageDownloadDataOperationTests
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageUploadFileOperationTests
+        -skip-testing AWSS3StoragePluginTests/AWSS3StorageServiceTests
         -skip-testing AWSPinpointAnalyticsPluginUnitTests/AWSPinpointAnalyticsPluginClientBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/ModelReconciliationQueueBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueTests
@@ -60,6 +62,7 @@ jobs:
         -skip-testing AWSDataStoreCategoryPluginTests/OutgoingMutationQueueMockStateTest
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginBaseBehaviorTests
         -skip-testing AWSDataStoreCategoryPluginTests/AWSDataStorePluginSubscribeBehaviorTests
+        -skip-testing AWSDataStoreCategoryPluginTests/CascadeDeleteOperationTests
         -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorForgetDeviceTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginConfigTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AWSCognitoAuthPluginAmplifyOutputsConfigTests
@@ -72,6 +75,7 @@ jobs:
         -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderConfirmSigninTests
         -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderDeleteUserTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/UpdateMFAPreferenceTaskTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
@@ -83,5 +87,7 @@ jobs:
         -skip-testing AWSAPIPluginTests/GraphQLSubscribeTests
         -skip-testing AWSAPIPluginTests/AWSRESTOperationTests
         -skip-testing InternalAWSPinpointUnitTests/SessionClientTests
+        -skip-testing InternalAWSPinpointUnitTests/AWSAPICategoryPluginRESTClientBehaviorTests
+        -skip-testing AWSPluginsCoreTests/WebSocketClientTests
       test_without_building: true
       retry_tests: false
