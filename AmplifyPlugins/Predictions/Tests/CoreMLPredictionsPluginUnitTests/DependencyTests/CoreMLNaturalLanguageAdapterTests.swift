@@ -100,7 +100,6 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
         XCTAssertFalse(result.isEmpty, "Should return some value back")
-        #endif
     }
 #endif
 
