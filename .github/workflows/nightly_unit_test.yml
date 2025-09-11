@@ -40,5 +40,5 @@ jobs:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 60
       generate_coverage_report: false
-      test_iterations_flags: -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES -skip-testing AWSDataStoreCategoryPluginTests/StorageEngineTestsSQLiteIndex 
+      test_iterations_flags: -parallel-testing-enabled NO 
       retry_tests: false
