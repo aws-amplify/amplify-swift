@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   unit_tests:
-    name: ${{ matrix.scheme }} Repeated Unit Tests
+    name: ${{ matrix.scheme }} Nightly Unit Tests
     strategy:
       fail-fast: false
       matrix:
