@@ -77,6 +77,8 @@ jobs:
         -skip-testing AWSCognitoAuthPluginUnitTests/StateMachineListenerTests
         -skip-testing AWSCognitoAuthPluginUnitTests/AuthenticationProviderDeleteUserTests
         -skip-testing AWSCognitoAuthPluginUnitTests/UpdateMFAPreferenceTaskTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/DeviceBehaviorRememberDeviceTests
+        -skip-testing AWSCognitoAuthPluginUnitTests/SendUserAttributeVerificationCodeTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingMonitorTests
         -skip-testing AWSCloudWatchLoggingPluginTests/AWSCloudWatchLoggingSessionControllerTests
         -skip-testing AWSAPIPluginTests/AppSyncRealTimeClientTests
