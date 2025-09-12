@@ -63,7 +63,7 @@ struct RefreshUserPoolTokens: Action {
             guard let authenticationResult = response?.authenticationResult,
                 let idToken = authenticationResult.idToken,
                 let accessToken = authenticationResult.accessToken,
-                let refreshToken = authenticationResult.refreshToken
+                let refreshToken = authenticationResult.refreshToken ?? existingTokens.refreshToken
             else {
                 let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                 await dispatcher.send(event)
