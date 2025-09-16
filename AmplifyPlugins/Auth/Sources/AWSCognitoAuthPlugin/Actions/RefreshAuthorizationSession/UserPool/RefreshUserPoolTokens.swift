@@ -62,8 +62,7 @@ struct RefreshUserPoolTokens: Action {
 
             guard let authenticationResult = response?.authenticationResult,
                 let idToken = authenticationResult.idToken,
-                let accessToken = authenticationResult.accessToken,
-                let refreshToken = authenticationResult.refreshToken
+                let accessToken = authenticationResult.accessToken
             else {
                 let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                 await dispatcher.send(event)
@@ -74,7 +73,7 @@ struct RefreshUserPoolTokens: Action {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
-                refreshToken: refreshToken
+                refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
             )
             
             let signedInData = SignedInData(

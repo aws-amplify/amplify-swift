@@ -190,41 +190,4 @@ class RefreshUserPoolTokensTests: XCTestCase {
             timeout: 0.1
         )
     }
-    func testRefreshTokenMissing() async {
-
-        let expectation = expectation(description: "refreshTokenMissing")
-        let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
-            MockIdentityProvider(
-                mockGetTokensFromRefreshTokenResponse: { _ in
-                    return GetTokensFromRefreshTokenOutput(
-                        authenticationResult: .init(
-                            accessToken: "accessTokenNew",
-                            expiresIn: 100,
-                            idToken: "idTokenNew",
-                            refreshToken: nil))
-                }
-            )
-        }
-
-        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
-
-        await action.execute(
-            withDispatcher: MockDispatcher { event in
-
-                if let userPoolEvent = event as? RefreshSessionEvent,
-                    case let .throwError(error) = userPoolEvent.eventType
-                {
-                    XCTAssertEqual(error, .invalidTokens)
-                    expectation.fulfill()
-                }
-            },
-            environment: Defaults.makeDefaultAuthEnvironment(
-                userPoolFactory: identityProviderFactory)
-        )
-
-        await fulfillment(
-            of: [expectation],
-            timeout: 0.1
-        )
-    }
 }
