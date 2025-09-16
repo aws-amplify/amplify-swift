@@ -23,7 +23,7 @@ class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFacto
 
 class MockReachability: NetworkReachabilityProviding {
     var allowsCellularConnection = true
-    static var iConnection = AmplifyReachability.Connection.wifi
+    nonisolated(unsafe) static var iConnection = AmplifyReachability.Connection.wifi
     var connection: AmplifyReachability.Connection {
         get {
             return MockReachability.iConnection

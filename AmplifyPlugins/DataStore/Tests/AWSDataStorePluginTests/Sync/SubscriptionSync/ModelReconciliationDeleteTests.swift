@@ -10,7 +10,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 @testable import AWSDataStorePlugin
 
 typealias MutationSyncInProcessListener = GraphQLSubscriptionOperation<MutationSync<AnyModel>>.InProcessListener

@@ -12,7 +12,7 @@ extension Predictions.Identify {
 }
 
 extension Predictions.Identify.Request where Output == Predictions.Identify.Text.Result {
-    public static let text = Self(
+    nonisolated(unsafe) public static let text = Self(
         kind: .detectText(.lift)
     )
 }

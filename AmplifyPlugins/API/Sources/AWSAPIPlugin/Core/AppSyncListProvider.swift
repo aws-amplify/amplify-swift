@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@preconcurrency import Amplify
 import AWSPluginsCore
 
 public class AppSyncListProvider<Element: Model>: ModelListProvider {

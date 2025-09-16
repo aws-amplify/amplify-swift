@@ -8,7 +8,7 @@
 extension Predictions {
     /// Describes different text formats passed a type parameter
     /// to identify().
-    public struct TextFormatType: Equatable {
+    public struct TextFormatType: Equatable, @unchecked Sendable {
         let id: UInt8
 
         public static let all = Self(id: 0)

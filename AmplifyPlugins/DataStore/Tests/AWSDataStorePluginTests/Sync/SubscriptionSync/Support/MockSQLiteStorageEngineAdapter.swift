@@ -14,7 +14,7 @@ import Combine
 
 class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
-    static var maxNumberOfPredicates: Int = 950
+    static let maxNumberOfPredicates: Int = 950
 
     var responders = [ResponderKeys: Any]()
 

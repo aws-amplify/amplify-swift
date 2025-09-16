@@ -7,7 +7,7 @@
 
 
 import XCTest
-import Combine
+@preconcurrency import Combine
 import Amplify
 @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin

@@ -29,6 +29,9 @@ protocol CognitoUserPoolBehavior {
     /// Throws RevokeTokenOutputError
     func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutput
 
+    /// Throws GetTokensFromRefreshTokenOutputError
+    func getTokensFromRefreshToken(input: GetTokensFromRefreshTokenInput) async throws -> GetTokensFromRefreshTokenOutput
+
     // MARK: - User Attribute API's
 
     /// Throws GetUserAttributeVerificationCodeOutputError

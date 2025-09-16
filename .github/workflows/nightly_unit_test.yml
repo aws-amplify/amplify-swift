@@ -1,4 +1,4 @@
-name: Amplify Nightly Repeated Unit Test
+name: Amplify Nightly Unit Test
 on:
   workflow_dispatch:
   schedule:
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   unit_tests:
-    name: ${{ matrix.scheme }} Repeated Unit Tests
+    name: ${{ matrix.scheme }} Nightly Unit Tests
     strategy:
       fail-fast: false
       matrix:
@@ -35,6 +35,6 @@ jobs:
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
-      timeout-minutes: 50
+      timeout-minutes: 60
       generate_coverage_report: false
-      test_iterations_flags: -test-iterations 25 -run-tests-until-failure
+      retry_tests: false

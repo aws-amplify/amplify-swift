@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TemporalFormat {
+public struct TemporalFormat: @unchecked Sendable {
     let dateFormat: String
     let dateTimeFormat: String
     let timeFormat: String

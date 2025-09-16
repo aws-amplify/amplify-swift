@@ -31,6 +31,8 @@ extension AmplifyCredentials: Codable { }
 
 extension AmplifyCredentials: Equatable { }
 
+extension AmplifyCredentials: @unchecked Sendable { }
+
 extension AmplifyCredentials: CustomDebugStringConvertible {
     var debugDescription: String {
         switch self {

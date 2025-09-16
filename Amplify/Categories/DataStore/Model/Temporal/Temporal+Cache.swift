@@ -12,7 +12,7 @@ extension Temporal {
     // of the formatter cache dictionary.
     //
     // DateFormatter itself is thread safe.
-    private static var formatterCache: [String: DateFormatter] = [:]
+    nonisolated(unsafe) private static var formatterCache: [String: DateFormatter] = [:]
 
     @usableFromInline
     /// The `Calendar` used for date operations.
@@ -26,7 +26,7 @@ extension Temporal {
     }()
 
     /// Pointer to lock to ensure exclusive access.
-    private static let lock: UnsafeMutablePointer<os_unfair_lock> = {
+    nonisolated(unsafe) private static let lock: UnsafeMutablePointer<os_unfair_lock> = {
         let pointer = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
         pointer.initialize(to: os_unfair_lock())
         return pointer

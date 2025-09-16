@@ -9,7 +9,7 @@ import Foundation
 
 public extension Geo {
     /// Country codes for use with Amplify Geo.
-    struct Country {
+    struct Country: @unchecked Sendable {
         public let code: String
         public let description: String
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import Amplify
+@testable @preconcurrency import Amplify
 
 // These tests must be run with ThreadSanitizer enabled
 class ChildTaskTests: XCTestCase {

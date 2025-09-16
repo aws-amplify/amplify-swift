@@ -1,0 +1,68 @@
+name: 'Install Simulators if Needed'
+description: 'Downloads and installs simulator runtimes for Xcode 16.0'
+
+inputs:
+  xcode_version:
+    description: 'The Xcode version being used'
+    required: true
+    type: string
+  platform:
+    description: 'The platform to install simulators for'
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Simulators for Xcode 16.0
+      shell: bash
+      run: |
+        XCODE_VERSION="${{ inputs.xcode_version }}"
+        PLATFORM="${{ inputs.platform }}"
+        
+        # Only run for Xcode 16.0.0
+        if [[ "$XCODE_VERSION" != "16.0.0" ]]; then
+          echo "Not Xcode 16.0.0 (current: $XCODE_VERSION), skipping simulator installation"
+          exit 0
+        fi
+        
+        # Skip for macOS as it doesn't need simulators
+        if [[ "$PLATFORM" == "macOS" ]]; then
+          echo "macOS doesn't need simulator downloads"
+          exit 0
+        fi
+        
+        echo "Installing simulators for $PLATFORM with Xcode 16.0.0..."
+        
+        # Ensure we're using Xcode 16.0.0 for simulator downloads
+        echo "Switching to Xcode 16.0.0..."
+        sudo xcode-select -switch /Applications/Xcode_16.0.0.app/Contents/Developer
+        
+        # Verify the switch worked
+        echo "Current Xcode version:"
+        xcodebuild -version
+        
+        # Show what's available before download
+        echo "Simulators before download:"
+        xcrun simctl list runtimes || true
+        
+        # Download the platform runtime for Xcode 16.0.0
+        echo "Downloading $PLATFORM runtime for Xcode 16.0..."
+        case $PLATFORM in
+          iOS)
+            sudo xcodebuild -downloadPlatform iOS || echo "Failed to download iOS platform"
+            ;;
+          tvOS)
+            sudo xcodebuild -downloadPlatform tvOS || echo "Failed to download tvOS platform"
+            ;;
+          watchOS)
+            sudo xcodebuild -downloadPlatform watchOS || echo "Failed to download watchOS platform"
+            ;;
+          visionOS)
+            sudo xcodebuild -downloadPlatform visionOS || echo "Failed to download visionOS platform"
+            ;;
+        esac
+        
+        # Show what's available after download
+        echo "Simulators after download:"
+        xcrun simctl list runtimes || true

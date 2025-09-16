@@ -6,7 +6,7 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
 extension CustomerOrder {

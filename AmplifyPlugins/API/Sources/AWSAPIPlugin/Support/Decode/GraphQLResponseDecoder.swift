@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-class GraphQLResponseDecoder<R: Decodable> {
+class GraphQLResponseDecoder<R> where R: Decodable, R: Sendable {
 
     let request: GraphQLOperationRequest<R>
     var response: Data

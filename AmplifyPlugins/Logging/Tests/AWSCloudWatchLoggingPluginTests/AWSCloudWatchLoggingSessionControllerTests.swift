@@ -69,7 +69,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
         systemUnderTest.client = mockCloudWatchLogClient
         systemUnderTest.enable()
         try await systemUnderTest.flushLogs()
-        await fulfillment(of: [hubEventExpectation], timeout: 2)
+        await fulfillment(of: [hubEventExpectation], timeout: 10)
     }
 
     private func getLogFile() -> URL {

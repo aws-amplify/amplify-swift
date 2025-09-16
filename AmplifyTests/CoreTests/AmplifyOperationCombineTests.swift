@@ -262,7 +262,7 @@ struct MockPublisherRequest: AmplifyOperationRequest {
 }
 
 extension HubPayloadEventName {
-    static var mockPublisherOperation = "MockPublisherOperation"
+    static let mockPublisherOperation = "MockPublisherOperation"
 }
 
 class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError>, @unchecked Sendable {
