@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.51.0 (2025-09-16)
+
+### Features
+
+- **auth**: Refresh Token Rotation (#4050)
+
 ## 2.50.0 (2025-08-06)
 
 ### Features
