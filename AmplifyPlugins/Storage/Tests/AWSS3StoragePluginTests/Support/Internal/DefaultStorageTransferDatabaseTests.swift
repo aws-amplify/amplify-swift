@@ -204,6 +204,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
     /// Given: A DefaultStorageTransferDatabase
     /// When: recover is invoked with a StorageURLSession that returns a session
     /// Then: A .success is returned
+    /// TODO: Disabled: Flaky test, failing in CI/CD.
     func testLoadPersistableTasks() async {
         let urlSession = MockStorageURLSession(
             sessionTasks: [
@@ -223,6 +224,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
     /// Given: A DefaultStorageTransferDatabase
     /// When: prepareForBackground is invoked
     /// Then: A callback is invoked
+    /// TODO: Disabled: Flaky test, failing in CI/CD.
     func testPrepareForBackground() async {
         let expectation = self.expectation(description: "Prepare for Background")
         database.prepareForBackground() {

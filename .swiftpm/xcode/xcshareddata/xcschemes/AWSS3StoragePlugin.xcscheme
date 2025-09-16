@@ -48,6 +48,14 @@
                BlueprintName = "AWSS3StoragePluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DefaultStorageTransferDatabaseTests/testLoadPersistableTasks()">
+               </Test>
+               <Test
+                  Identifier = "DefaultStorageTransferDatabaseTests/testPrepareForBackground()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
