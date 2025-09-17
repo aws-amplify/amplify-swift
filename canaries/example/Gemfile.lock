@@ -2,8 +2,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (3.0.5)
-      base64
-      nkf
       rexml
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
@@ -27,7 +25,6 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     babosa (1.0.4)
     base64 (0.2.0)
-    bigdecimal (3.2.2)
     claide (1.1.0)
     colored (1.2)
     colored2 (3.1.2)
@@ -164,7 +161,6 @@ GEM
     multipart-post (2.4.1)
     nanaimo (0.3.0)
     naturally (2.3.0)
-    nkf (0.2.0)
     optparse (0.6.0)
     os (1.1.4)
     plist (3.7.2)
@@ -175,7 +171,7 @@ GEM
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.3.9)
+    rexml (3.4.4)
     rouge (3.28.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
