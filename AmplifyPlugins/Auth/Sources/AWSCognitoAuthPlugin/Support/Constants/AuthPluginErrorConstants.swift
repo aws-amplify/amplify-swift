@@ -16,6 +16,11 @@ typealias AuthPluginValidationErrorString = (field: Field,
 
 enum AuthPluginErrorConstants {
 
+    static let protectedDataUnavailableError: AuthPluginErrorString = (
+        "Protected data is not yet available",
+        "Delay Amplify calls until `UIApplication.shared.isProtectedDataAvailable` returns true"
+    )
+
     static let decodeConfigurationError: AuthPluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue")
