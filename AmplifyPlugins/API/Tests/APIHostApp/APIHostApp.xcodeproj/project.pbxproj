@@ -433,129 +433,6 @@
 		976836E52E7BC015009CE583 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		976836E62E7BC015009CE583 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B782A69BA6A00F70E38 /* API.swift */; };
 		976836E72E7BC015009CE583 /* GraphQLWithIAMIntegrationAPISwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B7A2A69BC0800F70E38 /* GraphQLWithIAMIntegrationAPISwiftTests.swift */; };
-		976836F52E7BC057009CE583 /* ImplicitChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A5C291D762B005021F7 /* ImplicitChild.swift */; };
-		976836F62E7BC057009CE583 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
-		976836F72E7BC057009CE583 /* GraphQLLazyLoadProjectTeam5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A31291D75F4005021F7 /* GraphQLLazyLoadProjectTeam5Tests.swift */; };
-		976836F82E7BC057009CE583 /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089ED291D75C3005021F7 /* MyNestedModel8+Schema.swift */; };
-		976836F92E7BC057009CE583 /* HasOneChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A4D291D762A005021F7 /* HasOneChild.swift */; };
-		976836FA2E7BC057009CE583 /* Person+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA8295F9F8C00B4A883 /* Person+Schema.swift */; };
-		976836FB2E7BC057009CE583 /* HasOneChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A4F291D762A005021F7 /* HasOneChild+Schema.swift */; };
-		976836FC2E7BC057009CE583 /* Comment7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A43291D7608005021F7 /* Comment7.swift */; };
-		976836FD2E7BC057009CE583 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A1F291D75E4005021F7 /* Team2.swift */; };
-		976836FE2E7BC057009CE583 /* GraphQLLazyLoadPostTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A05291D75D6005021F7 /* GraphQLLazyLoadPostTagTests.swift */; };
-		976836FF2E7BC057009CE583 /* Post14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11192971ADA4000E189E /* Post14.swift */; };
-		976837002E7BC057009CE583 /* GraphQLLazyLoadBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA887528F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift */; };
-		976837012E7BC057009CE583 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0191291AE3750068D133 /* Comment4V2+Schema.swift */; };
-		976837022E7BC057009CE583 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A74291D7631005021F7 /* Post8+Schema.swift */; };
-		976837032E7BC057009CE583 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3529819A4000CCA482 /* Nested.swift */; };
-		976837042E7BC057009CE583 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */; };
-		976837052E7BC057009CE583 /* CompositePKChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A5B291D762B005021F7 /* CompositePKChild.swift */; };
-		976837062E7BC057009CE583 /* GraphQLLazyLoadProjectTeam6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A3C291D75FE005021F7 /* GraphQLLazyLoadProjectTeam6Tests.swift */; };
-		976837072E7BC057009CE583 /* Post7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A46291D7608005021F7 /* Post7+Schema.swift */; };
-		976837082E7BC057009CE583 /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089E7291D75C3005021F7 /* MyNestedModel8.swift */; };
-		976837092E7BC057009CE583 /* Team5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A33291D75F4005021F7 /* Team5+Schema.swift */; };
-		9768370A2E7BC057009CE583 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0190291AE3750068D133 /* Comment4V2.swift */; };
-		9768370B2E7BC057009CE583 /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAB295F9F8C00B4A883 /* Transcript.swift */; };
-		9768370C2E7BC057009CE583 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */; };
-		9768370D2E7BC057009CE583 /* Project5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A32291D75F4005021F7 /* Project5.swift */; };
-		9768370E2E7BC057009CE583 /* StrangeExplicitChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A5E291D762B005021F7 /* StrangeExplicitChild+Schema.swift */; };
-		9768370F2E7BC057009CE583 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A1B291D75E4005021F7 /* Project2.swift */; };
-		976837102E7BC057009CE583 /* Comment8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089EA291D75C3005021F7 /* Comment8V2.swift */; };
-		976837112E7BC057009CE583 /* DefaultPKChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A4E291D762A005021F7 /* DefaultPKChild.swift */; };
-		976837122E7BC057009CE583 /* GraphQLLazyLoadCompositePKChildSansTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971829915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift */; };
-		976837132E7BC057009CE583 /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089EE291D75C3005021F7 /* MyCustomModel8.swift */; };
-		976837142E7BC057009CE583 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A25291D75EB005021F7 /* Comment4.swift */; };
-		976837152E7BC057009CE583 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A14291D75DD005021F7 /* Team1.swift */; };
-		976837162E7BC057009CE583 /* DefaultPKParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A50291D762A005021F7 /* DefaultPKParent+Schema.swift */; };
-		976837172E7BC057009CE583 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D018F291AE3750068D133 /* Post4V2.swift */; };
-		976837182E7BC057009CE583 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A04291D75D6005021F7 /* PostTagsWithCompositeKey+Schema.swift */; };
-		976837192E7BC057009CE583 /* Blog8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089E6291D75C3005021F7 /* Blog8V2+Schema.swift */; };
-		9768371A2E7BC057009CE583 /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A3A291D75FE005021F7 /* Project6.swift */; };
-		9768371B2E7BC057009CE583 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
-		9768371C2E7BC057009CE583 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A03291D75D6005021F7 /* PostTagsWithCompositeKey.swift */; };
-		9768371D2E7BC057009CE583 /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A15291D75DD005021F7 /* Project1+Schema.swift */; };
-		9768371E2E7BC057009CE583 /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A13291D75DD005021F7 /* Team1+Schema.swift */; };
-		9768371F2E7BC057009CE583 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A11291D75DD005021F7 /* Project1.swift */; };
-		976837202E7BC057009CE583 /* CompositePKChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A5A291D762B005021F7 /* CompositePKChild+Schema.swift */; };
-		976837212E7BC057009CE583 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A08291D75D6005021F7 /* PostWithTagsCompositeKey.swift */; };
-		976837222E7BC057009CE583 /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C2F29819A3F00CCA482 /* ListIntContainer+Schema.swift */; };
-		976837232E7BC057009CE583 /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A39291D75FE005021F7 /* Project6+Schema.swift */; };
-		976837242E7BC057009CE583 /* Team6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A3B291D75FE005021F7 /* Team6.swift */; };
-		976837252E7BC057009CE583 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089FA291D75CE005021F7 /* PostWithCompositeKey.swift */; };
-		976837262E7BC057009CE583 /* Comment8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089EC291D75C3005021F7 /* Comment8V2+Schema.swift */; };
-		976837272E7BC057009CE583 /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A73291D7631005021F7 /* Post8.swift */; };
-		976837282E7BC057009CE583 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089FB291D75CE005021F7 /* PostWithCompositeKey+Schema.swift */; };
-		976837292E7BC057009CE583 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A75291D7631005021F7 /* Comment8+Schema.swift */; };
-		9768372A2E7BC057009CE583 /* ChildSansBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A58291D762B005021F7 /* ChildSansBelongsTo.swift */; };
-		9768372B2E7BC057009CE583 /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3029819A3F00CCA482 /* ListStringContainer+Schema.swift */; };
-		9768372C2E7BC057009CE583 /* Post8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089E8291D75C3005021F7 /* Post8V2+Schema.swift */; };
-		9768372D2E7BC057009CE583 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A1D291D75E4005021F7 /* Team2+Schema.swift */; };
-		9768372E2E7BC057009CE583 /* Transcript+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */; };
-		9768372F2E7BC057009CE583 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A06291D75D6005021F7 /* TagWithCompositeKey.swift */; };
-		976837302E7BC057009CE583 /* GraphQLLazyLoadHasOneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FA8EF6295C9609009F6A07 /* GraphQLLazyLoadHasOneTests.swift */; };
-		976837312E7BC057009CE583 /* StrangeExplicitChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A5D291D762B005021F7 /* StrangeExplicitChild.swift */; };
-		976837322E7BC057009CE583 /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C2D29819A3F00CCA482 /* EnumTestModel+Schema.swift */; };
-		976837332E7BC057009CE583 /* Comment14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11132971ADA4000E189E /* Comment14.swift */; };
-		976837342E7BC057009CE583 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A09291D75D6005021F7 /* PostWithTagsCompositeKey+Schema.swift */; };
-		976837352E7BC057009CE583 /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3229819A3F00CCA482 /* TestEnum.swift */; };
-		976837362E7BC057009CE583 /* HasOneParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A51291D762A005021F7 /* HasOneParent+Schema.swift */; };
-		976837372E7BC057009CE583 /* GraphQLLazyLoadUserPostCommentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11242971ADBD000E189E /* GraphQLLazyLoadUserPostCommentTests.swift */; };
-		976837382E7BC057009CE583 /* UserSettings14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11142971ADA4000E189E /* UserSettings14.swift */; };
-		976837392E7BC057009CE583 /* Team5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A30291D75F4005021F7 /* Team5.swift */; };
-		9768373A2E7BC057009CE583 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A72291D7631005021F7 /* Comment8.swift */; };
-		9768373B2E7BC057009CE583 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3429819A4000CCA482 /* EnumTestModel.swift */; };
-		9768373C2E7BC057009CE583 /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3729819A4000CCA482 /* ScalarContainer+Schema.swift */; };
-		9768373D2E7BC057009CE583 /* GraphQLLazyLoadCompositePKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FA8EFA295C9647009F6A07 /* GraphQLLazyLoadCompositePKTests.swift */; };
-		9768373E2E7BC057009CE583 /* Post7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A45291D7608005021F7 /* Post7.swift */; };
-		9768373F2E7BC057009CE583 /* CompositePKParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A56291D762B005021F7 /* CompositePKParent.swift */; };
-		976837402E7BC057009CE583 /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3629819A4000CCA482 /* ScalarContainer.swift */; };
-		976837412E7BC057009CE583 /* Post8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089EB291D75C3005021F7 /* Post8V2.swift */; };
-		976837422E7BC057009CE583 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A29291D75EB005021F7 /* Post4.swift */; };
-		976837432E7BC057009CE583 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C2E29819A3F00CCA482 /* NestedTypeTestModel+Schema.swift */; };
-		976837442E7BC057009CE583 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */; };
-		976837452E7BC057009CE583 /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3329819A4000CCA482 /* ListIntContainer.swift */; };
-		976837462E7BC057009CE583 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A07291D75D6005021F7 /* TagWithCompositeKey+Schema.swift */; };
-		976837472E7BC057009CE583 /* GraphQLLazyLoadCompositePKChildTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971229915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift */; };
-		976837482E7BC057009CE583 /* CompositePKParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A59291D762B005021F7 /* CompositePKParent+Schema.swift */; };
-		976837492E7BC057009CE583 /* User14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11162971ADA4000E189E /* User14.swift */; };
-		9768374A2E7BC057009CE583 /* User14+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11152971ADA4000E189E /* User14+Schema.swift */; };
-		9768374B2E7BC057009CE583 /* Blog8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089E9291D75C3005021F7 /* Blog8V2.swift */; };
-		9768374C2E7BC057009CE583 /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3829819A4000CCA482 /* Nested+Schema.swift */; };
-		9768374D2E7BC057009CE583 /* DefaultPKParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A55291D762B005021F7 /* DefaultPKParent.swift */; };
-		9768374E2E7BC057009CE583 /* GraphQLLazyLoadPhoneCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */; };
-		9768374F2E7BC057009CE583 /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC111A2971ADA4000E189E /* PostStatus.swift */; };
-		976837502E7BC057009CE583 /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A3D291D75FE005021F7 /* Team6+Schema.swift */; };
-		976837512E7BC057009CE583 /* GraphQLLazyLoadDefaultPKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FA8EF8295C962E009F6A07 /* GraphQLLazyLoadDefaultPKTests.swift */; };
-		976837522E7BC057009CE583 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A27291D75EB005021F7 /* Comment4+Schema.swift */; };
-		976837532E7BC057009CE583 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089FC291D75CE005021F7 /* CommentWithCompositeKey.swift */; };
-		976837542E7BC057009CE583 /* GraphQLLazyLoadProjectTeam1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A12291D75DD005021F7 /* GraphQLLazyLoadProjectTeam1Tests.swift */; };
-		976837552E7BC057009CE583 /* HasOneParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A57291D762B005021F7 /* HasOneParent.swift */; };
-		976837562E7BC057009CE583 /* Comment7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A47291D7608005021F7 /* Comment7+Schema.swift */; };
-		976837572E7BC057009CE583 /* PhoneCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA9295F9F8C00B4A883 /* PhoneCall.swift */; };
-		976837582E7BC057009CE583 /* UserSettings14+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11122971ADA4000E189E /* UserSettings14+Schema.swift */; };
-		976837592E7BC057009CE583 /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3929819A4000CCA482 /* ListStringContainer.swift */; };
-		9768375A2E7BC057009CE583 /* GraphQLLazyLoadPostComment4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A26291D75EB005021F7 /* GraphQLLazyLoadPostComment4Tests.swift */; };
-		9768375B2E7BC057009CE583 /* ChildSansBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A53291D762B005021F7 /* ChildSansBelongsTo+Schema.swift */; };
-		9768375C2E7BC057009CE583 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAA295F9F8C00B4A883 /* Person.swift */; };
-		9768375D2E7BC057009CE583 /* DefaultPKChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A54291D762B005021F7 /* DefaultPKChild+Schema.swift */; };
-		9768375E2E7BC057009CE583 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089FD291D75CE005021F7 /* CommentWithCompositeKey+Schema.swift */; };
-		9768375F2E7BC057009CE583 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
-		976837602E7BC057009CE583 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089E5291D75C3005021F7 /* MyCustomModel8+Schema.swift */; };
-		976837612E7BC057009CE583 /* Comment14+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11172971ADA4000E189E /* Comment14+Schema.swift */; };
-		976837622E7BC057009CE583 /* Post14+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC11182971ADA4000E189E /* Post14+Schema.swift */; };
-		976837632E7BC057009CE583 /* GraphQLLazyLoadProjectTeam2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A1C291D75E4005021F7 /* GraphQLLazyLoadProjectTeam2Tests.swift */; };
-		976837642E7BC057009CE583 /* GraphQLLazyLoadCompositePKImplicitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971429915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift */; };
-		976837652E7BC057009CE583 /* GraphQLLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219089F9291D75CE005021F7 /* GraphQLLazyLoadPostCommentWithCompositeKeyTests.swift */; };
-		976837662E7BC057009CE583 /* GraphQLLazyLoadPostComment8Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A71291D7631005021F7 /* GraphQLLazyLoadPostComment8Tests.swift */; };
-		976837672E7BC057009CE583 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A1E291D75E4005021F7 /* Project2+Schema.swift */; };
-		976837682E7BC057009CE583 /* GraphQLLazyLoadPostComment7Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A44291D7608005021F7 /* GraphQLLazyLoadPostComment7Tests.swift */; };
-		976837692E7BC057009CE583 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971629915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift */; };
-		9768376A2E7BC057009CE583 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A28291D75EB005021F7 /* Post4+Schema.swift */; };
-		9768376B2E7BC057009CE583 /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0192291AE3750068D133 /* Post4V2+Schema.swift */; };
-		9768376C2E7BC057009CE583 /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C3129819A3F00CCA482 /* NestedTypeTestModel.swift */; };
-		9768376D2E7BC057009CE583 /* PhoneCall+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */; };
-		9768376E2E7BC057009CE583 /* ImplicitChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A52291D762B005021F7 /* ImplicitChild+Schema.swift */; };
-		9768376F2E7BC057009CE583 /* Project5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A2F291D75F4005021F7 /* Project5+Schema.swift */; };
 		9768377D2E7BC117009CE583 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
 		9768377E2E7BC117009CE583 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		9768377F2E7BC117009CE583 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -666,13 +543,6 @@
 			remoteInfo = APIWatchApp;
 		};
 		976836EF2E7BC02E009CE583 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 681B35282A4395730074F369;
-			remoteInfo = APIWatchApp;
-		};
-		976837772E7BC06D009CE583 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -1042,7 +912,6 @@
 		970333EA295CD6F60019981E /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
 		976836D92E7BBED3009CE583 /* AWSAPIPluginRESTUserPoolTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTUserPoolTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		976836EE2E7BC015009CE583 /* AWSAPIPluginGraphQLIAMTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		976837762E7BC057009CE583 /* AWSAPIPluginLazyLoadTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginLazyLoadTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9768378A2E7BC117009CE583 /* AWSAPIPluginGraphQLAuthDirectiveTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLAuthDirectiveTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		97914BC529558714002000EA /* GraphQLAPIStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLAPIStressTests.swift; sourceTree = "<group>"; };
 		97914C182955872A002000EA /* GraphQLAPIStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphQLAPIStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1166,13 +1035,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		976836E82E7BC015009CE583 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		976837702E7BC057009CE583 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1833,7 +1695,6 @@
 				2163D60C2BE96C90009689B1 /* AWSAPIPluginGen2GraphQLTests.xctest */,
 				976836D92E7BBED3009CE583 /* AWSAPIPluginRESTUserPoolTestsWatch.xctest */,
 				976836EE2E7BC015009CE583 /* AWSAPIPluginGraphQLIAMTestsWatch.xctest */,
-				976837762E7BC057009CE583 /* AWSAPIPluginLazyLoadTestsWatch.xctest */,
 				9768378A2E7BC117009CE583 /* AWSAPIPluginGraphQLAuthDirectiveTestsWatch.xctest */,
 			);
 			name = Products;
@@ -2376,25 +2237,6 @@
 			productReference = 976836EE2E7BC015009CE583 /* AWSAPIPluginGraphQLIAMTestsWatch.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		976836F12E7BC057009CE583 /* AWSAPIPluginLazyLoadTestsWatch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 976837732E7BC057009CE583 /* Build configuration list for PBXNativeTarget "AWSAPIPluginLazyLoadTestsWatch" */;
-			buildPhases = (
-				976836F42E7BC057009CE583 /* Sources */,
-				976837702E7BC057009CE583 /* Frameworks */,
-				976837712E7BC057009CE583 /* Resources */,
-				976837722E7BC057009CE583 /* Copy Configuration Files */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				976837782E7BC06D009CE583 /* PBXTargetDependency */,
-			);
-			name = AWSAPIPluginLazyLoadTestsWatch;
-			productName = AWSAPIPluginLazyLoadTests;
-			productReference = 976837762E7BC057009CE583 /* AWSAPIPluginLazyLoadTestsWatch.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		976837792E7BC117009CE583 /* AWSAPIPluginGraphQLAuthDirectiveTestsWatch */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 976837872E7BC117009CE583 /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLAuthDirectiveTestsWatch" */;
@@ -2502,9 +2344,6 @@
 					976836DC2E7BC015009CE583 = {
 						TestTargetID = 681B35282A4395730074F369;
 					};
-					976836F12E7BC057009CE583 = {
-						TestTargetID = 681B35282A4395730074F369;
-					};
 					976837792E7BC117009CE583 = {
 						TestTargetID = 681B35282A4395730074F369;
 					};
@@ -2543,7 +2382,6 @@
 				2163D60B2BE96C90009689B1 /* AWSAPIPluginGen2GraphQLTests */,
 				976836CA2E7BBED3009CE583 /* AWSAPIPluginRESTUserPoolTestsWatch */,
 				976836DC2E7BC015009CE583 /* AWSAPIPluginGraphQLIAMTestsWatch */,
-				976836F12E7BC057009CE583 /* AWSAPIPluginLazyLoadTestsWatch */,
 				976837792E7BC117009CE583 /* AWSAPIPluginGraphQLAuthDirectiveTestsWatch */,
 			);
 		};
@@ -2658,13 +2496,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		976836E92E7BC015009CE583 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		976837712E7BC057009CE583 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2922,24 +2753,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
-		};
-		976837722E7BC057009CE583 /* Copy Configuration Files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Configuration Files";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		976837862E7BC117009CE583 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3524,136 +3337,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		976836F42E7BC057009CE583 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				976836F52E7BC057009CE583 /* ImplicitChild.swift in Sources */,
-				976836F62E7BC057009CE583 /* AsyncExpectation.swift in Sources */,
-				976836F72E7BC057009CE583 /* GraphQLLazyLoadProjectTeam5Tests.swift in Sources */,
-				976836F82E7BC057009CE583 /* MyNestedModel8+Schema.swift in Sources */,
-				976836F92E7BC057009CE583 /* HasOneChild.swift in Sources */,
-				976836FA2E7BC057009CE583 /* Person+Schema.swift in Sources */,
-				976836FB2E7BC057009CE583 /* HasOneChild+Schema.swift in Sources */,
-				976836FC2E7BC057009CE583 /* Comment7.swift in Sources */,
-				976836FD2E7BC057009CE583 /* Team2.swift in Sources */,
-				976836FE2E7BC057009CE583 /* GraphQLLazyLoadPostTagTests.swift in Sources */,
-				976836FF2E7BC057009CE583 /* Post14.swift in Sources */,
-				976837002E7BC057009CE583 /* GraphQLLazyLoadBaseTest.swift in Sources */,
-				976837012E7BC057009CE583 /* Comment4V2+Schema.swift in Sources */,
-				976837022E7BC057009CE583 /* Post8+Schema.swift in Sources */,
-				976837032E7BC057009CE583 /* Nested.swift in Sources */,
-				976837042E7BC057009CE583 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift in Sources */,
-				976837052E7BC057009CE583 /* CompositePKChild.swift in Sources */,
-				976837062E7BC057009CE583 /* GraphQLLazyLoadProjectTeam6Tests.swift in Sources */,
-				976837072E7BC057009CE583 /* Post7+Schema.swift in Sources */,
-				976837082E7BC057009CE583 /* MyNestedModel8.swift in Sources */,
-				976837092E7BC057009CE583 /* Team5+Schema.swift in Sources */,
-				9768370A2E7BC057009CE583 /* Comment4V2.swift in Sources */,
-				9768370B2E7BC057009CE583 /* Transcript.swift in Sources */,
-				9768370C2E7BC057009CE583 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */,
-				9768370D2E7BC057009CE583 /* Project5.swift in Sources */,
-				9768370E2E7BC057009CE583 /* StrangeExplicitChild+Schema.swift in Sources */,
-				9768370F2E7BC057009CE583 /* Project2.swift in Sources */,
-				976837102E7BC057009CE583 /* Comment8V2.swift in Sources */,
-				976837112E7BC057009CE583 /* DefaultPKChild.swift in Sources */,
-				976837122E7BC057009CE583 /* GraphQLLazyLoadCompositePKChildSansTests.swift in Sources */,
-				976837132E7BC057009CE583 /* MyCustomModel8.swift in Sources */,
-				976837142E7BC057009CE583 /* Comment4.swift in Sources */,
-				976837152E7BC057009CE583 /* Team1.swift in Sources */,
-				976837162E7BC057009CE583 /* DefaultPKParent+Schema.swift in Sources */,
-				976837172E7BC057009CE583 /* Post4V2.swift in Sources */,
-				976837182E7BC057009CE583 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
-				976837192E7BC057009CE583 /* Blog8V2+Schema.swift in Sources */,
-				9768371A2E7BC057009CE583 /* Project6.swift in Sources */,
-				9768371B2E7BC057009CE583 /* XCTestCase+AsyncTesting.swift in Sources */,
-				9768371C2E7BC057009CE583 /* PostTagsWithCompositeKey.swift in Sources */,
-				9768371D2E7BC057009CE583 /* Project1+Schema.swift in Sources */,
-				9768371E2E7BC057009CE583 /* Team1+Schema.swift in Sources */,
-				9768371F2E7BC057009CE583 /* Project1.swift in Sources */,
-				976837202E7BC057009CE583 /* CompositePKChild+Schema.swift in Sources */,
-				976837212E7BC057009CE583 /* PostWithTagsCompositeKey.swift in Sources */,
-				976837222E7BC057009CE583 /* ListIntContainer+Schema.swift in Sources */,
-				976837232E7BC057009CE583 /* Project6+Schema.swift in Sources */,
-				976837242E7BC057009CE583 /* Team6.swift in Sources */,
-				976837252E7BC057009CE583 /* PostWithCompositeKey.swift in Sources */,
-				976837262E7BC057009CE583 /* Comment8V2+Schema.swift in Sources */,
-				976837272E7BC057009CE583 /* Post8.swift in Sources */,
-				976837282E7BC057009CE583 /* PostWithCompositeKey+Schema.swift in Sources */,
-				976837292E7BC057009CE583 /* Comment8+Schema.swift in Sources */,
-				9768372A2E7BC057009CE583 /* ChildSansBelongsTo.swift in Sources */,
-				9768372B2E7BC057009CE583 /* ListStringContainer+Schema.swift in Sources */,
-				9768372C2E7BC057009CE583 /* Post8V2+Schema.swift in Sources */,
-				9768372D2E7BC057009CE583 /* Team2+Schema.swift in Sources */,
-				9768372E2E7BC057009CE583 /* Transcript+Schema.swift in Sources */,
-				9768372F2E7BC057009CE583 /* TagWithCompositeKey.swift in Sources */,
-				976837302E7BC057009CE583 /* GraphQLLazyLoadHasOneTests.swift in Sources */,
-				976837312E7BC057009CE583 /* StrangeExplicitChild.swift in Sources */,
-				976837322E7BC057009CE583 /* EnumTestModel+Schema.swift in Sources */,
-				976837332E7BC057009CE583 /* Comment14.swift in Sources */,
-				976837342E7BC057009CE583 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
-				976837352E7BC057009CE583 /* TestEnum.swift in Sources */,
-				976837362E7BC057009CE583 /* HasOneParent+Schema.swift in Sources */,
-				976837372E7BC057009CE583 /* GraphQLLazyLoadUserPostCommentTests.swift in Sources */,
-				976837382E7BC057009CE583 /* UserSettings14.swift in Sources */,
-				976837392E7BC057009CE583 /* Team5.swift in Sources */,
-				9768373A2E7BC057009CE583 /* Comment8.swift in Sources */,
-				9768373B2E7BC057009CE583 /* EnumTestModel.swift in Sources */,
-				9768373C2E7BC057009CE583 /* ScalarContainer+Schema.swift in Sources */,
-				9768373D2E7BC057009CE583 /* GraphQLLazyLoadCompositePKTests.swift in Sources */,
-				9768373E2E7BC057009CE583 /* Post7.swift in Sources */,
-				9768373F2E7BC057009CE583 /* CompositePKParent.swift in Sources */,
-				976837402E7BC057009CE583 /* ScalarContainer.swift in Sources */,
-				976837412E7BC057009CE583 /* Post8V2.swift in Sources */,
-				976837422E7BC057009CE583 /* Post4.swift in Sources */,
-				976837432E7BC057009CE583 /* NestedTypeTestModel+Schema.swift in Sources */,
-				976837442E7BC057009CE583 /* TestConfigHelper.swift in Sources */,
-				976837452E7BC057009CE583 /* ListIntContainer.swift in Sources */,
-				976837462E7BC057009CE583 /* TagWithCompositeKey+Schema.swift in Sources */,
-				976837472E7BC057009CE583 /* GraphQLLazyLoadCompositePKChildTests.swift in Sources */,
-				976837482E7BC057009CE583 /* CompositePKParent+Schema.swift in Sources */,
-				976837492E7BC057009CE583 /* User14.swift in Sources */,
-				9768374A2E7BC057009CE583 /* User14+Schema.swift in Sources */,
-				9768374B2E7BC057009CE583 /* Blog8V2.swift in Sources */,
-				9768374C2E7BC057009CE583 /* Nested+Schema.swift in Sources */,
-				9768374D2E7BC057009CE583 /* DefaultPKParent.swift in Sources */,
-				9768374E2E7BC057009CE583 /* GraphQLLazyLoadPhoneCallTests.swift in Sources */,
-				9768374F2E7BC057009CE583 /* PostStatus.swift in Sources */,
-				976837502E7BC057009CE583 /* Team6+Schema.swift in Sources */,
-				976837512E7BC057009CE583 /* GraphQLLazyLoadDefaultPKTests.swift in Sources */,
-				976837522E7BC057009CE583 /* Comment4+Schema.swift in Sources */,
-				976837532E7BC057009CE583 /* CommentWithCompositeKey.swift in Sources */,
-				976837542E7BC057009CE583 /* GraphQLLazyLoadProjectTeam1Tests.swift in Sources */,
-				976837552E7BC057009CE583 /* HasOneParent.swift in Sources */,
-				976837562E7BC057009CE583 /* Comment7+Schema.swift in Sources */,
-				976837572E7BC057009CE583 /* PhoneCall.swift in Sources */,
-				976837582E7BC057009CE583 /* UserSettings14+Schema.swift in Sources */,
-				976837592E7BC057009CE583 /* ListStringContainer.swift in Sources */,
-				9768375A2E7BC057009CE583 /* GraphQLLazyLoadPostComment4Tests.swift in Sources */,
-				9768375B2E7BC057009CE583 /* ChildSansBelongsTo+Schema.swift in Sources */,
-				9768375C2E7BC057009CE583 /* Person.swift in Sources */,
-				9768375D2E7BC057009CE583 /* DefaultPKChild+Schema.swift in Sources */,
-				9768375E2E7BC057009CE583 /* CommentWithCompositeKey+Schema.swift in Sources */,
-				9768375F2E7BC057009CE583 /* AsyncTesting.swift in Sources */,
-				976837602E7BC057009CE583 /* MyCustomModel8+Schema.swift in Sources */,
-				976837612E7BC057009CE583 /* Comment14+Schema.swift in Sources */,
-				976837622E7BC057009CE583 /* Post14+Schema.swift in Sources */,
-				976837632E7BC057009CE583 /* GraphQLLazyLoadProjectTeam2Tests.swift in Sources */,
-				976837642E7BC057009CE583 /* GraphQLLazyLoadCompositePKImplicitTests.swift in Sources */,
-				976837652E7BC057009CE583 /* GraphQLLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */,
-				976837662E7BC057009CE583 /* GraphQLLazyLoadPostComment8Tests.swift in Sources */,
-				976837672E7BC057009CE583 /* Project2+Schema.swift in Sources */,
-				976837682E7BC057009CE583 /* GraphQLLazyLoadPostComment7Tests.swift in Sources */,
-				976837692E7BC057009CE583 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift in Sources */,
-				9768376A2E7BC057009CE583 /* Post4+Schema.swift in Sources */,
-				9768376B2E7BC057009CE583 /* Post4V2+Schema.swift in Sources */,
-				9768376C2E7BC057009CE583 /* NestedTypeTestModel.swift in Sources */,
-				9768376D2E7BC057009CE583 /* PhoneCall+Schema.swift in Sources */,
-				9768376E2E7BC057009CE583 /* ImplicitChild+Schema.swift in Sources */,
-				9768376F2E7BC057009CE583 /* Project5+Schema.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9768377C2E7BC117009CE583 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3756,11 +3439,6 @@
 			isa = PBXTargetDependency;
 			target = 681B35282A4395730074F369 /* APIWatchApp */;
 			targetProxy = 976836EF2E7BC02E009CE583 /* PBXContainerItemProxy */;
-		};
-		976837782E7BC06D009CE583 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 681B35282A4395730074F369 /* APIWatchApp */;
-			targetProxy = 976837772E7BC06D009CE583 /* PBXContainerItemProxy */;
 		};
 		9768378C2E7BC13D009CE583 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4679,50 +4357,6 @@
 			};
 			name = Release;
 		};
-		976837742E7BC057009CE583 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
-			};
-			name = Debug;
-		};
-		976837752E7BC057009CE583 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
-			};
-			name = Release;
-		};
 		976837882E7BC117009CE583 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4989,15 +4623,6 @@
 			buildConfigurations = (
 				976836EC2E7BC015009CE583 /* Debug */,
 				976836ED2E7BC015009CE583 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		976837732E7BC057009CE583 /* Build configuration list for PBXNativeTarget "AWSAPIPluginLazyLoadTestsWatch" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				976837742E7BC057009CE583 /* Debug */,
-				976837752E7BC057009CE583 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

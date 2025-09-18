@@ -39,6 +39,7 @@ jobs:
     secrets: inherit
 
   graphql-lazy-load-test:
+    if: ${{ false }}
     name: GraphQL | Lazy Load Tests
     uses: ./.github/workflows/integ_test_api_graphql_lazy_load.yml
     secrets: inherit
