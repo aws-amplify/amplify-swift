@@ -6,10 +6,10 @@
 //
 
 import Amplify
-import Combine
-import Foundation
-@preconcurrency import Combine
 import Amplify
+import Combine
+@preconcurrency import Combine
+import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
 /**
@@ -31,14 +31,14 @@ actor AppSyncRealTimeSubscription {
     private let state = CurrentValueSubject<State, Never>(.none)
 
     /// publisher for monitoring subscription status
-    public var publisher: AnyPublisher<State, Never> {
+    var publisher: AnyPublisher<State, Never> {
         state.eraseToAnyPublisher()
     }
 
     private weak var appSyncRealTimeClient: AppSyncRealTimeClient?
 
-    public let id: String
-    public let query: String
+    let id: String
+    let query: String
 
 
     init(id: String, query: String, appSyncRealTimeClient: AppSyncRealTimeClient) {

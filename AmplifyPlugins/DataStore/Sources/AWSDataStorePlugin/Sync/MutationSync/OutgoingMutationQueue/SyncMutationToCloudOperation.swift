@@ -7,9 +7,9 @@
 
 import Amplify
 import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
-@preconcurrency import AWSPluginsCore
 
 /// Publishes a mutation event to the specified Cloud API. Upon receipt of the API response, validates to ensure it is
 /// not a retriable error. If it is, attempts a retry until either success or terminal failure. Upon success or
@@ -304,7 +304,6 @@ class SyncMutationToCloudOperation: AsynchronousOperation, @unchecked Sendable {
                 httpURLResponse: nil,
                 attemptNumber: currentAttemptNumber
             )
-
         // we can't unify the following two cases (case 1 and case 2) as they have different associated values.
         // should retry with a different authType if server returned "Unauthorized Error"
         case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401: // case 1
@@ -395,10 +394,10 @@ private extension GraphQLMutationType {
 }
 
 extension SyncMutationToCloudOperation: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

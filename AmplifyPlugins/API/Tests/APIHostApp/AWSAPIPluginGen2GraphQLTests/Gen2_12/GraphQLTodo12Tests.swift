@@ -38,7 +38,7 @@ extension GraphQLTodo12Tests {
     typealias Todo = Todo12
 
     struct Todo12Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Todo12.self)
         }

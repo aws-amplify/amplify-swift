@@ -33,8 +33,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
             Task {
-                if let callback = responder.callback((model: model,
-                                                      where: condition)) {
+                if let callback = responder.callback((
+                    model: model,
+                    where: condition
+                )) {
                     completion(callback)
                 }
             }
@@ -110,10 +112,12 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
             Task {
-                if let result = responder.callback((modelType: modelType,
-                                                    where: predicate,
-                                                    sort: sortInput,
-                                                    paginate: paginationInput)) {
+                if let result = responder.callback((
+                    modelType: modelType,
+                    where: predicate,
+                    sort: sortInput,
+                    paginate: paginationInput
+                )) {
                     completion(result)
                 }
             }
@@ -129,10 +133,12 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = responder.callback((modelType: modelType,
-                                                  where: predicate,
-                                                  sort: sortInput,
-                                                  paginate: paginationInput)) {
+            if let result = responder.callback((
+                modelType: modelType,
+                where: predicate,
+                sort: sortInput,
+                paginate: paginationInput
+            )) {
                 switch result {
                 case .success(let models):
                     return models
@@ -279,8 +285,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
             Task {
-                if let callback = responder.callback((model: model,
-                                                      where: predicate)) {
+                if let callback = responder.callback((
+                    model: model,
+                    where: predicate
+                )) {
                     completion(callback)
                 }
             }
@@ -360,7 +368,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         return AmplifyAsyncThrowingSequence(parent: nil)
     }
 
-    public func observeQuery<M: Model>(
+    func observeQuery<M: Model>(
         for modelType: M.Type,
         where predicate: QueryPredicate? = nil,
         sort sortInput: QuerySortInput? = nil
@@ -403,10 +411,10 @@ class ObserveQueryRequest: AmplifyOperationRequest {
 
 class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
 
-    public typealias Request = ObserveQueryRequest
-    public typealias InProcess = DataStoreQuerySnapshot<M>
-    public var request: ObserveQueryRequest
-    public var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
+    typealias Request = ObserveQueryRequest
+    typealias InProcess = DataStoreQuerySnapshot<M>
+    var request: ObserveQueryRequest
+    var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
     func run() async throws {
 
     }

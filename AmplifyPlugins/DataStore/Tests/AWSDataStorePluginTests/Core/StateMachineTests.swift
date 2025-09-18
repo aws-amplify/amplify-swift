@@ -177,12 +177,10 @@ class StateMachineTests: XCTestCase {
                 return .two
             case (.one, .decrement):
                 return .three
-
             case (.two, .increment):
                 return .three
             case (.two, .decrement):
                 return .one
-
             case (.three, .increment):
                 return .one
             case (.three, .decrement):

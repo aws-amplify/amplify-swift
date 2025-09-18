@@ -421,7 +421,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(post2)
         let comment2 = LazyChildComment4V2(id: "id2", content: "content", post: post2)
         try await saveAsync(comment2)
-        
+
         let posts = try await queryAsync(LazyParentPost4V2.self)
         XCTAssertEqual(posts.count, 2)
         guard let postId1 = posts.first(where: { $0.id == "postId1" }) else {

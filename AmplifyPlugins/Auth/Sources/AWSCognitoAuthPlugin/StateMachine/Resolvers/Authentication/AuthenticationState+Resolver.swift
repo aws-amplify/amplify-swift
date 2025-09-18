@@ -29,17 +29,20 @@ extension AuthenticationState {
                 } else {
                     return .from(oldState)
                 }
+
             case .configured:
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveConfigured(byApplying: authEvent)
                 } else {
                     return .from(oldState)
                 }
+
             case .signingOut(let signOutState):
                 return resolveSigningOutState(
                     byApplying: event,
                     to: signOutState
                 )
+
             case .signedOut(let signedOutData):
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveSignedOut( byApplying: authEvent, to: signedOutData)
@@ -49,8 +52,10 @@ extension AuthenticationState {
                 } else {
                     return .from(oldState)
                 }
+
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
+
             case .signedIn(let signedInData):
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveSignedIn(byApplying: authEvent, to: signedInData)
@@ -90,11 +95,13 @@ extension AuthenticationState {
                     return .init(newState: .federatedToIdentityPool)
                 case .throwError(let authZError):
                     let authNError = AuthenticationError.service(
-                        message: "Authorization error: \(authZError)", error: authZError)
+                        message: "Authorization error: \(authZError)", error: authZError
+                    )
                     return .init(newState: .error(authNError))
                 case .receivedSessionError(let sessionError):
                     let authNError = AuthenticationError.service(
-                        message: "Session error: \(sessionError)", error: sessionError)
+                        message: "Session error: \(sessionError)", error: sessionError
+                    )
                     return .init(newState: .error(authNError))
                 default:
                     return .from(oldState)
@@ -227,6 +234,7 @@ extension AuthenticationState {
                     actions: [action]
                 )
                 return resolution
+
             default:
                 return .from(.signedIn(currentSignedInData))
             }

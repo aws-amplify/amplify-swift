@@ -75,7 +75,7 @@ extension AuthCategory: AuthCategoryBehavior {
     public func autoSignIn() async throws -> AuthSignInResult {
         try await plugin.autoSignIn()
     }
-    
+
     public func deleteUser() async throws {
         try await plugin.deleteUser()
     }

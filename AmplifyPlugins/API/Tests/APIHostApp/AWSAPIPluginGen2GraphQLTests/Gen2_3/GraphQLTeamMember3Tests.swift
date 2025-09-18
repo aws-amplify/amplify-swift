@@ -185,7 +185,7 @@ extension GraphQLTeamMember3Tests {
     typealias Member = Member3
 
     struct TeamMember3Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Team3.self)
             ModelRegistry.register(modelType: Member3.self)

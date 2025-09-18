@@ -42,7 +42,7 @@ struct StorageAccessLevelAwarePrefixResolver {
     let authService: AWSAuthServiceBehavior
 
     /// - Tag: StorageAccessLevelAwarePrefixResolver.init
-    public init(authService: AWSAuthServiceBehavior) {
+    init(authService: AWSAuthServiceBehavior) {
         self.authService = authService
     }
 }

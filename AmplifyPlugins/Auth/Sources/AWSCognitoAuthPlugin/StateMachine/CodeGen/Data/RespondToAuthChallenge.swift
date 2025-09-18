@@ -56,7 +56,7 @@ extension RespondToAuthChallenge {
     }
 
     var getAllowedAuthFactorsForSelection: Set<AuthFactorType> {
-        return Set(availableChallenges.compactMap({ $0.authFactor }))
+        return Set(availableChallenges.compactMap { $0.authFactor })
     }
 
     /// Helper method to extract MFA types from parameters

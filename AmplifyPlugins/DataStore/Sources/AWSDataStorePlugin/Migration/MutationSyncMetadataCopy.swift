@@ -6,30 +6,30 @@
 //
 
 import Amplify
-import Foundation
 @preconcurrency import Amplify
+import Foundation
 
 extension MutationSyncMetadataMigration {
     struct MutationSyncMetadataCopy: Model {
-        public let id: String
-        public var deleted: Bool
-        public var lastChangedAt: Int64
-        public var version: Int
+        let id: String
+        var deleted: Bool
+        var lastChangedAt: Int64
+        var version: Int
 
         // MARK: - CodingKeys
 
-        public enum CodingKeys: String, ModelKey {
+        enum CodingKeys: String, ModelKey {
             case id
             case deleted
             case lastChangedAt
             case version
         }
 
-        public static let keys = CodingKeys.self
+        static let keys = CodingKeys.self
 
         // MARK: - ModelSchema
 
-        public static let schema = defineSchema { definition in
+        static let schema = defineSchema { definition in
             let sync = MutationSyncMetadataCopy.keys
 
             definition.attributes(.isSystem)

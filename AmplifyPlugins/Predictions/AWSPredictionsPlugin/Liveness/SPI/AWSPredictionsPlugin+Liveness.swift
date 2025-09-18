@@ -46,10 +46,10 @@ public extension AWSPredictionsPlugin {
 
 public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct Options {
+    struct Options {
         public let attemptCount: Int
         public let preCheckViewEnabled: Bool
-        
+
         public init(
             attemptCount: Int,
             preCheckViewEnabled: Bool

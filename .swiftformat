@@ -65,12 +65,17 @@
 --enable void
   --empty void
 
---disable wrapArguments
-  --closingparen same-line
-  --wraparguments after-first
+--enable wrapArguments
+  --closingparen balanced
+  --wraparguments before-first
   --wrapcollections before-first
+  --wrapconditions preserve
 
 # standalone rules
+--disable preferKeyPath
+--disable conditionalAssignment
+--disable wrapMultilineConditionalAssignment
+--disable wrapMultilineStatementBraces
 --disable andOperator
 --disable anyObjectProtocol
 --disable blankLinesAroundMark

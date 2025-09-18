@@ -26,9 +26,11 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
                         .confirmSignInWithTOTPCode
                     ),
                     .totpMFA,
-                    .apiBased(.userSRP))),
+                    .apiBased(.userSRP)
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step

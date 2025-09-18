@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import Foundation
 
 typealias ConfirmationCode = String
 typealias ForceAliasCreation = Bool
@@ -15,7 +15,7 @@ struct SignUpEvent: StateMachineEvent {
     var id: String
     var time: Date?
     let eventType: EventType
-    
+
     enum EventType {
         case initiateSignUp(SignUpEventData, Password?, [AuthUserAttribute]?)
         case initiateSignUpComplete(SignUpEventData, AuthSignUpResult)
@@ -23,15 +23,17 @@ struct SignUpEvent: StateMachineEvent {
         case signedUp(SignUpEventData, AuthSignUpResult)
         case throwAuthError(SignUpError)
     }
-    
-    init(id: String = UUID().uuidString,
-         eventType: EventType,
-         time: Date? = nil) {
+
+    init(
+        id: String = UUID().uuidString,
+        eventType: EventType,
+        time: Date? = nil
+    ) {
         self.id = id
         self.eventType = eventType
         self.time = time
     }
-    
+
     var type: String {
         switch eventType {
         case .initiateSignUp: return "SignUpEvent.initiateSignUp"
@@ -41,5 +43,5 @@ struct SignUpEvent: StateMachineEvent {
         case .throwAuthError: return "SignUpEvent.throwAuthError"
         }
     }
-    
+
 }

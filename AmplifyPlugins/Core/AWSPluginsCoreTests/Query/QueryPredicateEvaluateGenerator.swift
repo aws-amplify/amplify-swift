@@ -91,21 +91,27 @@ class QueryPredicateGenerator: XCTestCase {
         "Double": ["1.1", "2.1", "3.1", "1", "2", "3", ""],
         "Int": ["1", "2", "3", ""],
         "String": ["\"a\"", "\"bb\"", "\"aa\"", "\"c\"", ""],
-        "Temporal.Date": ["Temporal.Date.now()",
-                          "Temporal.Date.now().add(value:1, to:.day)",
-                          "Temporal.Date.now().add(value:2, to:.day)",
-                          "Temporal.Date.now().add(value:3, to:.day)",
-                          ""],
-        "Temporal.DateTime": ["Temporal.DateTime.now()",
-                              "Temporal.DateTime.now().add(value:1, to:.hour)",
-                              "Temporal.DateTime.now().add(value:2, to:.hour)",
-                              "Temporal.DateTime.now().add(value:3, to:.hour)",
-                              ""],
-        "Temporal.Time": ["Temporal.Time.now()",
-                          "Temporal.Time.now().add(value:1, to:.hour)",
-                          "Temporal.Time.now().add(value:2, to:.hour)",
-                          "Temporal.Time.now().add(value:3, to:.hour)",
-                          ""]
+        "Temporal.Date": [
+            "Temporal.Date.now()",
+            "Temporal.Date.now().add(value:1, to:.day)",
+            "Temporal.Date.now().add(value:2, to:.day)",
+            "Temporal.Date.now().add(value:3, to:.day)",
+            ""
+        ],
+        "Temporal.DateTime": [
+            "Temporal.DateTime.now()",
+            "Temporal.DateTime.now().add(value:1, to:.hour)",
+            "Temporal.DateTime.now().add(value:2, to:.hour)",
+            "Temporal.DateTime.now().add(value:3, to:.hour)",
+            ""
+        ],
+        "Temporal.Time": [
+            "Temporal.Time.now()",
+            "Temporal.Time.now().add(value:1, to:.hour)",
+            "Temporal.Time.now().add(value:2, to:.hour)",
+            "Temporal.Time.now().add(value:3, to:.hour)",
+            ""
+        ]
     ]
 
     let temporalToTimeMap: [String: Date] = [
@@ -146,24 +152,30 @@ class QueryPredicateGenerator: XCTestCase {
         "Int,Double": ["0", "1", "2", "3", "4", ""],
         "Int,Int": ["0", "1", "2", "3", "4", ""],
         "String,String": ["\"a\"", "\"bb\"", "\"c\"", "\"dd\"", "\"e\"", ""],
-        "Temporal.Date,Temporal.Date": ["Temporal.Date.now()",
-                                        "Temporal.Date.now().add(value:1, to:.day)",
-                                        "Temporal.Date.now().add(value:2, to:.day)",
-                                        "Temporal.Date.now().add(value:3, to:.day)",
-                                        "Temporal.Date.now().add(value:4, to:.day)",
-                                        ""],
-        "Temporal.DateTime,Temporal.DateTime": ["Temporal.DateTime.now()",
-                                                "Temporal.DateTime.now().add(value:1, to:.hour)",
-                                                "Temporal.DateTime.now().add(value:2, to:.hour)",
-                                                "Temporal.DateTime.now().add(value:3, to:.hour)",
-                                                "Temporal.DateTime.now().add(value:4, to:.hour)",
-                                                ""],
-        "Temporal.Time,Temporal.Time": ["Temporal.Time.now()",
-                                        "Temporal.Time.now().add(value:1, to:.hour)",
-                                        "Temporal.Time.now().add(value:2, to:.hour)",
-                                        "Temporal.Time.now().add(value:3, to:.hour)",
-                                        "Temporal.Time.now().add(value:4, to:.hour)",
-                                        ""]
+        "Temporal.Date,Temporal.Date": [
+            "Temporal.Date.now()",
+            "Temporal.Date.now().add(value:1, to:.day)",
+            "Temporal.Date.now().add(value:2, to:.day)",
+            "Temporal.Date.now().add(value:3, to:.day)",
+            "Temporal.Date.now().add(value:4, to:.day)",
+            ""
+        ],
+        "Temporal.DateTime,Temporal.DateTime": [
+            "Temporal.DateTime.now()",
+            "Temporal.DateTime.now().add(value:1, to:.hour)",
+            "Temporal.DateTime.now().add(value:2, to:.hour)",
+            "Temporal.DateTime.now().add(value:3, to:.hour)",
+            "Temporal.DateTime.now().add(value:4, to:.hour)",
+            ""
+        ],
+        "Temporal.Time,Temporal.Time": [
+            "Temporal.Time.now()",
+            "Temporal.Time.now().add(value:1, to:.hour)",
+            "Temporal.Time.now().add(value:2, to:.hour)",
+            "Temporal.Time.now().add(value:3, to:.hour)",
+            "Temporal.Time.now().add(value:4, to:.hour)",
+            ""
+        ]
     ]
 
     let fieldForType: [String: String] = [

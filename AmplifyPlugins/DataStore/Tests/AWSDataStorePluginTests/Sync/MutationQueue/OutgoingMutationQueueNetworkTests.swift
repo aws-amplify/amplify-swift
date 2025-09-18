@@ -12,8 +12,8 @@ import XCTest
 @_implementationOnly import AmplifyAsyncTesting
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable @preconcurrency import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
 @testable import AWSPluginsCore
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {

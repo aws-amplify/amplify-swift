@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable @preconcurrency import AWSPluginsCore
 @testable @preconcurrency import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
 
 final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!

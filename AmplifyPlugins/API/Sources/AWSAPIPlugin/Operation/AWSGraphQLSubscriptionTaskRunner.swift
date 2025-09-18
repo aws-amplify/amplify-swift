@@ -186,7 +186,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R>: InternalTaskRunner,
 }
 
 // Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
-final public class AWSGraphQLSubscriptionOperation<R>: GraphQLSubscriptionOperation<R>, @unchecked Sendable where R: Decodable, R: Sendable {
+public final class AWSGraphQLSubscriptionOperation<R>: GraphQLSubscriptionOperation<R>, @unchecked Sendable where R: Decodable, R: Sendable {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
@@ -389,7 +389,7 @@ private func encodeRequest(query: String, variables: [String: Any]?) -> String {
     }
 }
 
-fileprivate func toAPIError<R>(_ errors: [Error], type: R.Type) -> APIError where R: Decodable, R: Sendable {
+private func toAPIError<R>(_ errors: [Error], type: R.Type) -> APIError where R: Decodable, R: Sendable {
     func errorDescription(_ hasAuthorizationError: Bool = false) -> String {
         "Subscription item event failed with error" +
         (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
@@ -412,7 +412,6 @@ fileprivate func toAPIError<R>(_ errors: [Error], type: R.Type) -> APIError wher
             "",
             GraphQLResponseError<R>.error(errors)
         )
-
     case _ as [WebSocketClient.Error]:
         return APIError.networkError("WebSocketClient connection aborted", nil, URLError(.networkConnectionLost))
     default:

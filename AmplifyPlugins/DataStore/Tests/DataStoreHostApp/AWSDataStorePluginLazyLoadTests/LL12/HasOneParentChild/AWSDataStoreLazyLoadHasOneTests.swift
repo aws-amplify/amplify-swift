@@ -271,7 +271,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
 extension AWSDataStoreLazyLoadHasOneTests {
 
     struct HasOneModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: HasOneChild.self)
             ModelRegistry.register(modelType: HasOneParent.self)

@@ -11,16 +11,16 @@ import Foundation
 /// `FlutterSerializedModel` assists in serializing and deserializing JSON when interacting with the amplify-ios DataStore API.
 /// Taken from [amplify-flutter DataStore category](https://github.com/aws-amplify/amplify-flutter/blob/main/packages/amplify_datastore/ios/Classes/types/model/FlutterSerializedModel.swift)
 struct FlutterSerializedModel: Model, JSONValueHolder {
-    public let id: String
+    let id: String
 
-    public var values: [String: JSONValue]
+    var values: [String: JSONValue]
 
-    public init(id: String = UUID().uuidString, map: [String: JSONValue]) {
+    init(id: String = UUID().uuidString, map: [String: JSONValue]) {
         self.id = id
         self.values = map
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
 
         let y = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try y.decode(String.self, forKey: .id)
@@ -60,12 +60,12 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         return jsonValue
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var x = encoder.unkeyedContainer()
         try x.encode(values)
     }
 
-    public func jsonValue(for key: String) -> Any?? {
+    func jsonValue(for key: String) -> Any?? {
         if key == "id" {
             return id
         }
@@ -87,7 +87,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         }
     }
 
-    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
+    func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
            case .some(.number(let deserializedValue)) = values[key] {
@@ -203,7 +203,7 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
         return result
     }
 
-    public func toMap(modelSchema: ModelSchema) -> [String: Any] {
+    func toMap(modelSchema: ModelSchema) -> [String: Any] {
         return [
             "id": id,
             "modelName": modelSchema.name,
@@ -214,10 +214,10 @@ struct FlutterSerializedModel: Model, JSONValueHolder {
 
 extension FlutterSerializedModel {
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case values
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 }

@@ -250,7 +250,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         }
         entries.append(LogEntry(category: "CloudWatchLogConsumerTests", namespace: nil, level: .error, message: ""))
         do {
-            let _ = try await systemUnderTest.consume(batch: self)
+            _ = try await systemUnderTest.consume(batch: self)
             XCTFail("Expecting exception propagated from mock client.")
         } catch {
             XCTAssertEqual(String(describing: error), "consumeError")

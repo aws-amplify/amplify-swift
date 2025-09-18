@@ -35,7 +35,7 @@ extension GraphQLPostVideoPrivacySettings2Tests {
     typealias Video = Video2
 
     struct PostVideoPrivacySettings2Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post2.self)
             ModelRegistry.register(modelType: Video2.self)

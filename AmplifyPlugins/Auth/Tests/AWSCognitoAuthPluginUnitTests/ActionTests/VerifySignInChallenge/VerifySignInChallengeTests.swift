@@ -16,17 +16,20 @@ class VerifySignInChallengeTests: XCTestCase {
 
     typealias CognitoFactory = BasicSRPAuthEnvironment.CognitoUserPoolFactory
 
-    let mockRespondAuthChallenge = RespondToAuthChallenge(challenge: .smsMfa,
-                                                          availableChallenges: [],
-                                                          username: "usernameMock",
-                                                          session: "mockSession",
-                                                          parameters: [:])
+    let mockRespondAuthChallenge = RespondToAuthChallenge(
+        challenge: .smsMfa,
+        availableChallenges: [],
+        username: "usernameMock",
+        session: "mockSession",
+        parameters: [:]
+    )
     let mockConfirmEvent = ConfirmSignInEventData(
         answer: "1233",
         attributes: [:],
         metadata: [:],
         friendlyDeviceName: nil,
-        presentationAnchor: nil)
+        presentationAnchor: nil
+    )
 
     /// Test if valid input are given the service call is made
     ///
@@ -50,10 +53,12 @@ class VerifySignInChallengeTests: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -86,10 +91,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -136,10 +143,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 
@@ -187,10 +196,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -238,10 +249,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
         let dispatcher = MockDispatcher { event in
@@ -285,10 +298,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 
@@ -330,10 +345,12 @@ class VerifySignInChallengeTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let action = VerifySignInChallenge(challenge: mockRespondAuthChallenge,
-                                           confirmSignEventData: mockConfirmEvent,
-                                           signInMethod: .apiBased(.userSRP),
-                                           currentSignInStep: .confirmSignInWithTOTPCode)
+        let action = VerifySignInChallenge(
+            challenge: mockRespondAuthChallenge,
+            confirmSignEventData: mockConfirmEvent,
+            signInMethod: .apiBased(.userSRP),
+            currentSignInStep: .confirmSignInWithTOTPCode
+        )
 
         let verifyChallengeComplete = expectation(description: "verifyChallengeComplete")
 

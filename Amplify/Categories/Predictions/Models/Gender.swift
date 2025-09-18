@@ -8,7 +8,7 @@
 public extension Predictions {
     /// Describes gender of an entity identified as a result of
     /// identify() API
-    public struct Gender: @unchecked Sendable {
+    struct Gender: @unchecked Sendable {
         let id: UInt8
 
         public static let unknown = Self(id: 0)

@@ -30,7 +30,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         return Predictions.Identify.Labels.Result(labels: labelsResult)
     }
 
-    public func detectText(_ imageURL: URL) throws -> Predictions.Identify.Text.Result? {
+    func detectText(_ imageURL: URL) throws -> Predictions.Identify.Text.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
 #if targetEnvironment(simulator)

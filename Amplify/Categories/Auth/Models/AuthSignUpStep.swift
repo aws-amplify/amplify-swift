@@ -18,10 +18,10 @@ public enum AuthSignUpStep {
         UserId? = nil
     )
 
-    /// Sign Up successfully completed  
+    /// Sign Up successfully completed
     /// The customers can use this step to determine if they want to complete sign in
     case completeAutoSignIn(Session)
-    
+
     /// Sign up is complete
     case done
 }

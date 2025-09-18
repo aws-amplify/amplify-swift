@@ -190,19 +190,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             )
         case .notifyingSyncStarted:
             notifySyncStarted()
-
         case .syncEngineActive:
             log.debug("RemoteSyncEngine SyncEngineActive")
-
         case .cleaningUp(let error):
             cleanup(error: error)
-
         case .cleaningUpForTermination:
             cleanupForTermination()
-
         case .schedulingRestart(let error):
             scheduleRestartOrTerminate(error: error)
-
         case .terminate:
             terminate()
         }
@@ -450,10 +445,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 }
 
 extension RemoteSyncEngine: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -417,7 +417,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
     typealias Comment = Comment8V2
 
     struct BlogPostComment8V2Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Blog8V2.self)
             ModelRegistry.register(modelType: Post8V2.self)

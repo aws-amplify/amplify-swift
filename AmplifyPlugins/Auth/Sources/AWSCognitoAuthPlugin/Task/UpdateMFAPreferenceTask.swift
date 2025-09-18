@@ -35,11 +35,13 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
         HubPayload.EventName.Auth.updateMFAPreferenceAPI
     }
 
-    init(smsPreference: MFAPreference?,
-         totpPreference: MFAPreference?,
-         emailPreference: MFAPreference?,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+    init(
+        smsPreference: MFAPreference?,
+        totpPreference: MFAPreference?,
+        emailPreference: MFAPreference?,
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.smsPreference = smsPreference
         self.totpPreference = totpPreference
         self.emailPreference = emailPreference
@@ -66,7 +68,7 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
         let preferredMFAType = currentPreference.preferredMfaSetting.map(MFAType.init(rawValue:))
         let input = SetUserMFAPreferenceInput(
             accessToken: accessToken,
-            emailMfaSettings: emailPreference?.emailSetting(isCurrentlyPreferred: preferredMFAType == .email), 
+            emailMfaSettings: emailPreference?.emailSetting(isCurrentlyPreferred: preferredMFAType == .email),
             smsMfaSettings: smsPreference?.smsSetting(isCurrentlyPreferred: preferredMFAType == .sms),
             softwareTokenMfaSettings: totpPreference?.softwareTokenSetting(isCurrentlyPreferred: preferredMFAType == .totp)
         )

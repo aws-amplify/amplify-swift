@@ -39,6 +39,7 @@ extension AuthState {
                 default:
                     return .from(oldState)
                 }
+
             case .validatingCredentialsAndConfiguration:
                 switch isAuthEvent(event)?.eventType {
                 case .configureAuthentication(let authConfiguration, let storedCredentials):
@@ -55,6 +56,7 @@ extension AuthState {
                 default:
                     return .from(oldState)
                 }
+
             case .configuringAuthentication(let authenticationState):
                 let resolver = AuthenticationState.Resolver()
                 let resolution = resolver.resolve(oldState: authenticationState, byApplying: event)

@@ -62,7 +62,7 @@ struct Preconditions: Codable {
         self.mockedResponses = expectedResponses
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let amplifyConfigurationFile = try values.decode(String.self, forKey: .amplifyConfigurationPath)
         let initialAuthStateFile = try values.decode(String.self, forKey: .initialAuthStatePath)
@@ -74,7 +74,7 @@ struct Preconditions: Codable {
         self.mockedResponses = try  values.decode([JSONValue].self, forKey: .mockedResponses)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         fatalError("Encoding not supported")
     }
 
@@ -109,7 +109,7 @@ struct API: Codable {
         case globalSignOut
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
 
         self.name = try values.decode(APIName.self, forKey: .name)
@@ -117,7 +117,7 @@ struct API: Codable {
         self.options = try values.decode(JSONValue.self, forKey: .options)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         fatalError("Encoding not supported")
     }
 }

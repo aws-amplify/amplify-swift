@@ -86,7 +86,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     private func doSignIn(authflowType: AuthFlowType) async throws -> AuthSignInResult {
         log.verbose("Sending signIn event")
         await sendSignInEvent(authflowType: authflowType)
-        
+
         log.verbose("Waiting for signin to complete")
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
@@ -103,7 +103,6 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
                 }
             case .error(let error):
                 throw error.authError
-
             case .signingIn(let signInState):
                 guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
                     continue

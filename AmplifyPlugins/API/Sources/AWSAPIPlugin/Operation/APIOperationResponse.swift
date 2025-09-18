@@ -13,7 +13,7 @@ struct APIOperationResponse {
     let httpURLResponse: HTTPURLResponse?
     let responseData: Data?
 
-    public init(error: Error?, response: URLResponse?, data: Data? = nil) {
+    init(error: Error?, response: URLResponse?, data: Data? = nil) {
         self.urlError = error as? URLError
         self.httpURLResponse = response as? HTTPURLResponse
         self.responseData = data

@@ -75,11 +75,13 @@ public enum QueryOperator: Encodable {
             if let value {
                 try container.encode(value, forKey: .value)
             }
+
         case .equals(let value):
             try container.encode("equals", forKey: .type)
             if let value {
                 try container.encode(value, forKey: .value)
             }
+
         case .lessOrEqual(let value):
             try container.encode("lessOrEqual", forKey: .type)
             try container.encode(value, forKey: .value)

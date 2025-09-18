@@ -289,7 +289,7 @@ extension GraphQLLazyLoadDefaultPKTests: DefaultLogger { }
 extension GraphQLLazyLoadDefaultPKTests {
 
     struct DefaultPKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: DefaultPKParent.self)
             ModelRegistry.register(modelType: DefaultPKChild.self)

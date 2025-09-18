@@ -6,16 +6,16 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateSignUp: Action {
-    
+
     var identifier: String = "InitiateSignUp"
     let data: SignUpEventData
     let password: String?
     let attributes: [AuthUserAttribute]?
-    
+
     func execute(
         withDispatcher dispatcher: any EventDispatcher,
         environment: any Environment
@@ -27,7 +27,8 @@ struct InitiateSignUp: Action {
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: data.username,
-                credentialStoreClient: authEnvironment.credentialsClient)
+                credentialStoreClient: authEnvironment.credentialsClient
+            )
             let attributes = attributes?.reduce(
                 into: [String: String]()) {
                     $0[$1.key.rawValue] = $1.value
@@ -63,18 +64,22 @@ struct InitiateSignUp: Action {
             await dispatcher.send(event)
         } catch let error as SignUpError {
             let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignUpError.service(error: error)
             let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }
-    
+
 }
 
 extension InitiateSignUp: CustomDebugDictionaryConvertible {

@@ -84,8 +84,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             for (name, value, _) in identifierFields {
                 inputMap[name] = value.graphQLDocumentValue
             }
-            inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-                                                   value: .object(inputMap))
+            inputs["input"] = GraphQLDocumentInput(
+                type: "\(document.name.pascalCased())Input!",
+                value: .object(inputMap)
+            )
 
         } else if case .query = document.operationType {
             for (name, value, type) in identifierFields {

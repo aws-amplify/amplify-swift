@@ -29,7 +29,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
 extension AWSDataStoreLazyLoadCompositePKTests {
 
     struct CompositePKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: CompositePKParent.self)
             ModelRegistry.register(modelType: CompositePKChild.self)

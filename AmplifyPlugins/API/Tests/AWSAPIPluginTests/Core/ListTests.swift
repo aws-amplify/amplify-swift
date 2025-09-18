@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @preconcurrency import Amplify
 import AmplifyTestCommon
+import XCTest
 import XCTest
 @testable import AWSAPIPlugin
 

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 // Follow MFATests/EmailMFAOnlyTests/Readme.md for test setup locally
 // Test class for scenarios where only Email MFA is required.
@@ -69,14 +69,16 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
 
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
-                password: password)
+                password: password
+            )
 
             let options = AuthSignInRequest.Options()
             // Step 3: Initiate sign-in, expecting MFA setup to be required
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: options)
+                options: options
+            )
 
             // Step 4: Ensure that the next step is to set up Email MFA
             guard case .continueSignInWithEmailMFASetup = result.nextStep else {
@@ -109,7 +111,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
 
             confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: mfaCode,
-                options: .init())
+                options: .init()
+            )
 
             // Step 8: Ensure that the sign-in process is complete
             guard case .done = confirmSignInResult.nextStep else {
@@ -154,7 +157,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
 
             let options = AuthSignInRequest.Options()
 
@@ -162,7 +166,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: options)
+                options: options
+            )
 
             // Step 6: Ensure that the next step is to confirm the Email MFA code
             guard case .confirmSignInWithOTP(let deliveryDetails) = result.nextStep else {
@@ -187,7 +192,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
             do {
                 _ = try await Amplify.Auth.confirmSignIn(
                     challengeResponse: "000000",
-                    options: .init())
+                    options: .init()
+                )
             } catch AuthError.service(_, _, let error) {
 
                 guard let underlyingError = error as? AWSCognitoAuthError else {
@@ -202,7 +208,8 @@ class EmailMFARequiredTests: AWSAuthBaseTest {
                 // Step 7: Enter the correct MFA code
                 let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                     challengeResponse: mfaCode,
-                    options: .init())
+                    options: .init()
+                )
 
                 // Step 8: Ensure that the sign-in process is complete
                 guard case .done = confirmSignInResult.nextStep else {

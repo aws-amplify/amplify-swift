@@ -29,7 +29,6 @@ struct InformSessionError: Action {
             }
         default:
             .init(eventType: .receivedSessionError(error))
-
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
@@ -43,11 +42,11 @@ struct InformSessionError: Action {
 }
 
 extension InformSessionError: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

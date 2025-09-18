@@ -404,7 +404,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     typealias Comment = Comment4V2
 
     struct PostComment4V2Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post4V2.self)
             ModelRegistry.register(modelType: Comment4V2.self)

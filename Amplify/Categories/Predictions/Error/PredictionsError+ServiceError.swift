@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension PredictionsError {
-    public struct ServiceError: Equatable, @unchecked Sendable {
+public extension PredictionsError {
+    struct ServiceError: Equatable, @unchecked Sendable {
         public static func == (lhs: PredictionsError.ServiceError, rhs: PredictionsError.ServiceError) -> Bool {
             lhs.description == rhs.description
             && lhs.recoverySuggestion == rhs.recoverySuggestion

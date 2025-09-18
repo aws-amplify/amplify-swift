@@ -167,7 +167,7 @@ final class StorageStressTests: XCTestCase {
             XCTAssertEqual(uploadKey, key)
             uploadExpectation.fulfill()
 
-            let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
+            _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
             downloadExpectation.fulfill()
 
             try await Amplify.Storage.remove(key: key)

@@ -19,7 +19,7 @@ class NetworkReachabilityNotifier {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
-    public init(
+    init(
         host: String,
         allowsCellularAccess: Bool,
         reachabilityFactory: NetworkReachabilityProvidingFactory.Type

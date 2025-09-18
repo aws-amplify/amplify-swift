@@ -37,7 +37,7 @@ extension GraphQLLocationPostUser1Tests {
     typealias Location = Location1
 
     struct PostUserLocation1Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post1.self)
             ModelRegistry.register(modelType: User1.self)

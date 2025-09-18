@@ -10,13 +10,15 @@ import Foundation
 
 extension RespondToAuthChallengeInput {
 
-    static func srpInputForUserAuth(username: String,
-                                    publicSRPAHexValue: String,
-                                    session: String,
-                                    clientMetadata: [String: String],
-                                    asfDeviceId: String,
-                                    deviceMetadata: DeviceMetadata,
-                                    environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+    static func srpInputForUserAuth(
+        username: String,
+        publicSRPAHexValue: String,
+        session: String,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,
             "SRP_A": publicSRPAHexValue,
@@ -31,16 +33,19 @@ extension RespondToAuthChallengeInput {
             clientMetadata: clientMetadata,
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
-    static func userPasswordInputForUserAuth(username: String,
-                                             password: String,
-                                             session: String,
-                                             clientMetadata: [String: String],
-                                             asfDeviceId: String,
-                                             deviceMetadata: DeviceMetadata,
-                                             environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
+    static func userPasswordInputForUserAuth(
+        username: String,
+        password: String,
+        session: String,
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,
             "PASSWORD": password,
@@ -55,14 +60,16 @@ extension RespondToAuthChallengeInput {
             clientMetadata: clientMetadata,
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
-            environment: environment)
+            environment: environment
+        )
     }
 
-    static func webAuthnInput(username: String,
-                              session: String?,
-                              asfDeviceId: String,
-                              deviceMetadata: DeviceMetadata,
-                              environment: UserPoolEnvironment
+    static func webAuthnInput(
+        username: String,
+        session: String?,
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
     ) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,

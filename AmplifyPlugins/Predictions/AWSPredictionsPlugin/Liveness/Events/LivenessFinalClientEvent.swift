@@ -26,8 +26,10 @@ public struct FinalClientEvent {
 
 public extension LivenessEvent where T == FinalClientEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func final(event: FinalClientEvent,
-                             challenge: Challenge) throws -> Self {
+    static func final(
+        event: FinalClientEvent,
+        challenge: Challenge
+    ) throws -> Self {
         let clientChallengeType: ClientChallenge.ChallengeType
         switch challenge {
         case .faceMovementAndLightChallenge:
@@ -66,7 +68,7 @@ public extension LivenessEvent where T == FinalClientEvent {
                 )
             )
         }
-        
+
         let clientEvent = ClientSessionInformationEvent(challenge: .init(clientChallengeType: clientChallengeType))
         let payload = try JSONEncoder().encode(clientEvent)
         return .init(

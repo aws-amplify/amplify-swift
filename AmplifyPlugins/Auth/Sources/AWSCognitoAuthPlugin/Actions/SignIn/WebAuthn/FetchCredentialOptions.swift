@@ -7,8 +7,8 @@
 
 #if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct FetchCredentialOptions: Action {
     let identifier = "FetchCredentialOptions"
@@ -16,8 +16,10 @@ struct FetchCredentialOptions: Action {
     let respondToAuthChallenge: RespondToAuthChallenge
     let presentationAnchor: AuthUIPresentationAnchor?
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let authEnv = try environment.authEnvironment()

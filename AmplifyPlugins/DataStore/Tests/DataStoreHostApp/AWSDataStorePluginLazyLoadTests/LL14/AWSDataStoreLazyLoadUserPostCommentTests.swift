@@ -116,7 +116,7 @@ extension AWSDataStoreLazyLoadUserPostCommentTests {
     typealias UserSettings = UserSettings14
 
     struct UserPostCommentModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: User14.self)
             ModelRegistry.register(modelType: Post14.self)

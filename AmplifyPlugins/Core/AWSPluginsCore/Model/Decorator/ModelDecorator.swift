@@ -49,8 +49,10 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
             }
         }
 
-        inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-            value: .object(graphQLInput))
+        inputs["input"] = GraphQLDocumentInput(
+            type: "\(document.name.pascalCased())Input!",
+            value: .object(graphQLInput)
+        )
         return document.copy(inputs: inputs)
     }
 }

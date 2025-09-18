@@ -14,7 +14,7 @@ class RequestRetryablePolicy: RequestRetryable {
 
     private static let maxExponentForExponentialBackoff = 31
 
-    public func retryRequestAdvice(
+    func retryRequestAdvice(
         urlError: URLError?,
         httpURLResponse: HTTPURLResponse?,
         attemptNumber: Int

@@ -52,7 +52,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         await ensureLogStreamExists()
 
         // Add safety check for nil logStreamName
-        guard let _ = self.logStreamName else {
+        guard let _ = logStreamName else {
             Amplify.Logging.error("Log stream name is nil, cannot send logs")
             try batch.complete()
             return
@@ -60,7 +60,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
 
         // Create a strong reference to entries to prevent deallocation during encoding
         let entriesCopy = entries
-        
+
         var batchByteSize: Int
         do {
             batchByteSize = try safeEncode(entriesCopy).count
@@ -69,7 +69,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        
+
         if entriesCopy.count > AWSCloudWatchConstants.maxLogEvents {
             let smallerEntries = entriesCopy.chunked(into: AWSCloudWatchConstants.maxLogEvents)
             for entries in smallerEntries {
@@ -111,10 +111,10 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
 
         // Only mark as complete after everything has finished successfully
         // to avoid potential race conditions with incomplete state
-        
+
         if logStreamName == nil {
             // Explicitly capture self to avoid potential memory issues
-            let streamName = await self.formatter.formattedStreamName()
+            let streamName = await formatter.formattedStreamName()
             // Check if self is still valid and streamName is not nil before assigning
             if !streamName.isEmpty {
                 self.logStreamName = streamName
@@ -123,28 +123,28 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 self.logStreamName = "default.\(UUID().uuidString)"
             }
         }
-        
+
         // Safety check - ensure we have a valid stream name before proceeding
-        guard let logStreamName = self.logStreamName, !logStreamName.isEmpty else {
+        guard let logStreamName = logStreamName, !logStreamName.isEmpty else {
             Amplify.Logging.error("Invalid log stream name")
             ensureLogStreamExistsComplete = true
             return
         }
-        
-        let stream = try? await self.client.describeLogStreams(input: DescribeLogStreamsInput(
-            logGroupName: self.logGroupName,
+
+        let stream = try? await client.describeLogStreams(input: DescribeLogStreamsInput(
+            logGroupName: logGroupName,
             logStreamNamePrefix: logStreamName
         )).logStreams?.first(where: { stream in
             return stream.logStreamName == logStreamName
         })
-        
+
         if stream == nil {
-            _ = try? await self.client.createLogStream(input: CreateLogStreamInput(
-                logGroupName: self.logGroupName,
+            _ = try? await client.createLogStream(input: CreateLogStreamInput(
+                logGroupName: logGroupName,
                 logStreamName: logStreamName
             ))
         }
-        
+
         // Mark as complete only after all operations finished
         ensureLogStreamExistsComplete = true
     }
@@ -154,37 +154,37 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         if entries.isEmpty {
             return
         }
-        
+
         // Safety check for logStreamName
-        guard let logStreamName = self.logStreamName, !logStreamName.isEmpty else {
+        guard let logStreamName = logStreamName, !logStreamName.isEmpty else {
             Amplify.Logging.error("Cannot send log events: Log stream name is nil or empty")
             return
         }
-        
+
         let events = convertToCloudWatchInputLogEvents(for: entries)
-        
+
         // Safety check for empty events
         if events.isEmpty {
             Amplify.Logging.warn("No valid events to send to CloudWatch")
             return
         }
-        
+
         do {
-            let response = try await self.client.putLogEvents(input: PutLogEventsInput(
+            let response = try await client.putLogEvents(input: PutLogEventsInput(
                 logEvents: events,
-                logGroupName: self.logGroupName,
+                logGroupName: logGroupName,
                 logStreamName: logStreamName,
                 sequenceToken: nil
             ))
-            
+
             // Handle retriable entries
             let retriableEntries = retriable(entries: entries, in: response)
             if !retriableEntries.isEmpty {
                 let retriableEvents = convertToCloudWatchInputLogEvents(for: retriableEntries)
                 if !retriableEvents.isEmpty {
-                    _ = try await self.client.putLogEvents(input: PutLogEventsInput(
+                    _ = try await client.putLogEvents(input: PutLogEventsInput(
                         logEvents: retriableEvents,
-                        logGroupName: self.logGroupName,
+                        logGroupName: logGroupName,
                         logStreamName: logStreamName,
                         sequenceToken: nil
                     ))
@@ -227,7 +227,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         var chunks: [[LogEntry]] = []
         var chunk: [LogEntry] = []
         var currentChunkSize = 0
-        
+
         for entry in entries {
             // Wrap the encoding in a do-catch to handle potential errors
             var entrySize: Int
@@ -238,7 +238,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 // Skip this entry and continue with the next one
                 continue
             }
-            
+
             if currentChunkSize + entrySize < maxByteSize {
                 chunk.append(entry)
                 currentChunkSize = currentChunkSize + entrySize
@@ -251,12 +251,12 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 currentChunkSize = entrySize
             }
         }
-        
+
         // Add the last chunk if it's not empty
         if !chunk.isEmpty {
             chunks.append(chunk)
         }
-        
+
         // Return even if chunks is empty to avoid null pointer issues
         return chunks
     }

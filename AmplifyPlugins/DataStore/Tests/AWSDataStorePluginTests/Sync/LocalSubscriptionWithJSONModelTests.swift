@@ -120,7 +120,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 }
             }, receiveValue: { _ in
                 receivedMutationEvent.fulfill()
-            })
+            }
+        )
 
         // insert a post
 
@@ -227,7 +228,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
                     receivedMutationEvent.fulfill()
                 }
-            })
+            }
+        )
 
         let title = "a title"
         let content = "some content"
@@ -288,7 +290,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 if mutationEvent.mutationType == MutationEvent.MutationType.update.rawValue {
                     receivedMutationEvent.fulfill()
                 }
-            })
+            }
+        )
 
         dataStorePlugin.save(newModel, modelSchema: postSchema) { _ in }
 
@@ -317,7 +320,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
                     receivedMutationEvent.fulfill()
                 }
-            })
+            }
+        )
 
         let title = "a title"
         let content = "some content"
@@ -358,7 +362,8 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
                     receivedPostMutationEvent.fulfill()
                 }
-            })
+            }
+        )
 
         let title = "a title"
         let content = "some content"

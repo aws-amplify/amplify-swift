@@ -16,9 +16,11 @@ struct VerifyPasswordSRP: Action {
     let authResponse: SignInResponseBehavior
     let clientMetadata: ClientMetadata
 
-    init(stateData: SRPStateData,
-         authResponse: SignInResponseBehavior,
-         clientMetadata: ClientMetadata) {
+    init(
+        stateData: SRPStateData,
+        authResponse: SignInResponseBehavior,
+        clientMetadata: ClientMetadata
+    ) {
         self.stateData = stateData
         self.authResponse = authResponse
         self.clientMetadata = clientMetadata
@@ -131,11 +133,11 @@ struct VerifyPasswordSRP: Action {
 }
 
 extension VerifyPasswordSRP: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

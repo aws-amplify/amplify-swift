@@ -40,7 +40,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
     private var stateMachineSink: AnyCancellable?
     private var cancellables: Set<AnyCancellable>
     private let mutationEventPublisher: PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>
-    public var publisher: AnyPublisher<ReconcileAndLocalSaveOperationEvent, DataStoreError> {
+    var publisher: AnyPublisher<ReconcileAndLocalSaveOperationEvent, DataStoreError> {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
 
@@ -543,10 +543,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
 }
 
 extension ReconcileAndLocalSaveOperation: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

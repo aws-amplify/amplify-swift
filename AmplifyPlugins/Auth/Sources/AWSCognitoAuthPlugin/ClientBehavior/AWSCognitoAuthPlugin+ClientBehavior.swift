@@ -12,13 +12,17 @@ import Foundation
 // swiftlint:disable force_cast
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
-    public func signUp(username: String,
-                       password: String? = nil,
-                       options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult {
+    public func signUp(
+        username: String,
+        password: String? = nil,
+        options: AuthSignUpRequest.Options?
+    ) async throws -> AuthSignUpResult {
         let options = options ?? AuthSignUpRequest.Options()
-        let request = AuthSignUpRequest(username: username,
-                                        password: password,
-                                        options: options)
+        let request = AuthSignUpRequest(
+            username: username,
+            password: password,
+            options: options
+        )
         let task = AWSAuthSignUpTask(request, authStateMachine: authStateMachine, authEnvironment: authEnvironment)
         return try await taskQueue.sync {
             return try await task.value
@@ -32,9 +36,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     )
     async throws -> AuthSignUpResult {
         let options = options ?? AuthConfirmSignUpRequest.Options()
-        let request = AuthConfirmSignUpRequest(username: username,
-                                               code: confirmationCode,
-                                               options: options)
+        let request = AuthConfirmSignUpRequest(
+            username: username,
+            code: confirmationCode,
+            options: options
+        )
         let task = AWSAuthConfirmSignUpTask(request, authStateMachine: authStateMachine, authEnvironment: authEnvironment)
         return try await taskQueue.sync {
             return try await task.value
@@ -136,7 +142,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             authStateMachine: authStateMachine,
             configuration: authConfiguration,
             environment: authEnvironment,
-            forceReconfigure: forceReconfigure)
+            forceReconfigure: forceReconfigure
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSession
@@ -190,13 +197,15 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         } as! AuthSignInResult
     }
-    
+
     public func autoSignIn() async throws -> AuthSignInResult {
         let options = AuthAutoSignInRequest.Options()
         let request = AuthAutoSignInRequest(options: options)
-        let task = AWSAuthAutoSignInTask(request,
-                                         authStateMachine: self.authStateMachine,
-                                         authEnvironment: authEnvironment)
+        let task = AWSAuthAutoSignInTask(
+            request,
+            authStateMachine: authStateMachine,
+            authEnvironment: authEnvironment
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult

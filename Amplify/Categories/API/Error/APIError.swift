@@ -106,6 +106,7 @@ extension APIError: AmplifyError {
             For more information on HTTP status codes, take a look at
             https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
             """
+
         case .pluginError(let error):
             return error.recoverySuggestion
         }

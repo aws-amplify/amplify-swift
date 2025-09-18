@@ -264,7 +264,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadData(
+    func downloadData(
         key: String,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
@@ -276,7 +276,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadFile(
+    func downloadFile(
         key: String,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options?
@@ -289,7 +289,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadData(
+    func uploadData(
         key: String,
         data: Data,
         options: StorageUploadDataOperation.Request.Options?
@@ -302,7 +302,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadFile(
+    func uploadFile(
         key: String,
         local: URL,
         options: StorageUploadFileOperation.Request.Options?
@@ -315,7 +315,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func remove(
+    func remove(
         key: String,
         options: StorageRemoveRequest.Options? = nil
     ) async throws -> String {
@@ -348,7 +348,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadData(
+    func downloadData(
         path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
@@ -360,7 +360,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadFile(
+    func downloadFile(
         path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options?
@@ -373,7 +373,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadData(
+    func uploadData(
         path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options?
@@ -386,7 +386,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadFile(
+    func uploadFile(
         path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options?
@@ -399,7 +399,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func remove(
+    func remove(
         path: any StoragePath,
         options: StorageRemoveRequest.Options? = nil
     ) async throws -> String {

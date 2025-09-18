@@ -26,9 +26,11 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                         .confirmSignInWithTOTPCode
                     ),
                     .selectMFAType,
-                    .apiBased(.userSRP))),
+                    .apiBased(.userSRP)
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .confirmSignInWithSMSMFACode as next step

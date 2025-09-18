@@ -6,23 +6,24 @@
 //
 
 import Foundation
+
 public typealias Version = String
 
 @_spi(PredictionsFaceLiveness)
 public enum Challenge: Equatable {
     case faceMovementChallenge(Version)
     case faceMovementAndLightChallenge(Version)
-    
+
     public func queryParameterString() -> String {
-        switch(self) {
+        switch self {
         case .faceMovementChallenge(let version):
             return "FaceMovementChallenge" + "_" + version
         case .faceMovementAndLightChallenge(let version):
             return "FaceMovementAndLightChallenge" + "_" + version
         }
     }
-    
-    public static func ==(lhs: Challenge, rhs: Challenge) -> Bool {
+
+    public static func == (lhs: Challenge, rhs: Challenge) -> Bool {
         switch (lhs, rhs) {
         case (.faceMovementChallenge(let lhsVersion), .faceMovementChallenge(let rhsVersion)):
             return lhsVersion == rhsVersion

@@ -55,17 +55,19 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
                     [
                         "PoolId": "xx",
                         "Region": "us-east-1"
                     ]
-                    ]],
+                ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -90,12 +92,13 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
                     [
                         "PoolId": "cc",
                         "Region": "us-east-1"
                     ]
-                    ]]
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -124,7 +127,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -149,16 +153,17 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
                     [
                         "xx": "xx",
                         "xx2": "us-east-1"
                     ]
-                    ]],
+                ]],
                 "CognitoUserPool": ["Default": [
                     "xx": "xx",
                     "xx2": "us-east-1"
-                    ]]
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -215,17 +220,19 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
                                                                 [
                                                                     "PoolId": "xx",
                                                                     "Region": "us-east-1"
                                                                 ]
-                                                           ]],
+                ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -244,7 +251,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
     }
-    
+
     /// Test Auth configuration with valid config for user pool and identity pool, with secure storage preferences
     ///
     /// - Given: Given valid config for user pool and identity pool, and secure storage preferences
@@ -263,21 +270,25 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                                                                ["PoolId": "xx",
-                                                                 "Region": "us-east-1"]
-                                                           ]],
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
+                                                                [
+                                                                    "PoolId": "xx",
+                                                                    "Region": "us-east-1"
+                                                                ]
+                ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
-            
+
             let escapeHatch = plugin.getEscapeHatch()
             guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
                 XCTFail("Expected .userPool, got \(escapeHatch)")
@@ -290,7 +301,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
     }
-    
+
     /// Test Auth configuration with valid config for user pool and identity pool, with network preferences and secure storage preferences
     ///
     /// - Given: Given valid config for user pool and identity pool, network preferences, and secure storage preferences
@@ -304,7 +315,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             networkPreferences: .init(
                 maxRetryCount: 2,
                 timeoutIntervalForRequest: 60,
-                timeoutIntervalForResource: 60),
+                timeoutIntervalForResource: 60
+            ),
             secureStoragePreferences: .init(
                 accessGroup: AccessGroup(name: "xx")
             )
@@ -313,21 +325,25 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                                                                ["PoolId": "xx",
-                                                                 "Region": "us-east-1"]
-                                                           ]],
+                "CredentialsProvider": ["CognitoIdentity": [
+                    "Default":
+                                                                [
+                                                                    "PoolId": "xx",
+                                                                    "Region": "us-east-1"
+                                                                ]
+                ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
         do {
             try Amplify.configure(amplifyConfig)
-            
+
             let escapeHatch = plugin.getEscapeHatch()
             guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
                 XCTFail("Expected .userPool, got \(escapeHatch)")
@@ -366,7 +382,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
                     "CognitoIdentity": [
                         "Default": [
                             "PoolId": "cc",
-                             "Region": "us-east-1"
+                            "Region": "us-east-1"
                         ]
                     ]
                 ]

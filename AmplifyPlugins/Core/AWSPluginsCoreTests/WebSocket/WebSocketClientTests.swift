@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
 @preconcurrency import Combine
+import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
 private let timeout: TimeInterval = 5

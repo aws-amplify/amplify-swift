@@ -211,6 +211,7 @@ extension AuthorizationState {
                     newState: .fetchingUnAuthSession(resolution.newState),
                     actions: resolution.actions
                 )
+
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let signedInData):
                 if case .fetched(
                     let identityID,
@@ -312,7 +313,6 @@ extension AuthorizationState {
                     case .clearFederationToIdentityPool:
                         return .from(.clearingFederation)
                     default: break
-
                     }
                 }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {

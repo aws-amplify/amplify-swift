@@ -6,10 +6,10 @@
 //
 
 import Amplify
-import Combine
-import Foundation
-@preconcurrency import Combine
 import Amplify
+import Combine
+@preconcurrency import Combine
+import Foundation
 
 extension AppSyncRealTimeClient {
     /**
@@ -109,7 +109,6 @@ extension AppSyncRealTimeClient {
                     outputType: AppSyncRealTimeResponse.self,
                     failureType: AppSyncRealTimeRequest.Error.self
                 ).eraseToAnyPublisher()
-
             }
 
         case .failure:

@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) @preconcurrency import Amplify
-import AWSPinpoint
 import AWSClientRuntime
+import AWSPinpoint
 import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint

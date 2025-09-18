@@ -60,7 +60,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Pauses operation.
-    override public func pause() {
+    override func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
             super.pause()
@@ -68,7 +68,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Resumes operation.
-    override public func resume() {
+    override func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
             super.resume()
@@ -76,7 +76,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Cancels operation.
-    override public func cancel() {
+    override func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
             super.cancel()
@@ -84,7 +84,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Performs the task to download file.
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             return

@@ -20,7 +20,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
     let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
-  
+
     override func setUp() {
         do {
             try Amplify.add(plugin: AWSAPIPlugin())

@@ -45,21 +45,23 @@ final class AWSCloudWatchLoggingSession {
         let directory = try directory(for: category, userIdentifier: userIdentifier)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         try (directory as NSURL).setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
-        
+
         // Calculate appropriate file size limit (individual file, not total cache)
         // Use a reasonable file size limit that's a fraction of the total cache size
         // Ensure it meets the minimum requirement of 1KB
-        let totalCacheSizeInBytes = localStoreMaxSizeInMB * 1048576
+        let totalCacheSizeInBytes = localStoreMaxSizeInMB * 1_048_576
         let fileSizeLimitInBytes = max(
             LogRotation.minimumFileSizeLimitInBytes,
             totalCacheSizeInBytes / LogRotation.fileCountLimit
         )
 
-        return try RotatingLogger(directory: directory,
-                                  category: category,
-                                  namespace: namespace,
-                                  logLevel: logLevel,
-                                  fileSizeLimitInBytes: fileSizeLimitInBytes)
+        return try RotatingLogger(
+            directory: directory,
+            category: category,
+            namespace: namespace,
+            logLevel: logLevel,
+            fileSizeLimitInBytes: fileSizeLimitInBytes
+        )
     }
 
     private static func directory(for category: String, userIdentifier: String?, fileManager: FileManager = .default) throws -> URL {

@@ -12,7 +12,7 @@ actor AsyncRunner {
     typealias VoidNeverContinuation = CheckedContinuation<Void, Never>
     private var continuations: [VoidNeverContinuation] = []
 
-    public nonisolated func run(timeout: Double = 5.0) async {
+    nonisolated func run(timeout: Double = 5.0) async {
         await withTaskCancellationHandler {
             await handleRun(timeout: timeout)
         } onCancel: {
@@ -22,7 +22,7 @@ actor AsyncRunner {
         }
     }
 
-    public func finish() {
+    func finish() {
         while !continuations.isEmpty {
             let continuation = continuations.removeFirst()
             continuation.resume(returning: ())

@@ -136,7 +136,6 @@ extension HostedUIError: AuthErrorConvertible {
 
         case .unknown:
             return .unknown("WebUI signIn encountered an unknown error", nil)
-
         }
     }
 }

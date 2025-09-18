@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 @preconcurrency import Amplify
 import Combine
+import Foundation
 @preconcurrency import InternalAmplifyCredentials
 @_spi(WebSocket) @preconcurrency import AWSPluginsCore
 
@@ -36,9 +35,9 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         let authType: AWSAuthorizationType?
     }
 
-    public private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
+    private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
 
-    public func getAppSyncRealTimeClient(
+    func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
         authService: AWSAuthCredentialsProviderBehavior,

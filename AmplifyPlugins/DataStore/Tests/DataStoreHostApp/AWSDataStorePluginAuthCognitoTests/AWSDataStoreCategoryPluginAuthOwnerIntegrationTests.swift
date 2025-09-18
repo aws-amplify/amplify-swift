@@ -223,42 +223,42 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
 extension AWSDataStoreCategoryPluginAuthOwnerIntegrationTests {
 
     struct CustomOwnerImplicitModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoCustomOwnerImplicit.self)
         }
     }
 
     struct CustomOwnerExplicitModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoCustomOwnerExplicit.self)
         }
     }
 
     struct ExplicitOwnerModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoExplicitOwnerField.self)
         }
     }
 
     struct ExplicitMultipleOwnerModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoCognitoMultiOwner.self)
         }
     }
 
     struct ImplicitOwnerModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoImplicitOwnerField.self)
         }
     }
 
     struct AllowPrivateModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoCognitoPrivate.self)
         }

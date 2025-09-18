@@ -133,7 +133,6 @@ extension ModelSchema {
                 value2Optional: value2Optional
             )
                 .sortComparator(sortOrder: sortOrder)
-
         case .date:
             guard let value1Optional = value1 as? Temporal.Date?, let value2Optional = value2 as? Temporal.Date? else {
                 return false
@@ -153,7 +152,6 @@ extension ModelSchema {
                 value2Optional: value2Optional
             )
                 .sortComparator(sortOrder: sortOrder)
-
         case .time:
             guard let value1Optional = value1 as? Temporal.Time?, let value2Optional = value2 as? Temporal.Time? else {
                 return false

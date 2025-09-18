@@ -46,7 +46,7 @@ struct DynamicModel: JSONValueHolder {
 
     let values: [String: JSONValue]
 
-    public func jsonValue(for key: String) -> Any?? {
+    func jsonValue(for key: String) -> Any?? {
         switch values[key] {
         case .some(.array(let deserializedValue)):
             return deserializedValue
@@ -65,7 +65,7 @@ struct DynamicModel: JSONValueHolder {
         }
     }
 
-    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
+    func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
            case .some(.number(let deserializedValue)) = values[key] {

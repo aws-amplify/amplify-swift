@@ -20,7 +20,8 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     func testSuccessfullSignOut() async {
@@ -88,7 +89,8 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         let initialState = AuthState.configured(
             AuthenticationState.federatedToIdentityPool,
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
 
         let authPlugin = configureCustomPluginWith(initialState: initialState)
 
@@ -108,7 +110,8 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.hostedUISignInData),
             AuthorizationState.sessionEstablished(.hostedUITestData),
-            .notStarted)
+            .notStarted
+        )
 
         let authPlugin = configureCustomPluginWith(initialState: initialState)
 
@@ -129,7 +132,8 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.init()),
             AuthorizationState.sessionEstablished(.testDataIdentityPool),
-            .notStarted)
+            .notStarted
+        )
 
         let authPlugin = configureCustomPluginWith(initialState: initialState)
 

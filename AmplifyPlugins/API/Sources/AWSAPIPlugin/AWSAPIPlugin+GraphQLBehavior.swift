@@ -9,45 +9,57 @@ import Amplify
 
 public extension AWSAPIPlugin {
 
-    func query<R>(request: GraphQLRequest<R>,
-                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
-        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
-                                            session: session,
-                                            mapper: mapper,
-                                            pluginConfig: pluginConfig,
-                                            resultListener: listener)
+    func query<R>(
+        request: GraphQLRequest<R>,
+        listener: GraphQLOperation<R>.ResultListener?
+    ) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
+        let operation = AWSGraphQLOperation(
+            request: request.toOperationRequest(operationType: .query),
+            session: session,
+            mapper: mapper,
+            pluginConfig: pluginConfig,
+            resultListener: listener
+        )
         queue.addOperation(operation)
         return operation
     }
 
     func query<R>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success where R: Decodable, R: Sendable {
-        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
-                                            session: session,
-                                            mapper: mapper,
-                                            pluginConfig: pluginConfig,
-                                            resultListener: nil)
+        let operation = AWSGraphQLOperation(
+            request: request.toOperationRequest(operationType: .query),
+            session: session,
+            mapper: mapper,
+            pluginConfig: pluginConfig,
+            resultListener: nil
+        )
         let task = AmplifyOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
         return try await task.value
     }
 
-    func mutate<R>(request: GraphQLRequest<R>,
-                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
-        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .mutation),
-                                            session: session,
-                                            mapper: mapper,
-                                            pluginConfig: pluginConfig,
-                                            resultListener: listener)
+    func mutate<R>(
+        request: GraphQLRequest<R>,
+        listener: GraphQLOperation<R>.ResultListener?
+    ) -> GraphQLOperation<R> where R: Decodable, R: Sendable {
+        let operation = AWSGraphQLOperation(
+            request: request.toOperationRequest(operationType: .mutation),
+            session: session,
+            mapper: mapper,
+            pluginConfig: pluginConfig,
+            resultListener: listener
+        )
         queue.addOperation(operation)
         return operation
     }
 
     func mutate<R>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success where R: Decodable, R: Sendable {
-        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .mutation),
-                                            session: session,
-                                            mapper: mapper,
-                                            pluginConfig: pluginConfig,
-                                            resultListener: nil)
+        let operation = AWSGraphQLOperation(
+            request: request.toOperationRequest(operationType: .mutation),
+            session: session,
+            mapper: mapper,
+            pluginConfig: pluginConfig,
+            resultListener: nil
+        )
         let task = AmplifyOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
         return try await task.value

@@ -23,10 +23,13 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                     .waitingForAnswer(.init(
                         secretCode: "sharedSecret",
                         session: "session",
-                        username: "username")),
-                    .testData)),
+                        username: "username"
+                    )),
+                    .testData
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step

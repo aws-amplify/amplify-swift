@@ -24,7 +24,7 @@ class LongPressGestureRecognizer: NSObject, @preconcurrency TriggerRecognizer, U
         registerLongPressRecognizer()
     }
 
-    public func gestureRecognizer(
+    func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     )

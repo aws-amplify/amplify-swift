@@ -493,7 +493,7 @@ extension GraphQLLazyLoadPostCommentWithCompositeKeyTests {
     typealias Comment = CommentWithCompositeKey
 
     struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostWithCompositeKey.self)
             ModelRegistry.register(modelType: CommentWithCompositeKey.self)

@@ -9,7 +9,7 @@ import Foundation
 
 public extension Predictions {
     /// Part of speech identified in a text from interpret() API
-    public struct PartOfSpeech: Equatable, @unchecked Sendable {
+    struct PartOfSpeech: Equatable, @unchecked Sendable {
         let description: String
 
         public static let adjective = Self(description: "adjective")

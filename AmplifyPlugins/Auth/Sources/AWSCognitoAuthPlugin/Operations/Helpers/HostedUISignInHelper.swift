@@ -84,8 +84,11 @@ struct HostedUISignInHelper: DefaultLogger {
         await sendSignInEvent(oauthConfiguration: oauthConfiguration)
         log.verbose("Wait for signIn to complete")
         for await state in stateSequences {
-            guard case .configured(let authNState,
-                                   let authZState, _) = state else { continue }
+            guard case .configured(
+                let authNState,
+                let authZState,
+                _
+            ) = state else { continue }
 
             switch authNState {
             case .signedIn:
@@ -104,6 +107,7 @@ struct HostedUISignInHelper: DefaultLogger {
                     continue
                 }
                 return result
+
             default:
                 continue
             }
@@ -165,11 +169,11 @@ struct HostedUISignInHelper: DefaultLogger {
         }
     }
 
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -28,8 +28,8 @@ extension SignInState: CustomDebugDictionaryConvertible {
                     "challengeType": challengeType,
                     "signInMethod": signInMethod
                 ],
-                uniquingKeysWith: {$1})
-
+                uniquingKeysWith: {$1}
+            )
         case .notStarted:
             additionalMetadataDictionary = [:]
         case .signingInWithSRPCustom(let srpstate, _):
@@ -47,7 +47,8 @@ extension SignInState: CustomDebugDictionaryConvertible {
         case .resolvingTOTPSetup(let signInTOTPSetupState, let signInEventData):
             additionalMetadataDictionary = [
                 "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
-                "SignInEventData": signInEventData.debugDictionary]
+                "SignInEventData": signInEventData.debugDictionary
+            ]
         case .autoSigningIn(let data):
             additionalMetadataDictionary = ["SignInData": data.debugDictionary]
         case .error:

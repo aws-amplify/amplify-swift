@@ -66,7 +66,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
 
         } catch {
@@ -98,7 +98,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
 
         } catch {
@@ -130,7 +130,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -164,7 +164,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.notAuthorized(_, _, _) = error else {
@@ -194,7 +194,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -226,7 +226,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -263,7 +263,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.unknown = error else {
@@ -291,7 +291,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -323,7 +323,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -355,7 +355,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -387,7 +387,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -419,7 +419,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -451,7 +451,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -483,7 +483,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
+            _ = try await plugin.verifyTOTPSetup(code: "123456", options: nil)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.configuration = error else {

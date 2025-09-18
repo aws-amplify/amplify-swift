@@ -91,7 +91,7 @@ final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBase
 
 extension AWSDataStorePrimaryKeyPostComment4V2Test {
     struct PostComment4V2: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post4V2.self)
             ModelRegistry.register(modelType: Comment4V2.self)

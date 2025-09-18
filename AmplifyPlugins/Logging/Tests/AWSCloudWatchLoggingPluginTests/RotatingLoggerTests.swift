@@ -155,7 +155,6 @@ final class RotatingLoggerTests: XCTestCase {
             systemUnderTest.debug(message)
         case .none:
             break
-
         }
         try await systemUnderTest.synchronize()
         try await Task.sleep(seconds: 0.100)

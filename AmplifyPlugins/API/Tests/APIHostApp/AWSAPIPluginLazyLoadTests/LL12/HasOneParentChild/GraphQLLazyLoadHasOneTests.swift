@@ -274,7 +274,7 @@ extension GraphQLLazyLoadHasOneTests: DefaultLogger { }
 extension GraphQLLazyLoadHasOneTests {
 
     struct HasOneParentChildModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: HasOneParent.self)
             ModelRegistry.register(modelType: HasOneChild.self)

@@ -268,7 +268,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
 extension AWSDataStoreLazyLoadPhoneCallTests {
 
     struct PhoneCallModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PhoneCall.self)
             ModelRegistry.register(modelType: Person.self)

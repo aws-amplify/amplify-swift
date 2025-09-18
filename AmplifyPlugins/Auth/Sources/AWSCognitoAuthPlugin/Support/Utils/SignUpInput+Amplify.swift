@@ -15,13 +15,15 @@ import UIKit
 
 extension SignUpInput {
     typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
-    init(username: String,
-         password: String?,
-         clientMetadata: [String: String]?,
-         validationData: [String: String]?,
-         attributes: [String: String],
-         asfDeviceId: String?,
-         environment: UserPoolEnvironment) async {
+    init(
+        username: String,
+        password: String?,
+        clientMetadata: [String: String]?,
+        validationData: [String: String]?,
+        attributes: [String: String],
+        asfDeviceId: String?,
+        environment: UserPoolEnvironment
+    ) async {
 
         let configuration = environment.userPoolConfiguration
         let secretHash = ClientSecretHelper.calculateSecretHash(

@@ -31,16 +31,18 @@ struct VerifySignInChallenge: Action {
                 try await handleContinueSignInWithMFASetupSelection(
                     withDispatcher: dispatcher,
                     environment: environment,
-                    username: username)
+                    username: username
+                )
                 return
             } else if case .continueSignInWithFirstFactorSelection = currentSignInStep,
                       let authFactorType = AuthFactorType(rawValue: confirmSignEventData.answer) {
-                if (authFactorType == .password || authFactorType == .passwordSRP) {
+                if authFactorType == .password || authFactorType == .passwordSRP {
                     try await handleContinueSignInWithPassword(
                         withDispatcher: dispatcher,
                         environment: environment,
                         username: username,
-                        authFactorType: authFactorType)
+                        authFactorType: authFactorType
+                    )
                     return
                 } else if isWebAuthn(authFactorType) {
                     let signInData = WebAuthnSignInData(
@@ -56,7 +58,8 @@ struct VerifySignInChallenge: Action {
                 try await handleConfirmSignInWithPassword(
                     withDispatcher: dispatcher,
                     environment: environment,
-                    username: username)
+                    username: username
+                )
                 return
             }
 
@@ -136,26 +139,33 @@ struct VerifySignInChallenge: Action {
 
         let newDeviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
             for: username,
-            with: environment)
+            with: environment
+        )
         if challenge.challenge == .password {
 
             let event = SignInEvent(
                 eventType: .initiateMigrateAuth(
-                    .init(username: username,
-                          password: confirmSignEventData.answer,
-                          signInMethod: signInMethod),
+                    .init(
+                        username: username,
+                        password: confirmSignEventData.answer,
+                        signInMethod: signInMethod
+                    ),
                     newDeviceMetadata,
-                    challenge))
+                    challenge
+                ))
 
             await dispatcher.send(event)
         } else if challenge.challenge == .passwordSrp {
             let event = SignInEvent(
                 eventType: .initiateSignInWithSRP(
-                    .init(username: username,
-                          password: confirmSignEventData.answer,
-                          signInMethod: signInMethod),
+                    .init(
+                        username: username,
+                        password: confirmSignEventData.answer,
+                        signInMethod: signInMethod
+                    ),
                     newDeviceMetadata,
-                    challenge))
+                    challenge
+                ))
             await dispatcher.send(event)
         } else {
             throw SignInError.unknown(
@@ -192,7 +202,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: [:])
+            parameters: [:]
+        )
 
         let event = SignInEvent(eventType: .receivedChallenge(newChallenge))
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
@@ -209,7 +220,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"])
+            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"]
+        )
 
         let event: SignInEvent
         guard let mfaType = MFAType(rawValue: confirmSignEventData.answer) else {
@@ -242,7 +254,7 @@ struct VerifySignInChallenge: Action {
     private func isWebAuthn(_ factorType: AuthFactorType?) -> Bool {
     #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, *) {
-            return .webAuthn == factorType
+            return factorType == .webAuthn
         }
     #endif
         return false

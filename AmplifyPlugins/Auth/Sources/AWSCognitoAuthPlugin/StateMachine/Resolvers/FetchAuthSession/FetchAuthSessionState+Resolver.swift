@@ -50,11 +50,13 @@ extension FetchAuthSessionState {
                         newState: .fetchingAWSCredentials(identityId, loginsMapProvider),
                         actions: [action]
                     )
+
                 case .throwError(let error):
                     return .init(
                         newState: .error(error),
                         actions: [InformSessionError(error: error)]
                     )
+
                 default:
                     return .from(oldState)
                 }
@@ -93,6 +95,7 @@ extension FetchAuthSessionState {
                 default:
                     return .from(oldState)
                 }
+
             case .fetched, error:
                 return .from(oldState)
             }

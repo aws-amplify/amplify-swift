@@ -27,11 +27,13 @@ extension RemoteSyncEngine {
 
             case (.initializingSubscriptions, .initializedSubscriptions):
                 return .performingInitialSync
+
             case (.initializingSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
 
             case (.performingInitialSync, .performedInitialSync):
                 return .activatingCloudSubscriptions
+
             case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
 
@@ -41,11 +43,13 @@ extension RemoteSyncEngine {
                 let reconciliationQueue
             )):
                 return .activatingMutationQueue(api, mutationEventPublisher, reconciliationQueue)
+
             case (.activatingCloudSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
 
             case (.activatingMutationQueue, .activatedMutationQueue):
                 return .notifyingSyncStarted
+
             case (.activatingMutationQueue, .errored(let error)):
                 return .cleaningUp(error)
 
@@ -60,6 +64,7 @@ extension RemoteSyncEngine {
 
             case (.cleaningUp, .cleanedUp(let error)):
                 return .schedulingRestart(error)
+
             case (.cleaningUpForTermination, .cleanedUpForTermination):
                 return .terminate
 

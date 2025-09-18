@@ -89,14 +89,14 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
 // MARK: - Models registration
 extension AWSDataStoreCategoryPluginIAMAuthIntegrationTests {
     struct IAMPrivateModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoIAMPrivate.self)
         }
     }
 
     struct IAMPublicModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoIAMPublic.self)
         }

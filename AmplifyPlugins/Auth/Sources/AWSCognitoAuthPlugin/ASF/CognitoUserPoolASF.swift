@@ -27,23 +27,31 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     static let phoneTypeKey = "PhoneType"
     static let asfVersion = "IOS20171114"
 
-    func userContextData(for username: String = "unknown",
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) async throws -> String {
+    func userContextData(
+        for username: String = "unknown",
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) async throws -> String {
 
         let contextData = await prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
-        let payload = try prepareJsonPayload(username: username,
-                                             contextData: contextData,
-                                             userPoolId: configuration.poolId)
-        let signature = try calculateSecretHash(contextJson: payload,
-                                                clientId: configuration.clientId)
+        let payload = try prepareJsonPayload(
+            username: username,
+            contextData: contextData,
+            userPoolId: configuration.poolId
+        )
+        let signature = try calculateSecretHash(
+            contextJson: payload,
+            clientId: configuration.clientId
+        )
         let result = try prepareJsonResult(payload: payload, signature: signature)
         return result
     }
 
-    func prepareUserContextData(deviceInfo: ASFDeviceBehavior,
-                                appInfo: ASFAppInfoBehavior) async -> [String: String] {
+    func prepareUserContextData(
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior
+    ) async -> [String: String] {
         var build = "release"
 #if DEBUG
         build = "debug"

@@ -294,7 +294,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        let _ = try await Amplify.DataStore.delete(registration)
+        _ = try await Amplify.DataStore.delete(registration)
         await fulfillment(of: [deleteRegistrationRecieved], timeout: TestCommonConstants.networkTimeout)
 
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)

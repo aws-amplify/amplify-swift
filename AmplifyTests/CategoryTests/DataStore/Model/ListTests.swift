@@ -44,7 +44,7 @@ class ListTests: XCTestCase {
         var nextPage: List<Element>?
         var state: ModelListProviderState<Element>?
 
-        public init(
+        init(
             elements: [Element] = [Element](),
             error: CoreError? = nil,
             errorOnLoad: CoreError? = nil,
@@ -60,11 +60,11 @@ class ListTests: XCTestCase {
             self.state = state
         }
 
-        public func getState() -> ModelListProviderState<Element> {
+        func getState() -> ModelListProviderState<Element> {
             state ?? .notLoaded(associatedIdentifiers: [""], associatedFields: [""])
         }
 
-        public func load(completion: (Result<[Element], CoreError>) -> Void) {
+        func load(completion: (Result<[Element], CoreError>) -> Void) {
             if let error {
                 completion(.failure(error))
             } else if let error = errorOnLoad {
@@ -74,7 +74,7 @@ class ListTests: XCTestCase {
             }
         }
 
-        public func load() async throws -> [Element] {
+        func load() async throws -> [Element] {
             if let error {
                 throw error
             } else if let error = errorOnLoad {
@@ -84,11 +84,11 @@ class ListTests: XCTestCase {
             }
         }
 
-        public func hasNextPage() -> Bool {
+        func hasNextPage() -> Bool {
             return nextPage != nil
         }
 
-        public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
+        func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
             if let error {
                 completion(.failure(error))
             } else if let error = errorOnNextPage {
@@ -100,7 +100,7 @@ class ListTests: XCTestCase {
             }
         }
 
-        public func getNextPage() async throws -> List<Element> {
+        func getNextPage() async throws -> List<Element> {
             if let error {
                 throw error
             } else if let error = errorOnNextPage {

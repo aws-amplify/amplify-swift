@@ -341,9 +341,11 @@ class AuthHubEventHandlerTests: XCTestCase {
             AuthenticationState.signingIn(.resolvingChallenge(
                 .waitingForAnswer(.testData(), .apiBased(.userSRP), .confirmSignInWithTOTPCode),
                 .smsMfa,
-                .apiBased(.userSRP))),
+                .apiBased(.userSRP)
+            )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -356,11 +358,14 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForDeleteUserEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
@@ -379,11 +384,14 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForSignOutEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
@@ -401,7 +409,8 @@ class AuthHubEventHandlerTests: XCTestCase {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.configured,
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider()
 
@@ -412,7 +421,8 @@ class AuthHubEventHandlerTests: XCTestCase {
         let initialState = AuthState.configured(
             AuthenticationState.federatedToIdentityPool,
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider()
 
@@ -424,7 +434,8 @@ class AuthHubEventHandlerTests: XCTestCase {
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
                 AmplifyCredentials.testDataWithExpiredTokens),
-            .notStarted)
+            .notStarted
+        )
 
         let mockIdentityProvider = MockIdentityProvider(
             mockGetTokensFromRefreshTokenResponse: { _ in
@@ -456,7 +467,8 @@ class AuthHubEventHandlerTests: XCTestCase {
             domain: "cognitodomain",
             scopes: ["name"],
             signInRedirectURI: "myapp://",
-            signOutRedirectURI: "myapp://"))
+            signOutRedirectURI: "myapp://"
+        ))
         let mockHostedUIResult: Result<[URLQueryItem], HostedUIError> = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)

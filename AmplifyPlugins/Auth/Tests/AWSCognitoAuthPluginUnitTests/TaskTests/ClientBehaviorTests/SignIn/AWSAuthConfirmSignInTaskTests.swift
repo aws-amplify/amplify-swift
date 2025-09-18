@@ -19,10 +19,14 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     override var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signingIn(
-                .resolvingChallenge(.waitingForAnswer(.testData(), .apiBased(.userSRP), .confirmSignInWithTOTPCode),
-                                    .smsMfa, .apiBased(.userSRP))),
+                .resolvingChallenge(
+                    .waitingForAnswer(.testData(), .apiBased(.userSRP), .confirmSignInWithTOTPCode),
+                    .smsMfa,
+                    .apiBased(.userSRP)
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step

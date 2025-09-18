@@ -98,11 +98,11 @@ class MockAPICategoryPlugin: MessageReporter,
         return taskRunner.sequence
     }
 
-    public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
+    func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
         reachabilityPublisher()
     }
 
-    public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
+    func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
         if let reachabilityPublisher = _reachabilityPublisher as? AnyPublisher<ReachabilityUpdate, Never> {
             return reachabilityPublisher
         } else {
@@ -400,10 +400,10 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
 
 class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
 
-    public typealias Request = GraphQLOperationRequest<R>
-    public typealias InProcess = GraphQLSubscriptionEvent<R>
-    public var request: GraphQLOperationRequest<R>
-    public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
+    typealias Request = GraphQLOperationRequest<R>
+    typealias InProcess = GraphQLSubscriptionEvent<R>
+    var request: GraphQLOperationRequest<R>
+    var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
     func run() async throws {
 
     }

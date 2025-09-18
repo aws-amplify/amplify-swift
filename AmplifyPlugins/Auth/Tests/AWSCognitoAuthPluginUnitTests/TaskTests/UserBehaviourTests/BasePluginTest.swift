@@ -37,11 +37,14 @@ class BasePluginTest: XCTestCase {
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     override func setUp() {

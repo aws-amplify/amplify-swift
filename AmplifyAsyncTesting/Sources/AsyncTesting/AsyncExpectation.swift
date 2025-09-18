@@ -42,10 +42,11 @@ public actor AsyncExpectation {
         expectedFulfillmentCount = count
     }
 
-    public init(description: String,
-                isInverted: Bool = false,
-                expectedFulfillmentCount: Int = 1)
-    {
+    public init(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) {
         self.expectationDescription = description
         self.isInverted = isInverted
         self.expectedFulfillmentCount = expectedFulfillmentCount
@@ -84,9 +85,10 @@ public actor AsyncExpectation {
         }
     }
 
-    func timeOut(file: StaticString = #filePath,
-                          line: UInt = #line) async
-    {
+    func timeOut(
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
         if isInverted {
             state = .timedOut
         } else if state != .fulfilled {

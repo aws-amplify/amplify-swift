@@ -71,7 +71,7 @@ public final class FaceLivenessSession: LivenessService {
     ) {
         serverEventListeners[event] = listener
     }
-    
+
     public func register(listener: @escaping (Challenge) -> Void, on event: LivenessEventKind.Server) {
         challengeTypeListeners[event] = listener
     }
@@ -82,17 +82,22 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
-    public func initializeLivenessStream(withSessionID sessionID: String, 
+    public func initializeLivenessStream(
+        withSessionID sessionID: String,
+
                                          userAgent: String = "",
-                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
-                                         options: FaceLivenessSession.Options) throws {
+        challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
+        options: FaceLivenessSession.Options
+    ) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
-            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
+            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1" : "0"),
             URLQueryItem(name: "attempt-count", value: String(options.attemptCount)),
-            URLQueryItem(name: "challenge-versions",
-                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
+            URLQueryItem(
+                name: "challenge-versions",
+                value: challenges.map {$0.queryParameterString()}.joined(separator: ",")
+            ),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)
@@ -155,10 +160,10 @@ public final class FaceLivenessSession: LivenessService {
         // We'll try to decode each of these events
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
-            self.serverEventListeners[.challenge]?(sessionConfiguration)
+            serverEventListeners[.challenge]?(sessionConfiguration)
         } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
             let challenge = challenge(from: payload)
-            self.challengeTypeListeners[.challenge]?(challenge)
+            challengeTypeListeners[.challenge]?(challenge)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return .stopAndInvalidateSession

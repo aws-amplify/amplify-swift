@@ -36,7 +36,7 @@ extension GraphQLStoreBranch7Tests {
     typealias StoreBranch = StoreBranch7
 
     struct StoreBranch7Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: StoreBranch7.self)
         }

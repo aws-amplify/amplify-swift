@@ -37,9 +37,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    nonisolated(unsafe) private static var signer = {
-        return AWSSigV4Signer()
-    }()
+    private nonisolated(unsafe) static var signer = AWSSigV4Signer()
 
     static func signAppSyncRequest(
         _ urlRequest: URLRequest,

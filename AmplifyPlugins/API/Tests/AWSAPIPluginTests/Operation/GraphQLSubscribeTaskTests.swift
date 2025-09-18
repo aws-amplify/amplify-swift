@@ -323,7 +323,6 @@ extension APIError: Equatable {
             case (.none, .none): return true
             default: return false
             }
-
         case (.networkError(_, _, let lhs), .networkError(_, _, let rhs)):
             if let lhs = lhs as? URLError, let rhs = rhs as? URLError {
                 return lhs.code == rhs.code

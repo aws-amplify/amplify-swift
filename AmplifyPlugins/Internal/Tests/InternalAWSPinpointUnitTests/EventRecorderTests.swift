@@ -8,9 +8,9 @@
 import AwsCommonRuntimeKit
 import AWSPinpoint
 import ClientRuntime
+@preconcurrency import ClientRuntime
 import XCTest
 @testable import Amplify
-@preconcurrency import ClientRuntime
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
 class EventRecorderTests: XCTestCase {

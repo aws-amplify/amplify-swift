@@ -51,8 +51,10 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// - Parameters:
     ///   - networkPreferences: network preferences
     ///   - secureStoragePreferences: secure storage preferences
-    public init(networkPreferences: AWSCognitoNetworkPreferences? = nil,
-                secureStoragePreferences: AWSCognitoSecureStoragePreferences = AWSCognitoSecureStoragePreferences()) {
+    public init(
+        networkPreferences: AWSCognitoNetworkPreferences? = nil,
+        secureStoragePreferences: AWSCognitoSecureStoragePreferences = AWSCognitoSecureStoragePreferences()
+    ) {
         self.networkPreferences = networkPreferences
         self.secureStoragePreferences = secureStoragePreferences
     }

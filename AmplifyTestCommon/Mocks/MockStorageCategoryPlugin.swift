@@ -290,10 +290,10 @@ class MockStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, URL, St
 }
 
 class MockStorageDownloadDataOperation: AmplifyInProcessReportingOperation<
-StorageDownloadDataRequest,
-Progress,
-Data,
-StorageError
+    StorageDownloadDataRequest,
+    Progress,
+    Data,
+    StorageError
 >, StorageDownloadDataOperation, @unchecked Sendable {
     override func pause() {
     }
@@ -311,10 +311,10 @@ StorageError
 }
 
 class MockStorageDownloadFileOperation: AmplifyInProcessReportingOperation<
-StorageDownloadFileRequest,
-Progress,
-Void,
-StorageError
+    StorageDownloadFileRequest,
+    Progress,
+    Void,
+    StorageError
 >, StorageDownloadFileOperation, @unchecked Sendable {
     override func pause() {
     }
@@ -332,10 +332,10 @@ StorageError
 }
 
 class MockStorageUploadDataOperation: AmplifyInProcessReportingOperation<
-StorageUploadDataRequest,
-Progress,
-String,
-StorageError
+    StorageUploadDataRequest,
+    Progress,
+    String,
+    StorageError
 >, StorageUploadDataOperation, @unchecked Sendable {
     override func pause() {
     }
@@ -353,10 +353,10 @@ StorageError
 }
 
 class MockStorageUploadFileOperation: AmplifyInProcessReportingOperation<
-StorageUploadFileRequest,
-Progress,
-String,
-StorageError
+    StorageUploadFileRequest,
+    Progress,
+    String,
+    StorageError
 >, StorageUploadFileOperation, @unchecked Sendable {
     override func pause() {
     }

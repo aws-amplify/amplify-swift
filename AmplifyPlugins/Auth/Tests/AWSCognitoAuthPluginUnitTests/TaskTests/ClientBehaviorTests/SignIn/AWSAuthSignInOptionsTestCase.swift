@@ -7,12 +7,12 @@
 
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
+import AWSCognitoIdentityProvider
+import ClientRuntime
 import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable @preconcurrency import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 
 class AWSAuthSignInOptionsTestCase: BasePluginTest {
     override var initialState: AuthState {

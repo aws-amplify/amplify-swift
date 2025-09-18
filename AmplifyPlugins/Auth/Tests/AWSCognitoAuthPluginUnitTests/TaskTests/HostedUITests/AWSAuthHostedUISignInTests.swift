@@ -34,7 +34,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         domain: "cognitodomain",
         scopes: ["name"],
         signInRedirectURI: "myapp://",
-        signOutRedirectURI: "myapp://"))
+        signOutRedirectURI: "myapp://"
+    ))
     let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
 
     func urlSessionMock() -> URLSession {
@@ -328,11 +329,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
-    @MainActor
     /// Given: A HostedUI response with `error` and `error_description` query parameters.
     /// When: Invoking `signInWithWebUI`
     /// Then: The caller should receive an `AuthError.service` where the `errorDescription`
     /// is `"\(error) \(error_description)"`
+    @MainActor
     func testTokenErrorResponse() async throws {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
@@ -371,7 +372,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             domain: "cognitodomain",
             scopes: ["name"],
             signInRedirectURI: "@#$%junk1343",
-            signOutRedirectURI: "@3451://"))
+            signOutRedirectURI: "@3451://"
+        ))
         let testPlugin = customPlugin(with: invalidRedirectConfig)
 
         mockHostedUIResult = .success([

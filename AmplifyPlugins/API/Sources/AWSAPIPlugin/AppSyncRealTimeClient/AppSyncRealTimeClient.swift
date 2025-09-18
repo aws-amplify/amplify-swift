@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 @preconcurrency import Combine
+import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
 /**
@@ -47,7 +47,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// WebSocketClient offering connections at the WebSocket protocol level
     var webSocketClient: AppSyncWebSocketClientProtocol
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
-    internal nonisolated let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
+    nonisolated let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
 
     var isConnected: Bool {
         state.value == .connected
@@ -385,6 +385,7 @@ extension AppSyncRealTimeClient {
             // Propagate connection error to downstream for Sync engine to restart
             log.debug("[AppSyncRealTimeClient] WebSocket error event: \(error)")
             subject.send(.failure(error))
+
         case .string(let string):
             guard let data = string.data(using: .utf8) else {
                 log.debug("[AppSyncRealTimeClient] Failed to decode string \(string)")

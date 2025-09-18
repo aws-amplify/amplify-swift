@@ -171,8 +171,8 @@ class MockASWebAuthenticationSession: ASWebAuthenticationSession {
         )
     }
 
-    var mockedURL: URL? = nil
-    var mockedError: Error? = nil
+    var mockedURL: URL?
+    var mockedError: Error?
     override func start() -> Bool {
         callback(mockedURL, mockedError)
         return presentationContextProvider?.presentationAnchor(for: self) != nil

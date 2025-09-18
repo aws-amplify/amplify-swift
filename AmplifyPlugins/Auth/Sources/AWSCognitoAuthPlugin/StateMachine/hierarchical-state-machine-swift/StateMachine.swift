@@ -26,7 +26,7 @@ actor StateMachine<
     private let environment: EnvironmentType
     private let resolver: AnyResolver<StateType>
 
-    public var currentState: StateType {
+    var currentState: StateType {
         currentStateSubject.value
     }
 

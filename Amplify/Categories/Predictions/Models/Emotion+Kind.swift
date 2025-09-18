@@ -8,7 +8,7 @@
 public extension Predictions.Emotion {
     /// Different emotion types returned as a result of
     /// identify() API call
-    public struct Kind: Equatable, @unchecked Sendable {
+    struct Kind: Equatable, @unchecked Sendable {
         let id: UInt8
 
         public static let unknown = Self(id: 0)

@@ -50,4 +50,4 @@ class ResultAsyncTests: XCTestCase {
     }
 }
 
-fileprivate class TestError: Error, @unchecked Sendable { }
+private class TestError: Error, @unchecked Sendable { }

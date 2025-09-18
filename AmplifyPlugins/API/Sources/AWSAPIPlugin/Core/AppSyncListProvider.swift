@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 @preconcurrency import Amplify
 import AWSPluginsCore
+import Foundation
 import Foundation
 
 public class AppSyncListProvider<Element: Model>: ModelListProvider {

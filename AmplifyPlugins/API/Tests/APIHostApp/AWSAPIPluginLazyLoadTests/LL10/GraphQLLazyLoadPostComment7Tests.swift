@@ -291,7 +291,7 @@ extension GraphQLLazyLoadPostComment7Tests {
     typealias Comment = Comment7
 
     struct PostComment7Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post7.self)
             ModelRegistry.register(modelType: Comment7.self)

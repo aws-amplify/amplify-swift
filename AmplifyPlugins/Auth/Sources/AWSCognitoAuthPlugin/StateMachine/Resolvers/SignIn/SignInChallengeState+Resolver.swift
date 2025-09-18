@@ -35,7 +35,8 @@ extension SignInChallengeState {
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
                         signInMethod: signInMethod,
-                        currentSignInStep: signInStep)
+                        currentSignInStep: signInStep
+                    )
                     return .init(
                         newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
@@ -50,7 +51,8 @@ extension SignInChallengeState {
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
                         signInMethod: signInMethod,
-                        currentSignInStep: signInStep)
+                        currentSignInStep: signInStep
+                    )
                     return .init(
                         newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
@@ -77,13 +79,15 @@ extension SignInChallengeState {
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
                         signInMethod: signInMethod,
-                        currentSignInStep: signInStep)
+                        currentSignInStep: signInStep
+                    )
                     return .init(
                         newState: .verifying(challenge, signInMethod, answerEventData.answer, signInStep),
                         actions: [action]
                     )
                 }
                 return .from(oldState)
+
             case .verified:
 
                 return .from(oldState)

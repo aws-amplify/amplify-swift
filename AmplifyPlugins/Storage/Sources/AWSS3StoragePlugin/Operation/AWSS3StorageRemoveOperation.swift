@@ -44,7 +44,7 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
     }
 
     /// Perform the task to remove item.
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             return

@@ -312,7 +312,7 @@ extension GraphQLLazyLoadPostTagTests {
     typealias PostTag = PostTagsWithCompositeKey
 
     struct PostTagModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostTagsWithCompositeKey.self)
             ModelRegistry.register(modelType: PostWithTagsCompositeKey.self)

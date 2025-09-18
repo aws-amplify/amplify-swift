@@ -11,8 +11,8 @@ import Foundation
 
 /// Resembles the AppSync's GraphQL response for a list operation.
 struct AppSyncListResponse<Element: Model>: Codable {
-    public let items: [Element]
-    public let nextToken: String?
+    let items: [Element]
+    let nextToken: String?
 
     init(items: [Element], nextToken: String? = nil) {
         self.items = items

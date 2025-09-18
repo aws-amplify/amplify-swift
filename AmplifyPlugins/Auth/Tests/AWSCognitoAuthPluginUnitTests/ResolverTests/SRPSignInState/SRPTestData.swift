@@ -7,8 +7,8 @@
 
 import Foundation
 
-@testable @preconcurrency import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 // MARK: - Test Data
 
@@ -123,12 +123,14 @@ extension RespondToAuthChallengeOutput {
     static func testData(
         challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
         challengeParameters: [String: String] = [:],
-        session: String = "session") -> RespondToAuthChallengeOutput {
+        session: String = "session"
+    ) -> RespondToAuthChallengeOutput {
             return RespondToAuthChallengeOutput(
                 authenticationResult: nil,
                 challengeName: challenge,
                 challengeParameters: challengeParameters,
-                session: session)
+                session: session
+            )
         }
 
 }

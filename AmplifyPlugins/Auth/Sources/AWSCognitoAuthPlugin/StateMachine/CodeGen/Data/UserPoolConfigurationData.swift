@@ -60,7 +60,8 @@ struct UserPoolConfigurationData: Equatable {
 
     static func isNamespacingEqual(
         lhs: UserPoolConfigurationData?,
-        rhs: UserPoolConfigurationData?) -> Bool {
+        rhs: UserPoolConfigurationData?
+    ) -> Bool {
             return lhs?.poolId == rhs?.poolId
             && lhs?.clientId == rhs?.clientId
             && lhs?.region == rhs?.region

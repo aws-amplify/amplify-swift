@@ -19,13 +19,13 @@ class GraphQLModelBasedTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
 
-    public final class PostCommentModelRegistration: AmplifyModelRegistration {
-        public func registerModels(registry: ModelRegistry.Type) {
+    final class PostCommentModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
             ModelRegistry.register(modelType: Comment.self)
         }
 
-        public let version: String = "1"
+        let version: String = "1"
     }
 
 

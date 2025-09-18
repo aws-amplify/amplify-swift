@@ -14,7 +14,7 @@ import Foundation
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public struct ModelProviderRegistry {
+public enum ModelProviderRegistry {
     nonisolated(unsafe) static var decoders = AtomicValue(initialValue: [ModelProviderDecoder.Type]())
 
     /// Register a decoder during plugin configuration time, to allow runtime retrievals of model providers.

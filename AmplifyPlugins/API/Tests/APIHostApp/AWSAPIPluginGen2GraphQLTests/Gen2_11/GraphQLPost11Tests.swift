@@ -70,7 +70,7 @@ extension GraphQLPost11Tests {
     typealias Post = Post11
 
     struct Post11Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post11.self)
         }

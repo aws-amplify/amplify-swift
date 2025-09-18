@@ -119,7 +119,6 @@ extension NLTag {
             return .symbol
         default:
             return .other
-
         }
     }
     // swiftlint:enable cyclomatic_complexity

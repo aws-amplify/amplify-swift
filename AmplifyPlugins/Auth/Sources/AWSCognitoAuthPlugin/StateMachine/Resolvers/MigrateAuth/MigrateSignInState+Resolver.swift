@@ -34,7 +34,6 @@ extension MigrateSignInState {
                 return resolveInitiating(from: oldState, byApplying: signInEvent)
             default:
                 return .from(oldState)
-
             }
         }
 
@@ -61,7 +60,8 @@ extension MigrateSignInState {
                     password: password,
                     clientMetadata: signInEventData.clientMetadata,
                     deviceMetadata: deviceMetadata,
-                    respondToAuthChallenge: respondToAuthChallenge)
+                    respondToAuthChallenge: respondToAuthChallenge
+                )
                 return StateResolution(
                     newState: MigrateSignInState.signingIn(signInEventData),
                     actions: [action]

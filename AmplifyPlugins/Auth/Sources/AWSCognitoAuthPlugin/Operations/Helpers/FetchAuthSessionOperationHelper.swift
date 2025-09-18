@@ -6,14 +6,14 @@
 //
 
 import Amplify
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class FetchAuthSessionOperationHelper {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
-    var environment: Environment? = nil
+    var environment: Environment?
 
     func fetch(
         _ authStateMachine: AuthStateMachine,
@@ -178,7 +178,8 @@ class FetchAuthSessionOperationHelper {
                 credentials = .userPoolAndIdentityPool(
                     signedInData: signedInData,
                     identityID: identityId,
-                    credentials: awsCredentials)
+                    credentials: awsCredentials
+                )
 
             case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
                 return

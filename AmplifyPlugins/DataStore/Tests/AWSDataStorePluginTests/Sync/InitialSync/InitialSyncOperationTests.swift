@@ -817,7 +817,7 @@ class InitialSyncOperationTests: XCTestCase {
                 syncMetadataSaved.fulfill()
             }
         }
-        
+
         await fulfillment(of: [syncMetadataSaved], timeout: 1.0)
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")

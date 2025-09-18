@@ -62,7 +62,7 @@ class Post3Wrapper: NSCopying {
 }
 
 extension Post3Wrapper: Equatable {
-    public static func == (lhs: Post3Wrapper, rhs: Post3Wrapper) -> Bool {
+    static func == (lhs: Post3Wrapper, rhs: Post3Wrapper) -> Bool {
         return lhs.idString() == rhs.idString()
             && lhs.title() == rhs.title()
     }

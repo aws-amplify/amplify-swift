@@ -45,13 +45,14 @@ extension AuthAWSCognitoCredentials {
             expiration: Date()
         )
     }
-    
+
     static var nonimmediateExpiryTestData: AuthAWSCognitoCredentials {
         return AuthAWSCognitoCredentials(
             accessKeyId: "xx",
             secretAccessKey: "xx",
             sessionToken: "xx",
-            expiration: Date() + TimeInterval(200))
+            expiration: Date() + TimeInterval(200)
+        )
     }
 }
 

@@ -62,7 +62,7 @@ extension GraphQLCustomer9Tests {
     typealias Customer = Customer9
 
     struct Customer9Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Customer9.self)
         }

@@ -64,7 +64,7 @@ extension GraphQLPostPerson41Tests {
     typealias Person = Person41
 
     struct PostPerson41Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post41.self)
             ModelRegistry.register(modelType: Person41.self)

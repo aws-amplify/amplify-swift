@@ -238,9 +238,9 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     // MARK: - Model
 
     struct Todo: Model {
-        public let id: String
-        public var name: String
-        public var description: String?
+        let id: String
+        var name: String
+        var description: String?
 
         init(
             id: String = UUID().uuidString,

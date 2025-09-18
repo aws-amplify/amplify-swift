@@ -17,7 +17,7 @@ class GraphQLResponseDecoder<R> where R: Decodable, R: Sendable {
     let encoder = JSONEncoder()
     let dataStorePluginOptions: AWSAPIPluginDataStoreOptions?
 
-    public init(request: GraphQLOperationRequest<R>, response: Data = Data()) {
+    init(request: GraphQLOperationRequest<R>, response: Data = Data()) {
         self.request = request
         self.response = response
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy

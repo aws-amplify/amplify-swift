@@ -63,22 +63,26 @@ extension InitiateAuthInput {
         )
     }
 
-    static func userAuth(username: String,
-                         preferredChallengeAuthParams: [String: String],
-                         clientMetadata: [String: String],
-                         asfDeviceId: String,
-                         deviceMetadata: DeviceMetadata,
-                         environment: UserPoolEnvironment) async -> InitiateAuthInput {
+    static func userAuth(
+        username: String,
+        preferredChallengeAuthParams: [String: String],
+        clientMetadata: [String: String],
+        asfDeviceId: String,
+        deviceMetadata: DeviceMetadata,
+        environment: UserPoolEnvironment
+    ) async -> InitiateAuthInput {
         var authParameters = preferredChallengeAuthParams
         authParameters["USERNAME"] = username
-        
-        return await buildInput(username: username,
-                                authFlowType: .userAuth,
-                                authParameters: authParameters,
-                                clientMetadata: clientMetadata,
-                                asfDeviceId: asfDeviceId,
-                                deviceMetadata: deviceMetadata,
-                                environment: environment)
+
+        return await buildInput(
+            username: username,
+            authFlowType: .userAuth,
+            authParameters: authParameters,
+            clientMetadata: clientMetadata,
+            asfDeviceId: asfDeviceId,
+            deviceMetadata: deviceMetadata,
+            environment: environment
+        )
     }
 
     static func migrateAuth(

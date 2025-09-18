@@ -393,13 +393,17 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             )
     }
 
-    public static func list<M: Model>(_ modelType: M.Type,
-                                      where predicate: QueryPredicate? = nil,
-                                      includes: IncludedAssociations<M> = { _ in [] },
-                                      limit: Int? = nil,
-                                      authMode: AWSAuthorizationType? = nil) -> GraphQLRequest<List<M>> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query)
+    public static func list<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate? = nil,
+        includes: IncludedAssociations<M> = { _ in [] },
+        limit: Int? = nil,
+        authMode: AWSAuthorizationType? = nil
+    ) -> GraphQLRequest<List<M>> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let modelPath = modelType.rootPath as? ModelPath<M> {

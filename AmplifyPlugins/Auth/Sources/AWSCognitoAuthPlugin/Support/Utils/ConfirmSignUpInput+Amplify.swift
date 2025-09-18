@@ -9,13 +9,14 @@ import AWSCognitoIdentityProvider
 import Foundation
 
 extension ConfirmSignUpInput {
-    init(username: String,
-         confirmationCode: String,
-         clientMetadata: [String: String]?,
-         asfDeviceId: String?,
-         forceAliasCreation: Bool?,
-         session: String?,
-         environment: UserPoolEnvironment
+    init(
+        username: String,
+        confirmationCode: String,
+        clientMetadata: [String: String]?,
+        asfDeviceId: String?,
+        forceAliasCreation: Bool?,
+        session: String?,
+        environment: UserPoolEnvironment
     ) async {
 
         let configuration = environment.userPoolConfiguration

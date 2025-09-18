@@ -68,7 +68,7 @@ class Comment3Wrapper: NSCopying {
 }
 
 extension Comment3Wrapper: Equatable {
-    public static func == (lhs: Comment3Wrapper, rhs: Comment3Wrapper) -> Bool {
+    static func == (lhs: Comment3Wrapper, rhs: Comment3Wrapper) -> Bool {
         return lhs.idString() == rhs.idString()
             && lhs.postId() == rhs.postId()
             && lhs.content() == rhs.content()

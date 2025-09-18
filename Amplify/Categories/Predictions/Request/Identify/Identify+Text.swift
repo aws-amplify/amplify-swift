@@ -11,8 +11,8 @@ public extension Predictions.Identify {
     enum Text {}
 }
 
-extension Predictions.Identify.Request where Output == Predictions.Identify.Text.Result {
-    nonisolated(unsafe) public static let text = Self(
+public extension Predictions.Identify.Request where Output == Predictions.Identify.Text.Result {
+    nonisolated(unsafe) static let text = Self(
         kind: .detectText(.lift)
     )
 }

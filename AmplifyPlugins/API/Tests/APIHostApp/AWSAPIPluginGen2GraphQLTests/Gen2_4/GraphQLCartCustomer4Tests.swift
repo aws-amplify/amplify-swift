@@ -147,7 +147,7 @@ extension GraphQLCartCustomer4Tests {
     typealias Customer = Customer4
 
     struct CartCustomer4Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Cart4.self)
             ModelRegistry.register(modelType: Customer4.self)

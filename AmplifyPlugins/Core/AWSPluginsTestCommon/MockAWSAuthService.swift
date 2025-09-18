@@ -8,9 +8,9 @@
 import Amplify
 import AwsCommonRuntimeKit
 import ClientRuntime
+import Foundation
 import InternalAmplifyCredentials
 import SmithyIdentity
-import Foundation
 
 public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
 

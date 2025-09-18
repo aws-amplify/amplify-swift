@@ -81,7 +81,7 @@ class ActivityTrackerTests: XCTestCase {
     func testApplicationStateChanged_shouldReportProperEvent() async {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
-        
+
         await NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
         await NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
         await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))

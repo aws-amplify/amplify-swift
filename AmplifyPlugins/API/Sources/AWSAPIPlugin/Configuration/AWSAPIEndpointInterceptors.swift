@@ -58,7 +58,7 @@ struct AWSAPIEndpointInterceptors {
 
     /// Registers an interceptor
     /// - Parameter interceptor: operation interceptor used to decorate API requests
-    public mutating func addInterceptor(_ interceptor: URLRequestInterceptor) {
+    mutating func addInterceptor(_ interceptor: URLRequestInterceptor) {
         interceptors.append(interceptor)
     }
 

@@ -13,7 +13,7 @@ struct InitializeSignInFlow: Action {
     var identifier: String = "IntializeSignInFlow"
 
     let signInEventData: SignInEventData
-    
+
     let autoSignIn: Bool
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {

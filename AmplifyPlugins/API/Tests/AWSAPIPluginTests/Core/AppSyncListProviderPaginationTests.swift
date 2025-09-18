@@ -6,10 +6,10 @@
 //
 
 import XCTest
-@testable import AWSPluginsCore
 @testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable import AWSPluginsCore
 @testable import AWSPluginsCore
 
 extension AppSyncListProviderTests {

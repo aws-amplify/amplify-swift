@@ -7,9 +7,9 @@
 
 @_implementationOnly import AmplifyAsyncTesting
 import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import XCTest
 @testable @preconcurrency import Amplify
-@preconcurrency import AWSPluginsCore
 @testable @preconcurrency import AmplifyTestCommon
 @testable import AWSAPIPlugin
 

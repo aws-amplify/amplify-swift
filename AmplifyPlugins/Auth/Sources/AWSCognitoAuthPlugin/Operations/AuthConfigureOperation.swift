@@ -39,7 +39,7 @@ class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
         )
     }
 
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             dispatch(result: .failure(AuthError.configuration(

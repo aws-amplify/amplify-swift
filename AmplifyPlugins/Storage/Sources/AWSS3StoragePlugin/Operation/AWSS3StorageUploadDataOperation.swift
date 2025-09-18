@@ -58,7 +58,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Pauses operation.
-    override public func pause() {
+    override func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
             super.pause()
@@ -66,7 +66,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Resume operation.
-    override public func resume() {
+    override func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
             super.resume()
@@ -74,7 +74,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Cancels operation.
-    override public func cancel() {
+    override func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
             super.cancel()
@@ -82,7 +82,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Performs the task to upload data.
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             return

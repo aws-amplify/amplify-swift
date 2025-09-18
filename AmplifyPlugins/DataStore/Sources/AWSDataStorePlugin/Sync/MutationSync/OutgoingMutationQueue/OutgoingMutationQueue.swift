@@ -7,9 +7,9 @@
 
 import Amplify
 import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
-@preconcurrency import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
 protocol OutgoingMutationQueueBehavior: AnyObject {
@@ -41,7 +41,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private var authModeStrategy: AuthModeStrategy
 
     private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
-    public var publisher: AnyPublisher<MutationEvent, Never> {
+    var publisher: AnyPublisher<MutationEvent, Never> {
         return outgoingMutationQueueSubject.eraseToAnyPublisher()
     }
 
@@ -468,10 +468,10 @@ extension OutgoingMutationQueue: Resettable {
 }
 
 extension OutgoingMutationQueue: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

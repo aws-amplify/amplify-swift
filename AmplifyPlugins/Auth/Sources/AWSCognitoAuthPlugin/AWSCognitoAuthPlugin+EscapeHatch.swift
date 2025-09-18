@@ -42,6 +42,7 @@ public extension AWSCognitoAuthPlugin {
                     identityPoolClient
                 )
             }
+
         case .none:
             service = nil
         }

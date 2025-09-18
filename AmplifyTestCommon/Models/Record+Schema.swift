@@ -7,9 +7,10 @@
 
 import Amplify
 
+@preconcurrency import Amplify
+
 // swiftlint:disable all
 import Foundation
-@preconcurrency import Amplify
 
 public extension Record {
   // MARK: - CodingKeys

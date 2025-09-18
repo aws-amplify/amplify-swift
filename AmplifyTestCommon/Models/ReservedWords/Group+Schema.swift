@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 @preconcurrency import Amplify
+import Foundation
 
 public extension Group {
     // MARK: - CodingKeys

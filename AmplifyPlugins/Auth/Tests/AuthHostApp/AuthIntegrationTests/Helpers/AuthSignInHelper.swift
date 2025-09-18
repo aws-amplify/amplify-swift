@@ -21,7 +21,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
             return try await signUpUserReturningResult(username: username, password: password, email: email, phoneNumber: phoneNumber).isSignUpComplete
         }
 
@@ -29,7 +30,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String? = nil,
-        phoneNumber: String? = nil) async throws -> AuthSignUpResult {
+        phoneNumber: String? = nil
+    ) async throws -> AuthSignUpResult {
 
             var userAttributes: [AuthUserAttribute] = []
 
@@ -55,7 +57,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
             let signedUp: Bool = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,

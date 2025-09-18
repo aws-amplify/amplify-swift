@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
 import XCTest
+@testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 

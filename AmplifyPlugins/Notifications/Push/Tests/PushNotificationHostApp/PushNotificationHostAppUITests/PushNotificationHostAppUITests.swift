@@ -14,7 +14,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
     private lazy var deviceIdentifier: String = {
         let bundlePath = Bundle.main.bundleURL.path
         let paths = Bundle.main.bundleURL.pathComponents
-        
+
         // Standard approach: Look for Devices directory
         if let devicesIndex = paths.firstIndex(where: { $0 == "Devices" }) {
             let nextIndex = devicesIndex + 1
@@ -22,18 +22,18 @@ final class PushNotificationHostAppUITests: XCTestCase {
                 return paths[nextIndex]
             }
         }
-        
+
         // For clone devices or alternative paths, find UUID-like identifiers
         for component in paths {
             // Device UUIDs are typically 36 characters with dashes
-            if component.contains("-") && 
-               component.count >= 30 && 
+            if component.contains("-") &&
+               component.count >= 30 &&
                component.count <= 50 &&
                component.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" }) {
                 return component
             }
         }
-        
+
         // Last resort: try to extract from the full path using regex
         let uuidPattern = "[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
         if let regex = try? NSRegularExpression(pattern: uuidPattern),
@@ -41,7 +41,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
            let range = Range(match.range, in: bundlePath) {
             return String(bundlePath[range])
         }
-        
+
         // If all else fails, provide detailed error information
         fatalError("Could not extract device identifier from bundle path: \(bundlePath)\nPath components: \(paths)")
     }()

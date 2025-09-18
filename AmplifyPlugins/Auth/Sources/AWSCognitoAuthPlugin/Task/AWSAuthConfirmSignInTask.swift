@@ -30,7 +30,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.authConfiguration = configuration
     }
-    
+
     func execute() async throws -> AuthSignInResult {
         await taskHelper.didStateMachineConfigured()
 
@@ -74,7 +74,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                    }
                case .error(let error):
                    throw AuthError.unknown("Sign in reached an error state", error)
-
                case .signingIn(let signInState):
                    guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
                        continue
@@ -92,7 +91,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         throw invalidStateError
     }
 
-    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: (SignInState), _ invalidStateError: AuthError) async throws {
+    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: SignInState, _ invalidStateError: AuthError) async throws {
         switch signInState {
         case .resolvingChallenge(let challengeState, let challengeType, _):
             // Validate if request valid MFA selection
@@ -133,7 +132,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             case .error:
                 throw AuthError.invalidState(
                     "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
             default:
                 throw invalidStateError
             }
@@ -142,7 +142,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             case .error:
                 throw AuthError.invalidState(
                     "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
             default:
                 throw invalidStateError
             }
@@ -158,7 +159,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw AuthError.validation(
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion
+            )
         }
     }
 
@@ -169,7 +171,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw AuthError.validation(
                 AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion
+            )
         }
     }
 

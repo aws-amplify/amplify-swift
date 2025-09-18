@@ -29,9 +29,12 @@ extension SignInState {
                     let action = StartSRPFlow(
                         signInEventData: signInEventData,
                         deviceMetadata: deviceMetadata,
-                        respondToAuthChallenge: respondToAuthChallenge)
-                    return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
-                                 actions: [action])
+                        respondToAuthChallenge: respondToAuthChallenge
+                    )
+                    return .init(
+                        newState: .signingInWithSRP(.notStarted, signInEventData),
+                        actions: [action]
+                    )
                 }
                 if case .initiateCustomSignIn(let signInEventData, let deviceMetadata) = event.isSignInEvent {
                     let action = StartCustomSignInFlow(
@@ -47,9 +50,12 @@ extension SignInState {
                     let action = StartSRPFlow(
                         signInEventData: signInEventData,
                         deviceMetadata: deviceMetadata,
-                        respondToAuthChallenge: nil)
-                    return .init(newState: .signingInWithSRPCustom(.notStarted, signInEventData),
-                                 actions: [action])
+                        respondToAuthChallenge: nil
+                    )
+                    return .init(
+                        newState: .signingInWithSRPCustom(.notStarted, signInEventData),
+                        actions: [action]
+                    )
                 }
                 if case .initiateHostedUISignIn(let options) = event.isSignInEvent {
                     let action = InitializeHostedUISignIn(options: options)
@@ -59,23 +65,32 @@ extension SignInState {
                     let action = StartMigrateAuthFlow(
                         signInEventData: signInEventData,
                         deviceMetadata: deviceMetadata,
-                        respondToAuthChallenge: respondToAuthChallenge)
-                    return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
-                                 actions: [action])
+                        respondToAuthChallenge: respondToAuthChallenge
+                    )
+                    return .init(
+                        newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
+                        actions: [action]
+                    )
                 }
                 if case .initiateUserAuth(let signInEventData, let deviceMetadata) = event.isSignInEvent {
                     let action = InitiateUserAuth(
                         signInEventData: signInEventData,
-                        deviceMetadata: deviceMetadata)
-                    return .init(newState: .signingInWithUserAuth(signInEventData),
-                                 actions: [action])
+                        deviceMetadata: deviceMetadata
+                    )
+                    return .init(
+                        newState: .signingInWithUserAuth(signInEventData),
+                        actions: [action]
+                    )
                 }
                 if case .initiateAutoSignIn(let signInEventData, let deviceMetadata) = event.isSignInEvent {
                     let action = AutoSignIn(
                         signInEventData: signInEventData,
-                        deviceMetadata: deviceMetadata)
-                    return .init(newState: .autoSigningIn(signInEventData),
-                                 actions: [action])
+                        deviceMetadata: deviceMetadata
+                    )
+                    return .init(
+                        newState: .autoSigningIn(signInEventData),
+                        actions: [action]
+                    )
                 }
                 return .from(oldState)
 
@@ -292,18 +307,24 @@ extension SignInState {
                     let action = StartSRPFlow(
                         signInEventData: signInEventData,
                         deviceMetadata: deviceMetadata,
-                        respondToAuthChallenge: respondToAuthChallenge)
-                    return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
-                                 actions: [action])
+                        respondToAuthChallenge: respondToAuthChallenge
+                    )
+                    return .init(
+                        newState: .signingInWithSRP(.notStarted, signInEventData),
+                        actions: [action]
+                    )
                 }
 
                 if case .initiateMigrateAuth(let signInEventData, let deviceMetadata, let respondToAuthChallenge) = event.isSignInEvent {
                     let action = StartMigrateAuthFlow(
                         signInEventData: signInEventData,
                         deviceMetadata: deviceMetadata,
-                        respondToAuthChallenge: respondToAuthChallenge)
-                    return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
-                                 actions: [action])
+                        respondToAuthChallenge: respondToAuthChallenge
+                    )
+                    return .init(
+                        newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
+                        actions: [action]
+                    )
                 }
 
                 // This could happen when we have nested challenges
@@ -526,34 +547,45 @@ extension SignInState {
                     )
                 }
                 return .from(oldState)
+
             case .signedIn, .error:
                 return .from(oldState)
+
             case .signingInWithUserAuth(let signInEventData):
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
-                    return .init(newState: .confirmingDevice,
-                                 actions: [action])
+                    return .init(
+                        newState: .confirmingDevice,
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
                     let action = StartDeviceSRPFlow(
                         username: username,
-                        authResponse: challengeResponse)
-                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
-                                 actions: [action])
+                        authResponse: challengeResponse
+                    )
+                    return .init(
+                        newState: .resolvingDeviceSrpa(.notStarted),
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge,
-                                                            signInMethod: signInEventData.signInMethod)
+                    let action = InitializeResolveChallenge(
+                        challenge: challenge,
+                        signInMethod: signInEventData.signInMethod
+                    )
                     let subState = SignInChallengeState.notStarted
                     return .init(newState: .resolvingChallenge(
                         subState,
@@ -582,12 +614,15 @@ extension SignInState {
                     let action = VerifyPasswordSRP(
                         stateData: srpStateData,
                         authResponse: authResponse,
-                        clientMetadata: clientMetadata)
+                        clientMetadata: clientMetadata
+                    )
                     return .init(
                         newState: .signingInWithSRP(
                             .respondingPasswordVerifier(srpStateData),
-                            signInEventData),
-                        actions: [action])
+                            signInEventData
+                        ),
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -595,10 +630,12 @@ extension SignInState {
                     let action = ThrowSignInError(error: error)
                     return StateResolution(
                         newState: .error,
-                        actions: [action])
+                        actions: [action]
+                    )
 
                 }
                 return .from(oldState)
+
             case .signingInWithWebAuthn(let webAuthnState):
             #if os(iOS) || os(macOS) || os(visionOS)
                 if #available(iOS 17.4, macOS 13.5, *) {
@@ -646,54 +683,70 @@ extension SignInState {
                     actions: [ThrowSignInError(error: error)]
                 )
             #endif
+
             case .autoSigningIn:
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
-                
+
                 if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
-                    return .init(newState: .confirmingDevice,
-                                 actions: [action])
+                    return .init(
+                        newState: .confirmingDevice,
+                        actions: [action]
+                    )
                 }
-                
+
                 if let signInEvent = event as? SignInEvent,
                    case .throwAuthError(let error) = signInEvent.eventType {
                     let action = ThrowSignInError(error: error)
                     return StateResolution(
                         newState: .error,
-                        actions: [action])
+                        actions: [action]
+                    )
 
                 }
                 return .from(oldState)
+
             case .signingInWithUserAuth(let signInEventData):
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
-                    return .init(newState: .confirmingDevice,
-                                 actions: [action])
+                    return .init(
+                        newState: .confirmingDevice,
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
                     let action = StartDeviceSRPFlow(
                         username: username,
-                        authResponse: challengeResponse)
-                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
-                                 actions: [action])
+                        authResponse: challengeResponse
+                    )
+                    return .init(
+                        newState: .resolvingDeviceSrpa(.notStarted),
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge,
-                                                            signInMethod: signInEventData.signInMethod)
+                    let action = InitializeResolveChallenge(
+                        challenge: challenge,
+                        signInMethod: signInEventData.signInMethod
+                    )
                     let subState = SignInChallengeState.notStarted
                     return .init(newState: .resolvingChallenge(
                         subState,
@@ -722,12 +775,15 @@ extension SignInState {
                     let action = VerifyPasswordSRP(
                         stateData: srpStateData,
                         authResponse: authResponse,
-                        clientMetadata: clientMetadata)
+                        clientMetadata: clientMetadata
+                    )
                     return .init(
                         newState: .signingInWithSRP(
                             .respondingPasswordVerifier(srpStateData),
-                            signInEventData),
-                        actions: [action])
+                            signInEventData
+                        ),
+                        actions: [action]
+                    )
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -735,10 +791,12 @@ extension SignInState {
                     let action = ThrowSignInError(error: error)
                     return StateResolution(
                         newState: .error,
-                        actions: [action])
+                        actions: [action]
+                    )
 
                 }
                 return .from(oldState)
+
             case .signingInWithWebAuthn(let webAuthnState):
             #if os(iOS) || os(macOS) || os(visionOS)
                 if #available(iOS 17.4, macOS 13.5, *) {
@@ -786,25 +844,31 @@ extension SignInState {
                     actions: [ThrowSignInError(error: error)]
                 )
             #endif
+
             case .autoSigningIn:
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
-                
+
                 if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
-                    return .init(newState: .confirmingDevice,
-                                 actions: [action])
+                    return .init(
+                        newState: .confirmingDevice,
+                        actions: [action]
+                    )
                 }
-                
+
                 if let signInEvent = event as? SignInEvent,
                    case .throwAuthError(let error) = signInEvent.eventType {
                     let action = ThrowSignInError(error: error)
                     return StateResolution(
                         newState: .error,
-                        actions: [action])
+                        actions: [action]
+                    )
 
                 }
                 return .from(oldState)

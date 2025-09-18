@@ -184,7 +184,7 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.applyModelMigrations(modelSchemas: modelSchemas)
     }
 
-    public func save<M: Model>(
+    func save<M: Model>(
         _ model: M,
         modelSchema: ModelSchema,
         condition: QueryPredicate? = nil,
@@ -464,10 +464,10 @@ extension StorageEngine: Resettable {
 }
 
 extension StorageEngine: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

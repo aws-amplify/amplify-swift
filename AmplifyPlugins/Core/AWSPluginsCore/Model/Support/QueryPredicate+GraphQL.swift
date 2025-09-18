@@ -41,10 +41,10 @@ public struct GraphQLFilterConverter {
         return serializedString
     }
 
+    /// Serialize the translated GraphQL query variable object to JSON string.
     @available(*, deprecated, message: """
     Use `toJSON(_:modelSchema:options)` instead. See https://github.com/aws-amplify/amplify-ios/pull/965 for more details.
     """)
-    /// Serialize the translated GraphQL query variable object to JSON string.
     public static func toJSON(
         _ queryPredicate: QueryPredicate,
         options: JSONSerialization.WritingOptions = []

@@ -98,7 +98,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     idToken: idToken,
                     accessToken: accessToken,
                     refreshToken: refreshToken,
-                    expiresIn: authenticationResult.expiresIn)
+                    expiresIn: authenticationResult.expiresIn
+                )
                 let signedInData = SignedInData(
                     signedInDate: Date(),
                     signInMethod: signInMethod,

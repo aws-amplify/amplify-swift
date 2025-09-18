@@ -169,6 +169,7 @@ extension SignOutState {
                         newState: SignOutState.revokingToken,
                         actions: [action]
                     )
+
                 case .globalSignOutError(
                     let signedInData,
                     globalSignOutError: let globalSignOutError,

@@ -87,7 +87,6 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                 await validateAPI(expectedOutput: expectedOutput) {
                     return await plugin.signOut(options: request.options) as! AWSCognitoSignOutResult
                 }
-
             case .deleteUser(_, let expectedOutput):
                 let expectation = expectation(description: "expectation")
                 do {

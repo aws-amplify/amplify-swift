@@ -8,8 +8,8 @@
 import XCTest
 
 @testable @preconcurrency import Amplify
-@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 @testable import AWSAPIPlugin
 
 class GraphQLMutateCombineTests: OperationTestBase {

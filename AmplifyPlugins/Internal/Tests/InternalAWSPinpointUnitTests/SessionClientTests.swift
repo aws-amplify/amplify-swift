@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
-import XCTest
 import AmplifyAsyncTesting
+import XCTest
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
 class SessionClientTests: XCTestCase {
     private var client: SessionClient!

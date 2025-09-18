@@ -135,11 +135,11 @@ final class AWSCloudWatchLoggingSessionController {
         }
         batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
             guard self?.networkMonitor.isOnline == true else { return }
-            
+
             // Capture strong references to consumer and batch before the async task
             let strongConsumer = consumer
             let strongBatch = batch
-            
+
             Task {
                 do {
                     try await strongConsumer.consume(batch: strongBatch)
@@ -189,12 +189,12 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func consumeLogBatch(_ batch: LogBatch) async throws {
         // Check if consumer exists before trying to use it
-        guard let consumer = self.consumer else {
+        guard let consumer = consumer else {
             // If consumer is nil, still mark the batch as completed to prevent memory leaks
             try batch.complete()
             return
         }
-        
+
         do {
             try await consumer.consume(batch: batch)
         } catch {

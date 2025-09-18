@@ -38,7 +38,7 @@ class MockLogAgent: LogAgent, @unchecked Sendable {
     func log(
         level: Smithy.LogAgentLevel,
         message: @autoclosure () -> String,
-        metadata: @autoclosure () -> [String : String]?,
+        metadata: @autoclosure () -> [String: String]?,
         source: @autoclosure () -> String,
         file: String,
         function: String,
@@ -46,7 +46,7 @@ class MockLogAgent: LogAgent, @unchecked Sendable {
     ) {
         print("MockLogAgent")
     }
-    
+
     var name: String = ""
 
     var level: LogAgentLevel = .debug

@@ -34,7 +34,6 @@ extension CustomSignInState {
                 return resolveInitiating(from: oldState, byApplying: customSignInEvent)
             default:
                 return .from(oldState)
-
             }
         }
 

@@ -349,7 +349,7 @@ extension GraphQLLazyLoadProjectTeam5Tests {
     typealias Team = Team5
 
     struct ProjectTeam5Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Project5.self)
             ModelRegistry.register(modelType: Team5.self)

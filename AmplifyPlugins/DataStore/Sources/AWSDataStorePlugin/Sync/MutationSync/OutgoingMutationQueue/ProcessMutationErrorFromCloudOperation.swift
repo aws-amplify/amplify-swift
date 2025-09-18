@@ -7,9 +7,9 @@
 
 import Amplify
 import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
-@preconcurrency import AWSPluginsCore
 
 // swiftlint:disable type_body_length file_length
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
@@ -492,10 +492,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation, @unchecked 
 }
 
 extension ProcessMutationErrorFromCloudOperation: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -6,9 +6,9 @@
 //
 
 import XCTest
+import XCTest
 @testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
-import XCTest
 
 final class AWSPinpointFactoryTests: XCTestCase {
     private var appId: String {

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
-import XCTest
 import AWSPinpoint
 import UserNotifications
 import XCTest
+import XCTest
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class EndpointClientTests: XCTestCase {

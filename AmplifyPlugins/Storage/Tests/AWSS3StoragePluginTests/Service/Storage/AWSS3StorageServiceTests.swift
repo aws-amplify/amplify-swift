@@ -392,7 +392,7 @@ class AWSS3StorageServiceTests: XCTestCase {
 }
 
 private class MockHttpClientEngineProxy: HttpClientEngineProxy {
-    var target: HTTPClient? = nil
+    var target: HTTPClient?
 
     var executeCount = 0
     var executeRequest: HTTPRequest?
@@ -436,9 +436,9 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase {
     }
 
     var attachEventHandlersCount = 0
-    var onUploadHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil
-    var onDownloadHandler: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil
-    var onMultipartUploadHandler: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil
+    var onUploadHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?
+    var onDownloadHandler: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?
+    var onMultipartUploadHandler: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?
     func attachEventHandlers(
         onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,
         onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?,
@@ -452,7 +452,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase {
 }
 
 private class MockFileSystem: FileSystem {
-    var moveFileError: Error? = nil
+    var moveFileError: Error?
     override func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
         if let moveFileError {
             throw moveFileError

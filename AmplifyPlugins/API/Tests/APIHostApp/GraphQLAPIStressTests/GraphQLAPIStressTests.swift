@@ -32,12 +32,12 @@ final class APIStressTests: XCTestCase {
     static let amplifyConfiguration = "testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
 
-    public final class TestModelRegistration: AmplifyModelRegistration {
-        public func registerModels(registry: ModelRegistry.Type) {
+    final class TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
         }
 
-        public let version: String = "1"
+        let version: String = "1"
     }
 
     override func setUp() async throws {

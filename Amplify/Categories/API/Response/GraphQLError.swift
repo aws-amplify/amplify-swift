@@ -37,7 +37,7 @@ public struct GraphQLError: Decodable {
 public extension GraphQLError {
 
     /// Both `line` and `column` are positive numbers describing the beginning of an associated syntax element
-    public struct Location: Decodable, @unchecked Sendable {
+    struct Location: Decodable, @unchecked Sendable {
 
         /// The line describing the associated syntax element
         public let line: Int

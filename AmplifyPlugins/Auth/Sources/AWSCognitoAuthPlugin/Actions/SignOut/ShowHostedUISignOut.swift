@@ -51,10 +51,10 @@ class ShowHostedUISignOut: NSObject, Action {
             await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
         } catch HostedUIError.cancelled {
             if signInData.isRefreshTokenExpired == true {
-                self.logVerbose("\(#fileID) Received user cancelled error, but session is expired and continue signing out.", environment: environment)
+                logVerbose("\(#fileID) Received user cancelled error, but session is expired and continue signing out.", environment: environment)
                 await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
             } else {
-                self.logVerbose("\(#fileID) Received error \(HostedUIError.cancelled)", environment: environment)
+                logVerbose("\(#fileID) Received error \(HostedUIError.cancelled)", environment: environment)
                 await sendEvent(with: HostedUIError.cancelled, dispatcher: dispatcher, environment: environment)
             }
         } catch {

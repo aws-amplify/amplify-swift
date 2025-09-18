@@ -99,9 +99,11 @@ struct IssueReporter: View {
     /// Open Amplify iOS issue logging screen on Github
     private func reportToGithub() {
         Task {
-            let issue = IssueInfo(issueDescription: issueDescription,
-                                        includeEnvInfo: includeEnvInfo,
-                                        includeDeviceInfo: includeDeviceInfo)
+            let issue = IssueInfo(
+                issueDescription: issueDescription,
+                includeEnvInfo: includeEnvInfo,
+                includeDeviceInfo: includeDeviceInfo
+            )
             let issueDescriptionMarkdown =
                 IssueInfoHelper.generateMarkdownForIssue(
                     issue: issue)
@@ -124,9 +126,11 @@ struct IssueReporter: View {
     /// Copy issue as a markdown string to clipboard
     private func copyToClipboard() {
         Task {
-            let issue = IssueInfo(issueDescription: issueDescription,
-                                  includeEnvInfo: includeEnvInfo,
-                                  includeDeviceInfo: includeDeviceInfo)
+            let issue = IssueInfo(
+                issueDescription: issueDescription,
+                includeEnvInfo: includeEnvInfo,
+                includeDeviceInfo: includeDeviceInfo
+            )
             let value = IssueInfoHelper.generateMarkdownForIssue(issue: issue)
             #if os(iOS)
             UIPasteboard.general.string = value

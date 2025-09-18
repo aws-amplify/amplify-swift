@@ -26,7 +26,7 @@ public extension Predictions {
 
 public extension Predictions.Landmark {
     /// different types of facial features
-    public struct Kind: @unchecked Sendable {
+    struct Kind: @unchecked Sendable {
         let id: UInt8
 
         public static let allPoints = Self(id: 0)

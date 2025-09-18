@@ -9,14 +9,14 @@ import Foundation
 
 import AWSClientRuntime
 import AWSCognitoIdentityProvider
+import AWSCognitoIdentityProvider
 import AwsCommonRuntimeKit
+import AwsCommonRuntimeKit
+import ClientRuntime
 import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable @preconcurrency import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
-import AwsCommonRuntimeKit
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
@@ -449,7 +449,6 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         default:
             XCTFail("Auth should be in configured state")
-
         }
     }
 

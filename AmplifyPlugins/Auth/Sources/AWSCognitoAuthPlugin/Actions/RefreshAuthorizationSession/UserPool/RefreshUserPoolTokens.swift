@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-import Amplify
 import ClientRuntime
 import Foundation
 
@@ -53,13 +53,15 @@ struct RefreshUserPoolTokens: Action {
             )
 
             logVerbose(
-                "\(#fileID) Starting get tokens from refresh token", environment: environment)
+                "\(#fileID) Starting get tokens from refresh token", environment: environment
+            )
 
             let response = try await client?.getTokensFromRefreshToken(input: input)
 
             logVerbose(
                 "\(#fileID) Get tokens from refresh token response received",
-                environment: environment)
+                environment: environment
+            )
 
             guard let authenticationResult = response?.authenticationResult,
                 let idToken = authenticationResult.idToken,
@@ -76,7 +78,7 @@ struct RefreshUserPoolTokens: Action {
                 accessToken: accessToken,
                 refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
             )
-            
+
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
@@ -108,12 +110,13 @@ struct RefreshUserPoolTokens: Action {
 }
 
 extension RefreshUserPoolTokens: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(
-            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self)
+        )
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

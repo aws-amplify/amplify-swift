@@ -61,7 +61,6 @@ extension HostedUISignInState {
 
             case .error:
                 return .from(oldState)
-
             }
 
         }

@@ -180,7 +180,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 
 extension AWSDataStoreMultiAuthCombinationTests {
     struct PrivatePublicComboModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PrivatePublicComboUPPost.self)
             ModelRegistry.register(modelType: PrivatePublicComboAPIPost.self)

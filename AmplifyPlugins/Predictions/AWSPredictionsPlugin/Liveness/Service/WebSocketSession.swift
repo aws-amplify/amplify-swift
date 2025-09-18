@@ -19,9 +19,9 @@ final class WebSocketSession {
 
     init() {
         self.delegateQueue = OperationQueue()
-        self.delegateQueue.maxConcurrentOperationCount = 1
-        self.delegateQueue.qualityOfService = .userInteractive
-        
+        delegateQueue.maxConcurrentOperationCount = 1
+        delegateQueue.qualityOfService = .userInteractive
+
         self.urlSessionWebSocketDelegate = Delegate()
 
         self.session = URLSession(

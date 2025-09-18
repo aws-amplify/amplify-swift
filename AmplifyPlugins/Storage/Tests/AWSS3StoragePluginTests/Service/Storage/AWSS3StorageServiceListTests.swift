@@ -112,7 +112,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
         } catch let error as StorageError {
             XCTAssertNotNil(error)
         }
@@ -130,7 +130,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
         } catch let error as StorageError {
             XCTAssertNotNil(error)
         }
@@ -146,7 +146,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
             path: path
         )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.identityIdIsEmpty.field)
@@ -165,7 +165,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
             path: path
         )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.invalidAccessLevelWithTarget.field)
@@ -184,7 +184,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
             path: ""
         )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.pathIsEmpty.field)

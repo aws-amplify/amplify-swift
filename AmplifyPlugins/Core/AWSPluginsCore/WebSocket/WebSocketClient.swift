@@ -27,7 +27,7 @@ public final actor WebSocketClient: NSObject {
     /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
     /// Internal wriable WebSocketEvent data stream
-    nonisolated private let subject = PassthroughSubject<WebSocketEvent, Never>()
+    private nonisolated let subject = PassthroughSubject<WebSocketEvent, Never>()
 
     private let retryWithJitter = RetryWithJitter()
 
@@ -157,7 +157,7 @@ public final actor WebSocketClient: NSObject {
     private func createWebSocketConnection() async -> URLSessionWebSocketTask {
         let decoratedURL = await (interceptor?.interceptConnection(url: url)) ?? url
         var urlRequest = URLRequest(url: decoratedURL)
-        self.handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+        handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
 
         urlRequest = await interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
 
@@ -252,7 +252,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
              (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet),
              (NSPOSIXErrorDomain.self, Int(ECONNABORTED)),
              (NSPOSIXErrorDomain.self, 57):
-            self.subject.send(.error(WebSocketClient.Error.connectionLost))
+            subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
                 await self?.networkMonitor.updateState(.offline)
             }
@@ -287,8 +287,8 @@ extension WebSocketClient {
         switch stateChange {
         case (.online, .offline):
             log.debug("[WebSocketClient] NetworkMonitor - Device went offline or network status became unknown")
-            self.connection?.cancel(with: .invalid, reason: nil)
-            self.subject.send(.disconnected(.invalid, nil))
+            connection?.cancel(with: .invalid, reason: nil)
+            subject.send(.disconnected(.invalid, nil))
         case (.offline, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
             await createConnectionAndRead()
@@ -349,7 +349,6 @@ extension WebSocketClient {
             }
         default:
             log.debug("[WebSocketClient] Not retrying for closeCode: \(closeCode)")
-            break
         }
 
     }

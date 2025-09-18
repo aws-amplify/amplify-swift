@@ -28,7 +28,8 @@ extension AuthState: Codable {
             self = .configured(
                 authenticationState,
                 authorizationState,
-                .notStarted)
+                .notStarted
+            )
         } else {
             fatalError("Decoding not supported")
         }

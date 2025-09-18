@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 @preconcurrency import Amplify
 import AWSPluginsCore
 import Combine
+import Foundation
 import Foundation
 
 // swiftlint:disable type_body_length file_length

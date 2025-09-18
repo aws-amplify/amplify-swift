@@ -15,7 +15,7 @@ import Foundation
 
 class MockModelReconciliationQueue: ModelReconciliationQueue {
 
-    public static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
+    static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
 
     private let modelSchema: ModelSchema
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>

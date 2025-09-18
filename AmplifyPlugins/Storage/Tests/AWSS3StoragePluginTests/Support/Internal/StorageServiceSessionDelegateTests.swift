@@ -338,7 +338,7 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
         return "identifier"
     }
 
-    var mockedTask: StorageTransferTask? = nil
+    var mockedTask: StorageTransferTask?
     override func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
         return mockedTask
     }
@@ -353,7 +353,7 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
         unregisterCount += 1
     }
 
-    var mockedMultipartUploadSession: StorageMultipartUploadSession? = nil
+    var mockedMultipartUploadSession: StorageMultipartUploadSession?
     override func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {
         return mockedMultipartUploadSession
     }

@@ -37,63 +37,63 @@ public class Amplify: @unchecked Sendable {
 
     /// - Tag: Amplify.Analytics
     private static let analyticsAtomic = AtomicValue<AnalyticsCategory>(initialValue: AnalyticsCategory())
-    public static internal(set) var Analytics: AnalyticsCategory {
+    public internal(set) static var Analytics: AnalyticsCategory {
         get { analyticsAtomic.get() }
         set { analyticsAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.API
     private static let apiAtomic = AtomicValue<APICategory>(initialValue: APICategory())
-    public static internal(set) var API: APICategory {
+    public internal(set) static var API: APICategory {
         get { apiAtomic.get() }
         set { apiAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Auth
     private static let authAtomic = AtomicValue<AuthCategory>(initialValue: AuthCategory())
-    public static internal(set) var Auth: AuthCategory {
+    public internal(set) static var Auth: AuthCategory {
         get { authAtomic.get() }
         set { authAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.DataStore
     private static let dataStoreAtomic = AtomicValue<DataStoreCategory>(initialValue: DataStoreCategory())
-    public static internal(set) var DataStore: DataStoreCategory {
+    public internal(set) static var DataStore: DataStoreCategory {
         get { dataStoreAtomic.get() }
         set { dataStoreAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Geo
     private static let geoAtomic = AtomicValue<GeoCategory>(initialValue: GeoCategory())
-    public static internal(set) var Geo: GeoCategory {
+    public internal(set) static var Geo: GeoCategory {
         get { geoAtomic.get() }
         set { geoAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Hub
     private static let hubAtomic = AtomicValue<HubCategory>(initialValue: HubCategory())
-    public static internal(set) var Hub: HubCategory {
+    public internal(set) static var Hub: HubCategory {
         get { hubAtomic.get() }
         set { hubAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Notifications
     private static let notificationsAtomic = AtomicValue<NotificationsCategory>(initialValue: NotificationsCategory())
-    public static internal(set) var Notifications: NotificationsCategory {
+    public internal(set) static var Notifications: NotificationsCategory {
         get { notificationsAtomic.get() }
         set { notificationsAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Predictions
     private static let predictionsAtomic = AtomicValue<PredictionsCategory>(initialValue: PredictionsCategory())
-    public static internal(set) var Predictions: PredictionsCategory {
+    public internal(set) static var Predictions: PredictionsCategory {
         get { predictionsAtomic.get() }
         set { predictionsAtomic.set(newValue) }
     }
 
     /// - Tag: Amplify.Storage
     private static let storageAtomic = AtomicValue<StorageCategory>(initialValue: StorageCategory())
-    public static internal(set) var Storage: StorageCategory {
+    public internal(set) static var Storage: StorageCategory {
         get { storageAtomic.get() }
         set { storageAtomic.set(newValue) }
     }

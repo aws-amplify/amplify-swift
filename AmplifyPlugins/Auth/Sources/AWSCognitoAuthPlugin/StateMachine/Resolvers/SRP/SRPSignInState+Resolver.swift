@@ -75,7 +75,8 @@ extension SRPSignInState {
                     authFlowType: authFlowType,
                     deviceMetadata: deviceMetadata,
                     clientMetadata: signInEventData.clientMetadata,
-                    respondToAuthChallenge: respondToAuthChallenge)
+                    respondToAuthChallenge: respondToAuthChallenge
+                )
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
                     actions: [action]

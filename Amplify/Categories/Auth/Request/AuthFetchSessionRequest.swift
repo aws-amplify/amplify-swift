@@ -45,8 +45,8 @@ public extension AuthFetchSessionRequest {
 
 extension AuthFetchSessionRequest.Options: @unchecked Sendable { }
 
-extension AuthFetchSessionRequest.Options {
-    public static func forceRefresh() -> AuthFetchSessionRequest.Options {
+public extension AuthFetchSessionRequest.Options {
+    static func forceRefresh() -> AuthFetchSessionRequest.Options {
         return AuthFetchSessionRequest.Options(forceRefresh: true)
     }
 }

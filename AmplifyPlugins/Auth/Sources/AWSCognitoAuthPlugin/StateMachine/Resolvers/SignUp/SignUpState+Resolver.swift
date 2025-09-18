@@ -52,7 +52,7 @@ extension SignUpState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveError(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState
@@ -68,7 +68,7 @@ extension SignUpState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveInitiatingSignUp(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState
@@ -88,7 +88,7 @@ extension SignUpState {
                 return .init(newState: .error(error))
             }
         }
-        
+
         private func resolveAwaitingUserConfirmation(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState
@@ -106,7 +106,7 @@ extension SignUpState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveConfirmingSignUp(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState
@@ -126,7 +126,7 @@ extension SignUpState {
                 return .from(oldState)
             }
         }
-        
+
         private func resolveSignedUp(
             byApplying signUpEvent: SignUpEvent,
             from oldState: SignUpState

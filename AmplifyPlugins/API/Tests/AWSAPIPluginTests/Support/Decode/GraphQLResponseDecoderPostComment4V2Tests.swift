@@ -6,9 +6,9 @@
 //
 
 import AWSPluginsCore
+import AWSPluginsCore
 import XCTest
 @testable @preconcurrency import Amplify
-import AWSPluginsCore
 @testable @preconcurrency import AmplifyTestCommon
 @testable import AWSAPIPlugin
 

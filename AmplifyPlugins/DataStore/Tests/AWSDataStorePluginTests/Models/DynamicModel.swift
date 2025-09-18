@@ -10,10 +10,10 @@ import Foundation
 
 struct DynamicModel: Model, JSONValueHolder {
 
-    public let id: String
-    public var values: [String: JSONValue]
+    let id: String
+    var values: [String: JSONValue]
 
-    public init(
+    init(
         id: String = UUID().uuidString,
         values: [String: JSONValue]
     ) {
@@ -23,18 +23,18 @@ struct DynamicModel: Model, JSONValueHolder {
         self.values = valueWIthId
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
         self.values = try decoder.singleValueContainer().decode([String: JSONValue].self)
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
         try container.encode(values)
     }
 
-    public func jsonValue(for key: String) -> Any?? {
+    func jsonValue(for key: String) -> Any?? {
         if key == "id" {
             return id
         }
@@ -56,7 +56,7 @@ struct DynamicModel: Model, JSONValueHolder {
         }
     }
 
-    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
+    func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
            case .some(.number(let deserializedValue)) = values[key] {
@@ -82,10 +82,10 @@ struct DynamicModel: Model, JSONValueHolder {
 
 extension DynamicModel {
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case values
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 }

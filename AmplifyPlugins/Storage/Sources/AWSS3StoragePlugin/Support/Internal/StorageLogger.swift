@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import Foundation
 @preconcurrency import Amplify
+import Foundation
 
 let storageLogger = Amplify.Logging.logger(forCategory: .storage)

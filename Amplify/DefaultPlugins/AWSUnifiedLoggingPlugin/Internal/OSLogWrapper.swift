@@ -14,7 +14,7 @@ final class OSLogWrapper: Logger {
 
     var getLogLevel: () -> LogLevel
 
-    public var logLevel: LogLevel {
+    var logLevel: LogLevel {
         get {
             getLogLevel()
         }
@@ -28,7 +28,7 @@ final class OSLogWrapper: Logger {
         self.getLogLevel = getLogLevel
     }
 
-    public func error(_ message: @autoclosure () -> String) {
+    func error(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.error.rawValue else { return }
         os_log(
             "%@",
@@ -38,7 +38,7 @@ final class OSLogWrapper: Logger {
         )
     }
 
-    public func error(error: Error) {
+    func error(error: Error) {
         guard enabled, logLevel.rawValue >= LogLevel.error.rawValue else { return }
         os_log(
             "%@",
@@ -48,7 +48,7 @@ final class OSLogWrapper: Logger {
         )
     }
 
-    public func warn(_ message: @autoclosure () -> String) {
+    func warn(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.warn.rawValue else {
             return
         }
@@ -61,7 +61,7 @@ final class OSLogWrapper: Logger {
         )
     }
 
-    public func info(_ message: @autoclosure () -> String) {
+    func info(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.info.rawValue else {
             return
         }
@@ -74,7 +74,7 @@ final class OSLogWrapper: Logger {
         )
     }
 
-    public func debug(_ message: @autoclosure () -> String) {
+    func debug(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.debug.rawValue else {
             return
         }
@@ -87,7 +87,7 @@ final class OSLogWrapper: Logger {
         )
     }
 
-    public func verbose(_ message: @autoclosure () -> String) {
+    func verbose(_ message: @autoclosure () -> String) {
         guard enabled, logLevel.rawValue >= LogLevel.verbose.rawValue else {
             return
         }

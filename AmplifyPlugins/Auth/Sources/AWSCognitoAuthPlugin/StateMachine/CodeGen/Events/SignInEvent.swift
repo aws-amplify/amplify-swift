@@ -34,7 +34,7 @@ struct SignInEvent: StateMachineEvent {
         case initiateUserAuth(SignInEventData, DeviceMetadata)
 
         case initiateWebAuthnSignIn(WebAuthnSignInData, RespondToAuthChallenge)
-        
+
         case initiateAutoSignIn(SignInEventData, DeviceMetadata)
 
         case respondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)

@@ -308,7 +308,7 @@ extension AWSDataStoreLazyLoadProjectTeam6Tests {
     typealias Team = Team6
 
     struct ProjectTeam6Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Project6.self)
             ModelRegistry.register(modelType: Team6.self)

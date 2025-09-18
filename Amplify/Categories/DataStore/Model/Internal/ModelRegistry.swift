@@ -18,11 +18,11 @@ public enum ModelRegistry {
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
-    nonisolated(unsafe) private static var modelTypes = [ModelName: Model.Type]()
+    private nonisolated(unsafe) static var modelTypes = [ModelName: Model.Type]()
 
-    nonisolated(unsafe) private static var modelDecoders = [ModelName: ModelDecoder]()
+    private nonisolated(unsafe) static var modelDecoders = [ModelName: ModelDecoder]()
 
-    nonisolated(unsafe) private static var modelSchemaMapping = [ModelName: ModelSchema]()
+    private nonisolated(unsafe) static var modelSchemaMapping = [ModelName: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
