@@ -11,7 +11,11 @@ import AWSCognitoAuthPlugin
 import AWSPluginsCore
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
 
@@ -137,7 +141,9 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
     
     func signUp() async throws {
-        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
+        let userAttributes = [AuthUserAttribute(.email, value: email)]
+        let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
+        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password, options: options)
         guard signUpResult.isSignUpComplete else {
             XCTFail("Sign up successful but not complete")
             return

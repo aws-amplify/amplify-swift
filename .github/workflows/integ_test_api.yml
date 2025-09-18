@@ -19,19 +19,16 @@ jobs:
     secrets: inherit
 
   graphql-user-pool-test:
-    if: ${{ false }}
     name: GraphQL | User Pool Tests
     uses: ./.github/workflows/integ_test_api_graphql_user_pool.yml
     secrets: inherit
 
   graphql-auth-directive-test:
-    if: ${{ false }}
     name: GraphQL | Auth Directive Tests
     uses: ./.github/workflows/integ_test_api_graphql_auth_directive.yml
     secrets: inherit
 
   graphql-iam-test:
-    if: ${{ false }}
     name: GraphQL | IAM Tests
     uses: ./.github/workflows/integ_test_api_graphql_iam.yml
     secrets: inherit
@@ -48,7 +45,6 @@ jobs:
     secrets: inherit
 
   rest-user-pool-test:
-    if: ${{ false }}
     name: REST | User Pool Tests
     uses: ./.github/workflows/integ_test_api_rest_user_pool.yml
     secrets: inherit

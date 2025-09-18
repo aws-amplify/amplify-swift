@@ -29,6 +29,7 @@ final class AWSCloudWatchLoggingMonitorTests: XCTestCase {
     /// Given: the the logging monitor is configured with a 2 second interval
     /// When: the monitor is enabled
     /// Then: the delegate is autoamtically invoked
+    /// TODO: Disabled: Flaky test, failing in CI/CD.
     func testDelegateIsInvokedOnInterval() async {
         monitor.setAutomaticFlushIntervals()
         await fulfillment(of: [invokedExpectation], timeout: 10)

@@ -10,7 +10,11 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
 
@@ -18,6 +22,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
     override func setUp() async throws {
         do {
@@ -205,7 +210,9 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     }
     
     func signUp() async throws {
-        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
+        let userAttributes = [AuthUserAttribute(.email, value: email)]
+        let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
+        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password, options: options)
         guard signUpResult.isSignUpComplete else {
             XCTFail("Sign up successful but not complete: \(signUpResult)")
             return

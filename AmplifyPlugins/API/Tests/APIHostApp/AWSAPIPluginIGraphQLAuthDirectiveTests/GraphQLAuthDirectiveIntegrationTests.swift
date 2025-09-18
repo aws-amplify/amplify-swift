@@ -11,7 +11,11 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     struct User {
@@ -19,7 +23,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         let password: String
     }
     
-    let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
     var user1: User!
     var user2: User!
     

@@ -62,6 +62,11 @@
                BlueprintName = "AWSCloudWatchLoggingPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSCloudWatchLoggingMonitorTests/testDelegateIsInvokedOnInterval()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

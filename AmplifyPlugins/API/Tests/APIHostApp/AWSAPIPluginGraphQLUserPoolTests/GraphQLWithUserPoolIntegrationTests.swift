@@ -18,6 +18,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
+    let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
   
     override func setUp() {
         do {
@@ -357,6 +358,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     func testOnCreateSubscriptionUnauthorized() async throws {
         Amplify.Logging.logLevel = .verbose
         let connectingInvoked = expectation(description: "Connecting invoked")
+        connectingInvoked.isInverted = true
         let connectedInvoked = expectation(description: "Connection established")
         connectedInvoked.isInverted = true
         let completedInvoked = expectation(description: "Completed invoked")
@@ -586,7 +588,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     }
     
     func signUp() async throws {
-        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
+        let userAttributes = [AuthUserAttribute(.email, value: email)]
+        let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
+        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password, options: options)
         guard signUpResult.isSignUpComplete else {
             XCTFail("Sign up successful but not complete")
             return
