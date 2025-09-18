@@ -173,17 +173,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         }
     }
 
-    func validateRequestForFactorSelection() throws {
-        let challengeResponse = request.challengeResponse
-
-        guard let _ = AuthFactorType(rawValue: challengeResponse) else {
-            throw AuthError.validation(
-                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.field,
-                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion)
-        }
-    }
-
     func sendConfirmSignInEvent() async {
         let event = SignInChallengeEvent(
             eventType: .verifyChallengeAnswer(createConfirmSignInEventData()))

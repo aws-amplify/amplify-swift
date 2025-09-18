@@ -67,13 +67,4 @@ extension AWSPluginsCore.AWSCredentials {
             sessionToken: (self as? AWSTemporaryCredentials)?.sessionToken
         )
     }
-
-    func toAWSCredentialIdentity() throws -> SmithyIdentity.AWSCredentialIdentity {
-        return SmithyIdentity.AWSCredentialIdentity(
-            accessKey: accessKeyId,
-            secret: secretAccessKey,
-            expiration: (self as? AWSTemporaryCredentials)?.expiration,
-            sessionToken: (self as? AWSTemporaryCredentials)?.sessionToken
-        )
-    }
 }

@@ -51,7 +51,7 @@ struct ConfigurationHelper {
         // If Migration path is enabled, auth flow type should always be set to USER_PASSWORD_AUTH
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {
-            .userPassword
+            authFlowType = .userPassword
         } else if let authJson = config.value(at: "Auth.Default"),
                   case .string(let authFlowTypeConfigValue) = authJson.value(at: "authenticationFlowType"),
                   let authFlowTypeFromConfig = AuthFlowType(rawValue: authFlowTypeConfigValue) {
@@ -71,27 +71,25 @@ struct ConfigurationHelper {
         let hostedUIConfig = parseHostedConfiguration(
             configuration: config.value(at: "Auth.Default.OAuth"))
 
-        return UserPoolConfigurationData(
-            poolId: poolId,
-            clientId: appClientId,
-            region: region,
-            endpoint: endpoint,
-            clientSecret: clientSecret,
-            pinpointAppId: pinpointId,
-            authFlowType: authFlowType,
-            hostedUIConfig: hostedUIConfig,
-            passwordProtectionSettings: nil,
-            usernameAttributes: [],
-            signUpAttributes: [],
-            verificationMechanisms: []
-        )
+        return UserPoolConfigurationData(poolId: poolId,
+                                         clientId: appClientId,
+                                         region: region,
+                                         endpoint: endpoint,
+                                         clientSecret: clientSecret,
+                                         pinpointAppId: pinpointId,
+                                         authFlowType: authFlowType,
+                                         hostedUIConfig: hostedUIConfig,
+                                         passwordProtectionSettings: nil,
+                                         usernameAttributes: [],
+                                         signUpAttributes: [],
+                                         verificationMechanisms: [])
     }
 
     static func parseUserPoolData(_ config: AmplifyOutputsData.Auth) -> UserPoolConfigurationData? {
         let hostedUIConfig = parseHostedConfiguration(configuration: config)
 
         // parse `passwordProtectionSettings`
-        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings?
+        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings? = nil
         if let passwordPolicy = config.passwordPolicy {
             passwordProtectionSettings = .init(from: passwordPolicy)
         }
@@ -111,20 +109,18 @@ struct ConfigurationHelper {
             .userVerificationTypes?
             .compactMap { .init(from: $0) } ?? []
 
-        return UserPoolConfigurationData(
-            poolId: config.userPoolId,
-            clientId: config.userPoolClientId,
-            region: config.awsRegion,
-            endpoint: nil, // Gen2 does not support this field
-            clientSecret: nil, // Gen2 does not support this field
-            pinpointAppId: nil, // Gen2 does not support this field
-            authFlowType: .userSRP,
-            hostedUIConfig: hostedUIConfig,
-            passwordProtectionSettings: passwordProtectionSettings,
-            usernameAttributes: usernameAttributes,
-            signUpAttributes: signUpAttributes,
-            verificationMechanisms: verificationMechanisms
-        )
+        return UserPoolConfigurationData(poolId: config.userPoolId,
+                                         clientId: config.userPoolClientId,
+                                         region: config.awsRegion,
+                                         endpoint: nil, // Gen2 does not support this field
+                                         clientSecret: nil, // Gen2 does not support this field
+                                         pinpointAppId: nil, // Gen2 does not support this field
+                                         authFlowType: .userSRP,
+                                         hostedUIConfig: hostedUIConfig,
+                                         passwordProtectionSettings: passwordProtectionSettings,
+                                         usernameAttributes: usernameAttributes,
+                                         signUpAttributes: signUpAttributes,
+                                         verificationMechanisms: verificationMechanisms)
     }
 
     static func parseHostedConfiguration(configuration: JSONValue?) -> HostedUIConfigurationData? {
@@ -149,55 +145,44 @@ struct ConfigurationHelper {
             clientSecret = appClientSecret
         }
 
-        return createHostedConfiguration(
-            appClientId: appClientId,
-            clientSecret: clientSecret,
-            domain: domain,
-            scopes: scopesArray,
-            signInRedirectURI: signInRedirectURI,
-            signOutRedirectURI: signOutRedirectURI
-        )
+        return createHostedConfiguration(appClientId: appClientId,
+                                         clientSecret: clientSecret,
+                                         domain: domain,
+                                         scopes: scopesArray,
+                                         signInRedirectURI: signInRedirectURI,
+                                         signOutRedirectURI: signOutRedirectURI)
     }
 
     static func parseHostedConfiguration(configuration: AmplifyOutputsData.Auth) -> HostedUIConfigurationData? {
         guard let oauth = configuration.oauth,
               let signInRedirectURI = oauth.redirectSignInUri.first,
-              let signOutRedirectURI = oauth.redirectSignOutUri.first
-        else {
+              let signOutRedirectURI = oauth.redirectSignOutUri.first else {
             return nil
         }
 
-        return createHostedConfiguration(
-            appClientId: configuration.userPoolClientId,
-            clientSecret: nil,
-            domain: oauth.domain,
-            scopes: oauth.scopes,
-            signInRedirectURI: signInRedirectURI,
-            signOutRedirectURI: signOutRedirectURI
-        )
+        return createHostedConfiguration(appClientId: configuration.userPoolClientId,
+                                         clientSecret: nil,
+                                         domain: oauth.domain,
+                                         scopes: oauth.scopes,
+                                         signInRedirectURI: signInRedirectURI,
+                                         signOutRedirectURI: signOutRedirectURI)
 
     }
-    static func createHostedConfiguration(
-        appClientId: String,
-        clientSecret: String?,
-        domain: String,
-        scopes: [String],
-        signInRedirectURI: String,
-        signOutRedirectURI: String
-    ) -> HostedUIConfigurationData {
+    static func createHostedConfiguration(appClientId: String,
+                                          clientSecret: String?,
+                                          domain: String,
+                                          scopes: [String],
+                                          signInRedirectURI: String,
+                                          signOutRedirectURI: String) -> HostedUIConfigurationData {
 
-        let oauth = OAuthConfigurationData(
-            domain: domain,
-            scopes: scopes,
-            signInRedirectURI: signInRedirectURI,
-            signOutRedirectURI: signOutRedirectURI
-        )
+        let oauth = OAuthConfigurationData(domain: domain,
+                                           scopes: scopes,
+                                           signInRedirectURI: signInRedirectURI,
+                                           signOutRedirectURI: signOutRedirectURI)
 
-        return HostedUIConfigurationData(
-            clientId: appClientId,
-            oauth: oauth,
-            clientSecret: clientSecret
-        )
+        return HostedUIConfigurationData(clientId: appClientId,
+                                         oauth: oauth,
+                                         clientSecret: clientSecret)
     }
 
     static func parseIdentityPoolData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
@@ -216,10 +201,8 @@ struct ConfigurationHelper {
 
     static func parseIdentityPoolData(_ config: AmplifyOutputsData.Auth) -> IdentityPoolConfigurationData? {
         if let identityPoolId = config.identityPoolId {
-            return IdentityPoolConfigurationData(
-                poolId: identityPoolId,
-                region: config.awsRegion
-            )
+            return IdentityPoolConfigurationData(poolId: identityPoolId,
+                                                 region: config.awsRegion)
         } else {
             return nil
         }
@@ -229,10 +212,8 @@ struct ConfigurationHelper {
         let userPoolConfig = try parseUserPoolData(config)
         let identityPoolConfig = parseIdentityPoolData(config)
 
-        return try createAuthConfiguration(
-            userPoolConfig: userPoolConfig,
-            identityPoolConfig: identityPoolConfig
-        )
+        return try createAuthConfiguration(userPoolConfig: userPoolConfig,
+                                           identityPoolConfig: identityPoolConfig)
     }
 
     static func authConfiguration(_ config: AmplifyOutputsData) throws -> AuthConfiguration {
@@ -245,17 +226,13 @@ struct ConfigurationHelper {
         let userPoolConfig = parseUserPoolData(config)
         let identityPoolConfig = parseIdentityPoolData(config)
 
-        return try createAuthConfiguration(
-            userPoolConfig: userPoolConfig,
-            identityPoolConfig: identityPoolConfig
-        )
+        return try createAuthConfiguration(userPoolConfig: userPoolConfig,
+                                           identityPoolConfig: identityPoolConfig)
 
     }
 
-    static func createAuthConfiguration(
-        userPoolConfig: UserPoolConfigurationData?,
-        identityPoolConfig: IdentityPoolConfigurationData?
-    ) throws -> AuthConfiguration {
+    static func createAuthConfiguration(userPoolConfig: UserPoolConfigurationData?,
+                                        identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)
         }
@@ -294,23 +271,17 @@ struct ConfigurationHelper {
             let characterPolicy: [JSONValue] = passwordProtectionSettings.characterPolicy.map { .string($0.rawValue) }
 
             authConfigObject = .object(
-                [
-                    "usernameAttributes": .array(usernameAttributes),
-                    "signupAttributes": .array(signUpAttributes),
-                    "verificationMechanism": .array(verificationMechanisms),
-                    "passwordProtectionSettings": .object(
-                    [
-                        "passwordPolicyMinLength": .number(Double(minLength)),
-                        "passwordPolicyCharacters": .array(characterPolicy)
-                    ])
-                ])
+                ["usernameAttributes": .array(usernameAttributes),
+                 "signupAttributes": .array(signUpAttributes),
+                 "verificationMechanism": .array(verificationMechanisms),
+                 "passwordProtectionSettings": .object(
+                    ["passwordPolicyMinLength": .number(Double(minLength)),
+                     "passwordPolicyCharacters": .array(characterPolicy)])])
         } else {
             authConfigObject = .object(
-                [
-                    "usernameAttributes": .array(usernameAttributes),
-                    "signupAttributes": .array(signUpAttributes),
-                    "verificationMechanism": .array(verificationMechanisms)
-                ])
+                ["usernameAttributes": .array(usernameAttributes),
+                 "signupAttributes": .array(signUpAttributes),
+                 "verificationMechanism": .array(verificationMechanisms)])
         }
 
         return JSONValue.object([

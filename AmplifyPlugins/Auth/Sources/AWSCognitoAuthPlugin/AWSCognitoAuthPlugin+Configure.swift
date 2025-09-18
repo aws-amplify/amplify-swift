@@ -7,15 +7,15 @@
 
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
-import AWSClientRuntime
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+import AWSClientRuntime
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
-import SmithyRetries
 import SmithyRetriesAPI
+import SmithyRetries
 
 extension AWSCognitoAuthPlugin {
 
@@ -35,16 +35,13 @@ extension AWSCognitoAuthPlugin {
         } else {
             throw PluginError.pluginConfigurationError(
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
-                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion
-            )
+                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
-        let credentialStoreMachine = StateMachine(
-            resolver: credentialStoreResolver,
-            environment: credentialEnvironment
-        )
+        let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver,
+                                                  environment: credentialEnvironment)
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
@@ -59,28 +56,23 @@ extension AWSCognitoAuthPlugin {
         let hubEventHandler = AuthHubEventHandler()
         let analyticsHandler = try UserPoolAnalytics(
             authConfiguration.getUserPoolConfiguration(),
-            credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment
-        )
+            credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment)
 
-        configure(
-            authConfiguration: authConfiguration,
-            authEnvironment: authEnvironment,
-            authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreMachine,
-            hubEventHandler: hubEventHandler,
-            analyticsHandler: analyticsHandler
-        )
+        configure(authConfiguration: authConfiguration,
+                  authEnvironment: authEnvironment,
+                  authStateMachine: authStateMachine,
+                  credentialStoreStateMachine: credentialStoreMachine,
+                  hubEventHandler: hubEventHandler,
+                  analyticsHandler: analyticsHandler)
     }
 
-    func configure(
-        authConfiguration: AuthConfiguration,
-        authEnvironment: AuthEnvironment,
-        authStateMachine: AuthStateMachine,
-        credentialStoreStateMachine: CredentialStoreStateMachine,
-        hubEventHandler: AuthHubEventBehavior,
-        analyticsHandler: UserPoolAnalyticsBehavior,
-        queue: OperationQueue = OperationQueue()
-    ) {
+    func configure(authConfiguration: AuthConfiguration,
+                   authEnvironment: AuthEnvironment,
+                   authStateMachine: AuthStateMachine,
+                   credentialStoreStateMachine: CredentialStoreStateMachine,
+                   hubEventHandler: AuthHubEventBehavior,
+                   analyticsHandler: UserPoolAnalyticsBehavior,
+                   queue: OperationQueue = OperationQueue()) {
 
         self.authConfiguration = authConfiguration
         self.queue = queue
@@ -88,11 +80,11 @@ extension AWSCognitoAuthPlugin {
         self.authEnvironment = authEnvironment
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        internalConfigure()
-        listenToStateMachineChanges()
+        self.internalConfigure()
+        self.listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
         self.analyticsHandler = analyticsHandler
-        taskQueue = TaskQueue()
+        self.taskQueue = TaskQueue()
     }
 
     // MARK: - Configure Helpers
@@ -105,7 +97,7 @@ extension AWSCognitoAuthPlugin {
                 endpointResolver: userPoolConfig.endpoint?.resolver
             )
 
-            if var httpClientEngineProxy {
+            if var httpClientEngineProxy = httpClientEngineProxy {
                 httpClientEngineProxy.target = baseClientEngine(for: configuration)
                 configuration.httpClientEngine = UserAgentSettingClientEngine(
                     target: httpClientEngineProxy
@@ -222,8 +214,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: credentialsClient,
-                logger: log
-            )
+                logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
             let authorizationEnvironment = authorizationEnvironment(
@@ -235,13 +226,10 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                logger: log
-            )
+                logger: log)
 
-        case .userPoolsAndIdentityPools(
-            let userPoolConfigurationData,
-            let identityPoolConfigurationData
-        ):
+        case .userPoolsAndIdentityPools(let userPoolConfigurationData,
+                                        let identityPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(
                 userPoolConfigData: userPoolConfigurationData)
             let authorizationEnvironment = authorizationEnvironment(
@@ -253,49 +241,39 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                logger: log
-            )
+                logger: log)
         }
     }
 
     private func authenticationEnvironment(userPoolConfigData: UserPoolConfigurationData) -> AuthenticationEnvironment {
 
-        let srpAuthEnvironment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: userPoolConfigData,
-            cognitoUserPoolFactory: makeUserPool
-        )
+        let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
+                                                         cognitoUserPoolFactory: makeUserPool)
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfigData,
             cognitoUserPoolFactory: makeUserPool,
             cognitoUserPoolASFFactory: makeCognitoASF,
-            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics
-        )
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
-        return BasicAuthenticationEnvironment(
-            srpSignInEnvironment: srpSignInEnvironment,
-            userPoolEnvironment: userPoolEnvironment,
-            hostedUIEnvironment: hostedUIEnvironment
-        )
+        return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
+                                              userPoolEnvironment: userPoolEnvironment,
+                                              hostedUIEnvironment: hostedUIEnvironment)
     }
 
     private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {
         guard let hostedUIConfig = configuration.hostedUIConfig else {
             return nil
         }
-        return BasicHostedUIEnvironment(
-            configuration: hostedUIConfig,
-            hostedUISessionFactory: makeHostedUISession,
-            urlSessionFactory: makeURLSession,
-            randomStringFactory: makeRandomString
-        )
+        return BasicHostedUIEnvironment(configuration: hostedUIConfig,
+                                        hostedUISessionFactory: makeHostedUISession,
+                                        urlSessionFactory: makeURLSession,
+                                        randomStringFactory: makeRandomString)
     }
 
     private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
-        BasicAuthorizationEnvironment(
-            identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: makeIdentityClient
-        )
+        BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
+                                      cognitoIdentityFactory: makeIdentityClient)
     }
 
     private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
@@ -313,9 +291,8 @@ extension AWSCognitoAuthPlugin {
         let operation = AuthConfigureOperation(
             request: request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine
-        )
-        queue.addOperation(operation)
+            credentialStoreStateMachine: credentialStoreStateMachine)
+        self.queue.addOperation(operation)
     }
 }
 

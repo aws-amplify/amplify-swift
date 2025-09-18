@@ -36,42 +36,42 @@ extension PredictionsError.ClientError: @unchecked Sendable {
         recoverySuggestion: "Try choosing an image and sending it again."
     )
 
-    static let invalidRegion = Self(
+    public static let invalidRegion = Self(
         description: "Invalid region",
         recoverySuggestion: "Ensure that you provide a valid region in your configuration"
     )
 
-    static let missingSourceLanguage = Self(
+    public static let missingSourceLanguage = Self(
         description: "Source language is not provided",
         recoverySuggestion: "Provide a supported source language"
     )
 
-    static let missingTargetLanguage = Self(
+    public static let missingTargetLanguage = Self(
         description: "Target language is not provided",
         recoverySuggestion: "Provide a supported target language"
     )
 
-    static let onlineIdentityServiceUnavailable = Self(
+    public static let onlineIdentityServiceUnavailable = Self(
         description: "Online identify service is not available",
         recoverySuggestion: "Please check if the values are proprely initialized"
     )
 
-    static let offlineIdentityServiceUnavailable = Self(
+    public static let offlineIdentityServiceUnavailable = Self(
         description: "Offline identify service is not available",
         recoverySuggestion: "Please check if the values are proprely initialized"
     )
 
-    static let onlineInterpretServiceUnavailable = Self(
+    public static let onlineInterpretServiceUnavailable = Self(
         description: "Online interpret service is not available",
         recoverySuggestion: "Please check if the values are proprely initialized"
     )
 
-    static let offlineInterpretServiceUnavailable = Self(
+    public static let offlineInterpretServiceUnavailable = Self(
         description: "Offline interpret service is not available",
         recoverySuggestion: "Please check if the values are proprely initialized"
     )
 
-    static let unableToInterpretText = Self(
+    public static let unableToInterpretText = Self(
         description: "No result found for the text",
         recoverySuggestion: "Interpret text did not produce any result"
     )

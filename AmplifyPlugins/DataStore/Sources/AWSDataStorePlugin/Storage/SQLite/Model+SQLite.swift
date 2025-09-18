@@ -8,6 +8,7 @@
 @preconcurrency import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 /// Extended types that conform to `Persistable` in order to provide conversion to SQLite's `Binding`
 /// types. This is necessary so `Model` properties' map values to a SQLite compatible types.

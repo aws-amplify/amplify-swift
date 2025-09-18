@@ -7,6 +7,7 @@
 
 @preconcurrency import Foundation
 import Security
+import Amplify
 
 // swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {

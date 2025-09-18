@@ -93,7 +93,7 @@ class LocalWebSocketServer {
         self.connections.forEach {
             let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
             metadata.closeCode = .protocolCode(NWProtocolWebSocket.CloseCode.Defined.internalServerError)
-            connection.send(
+            $0.send(
                 content: nil,
                 contentContext: NWConnection.ContentContext(identifier: "WebSocket", metadata: [metadata]),
                 completion: .idempotent

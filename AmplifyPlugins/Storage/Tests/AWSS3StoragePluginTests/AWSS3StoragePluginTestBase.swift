@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import InternalAmplifyCredentials
 import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon

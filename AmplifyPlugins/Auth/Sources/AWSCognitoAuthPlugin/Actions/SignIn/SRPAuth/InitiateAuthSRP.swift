@@ -124,18 +124,7 @@ struct InitiateAuthSRP: Action {
         logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
         return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
     }
-
-    private func sendRequest(request: RespondToAuthChallengeInput,
-                             environment: UserPoolEnvironment,
-                             srpStateData: SRPStateData) async throws -> SignInEvent {
-
-        let cognitoClient = try environment.cognitoUserPoolFactory()
-        logVerbose("\(#fileID) Starting execution", environment: environment)
-        let response = try await cognitoClient.respondToAuthChallenge(input: request)
-        logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
-    }
-
+    
     private func sendRequest(
         request: InitiateAuthInput,
         environment: UserPoolEnvironment,

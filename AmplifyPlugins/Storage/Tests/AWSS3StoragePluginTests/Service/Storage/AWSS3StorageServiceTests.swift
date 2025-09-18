@@ -7,6 +7,7 @@
 
 import AWSS3
 import ClientRuntime
+import SmithyHTTPAPI
 import XCTest
 @testable import Amplify
 @testable import AWSPluginsTestCommon

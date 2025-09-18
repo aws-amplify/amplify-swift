@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 @preconcurrency import Combine
 @_spi(WebSocket) import AWSPluginsCore
 

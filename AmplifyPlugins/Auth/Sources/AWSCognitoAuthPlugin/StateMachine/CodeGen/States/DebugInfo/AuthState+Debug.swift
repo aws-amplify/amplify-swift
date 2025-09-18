@@ -11,17 +11,19 @@ extension AuthState: CustomDebugStringConvertible {
 
     var debugDictionary: [String: Any] {
 
-        let additionalMetadataDictionary: [String: Any] = switch self {
+        let additionalMetadataDictionary: [String: Any]
+
+        switch self {
         case .notConfigured:
-            [:]
+            additionalMetadataDictionary = [:]
         case .configuringAuth:
-            [:]
+            additionalMetadataDictionary = [:]
         case .configuringAuthentication(let authenticationState):
-            authenticationState.debugDictionary
+            additionalMetadataDictionary = authenticationState.debugDictionary
         case .validatingCredentialsAndConfiguration:
-            [:]
+            additionalMetadataDictionary = [:]
         case .configuringAuthorization(let authenticationState, let authorizationState):
-            authenticationState.debugDictionary.merging(
+            additionalMetadataDictionary = authenticationState.debugDictionary.merging(
                 authorizationState.debugDictionary, uniquingKeysWith: {$1}
             )
         case .configured(let authenticationState, let authorizationState, let signUpState):
