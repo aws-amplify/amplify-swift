@@ -76,11 +76,10 @@ public struct TemporalFormat: @unchecked Sendable {
 
     @usableFromInline
     static func sortedFormats(for type: TemporalSpec.Type) -> [String] {
-        let formats: [String]
         // If the TemporalSpec is `Date`, let's only return `.full` and `.short`
         // because `.medium`, `.long`, and `.full` are all the same format.
         // If the formats ever differ, this needs to be updated.
-        = if type == Temporal.Date.self {
+        let formats: [String] = if type == Temporal.Date.self {
             [TemporalFormat.full, .short]
                 .map { $0(for: type) }
         } else {

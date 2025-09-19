@@ -58,8 +58,7 @@ public protocol DataStoreBaseBehavior {
         _ modelType: M.Type,
         withIdentifier id: String,
         where predicate: QueryPredicate?
-    ) async throws where M: ModelIdentifiable,
-                                                                               M.IdentifierFormat == ModelIdentifierFormat.Default
+    ) async throws where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
 
     func delete<M: Model>(
         _ modelType: M.Type,
