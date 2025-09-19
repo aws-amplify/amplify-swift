@@ -11,7 +11,7 @@ import Foundation
 /// The executor, a command definition and the entity providing the environment are decoupled in order
 /// to favor re-usability.
 public protocol CommandExecutable where Self: CommandEnvironmentProvider {
-    func exec<Command: AmplifyCommand>(command: Command) -> AmplifyCommandResult
+    func exec(command: some AmplifyCommand) -> AmplifyCommandResult
 }
 
 /// Provides a default implementation for an executable command

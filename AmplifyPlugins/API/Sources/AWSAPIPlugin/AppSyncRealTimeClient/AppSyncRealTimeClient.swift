@@ -165,12 +165,12 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         // promptly returning the filtered publisher for downstream consumption of all error messages.
         defer {
             let task = Task { [weak self] in
-                guard let self = self else { return }
-                if !(await self.isConnected) {
+                guard let self else { return }
+                if await !(self.isConnected) {
                     try await connect()
                     try await waitForState(.connected)
                 }
-                try await self.storeInConnectionCancellables(await self.startSubscription(id))
+                try await self.storeInConnectionCancellables(self.startSubscription(id))
             }
             self.storeInConnectionCancellables(task.toAnyCancellable)
         }

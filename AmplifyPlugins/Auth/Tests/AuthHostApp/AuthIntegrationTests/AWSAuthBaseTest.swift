@@ -157,7 +157,7 @@ class AWSAuthBaseTest: XCTestCase {
             }
         }
 
-        guard let subscription = subscription else { return }
+        guard let subscription else { return }
 
         await wait(name: "Subscription Connection Waiter", timeout: 5.0) {
             try await waitForSubscriptionConnection(subscription: subscription)

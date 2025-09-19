@@ -26,8 +26,8 @@ public protocol PredictionsCategoryBehavior {
     ///   - request:
     ///   - options:
     /// - Returns:
-    func convert<Input, Options, Output>(
-        _ request: Predictions.Convert.Request<Input, Options, Output>,
+    func convert<Options, Output>(
+        _ request: Predictions.Convert.Request<some Any, Options, Output>,
         options: Options?
     ) async throws -> Output
 

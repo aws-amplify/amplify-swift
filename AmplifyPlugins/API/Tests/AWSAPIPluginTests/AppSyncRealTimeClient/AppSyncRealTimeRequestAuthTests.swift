@@ -81,7 +81,7 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }
 
     private func areDictionariesEqual(_ lhs: [String: Any]?, _ rhs: [String: Any]?) -> Bool {
-        guard let lhs = lhs, let rhs = rhs else { return false }
+        guard let lhs, let rhs else { return false }
         return NSDictionary(dictionary: lhs).isEqual(to: rhs)
     }
 

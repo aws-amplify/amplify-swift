@@ -34,7 +34,7 @@ class PreferredChallengeHelper {
 
         switch authFactor {
         case .password:
-            guard let password = password else {
+            guard let password else {
                 throw AuthError.validation(
                     AuthPluginErrorConstants.signInPasswordError.field,
                     AuthPluginErrorConstants.signInPasswordError.errorDescription,
@@ -58,7 +58,7 @@ class PreferredChallengeHelper {
 
         let srpClient = try SRPSignInHelper.srpClient(srpEnv)
         let srpKeyPair = srpClient.generateClientKeyPair()
-        guard let password = password else {
+        guard let password else {
             throw AuthError.validation(
                 AuthPluginErrorConstants.signInPasswordError.field,
                 AuthPluginErrorConstants.signInPasswordError.errorDescription,

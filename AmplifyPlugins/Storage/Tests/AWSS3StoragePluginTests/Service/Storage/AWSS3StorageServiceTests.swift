@@ -341,7 +341,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// Then: A .failed event is dispatched with an .unknown error
     func testUpload_withoutPreSignedURL_shouldSendFailEvent() async {
         let data = Data("someData".utf8)
-        let expectation = self.expectation(description: "Upload")
+        let expectation = expectation(description: "Upload")
         let builder = MockAWSS3PreSignedURLBuilder()
         builder.getPreSignedURLHandler = {_, _, _ in
             throw StorageError.unknown("Unable to create URL", nil)

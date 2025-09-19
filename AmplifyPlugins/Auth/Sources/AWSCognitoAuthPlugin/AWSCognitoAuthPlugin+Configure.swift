@@ -105,7 +105,7 @@ extension AWSCognitoAuthPlugin {
                 endpointResolver: userPoolConfig.endpoint?.resolver
             )
 
-            if var httpClientEngineProxy = httpClientEngineProxy {
+            if var httpClientEngineProxy {
                 httpClientEngineProxy.target = baseClientEngine(for: configuration)
                 configuration.httpClientEngine = UserAgentSettingClientEngine(
                     target: httpClientEngineProxy

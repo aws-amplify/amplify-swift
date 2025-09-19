@@ -43,13 +43,13 @@ public protocol DataStoreBaseBehavior {
         paginate paginationInput: QueryPaginationInput?
     ) async throws -> [M]
 
-    func delete<M: Model>(
-        _ model: M,
+    func delete(
+        _ model: some Model,
         where predicate: QueryPredicate?
     ) async throws
 
-    func delete<M: Model>(
-        _ modelType: M.Type,
+    func delete(
+        _ modelType: (some Model).Type,
         withId id: String,
         where predicate: QueryPredicate?
     ) async throws
@@ -66,8 +66,8 @@ public protocol DataStoreBaseBehavior {
         where predicate: QueryPredicate?
     ) async throws where M: ModelIdentifiable
 
-    func delete<M: Model>(
-        _ modelType: M.Type,
+    func delete(
+        _ modelType: (some Model).Type,
         where predicate: QueryPredicate
     ) async throws
 
@@ -100,7 +100,7 @@ public protocol DataStoreBaseBehavior {
 public protocol DataStoreSubscribeBehavior {
     /// Returns an AmplifyAsyncThrowingSequence for model changes (create, updates, delete)
     /// - Parameter modelType: The model type to observe
-    func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent>
+    func observe(_ modelType: (some Model).Type) -> AmplifyAsyncThrowingSequence<MutationEvent>
 
     /// Returns a Publisher for query snapshots.
     ///
