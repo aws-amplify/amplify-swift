@@ -80,7 +80,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload:
     private let nondeterminsticOperation: NondeterminsticOperation<AmplifyAsyncThrowingSequence<SubscriptionEvents>>
 
     public init(
-        requestStream: AsyncStream<() async throws -> AmplifyAsyncThrowingSequence<SubscriptionEvents>>
+        requestStream: AsyncStream<() async throws -> AmplifyAsyncThrowingSequence<SubscriptionEvents>> 
     ) {
         self.nondeterminsticOperation = NondeterminsticOperation(operations: requestStream)
     }
