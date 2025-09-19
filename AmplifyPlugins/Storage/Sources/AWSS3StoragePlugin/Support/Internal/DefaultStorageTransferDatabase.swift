@@ -263,7 +263,7 @@ class DefaultStorageTransferDatabase {
         return instance
     }
 
-    private func store(fileURL: URL, value: some Encodable) throws  {
+    private func store(fileURL: URL, value: some Encodable) throws {
         if Thread.isMainThread {
             logger.warn("Storing on main thread")
         }
