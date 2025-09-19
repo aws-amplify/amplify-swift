@@ -150,10 +150,10 @@ public extension XCTestCase {
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
-    internal func waitError<T>(
+    internal func waitError(
         with expectation: AsyncExpectation,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> T
+        action: @escaping () async throws -> some Any
     ) async -> Error? {
         let task = Task { () -> Error? in
             defer {
@@ -186,10 +186,10 @@ public extension XCTestCase {
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
-    internal func waitError<T>(
+    internal func waitError(
         name: String,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> T
+        action: @escaping () async throws -> some Any
     ) async -> Error? {
         let expectation = asyncExpectation(description: name)
         return await waitError(with: expectation, timeout: timeout, action: action)

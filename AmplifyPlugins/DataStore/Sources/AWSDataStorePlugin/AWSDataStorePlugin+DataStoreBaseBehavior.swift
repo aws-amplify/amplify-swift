@@ -269,8 +269,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     // MARK: - Delete
     @available(*, deprecated, renamed: "delete(withIdentifier:)")
-    public func delete<M: Model>(
-        _ modelType: M.Type,
+    public func delete(
+        _ modelType: (some Model).Type,
         withId id: String,
         where predicate: QueryPredicate?
     ) async throws {
@@ -279,8 +279,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     @available(*, deprecated, renamed: "delete(withIdentifier:)")
-    public func delete<M: Model>(
-        _ modelType: M.Type,
+    public func delete(
+        _ modelType: (some Model).Type,
         modelSchema: ModelSchema,
         withId id: String,
         where predicate: QueryPredicate? = nil

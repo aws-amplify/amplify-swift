@@ -81,9 +81,9 @@ struct ASFDeviceInfo: ASFDeviceBehavior {
     }
 
     func deviceInfo() async -> String {
-        let model = await self.model
-        let type = await self.type
-        let version = await self.version
+        let model = await model
+        let type = await type
+        let version = await version
         var build = "release"
 #if DEBUG
         build = "debug"
