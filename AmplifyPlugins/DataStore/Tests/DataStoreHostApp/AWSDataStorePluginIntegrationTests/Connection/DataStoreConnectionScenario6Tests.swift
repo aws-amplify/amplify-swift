@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 #if !os(watchOS)
@@ -73,7 +73,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
         try await posts.fetch()
         XCTAssertEqual(posts.count, 2)
-        guard let fetchedPost = posts.first(where: { (post) -> Bool in
+        guard let fetchedPost = posts.first(where: { post -> Bool in
             post.id == post1.id
         }), let comments = fetchedPost.comments else {
             XCTFail("Could not set up - failed to get a post and its comments")
@@ -81,10 +81,10 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
         try await comments.fetch()
         XCTAssertEqual(comments.count, 2)
-        XCTAssertTrue(comments.contains(where: { (comment) -> Bool in
+        XCTAssertTrue(comments.contains(where: { comment -> Bool in
             comment.id == comment1post1.id
         }))
-        XCTAssertTrue(comments.contains(where: { (comment) -> Bool in
+        XCTAssertTrue(comments.contains(where: { comment -> Bool in
             comment.id == comment2post1.id
         }))
         if let post = comments[0].post, let comments = post.comments {
@@ -147,7 +147,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         if let postsInEagerlyLoadedBlog = eagerlyLoadedBlog.posts {
             try await postsInEagerlyLoadedBlog.fetch()
             XCTAssertEqual(postsInEagerlyLoadedBlog.count, 1)
-            XCTAssertTrue(postsInEagerlyLoadedBlog.contains(where: {(postIn) -> Bool in
+            XCTAssertTrue(postsInEagerlyLoadedBlog.contains(where: {postIn -> Bool in
                 postIn.id == post.id
             }))
             XCTAssertEqual(postsInEagerlyLoadedBlog[0].id, post.id)
@@ -183,7 +183,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         remoteEventReceived.expectedFulfillmentCount = 2
         let commentId1 = UUID().uuidString
         let commentId2 = UUID().uuidString
-        
+
         let task = Task {
             let mutationEvents = Amplify.DataStore.observe(Comment6.self)
             do {
@@ -199,7 +199,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        
+
         let blog = try await saveBlog(name: "name")
         let post = try await savePost(title: "title", blog: blog)
         _ = try await saveComment(id: commentId1, post: post, content: "content")
@@ -229,7 +229,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                               model.id == commentId1 || model.id == commentId2 {
                         processedSoFar += 1
                     }
-                    
+
                     Amplify.Logging.verbose("Processed so far \(processedSoFar)/6")
                     if processedSoFar == 6 {
                         outboxMutationProcessed.fulfill()
@@ -238,9 +238,9 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                     break
                 }
             }.store(in: &cancellables)
-        
+
         try await Amplify.DataStore.delete(Blog6.self, where: QueryPredicateConstant.all)
-        
+
         await fulfillment(of: [outboxMutationProcessed], timeout: 30)
     }
 

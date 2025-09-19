@@ -24,7 +24,7 @@ public enum ModelAttribute: Equatable {
     /// Convenience factory method to initialize a `.primaryKey` attribute by
     /// using the model coding keys
     public static func primaryKey(fields: [CodingKey]) -> ModelAttribute {
-        return .primaryKey(fields: fields.map { $0.stringValue })
+        return .primaryKey(fields: fields.map(\.stringValue))
     }
 }
 
@@ -53,14 +53,16 @@ public struct ModelField {
         return attributes.contains { $0 == .primaryKey }
     }
 
-    public init(name: String,
-                type: ModelFieldType,
-                isRequired: Bool = false,
-                isReadOnly: Bool = false,
-                isArray: Bool = false,
-                attributes: [ModelFieldAttribute] = [],
-                association: ModelAssociation? = nil,
-                authRules: AuthRules = []) {
+    public init(
+        name: String,
+        type: ModelFieldType,
+        isRequired: Bool = false,
+        isReadOnly: Bool = false,
+        isArray: Bool = false,
+        attributes: [ModelFieldAttribute] = [],
+        association: ModelAssociation? = nil,
+        authRules: AuthRules = []
+    ) {
         self.name = name
         self.type = type
         self.isRequired = isRequired
@@ -106,14 +108,16 @@ public struct ModelSchema {
         return primaryKey
     }
 
-    public init(name: String,
-                pluralName: String? = nil,
-                listPluralName: String? = nil,
-                syncPluralName: String? = nil,
-                authRules: AuthRules = [],
-                attributes: [ModelAttribute] = [],
-                fields: ModelFields = [:],
-                primaryKeyFieldKeys: [ModelFieldName] = []) {
+    public init(
+        name: String,
+        pluralName: String? = nil,
+        listPluralName: String? = nil,
+        syncPluralName: String? = nil,
+        authRules: AuthRules = [],
+        attributes: [ModelAttribute] = [],
+        fields: ModelFields = [:],
+        primaryKeyFieldKeys: [ModelFieldName] = []
+    ) {
         self.name = name
         self.pluralName = pluralName
         self.listPluralName = listPluralName
@@ -122,9 +126,11 @@ public struct ModelSchema {
         self.attributes = attributes
         self.fields = fields
         self.indexes = attributes.indexes
-        self._primaryKey = ModelPrimaryKey(allFields: fields,
-                                           attributes: attributes,
-                                           primaryKeyFieldKeys: primaryKeyFieldKeys)
+        self._primaryKey = ModelPrimaryKey(
+            allFields: fields,
+            attributes: attributes,
+            primaryKeyFieldKeys: primaryKeyFieldKeys
+        )
 
         let indexOfPrimaryKeyField = _primaryKey?.indexOfField ?? { (_: String) in nil }
         self.sortedFields = fields.sortedFields(indexOfPrimaryKeyField: indexOfPrimaryKeyField)
@@ -150,7 +156,7 @@ extension ModelAttribute {
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-extension Array where Element == ModelAttribute {
+extension [ModelAttribute] {
     var indexes: [ModelAttribute] {
         filter {
             switch $0 {
@@ -179,7 +185,7 @@ public extension ModelSchema {
 
 // MARK: - Dictionary + ModelField
 
-extension Dictionary where Key == String, Value == ModelField {
+extension [String: ModelField] {
 
     /// Returns an array of the values sorted by some pre-defined rules:
     ///

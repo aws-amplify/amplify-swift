@@ -7,9 +7,9 @@
 
 /// AWS Amplify Storage module provides a simple mechanism for managing user content for your app in public, protected
 /// or private storage buckets.
-/// 
+///
 /// - Tag: StorageCategory
-final public class StorageCategory: Category {
+public final class StorageCategory: Category {
     public let categoryType = CategoryType.storage
 
     var plugins = [PluginKey: StorageCategoryPlugin]()
@@ -54,8 +54,10 @@ final public class StorageCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = StorageError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
+            let error = StorageError.configuration(
+                "Plugin \(pluginDescription) has an empty `key`.",
+                "Set the `key` property for \(String(describing: plugin))"
+            )
             throw error
         }
 
@@ -78,8 +80,10 @@ final public class StorageCategory: Category {
     public func getPlugin(for key: PluginKey) throws -> StorageCategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = StorageError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+            let error = StorageError.configuration(
+                "No plugin has been added for '\(key)'.",
+                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)"
+            )
             throw error
         }
         return plugin

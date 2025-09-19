@@ -7,11 +7,11 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     let networkTimeout = TimeInterval(10)
@@ -21,11 +21,13 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         AuthState.configured(
             AuthenticationState.signedIn(
                 SignedInData(
-                             signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     override func setUp() {
@@ -36,25 +38,30 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
@@ -62,7 +69,8 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
     override func tearDown() async throws {

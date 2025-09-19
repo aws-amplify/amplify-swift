@@ -7,11 +7,11 @@
 
 import Foundation
 
+import AWSCognitoIdentity
+import AWSPluginsCore
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSPluginsCore
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
@@ -37,7 +37,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretAccessKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { input in
 
@@ -69,30 +70,36 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataWithExpiredAWSCredentials),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.configured,
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.error(.testData),
                 AuthorizationState.configured,
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.error(.sessionExpired(
                     error: NotAuthorizedException(message: "message"))),
-                .notStarted)
+                .notStarted
+            )
         ]
 
         for initialState in statesToTest {
@@ -100,9 +107,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 identityPool: {
                     MockIdentity(
                         mockGetIdResponse: getId,
-                        mockGetCredentialsResponse: getCredentials)
+                        mockGetCredentialsResponse: getCredentials
+                    )
                 },
-                initialState: initialState)
+                initialState: initialState
+            )
             do {
                 let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
                 XCTAssertNotNil(federatedResult)
@@ -136,7 +145,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secret",
-            sessionToken: "session")
+            sessionToken: "session"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { input in
 
@@ -167,14 +177,17 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
                 AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-            .notStarted)
+            .notStarted
+        )
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         do {
             let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
@@ -228,11 +241,13 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.notConfigured,
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.signedIn(.testData),
                 AuthorizationState.configured,
-                .notStarted)
+                .notStarted
+            )
         ]
 
         for initialState in statesToTest {
@@ -240,9 +255,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 identityPool: {
                     MockIdentity(
                         mockGetIdResponse: getId,
-                        mockGetCredentialsResponse: getCredentials)
+                        mockGetCredentialsResponse: getCredentials
+                    )
                 },
-                initialState: initialState)
+                initialState: initialState
+            )
             do {
                 _ = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
                 XCTFail("Should not succeed")
@@ -270,7 +287,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secret",
-            sessionToken: "session")
+            sessionToken: "session"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             if shouldThrowError {
@@ -288,24 +306,29 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
             initialState: AuthState.configured(
                 AuthenticationState.error(.testData),
                 AuthorizationState.error(.invalidState(message: "")),
-                .notStarted))
+                .notStarted
+            )
+        )
         do {
             // Should setup the plugin with a token
             shouldThrowError = false
             _ = try await plugin.federateToIdentityPool(
                 withProviderToken: "someToken",
-                for: .facebook)
+                for: .facebook
+            )
 
             // Push the AuthState to an error state
             shouldThrowError = true
             _ = try? await plugin.federateToIdentityPool(
                 withProviderToken: "someToken",
-                for: .facebook)
+                for: .facebook
+            )
 
             // Should still be able to clear credentials
             try await plugin.clearFederationToIdentityPool()
@@ -328,7 +351,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secret",
-            sessionToken: "session")
+            sessionToken: "session"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -344,12 +368,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.sessionEstablished(.identityPoolWithFederation(
                     federatedToken: .testData,
                     identityID: "identityId",
-                    credentials: .testData)),
-                .notStarted),
+                    credentials: .testData
+                )),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.error(.testData),
                 AuthorizationState.error(.invalidState(message: "")),
-                .notStarted)
+                .notStarted
+            )
         ]
 
         for initialState in statesToTest {
@@ -357,13 +384,16 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 identityPool: {
                     MockIdentity(
                         mockGetIdResponse: getId,
-                        mockGetCredentialsResponse: getCredentials)
+                        mockGetCredentialsResponse: getCredentials
+                    )
                 },
-                initialState: initialState)
+                initialState: initialState
+            )
             do {
                 _ = try await plugin.federateToIdentityPool(
                     withProviderToken: "someToken",
-                    for: .facebook)
+                    for: .facebook
+                )
                 try await plugin.clearFederationToIdentityPool()
             } catch {
                 XCTFail("Received failure with error \(error)")
@@ -395,14 +425,17 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
                 AuthorizationState.configured,
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.configured,
                 AuthorizationState.sessionEstablished(.identityPoolWithFederation(
                     federatedToken: .testData,
                     identityID: "identityId",
-                    credentials: .testData)),
-                .notStarted)
+                    credentials: .testData
+                )),
+                .notStarted
+            )
         ]
 
         for initialState in statesToTest {
@@ -410,9 +443,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 identityPool: {
                     MockIdentity(
                         mockGetIdResponse: getId,
-                        mockGetCredentialsResponse: getCredentials)
+                        mockGetCredentialsResponse: getCredentials
+                    )
                 },
-                initialState: initialState)
+                initialState: initialState
+            )
             do {
                 try await plugin.clearFederationToIdentityPool()
                 XCTFail("Should not succeed")
@@ -447,7 +482,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretAccessKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
         cognitoAPIExpectation.expectedFulfillmentCount = 1
@@ -478,16 +514,20 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)),
-            .notStarted)
+                    credentials: .expiredTestData
+                )),
+            .notStarted
+        )
 
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
         do {
             let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
             XCTAssertTrue(session.isSignedIn)
@@ -504,8 +544,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch {
+            } catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -541,7 +580,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretAccessKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
@@ -559,16 +599,20 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .testData)),
-            .notStarted)
+                    credentials: .testData
+                )),
+            .notStarted
+        )
 
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
         do {
             let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
             XCTAssertTrue(session.isSignedIn)
@@ -584,8 +628,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch {
+            } catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -620,7 +663,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
         cognitoAPIExpectation.expectedFulfillmentCount = 1
@@ -651,16 +695,20 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)),
-            .notStarted)
+                    credentials: .expiredTestData
+                )),
+            .notStarted
+        )
 
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         do {
             let session = try await plugin.fetchAuthSession(options: .forceRefresh())
@@ -677,8 +725,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             do {
                 _ = try (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-            }
-            catch {
+            } catch {
                 guard case .invalidState = error else {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
@@ -712,7 +759,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
@@ -737,21 +785,25 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthenticationState.signedOut(.testData),
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.federatedToIdentityPool,
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataWithExpiredAWSCredentials),
-                .notStarted),
+                .notStarted
+            ),
             AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.configured,
-                .notStarted)
+                .notStarted
+            )
         ]
 
         for initialState in statesToTest {
@@ -759,14 +811,17 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 identityPool: {
                     MockIdentity(
                         mockGetIdResponse: getId,
-                        mockGetCredentialsResponse: getCredentials)
+                        mockGetCredentialsResponse: getCredentials
+                    )
                 },
-                initialState: initialState)
+                initialState: initialState
+            )
             do {
                 let federatedResult = try await plugin.federateToIdentityPool(
                     withProviderToken: authenticationToken,
                     for: provider,
-                    options: .init(developerProvidedIdentityID: mockIdentityId))
+                    options: .init(developerProvidedIdentityID: mockIdentityId)
+                )
                 XCTAssertNotNil(federatedResult)
                 XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
                 XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
@@ -791,7 +846,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testFederateToIdentityPoolWhenGetIdErrorsOut() async throws {
 
-        var shouldThrowError: Bool = false
+        var shouldThrowError = false
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -801,7 +856,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretAccessKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { input in
             return .init(identityId: mockIdentityId)
@@ -819,15 +875,18 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
                 AmplifyCredentials.testDataIdentityPoolWithExpiredTokens),
-            .notStarted)
+            .notStarted
+        )
 
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
 
         shouldThrowError = true
         do {
@@ -871,14 +930,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let mockIdentityId = "mockIdentityId"
 
-        var shouldThrowError: Bool = false
+        var shouldThrowError = false
 
         let federatedToken: FederatedToken = .testData
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
             secretKey: "secretAccessKey",
-            sessionToken: "sessionKey")
+            sessionToken: "sessionKey"
+        )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("GetId should not be called")
@@ -899,16 +959,20 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 .identityPoolWithFederation(
                     federatedToken: federatedToken,
                     identityID: mockIdentityId,
-                    credentials: .expiredTestData)),
-            .notStarted)
+                    credentials: .expiredTestData
+                )),
+            .notStarted
+        )
 
         let plugin = configurePluginWith(
             identityPool: {
                 MockIdentity(
                     mockGetIdResponse: getId,
-                    mockGetCredentialsResponse: getCredentials)
+                    mockGetCredentialsResponse: getCredentials
+                )
             },
-            initialState: initialState)
+            initialState: initialState
+        )
 
 
         shouldThrowError = true
@@ -948,6 +1012,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
 
 }

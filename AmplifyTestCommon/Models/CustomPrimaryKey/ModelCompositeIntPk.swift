@@ -15,17 +15,23 @@ public struct ModelCompositeIntPk: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      serial: Int) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    serial: Int
+  ) {
+    self.init(
+      id: id,
       serial: serial,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      serial: Int,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    serial: Int,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.serial = serial
       self.createdAt = createdAt

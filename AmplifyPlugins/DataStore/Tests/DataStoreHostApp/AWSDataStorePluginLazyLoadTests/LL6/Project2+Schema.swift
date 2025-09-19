@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Project2 {
+public extension Project2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case projectId
     case name
     case team
@@ -14,10 +21,10 @@ extension Project2 {
     case project2TeamName
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let project2 = Project2.keys
 
     model.pluralName = "Project2s"
@@ -37,10 +44,10 @@ extension Project2 {
       .field(project2.project2TeamName, is: .optional, ofType: .string)
     )
     }
-    
-    public class Path: ModelPath<Project2> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+
+    class Path: ModelPath<Project2> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Project2: ModelIdentifiable {
@@ -48,10 +55,12 @@ extension Project2: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension Project2.IdentifierProtocol {
-  public static func identifier(projectId: String,
-      name: String) -> Self {
-    .make(fields:[(name: "projectId", value: projectId), (name: "name", value: name)])
+public extension Project2.IdentifierProtocol {
+  static func identifier(
+    projectId: String,
+    name: String
+  ) -> Self {
+    .make(fields: [(name: "projectId", value: projectId), (name: "name", value: name)])
   }
 }
 

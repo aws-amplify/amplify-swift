@@ -14,15 +14,16 @@ typealias DisableSubscriptions = () -> Bool
 
 // Used for testing:
 typealias IncomingEventReconciliationQueueFactory =
-    ([ModelSchema],
-    APICategoryGraphQLBehavior,
-    StorageEngineAdapter,
-    [DataStoreSyncExpression],
-    AuthCategoryBehavior?,
-    AuthModeStrategy,
-    ModelReconciliationQueueFactory?,
-    @escaping DisableSubscriptions
-) async -> IncomingEventReconciliationQueue
+    (
+        [ModelSchema],
+        APICategoryGraphQLBehavior,
+        StorageEngineAdapter,
+        [DataStoreSyncExpression],
+        AuthCategoryBehavior?,
+        AuthModeStrategy,
+        ModelReconciliationQueueFactory?,
+        @escaping DisableSubscriptions
+    ) async -> IncomingEventReconciliationQueue
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
@@ -45,22 +46,24 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
     private let modelSchemasCount: Int
 
-    init(modelSchemas: [ModelSchema],
-         api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter,
-         syncExpressions: [DataStoreSyncExpression],
-         auth: AuthCategoryBehavior? = nil,
-         authModeStrategy: AuthModeStrategy,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
-         disableSubscriptions: @escaping () -> Bool = { false }) async {
+    init(
+        modelSchemas: [ModelSchema],
+        api: APICategoryGraphQLBehavior,
+        storageAdapter: StorageEngineAdapter,
+        syncExpressions: [DataStoreSyncExpression],
+        auth: AuthCategoryBehavior? = nil,
+        authModeStrategy: AuthModeStrategy,
+        modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
+        disableSubscriptions: @escaping () -> Bool = { false }
+    ) async {
         self.modelSchemasCount = modelSchemas.count
-        self.modelReconciliationQueueSinks.set([:])
+        modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
-        self.reconciliationQueues.set([:])
+        reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
 
-        if let modelReconciliationQueueFactory = modelReconciliationQueueFactory {
+        if let modelReconciliationQueueFactory {
             self.modelReconciliationQueueFactory = modelReconciliationQueueFactory
         } else {
             self.modelReconciliationQueueFactory = AWSModelReconciliationQueue.init
@@ -80,7 +83,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             Running DataStore on watchOS with subscriptions enabled is only possible during special circumstances
             such as actively streaming audio. See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
             """
-            self.log.verbose(message)
+            log.verbose(message)
         }
         #endif
 
@@ -94,21 +97,25 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 log.warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
-            let queue = await self.modelReconciliationQueueFactory(modelSchema,
-                                                                   storageAdapter,
-                                                                   api,
-                                                                   reconcileAndSaveQueue,
-                                                                   modelPredicate,
-                                                                   auth,
-                                                                   authModeStrategy,
-                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
+            let queue = await self.modelReconciliationQueueFactory(
+                modelSchema,
+                storageAdapter,
+                api,
+                reconcileAndSaveQueue,
+                modelPredicate,
+                auth,
+                authModeStrategy,
+                subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil
+            )
 
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
             }
             log.verbose("[InitializeSubscription.5] Sink reconciliationQueues \(modelName) \(reconciliationQueues.get().count)")
-            let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onReceiveValue(receiveValue:))
+            let modelReconciliationQueueSink = queue.publisher.sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onReceiveValue(receiveValue:)
+            )
             modelReconciliationQueueSinks.with { modelReconciliationQueueSinks in
                 modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
             }
@@ -197,10 +204,10 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 }
 
 extension AWSIncomingEventReconciliationQueue: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }
@@ -209,14 +216,16 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 extension AWSIncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = {
         modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
-        await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                                  api: api,
-                                                  storageAdapter: storageAdapter,
-                                                  syncExpressions: syncExpressions,
-                                                  auth: auth,
-                                                  authModeStrategy: authModeStrategy,
-                                                  modelReconciliationQueueFactory: nil,
-                                                  disableSubscriptions: disableSubscriptions)
+        await AWSIncomingEventReconciliationQueue(
+            modelSchemas: modelSchemas,
+            api: api,
+            storageAdapter: storageAdapter,
+            syncExpressions: syncExpressions,
+            auth: auth,
+            authModeStrategy: authModeStrategy,
+            modelReconciliationQueueFactory: nil,
+            disableSubscriptions: disableSubscriptions
+        )
     }
 }
 
@@ -237,7 +246,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
         reconcileAndSaveQueue.cancelAllOperations()
         // Reset is used in internal testing only. Some operations get kicked off at this point and do not finish
         // We're sometimes hitting a deadlock when waiting for them to finish. Commenting this out and letting
-        // the tests continue onto the next works pretty well, but ideally ReconcileAndLocalSaveOperation's should 
+        // the tests continue onto the next works pretty well, but ideally ReconcileAndLocalSaveOperation's should
         // always finish. We can uncomment this to explore a better fix that will still gives us test stability.
         // reconcileAndSaveQueue.waitUntilOperationsAreFinished()
         log.verbose("Resetting reconcileAndSaveQueue: finished")

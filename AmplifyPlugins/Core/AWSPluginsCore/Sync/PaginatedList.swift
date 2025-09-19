@@ -28,18 +28,18 @@ public struct PaginatedList<ModelType: Model>: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let optimisticDecodedResults = try values.decode([OptimisticDecoded<MutationSync<ModelType>>].self, forKey: .items)
-        items = optimisticDecodedResults.compactMap { try? $0.result.get() }
-        nextToken = try values.decode(String?.self, forKey: .nextToken)
-        startedAt = try values.decode(Int64?.self, forKey: .startedAt)
+        self.items = optimisticDecodedResults.compactMap { try? $0.result.get() }
+        self.nextToken = try values.decode(String?.self, forKey: .nextToken)
+        self.startedAt = try values.decode(Int64?.self, forKey: .startedAt)
     }
 }
 
 
-fileprivate struct OptimisticDecoded<T: Decodable>: Decodable {
+private struct OptimisticDecoded<T: Decodable>: Decodable {
     let result: Result<T, Error>
 
     init(from decoder: Decoder) throws {
-        result = Result(catching: {
+        self.result = Result(catching: {
             try T(from: decoder)
         })
     }

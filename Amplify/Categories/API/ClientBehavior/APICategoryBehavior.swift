@@ -7,8 +7,8 @@
 
 /// Behavior of the API category that clients will use
 public typealias APICategoryBehavior =
-    APICategoryRESTBehavior &
+    APICategoryAuthProviderFactoryBehavior &
     APICategoryGraphQLBehavior &
     APICategoryInterceptorBehavior &
-    APICategoryReachabilityBehavior &
-    APICategoryAuthProviderFactoryBehavior
+    APICategoryRESTBehavior &
+    APICategoryReachabilityBehavior

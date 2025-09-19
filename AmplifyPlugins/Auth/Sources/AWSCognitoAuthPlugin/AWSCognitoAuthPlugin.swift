@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
@@ -39,7 +39,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     let secureStoragePreferences: AWSCognitoSecureStoragePreferences?
 
     @_spi(InternalAmplifyConfiguration)
-    internal(set) public var jsonConfiguration: JSONValue?
+    public internal(set) var jsonConfiguration: JSONValue?
 
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
@@ -51,8 +51,10 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// - Parameters:
     ///   - networkPreferences: network preferences
     ///   - secureStoragePreferences: secure storage preferences
-    public init(networkPreferences: AWSCognitoNetworkPreferences? = nil,
-                secureStoragePreferences: AWSCognitoSecureStoragePreferences = AWSCognitoSecureStoragePreferences()) {
+    public init(
+        networkPreferences: AWSCognitoNetworkPreferences? = nil,
+        secureStoragePreferences: AWSCognitoSecureStoragePreferences = AWSCognitoSecureStoragePreferences()
+    ) {
         self.networkPreferences = networkPreferences
         self.secureStoragePreferences = secureStoragePreferences
     }

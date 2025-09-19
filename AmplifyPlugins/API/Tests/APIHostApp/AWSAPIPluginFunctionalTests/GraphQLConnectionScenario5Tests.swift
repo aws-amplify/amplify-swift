@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -234,10 +234,10 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
             resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
-        XCTAssertTrue(resultsArray.contains(where: { (postEditor) -> Bool in
+        XCTAssertTrue(resultsArray.contains(where: { postEditor -> Bool in
             postEditor.post.id == post1.id
         }))
-        XCTAssertTrue(resultsArray.contains(where: { (postEditor) -> Bool in
+        XCTAssertTrue(resultsArray.contains(where: { postEditor -> Bool in
             postEditor.post.id == post2.id
         }))
     }

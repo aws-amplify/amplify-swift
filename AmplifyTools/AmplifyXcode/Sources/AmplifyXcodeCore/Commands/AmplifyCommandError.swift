@@ -26,7 +26,7 @@ public struct AmplifyCommandError: Error {
         self.errorDescription = errorDescription
         self.recoverySuggestion = recoverySuggestion
 
-        if let error = error {
+        if let error {
             self.underlyingErrors = [error]
         }
     }
@@ -61,7 +61,7 @@ public extension AmplifyCommandError {
             components.append("-- Recovery suggestion: \(recoveryMsg)")
         }
 
-        guard let underlyingErrors = self.underlyingErrors else {
+        guard let underlyingErrors else {
             return components.joined(separator: "\n")
         }
 

@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension NestedTypeTestModel {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension NestedTypeTestModel {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case nestedVal
     case nullableNestedVal
@@ -15,15 +22,15 @@ extension NestedTypeTestModel {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let nestedTypeTestModel = NestedTypeTestModel.keys
-    
+
     model.pluralName = "NestedTypeTestModels"
-    
+
     model.fields(
       .id(),
       .field(nestedTypeTestModel.nestedVal, is: .required, ofType: .embedded(type: Nested.self)),

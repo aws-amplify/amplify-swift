@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import CryptoKit
+import Foundation
 
 struct FetchHostedUISignInToken: Action {
 
@@ -32,16 +32,17 @@ struct FetchHostedUISignInToken: Action {
         do {
             let request = try HostedUIRequestHelper.createTokenRequest(
                 configuration: hostedUIConfig,
-                result: result)
+                result: result
+            )
 
             let data = try await withCheckedThrowingContinuation {
                 (continuation: CheckedContinuation<Data, Error>) in
                 let task = hostedUIEnvironment.urlSessionFactory().dataTask(with: request) {
                     data, _, error in
 
-                    if let error = error {
+                    if let error {
                         continuation.resume(with: .failure(SignInError.service(error: error)))
-                    } else if let data = data {
+                    } else if let data {
                         continuation.resume(with: .success(data))
                     } else {
                         continuation.resume(with: .failure(SignInError.hostedUI(.tokenParsing)))
@@ -71,7 +72,8 @@ struct FetchHostedUISignInToken: Action {
     func handleData(_ data: Data) async throws -> SignedInData {
         guard let json = try JSONSerialization.jsonObject(
             with: data,
-            options: []) as? [String: Any] else {
+            options: []
+        ) as? [String: Any] else {
             throw HostedUIError.tokenParsing
         }
 
@@ -86,11 +88,13 @@ struct FetchHostedUISignInToken: Action {
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                expiresIn: json["expires_in"] as? Int)
+                expiresIn: json["expires_in"] as? Int
+            )
             let signedInData = SignedInData(
                 signedInDate: Date(),
                 signInMethod: .hostedUI(result.options),
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             return signedInData
         } else {
             throw HostedUIError.tokenParsing

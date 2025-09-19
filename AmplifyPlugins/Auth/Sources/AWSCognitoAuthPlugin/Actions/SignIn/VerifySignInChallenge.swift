@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifySignInChallenge: Action {
 
@@ -31,16 +31,18 @@ struct VerifySignInChallenge: Action {
                 try await handleContinueSignInWithMFASetupSelection(
                     withDispatcher: dispatcher,
                     environment: environment,
-                    username: username)
+                    username: username
+                )
                 return
             } else if case .continueSignInWithFirstFactorSelection = currentSignInStep,
                       let authFactorType = AuthFactorType(rawValue: confirmSignEventData.answer) {
-                if (authFactorType == .password || authFactorType == .passwordSRP) {
+                if authFactorType == .password || authFactorType == .passwordSRP {
                     try await handleContinueSignInWithPassword(
                         withDispatcher: dispatcher,
                         environment: environment,
                         username: username,
-                        authFactorType: authFactorType)
+                        authFactorType: authFactorType
+                    )
                     return
                 } else if isWebAuthn(authFactorType) {
                     let signInData = WebAuthnSignInData(
@@ -56,7 +58,8 @@ struct VerifySignInChallenge: Action {
                 try await handleConfirmSignInWithPassword(
                     withDispatcher: dispatcher,
                     environment: environment,
-                    username: username)
+                    username: username
+                )
                 return
             }
 
@@ -69,11 +72,13 @@ struct VerifySignInChallenge: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.authEnvironment().credentialsClient)
+                credentialStoreClient: environment.authEnvironment().credentialsClient
+            )
 
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                            for: username,
-                            with: environment)
+                for: username,
+                with: environment
+            )
 
             let input = await RespondToAuthChallengeInput.verifyChallenge(
                 username: username,
@@ -85,15 +90,19 @@ struct VerifySignInChallenge: Action {
                 asfDeviceId: asfDeviceId,
                 attributes: confirmSignEventData.attributes,
                 deviceMetadata: deviceMetadata,
-                environment: userpoolEnv)
+                environment: userpoolEnv
+            )
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,
                 signInMethod: signInMethod,
-                environment: userpoolEnv)
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+                environment: userpoolEnv
+            )
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
@@ -106,14 +115,18 @@ struct VerifySignInChallenge: Action {
             await dispatcher.send(event)
         } catch let error as SignInError {
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }
@@ -126,26 +139,33 @@ struct VerifySignInChallenge: Action {
 
         let newDeviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
             for: username,
-            with: environment)
+            with: environment
+        )
         if challenge.challenge == .password {
 
             let event = SignInEvent(
                 eventType: .initiateMigrateAuth(
-                    .init(username: username,
-                          password: confirmSignEventData.answer,
-                          signInMethod: signInMethod),
+                    .init(
+                        username: username,
+                        password: confirmSignEventData.answer,
+                        signInMethod: signInMethod
+                    ),
                     newDeviceMetadata,
-                    challenge))
+                    challenge
+                ))
 
             await dispatcher.send(event)
         } else if challenge.challenge == .passwordSrp {
             let event = SignInEvent(
                 eventType: .initiateSignInWithSRP(
-                    .init(username: username,
-                          password: confirmSignEventData.answer,
-                          signInMethod: signInMethod),
+                    .init(
+                        username: username,
+                        password: confirmSignEventData.answer,
+                        signInMethod: signInMethod
+                    ),
                     newDeviceMetadata,
-                    challenge))
+                    challenge
+                ))
             await dispatcher.send(event)
         } else {
             throw SignInError.unknown(
@@ -182,7 +202,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: [:])
+            parameters: [:]
+        )
 
         let event = SignInEvent(eventType: .receivedChallenge(newChallenge))
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
@@ -199,7 +220,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"])
+            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"]
+        )
 
         let event: SignInEvent
         guard let mfaType = MFAType(rawValue: confirmSignEventData.answer) else {
@@ -232,7 +254,7 @@ struct VerifySignInChallenge: Action {
     private func isWebAuthn(_ factorType: AuthFactorType?) -> Bool {
     #if os(iOS) || os(macOS) || os(visionOS)
         if #available(iOS 17.4, macOS 13.5, *) {
-            return .webAuthn == factorType
+            return factorType == .webAuthn
         }
     #endif
         return false

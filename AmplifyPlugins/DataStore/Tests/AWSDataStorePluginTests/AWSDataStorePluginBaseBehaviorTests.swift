@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -16,12 +16,14 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
 
     func testDispatchModelSyncedEventToHub() {
 
-        let modelSyncedEvent = ModelSyncedEvent(modelName: Post.modelName,
-                                                isFullSync: true,
-                                                isDeltaSync: false,
-                                                added: 10,
-                                                updated: 1,
-                                                deleted: 1)
+        let modelSyncedEvent = ModelSyncedEvent(
+            modelName: Post.modelName,
+            isFullSync: true,
+            isDeltaSync: false,
+            added: 10,
+            updated: 1,
+            deleted: 1
+        )
         let modelSyncedReceivedFromHub = expectation(description: "modelSynced received from Hub")
         let listener = Amplify.Hub.publisher(for: .dataStore).sink { payload in
             switch payload.eventName {
@@ -50,12 +52,14 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
     }
 
     func testDispatchedModelSyncedEventFalseAfterStop() throws {
-        let modelSyncedEvent = ModelSyncedEvent(modelName: Post.modelName,
-                                                isFullSync: true,
-                                                isDeltaSync: false,
-                                                added: 10,
-                                                updated: 1,
-                                                deleted: 1)
+        let modelSyncedEvent = ModelSyncedEvent(
+            modelName: Post.modelName,
+            isFullSync: true,
+            isDeltaSync: false,
+            added: 10,
+            updated: 1,
+            deleted: 1
+        )
         guard let dispatchedModelSyncedEvent = dataStorePlugin.dispatchedModelSyncedEvents[Post.modelName] else {
             XCTFail("Missing `dispatchedModelSyncedEvent` for `Post` model")
             return

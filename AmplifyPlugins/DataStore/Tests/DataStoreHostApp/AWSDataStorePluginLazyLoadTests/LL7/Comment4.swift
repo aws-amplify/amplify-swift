@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -9,24 +16,30 @@ public struct Comment4: Model {
   public var updatedAt: Temporal.DateTime?
   public var post4CommentsPostId: String?
   public var post4CommentsTitle: String?
-  
-  public init(commentId: String,
-      content: String,
-      post4CommentsPostId: String? = nil,
-      post4CommentsTitle: String? = nil) {
-    self.init(commentId: commentId,
+
+  public init(
+    commentId: String,
+    content: String,
+    post4CommentsPostId: String? = nil,
+    post4CommentsTitle: String? = nil
+  ) {
+    self.init(
+      commentId: commentId,
       content: content,
       createdAt: nil,
       updatedAt: nil,
       post4CommentsPostId: post4CommentsPostId,
-      post4CommentsTitle: post4CommentsTitle)
+      post4CommentsTitle: post4CommentsTitle
+    )
   }
-  internal init(commentId: String,
-      content: String,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      post4CommentsPostId: String? = nil,
-      post4CommentsTitle: String? = nil) {
+  init(
+    commentId: String,
+    content: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    post4CommentsPostId: String? = nil,
+    post4CommentsTitle: String? = nil
+  ) {
       self.commentId = commentId
       self.content = content
       self.createdAt = createdAt

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-import Amplify
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
@@ -86,7 +86,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
-                            refreshToken: "refreshTokenNew"))
+                            refreshToken: "refreshTokenNew"
+                        ))
                 }
             )
         }
@@ -97,8 +98,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let userPoolEvent = event as? RefreshSessionEvent,
-                    case .refreshIdentityInfo = userPoolEvent.eventType
-                {
+                    case .refreshIdentityInfo = userPoolEvent.eventType {
                     expectation.fulfill()
                 }
             },
@@ -130,7 +130,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
-            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
+        )
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
@@ -138,13 +139,13 @@ class RefreshUserPoolTokensTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let userPoolEvent = event as? RefreshSessionEvent,
-                    case let .throwError(error) = userPoolEvent.eventType
-                {
+                    case let .throwError(error) = userPoolEvent.eventType {
                     XCTAssertNotNil(error)
                     XCTAssertEqual(error, .service(testError))
                     expectation.fulfill()
                 }
-            }, environment: environment)
+            }, environment: environment
+        )
 
         await fulfillment(
             of: [expectation],
@@ -163,7 +164,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
-                            refreshToken: "refreshTokenRotated"))
+                            refreshToken: "refreshTokenRotated"
+                        ))
                 }
             )
         }
@@ -174,10 +176,10 @@ class RefreshUserPoolTokensTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let userPoolEvent = event as? RefreshSessionEvent,
-                    case let .refreshIdentityInfo(signedInData, _) = userPoolEvent.eventType
-                {
+                    case let .refreshIdentityInfo(signedInData, _) = userPoolEvent.eventType {
                     XCTAssertEqual(
-                        signedInData.cognitoUserPoolTokens.refreshToken, "refreshTokenRotated")
+                        signedInData.cognitoUserPoolTokens.refreshToken, "refreshTokenRotated"
+                    )
                     expectation.fulfill()
                 }
             },

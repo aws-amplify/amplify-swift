@@ -42,8 +42,8 @@ struct AssertWebAuthnCredentials: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let payload = try await credentialAsserter.assert(with: options)
-            let event = WebAuthnEvent(eventType: .verifyCredentialsAndSignIn(
-                try payload.stringify(),
+            let event = try WebAuthnEvent(eventType: .verifyCredentialsAndSignIn(
+                payload.stringify(),
                 .init(
                     username: username,
                     challenge: respondToAuthChallenge,

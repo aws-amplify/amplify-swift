@@ -60,9 +60,11 @@ public extension InternalTaskHubResult where Self: InternalTaskIdentifiable & In
             // Automatically unsubscribe when event is received
             unsubscribe?()
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: idFilter,
-                                       listener: resultHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: idFilter,
+            listener: resultHubListener
+        )
         unsubscribe = {
             Amplify.Hub.removeListener(token)
         }
@@ -94,9 +96,11 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
                 return
             }
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: idFilter,
-                                       listener: inProcessHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: idFilter,
+            listener: inProcessHubListener
+        )
         return token
     }
 
@@ -131,9 +135,11 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
                 unsubscribe?()
             }
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: idFilter,
-                                       listener: inProcessHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: idFilter,
+            listener: inProcessHubListener
+        )
         unsubscribe = {
             Amplify.Hub.removeListener(token)
         }
@@ -157,9 +163,11 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable {
                 return
             }
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: filterById,
-                                       listener: inProcessHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: inProcessHubListener
+        )
         return token
     }
 
@@ -194,9 +202,11 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
                 unsubscribe?()
             }
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: filterById,
-                                       listener: inProcessHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: inProcessHubListener
+        )
         unsubscribe = {
             Amplify.Hub.removeListener(token)
         }

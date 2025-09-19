@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import SQLite
 import XCTest
-import Combine
 
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 /// Base class for SyncEngine and sync-enabled DataStore tests
 class SyncEngineTestBase: XCTestCase {
@@ -38,7 +38,7 @@ class SyncEngineTestBase: XCTestCase {
     var remoteSyncEngineSink: AnyCancellable!
 
     var requestRetryablePolicy: MockRequestRetryablePolicy!
-    
+
     var token: UnsubscribeToken!
 
     // MARK: - Setup
@@ -64,7 +64,7 @@ class SyncEngineTestBase: XCTestCase {
 
         amplifyConfig = AmplifyConfiguration(api: apiConfig, auth: authConfig, dataStore: dataStoreConfig)
 
-        if let reachabilityPublisher = reachabilityPublisher {
+        if let reachabilityPublisher {
             apiPlugin = MockAPICategoryPlugin(
                 reachabilityPublisher: reachabilityPublisher
             )
@@ -76,7 +76,7 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.add(plugin: apiPlugin)
         try Amplify.add(plugin: authPlugin)
     }
-    
+
     override func tearDown() async throws {
         amplifyConfig = nil
         apiPlugin = nil
@@ -102,7 +102,7 @@ class SyncEngineTestBase: XCTestCase {
     ) throws {
         models.forEach { ModelRegistry.register(modelType: $0) }
         let resolvedConnection: Connection
-        if let connection = connection {
+        if let connection {
             resolvedConnection = connection
         } else {
             resolvedConnection = try Connection(.inMemory)
@@ -122,24 +122,29 @@ class SyncEngineTestBase: XCTestCase {
     ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-        stateMachine = StateMachine(initialState: .notStarted,
-                                    resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+        stateMachine = StateMachine(
+            initialState: .notStarted,
+            resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:)
+        )
 
-        syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                      dataStoreConfiguration: .testDefault(),
-                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                      outgoingMutationQueue: mutationQueue,
-                                      mutationEventIngester: mutationDatabaseAdapter,
-                                      mutationEventPublisher: awsMutationEventPublisher,
-                                      initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                                      reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                      stateMachine: stateMachine,
-                                      networkReachabilityPublisher: reachabilityPublisher,
-                                      requestRetryablePolicy: requestRetryablePolicy)
+        syncEngine = RemoteSyncEngine(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            outgoingMutationQueue: mutationQueue,
+            mutationEventIngester: mutationDatabaseAdapter,
+            mutationEventPublisher: awsMutationEventPublisher,
+            initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
+            reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+            stateMachine: stateMachine,
+            networkReachabilityPublisher: reachabilityPublisher,
+            requestRetryablePolicy: requestRetryablePolicy
+        )
         remoteSyncEngineSink = syncEngine
             .publisher
-            .sink(receiveCompletion: {_ in },
-                  receiveValue: { (event: RemoteSyncEngineEvent) in
+            .sink(
+                receiveCompletion: {_ in },
+                receiveValue: { (event: RemoteSyncEngineEvent) in
                     switch event {
                     case .mutationsPaused:
                         // Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
@@ -149,25 +154,30 @@ class SyncEngineTestBase: XCTestCase {
                     default:
                         break
                     }
-            })
+            }
+            )
 
         let validAPIPluginKey = "MockAPICategoryPlugin"
         let validAuthPluginKey = "MockAuthCategoryPlugin"
 
-        let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+        let storageEngine = StorageEngine(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .testDefault(),
+            syncEngine: syncEngine,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
         }
         let publisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
-                                                 storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                                 dataStorePublisher: publisher,
-                                                 validAPIPluginKey: validAPIPluginKey,
-                                                 validAuthPluginKey: validAuthPluginKey)
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: modelRegistration,
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: publisher,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey
+        )
 
         try Amplify.add(plugin: dataStorePlugin)
     }
@@ -177,10 +187,10 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try await Amplify.DataStore.start()
     }
-    
+
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
-    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>)->Void) {
+    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {
@@ -189,14 +199,14 @@ class SyncEngineTestBase: XCTestCase {
                 }
             }
         }
-        
-        
+
+
         Task {
             guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
                 XCTFail("Never registered listener for sync started")
                 return
             }
-            
+
             do {
                 try await startAmplify()
             } catch {
@@ -204,7 +214,7 @@ class SyncEngineTestBase: XCTestCase {
                 completion(.failure(error))
             }
         }
-        
+
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
@@ -216,20 +226,24 @@ class SyncEngineTestBase: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Data methods
 
     /// Saves a mutation event directly to StorageAdapter. Used for pre-populating database before tests
-    func saveMutationEvent(of mutationType: MutationEvent.MutationType,
-                           for post: Post,
-                           inProcess: Bool = false) throws {
-        let mutationEvent = try MutationEvent(id: SyncEngineTestBase.mutationEventId(for: post),
-                                              modelId: post.id,
-                                              modelName: post.modelName,
-                                              json: post.toJSON(),
-                                              mutationType: mutationType,
-                                              createdAt: .now(),
-                                              inProcess: inProcess)
+    func saveMutationEvent(
+        of mutationType: MutationEvent.MutationType,
+        for post: Post,
+        inProcess: Bool = false
+    ) throws {
+        let mutationEvent = try MutationEvent(
+            id: SyncEngineTestBase.mutationEventId(for: post),
+            modelId: post.id,
+            modelName: post.modelName,
+            json: post.toJSON(),
+            mutationType: mutationType,
+            createdAt: .now(),
+            inProcess: inProcess
+        )
 
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         storageAdapter.save(mutationEvent) { result in

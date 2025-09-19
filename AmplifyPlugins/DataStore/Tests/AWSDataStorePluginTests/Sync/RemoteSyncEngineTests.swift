@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 import Combine
 @testable import Amplify
@@ -46,7 +46,7 @@ class RemoteSyncEngineTests: XCTestCase {
     }
 
     func testErrorOnNilStorageAdapter() throws {
-        guard let remoteSyncEngine = remoteSyncEngine else {
+        guard let remoteSyncEngine else {
             XCTFail("Failed to initialize remoteSyncEngine")
             return
         }

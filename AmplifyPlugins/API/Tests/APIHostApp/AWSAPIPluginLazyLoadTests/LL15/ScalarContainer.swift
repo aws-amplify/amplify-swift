@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -19,22 +26,25 @@ public struct ScalarContainer: Model {
   public var myIPAddress: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      myString: String? = nil,
-      myInt: Int? = nil,
-      myDouble: Double? = nil,
-      myBool: Bool? = nil,
-      myDate: Temporal.Date? = nil,
-      myTime: Temporal.Time? = nil,
-      myDateTime: Temporal.DateTime? = nil,
-      myTimeStamp: Int? = nil,
-      myEmail: String? = nil,
-      myJSON: String? = nil,
-      myPhone: String? = nil,
-      myURL: String? = nil,
-      myIPAddress: String? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    myString: String? = nil,
+    myInt: Int? = nil,
+    myDouble: Double? = nil,
+    myBool: Bool? = nil,
+    myDate: Temporal.Date? = nil,
+    myTime: Temporal.Time? = nil,
+    myDateTime: Temporal.DateTime? = nil,
+    myTimeStamp: Int? = nil,
+    myEmail: String? = nil,
+    myJSON: String? = nil,
+    myPhone: String? = nil,
+    myURL: String? = nil,
+    myIPAddress: String? = nil
+  ) {
+    self.init(
+      id: id,
       myString: myString,
       myInt: myInt,
       myDouble: myDouble,
@@ -49,24 +59,27 @@ public struct ScalarContainer: Model {
       myURL: myURL,
       myIPAddress: myIPAddress,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      myString: String? = nil,
-      myInt: Int? = nil,
-      myDouble: Double? = nil,
-      myBool: Bool? = nil,
-      myDate: Temporal.Date? = nil,
-      myTime: Temporal.Time? = nil,
-      myDateTime: Temporal.DateTime? = nil,
-      myTimeStamp: Int? = nil,
-      myEmail: String? = nil,
-      myJSON: String? = nil,
-      myPhone: String? = nil,
-      myURL: String? = nil,
-      myIPAddress: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    myString: String? = nil,
+    myInt: Int? = nil,
+    myDouble: Double? = nil,
+    myBool: Bool? = nil,
+    myDate: Temporal.Date? = nil,
+    myTime: Temporal.Time? = nil,
+    myDateTime: Temporal.DateTime? = nil,
+    myTimeStamp: Int? = nil,
+    myEmail: String? = nil,
+    myJSON: String? = nil,
+    myPhone: String? = nil,
+    myURL: String? = nil,
+    myIPAddress: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.myString = myString
       self.myInt = myInt

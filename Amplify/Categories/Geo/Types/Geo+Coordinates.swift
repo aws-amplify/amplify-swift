@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
 public extension Geo {
     /// A pair of coordinates to represent a location (point).

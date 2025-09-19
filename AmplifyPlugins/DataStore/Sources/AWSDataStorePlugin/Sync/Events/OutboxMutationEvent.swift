@@ -17,18 +17,24 @@ public struct OutboxMutationEvent {
         self.modelName = modelName
         self.element = element
     }
-    public static func fromModelWithMetadata(modelName: String,
-                                             model: Model,
-                                             mutationSync: MutationSync<AnyModel>) -> OutboxMutationEvent {
-        let element = OutboxMutationEventElement(model: model,
-                                                 version: mutationSync.syncMetadata.version,
-                                                 lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
-                                                 deleted: mutationSync.syncMetadata.deleted)
+    public static func fromModelWithMetadata(
+        modelName: String,
+        model: Model,
+        mutationSync: MutationSync<AnyModel>
+    ) -> OutboxMutationEvent {
+        let element = OutboxMutationEventElement(
+            model: model,
+            version: mutationSync.syncMetadata.version,
+            lastChangedAt: mutationSync.syncMetadata.lastChangedAt,
+            deleted: mutationSync.syncMetadata.deleted
+        )
         return OutboxMutationEvent(modelName: modelName, element: element)
     }
 
-    public static func fromModelWithoutMetadata(modelName: String,
-                                                model: Model) -> OutboxMutationEvent {
+    public static func fromModelWithoutMetadata(
+        modelName: String,
+        model: Model
+    ) -> OutboxMutationEvent {
         let element = OutboxMutationEventElement(model: model)
         return OutboxMutationEvent(modelName: modelName, element: element)
     }

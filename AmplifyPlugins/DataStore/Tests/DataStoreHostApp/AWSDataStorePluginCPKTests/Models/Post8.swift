@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -8,21 +15,27 @@ public struct Post8: Model {
   public var comments: List<Comment8>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(postId: String,
-      title: String,
-      comments: List<Comment8>? = []) {
-    self.init(postId: postId,
+
+  public init(
+    postId: String,
+    title: String,
+    comments: List<Comment8>? = []
+  ) {
+    self.init(
+      postId: postId,
       title: title,
       comments: comments,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(postId: String,
-      title: String,
-      comments: List<Comment8>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    postId: String,
+    title: String,
+    comments: List<Comment8>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.postId = postId
       self.title = title
       self.comments = comments

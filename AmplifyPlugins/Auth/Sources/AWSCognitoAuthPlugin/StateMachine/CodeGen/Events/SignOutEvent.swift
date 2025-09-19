@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct SignOutEvent: StateMachineEvent {
     var data: Any?
@@ -14,30 +14,37 @@ struct SignOutEvent: StateMachineEvent {
     enum EventType {
         case signOutGlobally(
             SignedInData,
-            hostedUIError: AWSCognitoHostedUIError? = nil)
+            hostedUIError: AWSCognitoHostedUIError? = nil
+        )
 
         case revokeToken(
             SignedInData,
             hostedUIError: AWSCognitoHostedUIError? = nil,
-            globalSignOutError: AWSCognitoGlobalSignOutError? = nil)
+            globalSignOutError: AWSCognitoGlobalSignOutError? = nil
+        )
 
         case signOutLocally(
             SignedInData,
             hostedUIError: AWSCognitoHostedUIError? = nil,
             globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
-            revokeTokenError: AWSCognitoRevokeTokenError? = nil)
+            revokeTokenError: AWSCognitoRevokeTokenError? = nil
+        )
 
         case signOutGuest
 
         case invokeHostedUISignOut(SignOutEventData, SignedInData)
 
-        case signedOutSuccess(hostedUIError: AWSCognitoHostedUIError? = nil,
-                              globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
-                              revokeTokenError: AWSCognitoRevokeTokenError? = nil)
+        case signedOutSuccess(
+            hostedUIError: AWSCognitoHostedUIError? = nil,
+            globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
+            revokeTokenError: AWSCognitoRevokeTokenError? = nil
+        )
 
-        case globalSignOutError(SignedInData,
-                                globalSignOutError: AWSCognitoGlobalSignOutError,
-                                hostedUIError: AWSCognitoHostedUIError? = nil)
+        case globalSignOutError(
+            SignedInData,
+            globalSignOutError: AWSCognitoGlobalSignOutError,
+            hostedUIError: AWSCognitoHostedUIError? = nil
+        )
 
         case signedOutFailure(AuthenticationError)
 

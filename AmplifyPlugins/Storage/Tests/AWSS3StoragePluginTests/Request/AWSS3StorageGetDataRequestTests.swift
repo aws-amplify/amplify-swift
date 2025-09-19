@@ -16,9 +16,11 @@ class StorageDownloadDataRequestTests: XCTestCase {
     let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
-        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
-                                                    targetIdentityId: testTargetIdentityId,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageDownloadDataRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -27,9 +29,11 @@ class StorageDownloadDataRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
-                                                    targetIdentityId: "",
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageDownloadDataRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: "",
+            pluginOptions: testPluginOptions
+        )
         let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -50,9 +54,11 @@ class StorageDownloadDataRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let options = StorageDownloadDataRequest.Options(accessLevel: .private,
-                                                    targetIdentityId: testTargetIdentityId,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageDownloadDataRequest.Options(
+            accessLevel: .private,
+            targetIdentityId: testTargetIdentityId,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -73,9 +79,11 @@ class StorageDownloadDataRequestTests: XCTestCase {
     }
 
     func testValidateKeyIsEmptyError() {
-        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
-                                                    targetIdentityId: testTargetIdentityId,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageDownloadDataRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: testTargetIdentityId,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageDownloadDataRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()
@@ -100,9 +108,11 @@ class StorageDownloadDataRequestTests: XCTestCase {
     /// Then: There is no error returned even though the storage path is invalid
     /// There is no error because the path validation is done at operation execution time and not part of the request
     func testValidateWithStoragePath() {
-        let options = StorageDownloadDataRequest.Options(accessLevel: .private,
-                                                    targetIdentityId: "",
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageDownloadDataRequest.Options(
+            accessLevel: .private,
+            targetIdentityId: "",
+            pluginOptions: testPluginOptions
+        )
         let path = StringStoragePath(resolve: { input in return "my/path/"})
         let request = StorageDownloadDataRequest(path: path, options: options)
 

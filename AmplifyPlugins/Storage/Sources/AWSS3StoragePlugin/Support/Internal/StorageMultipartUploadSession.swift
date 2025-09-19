@@ -8,8 +8,8 @@
 // Docs: https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
 // https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias RequestHeaders = [String: String]
 typealias RequestParameters = [String: String]
@@ -44,25 +44,29 @@ class StorageMultipartUploadSession {
     private let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler
 
     private let transferTask: StorageTransferTask
-    private var cancelationError: (any Error)? = nil
+    private var cancelationError: (any Error)?
 
-    init(client: StorageMultipartUploadClient,
-         bucket: String,
-         key: String,
-         contentType: String? = nil,
-         requestHeaders: RequestHeaders? = nil,
-         onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
-         behavior: StorageMultipartUploadBehavior = .progressive,
-         fileSystem: FileSystem = .default,
-         logger: Logger = storageLogger) {
+    init(
+        client: StorageMultipartUploadClient,
+        bucket: String,
+        key: String,
+        contentType: String? = nil,
+        requestHeaders: RequestHeaders? = nil,
+        onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
+        behavior: StorageMultipartUploadBehavior = .progressive,
+        fileSystem: FileSystem = .default,
+        logger: Logger = storageLogger
+    ) {
         self.client = client
 
         let transferType: StorageTransferType = .multiPartUpload(onEvent: onEvent)
-        let transferTask = StorageTransferTask(transferType: transferType,
-                                               bucket: bucket,
-                                               key: key,
-                                               contentType: contentType,
-                                               requestHeaders: requestHeaders)
+        let transferTask = StorageTransferTask(
+            transferType: transferType,
+            bucket: bucket,
+            key: key,
+            contentType: contentType,
+            requestHeaders: requestHeaders
+        )
         self.transferTask = transferTask
         self.onEvent = onEvent
 
@@ -70,21 +74,23 @@ class StorageMultipartUploadSession {
         self.fileSystem = fileSystem
         self.logger = logger
 
-        multipartUpload = .none
+        self.multipartUpload = .none
         self.client.integrate(session: self)
 
         // attach session to transferTask
         transferTask.proxyStorageTask = self
 
-        logger.info("Concurrency Limit is \(self.concurrentLimit) [based on active processors]")
+        logger.info("Concurrency Limit is \(concurrentLimit) [based on active processors]")
     }
 
-    init?(client: StorageMultipartUploadClient,
-          transferTask: StorageTransferTask,
-          multipartUpload: StorageMultipartUpload,
-          behavior: StorageMultipartUploadBehavior = .progressive,
-          fileSystem: FileSystem = .default,
-          logger: Logger = storageLogger) {
+    init?(
+        client: StorageMultipartUploadClient,
+        transferTask: StorageTransferTask,
+        multipartUpload: StorageMultipartUpload,
+        behavior: StorageMultipartUploadBehavior = .progressive,
+        fileSystem: FileSystem = .default,
+        logger: Logger = storageLogger
+    ) {
         guard case let .multiPartUpload(onEvent) = transferTask.transferType else {
             return nil
         }
@@ -103,7 +109,8 @@ class StorageMultipartUploadSession {
         guard let uploadFile = multipartUpload.uploadFile,
               let uploadId = multipartUpload.uploadId,
               let partSize = multipartUpload.partSize,
-              let parts = multipartUpload.parts else {
+              let parts = multipartUpload.parts
+        else {
             return
         }
         uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
@@ -334,7 +341,7 @@ class StorageMultipartUploadSession {
                     let index = partNumber - 1
                     parts[index] = .pending(bytes: part.bytes)
                     multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
-                    let remainingParts = parts.filter({ $0.inProgress })
+                    let remainingParts = parts.filter { $0.inProgress }
                     if remainingParts.isEmpty {
                         // If there are no remaining parts in progress, manually trigger the reupload
                         try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: createSubTask(partNumber: partNumber))
@@ -363,21 +370,22 @@ class StorageMultipartUploadSession {
         serialQueue.sync {
             guard let uploadId = multipartUpload.uploadId,
                   let uploadFile = multipartUpload.uploadFile,
-                    let partSize = multipartUpload.partSize else {
+                    let partSize = multipartUpload.partSize
+            else {
                 logger.warn("Unable to get required values to cancel in progress parts: \(multipartUpload)")
                 return
             }
 
             // collect TaskIdentifier from each part that is in progress
-            let cancellingParts: [TaskIdentifier?] = parts.reduce(into: [], { result, part in
+            let cancellingParts: [TaskIdentifier?] = parts.reduce(into: []) { result, part in
                 if case .inProgress(_, _, let taskIdentifier) = part {
                     result.append(taskIdentifier)
                 } else {
                     result.append(nil)
                 }
-            })
+            }
 
-            for index in 0..<cancellingParts.count {
+            for index in 0 ..< cancellingParts.count {
                 if cancellingParts[index] != nil {
                     let partNumber = index + 1
                     logger.debug("Pausing upload and cancelling URLSession upload task: partNumber = \(partNumber)")
@@ -395,7 +403,7 @@ class StorageMultipartUploadSession {
             multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
 
             let taskIdentifiers = cancellingParts.compactMap { $0 }
-            logger.debug(("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)"))
+            logger.debug("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)")
 
             // block while cancelling upload tasks
             let group = DispatchGroup()
@@ -425,9 +433,9 @@ class StorageMultipartUploadSession {
             let maxPartsCount = min(concurrentLimit, concurrentLimit - inProgressCount)
             if maxPartsCount > 0 {
                 let end = min(maxPartsCount, pendingPartNumbers.count)
-                let numbers = pendingPartNumbers[0..<end]
+                let numbers = pendingPartNumbers[0 ..< end]
                 // queue upload part first
-                numbers.forEach { partNumber in
+                for partNumber in numbers {
                     logger.debug("Queuing part \(partNumber)")
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
                 }

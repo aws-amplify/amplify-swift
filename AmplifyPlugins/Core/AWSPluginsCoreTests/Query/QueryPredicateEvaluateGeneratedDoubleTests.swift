@@ -10,6 +10,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 // swiftlint:disable type_name

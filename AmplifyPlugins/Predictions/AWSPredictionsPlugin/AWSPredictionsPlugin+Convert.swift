@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(PredictionsConvertRequestKind) import Amplify
 import AWSPolly
 
 extension AWSPredictionsPlugin {
 
-    public func convert<Input, Options, Output>(
-        _ request: Predictions.Convert.Request<Input, Options, Output>,
+    public func convert<Options, Output>(
+        _ request: Predictions.Convert.Request<some Any, Options, Output>,
         options: Options?
     ) async throws -> Output {
         switch request.kind {
@@ -102,7 +102,7 @@ extension AWSPredictionsPlugin {
         voice: Predictions.Voice?,
         config: PredictionsPluginConfiguration
     ) -> PollyClientTypes.VoiceId {
-        if let voice = voice,
+        if let voice,
            let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: voice.id) {
             return pollyVoiceID
         }

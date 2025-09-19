@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPinpoint
+import XCTest
 
-@testable import Amplify
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-@testable import AWSPinpointAnalyticsPlugin
 import AWSCognitoAuthPlugin
 import Network
+@testable import Amplify
+@testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
@@ -20,7 +20,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
     static let amplifyOutputs = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
-    
+
     var useGen2Configuration: Bool {
         ProcessInfo.processInfo.arguments.contains("GEN2")
     }
@@ -65,27 +65,33 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let location = AnalyticsUserProfile.Location(latitude: 47.606209,
-                                                     longitude: -122.332069,
-                                                     postalCode: "98122",
-                                                     city: "Seattle",
-                                                     region: "WA",
-                                                     country: "USA")
-        let properties = ["userPropertyStringKey": "userProperyStringValue",
-                          "userPropertyIntKey": 123,
-                          "userPropertyDoubleKey": 12.34,
-                          "userPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-        let userProfile = AnalyticsUserProfile(name: "name",
-                                               email: "email",
-                                               plan: "plan",
-                                               location: location,
-                                               properties: properties)
+        let location = AnalyticsUserProfile.Location(
+            latitude: 47.606209,
+            longitude: -122.332069,
+            postalCode: "98122",
+            city: "Seattle",
+            region: "WA",
+            country: "USA"
+        )
+        let properties = [
+            "userPropertyStringKey": "userProperyStringValue",
+            "userPropertyIntKey": 123,
+            "userPropertyDoubleKey": 12.34,
+            "userPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
+        let userProfile = AnalyticsUserProfile(
+            name: "name",
+            email: "email",
+            plan: "plan",
+            location: location,
+            properties: properties
+        )
         Amplify.Analytics.identifyUser(userId: userId, userProfile: userProfile)
 
         await fulfillment(
-             of: [identifyUserEvent],
-             timeout: TestCommonConstants.networkTimeout
-         )
+            of: [identifyUserEvent],
+            timeout: TestCommonConstants.networkTimeout
+        )
 
         // Remove userId from the current endpoint
         let endpointClient = endpointClient()
@@ -123,7 +129,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
@@ -137,25 +143,29 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
 
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
-       
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
 
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed after the plugin is enabled
     /// Then: Flush Hub event is received
@@ -168,7 +178,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
@@ -181,29 +191,33 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                 flushEventsInvoked.fulfill()
             }
         }
-        
+
         Amplify.Analytics.disable()
         Amplify.Analytics.enable()
 
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
-       
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
 
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed after the plugin is disabled
     /// Then: Flush Hub event is not received
@@ -216,7 +230,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
@@ -224,27 +238,31 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         flushEventsInvoked.isInverted = true
-        
+
         Amplify.Analytics.disable()
-        
-        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
-                                "globalPropertyIntKey": 123,
-                                "globalPropertyDoubleKey": 12.34,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+
+        let globalProperties = [
+            "globalPropertyStringKey": "eventProperyStringValue",
+            "globalPropertyIntKey": 123,
+            "globalPropertyDoubleKey": 12.34,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
-       
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered
     /// Then: Flush Hub event is received with global properties
@@ -258,7 +276,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
@@ -280,19 +298,23 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                 flushEventsInvoked.fulfill()
             }
         }
-        
-        let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
-                                "globalPropertyIntKey": 321,
-                                "globalPropertyDoubleKey": 43.21,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+
+        let globalProperties = [
+            "globalPropertyStringKey": "GlobalProperyStringValue",
+            "globalPropertyIntKey": 321,
+            "globalPropertyDoubleKey": 43.21,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
-       
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
@@ -312,7 +334,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             }
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
-        
+
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
@@ -334,20 +356,24 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                 flushEventsInvoked.fulfill()
             }
         }
-        
-        let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
-                                "globalPropertyIntKey": 321,
-                                "globalPropertyDoubleKey": 43.21,
-                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+
+        let globalProperties = [
+            "globalPropertyStringKey": "GlobalProperyStringValue",
+            "globalPropertyIntKey": 321,
+            "globalPropertyDoubleKey": 43.21,
+            "globalPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
         Amplify.Analytics.unregisterGlobalProperties()
-        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
-                          "eventPropertyIntKey": 123,
-                          "eventPropertyDoubleKey": 12.34,
-                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let properties = [
+            "eventPropertyStringKey": "eventProperyStringValue",
+            "eventPropertyIntKey": 123,
+            "eventPropertyDoubleKey": 12.34,
+            "eventPropertyBoolKey": true
+        ] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
-       
+
         await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
@@ -363,11 +389,12 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
         let awsPinpoint = pinpointAnalyticsPlugin.getEscapeHatch()
         XCTAssertNotNil(awsPinpoint)
-    }    
-    
+    }
+
     private func plugin() -> AWSPinpointAnalyticsPlugin {
         guard let plugin = try? Amplify.Analytics.getPlugin(for: "awsPinpointAnalyticsPlugin"),
-              let analyticsPlugin = plugin as? AWSPinpointAnalyticsPlugin else {
+              let analyticsPlugin = plugin as? AWSPinpointAnalyticsPlugin
+        else {
             fatalError("Unable to retrieve configuration")
         }
 

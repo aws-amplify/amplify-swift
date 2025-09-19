@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
 import XCTest
+@testable @_spi(InternalAmplifyConfiguration) import Amplify
 
 @testable import AWSLocationGeoPlugin
 
@@ -49,7 +49,9 @@ class AWSLocationGeoPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 awsRegion: GeoPluginTestConfig.regionName,
                 maps: .init(
                     items: [GeoPluginTestConfig.map: .init(style: GeoPluginTestConfig.style)],
-                    default: GeoPluginTestConfig.map)))
+                    default: GeoPluginTestConfig.map
+                )
+            ))
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: config)
             XCTAssertNotNil(config)
@@ -69,7 +71,9 @@ class AWSLocationGeoPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 awsRegion: GeoPluginTestConfig.regionName,
                 searchIndices: .init(
                     items: [GeoPluginTestConfig.searchIndex],
-                    default: GeoPluginTestConfig.searchIndex)))
+                    default: GeoPluginTestConfig.searchIndex
+                )
+            ))
 
         do {
             let config = try AWSLocationGeoPluginConfiguration(config: config)
@@ -92,8 +96,10 @@ class AWSLocationGeoPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           GeoPluginConfigError.configurationInvalid(section: .plugin).errorDescription)
+            XCTAssertEqual(
+                errorDescription,
+                GeoPluginConfigError.configurationInvalid(section: .plugin).errorDescription
+            )
         }
     }
 
@@ -108,15 +114,19 @@ class AWSLocationGeoPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 awsRegion: GeoPluginTestConfig.regionName,
                 maps: .init(
                     items: [GeoPluginTestConfig.map: .init(style: GeoPluginTestConfig.style)],
-                    default: map)))
+                    default: map
+                )
+            ))
 
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           GeoPluginConfigError.mapDefaultNotFound(mapName: map).errorDescription)
+            XCTAssertEqual(
+                errorDescription,
+                GeoPluginConfigError.mapDefaultNotFound(mapName: map).errorDescription
+            )
         }
     }
 
@@ -129,15 +139,18 @@ class AWSLocationGeoPluginAmplifyOutputsConfigurationTests: XCTestCase {
             geo: .init(
                 awsRegion: GeoPluginTestConfig.regionName,
                 maps: nil,
-                searchIndices: .init(items: [GeoPluginTestConfig.searchIndex], default: searchIndex)))
+                searchIndices: .init(items: [GeoPluginTestConfig.searchIndex], default: searchIndex)
+            ))
 
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           GeoPluginConfigError.searchDefaultNotFound(indexName: searchIndex).errorDescription)
+            XCTAssertEqual(
+                errorDescription,
+                GeoPluginConfigError.searchDefaultNotFound(indexName: searchIndex).errorDescription
+            )
         }
     }
 }

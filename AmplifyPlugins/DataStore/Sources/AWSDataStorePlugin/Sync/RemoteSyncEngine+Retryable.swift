@@ -44,9 +44,11 @@ extension RemoteSyncEngine {
             urlErrorOptional = urlError
         }
 
-        let advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlErrorOptional,
-                                                               httpURLResponse: nil,
-                                                               attemptNumber: currentAttemptNumber)
+        let advice = requestRetryablePolicy.retryRequestAdvice(
+            urlError: urlErrorOptional,
+            httpURLResponse: nil,
+            attemptNumber: currentAttemptNumber
+        )
         return advice
     }
 

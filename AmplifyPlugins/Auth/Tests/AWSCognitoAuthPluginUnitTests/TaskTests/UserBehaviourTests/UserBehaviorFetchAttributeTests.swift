@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSClientRuntime
+import AWSCognitoIdentityProvider
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {

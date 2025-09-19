@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 
 protocol AuthResendSignUpCodeTask: AmplifyAuthTask where Request == AuthResendSignUpCodeRequest, Success == AuthCodeDeliveryDetails, Failure == AuthError {}

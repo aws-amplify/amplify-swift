@@ -45,8 +45,10 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var request: ObserveQueryRequest
     var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
 
-    private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
-                                            target: DispatchQueue.global())
+    private let serialQueue = DispatchQueue(
+        label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
+        target: DispatchQueue.global()
+    )
     private let itemsChangedPeriodicPublishTimeInSeconds: DispatchQueue.SchedulerTimeType.Stride = 2
 
     let modelType: M.Type
@@ -74,17 +76,19 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
     var dataStoreStateSink: AnyCancellable?
 
-    init(request: ObserveQueryRequest = .init(options: []),
-         context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
-         modelType: M.Type,
-         modelSchema: ModelSchema,
-         predicate: QueryPredicate?,
-         sortInput: [QuerySortDescriptor]?,
-         storageEngine: StorageEngineBehavior,
-         dataStorePublisher: ModelSubcriptionBehavior,
-         dataStoreConfiguration: DataStoreConfiguration,
-         dispatchedModelSyncedEvent: AtomicValue<Bool>,
-         dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>) {
+    init(
+        request: ObserveQueryRequest = .init(options: []),
+        context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
+        modelType: M.Type,
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        sortInput: [QuerySortDescriptor]?,
+        storageEngine: StorageEngineBehavior,
+        dataStorePublisher: ModelSubcriptionBehavior,
+        dataStoreConfiguration: DataStoreConfiguration,
+        dispatchedModelSyncedEvent: AtomicValue<Bool>,
+        dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
+    ) {
         self.request = request
         self.context = context
 
@@ -113,9 +117,9 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
     func subscribeToDataStoreState() {
         serialQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.dataStoreStateSink = self.dataStoreStatePublisher.sink { completion in
+            dataStoreStateSink = dataStoreStatePublisher.sink { completion in
                 switch completion {
                 case .finished:
                     self.finish()
@@ -134,17 +138,17 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
         }
     }
 
-    public func cancel() {
+    func cancel() {
         serialQueue.sync {
-            if let itemsChangedSink = itemsChangedSink {
+            if let itemsChangedSink {
                 itemsChangedSink.cancel()
             }
 
-            if let batchItemsChangedSink = batchItemsChangedSink {
+            if let batchItemsChangedSink {
                 batchItemsChangedSink.cancel()
             }
 
-            if let modelSyncedEventSink = modelSyncedEventSink {
+            if let modelSyncedEventSink {
                 modelSyncedEventSink.cancel()
             }
         }
@@ -178,7 +182,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 self.observeQueryStarted = true
             }
 
-            if let storageEngine = storageEngine {
+            if let storageEngine {
                 self.storageEngine = storageEngine
             }
             self.log.verbose("Start ObserveQuery")
@@ -208,7 +212,8 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                     fail(error)
                     return
                 }
-            })
+            }
+        )
     }
 
     // MARK: Observe item changes
@@ -221,36 +226,40 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     /// accessed under the serial queue.
     func subscribeToItemChanges() {
         serialQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            self.batchItemsChangedSink = self.dataStorePublisher.publisher
+            batchItemsChangedSink = dataStorePublisher.publisher
                 .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-                .filter(self.filterByModelName(mutationEvent:))
-                .filter(self.filterByPredicateMatch(mutationEvent:))
-                .handleEvents(receiveOutput: self.onItemChangeDuringSync(mutationEvent:) )
+                .filter(filterByModelName(mutationEvent:))
+                .filter(filterByPredicateMatch(mutationEvent:))
+                .handleEvents(receiveOutput: onItemChangeDuringSync(mutationEvent:) )
                 .collect(
                     .byTimeOrCount(
                         // on queue
-                        self.serialQueue,
+                        serialQueue,
                         // collect over this timeframe
-                        self.itemsChangedPeriodicPublishTimeInSeconds,
+                        itemsChangedPeriodicPublishTimeInSeconds,
                         // If the `storageEngine` does sync from remote, the initial batch should
                         // collect snapshots based on time / snapshots received.
                         // If it doesn't, it should publish each snapshot without waiting.
-                        self.storageEngine.syncsFromRemote
-                        ? self.itemsChangedMaxSize
+                        storageEngine.syncsFromRemote
+                        ? itemsChangedMaxSize
                         : 1
                     )
                 )
-                .sink(receiveCompletion: self.onReceiveCompletion(completed:),
-                      receiveValue: self.onItemsChangeDuringSync(mutationEvents:))
+                .sink(
+                    receiveCompletion: onReceiveCompletion(completed:),
+                    receiveValue: onItemsChangeDuringSync(mutationEvents:)
+                )
 
-            self.itemsChangedSink = self.dataStorePublisher.publisher
+            itemsChangedSink = dataStorePublisher.publisher
                 .filter { _ in self.dispatchedModelSyncedEvent.get() }
-                .filter(self.filterByModelName(mutationEvent:))
-                .receive(on: self.serialQueue)
-                .sink(receiveCompletion: self.onReceiveCompletion(completed:),
-                      receiveValue: self.onItemChangeAfterSync(mutationEvent:))
+                .filter(filterByModelName(mutationEvent:))
+                .receive(on: serialQueue)
+                .sink(
+                    receiveCompletion: onReceiveCompletion(completed:),
+                    receiveValue: onItemChangeAfterSync(mutationEvent:)
+                )
         }
     }
 
@@ -273,7 +282,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
     func filterByPredicateMatch(mutationEvent: MutationEvent) -> Bool {
         // Filter in the model when there is no predicate to check against.
-        guard let predicate = self.predicate else {
+        guard let predicate else {
             return true
         }
         do {
@@ -288,24 +297,24 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
     func onItemChangeDuringSync(mutationEvent: MutationEvent) {
         serialQueue.async { [weak self] in
-            guard let self = self, self.observeQueryStarted else {
+            guard let self, observeQueryStarted else {
                 return
             }
 
-            self.apply(itemsChanged: [mutationEvent])
+            apply(itemsChanged: [mutationEvent])
         }
     }
 
     func onItemsChangeDuringSync(mutationEvents: [MutationEvent]) {
         serialQueue.async { [weak self] in
-            guard let self = self,
-                  self.observeQueryStarted,
+            guard let self,
+                  observeQueryStarted,
                   !mutationEvents.isEmpty,
                   !self.dispatchedModelSyncedEvent.get()
             else { return }
 
-            self.startSnapshotStopWatch()
-            self.sendSnapshot()
+            startSnapshotStopWatch()
+            sendSnapshot()
         }
     }
 
@@ -393,22 +402,22 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
         serialQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             switch completed {
             case .finished:
-                self.finish()
+                finish()
             case .failure(let error):
-                self.fail(error)
+                fail(error)
             }
         }
     }
 }
 
 extension ObserveQueryTaskRunner: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

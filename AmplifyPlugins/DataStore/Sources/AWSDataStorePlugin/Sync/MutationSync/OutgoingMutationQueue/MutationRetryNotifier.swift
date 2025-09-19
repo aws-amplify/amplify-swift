@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
 import Combine
+import Foundation
 
 final class MutationRetryNotifier {
     private var lock: NSLock
@@ -17,9 +17,11 @@ final class MutationRetryNotifier {
     var retryMutationCallback: () -> Void
     private var reachabilitySubscription: Subscription?
 
-    init(advice: RequestRetryAdvice,
-         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-         retryMutationCallback: @escaping BasicClosure) {
+    init(
+        advice: RequestRetryAdvice,
+        networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
+        retryMutationCallback: @escaping BasicClosure
+    ) {
         self.lock = NSLock()
 
         self.retryMutationCallback = retryMutationCallback
@@ -83,10 +85,10 @@ extension MutationRetryNotifier: Subscriber {
 }
 
 extension MutationRetryNotifier: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

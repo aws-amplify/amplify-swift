@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct APIOperationResponse {
     let urlError: URLError?
     let httpURLResponse: HTTPURLResponse?
     let responseData: Data?
 
-    public init(error: Error?, response: URLResponse?, data: Data? = nil) {
+    init(error: Error?, response: URLResponse?, data: Data? = nil) {
         self.urlError = error as? URLError
         self.httpURLResponse = response as? HTTPURLResponse
         self.responseData = data

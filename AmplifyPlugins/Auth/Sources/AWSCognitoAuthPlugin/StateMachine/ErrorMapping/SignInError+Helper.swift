@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import ClientRuntime
+import Foundation
 
 extension SignInError {
 
@@ -50,7 +50,8 @@ extension SignInError: AuthErrorConvertible {
             return AuthError.validation(
                 field,
                 AuthPluginErrorConstants.signInUsernameError.errorDescription,
-                AuthPluginErrorConstants.signInUsernameError.recoverySuggestion)
+                AuthPluginErrorConstants.signInUsernameError.recoverySuggestion
+            )
         case .unknown(let message):
             return .unknown(message, nil)
         case .hostedUI(let error):
@@ -68,54 +69,64 @@ extension HostedUIError: AuthErrorConvertible {
         case .signInURI:
             return .configuration(
                 AuthPluginErrorConstants.hostedUISignInURI.errorDescription,
-                AuthPluginErrorConstants.hostedUISignInURI.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUISignInURI.recoverySuggestion
+            )
 
         case .tokenURI:
             return .configuration(
                 AuthPluginErrorConstants.hostedUITokenURI.errorDescription,
-                AuthPluginErrorConstants.hostedUITokenURI.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUITokenURI.recoverySuggestion
+            )
 
         case .signOutURI:
             return .configuration(
                 AuthPluginErrorConstants.hostedUISignOutURI.errorDescription,
-                AuthPluginErrorConstants.hostedUISignOutURI.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUISignOutURI.recoverySuggestion
+            )
 
         case .signOutRedirectURI:
             return .configuration(
                 AuthPluginErrorConstants.hostedUISignOutRedirectURI.errorDescription,
-                AuthPluginErrorConstants.hostedUISignOutRedirectURI.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUISignOutRedirectURI.recoverySuggestion
+            )
 
         case .proofCalculation:
             return .invalidState(
                 AuthPluginErrorConstants.hostedUIProofCalculation.errorDescription,
-                AuthPluginErrorConstants.hostedUIProofCalculation.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUIProofCalculation.recoverySuggestion
+            )
 
         case .codeValidation:
             return .service(
                 AuthPluginErrorConstants.hostedUISecurityFailedError.errorDescription,
-                AuthPluginErrorConstants.hostedUISecurityFailedError.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUISecurityFailedError.recoverySuggestion
+            )
 
         case .tokenParsing:
             return .service(
                 AuthPluginErrorConstants.tokenParsingError.errorDescription,
-                AuthPluginErrorConstants.tokenParsingError.recoverySuggestion)
+                AuthPluginErrorConstants.tokenParsingError.recoverySuggestion
+            )
 
         case .cancelled:
             return .service(
                 AuthPluginErrorConstants.hostedUIUserCancelledError.errorDescription,
                 AuthPluginErrorConstants.hostedUIUserCancelledError.recoverySuggestion,
-                AWSCognitoAuthError.userCancelled)
+                AWSCognitoAuthError.userCancelled
+            )
 
         case .invalidContext:
             return .invalidState(
                 AuthPluginErrorConstants.hostedUIInvalidPresentation.errorDescription,
-                AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion
+            )
 
         case .unableToStartASWebAuthenticationSession:
             return .service(
                 AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.errorDescription,
                 AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion,
-                AWSCognitoAuthError.errorLoadingUI)
+                AWSCognitoAuthError.errorLoadingUI
+            )
 
         case .serviceMessage(let message):
             return .service(message, AuthPluginErrorConstants.serviceError)
@@ -125,7 +136,6 @@ extension HostedUIError: AuthErrorConvertible {
 
         case .unknown:
             return .unknown("WebUI signIn encountered an unknown error", nil)
-
         }
     }
 }

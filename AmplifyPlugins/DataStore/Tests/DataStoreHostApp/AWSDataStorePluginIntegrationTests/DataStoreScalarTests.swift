@@ -27,19 +27,21 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     func testScalarContainer() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        let container = ScalarContainer(myString: "myString",
-                                        myInt: 1,
-                                        myDouble: 1.0,
-                                        myBool: true,
-                                        myDate: .now(),
-                                        myTime: .now(),
-                                        myDateTime: .now(),
-                                        myTimeStamp: 123,
-                                        myEmail: "local-part@domain-part",
-                                        myJSON: "{}",
-                                        myPhone: "2342355678",
-                                        myURL: "https://www.amazon.com/dp/B000NZW3KC/",
-                                        myIPAddress: "123.12.34.56")
+        let container = ScalarContainer(
+            myString: "myString",
+            myInt: 1,
+            myDouble: 1.0,
+            myBool: true,
+            myDate: .now(),
+            myTime: .now(),
+            myDateTime: .now(),
+            myTimeStamp: 123,
+            myEmail: "local-part@domain-part",
+            myJSON: "{}",
+            myPhone: "2342355678",
+            myURL: "https://www.amazon.com/dp/B000NZW3KC/",
+            myIPAddress: "123.12.34.56"
+        )
         let updatedContainer = ScalarContainer(id: container.id)
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
@@ -61,15 +63,18 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
             intList: [],
             intNullableList: [],
             nullableIntList: [],
-            nullableIntNullableList: nil)
+            nullableIntNullableList: nil
+        )
 
-        let updatedContainer = ListIntContainer(id: container.id,
-                                                test: 2,
-                                                nullableInt: nil,
-                                                intList: [1, 2, 3],
-                                                intNullableList: [1, 2, 3],
-                                                nullableIntList: [1, 2, 3],
-                                                nullableIntNullableList: [1, 2, 3])
+        let updatedContainer = ListIntContainer(
+            id: container.id,
+            test: 2,
+            nullableInt: nil,
+            intList: [1, 2, 3],
+            intNullableList: [1, 2, 3],
+            nullableIntList: [1, 2, 3],
+            nullableIntNullableList: [1, 2, 3]
+        )
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
         let updatedModel = try await Amplify.DataStore.save(updatedContainer)
@@ -90,15 +95,18 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
             stringList: ["value1"],
             stringNullableList: [],
             nullableStringList: [],
-            nullableStringNullableList: nil)
+            nullableStringNullableList: nil
+        )
 
-        let updatedContainer = ListStringContainer(id: container.id,
-                                                   test: "test",
-                                                   nullableString: "test",
-                                                   stringList: ["value1"],
-                                                   stringNullableList: ["value1"],
-                                                   nullableStringList: ["value1"],
-                                                   nullableStringNullableList: ["value1"])
+        let updatedContainer = ListStringContainer(
+            id: container.id,
+            test: "test",
+            nullableString: "test",
+            stringList: ["value1"],
+            stringNullableList: ["value1"],
+            nullableStringList: ["value1"],
+            nullableStringNullableList: ["value1"]
+        )
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
         let updatedModel = try await Amplify.DataStore.save(updatedContainer)
@@ -120,15 +128,18 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
             stringList: ["value1"],
             stringNullableList: nil,
             nullableStringList: [nil],
-            nullableStringNullableList: nil)
+            nullableStringNullableList: nil
+        )
 
-        let updatedContainer = ListStringContainer(id: container.id,
-                                                   test: "test",
-                                                   nullableString: "test",
-                                                   stringList: ["value1"],
-                                                   stringNullableList: ["value1"],
-                                                   nullableStringList: ["value1"],
-                                                   nullableStringNullableList: ["value1"])
+        let updatedContainer = ListStringContainer(
+            id: container.id,
+            test: "test",
+            nullableString: "test",
+            stringList: ["value1"],
+            stringNullableList: ["value1"],
+            nullableStringList: ["value1"],
+            nullableStringNullableList: ["value1"]
+        )
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
         let updatedModel = try await Amplify.DataStore.save(updatedContainer)
@@ -143,19 +154,23 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     func testEnumTestModel() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        let container = EnumTestModel(enumVal: .valueOne,
-                                      nullableEnumVal: .valueTwo,
-                                      enumList: [.valueOne],
-                                      enumNullableList: [.valueTwo],
-                                      nullableEnumList: [.valueOne, .valueTwo],
-                                      nullableEnumNullableList: [.valueTwo, .valueOne])
-        let updatedContainer = EnumTestModel(id: container.id,
-                                             enumVal: .valueTwo,
-                                             nullableEnumVal: nil,
-                                             enumList: [.valueTwo],
-                                             enumNullableList: [.valueTwo, .valueOne],
-                                             nullableEnumList: [.valueTwo, .valueOne],
-                                             nullableEnumNullableList: [.valueOne, .valueTwo])
+        let container = EnumTestModel(
+            enumVal: .valueOne,
+            nullableEnumVal: .valueTwo,
+            enumList: [.valueOne],
+            enumNullableList: [.valueTwo],
+            nullableEnumList: [.valueOne, .valueTwo],
+            nullableEnumNullableList: [.valueTwo, .valueOne]
+        )
+        let updatedContainer = EnumTestModel(
+            id: container.id,
+            enumVal: .valueTwo,
+            nullableEnumVal: nil,
+            enumList: [.valueTwo],
+            enumNullableList: [.valueTwo, .valueOne],
+            nullableEnumList: [.valueTwo, .valueOne],
+            nullableEnumNullableList: [.valueOne, .valueTwo]
+        )
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
         let updatedModel = try await Amplify.DataStore.save(updatedContainer)
@@ -170,20 +185,24 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     func testNestedEnumTestModel() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
-                                            nullableNestedVal: .init(),
-                                            nestedList: [.init(valueTwo: "value2")],
-                                            nestedNullableList: [.init()],
-                                            nullableNestedList: [.init(valueOne: 1, valueTwo: "value2")],
-                                            nullableNestedNullableList: [.init(valueOne: 1, valueTwo: "value2")])
+        let container = NestedTypeTestModel(
+            nestedVal: .init(valueOne: 1),
+            nullableNestedVal: .init(),
+            nestedList: [.init(valueTwo: "value2")],
+            nestedNullableList: [.init()],
+            nullableNestedList: [.init(valueOne: 1, valueTwo: "value2")],
+            nullableNestedNullableList: [.init(valueOne: 1, valueTwo: "value2")]
+        )
 
-        let updatedContainer = NestedTypeTestModel(id: container.id,
-                                                   nestedVal: .init(valueOne: 1),
-                                                   nullableNestedVal: .init(),
-                                                   nestedList: [.init(valueTwo: "updatedValue"), .init(valueOne: 1)],
-                                                   nestedNullableList: [.init(valueOne: 1, valueTwo: "value2")],
-                                                   nullableNestedList: [],
-                                                   nullableNestedNullableList: nil)
+        let updatedContainer = NestedTypeTestModel(
+            id: container.id,
+            nestedVal: .init(valueOne: 1),
+            nullableNestedVal: .init(),
+            nestedList: [.init(valueTwo: "updatedValue"), .init(valueOne: 1)],
+            nestedNullableList: [.init(valueOne: 1, valueTwo: "value2")],
+            nullableNestedList: [],
+            nullableNestedNullableList: nil
+        )
 
         let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)

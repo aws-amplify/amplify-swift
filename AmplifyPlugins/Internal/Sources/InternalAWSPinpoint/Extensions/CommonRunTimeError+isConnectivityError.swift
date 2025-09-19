@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import AwsCIo
 import AwsCHttp
+import AwsCIo
 import AwsCommonRuntimeKit
 import AWSPinpoint
 import ClientRuntime

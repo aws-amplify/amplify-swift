@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Convert.TextToSpeech {
-    public struct Options {
+public extension Predictions.Convert.TextToSpeech {
+    struct Options {
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 

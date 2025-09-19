@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
-extension AWSS3StoragePlugin {
+public extension AWSS3StoragePlugin {
 
     /// Resets the state of the plugin.
     ///
@@ -17,7 +17,7 @@ extension AWSS3StoragePlugin {
     /// storage service, authentication service, and queue to nil to allow deallocation.
     ///
     /// - Tag: AWSS3StoragePlugin.reset
-    public func reset() async {
+    func reset() async {
         if defaultBucket != nil {
             defaultBucket = nil
         }

@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public enum SessionConfiguration {
+    enum SessionConfiguration {
         case faceMovement(OvalMatchChallenge)
         case faceMovementAndLight(ColorChallenge, OvalMatchChallenge)
     }

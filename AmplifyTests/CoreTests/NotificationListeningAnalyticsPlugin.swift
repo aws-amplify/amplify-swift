@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
     let key = "NotificationListeningAnalyticsPlugin"
@@ -22,7 +22,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .analytics, isIncluded: isConfigured) { _ in
             self.notificationReceived.fulfill()
-            if let token = token {
+            if let token {
                 Amplify.Hub.removeListener(token)
             }
         }

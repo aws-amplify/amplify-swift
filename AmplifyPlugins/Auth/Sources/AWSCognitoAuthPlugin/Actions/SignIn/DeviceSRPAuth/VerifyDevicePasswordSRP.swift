@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifyDevicePasswordSRP: Action {
     let identifier = "VerifyDevicePasswordSRP"
@@ -15,8 +15,10 @@ struct VerifyDevicePasswordSRP: Action {
     let stateData: SRPStateData
     let authResponse: SignInResponseBehavior
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
@@ -35,11 +37,13 @@ struct VerifyDevicePasswordSRP: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.authEnvironment().credentialsClient)
+                credentialStoreClient: environment.authEnvironment().credentialsClient
+            )
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
             guard
                 case .metadata(let deviceData) = deviceMetadata
             else {
@@ -57,7 +61,8 @@ struct VerifyDevicePasswordSRP: Action {
                 saltHex: saltHex,
                 secretBlock: secretBlock,
                 serverPublicBHexString: serverPublicB,
-                srpClient: srpClient)
+                srpClient: srpClient
+            )
 
             let request = await RespondToAuthChallengeInput.devicePasswordVerifier(
                 username: username,
@@ -67,15 +72,19 @@ struct VerifyDevicePasswordSRP: Action {
                 signature: signature,
                 deviceMetadata: deviceMetadata,
                 asfDeviceId: asfDeviceId,
-                environment: userPoolEnv)
+                environment: userPoolEnv
+            )
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
                 signInMethod: .apiBased(.userSRP),
-                environment: userPoolEnv)
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+                environment: userPoolEnv
+            )
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
 
         } catch let error as SignInError {
@@ -96,11 +105,11 @@ struct VerifyDevicePasswordSRP: Action {
 }
 
 extension VerifyDevicePasswordSRP: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

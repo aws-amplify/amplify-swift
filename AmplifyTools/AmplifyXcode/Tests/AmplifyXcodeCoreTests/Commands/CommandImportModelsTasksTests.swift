@@ -32,22 +32,24 @@ class CommandImportModelsTasksTests: XCTestCase {
         class CustomEnvironment: MockAmplifyCommandEnvironment {
             override func glob(pattern: String) -> [String] {
                 [
-                   "Todo.swift",
-                   "Note.swift"
-               ]
+                    "Todo.swift",
+                    "Note.swift"
+                ]
 
             }
         }
         let environment = CustomEnvironment(basePath: basePath, fileManager: fileManager)
         if case let .failure(error) = CommandImportModelsTasks.projectHasGeneratedModels(
             environment: environment,
-            args: taskArgs) {
+            args: taskArgs
+        ) {
             XCTFail("projectHasGeneratedModels failed with error \(error)")
         }
 
         if case let .failure(error) = CommandImportModelsTasks.addGeneratedModelsToProject(
             environment: environment,
-            args: taskArgs) {
+            args: taskArgs
+        ) {
             XCTFail("addGeneratedModelsToProject failed with error \(error)")
         }
         XCTAssertEqual(environment.createXcodeFileCalledTimes, 2) // one call for each model file found

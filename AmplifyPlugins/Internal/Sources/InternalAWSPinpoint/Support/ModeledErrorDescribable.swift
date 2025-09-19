@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
+import Foundation
 
 protocol ModeledErrorDescribable {
     var errorDescription: String { get }

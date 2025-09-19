@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AwsCommonRuntimeKit
-import AwsCIo
 import AwsCHttp
+import AwsCIo
+import AwsCommonRuntimeKit
+import Foundation
 
 private let connectivityErrorCodes: Set<UInt32> = [
     AWS_ERROR_HTTP_CONNECTION_CLOSED.rawValue,
@@ -30,8 +30,7 @@ private let connectivityErrorCodes: Set<UInt32> = [
 
 extension CommonRunTimeError: AuthErrorConvertible {
     var authError: AuthError {
-        let error: CRTError
-        switch self { case .crtError(let crtError): error = crtError }
+        let error: CRTError = switch self { case .crtError(let crtError): crtError }
 
         if connectivityErrorCodes.contains(UInt32(error.code)) {
             return .service(error.name, error.message, AWSCognitoAuthError.network)

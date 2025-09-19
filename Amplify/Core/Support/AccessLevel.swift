@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 public enum AccessLevel: String {
     case `public`
     case protected

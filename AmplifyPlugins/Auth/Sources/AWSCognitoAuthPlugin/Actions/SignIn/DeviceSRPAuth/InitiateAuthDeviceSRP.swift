@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import CryptoKit
 import AWSCognitoIdentityProvider
+import CryptoKit
+import Foundation
 
 struct InitiateAuthDeviceSRP: Action {
     let identifier = "InitiateAuthDeviceSRP"
@@ -16,8 +16,10 @@ struct InitiateAuthDeviceSRP: Action {
     let username: String
     let authResponse: SignInResponseBehavior
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         do {
@@ -31,11 +33,13 @@ struct InitiateAuthDeviceSRP: Action {
             // Get device metadata
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.authEnvironment().credentialsClient)
+                credentialStoreClient: environment.authEnvironment().credentialsClient
+            )
 
             let srpStateData = SRPStateData(
                 username: username,
@@ -43,7 +47,8 @@ struct InitiateAuthDeviceSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                clientTimestamp: Date())
+                clientTimestamp: Date()
+            )
 
             let request = await RespondToAuthChallengeInput.deviceSRP(
                 username: username,
@@ -51,7 +56,8 @@ struct InitiateAuthDeviceSRP: Action {
                 deviceMetadata: deviceMetadata,
                 asfDeviceId: asfDeviceId,
                 session: authResponse.session,
-                publicHexValue: srpKeyPair.publicKeyHexValue)
+                publicHexValue: srpKeyPair.publicKeyHexValue
+            )
 
             let client = try userPoolEnv.cognitoUserPoolFactory()
 
@@ -84,7 +90,8 @@ struct InitiateAuthDeviceSRP: Action {
 
     func parseResponse(
         _ response: SignInResponseBehavior,
-        with stateData: SRPStateData) -> StateMachineEvent {
+        with stateData: SRPStateData
+    ) -> StateMachineEvent {
             guard case .devicePasswordVerifier = response.challengeName else {
                 let message = """
                 Unsupported challenge response during DeviceSRPAuth
@@ -99,11 +106,11 @@ struct InitiateAuthDeviceSRP: Action {
 }
 
 extension InitiateAuthDeviceSRP: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

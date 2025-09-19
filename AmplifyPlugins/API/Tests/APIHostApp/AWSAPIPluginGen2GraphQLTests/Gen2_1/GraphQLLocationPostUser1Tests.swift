@@ -19,7 +19,8 @@ final class GraphQLLocationPostUser1Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let post = Post(
             location: .init(
                 lat: 48.837006,
-                long: 8.28245))
+                long: 8.28245
+            ))
         let createdPost = try await Amplify.API.mutate(request: .create(post)).get()
         print("\(createdPost)")
 
@@ -36,7 +37,7 @@ extension GraphQLLocationPostUser1Tests {
     typealias Location = Location1
 
     struct PostUserLocation1Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post1.self)
             ModelRegistry.register(modelType: User1.self)

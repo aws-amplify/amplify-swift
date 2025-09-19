@@ -15,7 +15,7 @@ public extension AmplifyBigInt {
     }
 
     var byteArray: [UInt8] {
-        let bytesCount = self.bytesCount
+        let bytesCount = bytesCount
         var buffer = [UInt8](repeating: 0, count: bytesCount)
         var written = size_t()
         let error = amplify_mp_to_sbin(&value, &buffer, bytesCount, &written)

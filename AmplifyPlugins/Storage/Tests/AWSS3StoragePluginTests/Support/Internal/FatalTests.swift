@@ -8,8 +8,8 @@
 import XCTest
 
 import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class FatalTests: XCTestCase {
 

@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 final class AuthStressTests: AuthStressBaseTest {
 
     let concurrencyLimit = 50
-    
+
     override func setUp() async throws {
         try await super.setUp()
         AuthSessionHelper.clearSession()
@@ -23,9 +23,9 @@ final class AuthStressTests: AuthStressBaseTest {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
-    
+
     // MARK: - Stress tests
-    
+
     /// Test concurrent fetching of the user's email attribute.
     ///
     /// - Given: A confirmed user
@@ -38,15 +38,17 @@ final class AuthStressTests: AuthStressBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                               password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let fetchUserAttributesExpectation = expectation(description: "Fetch user attributes was successful")
         fetchUserAttributesExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 let attributes = try await Amplify.Auth.fetchUserAttributes()
                 if let emailAttribute = attributes.filter({ $0.key == .email }).first {
@@ -57,7 +59,7 @@ final class AuthStressTests: AuthStressBaseTest {
                 fetchUserAttributesExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [fetchUserAttributesExpectation], timeout: 30)
     }
 
@@ -73,24 +75,27 @@ final class AuthStressTests: AuthStressBaseTest {
     func testMultipleFetchAuthSessionAfterSignIn() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let fetchAuthSessionExpectation = expectation(description: "Fetch auth session was successful")
         fetchAuthSessionExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 let session = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
                 fetchAuthSessionExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [fetchAuthSessionExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test if successful session is retrieved with random force refresh operation happening in between
     ///
     /// - Given: A signedIn auth plugin
@@ -113,11 +118,11 @@ final class AuthStressTests: AuthStressBaseTest {
         let identityIDExpectation = expectation(description: "Identity id should be fetched")
         identityIDExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for index in 1...concurrencyLimit {
+        for index in 1 ... concurrencyLimit {
             Task {
                 // Randomly yield the task so that below execution of force refresh happens
-                let session : AuthSession
-                if index == concurrencyLimit/2 {
+                let session: AuthSession
+                if index == concurrencyLimit / 2 {
                     session = try await Amplify.Auth.fetchAuthSession(options: .forceRefresh())
                 } else {
                     session = try await Amplify.Auth.fetchAuthSession()
@@ -130,10 +135,10 @@ final class AuthStressTests: AuthStressBaseTest {
                 identityIDExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [identityIDExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test if we can fetch auth session in signedOut state
     ///
     /// - Given: Auth category with a signedOut state
@@ -146,7 +151,7 @@ final class AuthStressTests: AuthStressBaseTest {
         let fetchAuthSessionExpectation = expectation(description: "Session state should not be signedIn")
         fetchAuthSessionExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 let result = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
@@ -159,10 +164,10 @@ final class AuthStressTests: AuthStressBaseTest {
                 fetchAuthSessionExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [fetchAuthSessionExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test concurrent invocations of get current user API
     ///
     /// - Given: A signedIn Amplify Auth Category
@@ -177,14 +182,15 @@ final class AuthStressTests: AuthStressBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         XCTAssertTrue(didSucceed, "SignIn operation failed")
-        
+
         let getCurrentUserExpectation = expectation(description: "getCurrentUser() is successful")
         getCurrentUserExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 let authUser = try await Amplify.Auth.getCurrentUser()
                 XCTAssertEqual(authUser.username.lowercased(), username.lowercased())
@@ -192,7 +198,7 @@ final class AuthStressTests: AuthStressBaseTest {
                 getCurrentUserExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [getCurrentUserExpectation], timeout: networkTimeout)
     }
 }

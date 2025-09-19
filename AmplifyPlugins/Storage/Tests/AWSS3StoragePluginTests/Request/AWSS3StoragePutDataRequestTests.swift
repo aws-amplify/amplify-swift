@@ -19,10 +19,12 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase {
     let testMetadata: [String: String] = [:]
 
     func testValidateSuccess() {
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
-                                                    metadata: testMetadata,
-                                                    contentType: testContentType,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageUploadDataRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let storageErrorOptional = request.validate()
@@ -31,10 +33,12 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase {
     }
 
     func testValidateEmptyKeyError() {
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
-                                                    metadata: testMetadata,
-                                                    contentType: testContentType,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageUploadDataRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadDataRequest(key: "", data: testData, options: options)
 
         let storageErrorOptional = request.validate()
@@ -55,10 +59,12 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase {
     }
 
     func testValidateEmptyContentTypeError() {
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
-                                                    metadata: testMetadata,
-                                                    contentType: "",
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageUploadDataRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: "",
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let storageErrorOptional = request.validate()
@@ -80,10 +86,12 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase {
 
     func testValidateMetadataKeyIsInvalid() {
         let metadata = ["InvalidKeyNotLowerCase": "someValue"]
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
-                                                    metadata: metadata,
-                                                    contentType: testContentType,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageUploadDataRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let storageErrorOptional = request.validate()
@@ -109,10 +117,12 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase {
     /// There is no error because the path validation is done at operation execution time and not part of the request
     func testValidateWithStoragePath() {
         let path = StringStoragePath(resolve: {_ in "my/path"})
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
-                                                    metadata: testMetadata,
-                                                    contentType: testContentType,
-                                                    pluginOptions: testPluginOptions)
+        let options = StorageUploadDataRequest.Options(
+            accessLevel: .protected,
+            metadata: testMetadata,
+            contentType: testContentType,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
 
         let storageErrorOptional = request.validate()

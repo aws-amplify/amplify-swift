@@ -19,7 +19,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     var inProcess: AmplifyAsyncSequence<InProcess> {
         let channel: AmplifyAsyncSequence<InProcess>
-        if let inProcessChannel = inProcessChannel {
+        if let inProcessChannel {
             channel = inProcessChannel
         } else {
             channel = AmplifyAsyncSequence<InProcess>(bufferingPolicy: bufferingPolicy)
@@ -63,7 +63,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     func report(_ inProcess: InProcess?) async throws {
         if let channel = inProcessChannel {
-            if let inProcess = inProcess {
+            if let inProcess {
                 channel.send(inProcess)
             } else {
                 // nil indicates the sequence is done
@@ -77,7 +77,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
             send(result)
         }
         // store result for when the value property is used
-        self.storedResult = result
+        storedResult = result
         if let channel = inProcessChannel {
             channel.finish()
         }

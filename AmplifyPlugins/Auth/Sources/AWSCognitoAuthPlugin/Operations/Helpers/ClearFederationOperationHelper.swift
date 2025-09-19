@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct ClearFederationOperationHelper {
 
@@ -17,7 +17,8 @@ struct ClearFederationOperationHelper {
         guard case .configured(let authNState, let authZState, _) = currentState else {
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
             throw authError
         }
 
@@ -28,7 +29,8 @@ struct ClearFederationOperationHelper {
         default:
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
             throw authError
         }
     }

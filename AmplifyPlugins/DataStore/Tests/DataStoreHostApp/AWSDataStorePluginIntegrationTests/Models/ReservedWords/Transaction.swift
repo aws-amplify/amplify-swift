@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+
 // swiftlint:disable all
 import Foundation
-import Amplify
 
 public struct Transaction: Model {
     public let id: String

@@ -10,7 +10,7 @@ import Foundation
 func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSession.OvalMatchChallenge {
     let challengeConfig: ChallengeConfig
     let ovalParameters: OvalParameters
-    
+
     switch event.sessionInformation.challenge.type {
     case .faceMovementAndLightChallenge(let challenge):
         challengeConfig = challenge.challengeConfig
@@ -19,7 +19,7 @@ func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSes
         challengeConfig = challenge.challengeConfig
         ovalParameters = challenge.ovalParameters
     }
-    
+
     let ovalBoundingBox = FaceLivenessSession.BoundingBox.init(
         x: Double(ovalParameters.centerX - ovalParameters.width / 2),
         y: Double(ovalParameters.centerY - ovalParameters.height / 2),
@@ -49,8 +49,8 @@ func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSes
 
 func colorChallenge(from challenge: FaceMovementAndLightServerChallenge) -> FaceLivenessSession.ColorChallenge {
     let displayColors = challenge.colorSequences
-        .map({ color -> FaceLivenessSession.DisplayColor in
-            
+        .map { color -> FaceLivenessSession.DisplayColor in
+
             let duration: Double
             let shouldScroll: Bool
             switch (color.downscrollDuration, color.flatDisplayDuration) {
@@ -61,15 +61,15 @@ func colorChallenge(from challenge: FaceMovementAndLightServerChallenge) -> Face
                 duration = Double(color.downscrollDuration)
                 shouldScroll = true
             }
-            
+
             precondition(
                 color.freshnessColor.rgb.count == 3,
-                    """
+                """
                     Received invalid freshness colors.
                     Expected 3 values (r, g, b), received: \(color.freshnessColor.rgb.count)
                     """
             )
-            
+
             return .init(
                 rgb: .init(
                     red: Double(color.freshnessColor.rgb[0]) / 255,
@@ -80,7 +80,7 @@ func colorChallenge(from challenge: FaceMovementAndLightServerChallenge) -> Face
                 duration: duration,
                 shouldScroll: shouldScroll
             )
-        })
+        }
     return .init(colors: displayColors)
 }
 

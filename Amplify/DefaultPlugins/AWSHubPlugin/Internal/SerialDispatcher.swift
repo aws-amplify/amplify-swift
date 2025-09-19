@@ -32,17 +32,17 @@ struct SerialDispatcher: Dispatcher {
             }
 
             DispatchQueue.global().async {
-                guard !self.isCancelled else {
+                guard !isCancelled else {
                     return
                 }
 
                 if let filter = filteredListener.filter {
-                    guard filter(self.payload) else {
+                    guard filter(payload) else {
                         return
                     }
                 }
 
-                filteredListener.listener(self.payload)
+                filteredListener.listener(payload)
             }
         }
     }

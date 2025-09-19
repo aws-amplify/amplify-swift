@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension QPredGen {
+public extension QPredGen {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case myBool
@@ -23,10 +23,10 @@ extension QPredGen {
     case myTime
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let qPredGen = QPredGen.keys
 
     model.listPluralName = "QPredGens"

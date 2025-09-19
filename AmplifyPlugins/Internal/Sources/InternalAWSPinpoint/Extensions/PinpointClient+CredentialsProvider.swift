@@ -6,8 +6,8 @@
 //
 
 import AWSClientRuntime
-import AWSPluginsCore
 import AWSPinpoint
+import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import SmithyIdentity
 

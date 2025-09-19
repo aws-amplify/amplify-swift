@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly

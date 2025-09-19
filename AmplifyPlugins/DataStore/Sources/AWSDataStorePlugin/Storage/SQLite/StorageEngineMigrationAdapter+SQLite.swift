@@ -12,7 +12,7 @@ import SQLite
 extension SQLiteStorageEngineAdapter {
 
     @discardableResult func createStore(for modelSchema: ModelSchema) throws -> String {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let createTableStatement = CreateTableStatement(modelSchema: modelSchema).stringValue
@@ -23,7 +23,7 @@ extension SQLiteStorageEngineAdapter {
     }
 
     @discardableResult func removeStore(for modelSchema: ModelSchema) throws -> String {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let dropStatement = DropTableStatement(modelSchema: modelSchema).stringValue
@@ -32,7 +32,7 @@ extension SQLiteStorageEngineAdapter {
     }
 
     @discardableResult func emptyStore(for modelSchema: ModelSchema) throws -> String {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let deleteStatement = DeleteStatement(modelSchema: modelSchema).stringValue
@@ -41,7 +41,7 @@ extension SQLiteStorageEngineAdapter {
     }
 
     @discardableResult func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String {
-        guard let connection = connection else {
+        guard let connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
         let alterTableStatement = AlterTableStatement(from: from, toModelSchema: toModelSchema).stringValue

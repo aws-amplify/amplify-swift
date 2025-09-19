@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 
 extension ListTests {
-    
+
     func testFetchSuccess() async throws {
         let mockListProvider = MockListProvider<BasicModel>(elements: [BasicModel]()).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
@@ -19,7 +19,7 @@ extension ListTests {
         }
         let fetchComplete = expectation(description: "fetch completed")
         Task {
-            
+
             try await list.fetch()
             guard case .loaded = list.loadedState else {
                 XCTFail("Should be loaded")
@@ -28,7 +28,7 @@ extension ListTests {
             fetchComplete.fulfill()
         }
         await fulfillment(of: [fetchComplete], timeout: 1)
-        
+
         let fetchComplete2 = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
@@ -60,7 +60,7 @@ extension ListTests {
             }
             fetchCompleted.fulfill()
         }
-        
+
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }
 
@@ -100,7 +100,7 @@ extension ListTests {
             getNextPageSuccess.fulfill()
         }
         await fulfillment(of: [getNextPageSuccess], timeout: 1.0)
-        
+
         guard case .loaded = list.loadedState else {
             XCTFail("Should be loaded")
             return
@@ -128,7 +128,7 @@ extension ListTests {
             fetchCompleted.fulfill()
         }
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
-        
+
         let getNextPageSuccess = expectation(description: "getNextPage successful")
         Task {
             do {

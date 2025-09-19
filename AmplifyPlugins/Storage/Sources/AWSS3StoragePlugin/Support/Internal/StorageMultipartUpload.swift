@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 enum StorageMultipartUpload {
     enum Failure: Error {
@@ -57,24 +57,22 @@ enum StorageMultipartUpload {
     }
 
     var partSize: StorageUploadPartSize? {
-        let result: StorageUploadPartSize?
-        switch self {
+        let result: StorageUploadPartSize? = switch self {
         case .parts(_, _, let partSize, _),
                 .paused(_, _, let partSize, _):
-            result = partSize
+            partSize
         default:
-            result = nil
+            nil
         }
         return result
     }
 
     var taskIdentifier: TaskIdentifier? {
-        let result: Int?
-        switch self {
+        let result: Int? = switch self {
         case .completing(let taskIdentifier):
-            result = taskIdentifier
+            taskIdentifier
         default:
-            result = nil
+            nil
         }
         return result
     }
@@ -153,7 +151,7 @@ enum StorageMultipartUpload {
     }
 
     var pendingPartNumbers: [Int] {
-        guard let parts = parts else {
+        guard let parts else {
             return []
         }
         let allNumbers = Array(1 ... parts.count)
@@ -166,7 +164,7 @@ enum StorageMultipartUpload {
     }
 
     var partsCompleted: Bool {
-        guard let parts = parts else {
+        guard let parts else {
             return false
         }
         let result = parts.completed.count == parts.count
@@ -174,7 +172,7 @@ enum StorageMultipartUpload {
     }
 
     var partsFailed: Bool {
-        guard let parts = parts else {
+        guard let parts else {
             return false
         }
         let result = !parts.failed.isEmpty
@@ -182,7 +180,7 @@ enum StorageMultipartUpload {
     }
 
     func part(for number: PartNumber) -> StorageUploadPart? {
-        guard let parts = parts,
+        guard let parts,
               parts.count >= number else { return nil }
         let part = parts[number - 1]
         return part
@@ -238,7 +236,6 @@ enum StorageMultipartUpload {
             default:
                 throw Failure.invalidStateTransition(reason: "Cannot resume upload: upload must be paused")
             }
-            break
         case .completing(let taskIdentifier):
             self = .completing(taskIdentifier: taskIdentifier)
         case .completed(let uploadId):
@@ -249,7 +246,7 @@ enum StorageMultipartUpload {
                 throw Failure.invalidStateTransition(reason: "Cannot complete upload: upload must be in progress")
             }
         case .aborting(let error):
-            if let uploadId = uploadId {
+            if let uploadId {
                 self = .aborting(uploadId: uploadId, error: error)
             } else {
                 throw Failure.invalidStateTransition(reason: "Cannot abort upload: no upload ID available")
@@ -316,9 +313,11 @@ enum StorageMultipartUpload {
         self = .failed(uploadId: uploadId, parts: parts, error: error)
     }
 
-    private mutating func createParts(uploadFile: UploadFile,
-                                      uploadId: UploadID,
-                                      logger: Logger = storageLogger) throws {
+    private mutating func createParts(
+        uploadFile: UploadFile,
+        uploadId: UploadID,
+        logger: Logger = storageLogger
+    ) throws {
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         let parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
         self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)

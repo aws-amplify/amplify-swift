@@ -8,34 +8,33 @@
 extension AuthenticationState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        let additionalMetadataDictionary: [String: Any]
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
         case .notConfigured:
-            additionalMetadataDictionary = [:]
+            [:]
 
         case .configured:
-            additionalMetadataDictionary = [:]
+            [:]
 
         case .signingOut(let signOutState):
-            additionalMetadataDictionary = signOutState.debugDictionary
+            signOutState.debugDictionary
 
         case .signedOut(let signedOutData):
-            additionalMetadataDictionary = signedOutData.debugDictionary
+            signedOutData.debugDictionary
 
         case .signingIn(let signInState):
-            additionalMetadataDictionary = signInState.debugDictionary
+            signInState.debugDictionary
 
         case .signedIn(let signedInData):
-            additionalMetadataDictionary = signedInData.debugDictionary
+            signedInData.debugDictionary
 
         case .federatedToIdentityPool, .clearingFederation, .federatingToIdentityPool:
-            additionalMetadataDictionary = [:]
+            [:]
 
         case .deletingUser(_, let deleteUserState):
-            additionalMetadataDictionary = deleteUserState.debugDictionary
+            deleteUserState.debugDictionary
 
         case .error(let error):
-            additionalMetadataDictionary = [
+            [
                 "Error": error
             ]
         }

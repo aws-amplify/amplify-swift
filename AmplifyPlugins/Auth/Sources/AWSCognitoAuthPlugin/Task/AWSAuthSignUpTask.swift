@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
 
@@ -20,9 +20,12 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
         HubPayload.EventName.Auth.signUpAPI
     }
 
-    init(_ request: AuthSignUpRequest, 
+    init(
+        _ request: AuthSignUpRequest,
+
          authStateMachine: AuthStateMachine,
-         authEnvironment: AuthEnvironment) {
+        authEnvironment: AuthEnvironment
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.authEnvironment = authEnvironment
@@ -33,7 +36,7 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
         await taskHelper.didStateMachineConfigured()
         try request.hasError()
         try await validateCurrentState()
-        
+
         do {
             log.verbose("Sign up")
             let result = try await doSignUp()
@@ -42,18 +45,18 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
         } catch {
             throw error
         }
-        
+
     }
-    
+
     private func doSignUp() async throws -> AuthSignUpResult {
         log.verbose("Sending sign up event")
         await sendSignUpEvent()
         log.verbose("Waiting for sign up to complete")
-        
+
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(_, _, let signUpState) = state else { continue }
-            
+
             switch signUpState {
             case .awaitingUserConfirmation(_, let result):
                 return result
@@ -67,26 +70,27 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
         }
         throw AuthError.unknown("Sign up reached an error state")
     }
-    
+
     private func sendSignUpEvent() async {
         let pluginOptions = request.options.pluginOptions as? AWSAuthSignUpOptions
         let metaData = pluginOptions?.metadata
         let validationData = pluginOptions?.validationData
         let attributes = request.options.userAttributes
-        
+
         let signUpEventData = SignUpEventData(
             username: request.username,
             clientMetadata: metaData,
             validationData: validationData
         )
         let event = SignUpEvent(eventType: .initiateSignUp(
-            signUpEventData, 
+            signUpEventData,
             request.password,
-            attributes)
+            attributes
+        )
         )
         await authStateMachine.send(event)
     }
-    
+
     private func validateCurrentState() async throws {
         let stateSequences = await authStateMachine.listen()
         log.verbose("Validating current state")
@@ -94,7 +98,7 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
             guard case .configured(_, _, let signUpState) = state else {
                 continue
             }
-            
+
             switch signUpState {
             case .notStarted, .awaitingUserConfirmation, .error, .signedUp:
                 return

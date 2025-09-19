@@ -9,7 +9,7 @@ import Amplify
 import XCTest
 
 enum AuthSignInHelper {
-    
+
     static func signOut() async {
         let session = try? await Amplify.Auth.fetchAuthSession()
         if session?.isSignedIn ?? false {
@@ -21,7 +21,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
             return try await signUpUserReturningResult(username: username, password: password, email: email, phoneNumber: phoneNumber).isSignUpComplete
         }
 
@@ -29,7 +30,8 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String? = nil,
-        phoneNumber: String? = nil) async throws -> AuthSignUpResult {
+        phoneNumber: String? = nil
+    ) async throws -> AuthSignUpResult {
 
             var userAttributes: [AuthUserAttribute] = []
 
@@ -37,7 +39,7 @@ enum AuthSignInHelper {
                 userAttributes.append(AuthUserAttribute(.email, value: email))
             }
 
-            if let phoneNumber = phoneNumber {
+            if let phoneNumber {
                 userAttributes.append(AuthUserAttribute(.phoneNumber, value: phoneNumber))
             }
 
@@ -55,12 +57,14 @@ enum AuthSignInHelper {
         username: String,
         password: String,
         email: String,
-        phoneNumber: String? = nil) async throws -> Bool {
+        phoneNumber: String? = nil
+    ) async throws -> Bool {
             let signedUp: Bool = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,
                 email: email,
-                phoneNumber: phoneNumber)
+                phoneNumber: phoneNumber
+            )
             guard signedUp else {
                 throw AuthError.invalidState("Auth sign up failed", "", nil)
             }

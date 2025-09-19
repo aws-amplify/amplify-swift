@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -8,21 +15,27 @@ public struct Blog6: Model {
   public var posts: List<Post6>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      name: String,
-      posts: List<Post6>? = []) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    name: String,
+    posts: List<Post6>? = []
+  ) {
+    self.init(
+      id: id,
       name: name,
       posts: posts,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String,
-      posts: List<Post6>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    posts: List<Post6>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.posts = posts

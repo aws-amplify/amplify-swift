@@ -35,17 +35,19 @@ public actor AsyncExpectation {
     }
 
     public func setShouldTrigger(_ shouldTrigger: Bool) {
-        self.isInverted = !shouldTrigger
+        isInverted = !shouldTrigger
     }
 
     public func setExpectedFulfillmentCount(_ count: Int) {
-        self.expectedFulfillmentCount = count
+        expectedFulfillmentCount = count
     }
 
-    public init(description: String,
-                isInverted: Bool = false,
-                expectedFulfillmentCount: Int = 1) {
-        expectationDescription = description
+    public init(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) {
+        self.expectationDescription = description
         self.isInverted = isInverted
         self.expectedFulfillmentCount = expectedFulfillmentCount
     }
@@ -73,7 +75,7 @@ public actor AsyncExpectation {
         }
     }
 
-    internal nonisolated func wait() async throws {
+    nonisolated func wait() async throws {
         try await withTaskCancellationHandler {
             try await handleWait()
         } onCancel: {
@@ -83,8 +85,10 @@ public actor AsyncExpectation {
         }
     }
 
-    internal func timeOut(file: StaticString = #filePath,
-                          line: UInt = #line) async {
+    func timeOut(
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
         if isInverted {
             state = .timedOut
         } else if state != .fulfilled {

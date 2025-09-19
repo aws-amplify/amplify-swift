@@ -18,8 +18,10 @@ extension AuthResetPasswordResult: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let isPasswordReset = try values.decode(Bool.self, forKey: .isPasswordReset)
         let resetPasswordStep = try values.decode(AuthResetPasswordStep.self, forKey: .nextStep)
-        self.init(isPasswordReset: isPasswordReset,
-                  nextStep: resetPasswordStep)
+        self.init(
+            isPasswordReset: isPasswordReset,
+            nextStep: resetPasswordStep
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -43,13 +45,16 @@ extension AuthResetPasswordStep: Codable {
 
             let codeDeliveryDetails = try values.decode(
                 AuthCodeDeliveryDetails.self,
-                forKey: .codeDeliveryDetails)
+                forKey: .codeDeliveryDetails
+            )
             let additionalInfo = try values.decode(
                 AdditionalInfo.self,
-                forKey: .additionalInfo)
+                forKey: .additionalInfo
+            )
             self = .confirmResetPasswordWithCode(
                 codeDeliveryDetails,
-                additionalInfo)
+                additionalInfo
+            )
         } else {
             fatalError("next step type not supported")
         }
@@ -89,12 +94,14 @@ extension AuthCodeDeliveryDetails: Codable {
         let attributeName = try values.decodeIfPresent(String.self, forKey: .attributeName)
         if attributeName == "EMAIL" {
             attributeKey = .email
-        } else if let attributeName = attributeName  {
+        } else if let attributeName  {
             attributeKey = .unknown(attributeName)
         }
 
-        self.init(destination: destination,
-                  attributeKey: attributeKey)
+        self.init(
+            destination: destination,
+            attributeKey: attributeKey
+        )
     }
 
     public func encode(to encoder: Encoder) throws {

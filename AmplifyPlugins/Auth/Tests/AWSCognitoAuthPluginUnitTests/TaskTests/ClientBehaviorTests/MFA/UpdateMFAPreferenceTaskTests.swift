@@ -7,10 +7,11 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
+import AWSClientRuntime
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 // swiftlint:disable type_body_length
@@ -33,7 +34,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
         // Test all the combinations for preference types
         for smsPreference in allSMSPreferences {
             for totpPreference in allTOTPPreference {
-                self.mockIdentityProvider = MockIdentityProvider(
+                mockIdentityProvider = MockIdentityProvider(
                     mockGetUserAttributeResponse: { request in
                         return .init(
                             userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
@@ -42,18 +43,22 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                     mockSetUserMFAPreferenceResponse: { request in
                         XCTAssertEqual(
                             request.smsMfaSettings?.preferredMfa,
-                            smsPreference.smsSetting().preferredMfa)
+                            smsPreference.smsSetting().preferredMfa
+                        )
                         XCTAssertEqual(
                             request.softwareTokenMfaSettings?.preferredMfa,
-                            totpPreference.softwareTokenSetting().preferredMfa)
+                            totpPreference.softwareTokenSetting().preferredMfa
+                        )
 
                         return .init()
-                    })
+                    }
+                )
 
                 do {
                     try await plugin.updateMFAPreference(
                         sms: smsPreference,
-                        totp: totpPreference)
+                        totp: totpPreference
+                    )
                 } catch {
                     XCTFail("Received failure with error \(error)")
                 }

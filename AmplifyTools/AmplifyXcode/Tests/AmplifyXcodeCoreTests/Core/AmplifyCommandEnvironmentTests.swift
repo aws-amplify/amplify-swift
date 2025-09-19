@@ -149,9 +149,11 @@ class AmplifyCommandEnvironmentTests: XCTestCase {
         }
         let environment = CommandEnvironment(basePath: basePath, fileManager: DirNotFoundFileManager())
         let file = environment.createXcodeFile(withPath: "File.swift", ofType: .source)
-        XCTAssertThrowsError(try environment.addFilesToXcodeProject(projectPath: "project",
-                                                                    files: [file],
-                                                                    toGroup: "group",
-                                                                    inTarget: .primary))
+        XCTAssertThrowsError(try environment.addFilesToXcodeProject(
+            projectPath: "project",
+            files: [file],
+            toGroup: "group",
+            inTarget: .primary
+        ))
     }
 }

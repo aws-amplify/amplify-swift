@@ -17,9 +17,11 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     ///      mutation is processed for authenticated users
     func testIAMAllowPrivate() async {
         let testId = UUID().uuidString
-        await setup(withModels: IAMPrivateModelRegistration(),
-                    testType: .defaultAuthIAM,
-                    testId: testId)
+        await setup(
+            withModels: IAMPrivateModelRegistration(),
+            testType: .defaultAuthIAM,
+            testId: testId
+        )
 
         await signIn(user: user1)
 
@@ -30,8 +32,10 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
         let authTypeExpectation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
-        await assertQuerySuccess(modelType: TodoIAMPrivate.self,
-                           expectations) { error in
+        await assertQuerySuccess(
+            modelType: TodoIAMPrivate.self,
+            expectations
+        ) { error in
             XCTFail("Error query \(error)")
         }
 
@@ -51,9 +55,11 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     ///      mutation is processed for unauthenticated users
     func testIAMAllowPublic() async {
         let testId = UUID().uuidString
-        await setup(withModels: IAMPublicModelRegistration(),
-                    testType: .defaultAuthIAM,
-                    testId: testId)
+        await setup(
+            withModels: IAMPublicModelRegistration(),
+            testType: .defaultAuthIAM,
+            testId: testId
+        )
 
         let expectations = makeExpectations()
 
@@ -62,8 +68,10 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
         let authTypeExpectation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
-        await assertQuerySuccess(modelType: TodoIAMPublic.self,
-                           expectations) { error in
+        await assertQuerySuccess(
+            modelType: TodoIAMPublic.self,
+            expectations
+        ) { error in
             XCTFail("Error query \(error)")
         }
 
@@ -81,14 +89,14 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
 // MARK: - Models registration
 extension AWSDataStoreCategoryPluginIAMAuthIntegrationTests {
     struct IAMPrivateModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoIAMPrivate.self)
         }
     }
 
     struct IAMPublicModelRegistration: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoIAMPublic.self)
         }

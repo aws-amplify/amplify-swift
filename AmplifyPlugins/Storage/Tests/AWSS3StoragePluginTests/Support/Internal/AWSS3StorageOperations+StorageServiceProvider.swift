@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 @testable import Amplify
 @testable import AWSPluginsCore
 @testable import AWSS3StoragePlugin
-import Foundation
 
 extension AWSS3StorageDownloadFileOperation {
     convenience init(

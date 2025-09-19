@@ -7,10 +7,10 @@
 
 import Amplify
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
+import InternalAmplifyCredentials
 
-final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
+public final class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
     /// Used for the default GraphQL API represented by the `data` category in `amplify_outputs.json`
     /// This constant is not used for APIs present in `amplifyconfiguration.json` since they always have names.
     public static let defaultGraphQLAPI = "defaultGraphQLAPI"

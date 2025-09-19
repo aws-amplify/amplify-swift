@@ -14,17 +14,19 @@ public struct Section: Embeddable {
     var number: Double
 }
 
-extension Section {
-    public enum CodingKeys: CodingKey {
+public extension Section {
+    enum CodingKeys: CodingKey {
         case name
         case number
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { embedded in
+    static let schema = defineSchema { embedded in
         let section = Section.keys
-        embedded.fields(.field(section.name, is: .required, ofType: .string),
-                       .field(section.number, is: .required, ofType: .double))
+        embedded.fields(
+            .field(section.name, is: .required, ofType: .string),
+            .field(section.number, is: .required, ofType: .double)
+        )
     }
 }

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 @testable import Amplify
@@ -17,7 +17,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
-        
+
         let commentSynced = expectation(description: "DataStore start success")
         let mutationEvents = Amplify.DataStore.observe(Comment4V2.self)
         Task {
@@ -31,10 +31,10 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         try await Amplify.DataStore.save(post)
         try await Amplify.DataStore.save(comment)
-        
+
         await fulfillment(of: [commentSynced], timeout: 10)
     }
 }
@@ -42,7 +42,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
 
 extension AWSDataStoreLazyLoadPostComment4V2 {
     struct PostComment4V2Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post4V2.self)
             ModelRegistry.register(modelType: Comment4V2.self)

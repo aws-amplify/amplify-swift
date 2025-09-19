@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 #if !os(watchOS)
 // swiftformat:disable fileHeader
 /*
@@ -27,10 +34,11 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 // This code was taken from the 5.0.0 release
 // Commit SHA1: 98e968e7b6c1318fb61df23e347bc319761e8acb
 import SystemConfiguration
-import Foundation
 
 public enum AmplifyReachabilityError: Error {
     case failedToCreateWithAddress(sockaddr, Int32)
@@ -88,7 +96,7 @@ public class AmplifyReachability {
     public var allowsCellularConnection: Bool
 
     // The notification center on which "reachability changed" events are being posted
-    public var notificationCenter: NotificationCenter = NotificationCenter.default
+    public var notificationCenter: NotificationCenter = .default
 
     @available(*, deprecated, renamed: "connection.description")
     public var currentReachabilityString: String {
@@ -132,29 +140,35 @@ public class AmplifyReachability {
         }
     }
 
-    required public init(reachabilityRef: SCNetworkReachability,
-                         queueQoS: DispatchQoS = .default,
-                         targetQueue: DispatchQueue? = nil,
-                         notificationQueue: DispatchQueue? = .main) {
+    public required init(
+        reachabilityRef: SCNetworkReachability,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) {
         self.allowsCellularConnection = true
         self.reachabilityRef = reachabilityRef
         self.reachabilitySerialQueue = DispatchQueue(label: "uk.co.ashleymills.reachability", qos: queueQoS, target: targetQueue)
         self.notificationQueue = notificationQueue
     }
 
-    public convenience init(hostname: String,
-                            queueQoS: DispatchQoS = .default,
-                            targetQueue: DispatchQueue? = nil,
-                            notificationQueue: DispatchQueue? = .main) throws {
+    public convenience init(
+        hostname: String,
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) throws {
         guard let ref = SCNetworkReachabilityCreateWithName(nil, hostname) else {
             throw AmplifyReachabilityError.failedToCreateWithHostname(hostname, SCError())
         }
         self.init(reachabilityRef: ref, queueQoS: queueQoS, targetQueue: targetQueue, notificationQueue: notificationQueue)
     }
 
-    public convenience init(queueQoS: DispatchQoS = .default,
-                            targetQueue: DispatchQueue? = nil,
-                            notificationQueue: DispatchQueue? = .main) throws {
+    public convenience init(
+        queueQoS: DispatchQoS = .default,
+        targetQueue: DispatchQueue? = nil,
+        notificationQueue: DispatchQueue? = .main
+    ) throws {
         var zeroAddress = sockaddr()
         zeroAddress.sa_len = UInt8(MemoryLayout<sockaddr>.size)
         zeroAddress.sa_family = sa_family_t(AF_INET)
@@ -178,7 +192,7 @@ public extension AmplifyReachability {
         guard !notifierRunning else { return }
 
         let callback: SCNetworkReachabilityCallBack = { _, flags, info in
-            guard let info = info else { return }
+            guard let info else { return }
 
             // `weakifiedReachability` is guaranteed to exist by virtue of our
             // retain/release callbacks which we provided to the `SCNetworkReachabilityContext`.
@@ -200,7 +214,7 @@ public extension AmplifyReachability {
                 _ = unmanagedWeakifiedReachability.retain()
                 return UnsafeRawPointer(unmanagedWeakifiedReachability.toOpaque())
             },
-            release: { (info: UnsafeRawPointer) -> Void in
+            release: { (info: UnsafeRawPointer) in
                 let unmanagedWeakifiedReachability = Unmanaged<AmplifyReachabilityWeakifier>.fromOpaque(info)
                 unmanagedWeakifiedReachability.release()
             },
@@ -262,8 +276,8 @@ private extension AmplifyReachability {
     func setReachabilityFlags() throws {
         try reachabilitySerialQueue.sync { [unowned self] in
             var flags = SCNetworkReachabilityFlags()
-            if !SCNetworkReachabilityGetFlags(self.reachabilityRef, &flags) {
-                self.stopNotifier()
+            if !SCNetworkReachabilityGetFlags(reachabilityRef, &flags) {
+                stopNotifier()
                 throw AmplifyReachabilityError.unableToGetFlags(SCError())
             }
 
@@ -273,9 +287,9 @@ private extension AmplifyReachability {
 
     func notifyReachabilityChanged() {
         let notify = { [weak self] in
-            guard let self = self else { return }
-            self.connection != .unavailable ? self.whenReachable?(self) : self.whenUnreachable?(self)
-            self.notificationCenter.post(name: .reachabilityChanged, object: self)
+            guard let self else { return }
+            connection != .unavailable ? whenReachable?(self) : whenUnreachable?(self)
+            notificationCenter.post(name: .reachabilityChanged, object: self)
         }
 
         // notify on the configured `notificationQueue`, or the caller's (i.e. `reachabilitySerialQueue`)

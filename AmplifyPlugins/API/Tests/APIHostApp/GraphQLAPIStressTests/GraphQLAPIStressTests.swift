@@ -6,48 +6,48 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+@testable import AWSAPIPlugin
 
 /*
  Model Schema
- 
+
  type Post @model @auth(rules: [{ allow: public }]) {
     id: ID!
     title: String!
     status: PostStatus!
     content: String!
   }
-  
+
   enum PostStatus {
     ACTIVE
     INACTIVE
   }
- 
+
  */
 
 final class APIStressTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
-    
-    final public class TestModelRegistration: AmplifyModelRegistration {
-        public func registerModels(registry: ModelRegistry.Type) {
+
+    final class TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
         }
-        
-        public let version: String = "1"
+
+        let version: String = "1"
     }
-    
+
     override func setUp() async throws {
         await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
         let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
-        
+
         do {
             try Amplify.add(plugin: plugin)
-            
+
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
@@ -55,13 +55,13 @@ final class APIStressTests: XCTestCase {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
     }
 
     // MARK: - Stress tests
-    
+
     /// - Given: APIPlugin configured with valid configuration and schema
     /// - When: I create 50 subsciptions on createPost mutation and then create a Post
     /// - Then: Subscriptions should receive connected, disconnected  and progress events correctly
@@ -108,23 +108,23 @@ final class APIStressTests: XCTestCase {
                     }
                     completedInvoked.fulfill()
                 }
-                
+
                 await sequenceActor.append(sequence: subscription)
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         let sequenceCount = await sequenceActor.sequences.count
         XCTAssertEqual(sequenceCount, concurrencyLimit)
-        
+
         guard try await createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 await sequenceActor.sequences[index].cancel()
@@ -133,7 +133,7 @@ final class APIStressTests: XCTestCase {
 
         await fulfillment(of: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: APIPlugin configured with valid configuration and schema
     /// - When: I create 50 posts simultaneously
     /// - Then: Operation should succeed
@@ -151,10 +151,10 @@ final class APIStressTests: XCTestCase {
                 postCreateExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: APIPlugin configured with valid configuration and schema and 50 posts saved
     /// - When: I update 50 post simultaneously
     /// - Then: Operation should succeed
@@ -164,7 +164,7 @@ final class APIStressTests: XCTestCase {
         let postUpdateExpectation = expectation(description: "Post was updated successfully")
         postUpdateExpectation.expectedFulfillmentCount = concurrencyLimit
         let postActor = PostActor()
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
@@ -179,7 +179,7 @@ final class APIStressTests: XCTestCase {
         }
 
         await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 var post = await postActor.posts[index]
@@ -191,10 +191,10 @@ final class APIStressTests: XCTestCase {
                 postUpdateExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [postUpdateExpectation], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: APIPlugin configured with valid configuration, schema and 50 posts saved
     /// - When: I delete 50 post simultaneously
     /// - Then: Operation should succeed
@@ -206,7 +206,7 @@ final class APIStressTests: XCTestCase {
         postDeleteExpectation.expectedFulfillmentCount = concurrencyLimit
 
         let postActor = PostActor()
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
@@ -221,7 +221,7 @@ final class APIStressTests: XCTestCase {
         }
 
         await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let post = await postActor.posts[index]
@@ -232,10 +232,10 @@ final class APIStressTests: XCTestCase {
                 postDeleteExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [postDeleteExpectation], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: APIPlugin configured with valid configuration, schema and 50 posts saved
     /// - When: I query for 50 posts simultaneously
     /// - Then: Operation should succeed
@@ -247,7 +247,7 @@ final class APIStressTests: XCTestCase {
         postQueryExpectation.expectedFulfillmentCount = concurrencyLimit
 
         let postActor = PostActor()
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
@@ -262,7 +262,7 @@ final class APIStressTests: XCTestCase {
         }
 
         await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let post = await postActor.posts[index]
@@ -281,24 +281,24 @@ final class APIStressTests: XCTestCase {
                 postQueryExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [postQueryExpectation], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     actor PostActor {
         var posts: [Post] = []
         func append(post: Post) {
             posts.append(post)
         }
     }
-    
+
     actor SequenceActor {
         var sequences: [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>] = []
         func append(sequence: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>) {
             sequences.append(sequence)
         }
     }
-    
+
     // MARK: - Helpers
 
     func createPost(id: String, title: String) async throws -> Post? {

@@ -1,30 +1,37 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension DefaultPKChild {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension DefaultPKChild {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case parent
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let defaultPKChild = DefaultPKChild.keys
-    
+
     model.pluralName = "DefaultPKChildren"
-    
+
     model.attributes(
       .index(fields: ["id"], name: nil),
       .primaryKey(fields: [defaultPKChild.id])
     )
-    
+
     model.fields(
       .field(defaultPKChild.id, is: .required, ofType: .string),
       .field(defaultPKChild.content, is: .optional, ofType: .string),
@@ -33,29 +40,29 @@ extension DefaultPKChild {
       .field(defaultPKChild.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<DefaultPKChild> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<DefaultPKChild> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension DefaultPKChild: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-extension ModelPath where ModelType == DefaultPKChild {
-  public var id: FieldPath<String>   {
-      string("id") 
+public extension ModelPath where ModelType == DefaultPKChild {
+  var id: FieldPath<String>   {
+      string("id")
     }
-  public var content: FieldPath<String>   {
-      string("content") 
+  var content: FieldPath<String>   {
+      string("content")
     }
-  public var parent: ModelPath<DefaultPKParent>   {
-      DefaultPKParent.Path(name: "parent", parent: self) 
+  var parent: ModelPath<DefaultPKParent>   {
+      DefaultPKParent.Path(name: "parent", parent: self)
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
-import AWSCognitoAuthPlugin
 
-fileprivate let internalTestDomain = "@amplify-swift-gamma.awsapps.com"
+private let internalTestDomain = "@amplify-swift-gamma.awsapps.com"
 
 class AWSAuthBaseTest: XCTestCase {
 
@@ -23,8 +23,8 @@ class AWSAuthBaseTest: XCTestCase {
     }
 
     var randomPhoneNumber: String {
-        "+1" + (1...10)
-            .map { _ in String(Int.random(in: 0...9)) }
+        "+1" + (1 ... 10)
+            .map { _ in String(Int.random(in: 0 ... 9)) }
             .joined()
     }
 
@@ -51,7 +51,7 @@ class AWSAuthBaseTest: XCTestCase {
         initializeAmplify()
         _ = await Amplify.Auth.signOut()
     }
-    
+
     override func tearDown() async throws {
         try await super.tearDown()
         subscription?.cancel()
@@ -112,7 +112,9 @@ class AWSAuthBaseTest: XCTestCase {
                             "AppClientId": userPooldAppClientID,
                             "Region": region
                         ]
-                    ]]]
+                    ]
+                ]
+            ]
             )
             let configuration = AmplifyConfiguration(auth: authConfiguration)
             let authPlugin = AWSCognitoAuthPlugin()
@@ -126,7 +128,7 @@ class AWSAuthBaseTest: XCTestCase {
 
     // Dictionary to store OTP with usernames as keys
     var usernameOTPDictionary: [String: String] = [:]
-    var subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<[String: JSONValue]>>? = nil
+    var subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<[String: JSONValue]>>?
 
     let document: String = """
     subscription OnCreateMfaInfo {
@@ -193,10 +195,10 @@ class AWSAuthBaseTest: XCTestCase {
         let lowerCasedUsername = username.lowercased()
         let expectation = XCTestExpectation(description: "Wait for OTP")
         expectation.expectedFulfillmentCount = 1
-        
+
         let task = Task { () -> String? in
             var code: String?
-            for _ in 0..<30 { // Poll for the code, max 30 times (once per second)
+            for _ in 0 ..< 30 { // Poll for the code, max 30 times (once per second)
                 if let otp = usernameOTPDictionary[lowerCasedUsername] {
                     code = otp
                     expectation.fulfill() // Fulfill the expectation when the value is found

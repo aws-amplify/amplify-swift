@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension StoreBranch7 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension StoreBranch7 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case tenantId
     case name
     case country
@@ -15,25 +22,25 @@ extension StoreBranch7 {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let storeBranch7 = StoreBranch7.keys
-    
+
     model.authRules = [
       rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
-    
+
     model.listPluralName = "StoreBranch7s"
     model.syncPluralName = "StoreBranch7s"
-    
+
     model.attributes(
       .index(fields: ["tenantId", "name"], name: nil),
       .primaryKey(fields: [storeBranch7.tenantId, storeBranch7.name])
     )
-    
+
     model.fields(
       .field(storeBranch7.tenantId, is: .required, ofType: .string),
       .field(storeBranch7.name, is: .required, ofType: .string),
@@ -46,9 +53,9 @@ extension StoreBranch7 {
       .field(storeBranch7.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<StoreBranch7> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<StoreBranch7> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension StoreBranch7: ModelIdentifiable {
@@ -56,38 +63,40 @@ extension StoreBranch7: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension StoreBranch7.IdentifierProtocol {
-  public static func identifier(tenantId: String,
-      name: String) -> Self {
-    .make(fields:[(name: "tenantId", value: tenantId), (name: "name", value: name)])
+public extension StoreBranch7.IdentifierProtocol {
+  static func identifier(
+    tenantId: String,
+    name: String
+  ) -> Self {
+    .make(fields: [(name: "tenantId", value: tenantId), (name: "name", value: name)])
   }
 }
-extension ModelPath where ModelType == StoreBranch7 {
-  public var tenantId: FieldPath<String>   {
-      string("tenantId") 
+public extension ModelPath where ModelType == StoreBranch7 {
+  var tenantId: FieldPath<String>   {
+      string("tenantId")
     }
-  public var name: FieldPath<String>   {
-      string("name") 
+  var name: FieldPath<String>   {
+      string("name")
     }
-  public var country: FieldPath<String>   {
-      string("country") 
+  var country: FieldPath<String>   {
+      string("country")
     }
-  public var state: FieldPath<String>   {
-      string("state") 
+  var state: FieldPath<String>   {
+      string("state")
     }
-  public var city: FieldPath<String>   {
-      string("city") 
+  var city: FieldPath<String>   {
+      string("city")
     }
-  public var zipCode: FieldPath<String>   {
-      string("zipCode") 
+  var zipCode: FieldPath<String>   {
+      string("zipCode")
     }
-  public var streetAddress: FieldPath<String>   {
-      string("streetAddress") 
+  var streetAddress: FieldPath<String>   {
+      string("streetAddress")
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

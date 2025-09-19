@@ -14,9 +14,11 @@ public struct User5: Model {
   public var username: String
   public var posts: List<PostEditor5>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       username: String,
-      posts: List<PostEditor5>? = []) {
+      posts: List<PostEditor5>? = []
+  ) {
       self.id = id
       self.username = username
       self.posts = posts

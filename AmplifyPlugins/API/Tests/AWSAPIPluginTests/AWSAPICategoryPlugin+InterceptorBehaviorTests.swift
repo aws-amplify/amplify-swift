@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import AWSAPIPlugin
 import AWSPluginsCore
 import InternalAmplifyCredentials
+import XCTest
+@testable import AWSAPIPlugin
 
 // swiftlint:disable:next type_name
 class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase {

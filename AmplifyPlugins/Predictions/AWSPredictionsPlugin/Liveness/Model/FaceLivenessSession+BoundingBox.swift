@@ -8,9 +8,9 @@
 import Foundation
 
 // swiftlint:disable identifier_name
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct BoundingBox: Codable {
+    struct BoundingBox: Codable {
         public let x: Double
         public let y: Double
         public let width: Double

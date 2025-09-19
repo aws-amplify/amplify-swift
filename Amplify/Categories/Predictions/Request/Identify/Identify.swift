@@ -9,8 +9,8 @@ import Foundation
 
 /// Identification criteria provided to
 /// type parameter in identify() API
-extension Predictions {
-    public enum Identify {
+public extension Predictions {
+    enum Identify {
         public struct Request<Output> {
             @_spi(PredictionsIdentifyRequestKind)
             public let kind: Kind
@@ -37,9 +37,9 @@ extension Predictions {
     }
 }
 
-extension Predictions.Identify.Request {
+public extension Predictions.Identify.Request {
     @_spi(PredictionsIdentifyRequestKind)
-    public enum Kind {
+    enum Kind {
         public typealias Lifting<T> = ((T) -> Output, (Output) -> T)
 
         case detectCelebrities(

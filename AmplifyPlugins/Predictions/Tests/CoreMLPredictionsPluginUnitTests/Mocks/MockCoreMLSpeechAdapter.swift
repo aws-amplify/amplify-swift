@@ -6,9 +6,9 @@
 //
 
 #if canImport(Speech)
-import XCTest
 import Amplify
 import Speech
+import XCTest
 @testable import CoreMLPredictionsPlugin
 
 class MockCoreMLSpeechAdapter: CoreMLSpeechBehavior {

@@ -15,8 +15,10 @@ extension AnyCancellable: StateMachineSubscriberToken {}
 
 class StateMachine<State, Event> {
     typealias Reducer = (State, Event) -> State
-    private let queue = DispatchQueue(label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Event.self)>",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Event.self)>",
+        target: DispatchQueue.global()
+    )
     private var reducer: Reducer
 
 #if canImport(Combine)
@@ -108,11 +110,11 @@ class StateMachine<State, Event> {
 protocol StateMachineSubscriberToken: AnyObject {}
 
 extension StateMachine: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

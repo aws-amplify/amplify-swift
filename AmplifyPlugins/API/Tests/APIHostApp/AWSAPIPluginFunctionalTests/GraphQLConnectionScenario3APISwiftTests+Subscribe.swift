@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -15,21 +15,23 @@ import XCTest
 #endif
 
 extension GraphQLConnectionScenario3Tests {
-    
+
     func onCreatePost3APISwiftRequest() -> GraphQLRequest<APISwift.OnCreatePost3Subscription.Data> {
         let request = GraphQLRequest<APISwift.OnCreatePost3Subscription.Data>(
             document: APISwift.OnCreatePost3Subscription.operationString,
-            responseType: APISwift.OnCreatePost3Subscription.Data.self)
+            responseType: APISwift.OnCreatePost3Subscription.Data.self
+        )
         return request
     }
-    
+
     func createPost3APISwift(_ id: String, _ title: String) async throws -> APISwift.CreatePost3Mutation.Data.CreatePost3? {
         let input = APISwift.CreatePost3Input(id: id, title: title)
         let mutation = APISwift.CreatePost3Mutation(input: input)
         let request = GraphQLRequest<APISwift.CreatePost3Mutation.Data>(
             document: APISwift.CreatePost3Mutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreatePost3Mutation.Data.self)
+            responseType: APISwift.CreatePost3Mutation.Data.self
+        )
         let response = try await Amplify.API.mutate(request: request)
         switch response {
         case .success(let data):
@@ -38,7 +40,7 @@ extension GraphQLConnectionScenario3Tests {
             throw error
         }
     }
-    
+
     func testOnCreateSubscriptionAPISwift() async throws {
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
@@ -76,10 +78,11 @@ extension GraphQLConnectionScenario3Tests {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         guard try await createPost3APISwift(uuid, title) != nil,
-              try await createPost3APISwift(uuid2, title) != nil else {
+              try await createPost3APISwift(uuid2, title) != nil
+        else {
             XCTFail("Failed to create post")
             return
         }

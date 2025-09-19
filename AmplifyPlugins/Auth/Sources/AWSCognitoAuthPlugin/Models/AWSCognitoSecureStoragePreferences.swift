@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// A struct to store preferences for how the plugin uses storage
 public struct AWSCognitoSecureStoragePreferences {

@@ -9,23 +9,23 @@
 import Amplify
 import Foundation
 
-extension TodoIAMPrivate {
+public extension TodoIAMPrivate {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case createdAt
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let todoIAMPrivate = TodoIAMPrivate.keys
 
     model.authRules = [
-        rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "TodoIAMPrivates"

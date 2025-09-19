@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AmplifySRP
 import AmplifyBigInteger
+import AmplifySRP
+import Foundation
 
 struct AmplifySRPClient: SRPClientBehavior {
 
@@ -31,18 +31,22 @@ struct AmplifySRPClient: SRPClientBehavior {
     func generateClientKeyPair() -> SRPKeys {
         let publicHexValue = client.publicA.asString(radix: 16)
         let privateHexValue = client.privateA.asString(radix: 16)
-        let srpKeys = SRPKeys(publicKeyHexValue: publicHexValue,
-                              privateKeyHexValue: privateHexValue)
+        let srpKeys = SRPKeys(
+            publicKeyHexValue: publicHexValue,
+            privateKeyHexValue: privateHexValue
+        )
         return srpKeys
     }
 
     // swiftlint:disable:next function_parameter_count
-    func calculateSharedSecret(username: String,
-                               password: String,
-                               saltHexValue: String,
-                               clientPrivateKeyHexValue: String,
-                               clientPublicKeyHexValue: String,
-                               serverPublicKeyHexValue: String) throws -> String {
+    func calculateSharedSecret(
+        username: String,
+        password: String,
+        saltHexValue: String,
+        clientPrivateKeyHexValue: String,
+        clientPublicKeyHexValue: String,
+        serverPublicKeyHexValue: String
+    ) throws -> String {
         guard let clientPublicNum = BigInt(clientPublicKeyHexValue, radix: 16) else {
             throw SRPError.numberConversion
         }
@@ -58,18 +62,22 @@ struct AmplifySRPClient: SRPClientBehavior {
         guard serverPublicKeyNum % commonState.prime != BigInt(0) else {
             throw SRPError.illegalParameter
         }
-        let sharedSecret = SRPClientState.calculateSessionKey(username: username,
-                                                              password: password,
-                                                              publicClientKey: clientPublicNum,
-                                                              privateClientKey: clientPrivateNum,
-                                                              publicServerKey: serverPublicKeyNum,
-                                                              salt: saltNum,
-                                                              commonState: commonState)
+        let sharedSecret = SRPClientState.calculateSessionKey(
+            username: username,
+            password: password,
+            publicClientKey: clientPublicNum,
+            privateClientKey: clientPrivateNum,
+            publicServerKey: serverPublicKeyNum,
+            salt: saltNum,
+            commonState: commonState
+        )
         return sharedSecret.asString(radix: 16)
     }
 
-    static func calculateUHexValue(clientPublicKeyHexValue: String,
-                                   serverPublicKeyHexValue: String) throws -> String {
+    static func calculateUHexValue(
+        clientPublicKeyHexValue: String,
+        serverPublicKeyHexValue: String
+    ) throws -> String {
         guard let clientPublicNum = BigInt(clientPublicKeyHexValue, radix: 16) else {
             throw SRPError.numberConversion
         }
@@ -79,8 +87,10 @@ struct AmplifySRPClient: SRPClientBehavior {
         let signedClientPublicKey = AmplifyBigIntHelper.getSignedData(num: clientPublicNum)
         let signedServerPublicKey = AmplifyBigIntHelper.getSignedData(num: serverPublicNum)
 
-        let u = SRPClientState.calculcateU(publicClientKey: signedClientPublicKey,
-                                           publicServerKey: signedServerPublicKey)
+        let u = SRPClientState.calculcateU(
+            publicClientKey: signedClientPublicKey,
+            publicServerKey: signedServerPublicKey
+        )
 
         return u.asString(radix: 16)
     }
@@ -99,20 +109,23 @@ struct AmplifySRPClient: SRPClientBehavior {
             keyingMaterial: Data(keyingMaterial),
             salt: Data(salt),
             info: "Caldera Derived Key",
-            outputLength: 16)
+            outputLength: 16
+        )
         return authenticationkey
     }
 
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,
-        password: String) -> (salt: Data, passwordVerifier: Data) {
+        password: String
+    ) -> (salt: Data, passwordVerifier: Data) {
 
             let passwordVerifier = SRPClientState.calculateDevicePasswordVerifier(
                 deviceGroupKey: deviceGroupKey,
                 deviceKey: deviceKey,
                 password: password,
-                commonState: commonState)
+                commonState: commonState
+            )
 
             let verifierData = Data(AmplifyBigIntHelper.getSignedData(
                 num: passwordVerifier.passwordVerifier))

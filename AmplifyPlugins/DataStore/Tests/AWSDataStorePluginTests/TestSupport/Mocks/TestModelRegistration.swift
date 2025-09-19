@@ -50,25 +50,33 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let draft = ModelField(name: "draft", type: .bool, isRequired: false)
         let rating = ModelField(name: "rating", type: .double, isRequired: false)
         let status = ModelField(name: "status", type: .string, isRequired: false)
-        let comments = ModelField(name: "comments",
-                                  type: .collection(of: "Comment"),
-                                  isRequired: false,
-                                  association: .hasMany(associatedFieldName: "post"))
-        let postSchema = ModelSchema(name: "Post",
-                                     listPluralName: "Posts",
-                                     syncPluralName: "Posts",
-                                     fields: [id.name: id,
-                                              title.name: title,
-                                              content.name: content,
-                                              createdAt.name: createdAt,
-                                              updatedAt.name: updatedAt,
-                                              draft.name: draft,
-                                              rating.name: rating,
-                                              status.name: status,
-                                              comments.name: comments])
+        let comments = ModelField(
+            name: "comments",
+            type: .collection(of: "Comment"),
+            isRequired: false,
+            association: .hasMany(associatedFieldName: "post")
+        )
+        let postSchema = ModelSchema(
+            name: "Post",
+            listPluralName: "Posts",
+            syncPluralName: "Posts",
+            fields: [
+                id.name: id,
+                title.name: title,
+                content.name: content,
+                createdAt.name: createdAt,
+                updatedAt.name: updatedAt,
+                draft.name: draft,
+                rating.name: rating,
+                status.name: status,
+                comments.name: comments
+            ]
+        )
 
-        ModelRegistry.register(modelType: DynamicModel.self,
-                               modelSchema: postSchema) { (jsonString, decoder) -> Model in
+        ModelRegistry.register(
+            modelType: DynamicModel.self,
+            modelSchema: postSchema
+        ) { jsonString, decoder -> Model in
             try DynamicModel.from(json: jsonString, decoder: decoder)
         }
 
@@ -77,20 +85,27 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let commentId = ModelFieldDefinition.id().modelField
         let commentContent = ModelField(name: "content", type: .string, isRequired: true)
         let commentCreatedAt = ModelField(name: "createdAt", type: .dateTime, isRequired: true)
-        let belongsTo = ModelField(name: "post",
-                                   type: .model(name: "Post"),
-                                   isRequired: true,
-                                   association: .belongsTo(associatedWith: nil, targetNames: ["postId"]))
-        let commentSchema = ModelSchema(name: "Comment",
-                                        listPluralName: "Comments",
-                                        syncPluralName: "Comments",
-                                        fields: [
-                                            commentId.name: commentId,
-                                            commentContent.name: commentContent,
-                                            commentCreatedAt.name: commentCreatedAt,
-                                            belongsTo.name: belongsTo])
-        ModelRegistry.register(modelType: DynamicModel.self,
-                               modelSchema: commentSchema) { (jsonString, decoder) -> Model in
+        let belongsTo = ModelField(
+            name: "post",
+            type: .model(name: "Post"),
+            isRequired: true,
+            association: .belongsTo(associatedWith: nil, targetNames: ["postId"])
+        )
+        let commentSchema = ModelSchema(
+            name: "Comment",
+            listPluralName: "Comments",
+            syncPluralName: "Comments",
+            fields: [
+                commentId.name: commentId,
+                commentContent.name: commentContent,
+                commentCreatedAt.name: commentCreatedAt,
+                belongsTo.name: belongsTo
+            ]
+        )
+        ModelRegistry.register(
+            modelType: DynamicModel.self,
+            modelSchema: commentSchema
+        ) { jsonString, decoder -> Model in
             try DynamicModel.from(json: jsonString, decoder: decoder)
         }
     }

@@ -10,9 +10,9 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 
+import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import Foundation
 
 struct AuthTestHarnessInput {
     let initialAuthState: AuthState
@@ -27,11 +27,11 @@ extension AuthTestHarnessInput {
             from specification: FeatureSpecification
         ) async -> AuthTestHarnessInput {
             return await AuthTestHarnessInput(
-            initialAuthState: specification.preConditions.initialAuthState,
-            expectedAuthState: getExpectedAuthState(from: specification),
-            amplifyAPI: getAmplifyAPIUnderTest(from: specification),
-            cognitoAPI: getCognitoAPI(from: specification)
-        )
+                initialAuthState: specification.preConditions.initialAuthState,
+                expectedAuthState: getExpectedAuthState(from: specification),
+                amplifyAPI: getAmplifyAPIUnderTest(from: specification),
+                cognitoAPI: getCognitoAPI(from: specification)
+            )
     }
 
     private static func getAmplifyAPIUnderTest(from specification: FeatureSpecification) -> AmplifyAPI {
@@ -61,25 +61,32 @@ extension AuthTestHarnessInput {
 enum AmplifyAPI {
     case resetPassword(
         input: AuthResetPasswordRequest,
-        expectedOutput: Result<AuthResetPasswordResult, AuthError>?)
+        expectedOutput: Result<AuthResetPasswordResult, AuthError>?
+    )
     case signUp(
         input: AuthSignUpRequest,
-        expectedOutput: Result<AuthSignUpResult, AuthError>?)
+        expectedOutput: Result<AuthSignUpResult, AuthError>?
+    )
     case signIn(
         input: AuthSignInRequest,
-        expectedOutput: Result<AuthSignInResult, AuthError>?)
+        expectedOutput: Result<AuthSignInResult, AuthError>?
+    )
     case fetchAuthSession(
         input: AuthFetchSessionRequest,
-        expectedOutput: Result<AWSAuthCognitoSession, AuthError>?)
+        expectedOutput: Result<AWSAuthCognitoSession, AuthError>?
+    )
     case signOut(
         input: AuthSignOutRequest,
-        expectedOutput: Result<AWSCognitoSignOutResult, AuthError>?)
+        expectedOutput: Result<AWSCognitoSignOutResult, AuthError>?
+    )
     case deleteUser(
         input: Void,
-        expectedOutput: Result<Void, AuthError>?)
+        expectedOutput: Result<Void, AuthError>?
+    )
     case confirmSignIn(
         input: AuthConfirmSignInRequest,
-        expectedOutput: Result<AuthSignInResult, AuthError>?)
+        expectedOutput: Result<AuthSignInResult, AuthError>?
+    )
 }
 
 enum CognitoAPI {

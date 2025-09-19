@@ -6,8 +6,8 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
-import Foundation
 import Amplify
+import Foundation
 
 public struct AWSAuthWebUISignInOptions {
 
@@ -27,16 +27,18 @@ public struct AWSAuthWebUISignInOptions {
     /// Safari always honors the request.
     public let preferPrivateSession: Bool
 
-    public init(idpIdentifier: String? = nil,
-                preferPrivateSession: Bool = false) {
+    public init(
+        idpIdentifier: String? = nil,
+        preferPrivateSession: Bool = false
+    ) {
         self.idpIdentifier = idpIdentifier
         self.preferPrivateSession = preferPrivateSession
     }
 }
 
-extension AuthWebUISignInRequest.Options {
+public extension AuthWebUISignInRequest.Options {
 
-    public static func preferPrivateSession() -> AuthWebUISignInRequest.Options {
+    static func preferPrivateSession() -> AuthWebUISignInRequest.Options {
         let pluginOptions = AWSAuthWebUISignInOptions(preferPrivateSession: true)
         let options = AuthWebUISignInRequest.Options(pluginOptions: pluginOptions)
         return options

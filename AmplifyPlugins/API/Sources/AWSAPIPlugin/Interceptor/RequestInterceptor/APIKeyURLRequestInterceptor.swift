@@ -7,8 +7,8 @@
 
 import Amplify
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
+import InternalAmplifyCredentials
 
 struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
 

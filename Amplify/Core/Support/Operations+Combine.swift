@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import Foundation
 import Combine
+import Foundation
 
 public extension AmplifyOperation {
     /// Publishes the final result of the operation

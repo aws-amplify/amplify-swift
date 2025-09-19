@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import Foundation
 import Combine
+import Foundation
 
 extension AmplifyInProcessReportingOperation {
     /// A Publisher that emits in-process values for an operation, or the associated

@@ -9,9 +9,9 @@ import Foundation
 
 import Amplify
 
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
 
 /// The class conforming to AWSS3Behavior which uses an instance of the AWSS3 to perform its methods.
 /// This class acts as a wrapper to expose AWSS3 functionality through an instance over a singleton,
@@ -52,12 +52,14 @@ class AWSS3Adapter: AWSS3Behavior {
             if let prefix = request.prefix {
                 finalPrefix = prefix + (request.path ?? "")
             }
-            let input = ListObjectsV2Input(bucket: request.bucket,
-                                           continuationToken: request.continuationToken,
-                                           delimiter: request.delimiter,
-                                           maxKeys: request.maxKeys,
-                                           prefix: finalPrefix,
-                                           startAfter: request.startAfter)
+            let input = ListObjectsV2Input(
+                bucket: request.bucket,
+                continuationToken: request.continuationToken,
+                delimiter: request.delimiter,
+                maxKeys: request.maxKeys,
+                prefix: finalPrefix,
+                startAfter: request.startAfter
+            )
             do {
                 let response = try await awsS3.listObjectsV2(input: input)
                 let contents: S3BucketContents = response.contents ?? []
@@ -80,15 +82,17 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - completion: handler which returns a result with uploadId
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void) {
         Task {
-            let input = CreateMultipartUploadInput(bucket: request.bucket,
-                                                   cacheControl: request.cacheControl,
-                                                   contentDisposition: request.contentDisposition,
-                                                   contentEncoding: request.contentEncoding,
-                                                   contentLanguage: request.contentLanguage,
-                                                   contentType: request.contentType,
-                                                   expires: request.expires,
-                                                   key: request.key,
-                                                   metadata: request.metadata)
+            let input = CreateMultipartUploadInput(
+                bucket: request.bucket,
+                cacheControl: request.cacheControl,
+                contentDisposition: request.contentDisposition,
+                contentEncoding: request.contentEncoding,
+                contentLanguage: request.contentLanguage,
+                contentType: request.contentType,
+                expires: request.expires,
+                key: request.key,
+                metadata: request.metadata
+            )
 
             do {
                 let response = try await awsS3.createMultipartUpload(input: input)

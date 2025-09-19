@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthStressBaseTest: XCTestCase {
 
@@ -20,13 +20,13 @@ class AuthStressBaseTest: XCTestCase {
     let credentialsFile = "testconfiguration/AWSAmplifyStressTests-credentials"
 
     var amplifyConfiguration: AmplifyConfiguration!
-    
+
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
         _ = await Amplify.Auth.signOut()
     }
-    
+
     override func tearDown() async throws {
         try await super.tearDown()
         await Amplify.reset()
@@ -80,7 +80,9 @@ class AuthStressBaseTest: XCTestCase {
                             "AppClientId": userPooldAppClientID,
                             "Region": region
                         ]
-                    ]]]
+                    ]
+                ]
+            ]
             )
             let configuration = AmplifyConfiguration(auth: authConfiguration)
             let authPlugin = AWSCognitoAuthPlugin()

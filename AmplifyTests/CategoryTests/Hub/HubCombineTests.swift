@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -43,9 +43,13 @@ class HubCombineTests: XCTestCase {
 
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: "test"))
 
-        await fulfillment(of: [sub1ReceivedValue,
-                               sub2ReceivedValue],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                sub1ReceivedValue,
+                sub2ReceivedValue
+            ],
+            timeout: 0.05
+        )
 
         sub1.cancel()
         sub2.cancel()
@@ -63,9 +67,13 @@ class HubCombineTests: XCTestCase {
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: "test"))
         Amplify.Hub.dispatch(to: .custom("testChannel"), payload: HubPayload(eventName: "test"))
 
-        await fulfillment(of: [receivedValueForAuth,
-                               receivedValueForCustom],
-                          timeout: 0.05)
+        await fulfillment(
+            of: [
+                receivedValueForAuth,
+                receivedValueForCustom
+            ],
+            timeout: 0.05
+        )
 
         authSink.cancel()
         customSink.cancel()

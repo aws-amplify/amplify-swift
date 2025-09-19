@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-import Amplify
 import ClientRuntime
 import Foundation
 
@@ -34,7 +34,8 @@ struct RefreshUserPoolTokens: Action {
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: existingSignedIndata.username,
-                with: environment)
+                with: environment
+            )
 
             let deviceKey: String? = {
                 if case .metadata(let data) = deviceMetadata {
@@ -52,13 +53,15 @@ struct RefreshUserPoolTokens: Action {
             )
 
             logVerbose(
-                "\(#fileID) Starting get tokens from refresh token", environment: environment)
+                "\(#fileID) Starting get tokens from refresh token", environment: environment
+            )
 
             let response = try await client?.getTokensFromRefreshToken(input: input)
 
             logVerbose(
                 "\(#fileID) Get tokens from refresh token response received",
-                environment: environment)
+                environment: environment
+            )
 
             guard let authenticationResult = response?.authenticationResult,
                 let idToken = authenticationResult.idToken,
@@ -75,18 +78,20 @@ struct RefreshUserPoolTokens: Action {
                 accessToken: accessToken,
                 refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
             )
-            
+
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             let event: RefreshSessionEvent
 
             if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                 let provider = CognitoUserPoolLoginsMap(
                     idToken: idToken,
                     region: config.region,
-                    poolId: config.poolId)
+                    poolId: config.poolId
+                )
                 event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
             } else {
                 event = .init(eventType: .refreshedCognitoUserPool(signedInData))
@@ -105,12 +110,13 @@ struct RefreshUserPoolTokens: Action {
 }
 
 extension RefreshUserPoolTokens: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(
-            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self)
+        )
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

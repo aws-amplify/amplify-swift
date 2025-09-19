@@ -12,7 +12,7 @@ import Smithy
 import SmithyHTTPAPI
 
 class AWSS3StoragePluginRequestRecorder {
-    var target: HTTPClient? = nil
+    var target: HTTPClient?
     var sdkRequests: [HTTPRequest] = []
     var urlRequests: [URLRequest] = []
     init() {

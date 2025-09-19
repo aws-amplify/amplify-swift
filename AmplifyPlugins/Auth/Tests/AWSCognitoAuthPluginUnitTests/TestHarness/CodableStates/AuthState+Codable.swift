@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension AuthState: Codable {
 
@@ -28,7 +28,8 @@ extension AuthState: Codable {
             self = .configured(
                 authenticationState,
                 authorizationState,
-                .notStarted)
+                .notStarted
+            )
         } else {
             fatalError("Decoding not supported")
         }
@@ -49,14 +50,17 @@ extension AuthState: Codable {
 
     static func initialize(
         fileName: String,
-        with fileExtension: String = "") -> AuthState {
+        with fileExtension: String = ""
+    ) -> AuthState {
             let bundle = Bundle.authCognitoTestBundle()
             let url = bundle.url(
                 forResource: fileName,
                 withExtension: fileExtension,
-                subdirectory: AuthTestHarnessConstants.authStatesResourcePath)!
+                subdirectory: AuthTestHarnessConstants.authStatesResourcePath
+            )!
             let fileData: Data = try! Data(contentsOf: url)
             return try! JSONDecoder().decode(
-                AuthState.self, from: fileData)
+                AuthState.self, from: fileData
+            )
         }
 }

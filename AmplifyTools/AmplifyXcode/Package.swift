@@ -23,19 +23,23 @@ let package = Package(
             dependencies: [
                 "XcodeProj",
                 "PathKit"
-            ]),
+            ]
+        ),
         .testTarget(
             name: "AmplifyXcodeCoreTests",
-            dependencies: ["AmplifyXcodeCore"]),
+            dependencies: ["AmplifyXcodeCore"]
+        ),
 
         .target(
             name: "AmplifyXcode",
             dependencies: [
                 "AmplifyXcodeCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ]),
+            ]
+        ),
         .testTarget(
             name: "AmplifyXcodeTests",
-            dependencies: ["AmplifyXcode"])
+            dependencies: ["AmplifyXcode"]
+        )
     ]
 )

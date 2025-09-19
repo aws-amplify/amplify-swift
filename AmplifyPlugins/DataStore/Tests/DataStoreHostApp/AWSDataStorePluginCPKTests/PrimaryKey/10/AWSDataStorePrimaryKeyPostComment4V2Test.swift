@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 
 /*
  ## iOS 10. bi-directional has-many PostComment4V2
@@ -44,10 +44,10 @@ final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBase
         setup(withModels: PostComment4V2())
         try await assertDataStoreReady()
         try await assertQuerySuccess(modelType: Post4V2.self)
-        
+
         let parent = Post4V2(title: "title")
         let child = Comment4V2(content: "content", post: parent)
-        
+
         // Mutations
         try await assertMutationsParentChild(parent: parent, child: child)
     }
@@ -67,13 +67,13 @@ final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBase
     func testSavePostAndLazyLoadComments() async throws {
         setup(withModels: PostComment4V2())
         try await assertDataStoreReady()
-        
+
         let parent = Post4V2(title: "title")
         let child = Comment4V2(content: "content", post: parent)
-        
+
         // Mutations
         try await assertMutationsParentChild(parent: parent, child: child, shouldDeleteParent: false)
-        
+
         guard let queriedPost = try await Amplify.DataStore.query(Post4V2.self, byId: parent.id) else {
             XCTFail("Failed to query post")
             return
@@ -84,14 +84,14 @@ final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBase
         }
         try await comments.fetch()
         XCTAssertEqual(comments.count, 1)
-        
+
         try await assertDeleteMutation(parent: parent, child: child)
     }
 }
 
 extension AWSDataStorePrimaryKeyPostComment4V2Test {
     struct PostComment4V2: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post4V2.self)
             ModelRegistry.register(modelType: Comment4V2.self)

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
@@ -90,9 +90,11 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testUploadUnreadableFile() async throws {
         let key = UUID().uuidString
         let path = NSTemporaryDirectory() + key + ".tmp"
-        FileManager.default.createFile(atPath: path,
-                                       contents: Data(key.utf8),
-                                       attributes: [FileAttributeKey.posixPermissions: 000])
+        FileManager.default.createFile(
+            atPath: path,
+            contents: Data(key.utf8),
+            attributes: [FileAttributeKey.posixPermissions: 000]
+        )
         defer {
             try? FileManager.default.removeItem(atPath: path)
         }

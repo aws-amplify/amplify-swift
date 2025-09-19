@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify // Amplify.Auth
-import AWSPluginsCore // AuthAWSCredentialsProvider
 import AwsCommonRuntimeKit // CommonRuntimeKit.initialize()
+import AWSPluginsCore // AuthAWSCredentialsProvider
 import AWSSDKHTTPAuth // AWSSigV4Signer
+import Foundation
 import Smithy // URIQueryItem
 import SmithyHTTPAPI
 import SmithyHTTPAuth
@@ -29,19 +29,22 @@ extension AWSCognitoAuthPlugin {
     /// - Returns: A closure that takes in a requestand returns a signed request.
     public static func createAppSyncSigner(region: String) -> ((URLRequest) async throws -> URLRequest) {
         return { request in
-            try await signAppSyncRequest(request, 
-                                         region: region)
+            try await signAppSyncRequest(
+                request,
+
+                                         region: region
+            )
         }
     }
 
-    nonisolated(unsafe) private static var signer = {
-        return AWSSigV4Signer()
-    }()
+    private nonisolated(unsafe) static var signer = AWSSigV4Signer()
 
-    static func signAppSyncRequest(_ urlRequest: URLRequest,
-                                   region: Swift.String,
-                                   signingName: Swift.String = "appsync",
-                                   date: Date = Date()) async throws -> URLRequest {
+    static func signAppSyncRequest(
+        _ urlRequest: URLRequest,
+        region: Swift.String,
+        signingName: Swift.String = "appsync",
+        date: Date = Date()
+    ) async throws -> URLRequest {
         CommonRuntimeKit.initialize()
 
         // Convert URLRequest to SDK's HTTPRequest
@@ -62,20 +65,24 @@ extension AWSCognitoAuthPlugin {
         }
 
         // Prepare signing
-        let flags = SigningFlags(useDoubleURIEncode: true,
-                                 shouldNormalizeURIPath: true,
-                                 omitSessionToken: false)
+        let flags = SigningFlags(
+            useDoubleURIEncode: true,
+            shouldNormalizeURIPath: true,
+            omitSessionToken: false
+        )
         let signedBodyHeader: AWSSignedBodyHeader = .none
         let signedBodyValue: AWSSignedBodyValue = .empty
-        let signingConfig = AWSSigningConfig(credentials: credentials,
-                                             signedBodyHeader: signedBodyHeader,
-                                             signedBodyValue: signedBodyValue,
-                                             flags: flags,
-                                             date: date,
-                                             service: signingName,
-                                             region: region,
-                                             signatureType: .requestHeaders,
-                                             signingAlgorithm: .sigv4)
+        let signingConfig = AWSSigningConfig(
+            credentials: credentials,
+            signedBodyHeader: signedBodyHeader,
+            signedBodyValue: signedBodyValue,
+            flags: flags,
+            date: date,
+            service: signingName,
+            region: region,
+            signatureType: .requestHeaders,
+            signingAlgorithm: .sigv4
+        )
 
         // Sign request
         guard let httpRequest = await signer.sigV4SignedRequest(

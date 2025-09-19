@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AmplifyTestCommon
+import XCTest
 
 class ModelIdentifierTests: XCTestCase {
     override func setUp() {
@@ -106,9 +106,11 @@ class ModelIdentifierTests: XCTestCase {
     }
 
     func testModelIdentifierCompositePredicate() {
-        let model = ModelCompositePk(id: "id",
-                                     dob: Temporal.DateTime.now(),
-                                     name: "name")
+        let model = ModelCompositePk(
+            id: "id",
+            dob: Temporal.DateTime.now(),
+            name: "name"
+        )
 
         let identifier = model.identifier(schema: ModelCompositePk.schema)
 

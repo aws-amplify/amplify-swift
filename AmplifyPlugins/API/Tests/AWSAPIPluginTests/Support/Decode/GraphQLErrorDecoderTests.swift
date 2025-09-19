@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 
 class GraphQLErrorDecoderTests: XCTestCase {
@@ -65,10 +65,10 @@ class GraphQLErrorDecoderTests: XCTestCase {
             ],
             "errorInfo": nil,
             "data": [
-              "id": "EF48518C-92EB-4F7A-A64E-D1B9325205CF",
-              "title": "new3",
-              "content": "Original content from DataStoreEndToEndTests at 2020-03-26 21:55:47 +0000",
-              "_version": 2
+                "id": "EF48518C-92EB-4F7A-A64E-D1B9325205CF",
+                "title": "new3",
+                "content": "Original content from DataStoreEndToEndTests at 2020-03-26 21:55:47 +0000",
+                "_version": 2
             ],
             "errorType": "ConflictUnhandled",
             "code": 123
@@ -105,8 +105,10 @@ class GraphQLErrorDecoderTests: XCTestCase {
         }
         XCTAssertEqual(data["id"], "EF48518C-92EB-4F7A-A64E-D1B9325205CF")
         XCTAssertEqual(data["title"], "new3")
-        XCTAssertEqual(data["content"],
-                       "Original content from DataStoreEndToEndTests at 2020-03-26 21:55:47 +0000")
+        XCTAssertEqual(
+            data["content"],
+            "Original content from DataStoreEndToEndTests at 2020-03-26 21:55:47 +0000"
+        )
         XCTAssertEqual(data["_version"], 2)
 
         guard case let .string(errorType) = extensions["errorType"] else {

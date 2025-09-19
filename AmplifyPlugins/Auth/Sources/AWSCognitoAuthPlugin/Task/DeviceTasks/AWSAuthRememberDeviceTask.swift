@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
 
@@ -22,9 +22,11 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
         HubPayload.EventName.Auth.rememberDeviceAPI
     }
 
-    init(_ request: AuthRememberDeviceRequest,
-         authStateMachine: AuthStateMachine,
-         environment: AuthEnvironment) {
+    init(
+        _ request: AuthRememberDeviceRequest,
+        authStateMachine: AuthStateMachine,
+        environment: AuthEnvironment
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.environment = environment
@@ -41,7 +43,7 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
             throw error.authError
         } catch let error as AuthError {
             throw error
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
@@ -59,11 +61,14 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
         let userPoolService = try environment.cognitoUserPoolFactory()
         let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
             for: username,
-            with: environment)
+            with: environment
+        )
         if case .metadata(let data) = deviceMetadata {
-            let input = UpdateDeviceStatusInput(accessToken: accessToken,
-                                                deviceKey: data.deviceKey,
-                                                deviceRememberedStatus: .remembered)
+            let input = UpdateDeviceStatusInput(
+                accessToken: accessToken,
+                deviceKey: data.deviceKey,
+                deviceRememberedStatus: .remembered
+            )
             _ = try await userPoolService.updateDeviceStatus(input: input)
         } else {
             throw AuthError.unknown("Unable to get device metadata")

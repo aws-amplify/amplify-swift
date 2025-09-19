@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-import AWSCognitoIdentityProvider
+import Foundation
 
 protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                            Success == UserMFAPreference,
@@ -32,8 +32,10 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
         HubPayload.EventName.Auth.fetchMFAPreferenceAPI
     }
 
-    init(authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory) {
+    init(
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
+    ) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)

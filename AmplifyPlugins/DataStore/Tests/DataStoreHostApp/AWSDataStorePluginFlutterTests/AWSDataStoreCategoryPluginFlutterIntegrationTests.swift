@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import XCTest
+
 import Amplify
 import AWSDataStorePlugin
+import XCTest
 
 class AWSDataStorePluginFlutterConfigurationTests: XCTestCase {
 

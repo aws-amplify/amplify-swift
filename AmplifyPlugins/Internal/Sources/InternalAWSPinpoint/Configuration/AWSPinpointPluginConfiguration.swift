@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import AWSPinpoint
 import AWSClientRuntime
+import AWSPinpoint
 import Foundation
 
 @_spi(InternalAWSPinpoint)
@@ -26,14 +26,16 @@ public struct AWSPinpointPluginConfiguration {
             )
         }
 
-        self.init(
-            appId: try AWSPinpointPluginConfiguration.getAppId(configObject),
-            region: try AWSPinpointPluginConfiguration.getRegion(configObject)
+        try self.init(
+            appId: AWSPinpointPluginConfiguration.getAppId(configObject),
+            region: AWSPinpointPluginConfiguration.getRegion(configObject)
         )
     }
 
-    public init(appId: String,
-                region: String) {
+    public init(
+        appId: String,
+        region: String
+    ) {
         self.appId = appId
         self.region = region
     }

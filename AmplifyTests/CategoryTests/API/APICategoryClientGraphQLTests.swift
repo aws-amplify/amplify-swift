@@ -55,7 +55,7 @@ class APICategoryClientGraphQLTests: XCTestCase {
         }
 
         let request = GraphQLRequest(document: "", variables: nil, responseType: JSONValue.self)
-        
+
         let mutateCompleted = expectation(description: "mutate completed")
         Task {
             _ = try await Amplify.API.mutate(request: request)

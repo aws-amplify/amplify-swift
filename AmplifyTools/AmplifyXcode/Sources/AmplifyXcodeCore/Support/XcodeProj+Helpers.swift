@@ -16,7 +16,7 @@ extension XcodeProj {
     }
 
     func getOrCreateGroup(named group: String, in rootGroup: PBXGroup?) throws -> PBXGroup? {
-        guard let rootGroup = rootGroup else {
+        guard let rootGroup else {
             return nil
         }
         if let existingGroup = rootGroup.group(named: group) {
@@ -38,8 +38,10 @@ extension XcodeProj {
 
 // MARK: Add files to project
 extension XcodeProj {
-    func targets(named targetName: String,
-                 ofType productType: PBXProductType) -> [PBXTarget] {
+    func targets(
+        named targetName: String,
+        ofType productType: PBXProductType
+    ) -> [PBXTarget] {
         pbxproj.targets(named: targetName).filter { $0.productType == productType }
     }
 

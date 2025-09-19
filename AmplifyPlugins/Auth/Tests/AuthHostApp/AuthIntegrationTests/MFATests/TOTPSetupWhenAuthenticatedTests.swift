@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class TOTPSetupWhenAuthenticatedTests: AWSAuthBaseTest {
 
@@ -76,7 +76,8 @@ class TOTPSetupWhenAuthenticatedTests: AWSAuthBaseTest {
         } catch {
 
             guard let authError = error as? AuthError,
-                  case .service(_, _, let underlyingError) = authError else {
+                  case .service(_, _, let underlyingError) = authError
+            else {
                 XCTFail("Should throw service error")
                 return
             }

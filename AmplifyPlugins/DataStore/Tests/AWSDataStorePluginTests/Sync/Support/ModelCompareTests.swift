@@ -25,20 +25,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft = false
         let rating = 4.0
         let status = PostStatus.published
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        let post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
+        let post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
         XCTAssertTrue(Post.schema.compare(post1, post2))
     }
 
@@ -50,20 +54,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft = false
         let rating = 4.0
         let status = PostStatus.published
-        var post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        var post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        var post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
+        var post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
         let commentId = UUID().uuidString
         let comment1 = Comment(id: commentId, content: "This is a comment.", createdAt: createdAt, post: post1)
         let comment2 = Comment(id: commentId, content: "This is a comment.", createdAt: createdAt, post: post2)
@@ -81,20 +89,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let status = PostStatus.published
 
         // creating posts with different id
-        var post1 = Post(id: UUID().uuidString,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        var post2 = Post(id: UUID().uuidString,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        var post1 = Post(
+            id: UUID().uuidString,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
+        var post2 = Post(
+            id: UUID().uuidString,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
         let id = UUID().uuidString
         let comment1 = Comment(id: id, content: "This is a comment.", createdAt: createdAt, post: post1)
         let comment2 = Comment(id: id, content: "This is a comment.", createdAt: createdAt, post: post2)
@@ -111,22 +123,26 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft = false
         let rating = 4.0
         let status = PostStatus.published
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        let post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
 
         // rating is nil
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: nil,
-                         status: status)
+        let post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: nil,
+            status: status
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 
@@ -137,20 +153,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft = false
         let rating = 4.0
         let status = PostStatus.published
-        let post1 = Post(id: UUID().uuidString,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        let post2 = Post(id: UUID().uuidString,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        let post1 = Post(
+            id: UUID().uuidString,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
+        let post2 = Post(
+            id: UUID().uuidString,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 
@@ -163,20 +183,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft = false
         let rating = 4.0
         let status = PostStatus.published
-        let post1 = Post(id: id,
-                         title: title1,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
-        let post2 = Post(id: id,
-                         title: title2,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status)
+        let post1 = Post(
+            id: id,
+            title: title1,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
+        let post2 = Post(
+            id: id,
+            title: title2,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 
@@ -189,20 +213,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let rating1 = 4.0
         let rating2 = 1.0
         let status = PostStatus.published
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating1,
-                         status: status)
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating2,
-                         status: status)
+        let post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating1,
+            status: status
+        )
+        let post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating2,
+            status: status
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 
@@ -247,20 +275,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let rating = 4.0
         let status1 = PostStatus.published
         let status2 = PostStatus.draft
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status1)
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft,
-                         rating: rating,
-                         status: status2)
+        let post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status1
+        )
+        let post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft,
+            rating: rating,
+            status: status2
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 
@@ -273,20 +305,24 @@ class ModelCompareTests: BaseDataStoreTests {
         let draft2 = true
         let rating = 4.0
         let status = PostStatus.published
-        let post1 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft1,
-                         rating: rating,
-                         status: status)
-        let post2 = Post(id: id,
-                         title: title,
-                         content: content,
-                         createdAt: createdAt,
-                         draft: draft2,
-                         rating: rating,
-                         status: status)
+        let post1 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft1,
+            rating: rating,
+            status: status
+        )
+        let post2 = Post(
+            id: id,
+            title: title,
+            content: content,
+            createdAt: createdAt,
+            draft: draft2,
+            rating: rating,
+            status: status
+        )
         XCTAssertFalse(Post.schema.compare(post1, post2))
     }
 

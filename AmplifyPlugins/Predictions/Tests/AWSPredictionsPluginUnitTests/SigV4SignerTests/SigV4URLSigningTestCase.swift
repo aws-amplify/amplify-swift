@@ -24,7 +24,7 @@ class SigV4URLSigningTestCase: XCTestCase {
     )
 
     // 20230327T201815Z
-    let date = Date(timeIntervalSince1970: 1679948295)
+    let date = Date(timeIntervalSince1970: 1_679_948_295)
 
     func testSignWSSURL() throws {
         let url = try url()

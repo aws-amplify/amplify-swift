@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Combine
 import XCTest
-import Amplify
 
 /// Tests asserting that Storage Operations dispatch progress updates via various flavors of the API.
 ///
@@ -38,7 +38,8 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         progressReceived.assertForOverFulfill = false
         let uploadOperation = Amplify.Storage.uploadData(
             key: key,
-            data: .testDataOfSize(.bytes(100)))
+            data: .testDataOfSize(.bytes(100))
+        )
 
         uploadOperation.resultPublisher
             .sink(receiveCompletion: { completion in
@@ -119,7 +120,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let task = Amplify.Storage.uploadData(
             key: key,
-            data: .testDataOfSize(.bytes(64*1024))
+            data: .testDataOfSize(.bytes(64 * 1_024))
         )
         let progress = await task.progress
         var progressReports: [Progress] = []

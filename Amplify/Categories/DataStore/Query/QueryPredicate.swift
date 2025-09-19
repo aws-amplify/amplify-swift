@@ -19,7 +19,7 @@ public enum QueryPredicateGroupType: String, Encodable {
 /// The `not` function is used to wrap a `QueryPredicate` in a `QueryPredicateGroup` of type `.not`.
 /// - Parameter predicate: the `QueryPredicate` (either operation or group)
 /// - Returns: `QueryPredicateGroup` of type `.not`
-public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredicateGroup {
+public func not(_ predicate: some QueryPredicate) -> QueryPredicateGroup {
     return QueryPredicateGroup(type: .not, predicates: [predicate])
 }
 
@@ -37,8 +37,10 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 
-    public init(type: QueryPredicateGroupType = .and,
-                predicates: [QueryPredicate] = []) {
+    public init(
+        type: QueryPredicateGroupType = .and,
+        predicates: [QueryPredicate] = []
+    ) {
         self.type = type
         self.predicates = predicates
     }
@@ -104,7 +106,7 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
         private let _encode: (Encoder) throws -> Void
 
         init(_ base: QueryPredicate) {
-            _encode = base.encode
+            self._encode = base.encode
         }
 
         func encode(to encoder: Encoder) throws {

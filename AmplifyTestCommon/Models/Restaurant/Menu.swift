@@ -16,11 +16,13 @@ public struct Menu: Model {
   public var restaurant: Restaurant?
   public var dishes: List<Dish>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       name: String,
       menuType: MenuType? = nil,
       restaurant: Restaurant? = nil,
-      dishes: List<Dish>? = []) {
+      dishes: List<Dish>? = []
+  ) {
       self.id = id
       self.name = name
       self.menuType = menuType

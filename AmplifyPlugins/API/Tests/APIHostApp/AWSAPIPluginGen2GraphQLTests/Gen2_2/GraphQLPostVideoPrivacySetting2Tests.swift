@@ -19,7 +19,8 @@ final class GraphQLPostVideoPrivacySettings2Tests: AWSAPIPluginGen2GraphQLBaseTe
         // Code Snippet Begins
         let post = Post(
             content: "hello",
-            privacySetting: .private)
+            privacySetting: .private
+        )
         let createdPost = try await Amplify.API.mutate(request: .create(post)).get()
 
         // Code Snippet Ends
@@ -34,7 +35,7 @@ extension GraphQLPostVideoPrivacySettings2Tests {
     typealias Video = Video2
 
     struct PostVideoPrivacySettings2Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post2.self)
             ModelRegistry.register(modelType: Video2.self)

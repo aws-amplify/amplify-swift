@@ -17,9 +17,11 @@ public struct ModelSyncMetadata: Model {
     /// The sync predicate for this model, extracted out from the sync expression.
     public var syncPredicate: String?
 
-    public init(id: String,
-                lastSync: Int64? = nil,
-                syncPredicate: String? = nil) {
+    public init(
+        id: String,
+        lastSync: Int64? = nil,
+        syncPredicate: String? = nil
+    ) {
         self.id = id
         self.lastSync = lastSync
         self.syncPredicate = syncPredicate

@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import XCTest
+
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 
 class GraphQLOperationRequestUtilsTests: XCTestCase {
@@ -14,8 +15,10 @@ class GraphQLOperationRequestUtilsTests: XCTestCase {
     let testDocument = "testDocument"
 
     func testGraphQLOperationRequestWithCache() throws {
-        let request = GraphQLOperationRequestUtils.constructRequest(with: baseURL,
-                                                                    requestPayload: Data())
+        let request = GraphQLOperationRequestUtils.constructRequest(
+            with: baseURL,
+            requestPayload: Data()
+        )
         XCTAssertEqual(request.allHTTPHeaderFields?["Cache-Control"], "no-store")
     }
 }

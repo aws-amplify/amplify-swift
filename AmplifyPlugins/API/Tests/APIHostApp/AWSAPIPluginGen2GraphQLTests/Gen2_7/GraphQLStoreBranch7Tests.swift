@@ -5,13 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class GraphQLStoreBranch7Tests: AWSAPIPluginGen2GraphQLBaseTest {
 
@@ -25,7 +24,9 @@ final class GraphQLStoreBranch7Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 StoreBranch.self,
                 byIdentifier: .identifier(
                     tenantId: "123",
-                    name: "Downtown")))
+                    name: "Downtown"
+                )
+            ))
     }
 }
 
@@ -35,7 +36,7 @@ extension GraphQLStoreBranch7Tests {
     typealias StoreBranch = StoreBranch7
 
     struct StoreBranch7Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: StoreBranch7.self)
         }

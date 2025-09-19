@@ -64,12 +64,11 @@ struct XcodeProject {
     }
 
     private func resolveTarget(_ target: XcodeProjectTarget) throws -> PBXTarget {
-        let targetName: String
-        switch target {
+        let targetName: String = switch target {
         case .primary:
-            targetName = project.mainProject()?.name ?? "primary"
+            project.mainProject()?.name ?? "primary"
         case .named(let name):
-            targetName = name
+            name
         }
 
         if let targetRef = project.targets(named: targetName, ofType: .application).first {
@@ -82,9 +81,11 @@ struct XcodeProject {
 
 // MARK: Add files
 extension XcodeProject {
-    func add(files: [XcodeProjectFile],
-             toGroup group: String,
-             inTarget target: XcodeProjectTarget) throws {
+    func add(
+        files: [XcodeProjectFile],
+        toGroup group: String,
+        inTarget target: XcodeProjectTarget
+    ) throws {
         guard let mainProject = project.mainProject() else {
             throw XcodeProjectError.noPbxProjFound
         }

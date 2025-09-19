@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 class ArrayLiteralListProviderTests: XCTestCase {
     struct BasicModel: Model {
@@ -42,7 +42,7 @@ class ArrayLiteralListProviderTests: XCTestCase {
 
         wait(for: [loadComplete], timeout: 1)
     }
-    
+
     func testLoadAsync() async throws {
         let provider = ArrayLiteralListProvider(elements: [BasicModel(id: "id")])
         let elements = try await provider.load()
@@ -73,7 +73,7 @@ class ArrayLiteralListProviderTests: XCTestCase {
 
         wait(for: [getNextPageComplete], timeout: 1)
     }
-    
+
     func testGetNextPageAsync() async {
         let provider = ArrayLiteralListProvider(elements: [BasicModel(id: "id")])
         do {

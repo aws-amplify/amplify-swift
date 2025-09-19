@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import InternalAWSPinpoint
 import Foundation
+@testable import InternalAWSPinpoint
 
 class MockArchiver: AmplifyArchiverBehaviour {
-    var encoded: Data = Data()
+    var encoded: Data = .init()
     var decoded: Decodable?
 
     func resetCounters() {
@@ -18,7 +18,7 @@ class MockArchiver: AmplifyArchiverBehaviour {
     }
 
     var encodeCount = 0
-    func encode<T>(_ encodable: T) throws -> Data where T: Encodable {
+    func encode(_ encodable: some Encodable) throws -> Data {
         encodeCount += 1
         return encoded
     }

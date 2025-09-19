@@ -33,16 +33,16 @@ public class MockAWSLocation: AWSLocationBehavior {
 
     public func getEscapeHatch() -> LocationClient {
         getEscapeHatchCalled += 1
-        return self.locationClient
+        return locationClient
     }
 }
 
-extension MockAWSLocation {
-    public func verifyGetEscapeHatch() {
+public extension MockAWSLocation {
+    func verifyGetEscapeHatch() {
         XCTAssertEqual(getEscapeHatchCalled, 1)
     }
 
-    public func verifySearchPlaceIndexForText(_ request: SearchPlaceIndexForTextInput) {
+    func verifySearchPlaceIndexForText(_ request: SearchPlaceIndexForTextInput) {
         XCTAssertEqual(searchPlaceIndexForTextCalled, 1)
         guard let receivedRequest = searchPlaceIndexForTextRequest else {
             XCTFail("Did not receive request.")
@@ -59,7 +59,7 @@ extension MockAWSLocation {
         XCTAssertEqual(receivedRequest.maxResults, request.maxResults)
     }
 
-    public func verifySearchPlaceIndexForPosition(_ request: SearchPlaceIndexForPositionInput) {
+    func verifySearchPlaceIndexForPosition(_ request: SearchPlaceIndexForPositionInput) {
         XCTAssertEqual(searchPlaceIndexForPositionCalled, 1)
         guard let receivedRequest = searchPlaceIndexForPositionRequest else {
             XCTFail("Did not receive request.")

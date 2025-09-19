@@ -56,8 +56,8 @@ extension PlatformWebAuthnCredentials: CredentialAsserterProtocol {
             relyingPartyIdentifier: options.relyingPartyId
         )
 
-        let platformKeyRequest = platformProvider.createCredentialAssertionRequest(
-            challenge: try options.challenge
+        let platformKeyRequest = try platformProvider.createCredentialAssertionRequest(
+            challenge: options.challenge
         )
 
         return try await withCheckedThrowingContinuation { continuation in

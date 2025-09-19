@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageRemoveRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.

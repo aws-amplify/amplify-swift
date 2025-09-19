@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Dispatch
 import AWSPluginsCore
+import Dispatch
 
 extension MutationEvent {
     // Consecutive operations that modify a model results in a sequence of pending mutation events that
@@ -35,10 +35,12 @@ extension MutationEvent {
     // For a given model `id`, checks the version of the head of pending mutation event queue
     // against the API response version in `mutationSync` and saves it in the mutation event table if
     // the response version is a newer one
-    static func reconcilePendingMutationEventsVersion(sent mutationEvent: MutationEvent,
-                                                      received mutationSync: MutationSync<AnyModel>,
-                                                      storageAdapter: StorageEngineAdapter,
-                                                      completion: @escaping DataStoreCallback<Void>) {
+    static func reconcilePendingMutationEventsVersion(
+        sent mutationEvent: MutationEvent,
+        received mutationSync: MutationSync<AnyModel>,
+        storageAdapter: StorageEngineAdapter,
+        completion: @escaping DataStoreCallback<Void>
+    ) {
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter
@@ -52,9 +54,11 @@ extension MutationEvent {
                     return
                 }
 
-                guard let reconciledEvent = reconcile(pendingMutationEvent: existingEvent,
-                                                      with: mutationEvent,
-                                                      responseMutationSync: mutationSync) else {
+                guard let reconciledEvent = reconcile(
+                    pendingMutationEvent: existingEvent,
+                    with: mutationEvent,
+                    responseMutationSync: mutationSync
+                ) else {
                     completion(.success(()))
                     return
                 }
@@ -71,9 +75,11 @@ extension MutationEvent {
         }
     }
 
-    static func reconcile(pendingMutationEvent: MutationEvent,
-                          with requestMutationEvent: MutationEvent,
-                          responseMutationSync: MutationSync<AnyModel>) -> MutationEvent? {
+    static func reconcile(
+        pendingMutationEvent: MutationEvent,
+        with requestMutationEvent: MutationEvent,
+        responseMutationSync: MutationSync<AnyModel>
+    ) -> MutationEvent? {
         // return if version of the pending mutation event is not nil and
         // is >= version contained in the response
         if pendingMutationEvent.version != nil &&

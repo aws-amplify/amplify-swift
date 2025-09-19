@@ -21,7 +21,8 @@ final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
@@ -31,7 +32,8 @@ final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let todo = Todo(content: "My new todo")
             let createdTodo = try await Amplify.API.mutate(request: .create(
                 todo,
-                authMode: .amazonCognitoUserPools)).get()
+                authMode: .amazonCognitoUserPools
+            )).get()
             // Code Snippet Ends
             XCTAssertEqual(createdTodo.id, todo.id)
             // Code Snippet Begins
@@ -51,14 +53,16 @@ final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
         let todo = Todo(content: "My new todo")
         var createdTodo = try await Amplify.API.mutate(request: .create(
             todo,
-            authMode: .amazonCognitoUserPools)).get()
+            authMode: .amazonCognitoUserPools
+        )).get()
         let otherUserId = "otherUserId"
 
         // Code Snippet begins
@@ -66,7 +70,8 @@ final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest {
             createdTodo.owners?.append(otherUserId)
             let updatedTodo = try await Amplify.API.mutate(request: .update(
                 createdTodo,
-                authMode: .amazonCognitoUserPools)).get()
+                authMode: .amazonCognitoUserPools
+            )).get()
             // Code Snippet Ends
             XCTAssertEqual(updatedTodo.id, todo.id)
             XCTAssertEqual(updatedTodo.owners?.count, 2)
@@ -86,7 +91,7 @@ extension GraphQLTodo15Tests {
     typealias Todo = Todo15
 
     struct Todo15Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Todo15.self)
         }

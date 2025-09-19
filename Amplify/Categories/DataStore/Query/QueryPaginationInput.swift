@@ -21,7 +21,7 @@ public struct QueryPaginationInput {
 
 }
 
-extension QueryPaginationInput {
+public extension QueryPaginationInput {
 
     /// Creates a `QueryPaginationInput` in an expressive way, enabling a short
     /// and developer friendly access to an instance of `QueryPaginationInput`.
@@ -30,18 +30,20 @@ extension QueryPaginationInput {
     ///   - page: the page number (starting at 0)
     ///   - limit: the page size (defaults to `QueryPaginationInput.defaultLimit`)
     /// - Returns: a new instance of `QueryPaginationInput`
-    public static func page(_ page: UInt,
-                            limit: UInt = QueryPaginationInput.defaultLimit) -> QueryPaginationInput {
+    static func page(
+        _ page: UInt,
+        limit: UInt = QueryPaginationInput.defaultLimit
+    ) -> QueryPaginationInput {
         return QueryPaginationInput(page: page, limit: limit)
     }
 
     /// Utility that created a `QueryPaginationInput` with `page` 0 and `limit` 1
-    public static var firstResult: QueryPaginationInput {
+    static var firstResult: QueryPaginationInput {
         .page(0, limit: 1)
     }
 
     /// Utility that created a `QueryPaginationInput` with `page` 0 and the default `limit`
-    public static var firstPage: QueryPaginationInput {
+    static var firstPage: QueryPaginationInput {
         .page(0)
     }
 

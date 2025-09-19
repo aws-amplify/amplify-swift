@@ -21,7 +21,8 @@ final class GraphQLTodo13Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let todo = Todo(content: "My new todo")
             let createdTodo = try await Amplify.API.mutate(request: .create(
                 todo,
-                authMode: .awsIAM)).get()
+                authMode: .awsIAM
+            )).get()
             // Code Snippet Ends
             XCTAssertEqual(createdTodo.id, todo.id)
             // Code Snippet Begins
@@ -40,7 +41,7 @@ extension GraphQLTodo13Tests {
     typealias Todo = Todo13
 
     struct Todo13Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Todo13.self)
         }

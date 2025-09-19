@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -22,10 +22,10 @@ class AmplifyPublisherTests: XCTestCase {
         notDone.isInverted = true
         let done = expectation(description: "done")
         let input = 7
-        var output: Int = 0
+        var output = 0
         var success = false
         var thrown: Error? = nil
-        
+
         let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input)
         }
@@ -41,14 +41,14 @@ class AmplifyPublisherTests: XCTestCase {
             } receiveValue: { value in
                 output = value
             }
-        
+
         await fulfillment(of: [notDone], timeout: 0.01)
         await fulfillment(of: [done])
-        
+
         XCTAssertEqual(input, output)
         XCTAssertTrue(success)
         XCTAssertNil(thrown)
-        
+
         sink.cancel()
     }
 
@@ -56,10 +56,10 @@ class AmplifyPublisherTests: XCTestCase {
         let failed = expectation(description: "failed")
         let done = expectation(description: "done")
         let input = 13
-        var output: Int = 0
+        var output = 0
         var success = false
         var thrown: Error? = nil
-        
+
         let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input)
         }
@@ -75,7 +75,7 @@ class AmplifyPublisherTests: XCTestCase {
             } receiveValue: { value in
                 output = value
             }
-        
+
         await fulfillment(of: [failed])
         await fulfillment(of: [done])
 
@@ -92,10 +92,10 @@ class AmplifyPublisherTests: XCTestCase {
         let noValueReceived = expectation(description: "noValueReceived")
         noValueReceived.isInverted = true
         let input = 7
-        var output: Int = 0
+        var output = 0
         var success = false
         var thrown: Error? = nil
-        
+
         let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input, seconds: 0.25)
         }
@@ -124,12 +124,12 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromAmplifyAsyncSequenceSuccess() async throws {
-        let input = Array(1...100)
+        let input = Array(1 ... 100)
         let sequence = AmplifyAsyncSequence<Int>()
         var output = [Int]()
         let finished = expectation(description: "completion finished")
         let received = expectation(description: "values received")
-        
+
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
@@ -152,11 +152,11 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromAmplifyAsyncThrowingSequenceSuccess() async throws {
-        let input = Array(1...100)
+        let input = Array(1 ... 100)
         let sequence = AmplifyAsyncThrowingSequence<Int>()
         var output = [Int]()
         let finished = expectation(description: "completion finished")
-        
+
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
@@ -181,7 +181,7 @@ class AmplifyPublisherTests: XCTestCase {
         let sequence = Doubles()
         var output = [Int]()
         let finished = expectation(description: "completion finished")
-        
+
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
@@ -200,13 +200,13 @@ class AmplifyPublisherTests: XCTestCase {
         }
         sink.cancel()
     }
-    
+
     func testCreateFromBasicAsyncSequenceFail() async throws {
         let expected = [1, 2, 4]
         let sequence = Doubles(fails: true)
         var output = [Int]()
         let failed = expectation(description: "completion failed")
-        
+
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
@@ -228,20 +228,20 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromAmplifyAsyncSequenceCancelSink() async throws {
-        let input = Array(1...100)
+        let input = Array(1 ... 100)
         let expected = [Int]()
         let sequence = AmplifyAsyncSequence<Int>()
         var output = [Int]()
         let completed = expectation(description: "should not have completed")
         completed.isInverted = true
-        
+
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 completed.fulfill()
             } receiveValue: { value in
                 output.append(value)
             }
-        
+
         sink.cancel()
 
         send(input: input, sequence: sequence)
@@ -249,7 +249,7 @@ class AmplifyPublisherTests: XCTestCase {
         await fulfillment(of: [completed], timeout: 0.1)
         XCTAssertEqual(expected, output)
     }
-    
+
     func testCreateFromAmplifyAsyncSequenceCancelSequence() async throws {
         let expected = [Int]()
         let sequence = AmplifyAsyncSequence<Int>()
@@ -274,9 +274,11 @@ class AmplifyPublisherTests: XCTestCase {
         sink.cancel()
     }
 
-    private func send<Element>(input: [Element],
-                               sequence: AmplifyAsyncSequence<Element>,
-                               finish: Bool = true)  {
+    private func send<Element>(
+        input: [Element],
+        sequence: AmplifyAsyncSequence<Element>,
+        finish: Bool = true
+    ) {
         for value in input {
             sequence.send(value)
         }
@@ -285,9 +287,11 @@ class AmplifyPublisherTests: XCTestCase {
         }
     }
 
-    private func send<Element>(input: [Element],
-                               throwingSequence: AmplifyAsyncThrowingSequence<Element>,
-                               finish: Bool = true)  {
+    private func send<Element>(
+        input: [Element],
+        throwingSequence: AmplifyAsyncThrowingSequence<Element>,
+        finish: Bool = true
+    ) {
         for value in input {
             throwingSequence.send(value)
         }
@@ -298,24 +302,24 @@ class AmplifyPublisherTests: XCTestCase {
 
     private struct Doubles: AsyncSequence {
         let fails: Bool
-        
+
         init(fails: Bool = false) {
             self.fails = fails
         }
 
         typealias Element = Int
-        
+
         func makeAsyncIterator() -> AsyncIterator {
             AsyncIterator(fails: fails)
         }
-        
+
         struct AsyncIterator: AsyncIteratorProtocol {
             let fails: Bool
-            
+
             init(fails: Bool = false) {
                 self.fails = fails
             }
-            
+
             var current = 1
 
             mutating func next() async throws -> Element? {

@@ -53,8 +53,10 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.downloadData
     @available(*, deprecated, message: "Use downloadData(path:options:)")
     @discardableResult
-    func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options?) -> StorageDownloadDataTask
+    func downloadData(
+        key: String,
+        options: StorageDownloadDataOperation.Request.Options?
+    ) -> StorageDownloadDataTask
 
     /// Retrieve the object from storage into memory.
     ///

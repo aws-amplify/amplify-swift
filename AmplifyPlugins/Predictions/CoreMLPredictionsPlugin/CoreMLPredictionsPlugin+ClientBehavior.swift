@@ -6,14 +6,14 @@
 //
 
 #if canImport(Speech) && canImport(Vision)
-import Foundation
-import CoreGraphics
 import Amplify
+import CoreGraphics
+import Foundation
 @_spi(PredictionsIdentifyRequestKind) import Amplify
 @_spi(PredictionsConvertRequestKind) import Amplify
 
-extension CoreMLPredictionsPlugin {
-    public func identify<Output>(
+public extension CoreMLPredictionsPlugin {
+    func identify<Output>(
         _ request: Predictions.Identify.Request<Output>,
         in image: URL,
         options: Predictions.Identify.Options?
@@ -66,8 +66,8 @@ extension CoreMLPredictionsPlugin {
         }
     }
 
-    public func convert<Input, Options, Output>(
-        _ request: Predictions.Convert.Request<Input, Options, Output>,
+    func convert<Options, Output>(
+        _ request: Predictions.Convert.Request<some Any, Options, Output>,
         options: Options?
     ) async throws -> Output {
         var predictionsError: PredictionsError {
@@ -111,7 +111,7 @@ extension CoreMLPredictionsPlugin {
         }
     }
 
-    public func interpret(
+    func interpret(
         text: String,
         options: Predictions.Interpret.Options?
     ) async throws -> Predictions.Interpret.Result {
@@ -131,16 +131,15 @@ extension CoreMLPredictionsPlugin {
         let entities = naturalLanguageAdapter.getEntities(for: text)
         let sentiment = naturalLanguageAdapter.getSentiment(for: text)
 
-        let predictionsSentiment: Predictions.Sentiment
-        switch sentiment {
+        let predictionsSentiment = switch sentiment {
         case 0.0:
-            predictionsSentiment = Predictions.Sentiment(predominantSentiment: .neutral, sentimentScores: nil)
+            Predictions.Sentiment(predominantSentiment: .neutral, sentimentScores: nil)
         case -1.0 ..< 0.0:
-            predictionsSentiment = Predictions.Sentiment(predominantSentiment: .negative, sentimentScores: nil)
+            Predictions.Sentiment(predominantSentiment: .negative, sentimentScores: nil)
         case 0.0 ... 1.0:
-            predictionsSentiment = Predictions.Sentiment(predominantSentiment: .positive, sentimentScores: nil)
+            Predictions.Sentiment(predominantSentiment: .positive, sentimentScores: nil)
         default:
-            predictionsSentiment = Predictions.Sentiment(predominantSentiment: .mixed, sentimentScores: nil)
+            Predictions.Sentiment(predominantSentiment: .mixed, sentimentScores: nil)
         }
 
         let result = Predictions.Interpret.Result(

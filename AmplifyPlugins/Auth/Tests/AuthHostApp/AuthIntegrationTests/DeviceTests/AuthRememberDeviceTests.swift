@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthRememberDeviceTests: AWSAuthBaseTest {
 
@@ -52,7 +52,8 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         _ = try await Amplify.Auth.rememberDevice()

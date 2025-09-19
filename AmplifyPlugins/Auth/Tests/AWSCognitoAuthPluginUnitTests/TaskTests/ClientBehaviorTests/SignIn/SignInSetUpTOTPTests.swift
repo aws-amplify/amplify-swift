@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import AWSClientRuntime
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class SignInSetUpTOTPTests: BasePluginTest {
@@ -28,16 +29,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///    - I should get a .continueSignInWithTOTPSetup response
     ///
     func testSuccessfulTOTPSetupChallenge() async {
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init(secretCode: "sharedSecret", session: "newSession")
         })
@@ -47,7 +50,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .continueSignInWithTOTPSetup(let totpDetails) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithTOTPSetup for next step")
                 return
@@ -62,18 +66,20 @@ class SignInSetUpTOTPTests: BasePluginTest {
 
     func testSignInWithNextStepSetupMFAWithUnavailableMFAType() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\"]"],
-                session: "session")
+                session: "session"
+            )
         }, mockAssociateSoftwareTokenResponse: { _ in
             return .init(secretCode: "123456", session: "session")
         })
@@ -101,16 +107,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///    - I should get a .continueSignInWithTOTPSetup response
     ///
     func testSuccessfulTOTPSetupChallengeWithEmptyMFASCanSetup() async {
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-            session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: [:])
+                challengeParameters: [:]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init(secretCode: "sharedSecret", session: "newSession")
         })
@@ -120,7 +128,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             _ = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             XCTFail("Should throw an error")
         } catch {
             guard case AuthError.service(_, _, _) = error else {
@@ -142,16 +151,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithInvalidResult() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: [:])
+                challengeParameters: [:]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init()
         })
@@ -161,7 +172,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             _ = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             XCTFail("Should throw an error")
         } catch {
             guard case AuthError.service(_, _, _) = error else {
@@ -182,16 +194,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSecondSignInAfterSignInWithInvalidResult() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             return .init()
         })
@@ -200,16 +214,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
         } catch {
-            self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
                 return InitiateAuthOutput(
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
                     challengeParameters: InitiateAuthOutput.validChalengeParams,
-                    session: "someSession")
+                    session: "someSession"
+                )
             }, mockRespondToAuthChallengeResponse: { input in
                 return .testData(
                     challenge: .mfaSetup,
-                    challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                    challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+                )
             }, mockAssociateSoftwareTokenResponse: { input in
                 return .init(secretCode: "sharedSecret", session: "newSession")
             })
@@ -243,16 +259,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.InternalErrorException()
         })
@@ -281,16 +299,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
@@ -301,7 +321,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should produce invalidParameter error but instead produced \(error)")
                 return
             }
@@ -320,16 +341,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
@@ -358,16 +381,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithResourceNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
@@ -378,7 +403,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should produce resourceNotFound error but instead produced \(error)")
                 return
             }
@@ -397,16 +423,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithConcurrentModificationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ConcurrentModificationException()
         })
@@ -435,16 +463,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithForbiddenException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.ForbiddenException()
         })
@@ -473,16 +503,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException()
         })
@@ -493,7 +525,8 @@ class SignInSetUpTOTPTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
+                  case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError)
+            else {
                 XCTFail("Should produce resourceNotFound error but instead produced \(error)")
                 return
             }
@@ -512,16 +545,18 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSignInWithUnknownAWSHttpServiceError() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"]
+            )
         }, mockAssociateSoftwareTokenResponse: { input in
             throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                 httpResponse: .init(body: .empty, statusCode: .ok),

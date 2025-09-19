@@ -9,8 +9,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 extension FileSystem {
 
@@ -60,7 +60,7 @@ class FileSystemTests: XCTestCase {
         fs.removeDirectoryIfExists(directoryURL: sourceFileUrl)
         fs.removeDirectoryIfExists(directoryURL: destinationUrl)
     }
-    
+
     func testMoveFile_Succeeds_WhenFileAlreadyExists() throws {
         let fs = FileSystem()
         let directoryURL = fs.createTemporaryDirectoryURL()
@@ -78,7 +78,7 @@ class FileSystemTests: XCTestCase {
         fs.removeDirectoryIfExists(directoryURL: sourceFileUrl)
         fs.removeDirectoryIfExists(directoryURL: destinationUrl)
     }
-    
+
     func testFileExists() throws {
         let fs = FileSystem()
         let directoryURL = fs.createTemporaryDirectoryURL()
@@ -142,9 +142,7 @@ class FileSystemTests: XCTestCase {
             _ = try fs.createFile(baseURL: directoryURL, filename: name, data: data)
         }
         let contents = try fs.directoryContents(directoryURL: directoryURL, matching: { $0.hasSuffix(".dat") })
-            .map {
-                $0.lastPathComponent
-            }
+            .map(\.lastPathComponent)
         XCTAssertEqual(names.count, contents.count)
         for name in names {
             XCTAssertTrue(contents.contains(name))

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 
 class DataStoreTestBase: XCTestCase {
     func saveModel<M: Model>(_ model: M) async throws -> M {
@@ -18,7 +18,7 @@ class DataStoreTestBase: XCTestCase {
         return try await Amplify.DataStore.query(modelType, byId: id)
     }
 
-    func deleteModel<M: Model>(_ model: M) async throws {
+    func deleteModel(_ model: some Model) async throws {
         try await Amplify.DataStore.delete(model)
     }
 }

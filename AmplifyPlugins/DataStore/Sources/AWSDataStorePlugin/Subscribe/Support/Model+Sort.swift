@@ -84,9 +84,11 @@ extension ModelSchema {
     ///   - sortBy: The field and direction used to compare the two models
     /// - Returns: The resulting comparison between the two models based on `sortBy`
     // swiftlint:disable:next cyclomatic_complexity
-    func comparator(model1: Model,
-                    model2: Model,
-                    sortBy: QuerySortDescriptor) -> Bool? {
+    func comparator(
+        model1: Model,
+        model2: Model,
+        sortBy: QuerySortDescriptor
+    ) -> Bool? {
         let fieldName = sortBy.fieldName
         let sortOrder = sortBy.order
         guard let modelField = field(withName: fieldName) else {
@@ -99,19 +101,25 @@ extension ModelSchema {
             guard let value1Optional = value1 as? String?, let value2Optional = value2 as? String? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional,
-                                     value2Optional: value2Optional)
+            return ModelValueCompare(
+                value1Optional: value1Optional,
+                value2Optional: value2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
         case .int, .timestamp:
             if let value1Optional = value1 as? Int?, let value2Optional = value2 as? Int? {
-                return ModelValueCompare(value1Optional: value1Optional,
-                                         value2Optional: value2Optional)
+                return ModelValueCompare(
+                    value1Optional: value1Optional,
+                    value2Optional: value2Optional
+                )
                     .sortComparator(sortOrder: sortOrder)
             }
 
             if let value1Optional = value1 as? Int64?, let value2Optional = value2 as? Int64? {
-                return ModelValueCompare(value1Optional: value1Optional,
-                                         value2Optional: value2Optional)
+                return ModelValueCompare(
+                    value1Optional: value1Optional,
+                    value2Optional: value2Optional
+                )
                     .sortComparator(sortOrder: sortOrder)
             }
 
@@ -120,44 +128,54 @@ extension ModelSchema {
             guard let value1Optional = value1 as? Double?, let value2Optional = value2 as? Double? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional,
-                                     value2Optional: value2Optional)
+            return ModelValueCompare(
+                value1Optional: value1Optional,
+                value2Optional: value2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
-
         case .date:
             guard let value1Optional = value1 as? Temporal.Date?, let value2Optional = value2 as? Temporal.Date? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional,
-                                     value2Optional: value2Optional)
+            return ModelValueCompare(
+                value1Optional: value1Optional,
+                value2Optional: value2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
         case .dateTime:
             guard let value1Optional = value1 as? Temporal.DateTime?,
                   let value2Optional = value2 as? Temporal.DateTime? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional,
-                                     value2Optional: value2Optional)
+            return ModelValueCompare(
+                value1Optional: value1Optional,
+                value2Optional: value2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
-
         case .time:
             guard let value1Optional = value1 as? Temporal.Time?, let value2Optional = value2 as? Temporal.Time? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional,
-                                     value2Optional: value2Optional)
+            return ModelValueCompare(
+                value1Optional: value1Optional,
+                value2Optional: value2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
         case .bool:
             guard let value1Optional = value1 as? Bool?, let value2Optional = value2 as? Bool? else {
                 return false
             }
-            return ModelValueCompare(value1Optional: value1Optional?.intValue,
-                                     value2Optional: value2Optional?.intValue)
+            return ModelValueCompare(
+                value1Optional: value1Optional?.intValue,
+                value2Optional: value2Optional?.intValue
+            )
                 .sortComparator(sortOrder: sortOrder)
         case .enum:
+            // swiftformat:disable typeSugar
             // swiftlint:disable syntactic_sugar
             guard case .some(Optional<Any>.some(let value1Optional)) = value1,
-                  case .some(Optional<Any>.some(let value2Optional)) = value2 else {
+                  case .some(Optional<Any>.some(let value2Optional)) = value2
+            else {
                   if value1 == nil && value2 != nil {
                       return sortOrder == .ascending
                   } else if value1 != nil && value2 == nil {
@@ -166,10 +184,13 @@ extension ModelSchema {
                   return false
             }
             // swiftlint:enable syntactic_sugar
+            // swiftformat:enable typeSugar
             let enumValue1Optional = (value1Optional as? EnumPersistable)?.rawValue
             let enumValue2Optional = (value2Optional as? EnumPersistable)?.rawValue
-            return ModelValueCompare(value1Optional: enumValue1Optional,
-                                     value2Optional: enumValue2Optional)
+            return ModelValueCompare(
+                value1Optional: enumValue1Optional,
+                value2Optional: enumValue2Optional
+            )
                 .sortComparator(sortOrder: sortOrder)
         case .embedded, .embeddedCollection, .model, .collection:
             // Behavior is undetermined

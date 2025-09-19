@@ -32,19 +32,22 @@ extension AuthState {
                 case .validateCredentialAndConfiguration(let authConfiguration, let credentials):
                     let action = ValidateCredentialsAndConfiguration(
                         authConfiguration: authConfiguration,
-                        cachedCredentials: credentials)
+                        cachedCredentials: credentials
+                    )
                     let newState = AuthState.validatingCredentialsAndConfiguration
                     return .init(newState: newState, actions: [action])
                 default:
                     return .from(oldState)
                 }
+
             case .validatingCredentialsAndConfiguration:
                 switch isAuthEvent(event)?.eventType {
                 case .configureAuthentication(let authConfiguration, let storedCredentials):
                     let newState = AuthState.configuringAuthentication(.notConfigured)
                     let action = InitializeAuthenticationConfiguration(
                         configuration: authConfiguration,
-                        storedCredentials: storedCredentials)
+                        storedCredentials: storedCredentials
+                    )
                     return .init(newState: newState, actions: [action])
                 case .configureAuthorization(_, let storedCredentials):
                     let newState = AuthState.configuringAuthorization(.notConfigured, .notConfigured)
@@ -53,6 +56,7 @@ extension AuthState {
                 default:
                     return .from(oldState)
                 }
+
             case .configuringAuthentication(let authenticationState):
                 let resolver = AuthenticationState.Resolver()
                 let resolution = resolver.resolve(oldState: authenticationState, byApplying: event)
@@ -71,8 +75,10 @@ extension AuthState {
                 let authNresolution = authenticationResolver.resolve(oldState: authenticationState, byApplying: event)
                 let authZresolution = authorizationResolver.resolve(oldState: authorizationState, byApplying: event)
                 guard case .authorizationConfigured = isAuthEvent(event)?.eventType else {
-                    let newState = AuthState.configuringAuthorization(authNresolution.newState,
-                                                                      authZresolution.newState)
+                    let newState = AuthState.configuringAuthorization(
+                        authNresolution.newState,
+                        authZresolution.newState
+                    )
                     return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
                 }
 

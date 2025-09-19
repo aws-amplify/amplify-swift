@@ -121,15 +121,17 @@ class DefaultHubPluginTests: XCTestCase {
         }
 
         currentExpectation = expectation(description: "Message was received as expected")
-        guard try await HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
-                                                              plugin: plugin,
-                                                              timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(
+            with: unsubscribeToken,
+            plugin: plugin,
+            timeout: 0.5
+        ) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
             return
         }
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await fulfillment(of: [try XCTUnwrap(currentExpectation)], timeout: 0.5)
+        try await fulfillment(of: [XCTUnwrap(currentExpectation)], timeout: 0.5)
 
         plugin.removeListener(unsubscribeToken)
         try? await Task.sleep(seconds: 0.01)
@@ -138,16 +140,18 @@ class DefaultHubPluginTests: XCTestCase {
         currentExpectation = expectation(description: "Message was received after removing listener")
         currentExpectation?.isInverted = true
 
-        await isStillRegistered.set(
-            try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
-                                                         plugin: plugin,
-                                                         timeout: 0.5)
+        try await isStillRegistered.set(
+            HubListenerTestUtilities.waitForListener(
+                with: unsubscribeToken,
+                plugin: plugin,
+                timeout: 0.5
+            )
         )
 
         XCTAssertFalse(isStillRegistered.get(), "Should not be registered after removeListener")
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await fulfillment(of: [try XCTUnwrap(currentExpectation)], timeout: 0.5)
+        try await fulfillment(of: [XCTUnwrap(currentExpectation)], timeout: 0.5)
     }
 
     /// Given: The default Hub plugin

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ClientRuntime
+import Foundation
 import SmithyHTTPAPI
 
 @_spi(PluginHTTPClientEngine)

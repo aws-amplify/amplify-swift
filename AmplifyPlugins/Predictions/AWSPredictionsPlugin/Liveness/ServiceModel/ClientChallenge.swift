@@ -9,26 +9,26 @@ import Foundation
 
 struct ClientChallenge: Codable {
     let type: ChallengeType
-    
+
     init(clientChallengeType: ChallengeType) {
         self.type = clientChallengeType
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case faceMovementAndLightChallenge = "FaceMovementAndLightChallenge"
         case faceMovementChallenge = "FaceMovementChallenge"
     }
-    
+
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        switch self.type {
+        switch type {
         case .faceMovementChallenge(let faceMovementServerChallenge):
             try container.encode(faceMovementServerChallenge, forKey: .faceMovementChallenge)
         case .faceMovementAndLightChallenge(let faceMovementAndLightServerChallenge):
             try container.encode(faceMovementAndLightServerChallenge, forKey: .faceMovementAndLightChallenge)
         }
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let value = try? container.decode(FaceMovementClientChallenge.self, forKey: .faceMovementChallenge) {

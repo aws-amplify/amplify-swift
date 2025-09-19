@@ -26,10 +26,12 @@ protocol AnalyticsEventStorage {
     ///   - ofType: event type
     ///   - sessionId: session identifier
     ///   - setAttributes: event attributes
-    func updateEvents(ofType: String,
-                      withSessionId: PinpointSession.SessionId,
-                      setAttributes: [String: String]) throws
-    
+    func updateEvents(
+        ofType: String,
+        withSessionId: PinpointSession.SessionId,
+        setAttributes: [String: String]
+    ) throws
+
     /// Updates the session information of the events that match the same sessionId.
     /// - Parameter session: The session to update
     func updateSession(_ session: PinpointSession) throws

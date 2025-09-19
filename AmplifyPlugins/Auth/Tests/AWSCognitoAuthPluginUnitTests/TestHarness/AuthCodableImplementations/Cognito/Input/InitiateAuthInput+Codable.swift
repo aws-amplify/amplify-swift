@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import ClientRuntime
 
 extension InitiateAuthInput: Decodable {
@@ -27,7 +27,8 @@ extension InitiateAuthInput: Decodable {
             authFlow: authFlow,
             authParameters: authParameters,
             clientId: clientId,
-            clientMetadata: clientMetadata)
+            clientMetadata: clientMetadata
+        )
     }
 }
 

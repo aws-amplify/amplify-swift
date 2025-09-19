@@ -6,8 +6,8 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
-import Foundation
 import Amplify
+import Foundation
 
 struct HostedUISignInHelper: DefaultLogger {
 
@@ -17,9 +17,11 @@ struct HostedUISignInHelper: DefaultLogger {
 
     let configuration: AuthConfiguration
 
-    init(request: AuthWebUISignInRequest,
-         authstateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+    init(
+        request: AuthWebUISignInRequest,
+        authstateMachine: AuthStateMachine,
+        configuration: AuthConfiguration
+    ) {
         self.request = request
         self.authStateMachine = authstateMachine
         self.configuration = configuration
@@ -51,7 +53,8 @@ struct HostedUISignInHelper: DefaultLogger {
             case .signedIn:
                 throw AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
             case .signedOut:
                 return
             default: continue
@@ -81,8 +84,11 @@ struct HostedUISignInHelper: DefaultLogger {
         await sendSignInEvent(oauthConfiguration: oauthConfiguration)
         log.verbose("Wait for signIn to complete")
         for await state in stateSequences {
-            guard case .configured(let authNState,
-                                   let authZState, _) = state else { continue }
+            guard case .configured(
+                let authNState,
+                let authZState,
+                _
+            ) = state else { continue }
 
             switch authNState {
             case .signedIn:
@@ -101,6 +107,7 @@ struct HostedUISignInHelper: DefaultLogger {
                     continue
                 }
                 return result
+
             default:
                 continue
             }
@@ -115,16 +122,22 @@ struct HostedUISignInHelper: DefaultLogger {
         let privateSession = pluginOptions?.preferPrivateSession ?? false
         let idpIdentifier = pluginOptions?.idpIdentifier
 
-        let providerInfo = HostedUIProviderInfo(authProvider: request.authProvider,
-                                                idpIdentifier: idpIdentifier)
+        let providerInfo = HostedUIProviderInfo(
+            authProvider: request.authProvider,
+            idpIdentifier: idpIdentifier
+        )
         let scopeFromConfig = oauthConfiguration.scopes
-        let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
-                                              providerInfo: providerInfo,
-                                              presentationAnchor: request.presentationAnchor,
-                                              preferPrivateSession: privateSession)
-        let signInData = SignInEventData(username: nil,
-                                         password: nil,
-                                         signInMethod: .hostedUI(hostedUIOptions))
+        let hostedUIOptions = HostedUIOptions(
+            scopes: request.options.scopes ?? scopeFromConfig,
+            providerInfo: providerInfo,
+            presentationAnchor: request.presentationAnchor,
+            preferPrivateSession: privateSession
+        )
+        let signInData = SignInEventData(
+            username: nil,
+            password: nil,
+            signInMethod: .hostedUI(hostedUIOptions)
+        )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         await authStateMachine.send(event)
     }
@@ -156,11 +169,11 @@ struct HostedUISignInHelper: DefaultLogger {
         }
     }
 
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

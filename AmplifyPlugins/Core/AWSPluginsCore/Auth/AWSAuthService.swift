@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public class AWSAuthService: AWSAuthServiceBehavior {
 
@@ -44,8 +44,12 @@ public class AWSAuthService: AWSAuthServiceBehavior {
 
         guard let claimsData = encodedData else {
             return .failure(
-                .validation("", "Cannot get claims in `Data` form. Token is not valid base64 encoded string.",
-                            "", nil))
+                .validation(
+                    "",
+                    "Cannot get claims in `Data` form. Token is not valid base64 encoded string.",
+                    "",
+                    nil
+                ))
         }
 
         let jsonObject: Any?
@@ -53,14 +57,22 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             jsonObject = try JSONSerialization.jsonObject(with: claimsData, options: [])
         } catch {
             return .failure(
-                .validation("", "Cannot get claims in `Data` form. Token is not valid JSON string.",
-                            "", error))
+                .validation(
+                    "",
+                    "Cannot get claims in `Data` form. Token is not valid JSON string.",
+                    "",
+                    error
+                ))
         }
 
         guard let convertedDictionary = jsonObject as? [String: AnyObject] else {
             return .failure(
-                .validation("", "Cannot get claims in `Data` form. Unable to convert to [String: AnyObject].",
-                            "", nil))
+                .validation(
+                    "",
+                    "Cannot get claims in `Data` form. Unable to convert to [String: AnyObject].",
+                    "",
+                    nil
+                ))
         }
         return .success(convertedDictionary)
     }

@@ -25,8 +25,8 @@ extension Data {
     /// - Returns: First byte (`UInt8`) in `self` (`Data`)
     @discardableResult
     mutating func readByte() throws -> UInt8 {
-        guard let first = first else { throw ReadByteError.malformed }
-        self.removeFirst()
+        guard let first else { throw ReadByteError.malformed }
+        removeFirst()
         return first
     }
 

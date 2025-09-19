@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
 
@@ -18,7 +18,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
     }
-    
+
     func testLazyLoad() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -27,7 +27,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
         let savedPostTag = try await createAndWaitForSync(postTag)
-        
+
         try await assertPost(savedPost, canLazyLoad: savedPostTag)
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
         assertLazyReference(
@@ -51,44 +51,54 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let queriedPostTag = try await query(for: savedPostTag)
         try await assertPostTag(queriedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
     }
-    
-    func assertPost(_ post: Post,
-                    canLazyLoad postTag: PostTag) async throws {
+
+    func assertPost(
+        _ post: Post,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = post.tags else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [post.identifier],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
-    
-    func assertTag(_ tag: Tag,
-                   canLazyLoad postTag: PostTag) async throws {
+
+    func assertTag(
+        _ tag: Tag,
+        canLazyLoad postTag: PostTag
+    ) async throws {
         guard let postTags = tag.posts else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [tag.identifier],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
-    
+
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
         assertLazyReference(
             postTag._tagWithCompositeKey,
             state: .notLoaded(identifiers: [
                 .init(name: Tag.keys.id.stringValue, value: tag.id),
                 .init(name: Tag.keys.name.stringValue, value: tag.name)
-            ]))
+            ])
+        )
         assertLazyReference(
             postTag._postWithTagsCompositeKey,
             state: .notLoaded(identifiers: [
                 .init(name: Post.keys.postId.stringValue, value: post.postId),
                 .init(name: Post.keys.title.stringValue, value: post.title)
-            ]))
+            ])
+        )
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
@@ -96,7 +106,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         assertLazyReference(postTag._postWithTagsCompositeKey, state: .loaded(model: loadedPost))
         try await assertPost(loadedPost, canLazyLoad: postTag)
     }
-    
+
     func testUpdate() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -105,7 +115,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
         let savedPostTag = try await createAndWaitForSync(postTag)
-        
+
         // update the post tag with a new post
         var queriedPostTag = try await query(for: savedPostTag)
         let newPost = Post(postId: UUID().uuidString, title: "title")
@@ -121,7 +131,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         )
         let queriedPreviousPost = try await query(for: savedPost)
         try await assertPostWithNoPostTag(queriedPreviousPost)
-        
+
         // update the post tag with a new tag
         var queriedPostTagWithNewPost = try await query(for: savedPostTagWithNewPost)
         let newTag = Tag(name: "name")
@@ -138,29 +148,33 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let queriedPreviousTag = try await query(for: savedTag)
         try await assertTagWithNoPostTag(queriedPreviousTag)
     }
-    
+
     func assertPostWithNoPostTag(_ post: Post) async throws {
         guard let postTags = post.tags else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
-                                                 associatedFields: ["postWithTagsCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [post.identifier],
+            associatedFields: ["postWithTagsCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
-    
+
     func assertTagWithNoPostTag(_ tag: Tag) async throws {
         guard let postTags = tag.posts else {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
-                                                 associatedFields: ["tagWithCompositeKey"]))
+        assertList(postTags, state: .isNotLoaded(
+            associatedIds: [tag.identifier],
+            associatedFields: ["tagWithCompositeKey"]
+        ))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
-    
+
     func testDeletePost() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -169,14 +183,14 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
         let savedPostTag = try await createAndWaitForSync(postTag)
-        
+
         try await deleteAndWaitForSync(savedPost)
-        
+
         try await assertModelDoesNotExist(savedPost)
         try await assertModelExists(savedTag)
         try await assertModelDoesNotExist(savedPostTag)
     }
-    
+
     func testDeleteTag() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -185,14 +199,14 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
         let savedPostTag = try await createAndWaitForSync(postTag)
-        
+
         try await deleteAndWaitForSync(savedTag)
-        
+
         try await assertModelExists(savedPost)
         try await assertModelDoesNotExist(savedTag)
         try await assertModelDoesNotExist(savedPostTag)
     }
-    
+
     func testDeletePostTag() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -201,14 +215,14 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
         let savedPostTag = try await createAndWaitForSync(postTag)
-        
+
         try await deleteAndWaitForSync(savedPostTag)
-        
+
         try await assertModelExists(savedPost)
         try await assertModelExists(savedTag)
         try await assertModelDoesNotExist(savedPostTag)
     }
-    
+
     func testObservePost() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
@@ -221,7 +235,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.postId == post.postId {
-                    
+
                     guard let tags = receivedPost.tags else {
                         XCTFail("Lazy List does not exist")
                         return
@@ -232,7 +246,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load \(error)")
                     }
                     XCTAssertEqual(tags.count, 0)
-                    
+
                     mutationEventReceived.fulfill()
                 }
             }
@@ -243,16 +257,16 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveTag() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
         let tag = Tag(name: "name")
-        
+
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Tag.self)
         Task {
@@ -271,7 +285,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load \(error)")
                     }
                     XCTAssertEqual(posts.count, 0)
-                    
+
                     mutationEventReceived.fulfill()
                 }
             }
@@ -282,11 +296,11 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObservePostTag() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
@@ -294,10 +308,11 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let tag = Tag(name: "name")
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
-        _ = savedPost; _ = savedTag
+        _ = savedPost
+        _ = savedTag
 
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        
+
         let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(PostTag.self)
         Task {
@@ -306,24 +321,24 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                    version == 1,
                    let receivedPostTag = try? mutationEvent.decodeModel(as: PostTag.self),
                    receivedPostTag.id == postTag.id {
-                    
+
                     try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: postTag, modelSchema: PostTag.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveQueryPost() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
@@ -343,7 +358,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load \(error)")
                     }
                     XCTAssertEqual(tags.count, 0)
-                    
+
                     snapshotReceived.fulfill()
                 }
             }
@@ -354,16 +369,16 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryTag() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
         let tag = Tag(name: "name")
-        
+
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Tag.self, where: Tag.keys.id == tag.id)
         Task {
@@ -379,7 +394,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load \(error)")
                     }
                     XCTAssertEqual(posts.count, 0)
-                    
+
                     snapshotReceived.fulfill()
                 }
             }
@@ -390,11 +405,11 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryPostTag() async throws {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
@@ -402,9 +417,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let tag = Tag(name: "name")
         try await createAndWaitForSync(post)
         try await createAndWaitForSync(tag)
-        
+
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        
+
         let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: PostTag.self, where: PostTag.keys.id == postTag.id)
         Task {
@@ -415,14 +430,14 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: postTag, modelSchema: PostTag.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
@@ -432,9 +447,9 @@ extension AWSDataStoreLazyLoadPostTagTests {
     typealias Post = PostWithTagsCompositeKey
     typealias Tag = TagWithCompositeKey
     typealias PostTag = PostTagsWithCompositeKey
-    
+
     struct PostTagModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostTagsWithCompositeKey.self)
             ModelRegistry.register(modelType: PostWithTagsCompositeKey.self)

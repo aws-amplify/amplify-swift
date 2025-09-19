@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask where Request == AuthFederateToIdentityPoolRequest,
                                                                Success == FederateToIdentityPoolResult,
@@ -39,7 +39,8 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
         guard case .configured(let authNState, let authZState, _) = state  else {
             throw AuthError.invalidState(
                 "Federation could not be completed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
         }
 
         if isValidAuthNStateToStart(authNState) && isValidAuthZStateToStart(authZState) {
@@ -47,7 +48,8 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
         } else {
             throw AuthError.invalidState(
                 "Federation could not be completed.",
-                AuthPluginErrorConstants.invalidStateError, nil)
+                AuthPluginErrorConstants.invalidStateError, nil
+            )
         }
     }
 
@@ -105,7 +107,8 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
         case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             let federatedResult = FederateToIdentityPoolResult(
                 credentials: awsCredentials,
-                identityId: identityId)
+                identityId: identityId
+            )
             return federatedResult
         default:
             throw AuthError.unknown("Unable to parse credentials to expected output", nil)

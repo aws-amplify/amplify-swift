@@ -13,44 +13,63 @@ public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     @discardableResult
-    func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate?) async throws -> M
+    func save<M: Model>(
+        _ model: M,
+        where condition: QueryPredicate?
+    ) async throws -> M
 
     @available(*, deprecated, renamed: "query(byIdentifier:)")
-    func query<M: Model>(_ modelType: M.Type,
-                         byId id: String) async throws -> M?
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byId id: String
+    ) async throws -> M?
 
-    func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String) async throws -> M?
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier id: String
+    ) async throws -> M?
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
 
-    func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>
+    ) async throws -> M?
         where M: ModelIdentifiable
 
-    func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicate?,
-                         sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?) async throws -> [M]
+    func query<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?,
+        paginate paginationInput: QueryPaginationInput?
+    ) async throws -> [M]
 
-    func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate?) async throws
+    func delete<M: Model>(
+        _ model: M,
+        where predicate: QueryPredicate?
+    ) async throws
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: String,
-                          where predicate: QueryPredicate?) async throws
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate?
+    ) async throws
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: String,
-                          where predicate: QueryPredicate?) async throws where M: ModelIdentifiable,
-                                                                               M.IdentifierFormat == ModelIdentifierFormat.Default
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier id: String,
+        where predicate: QueryPredicate?
+    ) async throws where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                          where predicate: QueryPredicate?) async throws where M: ModelIdentifiable
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate?
+    ) async throws where M: ModelIdentifiable
 
-    func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate) async throws
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate
+    ) async throws
 
     /**
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())
@@ -89,8 +108,10 @@ public protocol DataStoreSubscribeBehavior {
     ///   - modelType: The model type to observe
     ///   - predicate: The predicate to match for filtered results
     ///   - sortInput: The field and order of data to be returned
-    func observeQuery<M: Model>(for modelType: M.Type,
-                                where predicate: QueryPredicate?,
-                                sort sortInput: QuerySortInput?)
+    func observeQuery<M: Model>(
+        for modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?
+    )
         -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>>
 }

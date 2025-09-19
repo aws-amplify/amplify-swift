@@ -4,13 +4,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
 
-import SwiftUI
 import Amplify
 import AWSCognitoAuthPlugin
-import AWSPinpointPushNotificationsPlugin
 import AWSPinpointAnalyticsPlugin
+import AWSPinpointPushNotificationsPlugin
+import SwiftUI
 
 let amplifyConfigurationFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration"
 let amplifyOutputsFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplify_outputs"
@@ -32,17 +31,17 @@ struct ContentView: View {
         ScrollView {
             VStack {
                 Button("Init Amplify", action: initAmplify)
-                
+
                 Button("Identify User", action: identifyUser)
                     .alert(isPresented: $showIdentifyUserDone) {
                         Alert(title: Text("Identified User"))
                     }
-                
+
                 Button("Register Device", action: registerDevice)
                     .alert(isPresented: $showRegisterTokenDone) {
                         Alert(title: Text("Registered Device"))
                     }
-                
+
                 Text(hubEvents.joined(separator: "\n"))
                 Spacer()
             }
@@ -72,13 +71,13 @@ struct ContentView: View {
     func listenHubEvent() {
         pushNotificationHubSubscription = Amplify.Hub.listen(to: .pushNotifications) { payload in
             if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
-                self.hubEvents.append(payload.eventDescription)
+                hubEvents.append(payload.eventDescription)
             }
         }
 
         analyticsHubSubscription = Amplify.Hub.listen(to: .analytics) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
-                self.hubEvents.append(payload.eventDescription)
+                hubEvents.append(payload.eventDescription)
             }
         }
     }
@@ -87,7 +86,7 @@ struct ContentView: View {
         Task {
             do {
                 try await Amplify.Notifications.Push.identifyUser(userId: UUID().uuidString)
-                self.showIdentifyUserDone = true
+                showIdentifyUserDone = true
             } catch {
                 print(#function, "Failed to identify user", error)
             }
@@ -99,7 +98,7 @@ struct ContentView: View {
         Task {
             do {
                 try await Amplify.Notifications.Push.registerDevice(apnsToken: randomDeviceToken)
-                self.showRegisterTokenDone = true
+                showRegisterTokenDone = true
             } catch {
                 print(#function, "Failed to register device token", error)
             }
@@ -109,7 +108,7 @@ struct ContentView: View {
 
 extension HubPayload {
     var eventDescription: String {
-        "\(self.eventName) = \(String(describing: self.data))"
+        "\(eventName) = \(String(describing: data))"
     }
 }
 

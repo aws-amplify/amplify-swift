@@ -10,12 +10,12 @@ import AWSRekognition
 @testable import AWSPredictionsPlugin
 
 class MockRekognitionBehavior: RekognitionClientProtocol {
-    var detectLabelsResponse: ((DetectLabelsInput) async throws -> DetectLabelsOutput)? = nil
-    var moderationLabelsResponse: ((DetectModerationLabelsInput) async throws -> DetectModerationLabelsOutput)? = nil
-    var celebritiesResponse: ((RecognizeCelebritiesInput) async throws -> RecognizeCelebritiesOutput)? = nil
-    var detectTextResponse: ((DetectTextInput) async throws -> DetectTextOutput)? = nil
-    var facesResponse: ((DetectFacesInput) async throws -> DetectFacesOutput)? = nil
-    var facesFromCollectionResponse: ((SearchFacesByImageInput) async throws -> SearchFacesByImageOutput)? = nil
+    var detectLabelsResponse: ((DetectLabelsInput) async throws -> DetectLabelsOutput)?
+    var moderationLabelsResponse: ((DetectModerationLabelsInput) async throws -> DetectModerationLabelsOutput)?
+    var celebritiesResponse: ((RecognizeCelebritiesInput) async throws -> RecognizeCelebritiesOutput)?
+    var detectTextResponse: ((DetectTextInput) async throws -> DetectTextOutput)?
+    var facesResponse: ((DetectFacesInput) async throws -> DetectFacesOutput)?
+    var facesFromCollectionResponse: ((SearchFacesByImageInput) async throws -> SearchFacesByImageOutput)?
 
     func detectLabels(input: DetectLabelsInput) async throws -> DetectLabelsOutput {
         guard let detectLabelsResponse else { throw MockBehaviorDefaultError() }

@@ -6,8 +6,8 @@
 //
 
 import Amplify
-@testable import AWSPinpointPushNotificationsPlugin
 import XCTest
+@testable import AWSPinpointPushNotificationsPlugin
 
 class AWSPinpointPushNotificationsPluginResetTests: AWSPinpointPushNotificationsPluginTestBase {
     func testReset_shouldResetValues() async {

@@ -8,9 +8,9 @@
 import Foundation
 
 import Amplify
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
 
 /// - Tag: AWSS3PreSignedURLBuilderError
 enum AWSS3PreSignedURLBuilderError: Error {
@@ -39,10 +39,12 @@ protocol AWSS3PreSignedURLBuilderBehavior {
     /// - Returns: Pre-Signed URL
     ///
     /// - Tag: AWSS3PreSignedURLBuilderBehavior.getPreSignedURL
-    func getPreSignedURL(key: String,
-                         signingOperation: AWSS3SigningOperation,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         expires: Int64?) async throws -> URL
+    func getPreSignedURL(
+        key: String,
+        signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        expires: Int64?
+    ) async throws -> URL
 
 }

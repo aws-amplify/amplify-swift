@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
@@ -17,8 +16,8 @@ class RetryWithJitterTests: XCTestCase {
     func testNext_returnDistinctValues() async {
         let retryWithJitter = RetryWithJitter()
         var values = Set<UInt>()
-        for _ in 0..<20 {
-            values.insert(await retryWithJitter.next())
+        for _ in 0 ..< 20 {
+            await values.insert(retryWithJitter.next())
         }
         XCTAssert(values.count > 10)
     }
@@ -27,8 +26,8 @@ class RetryWithJitterTests: XCTestCase {
         let max: UInt = 100_000
         let retryWithJitter = RetryWithJitter(max: max)
         var values = Set<UInt>()
-        for _ in 0..<50 {
-            values.insert(await retryWithJitter.next())
+        for _ in 0 ..< 50 {
+            await values.insert(retryWithJitter.next())
         }
         XCTAssert(values.allSatisfy { $0 < max})
     }

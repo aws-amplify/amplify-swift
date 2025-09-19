@@ -17,23 +17,29 @@ public struct Project1V2: Model {
   public var updatedAt: Temporal.DateTime?
   public var project1V2TeamId: String?
 
-  public init(id: String = UUID().uuidString,
-      name: String? = nil,
-      team: Team1V2? = nil,
-      project1V2TeamId: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String? = nil,
+    team: Team1V2? = nil,
+    project1V2TeamId: String? = nil
+  ) {
+    self.init(
+      id: id,
       name: name,
       team: team,
       createdAt: nil,
       updatedAt: nil,
-      project1V2TeamId: project1V2TeamId)
+      project1V2TeamId: project1V2TeamId
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String? = nil,
-      team: Team1V2? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      project1V2TeamId: String? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String? = nil,
+    team: Team1V2? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    project1V2TeamId: String? = nil
+  ) {
       self.id = id
       self.name = name
       self.team = team

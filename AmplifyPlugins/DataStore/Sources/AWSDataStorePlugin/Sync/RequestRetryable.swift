@@ -10,8 +10,10 @@ import Foundation
 struct RequestRetryAdvice {
     let shouldRetry: Bool
     let retryInterval: DispatchTimeInterval
-    init(shouldRetry: Bool,
-         retryInterval: DispatchTimeInterval = .seconds(60)) {
+    init(
+        shouldRetry: Bool,
+        retryInterval: DispatchTimeInterval = .seconds(60)
+    ) {
         self.shouldRetry = shouldRetry
         self.retryInterval = retryInterval
     }
@@ -19,7 +21,9 @@ struct RequestRetryAdvice {
 }
 
 protocol RequestRetryable {
-    func retryRequestAdvice(urlError: URLError?,
-                            httpURLResponse: HTTPURLResponse?,
-                            attemptNumber: Int) -> RequestRetryAdvice
+    func retryRequestAdvice(
+        urlError: URLError?,
+        httpURLResponse: HTTPURLResponse?,
+        attemptNumber: Int
+    ) -> RequestRetryAdvice
 }

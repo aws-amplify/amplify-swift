@@ -18,9 +18,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     }
 
     func testNoErrorNoHttpURLResponse() {
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssertFalse(retryAdvice.shouldRetry)
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
@@ -29,70 +31,90 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testNoErrorWithHttpURLResponseWithRetryAfterInHeader() {
         let headerFields = ["Retry-After": "42"]
         let url = URL(string: "http://www.amazon.com")!
-        let httpURLResponse = HTTPURLResponse(url: url,
-                                              statusCode: 429,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: headerFields)!
+        let httpURLResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 429,
+            httpVersion: "HTTP/1.1",
+            headerFields: headerFields
+        )!
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: httpURLResponse,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: httpURLResponse,
+            attemptNumber: 1
+        )
         XCTAssert(retryAdvice.shouldRetry)
         assertSeconds(retryAdvice.retryInterval, seconds: 42)
     }
 
     func testNoErrorWithHttpURLResponseWithoutRetryAfterInHeader_attempt1() {
         let url = URL(string: "http://www.amazon.com")!
-        let httpURLResponse = HTTPURLResponse(url: url,
-                                              statusCode: 429,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: nil)!
+        let httpURLResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 429,
+            httpVersion: "HTTP/1.1",
+            headerFields: nil
+        )!
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: httpURLResponse,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: httpURLResponse,
+            attemptNumber: 1
+        )
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
     }
 
     func testNoErrorWithHttpURLResponseWithoutRetryAfterInHeader_attempt2() {
         let url = URL(string: "http://www.amazon.com")!
-        let httpURLResponse = HTTPURLResponse(url: url,
-                                              statusCode: 429,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: nil)!
+        let httpURLResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 429,
+            httpVersion: "HTTP/1.1",
+            headerFields: nil
+        )!
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: httpURLResponse,
-                                                         attemptNumber: 2)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: httpURLResponse,
+            attemptNumber: 2
+        )
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 400, lessThan: 500)
     }
 
     func testNoErrorWithHttpURLResponseBeyondMaxWaitTime() {
         let url = URL(string: "http://www.amazon.com")!
-        let httpURLResponse = HTTPURLResponse(url: url,
-                                              statusCode: 429,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: nil)!
+        let httpURLResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 429,
+            httpVersion: "HTTP/1.1",
+            headerFields: nil
+        )!
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: httpURLResponse,
-                                                         attemptNumber: 12)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: httpURLResponse,
+            attemptNumber: 12
+        )
         XCTAssertFalse(retryAdvice.shouldRetry)
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
     func testNoErrorWithHttpURLResponseNotRetryable() {
         let url = URL(string: "http://www.amazon.com")!
-        let httpURLResponse = HTTPURLResponse(url: url,
-                                              statusCode: 204,
-                                              httpVersion: "HTTP/1.1",
-                                              headerFields: nil)!
+        let httpURLResponse = HTTPURLResponse(
+            url: url,
+            statusCode: 204,
+            httpVersion: "HTTP/1.1",
+            headerFields: nil
+        )!
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nil,
-                                                         httpURLResponse: httpURLResponse,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nil,
+            httpURLResponse: httpURLResponse,
+            attemptNumber: 1
+        )
         XCTAssertFalse(retryAdvice.shouldRetry)
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
@@ -101,9 +123,11 @@ class RequestRetryablePolicyTests: XCTestCase {
         let retryableErrorCode = URLError.init(.notConnectedToInternet)
         let attemptNumber = 1
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: attemptNumber)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: attemptNumber
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -113,9 +137,11 @@ class RequestRetryablePolicyTests: XCTestCase {
         let retryableErrorCode = URLError.init(.notConnectedToInternet)
         let attemptNumber = 2
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: attemptNumber)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: attemptNumber
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 400, lessThan: 500)
@@ -125,9 +151,11 @@ class RequestRetryablePolicyTests: XCTestCase {
         let retryableErrorCode = URLError.init(.notConnectedToInternet)
         let attemptNumber = 3
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: attemptNumber)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: attemptNumber
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 800, lessThan: 900)
@@ -136,9 +164,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testDNSLookupFailedError() {
         let retryableErrorCode = URLError.init(.dnsLookupFailed)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -147,9 +177,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testCannotConnectToHostError() {
         let retryableErrorCode = URLError.init(.cannotConnectToHost)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -158,9 +190,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testCannotFindHostError() {
         let retryableErrorCode = URLError.init(.cannotFindHost)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -169,9 +203,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testTimedOutError() {
         let retryableErrorCode = URLError.init(.timedOut)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -180,20 +216,24 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testCannotParseResponseError() {
         let retryableErrorCode = URLError.init(.cannotParseResponse)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
     }
-    
+
     func testNetworkConnectionLostError() {
         let retryableErrorCode = URLError.init(.networkConnectionLost)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -202,9 +242,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testUserAuthenticationRequiredError() {
         let retryableErrorCode = URLError.init(.userAuthenticationRequired)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -213,9 +255,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testHTTPTooManyRedirectsError() {
         let nonRetryableErrorCode = URLError.init(.httpTooManyRedirects)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: nonRetryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: nonRetryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssertFalse(retryAdvice.shouldRetry)
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
@@ -224,9 +268,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testSecureConnectionFailedError() {
         let retryableErrorCode = URLError.init(.secureConnectionFailed)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 1)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 1
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
@@ -235,9 +281,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testMaxValueRetryDelay() {
         let retryableErrorCode = URLError.init(.timedOut)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 31)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 31
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
@@ -246,9 +294,11 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testBeyondMaxValueRetryDelay() {
         let retryableErrorCode = URLError.init(.timedOut)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 32)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 32
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
@@ -257,16 +307,18 @@ class RequestRetryablePolicyTests: XCTestCase {
     func testOverflowCase() {
         let retryableErrorCode = URLError.init(.timedOut)
 
-        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
-                                                         httpURLResponse: nil,
-                                                         attemptNumber: 58)
+        let retryAdvice = retryPolicy.retryRequestAdvice(
+            urlError: retryableErrorCode,
+            httpURLResponse: nil,
+            attemptNumber: 58
+        )
 
         XCTAssert(retryAdvice.shouldRetry)
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
     }
 
     func assertMilliseconds(_ retryInterval: DispatchTimeInterval?, greaterThan: Int, lessThan: Int) {
-        guard let retryInterval = retryInterval else {
+        guard let retryInterval else {
             XCTFail("retryInterval is nil")
             return
         }
@@ -281,7 +333,7 @@ class RequestRetryablePolicyTests: XCTestCase {
     }
 
     func assertSeconds(_ retryInterval: DispatchTimeInterval?, seconds expectedSeconds: Int) {
-        guard let retryInterval = retryInterval else {
+        guard let retryInterval else {
             XCTFail("retryInterval is nil")
             return
         }

@@ -29,7 +29,7 @@ extension Date {
     typealias Millisecond = Int64
 
     var millisecondsSince1970: Millisecond {
-        return Int64(self.timeIntervalSince1970 * 1000)
+        return Int64(timeIntervalSince1970 * 1_000)
     }
 
     var asISO8601String: String {
@@ -39,7 +39,7 @@ extension Date {
 
 extension Date.Millisecond {
     var asDate: Date {
-        return Date(timeIntervalSince1970: TimeInterval(self / 1000))
-            .addingTimeInterval(TimeInterval(Double(self % 1000) / 1000 ))
+        return Date(timeIntervalSince1970: TimeInterval(self / 1_000))
+            .addingTimeInterval(TimeInterval(Double(self % 1_000) / 1_000 ))
     }
 }

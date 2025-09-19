@@ -16,20 +16,26 @@ public struct Blog6V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String,
-      posts: List<Post6V2>? = []) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String,
+    posts: List<Post6V2>? = []
+  ) {
+    self.init(
+      id: id,
       name: name,
       posts: posts,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String,
-      posts: List<Post6V2>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    posts: List<Post6V2>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.posts = posts

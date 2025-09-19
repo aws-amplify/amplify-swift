@@ -63,7 +63,7 @@ extension EventStream {
             resultData.append(contentsOf: headerLengthToEncodeBytes)
 
             // extract the first 8 bytes of the encoded message (prelude)
-            let preludeData = [UInt8](resultData[0..<8])
+            let preludeData = [UInt8](resultData[0 ..< 8])
 
             // generate crc based on the prelude
             let crc = crc32(0, preludeData, 8)
@@ -87,7 +87,7 @@ extension EventStream {
             // ┗───────────┸───────────────┸──────────┸────────────┸─────────────────┛
             for (key, value) in headers {
                 // Header Name Byte Length
-                let headerKeyLen: UInt8 = UInt8(Data(key.utf8).count)
+                let headerKeyLen = UInt8(Data(key.utf8).count)
 
                 // Value String Byte Length as big endian
                 var headerValLen = UInt16(value.data.count).bigEndian

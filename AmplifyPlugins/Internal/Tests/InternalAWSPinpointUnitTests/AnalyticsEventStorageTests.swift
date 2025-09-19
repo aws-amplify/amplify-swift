@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
@@ -48,11 +48,11 @@ class AnalyticsEventStorageTests: XCTestCase {
             let attributesBlob = Blob(bytes: [UInt8](encodedAttributes))
             let encodedMetrics = try archiver.encode(metrics)
             let metricsBlob = Blob(bytes: [UInt8](encodedMetrics))
-            let basicEvent: [Binding] = [1, attributesBlob, "eventType", metricsBlob, "2022-06-10T18:50:20.618Z", 1, "2022-06-10T17:00:20.618Z", "2022-06-10T17:10:20.618Z", 1654904585, 0, 0]
-            let failedWithMaxRetry: [Binding] = [2, attributesBlob, "eventType", metricsBlob, "2022-06-9T18:50:20.618Z", 2, "2022-06-9T17:00:20.618Z", "2022-06-9T17:10:20.618Z", 1654818185, 0, 4]
-            let dirtyEvent: [Binding] = [3, attributesBlob, "eventType", metricsBlob, "2022-06-8T18:50:20.618Z", 3, "2022-06-8T17:00:20.618Z", "2022-06-8T17:10:20.618Z", 1654731785, 1, 3]
-            let dirtyEvent2: [Binding] = [4, attributesBlob, "eventType", metricsBlob, "2022-06-7T18:50:20.618Z", 4, "2022-06-7T17:00:20.618Z", "2022-06-7T17:10:20.618Z", 1654645385, 1, 3]
-            let eventWithDirtyFlag: [Binding] = [5, attributesBlob, "eventType", metricsBlob, "2022-06-6T18:50:20.618Z", 5, "2022-06-6T17:00:20.618Z", "2022-06-6T17:10:20.618Z", 1654558985, 1, 1]
+            let basicEvent: [Binding] = [1, attributesBlob, "eventType", metricsBlob, "2022-06-10T18:50:20.618Z", 1, "2022-06-10T17:00:20.618Z", "2022-06-10T17:10:20.618Z", 1_654_904_585, 0, 0]
+            let failedWithMaxRetry: [Binding] = [2, attributesBlob, "eventType", metricsBlob, "2022-06-9T18:50:20.618Z", 2, "2022-06-9T17:00:20.618Z", "2022-06-9T17:10:20.618Z", 1_654_818_185, 0, 4]
+            let dirtyEvent: [Binding] = [3, attributesBlob, "eventType", metricsBlob, "2022-06-8T18:50:20.618Z", 3, "2022-06-8T17:00:20.618Z", "2022-06-8T17:10:20.618Z", 1_654_731_785, 1, 3]
+            let dirtyEvent2: [Binding] = [4, attributesBlob, "eventType", metricsBlob, "2022-06-7T18:50:20.618Z", 4, "2022-06-7T17:00:20.618Z", "2022-06-7T17:10:20.618Z", 1_654_645_385, 1, 3]
+            let eventWithDirtyFlag: [Binding] = [5, attributesBlob, "eventType", metricsBlob, "2022-06-6T18:50:20.618Z", 5, "2022-06-6T17:00:20.618Z", "2022-06-6T17:10:20.618Z", 1_654_558_985, 1, 1]
 
             _ = try adapter.executeQuery(insertEventStatement, basicEvent)
             _ = try adapter.executeQuery(insertEventStatement, failedWithMaxRetry)
@@ -85,7 +85,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTAssertEqual(eventcount, 3)
             XCTAssertEqual(dirtyEventcount, 2)
 
-            try storage.checkDiskSize(limit: 10000000)
+            try storage.checkDiskSize(limit: 10_000_000)
 
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
@@ -200,11 +200,11 @@ class AnalyticsEventStorageTests: XCTestCase {
             let latestEvent = events.first(where: { $0.id == "1" })
             XCTAssertNotNil(latestEvent)
             XCTAssertEqual(latestEvent?.eventType, "eventType")
-            XCTAssertEqual(latestEvent?.eventDate.millisecondsSince1970, 1654887020618)
+            XCTAssertEqual(latestEvent?.eventDate.millisecondsSince1970, 1_654_887_020_618)
             XCTAssertEqual(latestEvent?.session.sessionId, "1")
             XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
             XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
-            XCTAssertEqual(latestEvent?.session.duration, 600000)
+            XCTAssertEqual(latestEvent?.session.duration, 600_000)
             XCTAssertEqual(latestEvent?.attributes.count, 3)
             XCTAssertEqual(latestEvent?.attributes["key2"], "value2")
             XCTAssertEqual(latestEvent?.metrics.count, 2)
@@ -330,7 +330,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTAssertEqual(latestEvent?.session.sessionId, "6")
             XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
             XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
-            XCTAssertEqual(latestEvent?.session.duration, 600000)
+            XCTAssertEqual(latestEvent?.session.duration, 600_000)
             XCTAssertEqual(latestEvent?.attributes.count, 1)
             XCTAssertEqual(latestEvent?.attributes["testKey"], "testValue")
             XCTAssertEqual(latestEvent?.metrics.count, 1)
@@ -345,19 +345,27 @@ class AnalyticsEventStorageTests: XCTestCase {
         let eventType = "_session.start"
         let expectedSessionStartTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:00:20.618+0000")
         let expectedSessionStopTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:10:20.618+0000")
-        let session = PinpointSession(sessionId: "session-id",
-                                      startTime: expectedSessionStartTime!,
-                                      stopTime: expectedSessionStopTime)
-        let event1 = PinpointEvent(id: "event-1",
-                                   eventType: eventType,
-                                   session: session)
-        let event2 = PinpointEvent(id: "event-2",
-                                   eventType: eventType,
-                                   session: session)
+        let session = PinpointSession(
+            sessionId: "session-id",
+            startTime: expectedSessionStartTime!,
+            stopTime: expectedSessionStopTime
+        )
+        let event1 = PinpointEvent(
+            id: "event-1",
+            eventType: eventType,
+            session: session
+        )
+        let event2 = PinpointEvent(
+            id: "event-2",
+            eventType: eventType,
+            session: session
+        )
 
-        let notASessionStartEvent = PinpointEvent(id: "event-3",
-                                                  eventType: "another-event-type",
-                                                  session: session)
+        let notASessionStartEvent = PinpointEvent(
+            id: "event-3",
+            eventType: "another-event-type",
+            session: session
+        )
 
         let attributes = ["attr1": "value1", "attr2": "value2"]
 
@@ -365,9 +373,11 @@ class AnalyticsEventStorageTests: XCTestCase {
         try storage.saveEvent(event2)
         try storage.saveEvent(notASessionStartEvent)
 
-        try storage.updateEvents(ofType: eventType,
-                                 withSessionId: session.sessionId,
-                                 setAttributes: attributes)
+        try storage.updateEvents(
+            ofType: eventType,
+            withSessionId: session.sessionId,
+            setAttributes: attributes
+        )
 
         let savedEvents = try storage.getEventsWith(limit: 3)
 

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 class SignedOutAuthSessionTests: AWSAuthBaseTest {
 
@@ -49,7 +49,8 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
 
         let result = try await Amplify.Auth.fetchAuthSession()
         guard let cognitoResult = result as? AWSAuthCognitoSession,
-              let identityID1 = try? cognitoResult.identityIdResult.get() else {
+              let identityID1 = try? cognitoResult.identityIdResult.get()
+        else {
             XCTFail("Should retreive identity ID")
             return
         }
@@ -58,7 +59,8 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
 
         let result2 = try await Amplify.Auth.fetchAuthSession()
         guard let cognitoResult = result2 as? AWSAuthCognitoSession,
-              let identityID2 = try? cognitoResult.identityIdResult.get() else {
+              let identityID2 = try? cognitoResult.identityIdResult.get()
+        else {
             XCTFail("Should retreive identity ID")
             return
         }

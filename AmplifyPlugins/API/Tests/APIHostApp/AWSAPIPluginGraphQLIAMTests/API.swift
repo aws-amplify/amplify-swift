@@ -1,26 +1,34 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 //  This file was automatically generated and should not be edited.
 #if canImport(AWSAPIPlugin)
 import Foundation
+
 public protocol GraphQLInputValue {
 }
 public struct GraphQLVariable {
   let name: String
-  
+
   public init(_ name: String) {
     self.name = name
   }
 }
 extension GraphQLVariable: GraphQLInputValue {
 }
-extension JSONEncodable {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
+public extension JSONEncodable {
+  func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
     return jsonValue
   }
 }
 public typealias GraphQLMap = [String: JSONEncodable?]
-extension Dictionary where Key == String, Value == JSONEncodable? {
-  public var withNilValuesRemoved: Dictionary<String, JSONEncodable> {
-    var filtered = Dictionary<String, JSONEncodable>(minimumCapacity: count)
+public extension [String: JSONEncodable?] {
+  var withNilValuesRemoved: [String: JSONEncodable] {
+    var filtered = [String: JSONEncodable](minimumCapacity: count)
     for (key, value) in self {
       if value != nil {
         filtered[key] = value
@@ -39,13 +47,13 @@ public extension GraphQLMapConvertible {
 }
 public typealias GraphQLID = String
 public protocol APISwiftGraphQLOperation: AnyObject {
-  
+
   static var operationString: String { get }
   static var requestString: String { get }
   static var operationIdentifier: String? { get }
-  
+
   var variables: GraphQLMap? { get }
-  
+
   associatedtype Data: GraphQLSelectionSet
 }
 public extension APISwiftGraphQLOperation {
@@ -68,12 +76,12 @@ public protocol GraphQLFragment: GraphQLSelectionSet {
 public typealias Snapshot = [String: Any?]
 public protocol GraphQLSelectionSet: Decodable {
   static var selections: [GraphQLSelection] { get }
-  
+
   var snapshot: Snapshot { get }
   init(snapshot: Snapshot)
 }
-extension GraphQLSelectionSet {
-    public init(from decoder: Decoder) throws {
+public extension GraphQLSelectionSet {
+    init(from decoder: Decoder) throws {
         if let jsonObject = try? APISwiftJSONValue(from: decoder) {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(jsonObject)
@@ -92,10 +100,10 @@ enum APISwiftJSONValue: Codable {
     case object([String: APISwiftJSONValue])
     case string(String)
     case null
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if let value = try? container.decode([String: APISwiftJSONValue].self) {
             self = .object(value)
         } else if let value = try? container.decode([APISwiftJSONValue].self) {
@@ -110,10 +118,10 @@ enum APISwiftJSONValue: Codable {
             self = .null
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self {
         case .array(let value):
             try container.encode(value)
@@ -136,19 +144,19 @@ public struct GraphQLField: GraphQLSelection {
   let name: String
   let alias: String?
   let arguments: [String: GraphQLInputValue]?
-  
+
   var responseKey: String {
     return alias ?? name
   }
-  
+
   let type: GraphQLOutputType
-  
+
   public init(_ name: String, alias: String? = nil, arguments: [String: GraphQLInputValue]? = nil, type: GraphQLOutputType) {
     self.name = name
     self.alias = alias
-    
+
     self.arguments = arguments
-    
+
     self.type = type
   }
 }
@@ -157,7 +165,7 @@ public indirect enum GraphQLOutputType {
   case object([GraphQLSelection])
   case nonNull(GraphQLOutputType)
   case list(GraphQLOutputType)
-  
+
   var namedType: GraphQLOutputType {
     switch self {
     case .nonNull(let innerType), .list(let innerType):
@@ -171,25 +179,25 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
   let variableName: String
   let inverted: Bool
   let selections: [GraphQLSelection]
-  
+
   public init(variableName: String, inverted: Bool, selections: [GraphQLSelection]) {
     self.variableName = variableName
-    self.inverted = inverted;
-    self.selections = selections;
+    self.inverted = inverted
+    self.selections = selections
   }
 }
 public struct GraphQLTypeCondition: GraphQLSelection {
   let possibleTypes: [String]
   let selections: [GraphQLSelection]
-  
+
   public init(possibleTypes: [String], selections: [GraphQLSelection]) {
     self.possibleTypes = possibleTypes
-    self.selections = selections;
+    self.selections = selections
   }
 }
 public struct GraphQLFragmentSpread: GraphQLSelection {
   let fragment: GraphQLFragment.Type
-  
+
   public init(_ fragment: GraphQLFragment.Type) {
     self.fragment = fragment
   }
@@ -197,10 +205,10 @@ public struct GraphQLFragmentSpread: GraphQLSelection {
 public struct GraphQLTypeCase: GraphQLSelection {
   let variants: [String: [GraphQLSelection]]
   let `default`: [GraphQLSelection]
-  
+
   public init(variants: [String: [GraphQLSelection]], default: [GraphQLSelection]) {
     self.variants = variants
-    self.default = `default`;
+    self.default = `default`
   }
 }
 public typealias JSONObject = [String: Any]
@@ -215,7 +223,7 @@ public enum JSONDecodingError: Error, LocalizedError {
   case nullValue
   case wrongType
   case couldNotConvert(value: Any, to: Any.Type)
-  
+
   public var errorDescription: String? {
     switch self {
     case .missingValue:
@@ -284,8 +292,8 @@ extension Bool: JSONDecodable, JSONEncodable {
     return self
   }
 }
-extension RawRepresentable where RawValue: JSONDecodable {
-  public init(jsonValue value: Any) throws {
+public extension RawRepresentable where RawValue: JSONDecodable {
+  init(jsonValue value: Any) throws {
     let rawValue = try RawValue(jsonValue: value)
     if let tempSelf = Self(rawValue: rawValue) {
       self = tempSelf
@@ -294,17 +302,17 @@ extension RawRepresentable where RawValue: JSONDecodable {
     }
   }
 }
-extension RawRepresentable where RawValue: JSONEncodable {
-  public var jsonValue: Any {
+public extension RawRepresentable where RawValue: JSONEncodable {
+  var jsonValue: Any {
     return rawValue.jsonValue
   }
 }
-extension Optional where Wrapped: JSONDecodable {
-  public init(jsonValue value: Any) throws {
+public extension Optional where Wrapped: JSONDecodable {
+  init(jsonValue value: Any) throws {
     if value is NSNull {
       self = .none
     } else {
-      self = .some(try Wrapped(jsonValue: value))
+      self = try .some(Wrapped(jsonValue: value))
     }
   }
 }
@@ -324,7 +332,7 @@ extension Dictionary: JSONEncodable {
   public var jsonValue: Any {
     return jsonObject
   }
-  
+
   public var jsonObject: JSONObject {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {
@@ -339,7 +347,7 @@ extension Dictionary: JSONEncodable {
 }
 extension Array: JSONEncodable {
   public var jsonValue: Any {
-    return map() { element -> (Any) in
+    return map { element -> (Any) in
       if case let element as JSONEncodable = element {
         return element.jsonValue
       } else {
@@ -356,12 +364,12 @@ extension URL: JSONDecodable, JSONEncodable {
     self.init(string: string)!
   }
   public var jsonValue: Any {
-    return self.absoluteString
+    return absoluteString
   }
 }
 extension Dictionary {
   static func += (lhs: inout Dictionary, rhs: Dictionary) {
-    lhs.merge(rhs) { (_, new) in new }
+    lhs.merge(rhs) { _, new in new }
   }
 }
 #elseif canImport(AWSAppSync)
@@ -370,11 +378,11 @@ import AWSAppSync
 public struct APISwift {
     public struct CreateTodoInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(id: GraphQLID? = nil, name: String, description: String? = nil) {
-            graphQLMap = ["id": id, "name": name, "description": description]
+            self.graphQLMap = ["id": id, "name": name, "description": description]
         }
-        
+
         public var id: GraphQLID? {
             get {
                 return graphQLMap["id"] as! GraphQLID?
@@ -383,7 +391,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "id")
             }
         }
-        
+
         public var name: String {
             get {
                 return graphQLMap["name"] as! String
@@ -392,7 +400,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "name")
             }
         }
-        
+
         public var description: String? {
             get {
                 return graphQLMap["description"] as! String?
@@ -402,14 +410,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct ModelTodoConditionInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(name: ModelStringInput? = nil, description: ModelStringInput? = nil, and: [ModelTodoConditionInput?]? = nil, or: [ModelTodoConditionInput?]? = nil, not: ModelTodoConditionInput? = nil) {
-            graphQLMap = ["name": name, "description": description, "and": and, "or": or, "not": not]
+            self.graphQLMap = ["name": name, "description": description, "and": and, "or": or, "not": not]
         }
-        
+
         public var name: ModelStringInput? {
             get {
                 return graphQLMap["name"] as! ModelStringInput?
@@ -418,7 +426,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "name")
             }
         }
-        
+
         public var description: ModelStringInput? {
             get {
                 return graphQLMap["description"] as! ModelStringInput?
@@ -427,7 +435,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "description")
             }
         }
-        
+
         public var and: [ModelTodoConditionInput?]? {
             get {
                 return graphQLMap["and"] as! [ModelTodoConditionInput?]?
@@ -436,7 +444,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "and")
             }
         }
-        
+
         public var or: [ModelTodoConditionInput?]? {
             get {
                 return graphQLMap["or"] as! [ModelTodoConditionInput?]?
@@ -445,7 +453,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "or")
             }
         }
-        
+
         public var not: ModelTodoConditionInput? {
             get {
                 return graphQLMap["not"] as! ModelTodoConditionInput?
@@ -455,14 +463,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct ModelStringInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(ne: String? = nil, eq: String? = nil, le: String? = nil, lt: String? = nil, ge: String? = nil, gt: String? = nil, contains: String? = nil, notContains: String? = nil, between: [String?]? = nil, beginsWith: String? = nil, attributeExists: Bool? = nil, attributeType: ModelAttributeTypes? = nil, size: ModelSizeInput? = nil) {
-            graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
+            self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
         }
-        
+
         public var ne: String? {
             get {
                 return graphQLMap["ne"] as! String?
@@ -471,7 +479,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ne")
             }
         }
-        
+
         public var eq: String? {
             get {
                 return graphQLMap["eq"] as! String?
@@ -480,7 +488,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "eq")
             }
         }
-        
+
         public var le: String? {
             get {
                 return graphQLMap["le"] as! String?
@@ -489,7 +497,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "le")
             }
         }
-        
+
         public var lt: String? {
             get {
                 return graphQLMap["lt"] as! String?
@@ -498,7 +506,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "lt")
             }
         }
-        
+
         public var ge: String? {
             get {
                 return graphQLMap["ge"] as! String?
@@ -507,7 +515,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ge")
             }
         }
-        
+
         public var gt: String? {
             get {
                 return graphQLMap["gt"] as! String?
@@ -516,7 +524,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "gt")
             }
         }
-        
+
         public var contains: String? {
             get {
                 return graphQLMap["contains"] as! String?
@@ -525,7 +533,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "contains")
             }
         }
-        
+
         public var notContains: String? {
             get {
                 return graphQLMap["notContains"] as! String?
@@ -534,7 +542,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "notContains")
             }
         }
-        
+
         public var between: [String?]? {
             get {
                 return graphQLMap["between"] as! [String?]?
@@ -543,7 +551,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "between")
             }
         }
-        
+
         public var beginsWith: String? {
             get {
                 return graphQLMap["beginsWith"] as! String?
@@ -552,7 +560,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "beginsWith")
             }
         }
-        
+
         public var attributeExists: Bool? {
             get {
                 return graphQLMap["attributeExists"] as! Bool?
@@ -561,7 +569,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "attributeExists")
             }
         }
-        
+
         public var attributeType: ModelAttributeTypes? {
             get {
                 return graphQLMap["attributeType"] as! ModelAttributeTypes?
@@ -570,7 +578,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "attributeType")
             }
         }
-        
+
         public var size: ModelSizeInput? {
             get {
                 return graphQLMap["size"] as! ModelSizeInput?
@@ -580,7 +588,7 @@ public struct APISwift {
             }
         }
     }
-    
+
     public enum ModelAttributeTypes: RawRepresentable, Equatable, JSONDecodable, JSONEncodable {
         public typealias RawValue = String
         case binary
@@ -595,7 +603,7 @@ public struct APISwift {
         case null
         /// Auto generated constant for unknown enum values
         case unknown(RawValue)
-        
+
         public init?(rawValue: RawValue) {
             switch rawValue {
             case "binary": self = .binary
@@ -611,7 +619,7 @@ public struct APISwift {
             default: self = .unknown(rawValue)
             }
         }
-        
+
         public var rawValue: RawValue {
             switch self {
             case .binary: return "binary"
@@ -627,7 +635,7 @@ public struct APISwift {
             case .unknown(let value): return value
             }
         }
-        
+
         public static func == (lhs: ModelAttributeTypes, rhs: ModelAttributeTypes) -> Bool {
             switch (lhs, rhs) {
             case (.binary, .binary): return true
@@ -645,14 +653,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct ModelSizeInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(ne: Int? = nil, eq: Int? = nil, le: Int? = nil, lt: Int? = nil, ge: Int? = nil, gt: Int? = nil, between: [Int?]? = nil) {
-            graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "between": between]
+            self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "between": between]
         }
-        
+
         public var ne: Int? {
             get {
                 return graphQLMap["ne"] as! Int?
@@ -661,7 +669,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ne")
             }
         }
-        
+
         public var eq: Int? {
             get {
                 return graphQLMap["eq"] as! Int?
@@ -670,7 +678,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "eq")
             }
         }
-        
+
         public var le: Int? {
             get {
                 return graphQLMap["le"] as! Int?
@@ -679,7 +687,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "le")
             }
         }
-        
+
         public var lt: Int? {
             get {
                 return graphQLMap["lt"] as! Int?
@@ -688,7 +696,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "lt")
             }
         }
-        
+
         public var ge: Int? {
             get {
                 return graphQLMap["ge"] as! Int?
@@ -697,7 +705,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ge")
             }
         }
-        
+
         public var gt: Int? {
             get {
                 return graphQLMap["gt"] as! Int?
@@ -706,7 +714,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "gt")
             }
         }
-        
+
         public var between: [Int?]? {
             get {
                 return graphQLMap["between"] as! [Int?]?
@@ -716,14 +724,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct UpdateTodoInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(id: GraphQLID, name: String? = nil, description: String? = nil) {
-            graphQLMap = ["id": id, "name": name, "description": description]
+            self.graphQLMap = ["id": id, "name": name, "description": description]
         }
-        
+
         public var id: GraphQLID {
             get {
                 return graphQLMap["id"] as! GraphQLID
@@ -732,7 +740,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "id")
             }
         }
-        
+
         public var name: String? {
             get {
                 return graphQLMap["name"] as! String?
@@ -741,7 +749,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "name")
             }
         }
-        
+
         public var description: String? {
             get {
                 return graphQLMap["description"] as! String?
@@ -751,14 +759,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct DeleteTodoInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(id: GraphQLID) {
-            graphQLMap = ["id": id]
+            self.graphQLMap = ["id": id]
         }
-        
+
         public var id: GraphQLID {
             get {
                 return graphQLMap["id"] as! GraphQLID
@@ -768,14 +776,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct ModelTodoFilterInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(id: ModelIDInput? = nil, name: ModelStringInput? = nil, description: ModelStringInput? = nil, and: [ModelTodoFilterInput?]? = nil, or: [ModelTodoFilterInput?]? = nil, not: ModelTodoFilterInput? = nil) {
-            graphQLMap = ["id": id, "name": name, "description": description, "and": and, "or": or, "not": not]
+            self.graphQLMap = ["id": id, "name": name, "description": description, "and": and, "or": or, "not": not]
         }
-        
+
         public var id: ModelIDInput? {
             get {
                 return graphQLMap["id"] as! ModelIDInput?
@@ -784,7 +792,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "id")
             }
         }
-        
+
         public var name: ModelStringInput? {
             get {
                 return graphQLMap["name"] as! ModelStringInput?
@@ -793,7 +801,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "name")
             }
         }
-        
+
         public var description: ModelStringInput? {
             get {
                 return graphQLMap["description"] as! ModelStringInput?
@@ -802,7 +810,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "description")
             }
         }
-        
+
         public var and: [ModelTodoFilterInput?]? {
             get {
                 return graphQLMap["and"] as! [ModelTodoFilterInput?]?
@@ -811,7 +819,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "and")
             }
         }
-        
+
         public var or: [ModelTodoFilterInput?]? {
             get {
                 return graphQLMap["or"] as! [ModelTodoFilterInput?]?
@@ -820,7 +828,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "or")
             }
         }
-        
+
         public var not: ModelTodoFilterInput? {
             get {
                 return graphQLMap["not"] as! ModelTodoFilterInput?
@@ -830,14 +838,14 @@ public struct APISwift {
             }
         }
     }
-    
+
     public struct ModelIDInput: GraphQLMapConvertible {
         public var graphQLMap: GraphQLMap
-        
+
         public init(ne: GraphQLID? = nil, eq: GraphQLID? = nil, le: GraphQLID? = nil, lt: GraphQLID? = nil, ge: GraphQLID? = nil, gt: GraphQLID? = nil, contains: GraphQLID? = nil, notContains: GraphQLID? = nil, between: [GraphQLID?]? = nil, beginsWith: GraphQLID? = nil, attributeExists: Bool? = nil, attributeType: ModelAttributeTypes? = nil, size: ModelSizeInput? = nil) {
-            graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
+            self.graphQLMap = ["ne": ne, "eq": eq, "le": le, "lt": lt, "ge": ge, "gt": gt, "contains": contains, "notContains": notContains, "between": between, "beginsWith": beginsWith, "attributeExists": attributeExists, "attributeType": attributeType, "size": size]
         }
-        
+
         public var ne: GraphQLID? {
             get {
                 return graphQLMap["ne"] as! GraphQLID?
@@ -846,7 +854,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ne")
             }
         }
-        
+
         public var eq: GraphQLID? {
             get {
                 return graphQLMap["eq"] as! GraphQLID?
@@ -855,7 +863,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "eq")
             }
         }
-        
+
         public var le: GraphQLID? {
             get {
                 return graphQLMap["le"] as! GraphQLID?
@@ -864,7 +872,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "le")
             }
         }
-        
+
         public var lt: GraphQLID? {
             get {
                 return graphQLMap["lt"] as! GraphQLID?
@@ -873,7 +881,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "lt")
             }
         }
-        
+
         public var ge: GraphQLID? {
             get {
                 return graphQLMap["ge"] as! GraphQLID?
@@ -882,7 +890,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "ge")
             }
         }
-        
+
         public var gt: GraphQLID? {
             get {
                 return graphQLMap["gt"] as! GraphQLID?
@@ -891,7 +899,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "gt")
             }
         }
-        
+
         public var contains: GraphQLID? {
             get {
                 return graphQLMap["contains"] as! GraphQLID?
@@ -900,7 +908,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "contains")
             }
         }
-        
+
         public var notContains: GraphQLID? {
             get {
                 return graphQLMap["notContains"] as! GraphQLID?
@@ -909,7 +917,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "notContains")
             }
         }
-        
+
         public var between: [GraphQLID?]? {
             get {
                 return graphQLMap["between"] as! [GraphQLID?]?
@@ -918,7 +926,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "between")
             }
         }
-        
+
         public var beginsWith: GraphQLID? {
             get {
                 return graphQLMap["beginsWith"] as! GraphQLID?
@@ -927,7 +935,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "beginsWith")
             }
         }
-        
+
         public var attributeExists: Bool? {
             get {
                 return graphQLMap["attributeExists"] as! Bool?
@@ -936,7 +944,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "attributeExists")
             }
         }
-        
+
         public var attributeType: ModelAttributeTypes? {
             get {
                 return graphQLMap["attributeType"] as! ModelAttributeTypes?
@@ -945,7 +953,7 @@ public struct APISwift {
                 graphQLMap.updateValue(newValue, forKey: "attributeType")
             }
         }
-        
+
         public var size: ModelSizeInput? {
             get {
                 return graphQLMap["size"] as! ModelSizeInput?
@@ -955,40 +963,40 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class CreateTodoMutation: GraphQLMutation {
         public static let operationString =
         "mutation CreateTodo($input: CreateTodoInput!, $condition: ModelTodoConditionInput) {\n  createTodo(input: $input, condition: $condition) {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public var input: CreateTodoInput
         public var condition: ModelTodoConditionInput?
-        
+
         public init(input: CreateTodoInput, condition: ModelTodoConditionInput? = nil) {
             self.input = input
             self.condition = condition
         }
-        
+
         public var variables: GraphQLMap? {
             return ["input": input, "condition": condition]
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Mutation"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("createTodo", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(CreateTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(createTodo: CreateTodo? = nil) {
-                self.init(snapshot: ["__typename": "Mutation", "createTodo": createTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Mutation", "createTodo": createTodo.flatMap(\.snapshot)])
             }
-            
+
             public var createTodo: CreateTodo? {
                 get {
                     return (snapshot["createTodo"] as? Snapshot).flatMap { CreateTodo(snapshot: $0) }
@@ -997,10 +1005,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "createTodo")
                 }
             }
-            
+
             public struct CreateTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1009,17 +1017,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1028,7 +1036,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1037,7 +1045,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1046,7 +1054,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1055,7 +1063,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1064,7 +1072,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1076,40 +1084,40 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class UpdateTodoMutation: GraphQLMutation {
         public static let operationString =
         "mutation UpdateTodo($input: UpdateTodoInput!, $condition: ModelTodoConditionInput) {\n  updateTodo(input: $input, condition: $condition) {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public var input: UpdateTodoInput
         public var condition: ModelTodoConditionInput?
-        
+
         public init(input: UpdateTodoInput, condition: ModelTodoConditionInput? = nil) {
             self.input = input
             self.condition = condition
         }
-        
+
         public var variables: GraphQLMap? {
             return ["input": input, "condition": condition]
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Mutation"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("updateTodo", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(UpdateTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(updateTodo: UpdateTodo? = nil) {
-                self.init(snapshot: ["__typename": "Mutation", "updateTodo": updateTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Mutation", "updateTodo": updateTodo.flatMap(\.snapshot)])
             }
-            
+
             public var updateTodo: UpdateTodo? {
                 get {
                     return (snapshot["updateTodo"] as? Snapshot).flatMap { UpdateTodo(snapshot: $0) }
@@ -1118,10 +1126,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "updateTodo")
                 }
             }
-            
+
             public struct UpdateTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1130,17 +1138,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1149,7 +1157,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1158,7 +1166,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1167,7 +1175,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1176,7 +1184,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1185,7 +1193,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1197,40 +1205,40 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class DeleteTodoMutation: GraphQLMutation {
         public static let operationString =
         "mutation DeleteTodo($input: DeleteTodoInput!, $condition: ModelTodoConditionInput) {\n  deleteTodo(input: $input, condition: $condition) {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public var input: DeleteTodoInput
         public var condition: ModelTodoConditionInput?
-        
+
         public init(input: DeleteTodoInput, condition: ModelTodoConditionInput? = nil) {
             self.input = input
             self.condition = condition
         }
-        
+
         public var variables: GraphQLMap? {
             return ["input": input, "condition": condition]
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Mutation"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("deleteTodo", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(DeleteTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(deleteTodo: DeleteTodo? = nil) {
-                self.init(snapshot: ["__typename": "Mutation", "deleteTodo": deleteTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Mutation", "deleteTodo": deleteTodo.flatMap(\.snapshot)])
             }
-            
+
             public var deleteTodo: DeleteTodo? {
                 get {
                     return (snapshot["deleteTodo"] as? Snapshot).flatMap { DeleteTodo(snapshot: $0) }
@@ -1239,10 +1247,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "deleteTodo")
                 }
             }
-            
+
             public struct DeleteTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1251,17 +1259,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1270,7 +1278,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1279,7 +1287,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1288,7 +1296,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1297,7 +1305,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1306,7 +1314,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1318,38 +1326,38 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class GetTodoQuery: GraphQLQuery {
         public static let operationString =
         "query GetTodo($id: ID!) {\n  getTodo(id: $id) {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public var id: GraphQLID
-        
+
         public init(id: GraphQLID) {
             self.id = id
         }
-        
+
         public var variables: GraphQLMap? {
             return ["id": id]
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Query"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("getTodo", arguments: ["id": GraphQLVariable("id")], type: .object(GetTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(getTodo: GetTodo? = nil) {
-                self.init(snapshot: ["__typename": "Query", "getTodo": getTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Query", "getTodo": getTodo.flatMap(\.snapshot)])
             }
-            
+
             public var getTodo: GetTodo? {
                 get {
                     return (snapshot["getTodo"] as? Snapshot).flatMap { GetTodo(snapshot: $0) }
@@ -1358,10 +1366,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "getTodo")
                 }
             }
-            
+
             public struct GetTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1370,17 +1378,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1389,7 +1397,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1398,7 +1406,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1407,7 +1415,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1416,7 +1424,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1425,7 +1433,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1437,42 +1445,42 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class ListTodosQuery: GraphQLQuery {
         public static let operationString =
         "query ListTodos($filter: ModelTodoFilterInput, $limit: Int, $nextToken: String) {\n  listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      name\n      description\n      createdAt\n      updatedAt\n    }\n    nextToken\n  }\n}"
-        
+
         public var filter: ModelTodoFilterInput?
         public var limit: Int?
         public var nextToken: String?
-        
+
         public init(filter: ModelTodoFilterInput? = nil, limit: Int? = nil, nextToken: String? = nil) {
             self.filter = filter
             self.limit = limit
             self.nextToken = nextToken
         }
-        
+
         public var variables: GraphQLMap? {
             return ["filter": filter, "limit": limit, "nextToken": nextToken]
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Query"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("listTodos", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken")], type: .object(ListTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(listTodos: ListTodo? = nil) {
-                self.init(snapshot: ["__typename": "Query", "listTodos": listTodos.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Query", "listTodos": listTodos.flatMap(\.snapshot)])
             }
-            
+
             public var listTodos: ListTodo? {
                 get {
                     return (snapshot["listTodos"] as? Snapshot).flatMap { ListTodo(snapshot: $0) }
@@ -1481,26 +1489,26 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "listTodos")
                 }
             }
-            
+
             public struct ListTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["ModelTodoConnection"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
                     GraphQLField("nextToken", type: .scalar(String.self)),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(items: [Item?], nextToken: String? = nil) {
-                    self.init(snapshot: ["__typename": "ModelTodoConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken])
+                    self.init(snapshot: ["__typename": "ModelTodoConnection", "items": items.map { $0.flatMap(\.snapshot) }, "nextToken": nextToken])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1509,16 +1517,16 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var items: [Item?] {
                     get {
                         return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
                     }
                     set {
-                        snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+                        snapshot.updateValue(newValue.map { $0.flatMap(\.snapshot) }, forKey: "items")
                     }
                 }
-                
+
                 public var nextToken: String? {
                     get {
                         return snapshot["nextToken"] as? String
@@ -1527,10 +1535,10 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "nextToken")
                     }
                 }
-                
+
                 public struct Item: GraphQLSelectionSet {
                     public static let possibleTypes = ["Todo"]
-                    
+
                     public static let selections: [GraphQLSelection] = [
                         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1539,17 +1547,17 @@ public struct APISwift {
                         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                     ]
-                    
+
                     public var snapshot: Snapshot
-                    
+
                     public init(snapshot: Snapshot) {
                         self.snapshot = snapshot
                     }
-                    
+
                     public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                         self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                     }
-                    
+
                     public var __typename: String {
                         get {
                             return snapshot["__typename"]! as! String
@@ -1558,7 +1566,7 @@ public struct APISwift {
                             snapshot.updateValue(newValue, forKey: "__typename")
                         }
                     }
-                    
+
                     public var id: GraphQLID {
                         get {
                             return snapshot["id"]! as! GraphQLID
@@ -1567,7 +1575,7 @@ public struct APISwift {
                             snapshot.updateValue(newValue, forKey: "id")
                         }
                     }
-                    
+
                     public var name: String {
                         get {
                             return snapshot["name"]! as! String
@@ -1576,7 +1584,7 @@ public struct APISwift {
                             snapshot.updateValue(newValue, forKey: "name")
                         }
                     }
-                    
+
                     public var description: String? {
                         get {
                             return snapshot["description"] as? String
@@ -1585,7 +1593,7 @@ public struct APISwift {
                             snapshot.updateValue(newValue, forKey: "description")
                         }
                     }
-                    
+
                     public var createdAt: String {
                         get {
                             return snapshot["createdAt"]! as! String
@@ -1594,7 +1602,7 @@ public struct APISwift {
                             snapshot.updateValue(newValue, forKey: "createdAt")
                         }
                     }
-                    
+
                     public var updatedAt: String {
                         get {
                             return snapshot["updatedAt"]! as! String
@@ -1607,31 +1615,31 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class OnCreateTodoSubscription: GraphQLSubscription {
         public static let operationString =
         "subscription OnCreateTodo {\n  onCreateTodo {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public init() {
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Subscription"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("onCreateTodo", type: .object(OnCreateTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(onCreateTodo: OnCreateTodo? = nil) {
-                self.init(snapshot: ["__typename": "Subscription", "onCreateTodo": onCreateTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Subscription", "onCreateTodo": onCreateTodo.flatMap(\.snapshot)])
             }
-            
+
             public var onCreateTodo: OnCreateTodo? {
                 get {
                     return (snapshot["onCreateTodo"] as? Snapshot).flatMap { OnCreateTodo(snapshot: $0) }
@@ -1640,10 +1648,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "onCreateTodo")
                 }
             }
-            
+
             public struct OnCreateTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1652,17 +1660,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1671,7 +1679,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1680,7 +1688,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1689,7 +1697,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1698,7 +1706,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1707,7 +1715,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1719,31 +1727,31 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class OnUpdateTodoSubscription: GraphQLSubscription {
         public static let operationString =
         "subscription OnUpdateTodo {\n  onUpdateTodo {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public init() {
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Subscription"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("onUpdateTodo", type: .object(OnUpdateTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(onUpdateTodo: OnUpdateTodo? = nil) {
-                self.init(snapshot: ["__typename": "Subscription", "onUpdateTodo": onUpdateTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Subscription", "onUpdateTodo": onUpdateTodo.flatMap(\.snapshot)])
             }
-            
+
             public var onUpdateTodo: OnUpdateTodo? {
                 get {
                     return (snapshot["onUpdateTodo"] as? Snapshot).flatMap { OnUpdateTodo(snapshot: $0) }
@@ -1752,10 +1760,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "onUpdateTodo")
                 }
             }
-            
+
             public struct OnUpdateTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1764,17 +1772,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1783,7 +1791,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1792,7 +1800,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1801,7 +1809,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1810,7 +1818,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1819,7 +1827,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String
@@ -1831,31 +1839,31 @@ public struct APISwift {
             }
         }
     }
-    
+
     public final class OnDeleteTodoSubscription: GraphQLSubscription {
         public static let operationString =
         "subscription OnDeleteTodo {\n  onDeleteTodo {\n    __typename\n    id\n    name\n    description\n    createdAt\n    updatedAt\n  }\n}"
-        
+
         public init() {
         }
-        
+
         public struct Data: GraphQLSelectionSet {
             public static let possibleTypes = ["Subscription"]
-            
+
             public static let selections: [GraphQLSelection] = [
                 GraphQLField("onDeleteTodo", type: .object(OnDeleteTodo.selections)),
             ]
-            
+
             public var snapshot: Snapshot
-            
+
             public init(snapshot: Snapshot) {
                 self.snapshot = snapshot
             }
-            
+
             public init(onDeleteTodo: OnDeleteTodo? = nil) {
-                self.init(snapshot: ["__typename": "Subscription", "onDeleteTodo": onDeleteTodo.flatMap { $0.snapshot }])
+                self.init(snapshot: ["__typename": "Subscription", "onDeleteTodo": onDeleteTodo.flatMap(\.snapshot)])
             }
-            
+
             public var onDeleteTodo: OnDeleteTodo? {
                 get {
                     return (snapshot["onDeleteTodo"] as? Snapshot).flatMap { OnDeleteTodo(snapshot: $0) }
@@ -1864,10 +1872,10 @@ public struct APISwift {
                     snapshot.updateValue(newValue?.snapshot, forKey: "onDeleteTodo")
                 }
             }
-            
+
             public struct OnDeleteTodo: GraphQLSelectionSet {
                 public static let possibleTypes = ["Todo"]
-                
+
                 public static let selections: [GraphQLSelection] = [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
@@ -1876,17 +1884,17 @@ public struct APISwift {
                     GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
                     GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
                 ]
-                
+
                 public var snapshot: Snapshot
-                
+
                 public init(snapshot: Snapshot) {
                     self.snapshot = snapshot
                 }
-                
+
                 public init(id: GraphQLID, name: String, description: String? = nil, createdAt: String, updatedAt: String) {
                     self.init(snapshot: ["__typename": "Todo", "id": id, "name": name, "description": description, "createdAt": createdAt, "updatedAt": updatedAt])
                 }
-                
+
                 public var __typename: String {
                     get {
                         return snapshot["__typename"]! as! String
@@ -1895,7 +1903,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "__typename")
                     }
                 }
-                
+
                 public var id: GraphQLID {
                     get {
                         return snapshot["id"]! as! GraphQLID
@@ -1904,7 +1912,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "id")
                     }
                 }
-                
+
                 public var name: String {
                     get {
                         return snapshot["name"]! as! String
@@ -1913,7 +1921,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "name")
                     }
                 }
-                
+
                 public var description: String? {
                     get {
                         return snapshot["description"] as? String
@@ -1922,7 +1930,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "description")
                     }
                 }
-                
+
                 public var createdAt: String {
                     get {
                         return snapshot["createdAt"]! as! String
@@ -1931,7 +1939,7 @@ public struct APISwift {
                         snapshot.updateValue(newValue, forKey: "createdAt")
                     }
                 }
-                
+
                 public var updatedAt: String {
                     get {
                         return snapshot["updatedAt"]! as! String

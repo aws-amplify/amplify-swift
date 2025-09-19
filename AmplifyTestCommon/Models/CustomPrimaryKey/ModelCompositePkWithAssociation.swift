@@ -17,23 +17,29 @@ public struct ModelCompositePkWithAssociation: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-    public init(id: String = UUID().uuidString,
-                dob: Temporal.DateTime,
-                name: String? = nil,
-                otherModels: List<ModelCompositePkBelongsTo>? = []) {
-        self.init(id: id,
-                  dob: dob,
-                  name: name,
-                  otherModels: otherModels,
-                  createdAt: nil,
-                  updatedAt: nil)
+    public init(
+        id: String = UUID().uuidString,
+        dob: Temporal.DateTime,
+        name: String? = nil,
+        otherModels: List<ModelCompositePkBelongsTo>? = []
+    ) {
+        self.init(
+            id: id,
+            dob: dob,
+            name: name,
+            otherModels: otherModels,
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
-    internal init(id: String = UUID().uuidString,
-                  dob: Temporal.DateTime,
-                  name: String? = nil,
-                  otherModels: List<ModelCompositePkBelongsTo>? = [],
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        dob: Temporal.DateTime,
+        name: String? = nil,
+        otherModels: List<ModelCompositePkBelongsTo>? = [],
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self.dob = dob
         self.name = name

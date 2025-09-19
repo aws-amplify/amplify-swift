@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 
 /*
  # iOS.7. A Has-Many/Belongs-To relationship, each with a composite key
@@ -35,15 +34,17 @@ final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrima
         try await assertQuerySuccess(modelType: PostWithCompositeKey.self)
         let parent = PostWithCompositeKey(title: "Post22")
         let child = CommentWithCompositeKey(content: "Comment", post: parent)
-        
+
         // Mutations
         try await assertMutationsParentChild(parent: parent, child: child)
 
         // Child should not exists as we've deleted the parent
-        try await assertModelDeleted(modelType: CommentWithCompositeKey.self,
-                                     identifier: .identifier(id: child.id, content: child.content))
+        try await assertModelDeleted(
+            modelType: CommentWithCompositeKey.self,
+            identifier: .identifier(id: child.id, content: child.content)
+        )
     }
-    
+
     /// - Given: a set models with a belongs-to association and composite primary keys
     /// - When:
     ///     - the parent model is saved
@@ -55,7 +56,7 @@ final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrima
         setup(withModels: CompositeKeyWithAssociations())
 
         try await assertDataStoreReady()
-        
+
         let post = PostWithCompositeKey(title: "title")
         let comment = CommentWithCompositeKey(content: "content", post: post)
         _ = try await Amplify.DataStore.save(post)
@@ -72,7 +73,7 @@ final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrima
 }
 extension AWSDataStorePrimaryKeyPostCommentCompositeKeyTest {
     struct CompositeKeyWithAssociations: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostWithCompositeKey.self)
             ModelRegistry.register(modelType: CommentWithCompositeKey.self)

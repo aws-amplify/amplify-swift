@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 // swiftlint:disable type_name
 /// Protocol used as a marker to detect when the type is a `LazyReference`.
 /// Used to retrieve either the `reference` or the `identifiers` of the Model directly, without having load a not

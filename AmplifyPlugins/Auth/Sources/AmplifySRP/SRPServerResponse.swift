@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AmplifyBigInteger
+import Foundation
 
 struct SRPServerResponse {
     let publicKey: BigInt

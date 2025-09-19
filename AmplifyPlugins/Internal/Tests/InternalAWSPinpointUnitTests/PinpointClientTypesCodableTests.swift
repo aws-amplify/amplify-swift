@@ -6,8 +6,8 @@
 //
 
 import AWSPinpoint
-@testable import InternalAWSPinpoint
 import XCTest
+@testable import InternalAWSPinpoint
 
 class PinpointClientTypesCodableTests: XCTestCase {
     /// Given: Instances of PinpointClient types that conform to Codable

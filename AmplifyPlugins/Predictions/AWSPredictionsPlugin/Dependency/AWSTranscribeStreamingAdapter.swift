@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import AWSClientRuntime
 import AWSPluginsCore
 import AWSTranscribeStreaming
-import AwsCommonRuntimeKit
+import Foundation
 import SmithyIdentity
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
@@ -63,7 +63,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         var components = URLComponents()
         components.scheme = "wss"
         components.host = "transcribestreaming.\(region).amazonaws.com"
-        components.port = 8443
+        components.port = 8_443
         components.path = "/stream-transcription-websocket"
 
         components.queryItems = [
@@ -96,7 +96,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
             var currentEnd = min(chunkSize, audioDataSize - currentStart)
 
             while currentStart < audioDataSize {
-                let dataChunk = input.audioStream[currentStart..<currentEnd]
+                let dataChunk = input.audioStream[currentStart ..< currentEnd]
                 let encodedChunk = EventStream.Encoder().encode(payload: dataChunk, headers: headers)
 
                 webSocket.send(message: .data(encodedChunk), onError: { _ in })

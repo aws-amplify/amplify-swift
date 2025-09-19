@@ -21,7 +21,8 @@ extension SignInChallengeState: CustomDebugDictionaryConvertible {
                 [
                     "error": error
                 ],
-                uniquingKeysWith: {$1})
+                uniquingKeysWith: {$1}
+            )
         default: additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]

@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Predictions.Convert.Request.Kind {
+public extension Predictions.Convert.Request.Kind {
     @_spi(PredictionsConvertRequestKind)
-    public struct Lift<
+    struct Lift<
         SpecificInput,
         GenericInput,
         SpecificOptions,

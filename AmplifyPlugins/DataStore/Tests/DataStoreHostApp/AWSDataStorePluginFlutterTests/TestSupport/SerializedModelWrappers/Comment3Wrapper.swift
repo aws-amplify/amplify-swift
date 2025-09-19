@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps: Comment3
  */
 
@@ -23,11 +23,11 @@ class Comment3Wrapper: NSCopying {
             "postID": postID,
             "content": content
         ]
-        self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+        self.model = try FlutterSerializedModel(id: id, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }
 
     init(id: String = UUID().uuidString, content: String, post: FlutterSerializedModel) throws {
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(["content": content, "team": post.toMap(modelSchema: Post3.schema)]))
+        self.model = try FlutterSerializedModel(id: UUID().uuidString, map: FlutterDataStoreRequestUtils.getJSONValue(["content": content, "team": post.toMap(modelSchema: Post3.schema)]))
     }
 
     init(model: FlutterSerializedModel) {
@@ -37,28 +37,28 @@ class Comment3Wrapper: NSCopying {
     init(json: String) throws {
         let data = Data(json.utf8)
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-        self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
+        self.model = try FlutterSerializedModel(id: map!["id"] as! String, map: FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
 
     func setPostId(postId: String) throws {
-        self.model.values["postID"] = JSONValue.string(postId)
+        model.values["postID"] = JSONValue.string(postId)
 
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func content() -> JSONValue? {
-        return self.model.values["content"]
+        return model.values["content"]
     }
 
     func postId() -> JSONValue? {
-        return self.model.values["postID"]
+        return model.values["postID"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
@@ -68,7 +68,7 @@ class Comment3Wrapper: NSCopying {
 }
 
 extension Comment3Wrapper: Equatable {
-    public static func == (lhs: Comment3Wrapper, rhs: Comment3Wrapper) -> Bool {
+    static func == (lhs: Comment3Wrapper, rhs: Comment3Wrapper) -> Bool {
         return lhs.idString() == rhs.idString()
             && lhs.postId() == rhs.postId()
             && lhs.content() == rhs.content()

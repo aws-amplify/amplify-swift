@@ -25,13 +25,13 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
         let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<SFSpeechRecognitionResult, Error>) in
             recognizer.recognitionTask(
                 with: request,
-                resultHandler: { (result, error) in
-                    if let error = error {
+                resultHandler: { result, error in
+                    if let error {
                         continuation.resume(with: .failure(error))
                         return
                     }
 
-                    guard let result = result else {
+                    guard let result else {
                         continuation.resume(with: .failure(
                             PredictionsError.client(
                                 .init(

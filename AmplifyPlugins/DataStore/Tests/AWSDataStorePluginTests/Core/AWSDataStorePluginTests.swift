@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AmplifyTestCommon
 @_implementationOnly import AmplifyAsyncTesting
+import AmplifyTestCommon
+import XCTest
 
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSDataStorePlugin
@@ -20,11 +20,13 @@ class AWSDataStorePluginTests: XCTestCase {
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return MockStorageEngineBehavior()
         }
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: DataStorePublisher(),
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: DataStorePublisher(),
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let config = AmplifyOutputsData()
         do {
@@ -43,11 +45,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         do {
             try plugin.configure(using: nil)
         } catch {
@@ -66,11 +70,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         do {
             try plugin.configure(using: nil)
             plugin.start(completion: {_ in})
@@ -90,11 +96,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         do {
             try plugin.configure(using: nil)
             let queryCompleted = expectation(description: "query completed")
@@ -132,11 +140,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         do {
             try plugin.configure(using: nil)
@@ -169,11 +179,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         do {
             try plugin.configure(using: nil)
@@ -205,11 +217,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let finishNotReceived = expectation(
             description: "publisher should not receive .finished completion event after stop() is called")
@@ -280,11 +294,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let finishNotReceived = expectation(
             description: "publisher should not receive .finished completion event after clear() is called")
@@ -358,11 +374,13 @@ class AWSDataStorePluginTests: XCTestCase {
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
         }
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let finishNotReceived = expectation(
             description: "publisher should not receive .finished completion event after clear() is called")
@@ -449,11 +467,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let finishNotReceived = expectation(
             description: "publisher should not receive .finished completion event after clear() is called")
@@ -495,9 +515,11 @@ class AWSDataStorePluginTests: XCTestCase {
             await fulfillment(of:  [clearCompleted], timeout: 1.0)
 
             let mockModel = MockSynced(id: "12345")
-            try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
-                                                                     modelSchema: mockModel.schema,
-                                                                     mutationType: .create))
+            try plugin.dataStorePublisher?.send(input: MutationEvent(
+                model: mockModel,
+                modelSchema: mockModel.schema,
+                mutationType: .create
+            ))
 
             await fulfillment(of: [
                 startExpectation,
@@ -533,11 +555,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let finishNotReceived = expectation(
             description: "publisher should not receive .finished completion event after stop() is called")
@@ -584,9 +608,11 @@ class AWSDataStorePluginTests: XCTestCase {
                 enforceOrder: true
             )
             let mockModel = MockSynced(id: "12345")
-            try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
-                                                                     modelSchema: mockModel.schema,
-                                                                     mutationType: .create))
+            try plugin.dataStorePublisher?.send(input: MutationEvent(
+                model: mockModel,
+                modelSchema: mockModel.schema,
+                mutationType: .create
+            ))
 
             await fulfillment(of: [publisherReceivedValue, finishNotReceived], timeout: 1)
             sink.cancel()
@@ -610,11 +636,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         plugin.clear {
             if case .success = $0 {
@@ -635,11 +663,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let startCompleted = expectation(description: "start completed")
         plugin.start(completion: {_ in
@@ -665,11 +695,13 @@ class AWSDataStorePluginTests: XCTestCase {
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
 
         let startCompleted = expectation(description: "start completed")
         plugin.start(completion: {_ in

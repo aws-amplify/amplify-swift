@@ -9,9 +9,9 @@ import Amplify
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
-extension AWSPinpointAnalyticsPlugin {
+public extension AWSPinpointAnalyticsPlugin {
     /// Resets the state of the plugin
-    public func reset() async {
+    func reset() async {
         if pinpoint != nil {
             pinpoint = nil
         }

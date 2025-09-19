@@ -38,15 +38,15 @@ public protocol Model: Codable {
     var identifier: String { get }
 }
 
-extension Model {
-    public var identifier: String {
+public extension Model {
+    var identifier: String {
         guard let schema = ModelRegistry.modelSchema(from: modelName) else {
             preconditionFailure("Schema not found for \(modelName).")
         }
         return identifier(schema: schema).stringValue
     }
 
-    public func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
+    func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
         // resolve current instance identifier fields
         let fields: ModelIdentifierProtocol.Fields = modelSchema.primaryKey.fields.map {
             guard let fieldValue = self[$0.name] else {
@@ -77,5 +77,5 @@ extension Model {
 
     /// The `rootPath` is set to `nil` by default. Specific models should override this
     /// behavior and provide the proper path reference when available.
-    public static var rootPath: PropertyContainerPath? { nil }
+    static var rootPath: PropertyContainerPath? { nil }
 }

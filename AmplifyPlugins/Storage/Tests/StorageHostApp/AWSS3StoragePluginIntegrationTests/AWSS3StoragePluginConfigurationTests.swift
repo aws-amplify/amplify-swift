@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
+import AWSS3StoragePlugin
 import XCTest
 @testable import Amplify
-import AWSS3StoragePlugin
-import AWSS3
+
 class AWSS3StoragePluginConfigurationTests: XCTestCase {
 
     /// Given: awss3StoragePlugin configuration with incorrect DefaultAccessLevel value

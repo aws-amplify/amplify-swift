@@ -11,20 +11,20 @@ import SmithyHTTPAPI
 extension SmithyHTTPAPI.HTTPResponse: Codable { }
 
 enum HTTPResponseCodingKeys: String, CodingKey {
-    case statusCode = "statusCode"
+    case statusCode
 }
 
-extension Encodable where Self: SmithyHTTPAPI.HTTPResponse {
+public extension Encodable where Self: SmithyHTTPAPI.HTTPResponse {
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: HTTPResponseCodingKeys.self)
         try container.encode(statusCode.rawValue, forKey: .statusCode)
     }
 }
 
-extension Decodable where Self: SmithyHTTPAPI.HTTPResponse {
+public extension Decodable where Self: SmithyHTTPAPI.HTTPResponse {
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
 
         let containerValues = try decoder.container(keyedBy: HTTPResponseCodingKeys.self)
         let httpStatusCode = try containerValues.decodeIfPresent(Int.self, forKey: .statusCode)
