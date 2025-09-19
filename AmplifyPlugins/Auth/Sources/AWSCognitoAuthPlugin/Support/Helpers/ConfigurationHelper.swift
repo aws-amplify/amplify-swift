@@ -91,7 +91,7 @@ struct ConfigurationHelper {
         let hostedUIConfig = parseHostedConfiguration(configuration: config)
 
         // parse `passwordProtectionSettings`
-        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings? = nil
+        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings?
         if let passwordPolicy = config.passwordPolicy {
             passwordProtectionSettings = .init(from: passwordPolicy)
         }
