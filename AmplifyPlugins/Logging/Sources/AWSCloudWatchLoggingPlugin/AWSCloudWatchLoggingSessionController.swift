@@ -189,7 +189,7 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func consumeLogBatch(_ batch: LogBatch) async throws {
         // Check if consumer exists before trying to use it
-        guard let consumer = consumer else {
+        guard let consumer else {
             // If consumer is nil, still mark the batch as completed to prevent memory leaks
             try batch.complete()
             return

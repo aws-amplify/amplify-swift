@@ -208,8 +208,8 @@ public final class FaceLivenessSession: LivenessService {
                     Amplify.log.verbose("\(#function): Received exception: \(exceptionEvent)")
                     guard exceptionEvent == .invalidSignature,
                           connectingState == .normal,
-                          let savedURLForReconnect = savedURLForReconnect,
-                          let serverDate = serverDate else {
+                          let savedURLForReconnect,
+                          let serverDate else {
                         onServiceException(.init(event: exceptionEvent))
                         return .stopAndInvalidateSession
                     }

@@ -188,13 +188,13 @@ extension GraphQLModelBasedTests {
     func list<M: Model>(_ request: GraphQLRequest<List<M>>) async throws -> [M] {
         func getAllPages(_ list: List<M>) async throws -> [M] {
             if list.hasNextPage() {
-                return try list.elements + (await getAllPages(list.getNextPage()))
+                return try await list.elements + getAllPages(list.getNextPage())
             } else {
                 return list.elements
             }
         }
 
-        return try await getAllPages(await Amplify.API.query(request: request).get())
+        return try await getAllPages(Amplify.API.query(request: request).get())
     }
 
 }

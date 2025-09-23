@@ -35,7 +35,7 @@ class CloudWatchLoggingConsumer {
         self.logGroupName = logGroupName
     }
 
-    private func safeEncode<T: Encodable>(_ value: T) throws -> Data {
+    private func safeEncode(_ value: some Encodable) throws -> Data {
         return try encoderLock.withLock {
             return try encoder.encode(value)
         }
@@ -125,7 +125,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         // Safety check - ensure we have a valid stream name before proceeding
-        guard let logStreamName = logStreamName, !logStreamName.isEmpty else {
+        guard let logStreamName, !logStreamName.isEmpty else {
             Amplify.Logging.error("Invalid log stream name")
             ensureLogStreamExistsComplete = true
             return
@@ -156,7 +156,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         // Safety check for logStreamName
-        guard let logStreamName = logStreamName, !logStreamName.isEmpty else {
+        guard let logStreamName, !logStreamName.isEmpty else {
             Amplify.Logging.error("Cannot send log events: Log stream name is nil or empty")
             return
         }

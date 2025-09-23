@@ -192,7 +192,7 @@ struct VerifySignInChallenge: Action {
                 message: "This code path only supports password and password SRP. Received: \(challenge.challenge)")
         }
 
-        guard let challengeType = challengeType else {
+        guard let challengeType else {
             throw SignInError.unknown(
                 message: "Unable to determine challenge type from \(String(describing: authFactorType))")
         }

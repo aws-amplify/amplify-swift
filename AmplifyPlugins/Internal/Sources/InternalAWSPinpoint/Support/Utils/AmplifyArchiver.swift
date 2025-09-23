@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AmplifyArchiverBehaviour {
-    func encode<T>(_ encodable: T) throws -> Data where T: Encodable
+    func encode(_ encodable: some Encodable) throws -> Data
     func decode<T>(_ decodable: T.Type, from data: Data) throws -> T? where T: Decodable
 }
 

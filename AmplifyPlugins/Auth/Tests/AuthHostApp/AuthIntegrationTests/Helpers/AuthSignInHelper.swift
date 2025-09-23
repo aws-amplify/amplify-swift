@@ -35,7 +35,7 @@ enum AuthSignInHelper {
 
             var userAttributes: [AuthUserAttribute] = []
 
-            if let email = email {
+            if let email {
                 userAttributes.append(AuthUserAttribute(.email, value: email))
             }
 

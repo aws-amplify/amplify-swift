@@ -24,7 +24,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }
@@ -50,7 +50,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }
@@ -76,7 +76,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }
@@ -104,7 +104,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }
@@ -151,7 +151,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }
@@ -203,7 +203,7 @@ class LivenessDecodingTests: XCTestCase {
 
         do {
             let data = jsonString.data(using: .utf8)
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Input JSON is invalid")
                 return
             }

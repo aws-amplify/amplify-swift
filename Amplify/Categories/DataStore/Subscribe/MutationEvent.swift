@@ -66,8 +66,8 @@ public struct MutationEvent: Model {
     Initializing from a model without a ModelSchema is deprecated.
     Use init(model:modelSchema:mutationType:version:graphQLFilterJSON:) instead.
     """)
-    public init<M: Model>(
-        model: M,
+    public init(
+        model: some Model,
         mutationType: MutationType,
         version: Int? = nil,
         graphQLFilterJSON: String? = nil
