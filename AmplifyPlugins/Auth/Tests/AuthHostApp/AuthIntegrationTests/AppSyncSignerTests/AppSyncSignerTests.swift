@@ -27,9 +27,9 @@ class AppSyncSignerTests: AWSAuthBaseTest {
             XCTFail("Missing headers")
             return
         }
-        XCTAssertEqual(headers.count, 4)
+        XCTAssertEqual(headers.count, 3)
         let containsExpectedHeaders = headers.keys.contains(where: { key in
-            key == "Authorization" || key == "Host" || key == "X-Amz-Security-Token" || key == "X-Amz-Date"
+            key == "Authorization" || key == "X-Amz-Security-Token" || key == "X-Amz-Date"
         })
         XCTAssertTrue(containsExpectedHeaders)
     }
