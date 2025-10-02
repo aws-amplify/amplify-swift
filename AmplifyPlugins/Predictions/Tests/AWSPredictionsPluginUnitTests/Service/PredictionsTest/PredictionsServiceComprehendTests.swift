@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSComprehend
 import Amplify
+import AWSComprehend
+import XCTest
 @testable import AWSPredictionsPlugin
 
 class PredictionsServiceComprehendTests: XCTestCase {
@@ -21,7 +21,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
             "defaultRegion": "us_east_1"
         }
         """
-        
+
         do {
             let mockConfiguration = try JSONDecoder().decode(
                 PredictionsPluginConfiguration.self,

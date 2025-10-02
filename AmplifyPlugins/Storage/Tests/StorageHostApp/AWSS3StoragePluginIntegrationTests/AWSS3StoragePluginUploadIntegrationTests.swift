@@ -8,8 +8,8 @@
 @testable import Amplify
 
 import AWSS3StoragePlugin
-import SmithyHTTPAPI
 import CryptoKit
+import SmithyHTTPAPI
 import XCTest
 
 class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
@@ -69,7 +69,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method } , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method }, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -107,7 +107,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
 
         // Only the remove operation results in an SDK request
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [.delete])
+        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method}, [.delete])
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, ["PUT"])
@@ -139,9 +139,11 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "public/" + UUID().uuidString
 
         await wait(timeout: 60) {
-            let uploadKey = try await Amplify.Storage.uploadData(path: .fromString(key),
-                                                                 data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                                 options: nil).value
+            let uploadKey = try await Amplify.Storage.uploadData(
+                path: .fromString(key),
+                data: AWSS3StoragePluginTestBase.largeDataObject,
+                options: nil
+            ).value
             XCTAssertEqual(uploadKey, key)
         }
 
@@ -163,9 +165,11 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        FileManager.default.createFile(atPath: filePath,
-                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
-                                       attributes: nil)
+        FileManager.default.createFile(
+            atPath: filePath,
+            contents: AWSS3StoragePluginTestBase.largeDataObject,
+            attributes: nil
+        )
 
         await wait(timeout: 60) {
             _ = try await Amplify.Storage.uploadFile(path: .fromString("public/\(key)"), local: fileURL, options: nil).value
@@ -194,7 +198,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
     private func assertUserAgentComponents(sdkRequests: [HTTPRequest], file: StaticString = #filePath, line: UInt = #line) throws {
         for request in sdkRequests {
             let headers = request.headers.dictionary
-            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator:","))
+            let userAgent = try XCTUnwrap(headers["User-Agent"]?.joined(separator: ","))
             for component in SdkUserAgentComponent.allCases {
                 XCTAssertTrue(userAgent.contains(component.rawValue), "\(userAgent.description) does not contain \(component)", file: file, line: line)
             }

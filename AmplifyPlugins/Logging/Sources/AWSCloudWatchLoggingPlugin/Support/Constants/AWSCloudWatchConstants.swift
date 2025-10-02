@@ -8,7 +8,7 @@
 import Foundation
 
 /// Defines AWS CloudWatch SDK constants
-struct AWSCloudWatchConstants {
+enum AWSCloudWatchConstants {
 
     /// the max byte size of log events that can be sent is 1 MB
     static let maxBatchByteSize: Int64 = 1_000_000

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSS3
 import AWSClientRuntime
+import AWSS3
 import ClientRuntime
 import Foundation
 import XCTest
@@ -71,7 +71,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
             forcePathStyle: .random(),
             useArnRegion: .random(),
             disableMultiRegionAccessPoints: .random(),
-            accelerate: accelerate, 
+            accelerate: accelerate,
             useGlobalEndpoint: .random(),
             endpoint: UUID().uuidString
         )

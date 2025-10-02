@@ -68,8 +68,10 @@ class ConfigurationTests: XCTestCase {
     func testMultipleConfigureCallsThrowError() throws {
         let amplifyConfig = AmplifyConfiguration()
         try Amplify.configure(amplifyConfig)
-        XCTAssertThrowsError(try Amplify.configure(amplifyConfig),
-                             "Subsequent calls to configure should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.configure(amplifyConfig),
+            "Subsequent calls to configure should throw"
+        ) { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured error")
                 return
@@ -90,8 +92,10 @@ class ConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
-                             "Plugins should be reset") { error in
+        XCTAssertThrowsError(
+            try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
+            "Plugins should be reset"
+        ) { error in
                                 guard case LoggingError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin error")
                                     return

@@ -16,20 +16,26 @@ public struct Meeting8V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      attendees: List<Registration8V2>? = []) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    attendees: List<Registration8V2>? = []
+  ) {
+    self.init(
+      id: id,
       title: title,
       attendees: attendees,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      title: String,
-      attendees: List<Registration8V2>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    attendees: List<Registration8V2>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.attendees = attendees

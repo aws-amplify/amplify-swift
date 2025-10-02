@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Combine
 import AWSAPIPlugin
+import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
@@ -79,11 +79,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
     }
-    
+
     func stopDataStore() async throws {
         try await Amplify.DataStore.stop()
     }
-    
+
     func clearDataStore() async throws {
         try await Amplify.DataStore.clear()
     }
@@ -125,5 +125,5 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         await fulfillment(of: [eventReceived], timeout: 10)
     }
-    
+
 }

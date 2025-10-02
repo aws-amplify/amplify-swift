@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 class PasswordlessSignUpTests: AWSAuthBaseTest {
 
@@ -31,7 +31,7 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
-    
+
     /// Test if user registration is successful.
     ///
     /// - Given: A username that is not present in the system
@@ -43,8 +43,8 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
     func testSuccessfulPasswordlessRegisterUser() async throws {
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
         guard case .confirmUser = signUpResult.nextStep else {
@@ -53,7 +53,7 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
         }
         XCTAssertFalse(signUpResult.isSignUpComplete)
     }
-    
+
     /// Test if multiple user registration is successful.
     ///
     /// - Given: Usernames that are not present in the system
@@ -67,14 +67,14 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "Next step should be .confirmUser")
         signUpExpectation.expectedFulfillmentCount = 2
 
-        for _ in 0..<signUpExpectation.expectedFulfillmentCount {
+        for _ in 0 ..< signUpExpectation.expectedFulfillmentCount {
 
             Task {
                 do {
                     let username = "integTest\(UUID().uuidString)"
                     let options = AuthSignUpRequest.Options(
-                        userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-                    
+                        userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
                     // sign up
                     let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
                     guard case .confirmUser = signUpResult.nextStep else {
@@ -90,7 +90,7 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
         }
         await fulfillment(of: [signUpExpectation], timeout: 5, enforceOrder: false)
     }
-    
+
     /// Test for failure when invalid username is given
     ///
     /// - Given: An invalid input to signUp like empty username
@@ -102,11 +102,11 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
     func testFailureRegisterUserEmptyUsername() async throws {
         let username = ""
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         do {
-            let _ = try await Amplify.Auth.signUp(username: username, options: options)
+            _ = try await Amplify.Auth.signUp(username: username, options: options)
             XCTFail("Sign up should not be successfult")
         } catch (let error) {
             XCTAssertNotNil(error)
@@ -116,7 +116,7 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
             }
         }
     }
-    
+
     /// Test if registering an already existing user gives `.usernameExists` error
     ///
     /// - Given: An already registered user
@@ -128,8 +128,8 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
     func testFailureRegisterExistingUser()  async throws {
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
         guard case .confirmUser = signUpResult.nextStep else {
@@ -139,10 +139,10 @@ class PasswordlessSignUpTests: AWSAuthBaseTest {
 
         // sign up again
         do {
-            let _ = try await Amplify.Auth.signUp(username: username, options: options)
+            _ = try await Amplify.Auth.signUp(username: username, options: options)
             XCTFail("SignUp with an already registered user should not succeed")
         } catch {
-            guard 
+            guard
                 let authError = error as? AuthError,
                 let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
                 case .usernameExists = cognitoError else {

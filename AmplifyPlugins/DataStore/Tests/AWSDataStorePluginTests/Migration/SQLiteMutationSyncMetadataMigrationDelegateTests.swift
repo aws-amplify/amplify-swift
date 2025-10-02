@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -19,8 +19,10 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
 
     func testClearSuccess() throws {
         try setUpAllModels()
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         try delegate.emptyMutationSyncMetadataStore()
         try delegate.emptyModelSyncMetadataStore()
     }
@@ -36,8 +38,10 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         }
         XCTAssertEqual(mutationSyncMetadatas.count, 1)
 
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         let sql = try delegate.emptyMutationSyncMetadataStore()
         XCTAssertEqual(sql, "delete from \"MutationSyncMetadata\" as root")
         guard let mutationSyncMetadatas = queryMutationSyncMetadata() else {
@@ -58,8 +62,10 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         }
         XCTAssertEqual(modelSyncMetadatas.count, 1)
 
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         let sql = try delegate.emptyModelSyncMetadataStore()
         XCTAssertEqual(sql, "delete from \"ModelSyncMetadata\" as root")
         guard let modelSyncMetadatasDeleted = queryModelSyncMetadata() else {
@@ -84,8 +90,10 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         XCTAssertEqual(mutationSyncMetadatas.count, 1)
         XCTAssertEqual(mutationSyncMetadatas[0].id, restaurant.id)
 
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
 
         try delegate.removeMutationSyncMetadataCopyStore()
         try delegate.createMutationSyncMetadataCopyStore()
@@ -103,7 +111,8 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
 
         guard let restaurantMetadata = try storageAdapter.queryMutationSyncMetadata(
             for: restaurant.id,
-               modelName: Restaurant.modelName) else {
+            modelName: Restaurant.modelName
+        ) else {
                    XCTFail("Could not get metadata")
                    return
         }
@@ -113,8 +122,10 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
 
     /// Ensure creating and dropping the MutationSyncMetadataCopy works as expected
     func testDropMutationSyncMetadataCopyIfExists() throws {
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         try delegate.removeMutationSyncMetadataCopyStore()
 
         // Dropping the table without the table in the database is successful

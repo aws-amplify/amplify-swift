@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct HostedUIProviderInfo: Equatable {
 
@@ -24,8 +24,8 @@ extension HostedUIProviderInfo: Codable {
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        idpIdentifier = try values.decodeIfPresent(String.self, forKey: .idpIdentifier)
-        authProvider = nil
+        self.idpIdentifier = try values.decodeIfPresent(String.self, forKey: .idpIdentifier)
+        self.authProvider = nil
     }
 
     func encode(to encoder: Encoder) throws {

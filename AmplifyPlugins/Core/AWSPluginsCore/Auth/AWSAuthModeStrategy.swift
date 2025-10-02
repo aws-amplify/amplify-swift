@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import Combine
 import Amplify
+import Combine
+import Foundation
 
 /// Represents different auth strategies supported by a client
 /// interfacing with an AppSync backend
@@ -56,7 +56,7 @@ public protocol AuthorizationTypeIterator {
 
     /// Total number of values
     var count: Int { get }
-    
+
     /// Whether iterator has next available `AuthorizationType` to return or not
     var hasNext: Bool { get }
 
@@ -85,7 +85,7 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator, Sequence,
     public var count: Int {
         _count
     }
-    
+
     public var hasNext: Bool {
         _position < _count
     }
@@ -95,7 +95,7 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator, Sequence,
             _position += 1
             return value
         }
-        
+
         return nil
     }
 }
@@ -108,15 +108,19 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator, Sequence,
 /// registered as interceptor for the API
 public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
     public weak var authDelegate: AuthModeStrategyDelegate?
-    required public init() {}
+    public required init() {}
 
-    public func authTypesFor(schema: ModelSchema,
-                             operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operation: ModelOperation
+    ) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [.inferred])
     }
 
-    public func authTypesFor(schema: ModelSchema,
-                             operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operations: [ModelOperation]
+    ) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [.inferred])
     }
 }
@@ -129,7 +133,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
 
     private typealias AuthPriority = Int
 
-    required public init() {}
+    public required init() {}
 
     private static func defaultAuthTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
         switch authStrategy {
@@ -210,8 +214,10 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     ///   - schema: model schema
     ///   - operation: model operation
     /// - Returns: an iterator for the applicable auth rules
-    public func authTypesFor(schema: ModelSchema,
-                             operation: ModelOperation) async -> AWSAuthorizationTypeIterator {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operation: ModelOperation
+    ) async -> AWSAuthorizationTypeIterator {
         return await authTypesFor(schema: schema, operations: [operation])
     }
 
@@ -220,19 +226,21 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     ///   - schema: model schema
     ///   - operations: model operations
     /// - Returns: an iterator for the applicable auth rules
-    public func authTypesFor(schema: ModelSchema,
-                             operations: [ModelOperation]) async -> AWSAuthorizationTypeIterator {
+    public func authTypesFor(
+        schema: ModelSchema,
+        operations: [ModelOperation]
+    ) async -> AWSAuthorizationTypeIterator {
         var sortedRules = operations
             .flatMap { schema.authRules.filter(modelOperation: $0) }
-            .reduce(into: [AuthRule](), { array, rule in
+            .reduce(into: [AuthRule]()) { array, rule in
                 if !array.contains(rule) {
                     array.append(rule)
                 }
-            })
+            }
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
 
         // if there isn't a user signed in, returns only public or custom rules
-        if let authDelegate = authDelegate, await !authDelegate.isUserLoggedIn() {
+        if let authDelegate, await !authDelegate.isUserLoggedIn() {
             sortedRules = sortedRules.filter { rule in
                 return rule.allow == .public || rule.allow == .custom
             }

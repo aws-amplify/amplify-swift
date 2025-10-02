@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension PredictionsError {
-    public struct ClientError: Equatable {
+public extension PredictionsError {
+    struct ClientError: Equatable {
         public static func == (lhs: PredictionsError.ClientError, rhs: PredictionsError.ClientError) -> Bool {
             lhs.description == rhs.description
             && lhs.recoverySuggestion == rhs.recoverySuggestion

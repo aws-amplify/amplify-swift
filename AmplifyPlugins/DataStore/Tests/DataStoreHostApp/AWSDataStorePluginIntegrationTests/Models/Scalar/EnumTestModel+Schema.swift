@@ -9,9 +9,9 @@
 import Amplify
 import Foundation
 
-extension EnumTestModel {
+public extension EnumTestModel {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case enumVal
     case nullableEnumVal
@@ -21,10 +21,10 @@ extension EnumTestModel {
     case nullableEnumNullableList
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let enumTestModel = EnumTestModel.keys
 
     model.listPluralName = "EnumTestModels"

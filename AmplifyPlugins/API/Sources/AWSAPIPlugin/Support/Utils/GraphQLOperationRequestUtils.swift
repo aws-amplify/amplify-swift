@@ -12,7 +12,7 @@ class GraphQLOperationRequestUtils {
     // Get the graphQL request payload from the query document and variables
     static func getQueryDocument(document: String, variables: [String: Any]?) -> [String: Any] {
         var queryDocument = ["query": document] as [String: Any]
-        if let variables = variables {
+        if let variables {
             queryDocument["variables"] = variables
         }
 

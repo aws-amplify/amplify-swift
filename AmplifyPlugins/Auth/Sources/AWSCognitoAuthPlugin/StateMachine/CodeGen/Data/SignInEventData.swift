@@ -18,10 +18,10 @@ struct SignInEventData {
     let clientMetadata: [String: String]
 
     let signInMethod: SignInMethod
-    
+
     let session: String?
 
-    private(set) var presentationAnchor: AuthUIPresentationAnchor? = nil
+    private(set) var presentationAnchor: AuthUIPresentationAnchor?
 
     init(
         username: String?,

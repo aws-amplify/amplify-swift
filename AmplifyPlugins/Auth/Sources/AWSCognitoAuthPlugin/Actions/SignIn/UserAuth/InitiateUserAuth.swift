@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateUserAuth: Action {
     let identifier = "InitiateUserAuth"
@@ -15,14 +15,18 @@ struct InitiateUserAuth: Action {
     let signInEventData: SignInEventData
     let deviceMetadata: DeviceMetadata
 
-    init(signInEventData: SignInEventData,
-         deviceMetadata: DeviceMetadata) {
+    init(
+        signInEventData: SignInEventData,
+        deviceMetadata: DeviceMetadata
+    ) {
         self.signInEventData = signInEventData
         self.deviceMetadata = deviceMetadata
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
             let authEnv = try environment.authEnvironment()
@@ -46,7 +50,8 @@ struct InitiateUserAuth: Action {
                     authFactor: authFactor,
                     password: signInEventData.password,
                     username: username,
-                    environment: environment)
+                    environment: environment
+                )
                 preferredChallengeAuthParams = try preferredChallengeHelper.toCognitoAuthParameters()
                 srpStateData = preferredChallengeHelper.srpStateData
             } else {
@@ -57,14 +62,16 @@ struct InitiateUserAuth: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
             let request = await InitiateAuthInput.userAuth(
                 username: username,
                 preferredChallengeAuthParams: preferredChallengeAuthParams,
                 clientMetadata: signInEventData.clientMetadata,
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
+                environment: userPoolEnv
+            )
 
             let cognitoClient = try userPoolEnv.cognitoUserPoolFactory()
             logVerbose("\(#fileID) Starting execution", environment: environment)

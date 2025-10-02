@@ -14,8 +14,10 @@ final class MutationEventSubscription: Subscription {
     let subscriber: MutationEventSubscriber
     private weak var publisher: AWSMutationEventPublisher?
 
-    init<S>(subscriber: S,
-            publisher: AWSMutationEventPublisher) where S: Subscriber,
+    init<S>(
+        subscriber: S,
+        publisher: AWSMutationEventPublisher
+    ) where S: Subscriber,
         S.Failure == DataStoreError,
         S.Input == MutationEvent {
             self.subscriber = MutationEventSubscriber(subscriber: subscriber)
@@ -33,10 +35,10 @@ final class MutationEventSubscription: Subscription {
 }
 
 extension MutationEventSubscription: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import ArgumentParser
 import AmplifyXcodeCore
+import ArgumentParser
+import Foundation
 
 /// CLI command invoking `CommandImportConfig`.
 struct CLICommandImportConfig: ParsableCommand, CommandExecutable, CLICommandReportable, CLICommand {

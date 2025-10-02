@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSClientRuntime
 import ClientRuntime
+import Foundation
 import SmithyHTTPAPI
 
 public typealias NetworkResult = (Result<HTTPResponse, Error>) -> Void

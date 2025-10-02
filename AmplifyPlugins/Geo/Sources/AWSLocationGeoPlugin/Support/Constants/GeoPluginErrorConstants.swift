@@ -5,21 +5,24 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-struct GeoPluginErrorConstants {
+enum GeoPluginErrorConstants {
     static let missingDefaultSearchIndex: GeoPluginErrorString = (
         "No default search index was found.",
-        "Please ensure you have added search to your project before calling search functions.")
+        "Please ensure you have added search to your project before calling search functions."
+    )
 
     static let missingDefaultMap: GeoPluginErrorString = (
         "No default map was found.",
-        "Please ensure you have added maps to your project before calling map-related functions.")
+        "Please ensure you have added maps to your project before calling map-related functions."
+    )
 
     static let missingMaps: GeoPluginErrorString = (
         "No maps are available.",
-        "Please ensure you have added maps to your project before calling map-related functions.")
+        "Please ensure you have added maps to your project before calling map-related functions."
+    )
 }
 
 // Recovery Messages

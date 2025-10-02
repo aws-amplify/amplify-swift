@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct InternalDatastoreConfiguration {
 
@@ -32,7 +32,7 @@ struct InternalDatastoreConfiguration {
     let pluginConfiguration: DataStoreConfiguration
 
     mutating func updateIsSyncEnabled(_ isEnabled: Bool) {
-        self.isSyncEnabled = isEnabled
+        isSyncEnabled = isEnabled
     }
 
     mutating func updateIsEagerLoad(modelSchema: ModelSchema) {

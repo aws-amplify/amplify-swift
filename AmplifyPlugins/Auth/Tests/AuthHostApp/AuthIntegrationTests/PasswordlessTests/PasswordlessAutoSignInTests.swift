@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 class PasswordlessAutoSignInTests: AWSAuthBaseTest {
 
@@ -31,7 +31,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
-    
+
     /// Test for failure when auto sign in is done without sign up
     ///
     /// - Given: An initialized Amplify backend with auth plugin in `.signedOut` state
@@ -43,7 +43,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
     func testFailureAutoSignInWithoutSignUp() async throws {
         // auto sign in
         do {
-            let _ = try await Amplify.Auth.autoSignIn()
+            _ = try await Amplify.Auth.autoSignIn()
             XCTFail("Auto sign in should not succeed")
         } catch (let error) {
             XCTAssertNotNil(error)
@@ -53,7 +53,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
             }
         }
     }
-    
+
     /// Test successful sign up, confirm sign up and auto sign of a user
     ///
     /// - Given: A Cognito user pool configured with passwordless user auth
@@ -69,8 +69,8 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
         guard case .confirmUser = signUpResult.nextStep else {
@@ -87,7 +87,8 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
 
         // confirm sign up
         let confirmSignUpResult = try await Amplify.Auth.confirmSignUp(
-            for: username, confirmationCode: otp)
+            for: username, confirmationCode: otp
+        )
         guard case .completeAutoSignIn(let session) = confirmSignUpResult.nextStep else {
             XCTFail("Result should be .done for next step")
             return
@@ -103,7 +104,7 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
         }
         XCTAssertTrue(autoSignInResult.isSignedIn, "Signin result should be complete")
     }
-    
+
     /// Test for failure when auto sign in is invoked multiple times
     ///
     /// - Given: An initialized Amplify backend with auth plugin in `.signedOut` state
@@ -113,13 +114,13 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
     ///    - I should get a `.notAuthorized` error
     ///
     func testFailureMultipleAutoSignInWithSameSession() async throws {
-        
+
         await subscribeToOTPCreation()
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
         guard case .confirmUser = signUpResult.nextStep else {
@@ -136,7 +137,8 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
 
         // confirm sign up
         let confirmSignUpResult = try await Amplify.Auth.confirmSignUp(
-            for: username, confirmationCode: otp)
+            for: username, confirmationCode: otp
+        )
         guard case .completeAutoSignIn(let session) = confirmSignUpResult.nextStep else {
             XCTFail("Result should be .done for next step")
             return
@@ -151,13 +153,13 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
             return
         }
         XCTAssertTrue(autoSignInResult.isSignedIn, "Signin result should be complete")
-        
+
         // sign out
-        let _ = await Amplify.Auth.signOut(options: .init(globalSignOut: true))
-        
+        _ = await Amplify.Auth.signOut(options: .init(globalSignOut: true))
+
         // auto sign in again using the same session
         do {
-            let _ = try await Amplify.Auth.autoSignIn()
+            _ = try await Amplify.Auth.autoSignIn()
             XCTFail("Multiple auto sign in with same session should not succeed")
         } catch (let error) {
             XCTAssertNotNil(error)
@@ -166,6 +168,6 @@ class PasswordlessAutoSignInTests: AWSAuthBaseTest {
                 return
             }
         }
-        
+
     }
 }

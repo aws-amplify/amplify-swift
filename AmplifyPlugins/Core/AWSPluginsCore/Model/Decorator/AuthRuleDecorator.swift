@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public typealias IdentityClaimsDictionary = [String: AnyObject]
 
@@ -37,19 +37,25 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     ///   - authRuleDecoratorInput: decorator input
     ///   - authType: authentication type, if provided will be used to filter the auth rules based on the provider field.
     ///               Only use when multi-auth is enabled.
-    public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput,
-                authType: AWSAuthorizationType? = nil) {
+    public init(
+        _ authRuleDecoratorInput: AuthRuleDecoratorInput,
+        authType: AWSAuthorizationType? = nil
+    ) {
         self.input = authRuleDecoratorInput
         self.authType = authType
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         let authRules = modelSchema.authRules
                     .filterBy(authType: authType)
                     .filterBy(ownerFieldType: .string, modelSchema: modelSchema)
@@ -59,19 +65,24 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         var decorateDocument = document
 
         let readRestrictingStaticGroups = authRules.groupClaimsToReadRestrictingStaticGroups()
-        authRules.forEach { authRule in
-            decorateDocument = decorateAuthStrategy(document: decorateDocument,
-                                                    authRule: authRule,
-                                                    readRestrictingStaticGroups: readRestrictingStaticGroups)
+        for authRule in authRules {
+            decorateDocument = decorateAuthStrategy(
+                document: decorateDocument,
+                authRule: authRule,
+                readRestrictingStaticGroups: readRestrictingStaticGroups
+            )
         }
         return decorateDocument
     }
 
-    private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
-                                      authRule: AuthRule,
-                                      readRestrictingStaticGroups: [String: Set<String>]) -> SingleDirectiveGraphQLDocument {
+    private func decorateAuthStrategy(
+        document: SingleDirectiveGraphQLDocument,
+        authRule: AuthRule,
+        readRestrictingStaticGroups: [String: Set<String>]
+    ) -> SingleDirectiveGraphQLDocument {
         guard authRule.allow == .owner,
-            var selectionSet = document.selectionSet else {
+            var selectionSet = document.selectionSet
+        else {
             return document
         }
 
@@ -81,12 +92,16 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         if case let .subscription(_, claims) = input,
            let tokenClaims = claims,
             authRule.isReadRestrictingOwner() &&
-                isNotInReadRestrictingStaticGroup(jwtTokenClaims: tokenClaims,
-                                                  readRestrictingStaticGroups: readRestrictingStaticGroups) {
+                isNotInReadRestrictingStaticGroup(
+                    jwtTokenClaims: tokenClaims,
+                    readRestrictingStaticGroups: readRestrictingStaticGroups
+                ) {
             var inputs = document.inputs
-            let identityClaimValue = resolveIdentityClaimValue(identityClaim: authRule.identityClaimOrDefault(),
-                                                               claims: tokenClaims)
-            if let identityClaimValue = identityClaimValue {
+            let identityClaimValue = resolveIdentityClaimValue(
+                identityClaim: authRule.identityClaimOrDefault(),
+                claims: tokenClaims
+            )
+            if let identityClaimValue {
                 inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(identityClaimValue))
             }
             return document.copy(inputs: inputs, selectionSet: selectionSet)
@@ -106,8 +121,10 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
-    private func isNotInReadRestrictingStaticGroup(jwtTokenClaims: IdentityClaimsDictionary,
-                                                   readRestrictingStaticGroups: [String: Set<String>]) -> Bool {
+    private func isNotInReadRestrictingStaticGroup(
+        jwtTokenClaims: IdentityClaimsDictionary,
+        readRestrictingStaticGroups: [String: Set<String>]
+    ) -> Bool {
         for (groupClaim, readRestrictingStaticGroupsPerClaim) in readRestrictingStaticGroups {
             let groupsFromClaim = groupsFrom(jwtTokenClaims: jwtTokenClaims, groupClaim: groupClaim)
             let doesNotBelongToGroupsFromClaim = readRestrictingStaticGroupsPerClaim.isEmpty ||
@@ -121,8 +138,10 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return true
     }
 
-    private func groupsFrom(jwtTokenClaims: IdentityClaimsDictionary,
-                            groupClaim: String) -> Set<String> {
+    private func groupsFrom(
+        jwtTokenClaims: IdentityClaimsDictionary,
+        groupClaim: String
+    ) -> Set<String> {
         var groupSet = Set<String>()
         if let groups = (jwtTokenClaims[groupClaim] as? NSArray) as Array? {
             for group in groups {
@@ -146,11 +165,13 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
-    private func appendOwnerFieldToSelectionSetIfNeeded(selectionSet: SelectionSet,
-                                                        ownerField: String) -> SelectionSet {
+    private func appendOwnerFieldToSelectionSetIfNeeded(
+        selectionSet: SelectionSet,
+        ownerField: String
+    ) -> SelectionSet {
         var selectionSetModel = selectionSet
         while selectionSetModel.value.fieldType != .model {
-            selectionSetModel.children.forEach { selectionSet in
+            for selectionSet in selectionSetModel.children {
                 if selectionSet.value.fieldType == .model {
                     selectionSetModel = selectionSet
                 }
@@ -158,7 +179,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
         }
 
-        let containersOwnerField =  selectionSetModel.children.contains { (field) -> Bool in
+        let containersOwnerField =  selectionSetModel.children.contains { field -> Bool in
             if let fieldName = field.value.name, fieldName == ownerField {
                 return true
             }
@@ -175,7 +196,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
 private extension AuthRule {
     func ownerField(inSchema schema: ModelSchema) -> ModelField? {
-        guard let fieldName = self.ownerField else {
+        guard let fieldName = ownerField else {
             return nil
         }
         return schema.field(withName: fieldName)
@@ -184,7 +205,7 @@ private extension AuthRule {
 
 private extension AuthRules {
     func filterBy(authType: AWSAuthorizationType?) -> AuthRules {
-        guard let authType = authType else {
+        guard let authType else {
             return self
         }
 
@@ -199,8 +220,10 @@ private extension AuthRules {
         }
     }
 
-    func filterBy(ownerFieldType: ModelFieldType,
-                  modelSchema: ModelSchema) -> AuthRules {
+    func filterBy(
+        ownerFieldType: ModelFieldType,
+        modelSchema: ModelSchema
+    ) -> AuthRules {
         return filter {
             guard let modelField = $0.ownerField(inSchema: modelSchema) else {
                 // if we couldn't find the owner field means it has been implicitly

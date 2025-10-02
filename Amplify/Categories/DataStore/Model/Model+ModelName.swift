@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Model {
+public extension Model {
 
-    public static var modelName: String {
+    static var modelName: String {
         return String(describing: self)
     }
 
-    public var modelName: String {
+    var modelName: String {
         return type(of: self).modelName
     }
 }

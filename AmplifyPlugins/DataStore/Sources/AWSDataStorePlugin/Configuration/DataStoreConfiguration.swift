@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 /// Error Handler function typealias
 public typealias DataStoreErrorHandler = (AmplifyError) -> Void
@@ -73,14 +73,16 @@ public struct DataStoreConfiguration {
     public let disableSubscriptions: () -> Bool
 
     #if os(watchOS)
-    init(errorHandler: @escaping DataStoreErrorHandler,
-         conflictHandler: @escaping DataStoreConflictHandler,
-         syncInterval: TimeInterval,
-         syncMaxRecords: UInt,
-         syncPageSize: UInt,
-         syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default,
-         disableSubscriptions: @escaping () -> Bool) {
+    init(
+        errorHandler: @escaping DataStoreErrorHandler,
+        conflictHandler: @escaping DataStoreConflictHandler,
+        syncInterval: TimeInterval,
+        syncMaxRecords: UInt,
+        syncPageSize: UInt,
+        syncExpressions: [DataStoreSyncExpression],
+        authModeStrategy: AuthModeStrategyType = .default,
+        disableSubscriptions: @escaping () -> Bool
+    ) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
@@ -91,13 +93,15 @@ public struct DataStoreConfiguration {
         self.disableSubscriptions = disableSubscriptions
     }
     #else
-    init(errorHandler: @escaping DataStoreErrorHandler,
-         conflictHandler: @escaping DataStoreConflictHandler,
-         syncInterval: TimeInterval,
-         syncMaxRecords: UInt,
-         syncPageSize: UInt,
-         syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default) {
+    init(
+        errorHandler: @escaping DataStoreErrorHandler,
+        conflictHandler: @escaping DataStoreConflictHandler,
+        syncInterval: TimeInterval,
+        syncMaxRecords: UInt,
+        syncPageSize: UInt,
+        syncExpressions: [DataStoreSyncExpression],
+        authModeStrategy: AuthModeStrategyType = .default
+    ) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import CryptoKit
 import AmplifyBigInteger
+import CryptoKit
+import Foundation
 
 // swiftlint:disable identifier_name
 public struct SRPCommonState {

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 struct ASFDeviceInfo: ASFDeviceBehavior {
 
@@ -33,9 +33,13 @@ struct ASFDeviceInfo: ASFDeviceBehavior {
             await MainActor.run {
                 var systemInfo = utsname()
                 uname(&systemInfo)
-                return String(bytes: Data(bytes: &systemInfo.machine,
-                                          count: Int(_SYS_NAMELEN)),
-                              encoding: .utf8) ?? DeviceInfo.current.hostName
+                return String(
+                    bytes: Data(
+                        bytes: &systemInfo.machine,
+                        count: Int(_SYS_NAMELEN)
+                    ),
+                    encoding: .utf8
+                ) ?? DeviceInfo.current.hostName
             }
         }
     }
@@ -77,9 +81,9 @@ struct ASFDeviceInfo: ASFDeviceBehavior {
     }
 
     func deviceInfo() async -> String {
-        let model = await self.model
-        let type = await self.type
-        let version = await self.version
+        let model = await model
+        let type = await type
+        let version = await version
         var build = "release"
 #if DEBUG
         build = "debug"

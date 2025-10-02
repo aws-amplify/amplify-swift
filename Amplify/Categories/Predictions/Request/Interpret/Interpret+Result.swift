@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Interpret {
-    public struct Result {
+public extension Predictions.Interpret {
+    struct Result {
         public let keyPhrases: [Predictions.KeyPhrase]?
         public let sentiment: Predictions.Sentiment?
         public let entities: [Predictions.Entity.DetectionResult]?

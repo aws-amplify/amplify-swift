@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 @_spi(PredictionsFaceLiveness)
 public final class FaceLivenessSession: LivenessService {
@@ -21,15 +21,16 @@ public final class FaceLivenessSession: LivenessService {
     var serverDate: Date?
     var savedURLForReconnect: URL?
     var connectingState: ConnectingState = .normal
-    
+
     enum ConnectingState {
         case normal
         case reconnect
     }
-    
+
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
-        qos: .userInteractive)
+        qos: .userInteractive
+    )
 
     init(
         websocket: WebSocketSession,
@@ -50,7 +51,7 @@ public final class FaceLivenessSession: LivenessService {
         websocket.onSocketClosed { [weak self] closeCode in
             self?.onComplete(.unexpectedClosure(closeCode))
         }
-        
+
         websocket.onServerDateReceived { [weak self] serverDate in
             self?.serverDate = serverDate
         }
@@ -70,7 +71,7 @@ public final class FaceLivenessSession: LivenessService {
     ) {
         serverEventListeners[event] = listener
     }
-    
+
     public func register(listener: @escaping (Challenge) -> Void, on event: LivenessEventKind.Server) {
         challengeTypeListeners[event] = listener
     }
@@ -81,17 +82,22 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
-    public func initializeLivenessStream(withSessionID sessionID: String, 
+    public func initializeLivenessStream(
+        withSessionID sessionID: String,
+
                                          userAgent: String = "",
-                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
-                                         options: FaceLivenessSession.Options) throws {
+        challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
+        options: FaceLivenessSession.Options
+    ) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
-            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
+            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1" : "0"),
             URLQueryItem(name: "attempt-count", value: String(options.attemptCount)),
-            URLQueryItem(name: "challenge-versions",
-                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
+            URLQueryItem(
+                name: "challenge-versions",
+                value: challenges.map {$0.queryParameterString()}.joined(separator: ",")
+            ),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)
@@ -107,8 +113,8 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
-    public func send<T>(
-        _ event: LivenessEvent<T>,
+    public func send(
+        _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date = Date.init
     ) {
         livenessServiceDispatchQueue.async {
@@ -154,10 +160,10 @@ public final class FaceLivenessSession: LivenessService {
         // We'll try to decode each of these events
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
-            self.serverEventListeners[.challenge]?(sessionConfiguration)
+            serverEventListeners[.challenge]?(sessionConfiguration)
         } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
             let challenge = challenge(from: payload)
-            self.challengeTypeListeners[.challenge]?(challenge)
+            challengeTypeListeners[.challenge]?(challenge)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return .stopAndInvalidateSession
@@ -169,7 +175,7 @@ public final class FaceLivenessSession: LivenessService {
         switch result {
         case .success(.data(let data)):
             do {
-                let message = try self.eventStreamDecoder.decode(data: data)
+                let message = try eventStreamDecoder.decode(data: data)
 
                 if let eventType = message.headers.first(where: { $0.name == ":event-type" }) {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
@@ -202,12 +208,12 @@ public final class FaceLivenessSession: LivenessService {
                     Amplify.log.verbose("\(#function): Received exception: \(exceptionEvent)")
                     guard exceptionEvent == .invalidSignature,
                           connectingState == .normal,
-                          let savedURLForReconnect = savedURLForReconnect,
-                          let serverDate = serverDate else {
+                          let savedURLForReconnect,
+                          let serverDate else {
                         onServiceException(.init(event: exceptionEvent))
                         return .stopAndInvalidateSession
                     }
-                    
+
                     connectingState = .reconnect
                     let signedConnectionURL = signer.sign(
                         url: savedURLForReconnect,

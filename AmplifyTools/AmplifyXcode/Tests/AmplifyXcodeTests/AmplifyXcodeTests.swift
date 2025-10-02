@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import class Foundation.Bundle
+import XCTest
 
 final class AmplifyXcodeTests: XCTestCase {
     func testExecutable() throws {

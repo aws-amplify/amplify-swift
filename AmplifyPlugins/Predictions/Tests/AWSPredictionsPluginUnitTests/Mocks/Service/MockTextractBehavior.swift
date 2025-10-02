@@ -12,8 +12,8 @@ import AWSTextract
 struct MockBehaviorDefaultError: Error {}
 
 class MockTextractBehavior: TextractClientProtocol {
-    var analyzeDocumentResult: ((AnalyzeDocumentInput) async throws -> AnalyzeDocumentOutput)? = nil
-    var detectDocumentTextResult: ((DetectDocumentTextInput) async throws -> DetectDocumentTextOutput)? = nil
+    var analyzeDocumentResult: ((AnalyzeDocumentInput) async throws -> AnalyzeDocumentOutput)?
+    var detectDocumentTextResult: ((DetectDocumentTextInput) async throws -> DetectDocumentTextOutput)?
 
     func analyzeDocument(
         input: AnalyzeDocumentInput

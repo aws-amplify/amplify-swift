@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import ClientRuntime
 @_spi(InternalAmplifyPluginExtension) @_spi(InternalHttpEngineProxy) import InternalAmplifyCredentials
 import Smithy
 import SmithyHTTPAPI

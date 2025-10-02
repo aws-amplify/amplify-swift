@@ -8,8 +8,8 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
 
 // swiftlint:disable:next type_name
 class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase {

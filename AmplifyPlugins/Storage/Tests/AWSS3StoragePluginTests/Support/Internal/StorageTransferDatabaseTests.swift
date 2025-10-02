@@ -7,10 +7,10 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
-@testable import Amplify
-import AmplifyTestCommon
 @_implementationOnly import AmplifyAsyncTesting
+import AmplifyTestCommon
+@testable import Amplify
+@testable import AWSS3StoragePlugin
 
 // swiftlint:disable line_length
 
@@ -67,7 +67,7 @@ class StorageTransferDatabaseTests: XCTestCase {
 
         // set the session task and taskIdentifier
         var taskIdentifier = 0
-        [downloadTask, uploadTask, multipartUploadTask].forEach { task in
+        for task in [downloadTask, uploadTask, multipartUploadTask] {
             taskIdentifier += 1
             task.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier)
         }
@@ -85,9 +85,11 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
-                                             transferType: transferType,
-                                             sessionTask: sessionTask)
+        let loadedTask = StorageTransferTask(
+            persistableTransferTask: persistableTransferTask,
+            transferType: transferType,
+            sessionTask: sessionTask
+        )
 
         XCTAssertEqual(sessionTask.taskIdentifier, originalTask.taskIdentifier)
         XCTAssertEqual(sessionTask.taskIdentifier, persistableTransferTask.taskIdentifier)
@@ -109,9 +111,11 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
-                                             transferType: transferType,
-                                             sessionTask: sessionTask)
+        let loadedTask = StorageTransferTask(
+            persistableTransferTask: persistableTransferTask,
+            transferType: transferType,
+            sessionTask: sessionTask
+        )
 
         XCTAssertEqual(sessionTask.taskIdentifier, originalTask.taskIdentifier)
         XCTAssertEqual(sessionTask.taskIdentifier, persistableTransferTask.taskIdentifier)
@@ -127,16 +131,18 @@ class StorageTransferDatabaseTests: XCTestCase {
         let originalTask = createTask(transferType: .multiPartUpload(onEvent: mockMultiPartUploadEvent))
         originalTask.uploadId = uploadId
 
-        let fileSize: UInt64 = UInt64(Bytes.megabytes(12).bytes)
+        let fileSize = UInt64(Bytes.megabytes(12).bytes)
         let uploadFile = UploadFile(fileURL: fileSystem.createTemporaryFileURL(), temporaryFileCreated: true, size: fileSize)
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         let parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
         XCTAssertGreaterThanOrEqual(3, parts.count)
 
-        let multipartUpload = StorageMultipartUpload.parts(uploadId: uploadId,
-                                                           uploadFile: uploadFile,
-                                                           partSize: partSize,
-                                                           parts: parts)
+        let multipartUpload = StorageMultipartUpload.parts(
+            uploadId: uploadId,
+            uploadFile: uploadFile,
+            partSize: partSize,
+            parts: parts
+        )
         originalTask.multipartUpload = multipartUpload
 
         XCTAssertNotNil(originalTask.multipartUpload)
@@ -149,8 +155,10 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
-                                             transferType: transferType)
+        let loadedTask = StorageTransferTask(
+            persistableTransferTask: persistableTransferTask,
+            transferType: transferType
+        )
 
         XCTAssertNil(originalTask.taskIdentifier)
         XCTAssertNil(loadedTask.taskIdentifier)
@@ -172,7 +180,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         let originalTask = createTask(transferType: .multiPartUpload(onEvent: mockMultiPartUploadEvent))
         originalTask.uploadId = uploadId
 
-        let fileSize: UInt64 = UInt64(Bytes.megabytes(12).bytes)
+        let fileSize = UInt64(Bytes.megabytes(12).bytes)
         let uploadFile = UploadFile(fileURL: fileSystem.createTemporaryFileURL(), temporaryFileCreated: true, size: fileSize)
         let partSize = try StorageUploadPartSize(fileSize: uploadFile.size)
         var parts = try StorageUploadParts(fileSize: uploadFile.size, partSize: partSize, logger: logger)
@@ -187,21 +195,27 @@ class StorageTransferDatabaseTests: XCTestCase {
 
             if index <= 1 {
                 let partNumber = index + 1
-                let subTask = createSubTask(createMultipartUploadTask: originalTask,
-                                            uploadId: uploadId,
-                                            partNumber: partNumber)
+                let subTask = createSubTask(
+                    createMultipartUploadTask: originalTask,
+                    uploadId: uploadId,
+                    partNumber: partNumber
+                )
                 let sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier + index)
                 sessionTasks.append(sessionTask)
                 subTask.sessionTask = sessionTask
                 subTask.uploadPart = .pending(bytes: Bytes.megabytes(5).bytes)
                 if index == 0 {
-                    parts[index] = .inProgress(bytes: part.bytes,
-                                               bytesTransferred: UInt64(Double(part.bytes) * 0.75),
-                                               taskIdentifier: sessionTask.taskIdentifier)
+                    parts[index] = .inProgress(
+                        bytes: part.bytes,
+                        bytesTransferred: UInt64(Double(part.bytes) * 0.75),
+                        taskIdentifier: sessionTask.taskIdentifier
+                    )
                 } else if index == 1 {
-                    parts[index] = .inProgress(bytes: part.bytes,
-                                               bytesTransferred: UInt64(Double(part.bytes) * 0.25),
-                                               taskIdentifier: sessionTask.taskIdentifier)
+                    parts[index] = .inProgress(
+                        bytes: part.bytes,
+                        bytesTransferred: UInt64(Double(part.bytes) * 0.25),
+                        taskIdentifier: sessionTask.taskIdentifier
+                    )
                 }
             } else {
                 parts[index] = .queued(bytes: part.bytes)
@@ -210,10 +224,12 @@ class StorageTransferDatabaseTests: XCTestCase {
 
         XCTAssertEqual(sessionTasks.count, 2)
 
-        let multipartUpload = StorageMultipartUpload.parts(uploadId: uploadId,
-                                                           uploadFile: uploadFile,
-                                                           partSize: partSize,
-                                                           parts: parts)
+        let multipartUpload = StorageMultipartUpload.parts(
+            uploadId: uploadId,
+            uploadFile: uploadFile,
+            partSize: partSize,
+            parts: parts
+        )
         originalTask.multipartUpload = multipartUpload
 
         XCTAssertEqual(database.tasksCount, 3)
@@ -271,22 +287,28 @@ class StorageTransferDatabaseTests: XCTestCase {
     // MARK: - Private -
 
     private func createTask(transferType: StorageTransferType) -> StorageTransferTask {
-        StorageTransferTask(transferType: transferType,
-                            bucket: bucket,
-                            key: generatedKey(),
-                            storageTransferDatabase: database,
-                            logger: logger)
+        StorageTransferTask(
+            transferType: transferType,
+            bucket: bucket,
+            key: generatedKey(),
+            storageTransferDatabase: database,
+            logger: logger
+        )
     }
 
-    private func createSubTask(createMultipartUploadTask: StorageTransferTask,
-                               uploadId: UploadID,
-                               partNumber: PartNumber) -> StorageTransferTask {
+    private func createSubTask(
+        createMultipartUploadTask: StorageTransferTask,
+        uploadId: UploadID,
+        partNumber: PartNumber
+    ) -> StorageTransferTask {
         let transferType: StorageTransferType = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)
-        let subTask = StorageTransferTask(transferType: transferType,
-                                          bucket: createMultipartUploadTask.bucket,
-                                          key: createMultipartUploadTask.key,
-                                          storageTransferDatabase: database,
-                                          logger: logger)
+        let subTask = StorageTransferTask(
+            transferType: transferType,
+            bucket: createMultipartUploadTask.bucket,
+            key: createMultipartUploadTask.key,
+            storageTransferDatabase: database,
+            logger: logger
+        )
         subTask.uploadId = uploadId
         return subTask
     }

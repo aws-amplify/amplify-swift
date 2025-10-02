@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
@@ -16,16 +16,20 @@ struct VerifyPasswordSRP: Action {
     let authResponse: SignInResponseBehavior
     let clientMetadata: ClientMetadata
 
-    init(stateData: SRPStateData,
-         authResponse: SignInResponseBehavior,
-         clientMetadata: ClientMetadata) {
+    init(
+        stateData: SRPStateData,
+        authResponse: SignInResponseBehavior,
+        clientMetadata: ClientMetadata
+    ) {
         self.stateData = stateData
         self.authResponse = authResponse
         self.clientMetadata = clientMetadata
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let inputUsername = stateData.username
@@ -46,17 +50,21 @@ struct VerifyPasswordSRP: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.authEnvironment().credentialsClient)
+                credentialStoreClient: environment.authEnvironment().credentialsClient
+            )
 
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
-            let signature = try signature(userIdForSRP: userIdForSRP,
-                                          saltHex: saltHex,
-                                          secretBlock: secretBlock,
-                                          serverPublicBHexString: serverPublicB,
-                                          srpClient: srpClient,
-                                          poolId: userPoolEnv.userPoolConfiguration.poolId)
+                with: environment
+            )
+            let signature = try signature(
+                userIdForSRP: userIdForSRP,
+                saltHex: saltHex,
+                secretBlock: secretBlock,
+                serverPublicBHexString: serverPublicB,
+                srpClient: srpClient,
+                poolId: userPoolEnv.userPoolConfiguration.poolId
+            )
             let request = await RespondToAuthChallengeInput.passwordVerifier(
                 username: username,
                 stateData: stateData,
@@ -66,30 +74,38 @@ struct VerifyPasswordSRP: Action {
                 clientMetadata: clientMetadata,
                 deviceMetadata: deviceMetadata,
                 asfDeviceId: asfDeviceId,
-                environment: userPoolEnv)
+                environment: userPoolEnv
+            )
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
                 signInMethod: .apiBased(.userSRP),
-                environment: userPoolEnv)
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+                environment: userPoolEnv
+            )
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
             logVerbose("\(#fileID) SRPSignInError \(error)", environment: environment)
             let event = SignInEvent(
                 eventType: .throwPasswordVerifierError(error)
             )
-            logVerbose("\(#fileID) Sending event \(event)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(event)",
+                environment: environment
+            )
             await dispatcher.send(event)
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
             // Remove the saved device details and retry password verify
             await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
             let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse, clientMetadata))
-            logVerbose("\(#fileID) Sending event \(event)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(event)",
+                environment: environment
+            )
             await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) SRPSignInError Generic \(error)", environment: environment)
@@ -97,8 +113,10 @@ struct VerifyPasswordSRP: Action {
             let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
-            logVerbose("\(#fileID) Sending event \(event)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(event)",
+                environment: environment
+            )
             await dispatcher.send(event)
         }
     }
@@ -115,11 +133,11 @@ struct VerifyPasswordSRP: Action {
 }
 
 extension VerifyPasswordSRP: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

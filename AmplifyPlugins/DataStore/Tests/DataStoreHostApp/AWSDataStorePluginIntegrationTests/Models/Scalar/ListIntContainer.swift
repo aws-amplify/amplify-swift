@@ -18,13 +18,15 @@ public struct ListIntContainer: Model {
   public var nullableIntList: [Int?]
   public var nullableIntNullableList: [Int?]?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       test: Int,
       nullableInt: Int? = nil,
       intList: [Int] = [],
       intNullableList: [Int]? = nil,
       nullableIntList: [Int?] = [],
-      nullableIntNullableList: [Int?]? = nil) {
+      nullableIntNullableList: [Int?]? = nil
+  ) {
       self.id = id
       self.test = test
       self.nullableInt = nullableInt

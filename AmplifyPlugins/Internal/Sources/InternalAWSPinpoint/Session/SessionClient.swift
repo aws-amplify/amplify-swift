@@ -32,25 +32,29 @@ class SessionClient: SessionClientBehaviour {
     private let activityTracker: ActivityTrackerBehaviour
     private let archiver: AmplifyArchiverBehaviour
     private let configuration: SessionClientConfiguration
-    private let sessionClientQueue = DispatchQueue(label: Constants.queue,
-                                                   attributes: .concurrent)
+    private let sessionClientQueue = DispatchQueue(
+        label: Constants.queue,
+        attributes: .concurrent
+    )
     private let analyticsTaskQueue = TaskQueue<Void>()
     private let userDefaults: UserDefaultsBehaviour
     private var sessionBackgroundTimeout: TimeInterval = .zero
 
-    init(activityTracker: ActivityTrackerBehaviour = ActivityTracker(),
-         analyticsClient: AnalyticsClientBehaviour? = nil,
-         archiver: AmplifyArchiverBehaviour,
-         configuration: SessionClientConfiguration,
-         endpointClient: EndpointClientBehaviour,
-         userDefaults: UserDefaultsBehaviour) {
+    init(
+        activityTracker: ActivityTrackerBehaviour = ActivityTracker(),
+        analyticsClient: AnalyticsClientBehaviour? = nil,
+        archiver: AmplifyArchiverBehaviour,
+        configuration: SessionClientConfiguration,
+        endpointClient: EndpointClientBehaviour,
+        userDefaults: UserDefaultsBehaviour
+    ) {
         self.activityTracker = activityTracker
         self.analyticsClient = analyticsClient
         self.archiver = archiver
         self.configuration = configuration
         self.endpointClient = endpointClient
         self.userDefaults = userDefaults
-        session = Self.retrieveStoredSession(from: userDefaults, using: archiver) ?? .none
+        self.session = Self.retrieveStoredSession(from: userDefaults, using: archiver) ?? .none
     }
 
     var currentSession: PinpointSession {
@@ -83,18 +87,21 @@ class SessionClient: SessionClientBehaviour {
         activityTracker.backgroundTrackingTimeout = backgroundTimeout
         activityTracker.beginActivityTracking { [weak self] newState in
             guard let self else { return }
-            self.log.verbose("New state received: \(newState)")
-            self.sessionClientQueue.sync(flags: .barrier) {
+            log.verbose("New state received: \(newState)")
+            sessionClientQueue.sync(flags: .barrier) {
                 self.respond(to: newState)
             }
         }
     }
 
-    private static func retrieveStoredSession(from userDefaults: UserDefaultsBehaviour,
-                                              using archiver: AmplifyArchiverBehaviour) -> PinpointSession? {
+    private static func retrieveStoredSession(
+        from userDefaults: UserDefaultsBehaviour,
+        using archiver: AmplifyArchiverBehaviour
+    ) -> PinpointSession? {
         guard let sessionData = userDefaults.data(forKey: Constants.sessionKey),
               let storedSession = try? archiver.decode(PinpointSession.self, from: sessionData),
-              !storedSession.sessionId.isEmpty else {
+              !storedSession.sessionId.isEmpty
+        else {
             return nil
         }
 
@@ -102,17 +109,19 @@ class SessionClient: SessionClientBehaviour {
     }
 
     private func startNewSession() {
-        session = PinpointSession(appId: configuration.appId,
-                                  uniqueId: configuration.uniqueDeviceId)
+        session = PinpointSession(
+            appId: configuration.appId,
+            uniqueId: configuration.uniqueDeviceId
+        )
         saveSession()
         log.info("Session Started.")
 
         // Update Endpoint and record Session Start event
         analyticsTaskQueue.async { [weak self] in
             guard let self else { return }
-            try? await self.endpointClient.updateEndpointProfile()
-            self.log.verbose("Firing Session Event: Start")
-            await self.record(eventType: Constants.Events.start)
+            try? await endpointClient.updateEndpointProfile()
+            log.verbose("Firing Session Event: Start")
+            await record(eventType: Constants.Events.start)
         }
     }
 
@@ -132,8 +141,8 @@ class SessionClient: SessionClientBehaviour {
         log.info("Session Paused.")
         analyticsTaskQueue.async { [weak self] in
             guard let self else { return }
-            self.log.verbose("Firing Session Event: Pause")
-            await self.record(eventType: Constants.Events.pause)
+            log.verbose("Firing Session Event: Pause")
+            await record(eventType: Constants.Events.pause)
         }
     }
 
@@ -162,8 +171,8 @@ class SessionClient: SessionClientBehaviour {
         log.info("Session Resumed.")
         analyticsTaskQueue.async { [weak self] in
             guard let self else { return }
-            self.log.verbose("Firing Session Event: Resume")
-            await self.record(eventType: Constants.Events.resume)
+            log.verbose("Firing Session Event: Resume")
+            await record(eventType: Constants.Events.resume)
         }
     }
 
@@ -176,21 +185,22 @@ class SessionClient: SessionClientBehaviour {
         session.stop()
         log.info("Session Stopped.")
         analyticsTaskQueue.async { [weak self, session] in
-            guard let self = self,
-                  let analyticsClient = self.analyticsClient else {
+            guard let self,
+                  let analyticsClient
+            else {
                 return
             }
-            self.log.verbose("Removing remote global attributes")
+            log.verbose("Removing remote global attributes")
             await analyticsClient.removeAllRemoteGlobalAttributes()
 
-            self.log.verbose("Updating session for existing events")
+            log.verbose("Updating session for existing events")
             try? await analyticsClient.update(session)
 
-            self.log.verbose("Firing Session Event: Stop")
-            await self.record(eventType: Constants.Events.stop)
+            log.verbose("Firing Session Event: Stop")
+            await record(eventType: Constants.Events.stop)
 
             if shouldSave {
-                self.saveSession()
+                saveSession()
             }
         }
     }
@@ -205,7 +215,7 @@ class SessionClient: SessionClientBehaviour {
     }
 
     private func record(eventType: String) async {
-        guard let analyticsClient = analyticsClient else {
+        guard let analyticsClient else {
             log.error("Pinpoint Analytics is disabled.")
             return
         }
@@ -239,20 +249,20 @@ class SessionClient: SessionClientBehaviour {
 
 // MARK: - DefaultLogger
 extension SessionClient: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }
 
 extension SessionClient {
-    struct Constants {
+    enum Constants {
         static let sessionKey = "com.amazonaws.AWSPinpointSessionKey"
         static let queue = "com.amazonaws.Amplify.SessionClientQueue"
 
-        struct Events {
+        enum Events {
             static let start = "_session.start"
             static let stop = "_session.stop"
             static let pause = "_session.pause"

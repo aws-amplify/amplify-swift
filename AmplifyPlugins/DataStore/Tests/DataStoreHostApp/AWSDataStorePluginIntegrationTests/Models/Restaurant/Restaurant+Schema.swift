@@ -9,18 +9,18 @@
 import Amplify
 import Foundation
 
-extension Restaurant {
+public extension Restaurant {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case restaurantName
     case menus
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let restaurant = Restaurant.keys
 
     model.listPluralName = "Restaurants"

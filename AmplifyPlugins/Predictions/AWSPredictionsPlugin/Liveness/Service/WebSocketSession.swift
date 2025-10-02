@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 final class WebSocketSession {
     private let urlSessionWebSocketDelegate: Delegate
@@ -19,9 +19,9 @@ final class WebSocketSession {
 
     init() {
         self.delegateQueue = OperationQueue()
-        self.delegateQueue.maxConcurrentOperationCount = 1
-        self.delegateQueue.qualityOfService = .userInteractive
-        
+        delegateQueue.maxConcurrentOperationCount = 1
+        delegateQueue.qualityOfService = .userInteractive
+
         self.urlSessionWebSocketDelegate = Delegate()
 
         self.session = URLSession(
@@ -32,7 +32,7 @@ final class WebSocketSession {
     }
 
     func onMessageReceived(_ receive: @escaping (Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult) {
-        self.receiveMessage = receive
+        receiveMessage = receive
     }
 
     func onSocketClosed(_ onClose: @escaping (URLSessionWebSocketTask.CloseCode) -> Void) {
@@ -42,7 +42,7 @@ final class WebSocketSession {
     func onSocketOpened(_ onOpen: @escaping () -> Void) {
         urlSessionWebSocketDelegate.onOpen = onOpen
     }
-    
+
     func onServerDateReceived(_ onServerDateReceived: @escaping (Date?) -> Void) {
         urlSessionWebSocketDelegate.onServerDateReceived = onServerDateReceived
     }
@@ -114,11 +114,12 @@ final class WebSocketSession {
         ) {
             onClose(closeCode)
         }
-        
+
         // MARK: - URLSessionTaskDelegate methods
-        func urlSession(_ session: URLSession,
-                        task: URLSessionTask,
-                        didFinishCollecting metrics: URLSessionTaskMetrics
+        func urlSession(
+            _ session: URLSession,
+            task: URLSessionTask,
+            didFinishCollecting metrics: URLSessionTaskMetrics
         ) {
             guard let httpResponse = metrics.transactionMetrics.first?.response as? HTTPURLResponse,
                   let dateString = httpResponse.value(forHTTPHeaderField: "Date") else {
@@ -126,7 +127,7 @@ final class WebSocketSession {
                 onServerDateReceived(nil)
                 return
             }
-            
+
             let dateFormatter = DateFormatter()
             dateFormatter.locale = Locale(identifier: "en_US_POSIX")
             dateFormatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss z"
@@ -136,11 +137,11 @@ final class WebSocketSession {
                 onServerDateReceived(nil)
                 return
             }
-            
+
             onServerDateReceived(serverDate)
         }
     }
-    
+
     enum WebSocketMessageResult {
         case continueToReceive
         case stopAndInvalidateSession

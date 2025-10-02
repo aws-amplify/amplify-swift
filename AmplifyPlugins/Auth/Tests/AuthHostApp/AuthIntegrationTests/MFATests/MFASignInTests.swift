@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSCognitoAuthPlugin
+import XCTest
 
 class MFASignInTests: AWSAuthBaseTest {
 
@@ -58,7 +58,8 @@ class MFASignInTests: AWSAuthBaseTest {
         try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
         try await authCognitoPlugin.updateMFAPreference(
             sms: nil,
-            totp: .enabled)
+            totp: .enabled
+        )
         await AuthSignInHelper.signOut()
 
         /// Sleep for 30 secs so that TOTP code can be regenerated for use during sign in otherwise will get
@@ -75,7 +76,8 @@ class MFASignInTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .confirmSignInWithTOTPCode = result.nextStep else {
                 XCTFail("Next step should be confirmSignInWithTOTPCode")
                 return
@@ -126,7 +128,8 @@ class MFASignInTests: AWSAuthBaseTest {
             for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
         try await authCognitoPlugin.updateMFAPreference(
             sms: .enabled,
-            totp: nil)
+            totp: nil
+        )
         await AuthSignInHelper.signOut()
 
 
@@ -137,7 +140,8 @@ class MFASignInTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .confirmSignInWithSMSMFACode(let codeDeliveryDetails, _) = result.nextStep else {
                 XCTFail("Next step should be confirmSignInWithSMSMFACode")
                 return
@@ -178,7 +182,8 @@ class MFASignInTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: randomEmail,
-            phoneNumber: randomPhoneNumber)
+            phoneNumber: randomPhoneNumber
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
 
@@ -190,7 +195,8 @@ class MFASignInTests: AWSAuthBaseTest {
         try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
         try await authCognitoPlugin.updateMFAPreference(
             sms: .enabled,
-            totp: .enabled)
+            totp: .enabled
+        )
         await AuthSignInHelper.signOut()
 
         /// Sleep for 30 secs so that TOTP code can be regenerated for use during sign in otherwise will get
@@ -206,7 +212,8 @@ class MFASignInTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithMFASelection(let allowedMFATypes) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithMFASelection")
                 return
@@ -270,7 +277,8 @@ class MFASignInTests: AWSAuthBaseTest {
         try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
         try await authCognitoPlugin.updateMFAPreference(
             sms: .enabled,
-            totp: .enabled)
+            totp: .enabled
+        )
         await AuthSignInHelper.signOut()
 
         // Once all preconditions are satisfied, try signing in
@@ -278,7 +286,8 @@ class MFASignInTests: AWSAuthBaseTest {
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init())
+                options: .init()
+            )
             guard case .continueSignInWithMFASelection(let allowedMFATypes) = result.nextStep else {
                 XCTFail("Next step should be continueSignInWithMFASelection")
                 return

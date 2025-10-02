@@ -63,8 +63,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     func testCreateMutationGraphQLRequest() throws {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: post.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
@@ -106,8 +108,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     func testUpdateMutationGraphQLRequest() throws {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: post.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
@@ -149,8 +153,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     func testDeleteMutationGraphQLRequest() throws {
         let post = Post(title: "title", content: "content", createdAt: .now())
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelName: post.modelName,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
@@ -192,8 +198,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
     func testCreateSubscriptionGraphQLRequest() throws {
         let modelType = Post.self as Model.Type
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
@@ -215,8 +223,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -257,10 +267,12 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: modelType.schema,
-                                                                limit: limit,
-                                                                nextToken: nextToken,
-                                                                lastSync: lastSync)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(
+            modelSchema: modelType.schema,
+            limit: limit,
+            nextToken: nextToken,
+            lastSync: lastSync
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -289,7 +301,8 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             where: predicate,
             limit: limit,
             nextToken: nextToken,
-            lastSync: lastSync)
+            lastSync: lastSync
+        )
 
         guard let variables = request.variables else {
             XCTFail("The request doesn't contain variables")
@@ -319,7 +332,8 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             where: predicate,
             limit: limit,
             nextToken: nextToken,
-            lastSync: lastSync)
+            lastSync: lastSync
+        )
 
         guard let variables = request.variables else {
             XCTFail("The request doesn't contain variables")

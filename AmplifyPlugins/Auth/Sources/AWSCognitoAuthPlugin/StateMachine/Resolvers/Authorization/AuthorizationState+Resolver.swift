@@ -29,7 +29,8 @@ extension AuthorizationState {
                         signedInData: signedInData)
                     return .init(
                         newState: .fetchingAuthSessionWithUserPool(.notStarted, signedInData),
-                        actions: [action])
+                        actions: [action]
+                    )
                 case .error(let error):
                     return .init(newState: .error(AuthorizationError.service(error: error)))
                 case .cancelSignIn:
@@ -53,17 +54,21 @@ extension AuthorizationState {
                 }
 
                 if case .startFederationToIdentityPool(
-                    let federatedToken, let identityId) = event.isAuthorizationEvent {
+                    let federatedToken, let identityId
+                ) = event.isAuthorizationEvent {
 
                     let action = InitializeFederationToIdentityPool(
                         federatedToken: federatedToken,
-                        developerProvidedIdentityId: identityId)
+                        developerProvidedIdentityId: identityId
+                    )
                     return .init(
                         newState: .federatingToIdentityPool(
                             .notStarted,
                             federatedToken,
-                            existingCredentials: .noCredentials),
-                        actions: [action])
+                            existingCredentials: .noCredentials
+                        ),
+                        actions: [action]
+                    )
                 }
 
                 return .from(oldState)
@@ -81,23 +86,28 @@ extension AuthorizationState {
 
                     let action = InitializeFederationToIdentityPool(
                         federatedToken: federatedToken,
-                        developerProvidedIdentityId: identityId)
+                        developerProvidedIdentityId: identityId
+                    )
                     return .init(
                         newState: .federatingToIdentityPool(
                             .notStarted,
                             federatedToken,
-                            existingCredentials: credentials),
-                        actions: [action])
+                            existingCredentials: credentials
+                        ),
+                        actions: [action]
+                    )
                 }
 
                 if case .refreshSession(let forceRefresh) = event.isAuthorizationEvent {
                     let action = InitializeRefreshSession(
                         existingCredentials: credentials,
-                        isForceRefresh: forceRefresh)
+                        isForceRefresh: forceRefresh
+                    )
                     let subState = RefreshSessionState.notStarted
                     return .init(newState: .refreshingSession(
                         existingCredentials: credentials,
-                        subState), actions: [action])
+                        subState
+                    ), actions: [action])
                 }
 
                 if case .deleteUser = event.isDeleteUserEvent {
@@ -107,17 +117,23 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .federatingToIdentityPool(
-                let fetchSessionState, let federatedToken, let credentials):
+                let fetchSessionState, let federatedToken, let credentials
+            ):
 
-                if case .fetched(let identityID,
-                                 let credentials) = event.isAuthorizationEvent {
+                if case .fetched(
+                    let identityID,
+                    let credentials
+                ) = event.isAuthorizationEvent {
                     let amplifyCredentials = AmplifyCredentials.identityPoolWithFederation(
                         federatedToken: federatedToken,
                         identityID: identityID,
-                        credentials: credentials)
+                        credentials: credentials
+                    )
                     let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
+                    return .init(
+                        newState: .storingCredentials(amplifyCredentials),
+                        actions: [action]
+                    )
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
@@ -134,8 +150,10 @@ extension AuthorizationState {
                     newState: .federatingToIdentityPool(
                         resolution.newState,
                         federatedToken,
-                        existingCredentials: credentials),
-                    actions: resolution.actions)
+                        existingCredentials: credentials
+                    ),
+                    actions: resolution.actions
+                )
 
             case .signingOut(let credentials):
                 if let signOutEvent = event.isSignOutEvent,
@@ -144,7 +162,7 @@ extension AuthorizationState {
                 }
                 if let authenEvent = event.isAuthenticationEvent,
                    case .cancelSignOut = authenEvent {
-                    if let credentials = credentials {
+                    if let credentials {
                         return .init(newState: .sessionEstablished(credentials))
                     } else {
                         return .init(newState: .configured)
@@ -164,14 +182,19 @@ extension AuthorizationState {
 
             case .fetchingUnAuthSession(let fetchSessionState):
 
-                if case .fetched(let identityID,
-                                 let credentials) = event.isAuthorizationEvent {
+                if case .fetched(
+                    let identityID,
+                    let credentials
+                ) = event.isAuthorizationEvent {
                     let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityID,
-                        credentials: credentials)
+                        credentials: credentials
+                    )
                     let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
+                    return .init(
+                        newState: .storingCredentials(amplifyCredentials),
+                        actions: [action]
+                    )
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
@@ -184,31 +207,42 @@ extension AuthorizationState {
 
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
-                return .init(newState: .fetchingUnAuthSession(resolution.newState),
-                             actions: resolution.actions)
+                return .init(
+                    newState: .fetchingUnAuthSession(resolution.newState),
+                    actions: resolution.actions
+                )
+
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let signedInData):
-                if case .fetched(let identityID,
-                                 let credentials) = event.isAuthorizationEvent {
+                if case .fetched(
+                    let identityID,
+                    let credentials
+                ) = event.isAuthorizationEvent {
                     let amplifyCredentials = AmplifyCredentials.userPoolAndIdentityPool(
                         signedInData: signedInData,
                         identityID: identityID,
-                        credentials: credentials)
+                        credentials: credentials
+                    )
                     let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
+                    return .init(
+                        newState: .storingCredentials(amplifyCredentials),
+                        actions: [action]
+                    )
                 } else if case .receivedSessionError(let fetchError) = event.isAuthorizationEvent {
                     let amplifyCredentials = AmplifyCredentials.userPoolOnly(
                         signedInData: signedInData)
 
                     if case .noIdentityPool = fetchError {
                         let action = PersistCredentials(credentials: amplifyCredentials)
-                        return .init(newState: .storingCredentials(amplifyCredentials),
-                                     actions: [action])
+                        return .init(
+                            newState: .storingCredentials(amplifyCredentials),
+                            actions: [action]
+                        )
                     }
 
                     let authorizationError = AuthorizationError.sessionError(
                         fetchError,
-                        amplifyCredentials)
+                        amplifyCredentials
+                    )
                     return .init(newState: .error(authorizationError))
 
                 } else if case .throwError(let error) = event.isAuthorizationEvent {
@@ -216,20 +250,25 @@ extension AuthorizationState {
                         signedInData: signedInData)
                     let authorizationError = AuthorizationError.sessionError(
                         .service(error),
-                        amplifyCredentials)
+                        amplifyCredentials
+                    )
                     return .init(newState: .error(authorizationError))
                 }
 
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
-                return .init(newState: .fetchingAuthSessionWithUserPool(resolution.newState, signedInData),
-                             actions: resolution.actions)
+                return .init(
+                    newState: .fetchingAuthSessionWithUserPool(resolution.newState, signedInData),
+                    actions: resolution.actions
+                )
 
             case .refreshingSession(let existingCredentials, let refreshState):
                 if case .refreshed(let amplifyCredentials) = event.isAuthorizationEvent {
                     let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
+                    return .init(
+                        newState: .storingCredentials(amplifyCredentials),
+                        actions: [action]
+                    )
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
@@ -243,7 +282,8 @@ extension AuthorizationState {
                 let resolution = resolver.resolve(oldState: refreshState, byApplying: event)
                 return .init(newState: .refreshingSession(
                     existingCredentials: existingCredentials,
-                    resolution.newState), actions: resolution.actions)
+                    resolution.newState
+                ), actions: resolution.actions)
 
             case .storingCredentials:
                 if case .sessionEstablished(let credentials) = event.isAuthorizationEvent {
@@ -273,7 +313,6 @@ extension AuthorizationState {
                     case .clearFederationToIdentityPool:
                         return .from(.clearingFederation)
                     default: break
-
                     }
                 }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
@@ -287,13 +326,16 @@ extension AuthorizationState {
 
                     let action = InitializeFederationToIdentityPool(
                         federatedToken: federatedToken,
-                        developerProvidedIdentityId: identityId)
+                        developerProvidedIdentityId: identityId
+                    )
                     return .init(
                         newState: .federatingToIdentityPool(
                             .notStarted,
                             federatedToken,
-                            existingCredentials: existingCredentials),
-                        actions: [action])
+                            existingCredentials: existingCredentials
+                        ),
+                        actions: [action]
+                    )
                 }
 
                 // If authorization is under session error, we try to refresh it again to see if
@@ -302,11 +344,13 @@ extension AuthorizationState {
                    case .sessionError(_, let credentials) = error {
                     let action = InitializeRefreshSession(
                         existingCredentials: credentials,
-                        isForceRefresh: forceRefresh)
+                        isForceRefresh: forceRefresh
+                    )
                     let subState = RefreshSessionState.notStarted
                     return .init(newState: .refreshingSession(
                         existingCredentials: credentials,
-                        subState), actions: [action])
+                        subState
+                    ), actions: [action])
                 }
                 return .from(oldState)
 

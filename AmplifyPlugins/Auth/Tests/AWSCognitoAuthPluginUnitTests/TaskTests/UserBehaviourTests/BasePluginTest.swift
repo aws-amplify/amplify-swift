@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
@@ -14,11 +14,10 @@ class BasePluginTest: XCTestCase {
 
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
-    lazy var mockIdentity: CognitoIdentityBehavior = {
-        MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-    }()
+    lazy var mockIdentity: CognitoIdentityBehavior = MockIdentity(
+        mockGetIdResponse: getId,
+        mockGetCredentialsResponse: getCredentials
+    )
     var plugin: AWSCognitoAuthPlugin!
 
     let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -26,21 +25,26 @@ class BasePluginTest: XCTestCase {
     }
 
     let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-        let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                 expiration: Date(),
-                                                                 secretKey: "secret",
-                                                                 sessionToken: "session")
+        let credentials = CognitoIdentityClientTypes.Credentials(
+            accessKeyId: "accessKey",
+            expiration: Date(),
+            secretKey: "secret",
+            sessionToken: "session"
+        )
         return .init(credentials: credentials, identityId: "responseIdentityID")
     }
 
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(signedInDate: Date(),
-                             signInMethod: .apiBased(.userSRP),
-                             cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                SignedInData(
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     override func setUp() {
@@ -48,12 +52,14 @@ class BasePluginTest: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { self.mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { self.mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
@@ -61,28 +67,34 @@ class BasePluginTest: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
     func configureCustomPluginWith(
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
         userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
         identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
-        initialState: AuthState) -> AWSCognitoAuthPlugin {
+        initialState: AuthState
+    ) -> AWSCognitoAuthPlugin {
             let plugin = AWSCognitoAuthPlugin()
             let environment = Defaults.makeDefaultAuthEnvironment(
                 identityPoolFactory: identityPool,
-                userPoolFactory: userPool)
-            let statemachine = AuthStateMachine(resolver: AuthState.Resolver(),
-                                                environment: environment,
-                                                initialState: initialState)
+                userPoolFactory: userPool
+            )
+            let statemachine = AuthStateMachine(
+                resolver: AuthState.Resolver(),
+                environment: environment,
+                initialState: initialState
+            )
             plugin.configure(
                 authConfiguration: Defaults.makeDefaultAuthConfigData(),
                 authEnvironment: environment,
                 authStateMachine: statemachine,
                 credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
                 hubEventHandler: MockAuthHubEventBehavior(),
-                analyticsHandler: MockAnalyticsHandler())
+                analyticsHandler: MockAnalyticsHandler()
+            )
             return plugin
     }
 

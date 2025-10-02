@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveRequestTests: XCTestCase {
@@ -19,8 +19,10 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     let testMetadata: [String: String] = [:]
 
     func testValidateSuccess() {
-        let options = StorageRemoveRequest.Options(accessLevel: .protected,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageRemoveRequest.Options(
+            accessLevel: .protected,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageRemoveRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
@@ -29,8 +31,10 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     }
 
     func testValidateEmptyKeyError() {
-        let options = StorageRemoveRequest.Options(accessLevel: .protected,
-                                                   pluginOptions: testPluginOptions)
+        let options = StorageRemoveRequest.Options(
+            accessLevel: .protected,
+            pluginOptions: testPluginOptions
+        )
         let request = StorageRemoveRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()

@@ -5,26 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
-    
+
     func testStart() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
     }
-    
+
     func testSaveParent() async throws {
         await setup(withModels: DefaultPKModels())
         let parent = Parent()
         try await createAndWaitForSync(parent)
     }
-    
+
     func testSaveChild() async throws {
         await setup(withModels: DefaultPKModels())
         let parent = Parent()
@@ -32,10 +32,10 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         try await createAndWaitForSync(parent)
         try await createAndWaitForSync(child)
     }
-    
+
     func testLazyLoad() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         let savedParent = try await createAndWaitForSync(parent)
@@ -47,113 +47,135 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let queriedPost = try await query(for: savedParent)
         try await assertParent(queriedPost, canLazyLoad: savedChild)
     }
-    
+
     func testLazyLoadOnSaveAfterEncodeDecode() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         let savedParent = try await createAndWaitForSync(parent)
         let savedChild = try await createAndWaitForSync(child)
-        
+
         guard let encodedChild = try? savedChild.toJSON() else {
             XCTFail("Could not encode child")
             return
         }
         try await assertChild(savedChild, canLazyLoad: savedParent)
-        
-        guard let decodedChild = try? ModelRegistry.decode(modelName: Child.modelName,
-                                                             from: encodedChild) as? Child else {
-            
+
+        guard let decodedChild = try? ModelRegistry.decode(
+            modelName: Child.modelName,
+            from: encodedChild
+        ) as? Child else {
+
             XCTFail("Could not decode comment")
             return
         }
-        
+
         try await assertChild(decodedChild, canLazyLoad: savedParent)
     }
-    
+
     func testLazyLoadOnQueryAfterEncodeDecoder() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         let savedParent = try await createAndWaitForSync(parent)
         let savedChild = try await createAndWaitForSync(child)
         let queriedChild = try await query(for: savedChild)
-        
+
         guard let encodedChild = try? queriedChild.toJSON() else {
             XCTFail("Could not encode child")
             return
         }
-        
+
         try await assertChild(queriedChild, canLazyLoad: savedParent)
-        
-        guard let decodedChild = try? ModelRegistry.decode(modelName: Child.modelName,
-                                                             from: encodedChild) as? Child else {
-            
+
+        guard let decodedChild = try? ModelRegistry.decode(
+            modelName: Child.modelName,
+            from: encodedChild
+        ) as? Child else {
+
             XCTFail("Could not decode comment")
             return
         }
-        
+
         try await assertChild(decodedChild, canLazyLoad: savedParent)
     }
-    
-    func assertChild(_ child: Child,
-                     hasEagerLoaded parent: Parent) async throws {
-        assertLazyReference(child._parent,
-                            state: .loaded(model: parent))
-        
+
+    func assertChild(
+        _ child: Child,
+        hasEagerLoaded parent: Parent
+    ) async throws {
+        assertLazyReference(
+            child._parent,
+            state: .loaded(model: parent)
+        )
+
         guard let loadedParent = try await child.parent else {
             XCTFail("Failed to retrieve the parent from the child")
             return
         }
         XCTAssertEqual(loadedParent.id, parent.id)
-        
+
         try await assertParent(loadedParent, canLazyLoad: child)
     }
-    
-    func assertChild(_ child: Child,
-                       canLazyLoad parent: Parent) async throws {
-        assertLazyReference(child._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+
+    func assertChild(
+        _ child: Child,
+        canLazyLoad parent: Parent
+    ) async throws {
+        assertLazyReference(
+            child._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)])
+        )
         guard let loadedParent = try await child.parent else {
             XCTFail("Failed to load the parent from the child")
             return
         }
         XCTAssertEqual(loadedParent.id, parent.id)
-        assertLazyReference(child._parent,
-                        state: .loaded(model: parent))
+        assertLazyReference(
+            child._parent,
+            state: .loaded(model: parent)
+        )
         try await assertParent(loadedParent, canLazyLoad: child)
     }
-    
-    func assertParent(_ parent: Parent,
-                    canLazyLoad child: Child) async throws {
+
+    func assertParent(
+        _ parent: Parent,
+        canLazyLoad child: Child
+    ) async throws {
         guard let children = parent.children else {
             XCTFail("Missing children on parent")
             return
         }
-        assertList(children, state: .isNotLoaded(associatedIds: [parent.identifier],
-                                                 associatedFields: ["parent"]))
-        
+        assertList(children, state: .isNotLoaded(
+            associatedIds: [parent.identifier],
+            associatedFields: ["parent"]
+        ))
+
         try await children.fetch()
         assertList(children, state: .isLoaded(count: 1))
         guard let child = children.first else {
             XCTFail("Missing lazy loaded child from parent")
             return
         }
-        
+
         // further nested models should not be loaded
-        assertLazyReference(child._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+        assertLazyReference(
+            child._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)])
+        )
     }
-    
+
     func testSaveWithoutPost() async throws {
         await setup(withModels: DefaultPKModels())
         let child = Child(content: "content")
         let savedChild = try await createAndWaitForSync(child)
         var queriedChild = try await query(for: savedChild)
-        assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: nil))
+        assertLazyReference(
+            queriedChild._parent,
+            state: .notLoaded(identifiers: nil)
+        )
         let parent = Parent()
         let savedParent = try await createAndWaitForSync(parent)
         queriedChild.setParent(savedParent)
@@ -161,7 +183,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let queriedChild2 = try await query(for: saveCommentWithPost)
         try await assertChild(queriedChild2, canLazyLoad: parent)
     }
-    
+
     func testUpdateFromqueriedChild() async throws {
         await setup(withModels: DefaultPKModels())
         let parent = Parent()
@@ -169,24 +191,28 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let savedParent = try await createAndWaitForSync(parent)
         let savedChild = try await createAndWaitForSync(child)
         let queriedChild = try await query(for: savedChild)
-        assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+        assertLazyReference(
+            queriedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)])
+        )
         let savedqueriedChild = try await updateAndWaitForSync(queriedChild)
         let queriedChild2 = try await query(for: savedqueriedChild)
         try await assertChild(queriedChild2, canLazyLoad: savedParent)
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         _ = try await createAndWaitForSync(parent)
         let savedChild = try await createAndWaitForSync(child)
         var queriedChild = try await query(for: savedChild)
-        assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
-        
+        assertLazyReference(
+            queriedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)])
+        )
+
         let newParent = DefaultPKParent()
         _ = try await createAndWaitForSync(newParent)
         queriedChild.setParent(newParent)
@@ -194,28 +220,32 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let queriedChild2 = try await query(for: saveCommentWithNewPost)
         try await assertChild(queriedChild2, canLazyLoad: newParent)
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         _ = try await createAndWaitForSync(parent)
         let savedChild = try await createAndWaitForSync(child)
         var queriedChild = try await query(for: savedChild)
-        assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
-        
+        assertLazyReference(
+            queriedChild._parent,
+            state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)])
+        )
+
         queriedChild.setParent(nil)
         let saveCommentRemovePost = try await updateAndWaitForSync(queriedChild)
         let queriedChildNoParent = try await query(for: saveCommentRemovePost)
-        assertLazyReference(queriedChildNoParent._parent,
-                        state: .notLoaded(identifiers: nil))
+        assertLazyReference(
+            queriedChildNoParent._parent,
+            state: .notLoaded(identifiers: nil)
+        )
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: DefaultPKModels())
-        
+
         let parent = Parent()
         let child = Child(parent: parent)
         let savedParent = try await createAndWaitForSync(parent)
@@ -224,7 +254,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(savedChild)
         try await assertModelDoesNotExist(savedParent)
     }
-    
+
     func testObserveParent() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
@@ -238,9 +268,9 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                    version == 1,
                    let receivedParent = try? mutationEvent.decodeModel(as: Parent.self),
                    receivedParent.id == parent.id {
-                    
+
                     try await createAndWaitForSync(child)
-                    
+
                     guard let children = receivedParent.children else {
                         XCTFail("Lazy List does not exist")
                         return
@@ -251,23 +281,23 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load children \(error)")
                     }
                     XCTAssertEqual(children.count, 1)
-                    
+
                     mutationEventReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: Parent.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveChild() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
@@ -287,18 +317,18 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: Child.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
-    
+
     func testObserveQueryParent() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
@@ -320,27 +350,27 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                         XCTFail("Failed to lazy load children \(error)")
                     }
                     XCTAssertEqual(children.count, 1)
-                    
+
                     snapshotReceived.fulfill()
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: Parent.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
-    
+
     func testObserveQueryChild() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
-        
+
         let parent = Parent()
         let savedParent = try await createAndWaitForSync(parent)
         let child = Child(parent: parent)
@@ -354,26 +384,26 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                 }
             }
         }
-        
+
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: Child.schema)
         do {
             _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
-        
+
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
 }
 
 extension AWSDataStoreLazyLoadDefaultPKTests {
-    
+
     typealias Parent = DefaultPKParent
     typealias Child = DefaultPKChild
-    
+
     struct DefaultPKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Child.self)
             ModelRegistry.register(modelType: DefaultPKParent.self)

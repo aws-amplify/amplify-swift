@@ -12,8 +12,10 @@ import Foundation
 class StateMachine<State, Action> {
     typealias Reducer = (State, Action) -> State
 
-    private let queue = DispatchQueue(label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Action.self)>",
-                                      target: DispatchQueue.global())
+    private let queue = DispatchQueue(
+        label: "com.amazonaws.Amplify.StateMachine<\(State.self), \(Action.self)>",
+        target: DispatchQueue.global()
+    )
 
     private var reducer: Reducer
     @Published var state: State
@@ -51,10 +53,10 @@ class StateMachine<State, Action> {
 }
 
 extension StateMachine: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

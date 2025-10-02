@@ -7,8 +7,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class StoragePersistableTransferTaskTests: XCTestCase {
     var database: StorageTransferDatabase!
@@ -47,11 +47,13 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
-                                              transferType: loadedTranferType1,
-                                              sessionTask: sessionTask1,
-                                              storageTransferDatabase: database,
-                                              logger: logger)
+        let loadedTask1 = StorageTransferTask(
+            persistableTransferTask: persistableTask1,
+            transferType: loadedTranferType1,
+            sessionTask: sessionTask1,
+            storageTransferDatabase: database,
+            logger: logger
+        )
 
         XCTAssertEqual(task1.transferID, loadedTask1.transferID)
         XCTAssertEqual(task1.taskIdentifier, loadedTask1.taskIdentifier)
@@ -78,11 +80,13 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
-                                              transferType: loadedTranferType1,
-                                              sessionTask: sessionTask1,
-                                              storageTransferDatabase: database,
-                                              logger: logger)
+        let loadedTask1 = StorageTransferTask(
+            persistableTransferTask: persistableTask1,
+            transferType: loadedTranferType1,
+            sessionTask: sessionTask1,
+            storageTransferDatabase: database,
+            logger: logger
+        )
 
         XCTAssertEqual(task1.transferID, loadedTask1.transferID)
         XCTAssertEqual(task1.taskIdentifier, loadedTask1.taskIdentifier)
@@ -93,9 +97,11 @@ class StoragePersistableTransferTaskTests: XCTestCase {
     func testPersistingTransferTaskForPendingMultipartUpload() throws {
         let uploadId = UUID().uuidString
         let fileURL = fileSystem.createTemporaryFileURL()
-        let uploadFile = UploadFile(fileURL: fileURL,
-                                    temporaryFileCreated: true,
-                                    size: UInt64(Bytes.megabytes(12).bytes))
+        let uploadFile = UploadFile(
+            fileURL: fileURL,
+            temporaryFileCreated: true,
+            size: UInt64(Bytes.megabytes(12).bytes)
+        )
 
         let transferType1 = StorageTransferType.multiPartUpload(onEvent: { _ in })
         let task1 = createTask(transferType: transferType1, sessionTask: nil)
@@ -114,9 +120,11 @@ class StoragePersistableTransferTaskTests: XCTestCase {
     func testPersistingTransferTaskForInProgressMultipartUpload() throws {
         let uploadId = UUID().uuidString
         let fileURL = fileSystem.createTemporaryFileURL()
-        let uploadFile = UploadFile(fileURL: fileURL,
-                                    temporaryFileCreated: true,
-                                    size: UInt64(Bytes.megabytes(12).bytes))
+        let uploadFile = UploadFile(
+            fileURL: fileURL,
+            temporaryFileCreated: true,
+            size: UInt64(Bytes.megabytes(12).bytes)
+        )
 
         let transferType1 = StorageTransferType.multiPartUpload(onEvent: { _ in })
         let transferType2 = StorageTransferType.multiPartUploadPart(uploadId: uploadId, partNumber: 1)
@@ -170,10 +178,12 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
-                                              transferType: loadedTranferType1,
-                                              storageTransferDatabase: database,
-                                              logger: logger)
+        let loadedTask1 = StorageTransferTask(
+            persistableTransferTask: persistableTask1,
+            transferType: loadedTranferType1,
+            storageTransferDatabase: database,
+            logger: logger
+        )
 
         XCTAssertNil(loadedTask1.taskIdentifier)
         XCTAssertEqual(task1.transferID, loadedTask1.transferID)
@@ -186,11 +196,13 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask2 = StorageTransferTask(persistableTransferTask: persistableTask2,
-                                              transferType: loadedTranferType2,
-                                              sessionTask: sessionTask2,
-                                              storageTransferDatabase: database,
-                                              logger: logger)
+        let loadedTask2 = StorageTransferTask(
+            persistableTransferTask: persistableTask2,
+            transferType: loadedTranferType2,
+            sessionTask: sessionTask2,
+            storageTransferDatabase: database,
+            logger: logger
+        )
 
         XCTAssertEqual(task2.transferID, loadedTask2.transferID)
         XCTAssertEqual(task2.taskIdentifier, loadedTask2.taskIdentifier)
@@ -202,11 +214,13 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask3 = StorageTransferTask(persistableTransferTask: persistableTask3,
-                                              transferType: loadedTranferType3,
-                                              sessionTask: sessionTask3,
-                                              storageTransferDatabase: database,
-                                              logger: logger)
+        let loadedTask3 = StorageTransferTask(
+            persistableTransferTask: persistableTask3,
+            transferType: loadedTranferType3,
+            sessionTask: sessionTask3,
+            storageTransferDatabase: database,
+            logger: logger
+        )
 
         XCTAssertEqual(task3.transferID, loadedTask3.transferID)
         XCTAssertEqual(task3.taskIdentifier, loadedTask3.taskIdentifier)
@@ -223,21 +237,25 @@ class StoragePersistableTransferTaskTests: XCTestCase {
 
     // MARK: - Private -
 
-    private func createTask(transferType: StorageTransferType,
-                            sessionTask: StorageSessionTask? = nil) -> StorageTransferTask {
+    private func createTask(
+        transferType: StorageTransferType,
+        sessionTask: StorageSessionTask? = nil
+    ) -> StorageTransferTask {
         let transferID = UUID().uuidString
         let bucket = "BUCKET"
         let key = UUID().uuidString
 
-        let task = StorageTransferTask(transferID: transferID,
-                                       transferType: transferType,
-                                       bucket: bucket,
-                                       key: key,
-                                       location: nil,
-                                       contentType: nil,
-                                       requestHeaders: nil,
-                                       storageTransferDatabase: database,
-                                       logger: storageLogger)
+        let task = StorageTransferTask(
+            transferID: transferID,
+            transferType: transferType,
+            bucket: bucket,
+            key: key,
+            location: nil,
+            contentType: nil,
+            requestHeaders: nil,
+            storageTransferDatabase: database,
+            logger: storageLogger
+        )
         task.sessionTask = sessionTask
         return task
     }

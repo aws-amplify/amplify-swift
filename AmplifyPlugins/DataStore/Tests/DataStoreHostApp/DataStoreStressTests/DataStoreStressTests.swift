@@ -7,16 +7,16 @@
 
 import XCTest
 
+import AWSAPIPlugin
 import AWSPluginsCore
 import Combine
-import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
 final class DataStoreStressTests: DataStoreStressBaseTest {
-    
+
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Post.self)
@@ -24,9 +24,9 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         let version: String = "1"
     }
-    
+
     // MARK: - Stress tests
-    
+
     /// Perform concurrent saves and observe the data successfuly synced from cloud
     ///
     /// - Given: DataStore is in ready state
@@ -41,13 +41,15 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         var posts = [Post]()
         for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            status: .active,
-                            content: "content \(index)",
-                            createdAt: .now())
+            let post = Post(
+                title: "title \(index)",
+                status: .active,
+                content: "content \(index)",
+                createdAt: .now()
+            )
             posts.append(post)
         }
-        
+
         let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
         postsSyncedToCloud.expectedFulfillmentCount = concurrencyLimit
 
@@ -69,7 +71,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
+
         let capturedPosts = posts
 
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -77,10 +79,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 _ = try await Amplify.DataStore.save(capturedPosts[index])
             }
         }
-        
+
         await fulfillment(of: [postsSyncedToCloud], timeout: networkTimeout)
     }
-    
+
     /// Perform concurrent saves and observe the data successfuly synced from cloud
     ///
     /// - Given: DataStore is in ready state
@@ -95,7 +97,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
         try await startDataStoreAndWaitForReady()
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
-        
+
         let localQueryForPosts = expectation(description: "Query for the post is successful")
         localQueryForPosts.expectedFulfillmentCount = concurrencyLimit
 
@@ -109,10 +111,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 localQueryForPosts.fulfill()
             }
         }
-        
+
         await fulfillment(of: [localQueryForPosts], timeout: networkTimeout)
     }
-    
+
     /// Perform concurrent saves and observe the data successfuly synced from cloud
     ///
     /// - Given: DataStore is in ready state
@@ -127,7 +129,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
         try await startDataStoreAndWaitForReady()
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
-        
+
         let localQueryForPosts = expectation(description: "Query for the post is successful")
         localQueryForPosts.expectedFulfillmentCount = concurrencyLimit
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -142,10 +144,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 localQueryForPosts.fulfill()
             }
         }
-        
+
         await fulfillment(of: [localQueryForPosts], timeout: networkTimeout)
     }
-    
+
     /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
     /// and ensure they have successfully synced from cloud
     ///
@@ -160,12 +162,12 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
     func testMultipleDelete() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startDataStoreAndWaitForReady()
-        
+
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
-        
+
         let postsDeletedLocally = expectation(description: "All posts deleted locally")
         postsDeletedLocally.expectedFulfillmentCount = concurrencyLimit
-        
+
         let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
         postsDeletedFromCloud.expectedFulfillmentCount = concurrencyLimit
 
@@ -176,7 +178,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
                         return
                     }
-                    
+
                     if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                        mutationEvent.version == 1 {
                         postsDeletedLocally.fulfill()
@@ -189,29 +191,31 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 try await Amplify.DataStore.delete(posts[index])
             }
         }
-        
+
         await fulfillment(of: [postsDeletedLocally, postsDeletedFromCloud], timeout: networkTimeout)
     }
-    
-    
+
+
     // MARK: - Helpers
-    
+
     func saveAndSyncPosts(concurrencyLimit: Int) async -> [Post] {
         var posts = [Post]()
         for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            status: .active,
-                            content: "content \(index)",
-                            createdAt: .now())
+            let post = Post(
+                title: "title \(index)",
+                status: .active,
+                content: "content \(index)",
+                createdAt: .now()
+            )
             posts.append(post)
         }
-        
+
         let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
         postsSyncedToCloud.expectedFulfillmentCount = concurrencyLimit
 
@@ -223,7 +227,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
                         return
                     }
-                    
+
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
                        mutationEvent.version == 1 {
                         postsSyncedToCloud.fulfill()
@@ -233,16 +237,16 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
+
         let capturedPosts = posts
-        
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 _ = try await Amplify.DataStore.save(capturedPosts[index])
             }
         }
         await fulfillment(of: [postsSyncedToCloud], timeout: networkTimeout)
-        
+
         return capturedPosts
     }
 }

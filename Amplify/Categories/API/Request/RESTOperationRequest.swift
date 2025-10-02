@@ -32,13 +32,15 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     public let options: Options
 
     /// Initializer with all properties
-    public init(apiName: String?,
-                operationType: RESTOperationType,
-                path: String? = nil,
-                headers: [String: String]? = nil,
-                queryParameters: [String: String]? = nil,
-                body: Data? = nil,
-                options: Options) {
+    public init(
+        apiName: String?,
+        operationType: RESTOperationType,
+        path: String? = nil,
+        headers: [String: String]? = nil,
+        queryParameters: [String: String]? = nil,
+        body: Data? = nil,
+        options: Options
+    ) {
         self.apiName = apiName
         self.operationType = operationType
         self.path = path

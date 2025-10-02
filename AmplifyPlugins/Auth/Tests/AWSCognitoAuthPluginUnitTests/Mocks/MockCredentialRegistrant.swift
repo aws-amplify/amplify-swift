@@ -8,8 +8,8 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import Foundation
+@testable import AWSCognitoAuthPlugin
 
 @available(iOS 17.4, macOS 13.5, *)
 class MockCredentialRegistrant: CredentialRegistrantProtocol {

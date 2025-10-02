@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
 
@@ -31,7 +31,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
-    
+
     /// Test if confirmSignUp returns `.userNotFound` error for a non existing user
     ///
     /// - Given: A user which is not registered to the configured user pool
@@ -53,7 +53,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             XCTFail("Confirm sign up call should not succeed")
         } catch (let error) {
             XCTAssertNotNil(error)
-            guard 
+            guard
                 let authError = error as? AuthError,
                 let cognitoError = authError.underlyingError as? AWSCognitoAuthError else {
                 XCTFail("Should return cognitoAuthError")
@@ -68,7 +68,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             }
         }
     }
-    
+
     /// Test if confirmSignUp returns validation error
     ///
     /// - Given: An invalid input to confirmSignUp like empty code
@@ -83,7 +83,8 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.confirmSignUp(
                 for: username,
                 confirmationCode: "",
-                options: AuthConfirmSignUpRequest.Options())
+                options: AuthConfirmSignUpRequest.Options()
+            )
             XCTFail("confirmSignUp with validation error should not succeed")
         } catch {
             guard case AuthError.validation = error else {
@@ -92,7 +93,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             }
         }
     }
-    
+
     /// Test if confirmSignUp returns validation error
     ///
     /// - Given: An invalid input to confirmSignUp like empty username
@@ -107,7 +108,8 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.confirmSignUp(
                 for: username,
                 confirmationCode: "123456",
-                options: AuthConfirmSignUpRequest.Options())
+                options: AuthConfirmSignUpRequest.Options()
+            )
             XCTFail("confirmSignUp with validation error should not succeed")
         } catch {
             guard case AuthError.validation = error else {
@@ -116,7 +118,7 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
             }
         }
     }
-    
+
     /// Test successful sign up and confirm sign up of a user
     ///
     /// - Given: A Cognito user pool configured with passwordless user auth
@@ -131,8 +133,8 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
 
         let username = "integTest\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(
-            userAttributes: [ AuthUserAttribute(.email, value: randomEmail)])
-        
+            userAttributes: [AuthUserAttribute(.email, value: randomEmail)])
+
         // sign up
         let signUpResult = try await Amplify.Auth.signUp(username: username, options: options)
         guard case .confirmUser = signUpResult.nextStep else {
@@ -149,9 +151,10 @@ class PasswordlessConfirmSignUpTests: AWSAuthBaseTest {
 
         // confirm sign up
         let confirmSignUpResult = try await Amplify.Auth.confirmSignUp(
-            for: username, 
+            for: username,
             confirmationCode: otp,
-            options: AuthConfirmSignUpRequest.Options())
+            options: AuthConfirmSignUpRequest.Options()
+        )
         guard case .completeAutoSignIn(let session) = confirmSignUpResult.nextStep else {
             XCTFail("Result should be .done for next step")
             return

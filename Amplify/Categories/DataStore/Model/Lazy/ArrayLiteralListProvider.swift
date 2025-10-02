@@ -35,15 +35,19 @@ public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
     }
 
     public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        completion(.failure(CoreError.clientValidation("No pagination on an array literal",
-                                                       "Don't call this method",
-                                                       nil)))
+        completion(.failure(CoreError.clientValidation(
+            "No pagination on an array literal",
+            "Don't call this method",
+            nil
+        )))
     }
 
     public func getNextPage() async throws -> List<Element> {
-        throw CoreError.clientValidation("No pagination on an array literal",
-                                                       "Don't call this method",
-                                                       nil)
+        throw CoreError.clientValidation(
+            "No pagination on an array literal",
+            "Don't call this method",
+            nil
+        )
     }
 
     public func encode(to encoder: Encoder) throws {

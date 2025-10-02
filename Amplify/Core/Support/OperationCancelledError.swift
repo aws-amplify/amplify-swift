@@ -21,7 +21,7 @@ public struct OperationCancelledError: Error {
 /// change without warning.
 public extension AmplifyError {
     var isOperationCancelledError: Bool {
-        guard let underlyingError = underlyingError else {
+        guard let underlyingError else {
             return false
         }
         return underlyingError.isOperationCancelledError

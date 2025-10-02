@@ -17,13 +17,12 @@ struct InitializeFetchUnAuthSession: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let configuration = (environment as? AuthEnvironment)?.configuration
 
-        let event: FetchAuthSessionEvent
-        switch configuration {
+        let event: FetchAuthSessionEvent = switch configuration {
         case .userPools:
             // If only user pool is configured then we do not have any unauthsession
-            event = .init(eventType: .throwError(.noIdentityPool))
+            .init(eventType: .throwError(.noIdentityPool))
         default:
-            event = .init(eventType: .fetchUnAuthIdentityID)
+            .init(eventType: .fetchUnAuthIdentityID)
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
@@ -31,11 +30,11 @@ struct InitializeFetchUnAuthSession: Action {
 }
 
 extension InitializeFetchUnAuthSession: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

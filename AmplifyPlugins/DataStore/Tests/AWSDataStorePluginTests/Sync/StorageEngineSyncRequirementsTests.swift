@@ -113,38 +113,58 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules, authModeStrategy: .default))
         XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules, authModeStrategy: .multiAuth))
     }
-    
+
     func testRequiresAuthPluginOIDCProvider_MultiAuthRules() {
         // OIDC requires an auth provider on the API, this is added below
-        let authRules = [AuthRule(allow: .owner, provider: .oidc),
-                         AuthRule(allow: .private, provider: .iam)]
+        let authRules = [
+            AuthRule(allow: .owner, provider: .oidc),
+            AuthRule(allow: .private, provider: .iam)
+        ]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         let oidcProvider = MockOIDCAuthProvider()
         apiPlugin.authProviderFactory = MockAPIAuthProviderFactory(oidcProvider: oidcProvider)
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, 
-                                                        authRules: authRules,
-                                                        authModeStrategy: .default),
-                       "Should be false since OIDC is the default auth type on the API.")
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin,
-                                                       authRules: authRules,
-                                                       authModeStrategy: .multiAuth),
-                      "Should be true since IAM requires auth plugin.")
+        XCTAssertFalse(
+            StorageEngine.requiresAuthPlugin(
+                apiPlugin,
+                authRules: authRules,
+                authModeStrategy: .default
+            ),
+            "Should be false since OIDC is the default auth type on the API."
+        )
+        XCTAssertTrue(
+            StorageEngine.requiresAuthPlugin(
+                apiPlugin,
+                authRules: authRules,
+                authModeStrategy: .multiAuth
+            ),
+            "Should be true since IAM requires auth plugin."
+        )
     }
-    
+
     func testRequiresAuthPluginUserPoolProvider_MultiAuthRules() {
-        let authRules = [AuthRule(allow: .owner, provider: .userPools),
-                         AuthRule(allow: .private, provider: .iam)]
+        let authRules = [
+            AuthRule(allow: .owner, provider: .userPools),
+            AuthRule(allow: .private, provider: .iam)
+        ]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = AWSAuthorizationType.amazonCognitoUserPools
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin,
-                                                        authRules: authRules,
-                                                        authModeStrategy: .default),
-                       "Should be true since UserPool is the default auth type on the API.")
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin,
-                                                       authRules: authRules,
-                                                       authModeStrategy: .multiAuth),
-                      "Should be true since both UserPool and IAM requires auth plugin.")
+        XCTAssertTrue(
+            StorageEngine.requiresAuthPlugin(
+                apiPlugin,
+                authRules: authRules,
+                authModeStrategy: .default
+            ),
+            "Should be true since UserPool is the default auth type on the API."
+        )
+        XCTAssertTrue(
+            StorageEngine.requiresAuthPlugin(
+                apiPlugin,
+                authRules: authRules,
+                authModeStrategy: .multiAuth
+            ),
+            "Should be true since both UserPool and IAM requires auth plugin."
+        )
     }
 
     func testRequiresAuthPluginFunctionProvider() {
@@ -238,7 +258,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
         func defaultAuthType(for apiName: String?) throws -> AWSAuthorizationType {
             if let error = defaultAuthTypeError {
                 throw error
-            } else if let authType = authType {
+            } else if let authType {
                 return authType
             } else {
                 return .amazonCognitoUserPools

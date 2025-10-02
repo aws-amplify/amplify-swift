@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AuthPluginConstants {
+enum AuthPluginConstants {
 
     /// The time interval under which the refresh of UserPool or awsCredentials tokens will happen
     static let sessionRefreshInterval: TimeInterval = 2 * 60

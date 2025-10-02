@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -5,29 +12,35 @@ import Foundation
 public struct UserSettings14: Model {
   public let id: String
   public var language: String?
-  internal var _user: LazyReference<User14>
+  var _user: LazyReference<User14>
   public var user: User14   {
-      get async throws { 
+      get async throws {
         try await _user.require()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(id: String = UUID().uuidString,
-      language: String? = nil,
-      user: User14) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    language: String? = nil,
+    user: User14
+  ) {
+    self.init(
+      id: id,
       language: language,
       user: user,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      language: String? = nil,
-      user: User14,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    language: String? = nil,
+    user: User14,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.language = language
       self._user = LazyReference(user)
@@ -35,15 +48,15 @@ public struct UserSettings14: Model {
       self.updatedAt = updatedAt
   }
   public mutating func setUser(_ user: User14) {
-    self._user = LazyReference(user)
+    _user = LazyReference(user)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      language = try? values.decode(String?.self, forKey: .language)
-      _user = try values.decodeIfPresent(LazyReference<User14>.self, forKey: .user) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.id = try values.decode(String.self, forKey: .id)
+      self.language = try? values.decode(String?.self, forKey: .language)
+      self._user = try values.decodeIfPresent(LazyReference<User14>.self, forKey: .user) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

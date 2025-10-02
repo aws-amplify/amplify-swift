@@ -8,11 +8,11 @@
 import Foundation
 
 // TODO: remove this https://github.com/aws-amplify/amplify-ios/issues/75
-struct URLRequestConstants {
+enum URLRequestConstants {
     static let appSyncServiceName = "appsync"
     static let apiGatewayServiceName = "execute-api"
 
-    struct Header {
+    enum Header {
         static let xAmzDate = "X-Amz-Date"
         static let contentType = "Content-Type"
         static let userAgent = "User-Agent"
@@ -21,7 +21,7 @@ struct URLRequestConstants {
         static let webSocketSubprotocols = "Sec-WebSocket-Protocol"
     }
 
-    struct ContentType {
+    enum ContentType {
         static let applicationJson = "application/json"
     }
 }

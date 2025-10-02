@@ -12,8 +12,10 @@ import Foundation
 ///   - expression: expression
 ///   - fail: error handler
 /// - Returns: optional result
-func attempt<T>(_ expression: @autoclosure () throws -> T,
-                fail: @autoclosure () -> ((Swift.Error) -> Void)) -> T? {
+func attempt<T>(
+    _ expression: @autoclosure () throws -> T,
+    fail: @autoclosure () -> ((Swift.Error) -> Void)
+) -> T? {
     do {
         return try expression()
     } catch {
@@ -28,8 +30,10 @@ func attempt<T>(_ expression: @autoclosure () throws -> T,
 ///   - fail: error handler
 /// - Returns: success
 @discardableResult
-func attempt(_ expression: @autoclosure () throws -> Void,
-             fail: @autoclosure () -> ((Swift.Error) -> Void)) -> Bool {
+func attempt(
+    _ expression: @autoclosure () throws -> Void,
+    fail: @autoclosure () -> ((Swift.Error) -> Void)
+) -> Bool {
     do {
         try expression()
         return true

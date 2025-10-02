@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AWSAuthConfirmSignUpAPITests: BasePluginTest {
@@ -20,8 +20,9 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     override var initialState: AuthState {
         AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
-            .configured, 
-            .awaitingUserConfirmation(SignUpEventData(username: "jeffb"), .init(.confirmUser())))
+            .configured,
+            .awaitingUserConfirmation(SignUpEventData(username: "jeffb"), .init(.confirmUser()))
+        )
     }
 
     /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response
@@ -29,7 +30,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up is complete with `.done` as the next step
     func testSuccessfulConfirmSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
                 XCTAssertNil(request.forceAliasCreation)
@@ -37,10 +38,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.confirmSignUp(
+        let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -48,7 +50,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
-    
+
     /// Given: Configured auth machine in `.notStarted` sign up state and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.done` as the next step
@@ -60,13 +62,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return .init()
             }
         )
-        
+
         let initialStateAwaitingNotStarted = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .notStarted)
-        
-        
+            .notStarted
+        )
+
+
         let authPluginNotStarted = configureCustomPluginWith(
             userPool: { mockIdentityProvider },
             initialState: initialStateAwaitingNotStarted
@@ -75,7 +78,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let result = try await authPluginNotStarted.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -83,7 +87,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
-    
+
     /// Given: Configured auth machine in `.signedUp` sign up state and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.done` as the next step
@@ -95,22 +99,24 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return .init()
             }
         )
-        
+
         let initialStateSignedUp = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .signedUp(.init(username: "user1"), .init(.done)))
-        
-        
+            .signedUp(.init(username: "user1"), .init(.done))
+        )
+
+
         let authPluginSignedUp = configureCustomPluginWith(
             userPool: { mockIdentityProvider },
             initialState: initialStateSignedUp
         )
-        
+
         let result2 = try await authPluginSignedUp.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result2.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -118,7 +124,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
         XCTAssertTrue(result2.isSignUpComplete, "Signin result should be complete")
     }
-    
+
     /// Given: Configured auth machine in `.error` sign up state and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.done` as the next step
@@ -134,15 +140,19 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error"))))
-        
-        let authPluginError = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                        initialState: initialStateError)
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
 
         let result = try await authPluginError.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -150,14 +160,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         }
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
-    
+
     /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response
     /// with a `session` string
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
     func testSuccessfulPasswordlessConfirmSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
                 XCTAssertNil(request.forceAliasCreation)
@@ -165,10 +175,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.confirmSignUp(
+        let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .completeAutoSignIn(let session) = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -177,7 +188,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
         XCTAssertEqual(session, "session")
     }
-    
+
     /// Given: Configured auth machine in `.notStarted` and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
@@ -193,9 +204,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateAwaitingNotStarted = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .notStarted)
-        
-        
+            .notStarted
+        )
+
+
         let authPluginNotStarted = configureCustomPluginWith(
             userPool: { mockIdentityProvider },
             initialState: initialStateAwaitingNotStarted
@@ -204,7 +216,8 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let result = try await authPluginNotStarted.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .completeAutoSignIn(let session) = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -213,7 +226,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
         XCTAssertEqual(session, "session")
     }
-    
+
     /// Given: Configured auth machine in `.notStarted` and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
@@ -225,22 +238,24 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateSignedUp = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .signedUp(.init(username: "user1"), .init(.done)))
-        
-        
+            .signedUp(.init(username: "user1"), .init(.done))
+        )
+
+
         let authPluginSignedUp = configureCustomPluginWith(
             userPool: { mockIdentityProvider },
             initialState: initialStateSignedUp
         )
-        
+
         let result = try await authPluginSignedUp.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .completeAutoSignIn(let session) = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -249,7 +264,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
         XCTAssertEqual(session, "session")
     }
-    
+
     /// Given: Configured auth machine in `.notStarted` and a mocked success response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.completeAutoSignIn` as the next step
@@ -261,19 +276,23 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error"))))
-        
-        let authPluginError = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                        initialState: initialStateError)
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
 
         let result = try await authPluginError.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .completeAutoSignIn(let session) = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -282,14 +301,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
         XCTAssertEqual(session, "session")
     }
-    
+
     /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state and a mocked success response
     /// with a `nil` session string
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up is complete with `.done` as the next step
     func testSuccessfulPasswordlessConfirmSignUpWithNilSession() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
                 XCTAssertNil(request.forceAliasCreation)
@@ -297,10 +316,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             }
         )
 
-        let result = try await self.plugin.confirmSignUp(
+        let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -314,7 +334,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up is complete with `.done` as the next step
     func testSuccessfulConfirmSignUpWithOptions() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNotNil(request.clientMetadata)
                 XCTAssertEqual(request.clientMetadata?["key"], "value")
@@ -325,12 +345,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         let pluginOptions = AWSAuthConfirmSignUpOptions(
             metadata: ["key": "value"],
-            forceAliasCreation: true)
+            forceAliasCreation: true
+        )
         let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
-        let result = try await self.plugin.confirmSignUp(
+        let result = try await plugin.confirmSignUp(
             for: "jeffb",
             confirmationCode: "123456",
-            options: options)
+            options: options
+        )
 
         guard case .done = result.nextStep else {
             XCTFail("Result should be .done for next step")
@@ -344,7 +366,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up fails with error
     func testConfirmSignUpWithEmptyUsername() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init()
@@ -352,10 +374,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await self.plugin.confirmSignUp(
+            _ = try await plugin.confirmSignUp(
                 for: "",
                 confirmationCode: "123456",
-                options: options)
+                options: options
+            )
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -371,7 +394,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up fails with error
     func testConfirmSignUpWithEmptyConfirmationCode() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 XCTFail("Sign up API should not be called")
                 return .init()
@@ -379,10 +402,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await self.plugin.confirmSignUp(
+            _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "",
-                options: options)
+                options: options
+            )
 
         } catch {
             guard let authError = error as? AuthError else {
@@ -415,36 +439,40 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         for errorToTest in errorsToTest {
             await validateConfirmSignUpServiceErrors(
                 confirmSignUpOutputError: errorToTest.confirmSignUpOutputError,
-                expectedCognitoError: errorToTest.cognitoError)
+                expectedCognitoError: errorToTest.cognitoError
+            )
         }
     }
 
-    /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state 
+    /// Given: Configured auth machine in `.awaitingUserConfirmation` sign up state
     /// and a mocked `NotAuthorizedException` response
     /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
     /// Then: Confirm Sign up fails with `.notAuthorized` error
     func testConfirmSignUpWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException()
             }
         )
 
         do {
-            let _ = try await self.plugin.confirmSignUp(
+            _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
                 return
             }
 
-            guard case .notAuthorized(let errorDescription,
-                                      let recoverySuggestion,
-                                      let notAuthorizedError) = authError else {
+            guard case .notAuthorized(
+                let errorDescription,
+                let recoverySuggestion,
+                let notAuthorizedError
+            ) = authError else {
                 XCTFail("Auth error should be of type notAuthorized")
                 return
             }
@@ -461,17 +489,18 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up fails with `.unknown` error
     func testConfirmSignUpWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException()
             }
         )
 
         do {
-            let _ = try await self.plugin.confirmSignUp(
+            _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -493,7 +522,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     /// Then: Confirm Sign up fails with `.unknown` error
     func testConfirmSignUpWithUnknownErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
                 throw AWSClientRuntime.UnknownAWSHTTPServiceError.init(
                     httpResponse: .init(body: .empty, statusCode: .accepted),
@@ -505,10 +534,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         )
 
         do {
-            let _ = try await self.plugin.confirmSignUp(
+            _ = try await plugin.confirmSignUp(
                 for: "jeffb",
                 confirmationCode: "12345",
-                options: options)
+                options: options
+            )
         } catch {
             guard let authError = error as? AuthError else {
                 XCTFail("Should throw Auth error")
@@ -526,27 +556,31 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
     func validateConfirmSignUpServiceErrors(
         confirmSignUpOutputError: Error,
-        expectedCognitoError: AWSCognitoAuthError) async {
-            self.mockIdentityProvider = MockIdentityProvider(
+        expectedCognitoError: AWSCognitoAuthError
+    ) async {
+            mockIdentityProvider = MockIdentityProvider(
                 mockConfirmSignUpResponse: { _ in
                     throw confirmSignUpOutputError
                 }
             )
 
             do {
-                let _ = try await self.plugin.confirmSignUp(
+                _ = try await plugin.confirmSignUp(
                     for: "jeffb",
                     confirmationCode: "12345",
-                    options: options)
+                    options: options
+                )
             } catch {
                 guard let authError = error as? AuthError else {
                     XCTFail("Should throw Auth error")
                     return
                 }
 
-                guard case .service(let errorMessage,
-                                    let recovery,
-                                    let serviceError) = authError else {
+                guard case .service(
+                    let errorMessage,
+                    let recovery,
+                    let serviceError
+                ) = authError else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }

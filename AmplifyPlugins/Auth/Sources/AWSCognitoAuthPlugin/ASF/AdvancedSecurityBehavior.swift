@@ -9,10 +9,12 @@ import Foundation
 
 protocol AdvancedSecurityBehavior {
 
-    func userContextData(for username: String,
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) async throws -> String
+    func userContextData(
+        for username: String,
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) async throws -> String
 }
 
 protocol ASFDeviceBehavior: Sendable {

@@ -17,27 +17,27 @@ final class MockLogger {
 }
 
 extension MockLogger: Logger {
-    
+
     func error(_ message: @autoclosure () -> String) {
         entries.append(Entry(level: .error, message: message()))
     }
-    
+
     func error(error: Error) {
         entries.append(Entry(level: .error, message: String(describing: error)))
     }
-    
+
     func warn(_ message: @autoclosure () -> String) {
         entries.append(Entry(level: .warn, message: message()))
     }
-    
+
     func info(_ message: @autoclosure () -> String) {
         entries.append(Entry(level: .info, message: message()))
     }
-    
+
     func debug(_ message: @autoclosure () -> String) {
         entries.append(Entry(level: .debug, message: message()))
     }
-    
+
     func verbose(_ message: @autoclosure () -> String) {
         entries.append(Entry(level: .verbose, message: message()))
     }

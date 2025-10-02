@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import XCTest
-import Amplify
 
 class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
 
@@ -54,39 +54,39 @@ class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
 
 extension AWSDataStorePrimaryKeyIntegrationTests {
     struct DefaultImplicitPKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: ModelImplicitDefaultPk.self)
         }
     }
 
     struct DefaultExplicitPKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: ModelExplicitDefaultPk.self)
         }
     }
 
     struct CustomExplicitPKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: ModelExplicitCustomPk.self)
         }
     }
 
     struct CompositePKModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: ModelCompositePk.self)
         }
     }
 
     struct CompositePKModelsWithInt: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: ModelCompositeIntPk.self)
         }
     }
 
-    
+
 }

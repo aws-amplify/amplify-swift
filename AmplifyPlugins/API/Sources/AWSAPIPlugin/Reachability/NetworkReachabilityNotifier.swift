@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import Combine
+import Foundation
 
 class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
@@ -19,9 +19,11 @@ class NetworkReachabilityNotifier {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
-    public init(host: String,
-                allowsCellularAccess: Bool,
-                reachabilityFactory: NetworkReachabilityProvidingFactory.Type) throws {
+    init(
+        host: String,
+        allowsCellularAccess: Bool,
+        reachabilityFactory: NetworkReachabilityProvidingFactory.Type
+    ) throws {
     #if os(watchOS)
         self.reachability = reachabilityFactory.make()
     #else
@@ -30,10 +32,12 @@ class NetworkReachabilityNotifier {
         self.allowsCellularAccess = allowsCellularAccess
 
         // Add listener for Reachability and start its notifier
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(respondToReachabilityChange),
-                                               name: .reachabilityChanged,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(respondToReachabilityChange),
+            name: .reachabilityChanged,
+            object: nil
+        )
         do {
             try reachability?.startNotifier()
         } catch {
@@ -49,18 +53,17 @@ class NetworkReachabilityNotifier {
 
     // MARK: - Notifications
     @objc private func respondToReachabilityChange() {
-        guard let reachability = reachability else {
+        guard let reachability else {
             return
         }
 
-        let isReachable: Bool
-        switch reachability.connection {
+        let isReachable: Bool = switch reachability.connection {
         case .wifi:
-            isReachable = true
+            true
         case .cellular:
-            isReachable = allowsCellularAccess
+            allowsCellularAccess
         case .none, .unavailable:
-            isReachable = false
+            false
         }
 
         let reachabilityMessageUpdate = ReachabilityUpdate(isOnline: isReachable)

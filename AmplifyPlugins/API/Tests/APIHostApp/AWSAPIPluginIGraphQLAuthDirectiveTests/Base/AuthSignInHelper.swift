@@ -9,7 +9,7 @@ import Amplify
 
 public typealias CompletionType = (Bool, AuthError?) -> Void
 
-public struct AuthSignInHelper {
+public enum AuthSignInHelper {
 
     public static func signUpUser(username: String, password: String, email: String) async throws -> AuthSignUpResult {
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])

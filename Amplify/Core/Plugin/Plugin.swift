@@ -30,5 +30,5 @@ public typealias PluginKey = String
 /// to store heterogenous collections of Plugins in a category.
 /// - Throws: PluginError.mismatchedPlugin if the instance is associated with the wrong category
 public protocol PluginInitializable {
-    init<P: Plugin>(instance: P)
+    init(instance: some Plugin)
 }

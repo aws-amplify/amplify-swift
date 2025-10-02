@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 /// Migrates `MutationSyncMetadata` to the new format.
 ///
@@ -23,7 +23,7 @@ class MutationSyncMetadataMigration: ModelMigration {
     }
 
     func apply() throws {
-        guard let delegate = delegate else {
+        guard let delegate else {
             log.debug("Missing MutationSyncMetadataMigrationDelegate delegate")
             throw DataStoreError.unknown("Missing MutationSyncMetadataMigrationDelegate delegate", "", nil)
         }
@@ -52,10 +52,10 @@ class MutationSyncMetadataMigration: ModelMigration {
 }
 
 extension MutationSyncMetadataMigration: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSPluginsCore
 import Amplify
+import AWSPluginsCore
+import Foundation
 
 extension FetchAuthSessionState {
 
@@ -15,8 +15,10 @@ extension FetchAuthSessionState {
 
         var defaultState: FetchAuthSessionState = .notStarted
 
-        func resolve(oldState: FetchAuthSessionState,
-                     byApplying event: StateMachineEvent)
+        func resolve(
+            oldState: FetchAuthSessionState,
+            byApplying event: StateMachineEvent
+        )
         -> StateResolution<FetchAuthSessionState> {
 
             guard let eventType = isFetchAuthSessionEvent(event)?.eventType else {
@@ -28,22 +30,33 @@ extension FetchAuthSessionState {
                 switch eventType {
 
                 case .fetchUnAuthIdentityID:
-                    return .init(newState: .fetchingIdentityID(UnAuthLoginsMapProvider()),
-                                 actions: [FetchAuthIdentityId()])
+                    return .init(
+                        newState: .fetchingIdentityID(UnAuthLoginsMapProvider()),
+                        actions: [FetchAuthIdentityId()]
+                    )
 
                 case .fetchAuthenticatedIdentityID(let provider):
-                    return .init(newState: .fetchingIdentityID(provider),
-                                 actions: [FetchAuthIdentityId(loginsMap: provider.loginsMap)])
+                    return .init(
+                        newState: .fetchingIdentityID(provider),
+                        actions: [FetchAuthIdentityId(loginsMap: provider.loginsMap)]
+                    )
 
                 case .fetchAWSCredentials(let identityId, let loginsMapProvider):
                     let action = FetchAuthAWSCredentials(
                         loginsMap: loginsMapProvider.loginsMap,
-                        identityID: identityId)
-                    return .init(newState: .fetchingAWSCredentials(identityId, loginsMapProvider),
-                                 actions: [action])
+                        identityID: identityId
+                    )
+                    return .init(
+                        newState: .fetchingAWSCredentials(identityId, loginsMapProvider),
+                        actions: [action]
+                    )
+
                 case .throwError(let error):
-                    return .init(newState: .error(error),
-                                 actions: [InformSessionError(error: error)])
+                    return .init(
+                        newState: .error(error),
+                        actions: [InformSessionError(error: error)]
+                    )
+
                 default:
                     return .from(oldState)
                 }
@@ -54,9 +67,12 @@ extension FetchAuthSessionState {
                 case .fetchedIdentityID(let identityID):
                     let action = FetchAuthAWSCredentials(
                         loginsMap: loginsMapProvider.loginsMap,
-                        identityID: identityID)
-                    return .init(newState: .fetchingAWSCredentials(identityID, loginsMapProvider),
-                                 actions: [action])
+                        identityID: identityID
+                    )
+                    return .init(
+                        newState: .fetchingAWSCredentials(identityID, loginsMapProvider),
+                        actions: [action]
+                    )
                 case .throwError(let error):
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -70,7 +86,8 @@ extension FetchAuthSessionState {
                 case .fetchedAWSCredentials(let identityID, let credentials):
                     let action = InformSessionFetched(
                         identityID: identityID,
-                        credentials: credentials)
+                        credentials: credentials
+                    )
                     return .init(newState: .fetched(identityID, credentials), actions: [action])
                 case .throwError(let error):
                     let action = InformSessionError(error: error)
@@ -78,6 +95,7 @@ extension FetchAuthSessionState {
                 default:
                     return .from(oldState)
                 }
+
             case .fetched, error:
                 return .from(oldState)
             }

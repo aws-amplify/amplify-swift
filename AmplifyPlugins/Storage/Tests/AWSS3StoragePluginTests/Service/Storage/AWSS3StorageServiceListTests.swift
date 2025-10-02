@@ -5,14 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSClientRuntime
 import AWSClientRuntime
 import AWSS3
-import Amplify
 import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+import SmithyHTTPAPI
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import SmithyHTTPAPI
 
 final class AWSS3StorageServiceListTests: XCTestCase {
 
@@ -33,9 +34,11 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         prefix = UUID().uuidString
         path = UUID().uuidString
         targetIdentityId = UUID().uuidString
-        systemUnderTest = try AWSS3StorageService(authService: authService,
-                                              region: region,
-                                              bucket: bucket)
+        systemUnderTest = try AWSS3StorageService(
+            authService: authService,
+            region: region,
+            bucket: bucket
+        )
         systemUnderTest.client = client
     }
 
@@ -59,14 +62,16 @@ final class AWSS3StorageServiceListTests: XCTestCase {
             inputs.append(input)
             return .init(contents: [])
         }
-        let pageSize: UInt = UInt.random(in: 1..<1_000)
+        let pageSize = UInt.random(in: 1 ..< 1_000)
         let nextToken = UUID().uuidString
-        let options = StorageListRequest.Options(pageSize: pageSize,
-                                                 nextToken: nextToken)
+        let options = StorageListRequest.Options(
+            pageSize: pageSize,
+            nextToken: nextToken
+        )
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
-        XCTAssertEqual(inputs.map { $0.continuationToken }, [nextToken])
-        XCTAssertEqual(inputs.map { $0.maxKeys }, [Int(pageSize)])
+        XCTAssertEqual(listing.items.map(\.key), [])
+        XCTAssertEqual(inputs.map(\.continuationToken), [nextToken])
+        XCTAssertEqual(inputs.map(\.maxKeys), [Int(pageSize)])
     }
 
     /// Given: A empty S3 bucket (client)
@@ -78,7 +83,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
+        XCTAssertEqual(listing.items.map(\.key), [])
     }
 
     /// Given: A empty S3 bucket (client)
@@ -90,7 +95,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: nil)
         let listing = try await systemUnderTest.list(prefix: prefix, options: options)
-        XCTAssertEqual(listing.items.map { $0.key }, [])
+        XCTAssertEqual(listing.items.map(\.key), [])
     }
 
     /// Given: A misconfigured or S3 bucket with restricted permissions
@@ -107,7 +112,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
         } catch let error as StorageError {
             XCTAssertNotNil(error)
         }
@@ -125,7 +130,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
         } catch let error as StorageError {
             XCTAssertNotNil(error)
         }
@@ -135,11 +140,13 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     /// When: A listing of it is requested using this empty targetIdentityId
     /// Then: The service throws a `StorageError.validation` error
     func testValidateEmptyTargetIdentityIdError() async throws {
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 targetIdentityId: "",
-                                                 path: path)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: "",
+            path: path
+        )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.identityIdIsEmpty.field)
@@ -152,11 +159,13 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     /// When: A listing of it is requested using `accessLevel: .private`
     /// Then: The service throws a `StorageError.validation` error
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() async throws {
-        let options = StorageListRequest.Options(accessLevel: .private,
-                                                 targetIdentityId: targetIdentityId,
-                                                 path: path)
+        let options = StorageListRequest.Options(
+            accessLevel: .private,
+            targetIdentityId: targetIdentityId,
+            path: path
+        )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.invalidAccessLevelWithTarget.field)
@@ -169,11 +178,13 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     /// When: A listing of it is requested using an empty string value for the `path` parameter
     /// Then: The service throws a `StorageError.validation` error
     func testValidateEmptyPathError() async throws {
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 targetIdentityId: targetIdentityId,
-                                                 path: "")
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            targetIdentityId: targetIdentityId,
+            path: ""
+        )
         do {
-            let _ = try await systemUnderTest.list(prefix: prefix, options: options)
+            _ = try await systemUnderTest.list(prefix: prefix, options: options)
             XCTFail("Missing StorageError")
         } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, StorageErrorConstants.pathIsEmpty.field)

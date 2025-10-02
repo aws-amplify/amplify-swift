@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension DeleteUserState {
 
@@ -16,8 +16,10 @@ extension DeleteUserState {
 
         let signedInData: SignedInData
 
-        func resolve(oldState: DeleteUserState,
-                     byApplying event: StateMachineEvent) -> StateResolution<DeleteUserState> {
+        func resolve(
+            oldState: DeleteUserState,
+            byApplying event: StateMachineEvent
+        ) -> StateResolution<DeleteUserState> {
 
             switch oldState {
 
@@ -70,7 +72,7 @@ extension DeleteUserState {
             let resolution = resolver.resolve(oldState: signOutState, byApplying: event)
             switch resolution.newState {
             case .signedOut(let signedOutData):
-                let action = InformUserDeletedAndSignedOut(result: .success((signedOutData)))
+                let action = InformUserDeletedAndSignedOut(result: .success(signedOutData))
                 let newState = DeleteUserState.userDeleted(signedOutData)
                 var resolutionActions = resolution.actions
                 resolutionActions.append(action)

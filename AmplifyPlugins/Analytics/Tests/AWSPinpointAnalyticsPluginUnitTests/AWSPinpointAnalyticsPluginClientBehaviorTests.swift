@@ -7,10 +7,10 @@
 
 import Amplify
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-@testable import AWSPinpointAnalyticsPlugin
-@testable import AmplifyTestCommon
 import XCTest
+@testable import AmplifyTestCommon
+@testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
@@ -18,16 +18,20 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     let testIdentityId = "identityId"
     let testEmail = "testEmail"
     let testPlan = "testPlan"
-    let testProperties: [String: AnalyticsPropertyValue] = ["keyString": "value",
-                                                            "keyInt": 123,
-                                                            "keyDouble": 1.2,
-                                                            "keyBool": true]
-    let testLocation = AnalyticsUserProfile.Location(latitude: 12,
-                                                     longitude: 34,
-                                                     postalCode: "98122",
-                                                     city: "Seattle",
-                                                     region: "WA",
-                                                     country: "USA")
+    let testProperties: [String: AnalyticsPropertyValue] = [
+        "keyString": "value",
+        "keyInt": 123,
+        "keyDouble": 1.2,
+        "keyBool": true
+    ]
+    let testLocation = AnalyticsUserProfile.Location(
+        latitude: 12,
+        longitude: 34,
+        postalCode: "98122",
+        city: "Seattle",
+        region: "WA",
+        country: "USA"
+    )
 
     // MARK: IdentifyUser API
 
@@ -52,13 +56,17 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
             }
         }
 
-        let userProfile = AnalyticsUserProfile(name: testName,
-                                               email: testEmail,
-                                               plan: testPlan,
-                                               location: testLocation,
-                                               properties: testProperties)
-        var expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
-                                                              endpointId: "endpointId")
+        let userProfile = AnalyticsUserProfile(
+            name: testName,
+            email: testEmail,
+            plan: testPlan,
+            location: testLocation,
+            properties: testProperties
+        )
+        var expectedEndpointProfile = PinpointEndpointProfile(
+            applicationId: "appId",
+            endpointId: "endpointId"
+        )
         expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
@@ -86,8 +94,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with an error
     func testIdentifyUserDispatchesErrorForPinpointError() async throws {
-        mockPinpoint.updateEndpointProfileResult = .failure(NSError(domain: "domain",
-                                                                    code: 1))
+        mockPinpoint.updateEndpointProfileResult = .failure(NSError(
+            domain: "domain",
+            code: 1
+        ))
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -103,13 +113,17 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
             }
         }
 
-        let userProfile = AnalyticsUserProfile(name: testName,
-                                               email: testEmail,
-                                               plan: testPlan,
-                                               location: testLocation,
-                                               properties: testProperties)
-        var expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
-                                                              endpointId: "endpointId")
+        let userProfile = AnalyticsUserProfile(
+            name: testName,
+            email: testEmail,
+            plan: testPlan,
+            location: testLocation,
+            properties: testProperties
+        )
+        var expectedEndpointProfile = PinpointEndpointProfile(
+            applicationId: "appId",
+            endpointId: "endpointId"
+        )
         expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
@@ -170,9 +184,11 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventDispatchesErrorForPinpointError() async {
-        mockPinpoint.recordResult = .failure(NSError(domain: "domain",
-                                                     code: 1,
-                                                     userInfo: nil))
+        mockPinpoint.recordResult = .failure(NSError(
+            domain: "domain",
+            code: 1,
+            userInfo: nil
+        ))
         let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
@@ -246,9 +262,11 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventWithNameDispatchesErrorForPinpointError() async {
-        mockPinpoint.recordResult = .failure(NSError(domain: "domain",
-                                                     code: 1,
-                                                     userInfo: nil))
+        mockPinpoint.recordResult = .failure(NSError(
+            domain: "domain",
+            code: 1,
+            userInfo: nil
+        ))
         let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
 
@@ -281,9 +299,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testRegisterGlobalProperties() async {
         mockPinpoint.addGlobalPropertyExpectation = expectation(description: "Add global property called")
         mockPinpoint.addGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
-        
+
         analyticsPlugin.registerGlobalProperties(testProperties)
-        
+
         await fulfillment(of: [mockPinpoint.addGlobalPropertyExpectation!], timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, testProperties.count)
         XCTAssertTrue(mockPinpoint.addGlobalMetricCalled > 0)
@@ -310,7 +328,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testUnregisterGlobalProperties() async {
         mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
         mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
-        
+
         analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
         analyticsPlugin.unregisterGlobalProperties(Set<String>(testProperties.keys))
 
@@ -343,8 +361,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with submitted events
     func testFlushEvents_isOnline() async {
-        let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: "")),
-                      PinpointEvent(eventType: "2", session: PinpointSession(appId: "", uniqueId: ""))]
+        let result = [
+            PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: "")),
+            PinpointEvent(eventType: "2", session: PinpointSession(appId: "", uniqueId: ""))
+        ]
         mockNetworkMonitor.isOnline = true
         mockPinpoint.submitEventsResult = .success(result)
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
@@ -365,7 +385,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 1)
         mockPinpoint.verifySubmitEvents()
     }
-    
+
     /// Given: The device does not have internet access
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked
@@ -407,9 +427,11 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with error
     func testFlushEventsDispatchesErrorForPinpointError() async {
-        mockPinpoint.submitEventsResult = .failure(NSError(domain: "domain",
-                                                           code: 1,
-                                                           userInfo: nil))
+        mockPinpoint.submitEventsResult = .failure(NSError(
+            domain: "domain",
+            code: 1,
+            userInfo: nil
+        ))
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in

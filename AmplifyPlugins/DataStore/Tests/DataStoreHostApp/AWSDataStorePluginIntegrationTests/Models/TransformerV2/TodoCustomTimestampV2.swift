@@ -15,17 +15,23 @@ public struct TodoCustomTimestampV2: Model {
   public var createdOn: Temporal.DateTime?
   public var updatedOn: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      content: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    content: String? = nil
+  ) {
+    self.init(
+      id: id,
       content: content,
       createdOn: nil,
-      updatedOn: nil)
+      updatedOn: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      content: String? = nil,
-      createdOn: Temporal.DateTime? = nil,
-      updatedOn: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    content: String? = nil,
+    createdOn: Temporal.DateTime? = nil,
+    updatedOn: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.content = content
       self.createdOn = createdOn

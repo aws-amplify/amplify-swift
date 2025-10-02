@@ -7,10 +7,10 @@
 
 import Foundation
 
-extension Predictions {
+public extension Predictions {
     /// Gender of an entity(face/celebrity) identified with
     /// associated confidence value
-    public struct GenderAttribute {
+    struct GenderAttribute {
         public var gender: Gender
         public var confidence: Double
 

@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSS3StoragePlugin
 import AWSS3
+import AWSS3StoragePlugin
+import XCTest
 
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
-    
+
     override func setUpWithError() throws {
-        self.continueAfterFailure = false
+        continueAfterFailure = false
     }
 
     /// Given: An object in storage
@@ -43,7 +43,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             defer {
                 dataTaskCompleteInvoked.fulfill()
             }
-            if let error = error {
+            if let error {
                 XCTFail("Failed to receive data from url with error \(error)")
                 return
             }
@@ -52,13 +52,13 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 XCTFail("Received unexpected response type")
                 return
             }
-            
+
             guard (200 ... 299).contains(response.statusCode) else {
                 XCTFail("Received unexpected status code of \(response.statusCode)")
                 return
             }
 
-            guard let data = data else {
+            guard let data else {
                 XCTFail("Received empty data object")
                 return
             }
@@ -79,7 +79,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             defer {
                 urlExpired.fulfill()
             }
-            if let error = error {
+            if let error {
                 XCTFail("Failed to receive data from url with error \(error)")
                 return
             }
@@ -89,11 +89,11 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            XCTAssertTrue((400..<500).contains(response.statusCode))
+            XCTAssertTrue((400 ..< 500).contains(response.statusCode))
         }
         task2.resume()
         await fulfillment(of: [urlExpired], timeout: TestCommonConstants.networkTimeout)
-        
+
         // Remove the key
         await remove(key: key)
     }

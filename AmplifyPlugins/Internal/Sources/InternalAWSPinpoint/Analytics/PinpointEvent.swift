@@ -17,14 +17,16 @@ public class PinpointEvent: AnalyticsPropertiesModel {
     let eventDate: Date
     let session: PinpointSession
     let retryCount: Int
-    private(set) public lazy var attributes: [String: String] = [:]
-    private(set) public lazy var metrics: [String: Double] = [:]
+    public private(set) lazy var attributes: [String: String] = [:]
+    public private(set) lazy var metrics: [String: Double] = [:]
 
-    init(id: String = UUID().uuidString,
-         eventType: String,
-         eventDate: Date = Date(),
-         session: PinpointSession,
-         retryCount: Int = 0) {
+    init(
+        id: String = UUID().uuidString,
+        eventType: String,
+        eventDate: Date = Date(),
+        session: PinpointSession,
+        retryCount: Int = 0
+    ) {
         self.id = id
         self.eventType = eventType
         self.eventDate = eventDate

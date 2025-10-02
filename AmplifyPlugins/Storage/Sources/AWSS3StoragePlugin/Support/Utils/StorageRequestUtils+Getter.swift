@@ -5,15 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension StorageRequestUtils {
     // MARK: Getter methods
 
-    static func getAccessLevelPrefix(accessLevel: StorageAccessLevel,
-                                     identityId: String,
-                                     targetIdentityId: String?) -> String {
+    static func getAccessLevelPrefix(
+        accessLevel: StorageAccessLevel,
+        identityId: String,
+        targetIdentityId: String?
+    ) -> String {
 
         let targetIdentityId = targetIdentityId ?? identityId
 
@@ -43,9 +45,9 @@ extension StorageRequestUtils {
     }
 }
 
-extension StorageAccessLevel {
+public extension StorageAccessLevel {
     /// Service Access Prefix.
-    public var serviceAccessPrefix: String {
+    var serviceAccessPrefix: String {
         switch self {
         case .guest:
             return "public"

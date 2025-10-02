@@ -12,18 +12,18 @@ type Post12 @model {
 }
 */
 
-import Foundation
-import Combine
-import XCTest
 import AWSAPIPlugin
 import AWSDataStorePlugin
+import Combine
+import Foundation
+import XCTest
 
 @testable import Amplify
 #if !os(watchOS)
 @testable import DataStoreHostApp
 #endif
 
-fileprivate struct TestModels: AmplifyModelRegistration {
+private struct TestModels: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {
         ModelRegistry.register(modelType: Post12.self)
     }

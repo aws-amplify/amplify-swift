@@ -28,7 +28,7 @@ class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, 
 
     private var running = false
 
-    public init(request: ObserveRequest = .init(), publisher: AnyPublisher<MutationEvent, DataStoreError>) {
+    init(request: ObserveRequest = .init(), publisher: AnyPublisher<MutationEvent, DataStoreError>) {
         self.request = request
         self.publisher = publisher
     }
@@ -37,7 +37,7 @@ class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, 
         guard !running else { return }
         running = true
 
-        self.sink = publisher.sink { completion in
+        sink = publisher.sink { completion in
             switch completion {
             case .finished:
                 self.finish()

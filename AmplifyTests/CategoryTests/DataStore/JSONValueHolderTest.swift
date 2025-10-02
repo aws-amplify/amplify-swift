@@ -5,14 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 class JSONValueHolderTest: XCTestCase {
 
-    var jsonValueHodler = DynamicModel(values: ["id": 123,
-                                                "name": nil,
-                                                "comment": "here is a comment"])
+    var jsonValueHodler = DynamicModel(values: [
+        "id": 123,
+        "name": nil,
+        "comment": "here is a comment"
+    ])
 
     func testJsonDoubleValue() {
         guard let id = jsonValueHodler.jsonValue(for: "id") as? Double else {
@@ -44,7 +46,7 @@ struct DynamicModel: JSONValueHolder {
 
     let values: [String: JSONValue]
 
-    public func jsonValue(for key: String) -> Any?? {
+    func jsonValue(for key: String) -> Any?? {
         switch values[key] {
         case .some(.array(let deserializedValue)):
             return deserializedValue
@@ -63,7 +65,7 @@ struct DynamicModel: JSONValueHolder {
         }
     }
 
-    public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
+    func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
            case .some(.number(let deserializedValue)) = values[key] {

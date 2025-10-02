@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Decorate the GraphQLDocument with the value of `ModelIdentifier` for a "delete" mutation or "get" query.
 public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
@@ -17,8 +17,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
         var firstField = true
         self.identifierFields = model.identifier(schema: schema).fields.compactMap { fieldName, _ in
-            guard let value = model.graphQLInputForPrimaryKey(modelFieldName: fieldName,
-                                                              modelSchema: schema) else {
+            guard let value = model.graphQLInputForPrimaryKey(
+                modelFieldName: fieldName,
+                modelSchema: schema
+            ) else {
                 return nil
             }
             if firstField {
@@ -32,7 +34,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public init(identifierFields: [(name: String, value: Persistable)]) {
         var firstField = true
-        identifierFields.forEach { name, value in
+        for (name, value) in identifierFields {
             self.identifierFields.append((name: name, value: Self.convert(persistable: value), type: firstField == true ? "ID!" : "String!"))
             firstField = false
         }
@@ -40,10 +42,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public init(identifiers: [LazyReferenceIdentifier]) {
         var firstField = true
-        identifiers.forEach({ identifier in
-            self.identifierFields.append((name: identifier.name, value: identifier.value, type: firstField == true ? "ID!": "String!"))
+        for identifier in identifiers {
+            identifierFields.append((name: identifier.name, value: identifier.value, type: firstField == true ? "ID!" : "String!"))
             firstField = false
-        })
+        }
     }
 
     @available(*, deprecated, message: "Use init(model:schema:)")
@@ -56,7 +58,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         let identifier = (name: ModelIdentifierFormat.Default.name, value: id, type: "ID!")
         var identifierFields = [identifier]
 
-        if let fields = fields {
+        if let fields {
             identifierFields.append(contentsOf: fields.map { key, value in
                 (name: key, value: value, type: "String!")
             })
@@ -64,13 +66,17 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         self.identifierFields = identifierFields
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
 
         if case .mutation = document.operationType {
@@ -78,8 +84,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             for (name, value, _) in identifierFields {
                 inputMap[name] = value.graphQLDocumentValue
             }
-            inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-                                                   value: .object(inputMap))
+            inputs["input"] = GraphQLDocumentInput(
+                type: "\(document.name.pascalCased())Input!",
+                value: .object(inputMap)
+            )
 
         } else if case .query = document.operationType {
             for (name, value, type) in identifierFields {
@@ -94,7 +102,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 }
 
-fileprivate extension ModelIdDecorator {
+private extension ModelIdDecorator {
     private static func convert(persistable: Persistable) -> GraphQLDocumentValueRepresentable {
         switch persistable {
         case let data as Double:

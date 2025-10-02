@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSAPIPlugin
+import AWSDataStorePlugin
+import Combine
 import Foundation
 import XCTest
-import Combine
-import AWSDataStorePlugin
-import AWSAPIPlugin
 #if !os(watchOS)
 @testable import DataStoreHostApp
 #endif
@@ -79,7 +79,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertQuerySuccess<M: Model>(modelType: M.Type) async throws {
+    func assertQuerySuccess(modelType: (some Model).Type) async throws {
         let models = try await Amplify.DataStore.query(modelType)
         XCTAssertNotNil(models)
     }
@@ -89,8 +89,10 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertModelDeleted<M: Model & ModelIdentifiable>(modelType: M.Type,
-                                                          identifier: ModelIdentifier<M, M.IdentifierFormat>) async throws {
+    func assertModelDeleted<M: Model & ModelIdentifiable>(
+        modelType: M.Type,
+        identifier: ModelIdentifier<M, M.IdentifierFormat>
+    ) async throws {
         let model = try await Amplify.DataStore.query(modelType, byIdentifier: identifier)
         XCTAssertNil(model)
     }
@@ -101,7 +103,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
         let ready = expectation(description: "Ready")
         let subscriptionsEstablished = expectation(description: "Subscriptions established")
         let modelsSynced = expectation(description: "Models synced")
-        
+
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
@@ -143,8 +145,8 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutations<M: Model & ModelIdentifiable>(model: M) async throws {
-        
+    func assertMutations(model: some Model & ModelIdentifiable) async throws {
+
         let mutationSaveProcessed = expectation(description: "mutation save processed")
         Amplify
             .Hub
@@ -152,7 +154,8 @@ extension AWSDataStorePrimaryKeyBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.identifier else {
+                      mutationEvent.modelId == model.identifier
+                else {
                     return
                 }
 
@@ -177,7 +180,8 @@ extension AWSDataStorePrimaryKeyBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.identifier else {
+                      mutationEvent.modelId == model.identifier
+                else {
                     return
                 }
 
@@ -187,7 +191,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
                 }
             }
             .store(in: &requests)
-        
+
         try await Amplify.DataStore.delete(model)
         await fulfillment(
             of: [mutationDeleteProcessed],
@@ -200,20 +204,22 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutationsParentChild<P: Model & ModelIdentifiable,
-                                    C: Model & ModelIdentifiable>(parent: P,
-                                                                  child: C,
-                                                                  shouldDeleteParent: Bool = true) async throws {
+    func assertMutationsParentChild(
+        parent: some Model & ModelIdentifiable,
+        child: some Model & ModelIdentifiable,
+        shouldDeleteParent: Bool = true
+    ) async throws {
         let mutationSaveProcessed = expectation(description: "mutation saved processed")
         mutationSaveProcessed.expectedFulfillmentCount = 2
-        
+
         Amplify
             .Hub
             .publisher(for: .dataStore)
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier else {
+                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier
+                else {
                     return
                 }
 
@@ -226,7 +232,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         // save parent first
         _ = try await Amplify.DataStore.save(parent)
-        
+
         // save child
         _ = try await Amplify.DataStore.save(child)
 
@@ -235,12 +241,11 @@ extension AWSDataStorePrimaryKeyBaseTest {
         guard shouldDeleteParent else {
             return
         }
-        
+
         try await assertDeleteMutation(parent: parent, child: child)
     }
-    
-    func assertDeleteMutation<P: Model & ModelIdentifiable,
-                              C: Model & ModelIdentifiable>(parent: P, child: C) async throws {
+
+    func assertDeleteMutation(parent: some Model & ModelIdentifiable, child: some Model & ModelIdentifiable) async throws {
         let mutationDeleteProcessed = expectation(description: "mutation delete processed")
         Amplify
             .Hub
@@ -248,7 +253,8 @@ extension AWSDataStorePrimaryKeyBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier else {
+                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier
+                else {
                     return
                 }
 
@@ -258,7 +264,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
                 }
             }
             .store(in: &requests)
-        
+
         // delete parent
         try await Amplify.DataStore.delete(parent)
         await fulfillment(of: [mutationDeleteProcessed], timeout: 60)

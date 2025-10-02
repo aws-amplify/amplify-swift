@@ -24,9 +24,9 @@ public struct FreshnessEvent {
     }
 }
 
-extension LivenessEvent where T == FreshnessEvent {
+public extension LivenessEvent where T == FreshnessEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func freshness(event: FreshnessEvent) throws -> Self {
+    static func freshness(event: FreshnessEvent) throws -> Self {
         let clientEvent = ClientSessionInformationEvent(
             challenge: .init(
                 clientChallengeType: .faceMovementAndLightChallenge(

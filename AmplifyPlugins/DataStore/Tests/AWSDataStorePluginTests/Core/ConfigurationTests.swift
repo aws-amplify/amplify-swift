@@ -14,11 +14,13 @@ class AWSAPICategoryPluginConfigureTests: XCTestCase {
 
     func testConfigureSuccessForNilConfiguration() throws {
         let dataStorePublisher = DataStorePublisher()
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
-                                        dataStorePublisher: dataStorePublisher,
-                                        validAPIPluginKey: "MockAPICategoryPlugin",
-                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         do {
             try plugin.configure(using: nil)
 

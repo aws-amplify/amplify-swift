@@ -13,8 +13,10 @@ struct ThrowSignInError: Action {
 
     let error: Error
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(
@@ -26,11 +28,11 @@ struct ThrowSignInError: Action {
 }
 
 extension ThrowSignInError: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

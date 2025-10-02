@@ -66,10 +66,12 @@ class MockAmplifyCommandEnvironment: Mock, AmplifyCommandEnvironment {
         return XcodeProjectFile(path, type: type)
     }
 
-    func addFilesToXcodeProject(projectPath path: String,
-                                files: [XcodeProjectFile],
-                                toGroup group: String,
-                                inTarget: XcodeProjectTarget) throws {
+    func addFilesToXcodeProject(
+        projectPath path: String,
+        files: [XcodeProjectFile],
+        toGroup group: String,
+        inTarget: XcodeProjectTarget
+    ) throws {
         captureCall("addFilesToXcodeProject")
     }
 }

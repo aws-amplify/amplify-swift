@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AwsCommonRuntimeKit
 import AWSPluginsCore
+import Foundation
 import SmithyIdentity
 
 extension AWSAuthService: AWSAuthCredentialsProviderBehavior {

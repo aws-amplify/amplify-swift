@@ -9,11 +9,11 @@ import AWSComprehend
 @testable import AWSPredictionsPlugin
 
 class MockComprehendBehavior: ComprehendClientProtocol {
-    var sentimentResponse: ((DetectSentimentInput) async throws -> DetectSentimentOutput)? = nil
-    var entitiesResponse: ((DetectEntitiesInput) async throws -> DetectEntitiesOutput)? = nil
-    var languageResponse: ((DetectDominantLanguageInput) async throws -> DetectDominantLanguageOutput)? = nil
-    var syntaxResponse: ((DetectSyntaxInput) async throws -> DetectSyntaxOutput)? = nil
-    var keyPhrasesResponse: ((DetectKeyPhrasesInput) async throws -> DetectKeyPhrasesOutput)? = nil
+    var sentimentResponse: ((DetectSentimentInput) async throws -> DetectSentimentOutput)?
+    var entitiesResponse: ((DetectEntitiesInput) async throws -> DetectEntitiesOutput)?
+    var languageResponse: ((DetectDominantLanguageInput) async throws -> DetectDominantLanguageOutput)?
+    var syntaxResponse: ((DetectSyntaxInput) async throws -> DetectSyntaxOutput)?
+    var keyPhrasesResponse: ((DetectKeyPhrasesInput) async throws -> DetectKeyPhrasesOutput)?
 
     func detectSentiment(input: DetectSentimentInput) async throws -> DetectSentimentOutput {
         guard let sentimentResponse else { throw MockBehaviorDefaultError() }

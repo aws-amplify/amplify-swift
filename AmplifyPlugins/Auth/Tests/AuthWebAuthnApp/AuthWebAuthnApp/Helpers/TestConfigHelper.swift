@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
 import Foundation
+@testable import Amplify
 
 class TestConfigHelper {
     enum ConfigError: Error {

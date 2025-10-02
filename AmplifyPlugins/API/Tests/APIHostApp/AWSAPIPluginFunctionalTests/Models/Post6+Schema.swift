@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Post6 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Post6 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case blog
@@ -12,19 +19,19 @@ extension Post6 {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let post6 = Post6.keys
-    
+
     model.pluralName = "Post6s"
-    
+
     model.attributes(
       .index(fields: ["blogID"], name: "byBlog")
     )
-    
+
     model.fields(
       .id(),
       .field(post6.title, is: .required, ofType: .string),

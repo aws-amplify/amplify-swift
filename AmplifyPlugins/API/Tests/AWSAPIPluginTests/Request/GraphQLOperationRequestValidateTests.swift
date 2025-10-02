@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 @testable import AWSAPIPlugin
 
 class GraphQLOperationRequestValidateTests: XCTestCase {
@@ -16,11 +16,13 @@ class GraphQLOperationRequestValidateTests: XCTestCase {
 
     func testGraphQLOperationRequestValidate() throws {
         let requestOptions = GraphQLOperationRequest<String>.Options(pluginOptions: nil)
-        let graphQLOperationRequest = GraphQLOperationRequest(apiName: testApiName,
-                                                     operationType: .mutation,
-                                                     document: testDocument,
-                                                     responseType: String.self,
-                                                     options: requestOptions)
+        let graphQLOperationRequest = GraphQLOperationRequest(
+            apiName: testApiName,
+            operationType: .mutation,
+            document: testDocument,
+            responseType: String.self,
+            options: requestOptions
+        )
         XCTAssertNoThrow(try graphQLOperationRequest.validate())
     }
 }

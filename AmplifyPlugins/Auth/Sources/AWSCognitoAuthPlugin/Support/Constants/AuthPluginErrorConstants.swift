@@ -5,172 +5,213 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias AuthPluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-typealias AuthPluginValidationErrorString = (field: Field,
+typealias AuthPluginValidationErrorString = (
+    field: Field,
     errorDescription: ErrorDescription,
-    recoverySuggestion: RecoverySuggestion)
+    recoverySuggestion: RecoverySuggestion
+)
 
 enum AuthPluginErrorConstants {
 
     static let decodeConfigurationError: AuthPluginErrorString = (
         "Unable to decode configuration",
-        "Make sure the plugin configuration is JSONValue")
+        "Make sure the plugin configuration is JSONValue"
+    )
 
     static let configurationObjectExpected: AuthPluginErrorString = (
         "Configuration was not a dictionary literal",
-        "Make sure the value for the plugin is a dictionary literal")
+        "Make sure the value for the plugin is a dictionary literal"
+    )
 
     static let hostedUISecurityFailedError: AuthPluginErrorString = (
         "Found invalid parameter while parsing the webUI redirect URL",
-        "Make sure that the signIn URL has not been modified during the signIn flow")
+        "Make sure that the signIn URL has not been modified during the signIn flow"
+    )
 
     static let hostedUIUserCancelledError: AuthPluginErrorString = (
         "User cancelled the signIn flow and could not be completed.",
-        "Present the signIn UI again for the user to sign in")
+        "Present the signIn UI again for the user to sign in"
+    )
 
     static let hostedUIUserCancelledSignOutError: AuthPluginErrorString = (
         "User cancelled the signOut flow and could not be completed.",
-        "Present the signOut UI again for the user to sign out")
+        "Present the signOut UI again for the user to sign out"
+    )
 
     static let hostedUIInvalidPresentation: AuthPluginErrorString = (
         "Presentation context provided is invalid or not present",
-        "Retry by providing a presentation context to present the webUI")
+        "Retry by providing a presentation context to present the webUI"
+    )
 
     static let hostedUIUnableToStartASWebAuthenticationSession: AuthPluginErrorString = (
         "Unable to start a ASWebAuthenticationSession",
-        "Make sure that the app can present an ASWebAuthenticationSession")
+        "Make sure that the app can present an ASWebAuthenticationSession"
+    )
 
     static let hostedUISignInURI: AuthPluginErrorString = (
         "SignIn URI could not be created",
-        "Check the configuration to make sure that HostedUI related information are present")
+        "Check the configuration to make sure that HostedUI related information are present"
+    )
 
     static let hostedUITokenURI: AuthPluginErrorString = (
         "Token URI could not be created",
-        "Check the configuration to make sure that HostedUI related information are present")
+        "Check the configuration to make sure that HostedUI related information are present"
+    )
 
     static let hostedUISignOutURI: AuthPluginErrorString = (
         "SignOut URI could not be created",
-        "Check the configuration to make sure that HostedUI related information are present")
+        "Check the configuration to make sure that HostedUI related information are present"
+    )
 
     static let hostedUISignOutRedirectURI: AuthPluginErrorString = (
         "Callback URL could not be retrieved",
-        "Check the configuration to make sure that HostedUI related information are present")
+        "Check the configuration to make sure that HostedUI related information are present"
+    )
 
     static let hostedUIProofCalculation: AuthPluginErrorString = (
         "Proof calculation failed",
-        "Reach out with amplify team via github to raise an issue")
+        "Reach out with amplify team via github to raise an issue"
+    )
 
     static let tokenParsingError: AuthPluginErrorString = (
         "Token returned by service could not be parsed",
-        "Check if the the configuration provided are correct")
+        "Check if the the configuration provided are correct"
+    )
 
     static let userInvalidError: AuthPluginErrorString = (
         "Could not validate the user",
-        "Get the current user Auth.getCurrentUser() and make the request")
-    
+        "Get the current user Auth.getCurrentUser() and make the request"
+    )
+
     static let identityIdSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive identity id",
-        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")
+        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool"
+    )
 
     static let awsCredentialsSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive AWS credentials",
-        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")
+        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool"
+    )
 
     static let cognitoTokensSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive cognito tokens",
-        "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
+        "Call Auth.signIn to sign in a user and then call Auth.fetchSession"
+    )
 
     static let userSubSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive user sub",
-        "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
+        "Call Auth.signIn to sign in a user and then call Auth.fetchSession"
+    )
 
     static let identityIdOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch identity id",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let awsCredentialsOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch AWS credentials",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let usersubOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch user sub",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let cognitoTokenOfflineError: AuthPluginErrorString = (
         "A network error occured while trying to fetch AWS Cognito Tokens",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let identityIdServiceError: AuthPluginErrorString = (
         "A serivce error occured while trying to fetch identity id",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let awsCredentialsServiceError: AuthPluginErrorString = (
         "A service error occured while trying to fetch AWS credentials",
-        "Try again with exponential backoff")
+        "Try again with exponential backoff"
+    )
 
     static let identityIdSessionExpiredError: AuthPluginErrorString = (
         "Session expired could not fetch identity id",
-        "Invoke Auth.signIn to re-authenticate the user")
+        "Invoke Auth.signIn to re-authenticate the user"
+    )
 
     static let awsCredentialsSessionExpiredError: AuthPluginErrorString = (
         "Session expired could not fetch AWS Credentials",
-        "Invoke Auth.signIn to re-authenticate the user")
+        "Invoke Auth.signIn to re-authenticate the user"
+    )
 
     static let usersubSessionExpiredError: AuthPluginErrorString = (
         "Session expired could not fetch user sub",
-        "Invoke Auth.signIn to re-authenticate the user")
+        "Invoke Auth.signIn to re-authenticate the user"
+    )
 
     static let cognitoTokensSessionExpiredError: AuthPluginErrorString = (
         "Session expired could not fetch cognito tokens",
-        "Invoke Auth.signIn to re-authenticate the user")
+        "Invoke Auth.signIn to re-authenticate the user"
+    )
 
     static let cognitoTokenSignedInThroughCIDPError: AuthPluginErrorString = (
         "User is not signed in through Cognito User pool",
-        "Tokens are not valid with user signed in through AWS Cognito Identity Pool")
+        "Tokens are not valid with user signed in through AWS Cognito Identity Pool"
+    )
 
     static let userSubSignedInThroughCIDPError: AuthPluginErrorString = (
         "User is not signed in through Cognito User pool",
-        "User sub are not valid with user signed in through AWS Cognito Identity Pool")
+        "User sub are not valid with user signed in through AWS Cognito Identity Pool"
+    )
 
     static let signedInIdentityIdWithNoCIDPError: AuthPluginErrorString = (
         "Could not fetch identity Id, AWS Cognito Identity Pool is not configured",
-        "Follow the steps to configure AWS Cognito Identity Pool and try again")
+        "Follow the steps to configure AWS Cognito Identity Pool and try again"
+    )
 
     static let signedInAWSCredentialsWithNoCIDPError: AuthPluginErrorString = (
         "Could not fetch AWS Credentials, AWS Cognito Identity Pool is not configured",
-        "Follow the steps to configure AWS Cognito Identity Pool and try again")
+        "Follow the steps to configure AWS Cognito Identity Pool and try again"
+    )
 
     static let fetchAttributeSignedOutError: AuthPluginErrorString = (
-    "Could not fetch attributes, there is no user signed in to the Auth category",
-    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+        "Could not fetch attributes, there is no user signed in to the Auth category",
+        "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    )
 
     static let updateAttributeSignedOutError: AuthPluginErrorString = (
-    "Could not update attributes, there is no user signed in to the Auth category",
-    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+        "Could not update attributes, there is no user signed in to the Auth category",
+        "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    )
 
     static let resendAttributeCodeSignedOutError: AuthPluginErrorString = (
-    "Could not resend attribute confirmation code, there is no user signed in to the Auth category",
-    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+        "Could not resend attribute confirmation code, there is no user signed in to the Auth category",
+        "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    )
 
     static let confirmAttributeSignedOutError: AuthPluginErrorString = (
-    "Could not confirm attribute, there is no user signed in to the Auth category",
-    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+        "Could not confirm attribute, there is no user signed in to the Auth category",
+        "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    )
 
     static let changePasswordSignedOutError: AuthPluginErrorString = (
-    "Could not change password, there is no user signed in to the Auth category",
-    "Change password require a user signed in to Auth category, use one of the signIn apis to signIn")
+        "Could not change password, there is no user signed in to the Auth category",
+        "Change password require a user signed in to Auth category, use one of the signIn apis to signIn"
+    )
 
     static let changePasswordUnableToSignInError: AuthPluginErrorString = (
-    "Could not change password, the user session is expired",
-    "Re-authenticate the user by using one of the signIn apis")
+        "Could not change password, the user session is expired",
+        "Re-authenticate the user by using one of the signIn apis"
+    )
 
     static let userSignedOutError: AuthPluginErrorString = (
-    "There is no user signed in to the Auth category",
-    "SignIn to Auth category by using one of the sign in methods and then try again")
+        "There is no user signed in to the Auth category",
+        "SignIn to Auth category by using one of the sign in methods and then try again"
+    )
 
     static let associateWebAuthnCredentialUserCancelledError: AuthPluginErrorString = (
         "User cancelled the creation of a new WebAuthn credential",

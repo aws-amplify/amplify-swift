@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 @_spi(PredictionsFaceLiveness)
 public protocol LivenessService {
-    func send<T>(
-        _ event: LivenessEvent<T>,
+    func send(
+        _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date
     )
 
@@ -19,16 +19,19 @@ public protocol LivenessService {
 
     func register(onComplete: @escaping (ServerDisconnection) -> Void)
 
-    func initializeLivenessStream(withSessionID sessionID: String, 
+    func initializeLivenessStream(
+        withSessionID sessionID: String,
+
                                   userAgent: String,
-                                  challenges: [Challenge],
-                                  options: FaceLivenessSession.Options) throws
+        challenges: [Challenge],
+        options: FaceLivenessSession.Options
+    ) throws
 
     func register(
         listener: @escaping (FaceLivenessSession.SessionConfiguration) -> Void,
         on event: LivenessEventKind.Server
     )
-    
+
     func register(
         listener: @escaping (Challenge) -> Void,
         on event: LivenessEventKind.Server

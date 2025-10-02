@@ -7,28 +7,33 @@
 
 import Amplify
 
-struct AuthCognitoSignedInSessionHelper {
+enum AuthCognitoSignedInSessionHelper {
 
     static func makeOfflineSignedInSession() -> AWSAuthCognitoSession {
         let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdOfflineError.errorDescription,
             AuthPluginErrorConstants.identityIdOfflineError.recoverySuggestion,
-            AWSCognitoAuthError.network)
+            AWSCognitoAuthError.network
+        )
 
         let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsOfflineError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsOfflineError.recoverySuggestion,
-            AWSCognitoAuthError.network)
+            AWSCognitoAuthError.network
+        )
 
         let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokenOfflineError.errorDescription,
             AuthPluginErrorConstants.cognitoTokenOfflineError.recoverySuggestion,
-            AWSCognitoAuthError.network)
+            AWSCognitoAuthError.network
+        )
 
-        let authSession = AWSAuthCognitoSession(isSignedIn: true,
-                                                identityIdResult: .failure(identityIdError),
-                                                awsCredentialsResult: .failure(awsCredentialsError),
-                                                cognitoTokensResult: .failure(tokensError))
+        let authSession = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(identityIdError),
+            awsCredentialsResult: .failure(awsCredentialsError),
+            cognitoTokensResult: .failure(tokensError)
+        )
         return authSession
     }
 
@@ -36,22 +41,27 @@ struct AuthCognitoSignedInSessionHelper {
         let identityIdError = AuthError.sessionExpired(
             AuthPluginErrorConstants.identityIdSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.identityIdSessionExpiredError.recoverySuggestion,
-            underlyingError)
+            underlyingError
+        )
 
         let awsCredentialsError = AuthError.sessionExpired(
             AuthPluginErrorConstants.awsCredentialsSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsSessionExpiredError.recoverySuggestion,
-            underlyingError)
+            underlyingError
+        )
 
         let tokensError = AuthError.sessionExpired(
             AuthPluginErrorConstants.cognitoTokensSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion,
-            underlyingError)
+            underlyingError
+        )
 
-        let authSession = AWSAuthCognitoSession(isSignedIn: true,
-                                                identityIdResult: .failure(identityIdError),
-                                                awsCredentialsResult: .failure(awsCredentialsError),
-                                                cognitoTokensResult: .failure(tokensError))
+        let authSession = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(identityIdError),
+            awsCredentialsResult: .failure(awsCredentialsError),
+            cognitoTokensResult: .failure(tokensError)
+        )
         return authSession
     }
 
@@ -59,7 +69,8 @@ struct AuthCognitoSignedInSessionHelper {
         let userSubError = AuthError.service(
             AuthPluginErrorConstants.userSubSignedInThroughCIDPError.errorDescription,
             AuthPluginErrorConstants.userSubSignedInThroughCIDPError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
         return userSubError
     }
 
@@ -67,7 +78,8 @@ struct AuthCognitoSignedInSessionHelper {
         let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokenSignedInThroughCIDPError.errorDescription,
             AuthPluginErrorConstants.cognitoTokenSignedInThroughCIDPError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
         return tokensError
     }
 
@@ -75,7 +87,8 @@ struct AuthCognitoSignedInSessionHelper {
         let identityIdError = AuthError.service(
             AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription,
             AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
         return identityIdError
     }
 
@@ -83,7 +96,8 @@ struct AuthCognitoSignedInSessionHelper {
         let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription,
             AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.recoverySuggestion,
-            AWSCognitoAuthError.invalidAccountTypeException)
+            AWSCognitoAuthError.invalidAccountTypeException
+        )
         return awsCredentialsError
     }
 }

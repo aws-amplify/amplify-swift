@@ -38,7 +38,7 @@ class StorageEngineTestsBase: XCTestCase {
         }
         return saveResult
     }
-    
+
     func saveModelSynchronous<M: Model>(model: M) async -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
         var result: DataStoreResult<M>?
@@ -62,7 +62,7 @@ class StorageEngineTestsBase: XCTestCase {
             }
         }
     }
-    
+
     func querySingleModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) -> DataStoreResult<M> {
         let result = queryModelSynchronous(modelType: modelType, predicate: predicate)
 
@@ -95,7 +95,7 @@ class StorageEngineTestsBase: XCTestCase {
         }
         return queryResult
     }
-    
+
     func queryModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) async -> DataStoreResult<[M]> {
         let queryFinished = expectation(description: "Query Finished")
         var result: DataStoreResult<[M]>?
@@ -111,14 +111,16 @@ class StorageEngineTestsBase: XCTestCase {
         }
         return queryResult
     }
-    
-    func queryAsync<M: Model>(_ modelType: M.Type,
-                              byIdentifier identifier: String,
-                              eagerLoad: Bool = true) async throws -> M? {
+
+    func queryAsync<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: String,
+        eagerLoad: Bool = true
+    ) async throws -> M? {
         let predicate: QueryPredicate = field("id").eq(identifier)
         return try await queryAsync(modelType, predicate: predicate, eagerLoad: eagerLoad).first
     }
-    
+
     func queryAsync<M: Model>(_ modelType: M.Type, predicate: QueryPredicate? = nil, eagerLoad: Bool = true) async throws -> [M] {
         try await withCheckedThrowingContinuation { continuation in
             storageEngine.query(modelType, predicate: predicate, eagerLoad: eagerLoad) { qResult in
@@ -126,10 +128,12 @@ class StorageEngineTestsBase: XCTestCase {
             }
         }
     }
-    
-    func queryStorageAdapter<M: Model>(_ modelType: M.Type,
-                                       byIdentifier identifier: String,
-                                       eagerLoad: Bool = true) async throws -> M? {
+
+    func queryStorageAdapter<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: String,
+        eagerLoad: Bool = true
+    ) async throws -> M? {
         let predicate: QueryPredicate = field("id").eq(identifier)
         return try await withCheckedThrowingContinuation { continuation in
             storageAdapter.query(modelType, predicate: predicate) { result in
@@ -138,17 +142,21 @@ class StorageEngineTestsBase: XCTestCase {
         }.first
     }
 
-    func deleteModelSynchronousOrFailOtherwise<M: Model>(modelType: M.Type,
-                                                         withId id: String,
-                                                         where predicate: QueryPredicate? = nil,
-                                                         timeout: TimeInterval = 1) -> DataStoreResult<M> {
-        let result = deleteModelSynchronous(modelType: modelType,
-                                            withId: id,
-                                            where: predicate,
-                                            timeout: timeout)
+    func deleteModelSynchronousOrFailOtherwise<M: Model>(
+        modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate? = nil,
+        timeout: TimeInterval = 1
+    ) -> DataStoreResult<M> {
+        let result = deleteModelSynchronous(
+            modelType: modelType,
+            withId: id,
+            where: predicate,
+            timeout: timeout
+        )
         switch result {
         case .success(let model):
-            if let model = model {
+            if let model {
                 return .success(model)
             } else {
                 return .failure(causedBy: "")
@@ -158,21 +166,25 @@ class StorageEngineTestsBase: XCTestCase {
         }
     }
 
-    func deleteModelSynchronous<M: Model>(modelType: M.Type,
-                                          withId id: String,
-                                          where predicate: QueryPredicate? = nil,
-                                          timeout: TimeInterval = 10) -> DataStoreResult<M?> {
+    func deleteModelSynchronous<M: Model>(
+        modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate? = nil,
+        timeout: TimeInterval = 10
+    ) -> DataStoreResult<M?> {
         let deleteFinished = expectation(description: "Delete Finished")
         var result: DataStoreResult<M?>?
 
-        storageEngine.delete(modelType,
-                             modelSchema: modelType.schema,
-                             withId: id,
-                             condition: predicate,
-                             completion: { dResult in
+        storageEngine.delete(
+            modelType,
+            modelSchema: modelType.schema,
+            withId: id,
+            condition: predicate,
+            completion: { dResult in
             result = dResult
             deleteFinished.fulfill()
-        })
+        }
+        )
 
         wait(for: [deleteFinished], timeout: timeout)
         guard let deleteResult = result else {
@@ -180,15 +192,19 @@ class StorageEngineTestsBase: XCTestCase {
         }
         return deleteResult
     }
-    
-    func deleteAsync<M: Model>(modelType: M.Type,
-                               withId id: String,
-                               where predicate: QueryPredicate? = nil) async throws -> M? {
+
+    func deleteAsync<M: Model>(
+        modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate? = nil
+    ) async throws -> M? {
         try await withCheckedThrowingContinuation { continuation in
-            storageEngine.delete(modelType,
-                                 modelSchema: modelType.schema,
-                                 withId: id,
-                                 condition: predicate) { dResult in
+            storageEngine.delete(
+                modelType,
+                modelSchema: modelType.schema,
+                withId: id,
+                condition: predicate
+            ) { dResult in
                 continuation.resume(with: dResult)
             }
         }

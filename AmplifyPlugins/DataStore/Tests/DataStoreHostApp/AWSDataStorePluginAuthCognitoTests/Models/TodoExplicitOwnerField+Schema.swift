@@ -9,33 +9,33 @@
 import Amplify
 import Foundation
 
-extension TodoExplicitOwnerField {
+public extension TodoExplicitOwnerField {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case content
     case owner
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
+
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-  
-  public static let schema = defineSchema { model in
+
+  static let schema = defineSchema { model in
     let todoExplicitOwnerField = TodoExplicitOwnerField.keys
-    
+
     model.authRules = [
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.read, .create, .update, .delete])
     ]
-    
+
     model.listPluralName = "TodoExplicitOwnerFields"
     model.syncPluralName = "TodoExplicitOwnerFields"
-    
+
     model.attributes(
       .primaryKey(fields: [todoExplicitOwnerField.id])
     )
-    
+
     model.fields(
       .field(todoExplicitOwnerField.id, is: .required, ofType: .string),
       .field(todoExplicitOwnerField.content, is: .required, ofType: .string),

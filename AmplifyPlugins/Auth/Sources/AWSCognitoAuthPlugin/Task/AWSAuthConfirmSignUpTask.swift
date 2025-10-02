@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
 
@@ -20,9 +20,11 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
         HubPayload.EventName.Auth.confirmSignUpAPI
     }
 
-    init(_ request: AuthConfirmSignUpRequest,
-         authStateMachine: AuthStateMachine,
-         authEnvironment: AuthEnvironment) {
+    init(
+        _ request: AuthConfirmSignUpRequest,
+        authStateMachine: AuthStateMachine,
+        authEnvironment: AuthEnvironment
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.authEnvironment = authEnvironment
@@ -33,7 +35,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
         await taskHelper.didStateMachineConfigured()
         try request.hasError()
         try await validateCurrentState()
-        
+
         do {
             log.verbose("Confirm sign up")
             let result = try await doConfirmSignUp()
@@ -43,12 +45,12 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             throw error
         }
     }
-    
+
     private func doConfirmSignUp() async throws -> AuthSignUpResult {
         log.verbose("Sending confirmSignUp event")
         try await sendConfirmSignUpEvent()
         log.verbose("Waiting for confirm signup to complete")
-        
+
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(_, _, let signUpState) = state else { continue }
@@ -64,7 +66,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
         }
         throw AuthError.unknown("Confirm sign up reached an error state")
     }
-    
+
     private func sendConfirmSignUpEvent() async throws {
         let currentState = await authStateMachine.currentState
         guard case .configured(_, _, let signUpState) = currentState  else {
@@ -72,7 +74,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             let error = AuthError.invalidState(message, "", nil)
             throw error
         }
-        
+
         var session: String?
         if case .awaitingUserConfirmation(let data, _) = signUpState,
            request.username == data.username {
@@ -80,24 +82,26 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             // the username in confirmSignUp() call
             session = data.session
         }
-        
+
         let pluginOptions = request.options.pluginOptions as? AWSAuthConfirmSignUpOptions
         let metaData = pluginOptions?.metadata
         let forceAliasCreation = pluginOptions?.forceAliasCreation
-        
+
         let signUpEventData = SignUpEventData(
             username: request.username,
             clientMetadata: metaData,
-            session: session)
+            session: session
+        )
         let event = SignUpEvent(
             eventType: .confirmSignUp(
-            signUpEventData,
-            request.code, 
-            forceAliasCreation)
+                signUpEventData,
+                request.code,
+                forceAliasCreation
+            )
         )
         await authStateMachine.send(event)
     }
-    
+
     private func validateCurrentState() async throws {
         let stateSequences = await authStateMachine.listen()
         log.verbose("Validating current state")
@@ -105,7 +109,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             guard case .configured(_, _, let signUpState) = state else {
                 continue
             }
-            
+
             switch signUpState {
             case .notStarted, .awaitingUserConfirmation, .error, .signedUp:
                 return

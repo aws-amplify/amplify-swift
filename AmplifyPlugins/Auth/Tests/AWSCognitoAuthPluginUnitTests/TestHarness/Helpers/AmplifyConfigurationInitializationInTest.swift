@@ -9,14 +9,17 @@ import Foundation
 @testable import Amplify
 
 extension AmplifyConfiguration {
-    init(fileName: String,
-         fileExtension: String = "") {
+    init(
+        fileName: String,
+        fileExtension: String = ""
+    ) {
 
         let bundle = Bundle.authCognitoTestBundle()
         let url = bundle.url(
             forResource: fileName,
             withExtension: fileExtension,
-            subdirectory: AuthTestHarnessConstants.authConfigurationResourcePath)!
+            subdirectory: AuthTestHarnessConstants.authConfigurationResourcePath
+        )!
         self = try! AmplifyConfiguration.loadAmplifyConfiguration(from: url)
     }
 }

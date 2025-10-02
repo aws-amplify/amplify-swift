@@ -74,9 +74,11 @@ extension AmplifyTaskGateway {
             // Automatically unsubscribe when event is received
             unsubscribe?()
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: filterById,
-                                       listener: resultHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: resultHubListener
+        )
         unsubscribe = {
             Amplify.Hub.removeListener(token)
         }
@@ -99,9 +101,11 @@ extension AmplifyTaskGateway {
                 unsubscribe?()
             }
         }
-        let token = Amplify.Hub.listen(to: channel,
-                                       isIncluded: filterById,
-                                       listener: inProcessHubListener)
+        let token = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: inProcessHubListener
+        )
         unsubscribe = {
             Amplify.Hub.removeListener(token)
         }

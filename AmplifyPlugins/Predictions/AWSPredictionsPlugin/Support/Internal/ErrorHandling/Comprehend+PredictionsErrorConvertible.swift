@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSComprehend
 import Amplify
+import AWSComprehend
 
 protocol PredictionsErrorConvertible {
     var predictionsError: PredictionsError { get }

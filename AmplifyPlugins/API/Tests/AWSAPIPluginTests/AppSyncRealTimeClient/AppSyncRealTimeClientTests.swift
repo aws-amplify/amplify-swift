@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
-@preconcurrency import Combine
 import Amplify
+@preconcurrency import Combine
+import XCTest
 @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
@@ -58,7 +57,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
         }
         await fulfillment(of: [finishExpectation], timeout: timeout + 1)
@@ -90,7 +89,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
@@ -133,7 +132,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
@@ -180,7 +179,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         Task {
-            try await Task.sleep(nanoseconds: 80 * 1000)
+            try await Task.sleep(nanoseconds: 80 * 1_000)
             await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
@@ -323,6 +322,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                                 {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
                             """))
                         }
+
                     default:
                         XCTFail("No other message should be written")
                     }
@@ -447,6 +447,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 switch action {
                 case .connect:
                     connectTriggered.fulfill()
+
                 case .write(let message):
                     guard let response = try? JSONDecoder().decode(
                         JSONValue.self,
@@ -519,8 +520,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                errors.count == 1,
                let error = errors.first,
                let connectionLostError = error as? WebSocketClient.Error,
-               connectionLostError == WebSocketClient.Error.connectionLost
-            {
+               connectionLostError == WebSocketClient.Error.connectionLost {
                 errorReceived.fulfill()
             }
         }.store(in: &cancellables)

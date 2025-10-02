@@ -41,10 +41,12 @@ extension ModelPrimaryKey: SQLColumn {
     /// Convenience method to convert a ModelPrimaryKey to an
     /// ModelField to be used in a SQL query
     var asField: ModelField {
-        ModelField(name: name,
-                   type: .string,
-                   isRequired: true,
-                   attributes: [.primaryKey])
+        ModelField(
+            name: name,
+            type: .string,
+            isRequired: true,
+            attributes: [.primaryKey]
+        )
     }
 
     var sqlType: SQLDataType {
@@ -69,7 +71,7 @@ extension ModelPrimaryKey: SQLColumn {
         }
 
         let columnName = ModelIdentifierFormat.Custom.sqlColumnName.quoted()
-        if let namespace = namespace {
+        if let namespace {
             return "\(namespace.quoted()).\(columnName)"
         }
 
@@ -130,7 +132,7 @@ extension ModelField: SQLColumn {
     /// - Returns: a valid (i.e. escaped) SQL column name
     func columnName(forNamespace namespace: String? = nil) -> String {
         var column = sqlName.quoted()
-        if let namespace = namespace {
+        if let namespace {
             column = namespace.quoted() + "." + column
         }
         return column
@@ -148,7 +150,7 @@ extension ModelField: SQLColumn {
     /// the call `field.columnAlias(forNamespace: "post")` would return `as "post.id"`.
     func columnAlias(forNamespace namespace: String? = nil) -> String {
         var column = sqlName
-        if let namespace = namespace {
+        if let namespace {
             column = "\(namespace).\(column)"
         }
         return column.quoted()
@@ -172,14 +174,14 @@ extension ModelSchema {
 
     /// Filter the fields that represent foreign keys.
     var foreignKeys: [ModelField] {
-        sortedFields.filter { $0.isForeignKey }
+        sortedFields.filter(\.isForeignKey)
     }
 
     /// Create SQLite indexes corresponding to secondary indexes in the model schema
     func createIndexStatements() -> String {
         // Store field names used to represent associations for a fast lookup
         var associationsFields = Set<String>()
-        for (_, field) in self.fields {
+        for (_, field) in fields {
             if field.isAssociationOwner,
                let association = field.association,
                case let .belongsTo(_, targetNames: targetNames) = association {

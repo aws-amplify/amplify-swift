@@ -18,13 +18,15 @@ public struct NestedTypeTestModel: Model {
   public var nullableNestedList: [Nested?]
   public var nullableNestedNullableList: [Nested?]?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       nestedVal: Nested,
       nullableNestedVal: Nested? = nil,
       nestedList: [Nested] = [],
       nestedNullableList: [Nested]? = nil,
       nullableNestedList: [Nested?] = [],
-      nullableNestedNullableList: [Nested?]? = nil) {
+      nullableNestedNullableList: [Nested?]? = nil
+  ) {
       self.id = id
       self.nestedVal = nestedVal
       self.nullableNestedVal = nullableNestedVal

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSS3StoragePlugin
-import XCTest
 
 class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
     private var customBucket: ResolvedStorageBucket!
@@ -228,7 +228,7 @@ class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let data = Data(key.utf8)
         try await uploadData(
-            key: key, 
+            key: key,
             data: data,
             options: .init(bucket: customBucket)
         )
@@ -301,7 +301,7 @@ class AWSS3StoragePluginMultipleBucketTests: AWSS3StoragePluginTestBase {
         } catch {
             XCTFail("Failed to read downloaded file")
         }
-        
+
         removeFileIfExisting(fileURL)
         let deleted = try await Amplify.Storage.remove(
             key: key,

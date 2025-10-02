@@ -1,24 +1,31 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Team1 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Team1 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let team1 = Team1.keys
-    
+
     model.pluralName = "Team1s"
-    
+
     model.fields(
       .id(),
       .field(team1.name, is: .required, ofType: .string),

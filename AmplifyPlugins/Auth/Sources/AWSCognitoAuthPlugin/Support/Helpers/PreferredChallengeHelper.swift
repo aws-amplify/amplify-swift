@@ -14,12 +14,14 @@ class PreferredChallengeHelper {
     let password: String?
     let username: String
     let environment: Environment
-    private(set) var srpStateData: SRPStateData? = nil
+    private(set) var srpStateData: SRPStateData?
 
-    init(authFactor: AuthFactorType,
-         password: String?,
-         username: String,
-         environment: Environment) {
+    init(
+        authFactor: AuthFactorType,
+        password: String?,
+        username: String,
+        environment: Environment
+    ) {
         self.authFactor = authFactor
         self.password = password
         self.username = username
@@ -32,11 +34,12 @@ class PreferredChallengeHelper {
 
         switch authFactor {
         case .password:
-            guard let password = password else {
+            guard let password else {
                 throw AuthError.validation(
                     AuthPluginErrorConstants.signInPasswordError.field,
                     AuthPluginErrorConstants.signInPasswordError.errorDescription,
-                    AuthPluginErrorConstants.signInPasswordError.recoverySuggestion)
+                    AuthPluginErrorConstants.signInPasswordError.recoverySuggestion
+                )
             }
             authParameters["PASSWORD"] = password
         case .passwordSRP:
@@ -55,11 +58,12 @@ class PreferredChallengeHelper {
 
         let srpClient = try SRPSignInHelper.srpClient(srpEnv)
         let srpKeyPair = srpClient.generateClientKeyPair()
-        guard let password = password else {
+        guard let password else {
             throw AuthError.validation(
                 AuthPluginErrorConstants.signInPasswordError.field,
                 AuthPluginErrorConstants.signInPasswordError.errorDescription,
-                AuthPluginErrorConstants.signInPasswordError.recoverySuggestion)
+                AuthPluginErrorConstants.signInPasswordError.recoverySuggestion
+            )
         }
         let srpStateData = SRPStateData(
             username: username,
@@ -67,7 +71,8 @@ class PreferredChallengeHelper {
             NHexValue: nHexValue,
             gHexValue: gHexValue,
             srpKeyPair: srpKeyPair,
-            clientTimestamp: Date())
+            clientTimestamp: Date()
+        )
         self.srpStateData = srpStateData
         return srpStateData
     }

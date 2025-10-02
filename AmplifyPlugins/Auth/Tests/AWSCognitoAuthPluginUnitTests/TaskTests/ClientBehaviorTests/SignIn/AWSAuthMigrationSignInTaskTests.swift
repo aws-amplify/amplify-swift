@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
 
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 
 class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
@@ -30,25 +30,30 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
@@ -56,7 +61,8 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
     override func tearDown() {
@@ -68,10 +74,12 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            return .init(authenticationResult: .init(accessToken: Defaults.validAccessToken,
-                                                     expiresIn: 2,
-                                                     idToken: "idToken",
-                                                     refreshToken: "refreshToken"))
+            return .init(authenticationResult: .init(
+                accessToken: Defaults.validAccessToken,
+                expiresIn: 2,
+                idToken: "idToken",
+                refreshToken: "refreshToken"
+            ))
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)

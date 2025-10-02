@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 /// This class contains integration tests for the sign-in functionality using various authentication flows.
 /// It tests the sign-in process with different preferred factors such as password, passwordSRP, email OTP, and SMS OTP.
@@ -59,7 +59,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
         }
 
         let confirmSignUpResult = try await Amplify.Auth.confirmSignUp(
-            for: username, confirmationCode: otp)
+            for: username, confirmationCode: otp
+        )
 
         guard confirmSignUpResult.isSignUpComplete else {
             XCTFail("Failed confirmation of sign up")
@@ -88,7 +89,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -116,7 +118,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -144,7 +147,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
                 return
@@ -190,7 +194,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             var signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
                 return
@@ -242,7 +247,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             // Select passwordSRP
             _ = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: AuthFactorType.passwordSRP.challengeResponse)
@@ -276,7 +282,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
                 return
@@ -320,7 +327,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
                 authFlowType: .userAuth(preferredFirstFactor: .emailOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
@@ -340,7 +348,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
 
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: otp)
-            
+
             XCTAssertTrue(confirmSignInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -367,7 +375,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
                 authFlowType: .userAuth(preferredFirstFactor: .smsOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
@@ -414,14 +423,15 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
                 return
             }
             XCTAssert(availableFactors.contains(.emailOTP))
-            
+
             // Select emailOTP as the factor
             var confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: AuthFactorType.emailOTP.challengeResponse)
@@ -471,14 +481,15 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .continueSignInWithFirstFactorSelection(let availableFactors) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
                 return
             }
             XCTAssert(availableFactors.contains(.smsOTP))
-            
+
             // Select smsOTP as the factor
             var confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: AuthFactorType.smsOTP.challengeResponse)
@@ -526,7 +537,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .continueSignInWithFirstFactorSelection = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
@@ -557,7 +569,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .continueSignInWithFirstFactorSelection = signInResult.nextStep else {
                 XCTFail("SignIn should return a .continueSignInWithFirstFactorSelection")
@@ -585,7 +598,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .emailOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .confirmSignInWithOTP = signInResult.nextStep else {
                 XCTFail("SignIn should return a .confirmSignInWithOTP")
@@ -613,7 +627,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .smsOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .confirmSignInWithOTP = signInResult.nextStep else {
                 XCTFail("SignIn should return a .confirmSignInWithOTP")
@@ -643,7 +658,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.signIn(
                 username: username,
                 password: incorrectPassword,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTFail("SignIn with an incorrect password should fail")
         } catch {
             // Expected failure
@@ -670,7 +686,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.signIn(
                 username: username,
                 password: incorrectPassword,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTFail("SignIn with an incorrect password should fail")
         } catch {
             // Expected failure
@@ -681,7 +698,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -707,7 +725,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.signIn(
                 username: username,
                 password: incorrectPassword,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTFail("SignIn with an incorrect password should fail")
         } catch {
             // Expected failure
@@ -734,7 +753,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             _ = try await Amplify.Auth.signIn(
                 username: username,
                 password: incorrectPassword,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTFail("SignIn with an incorrect password should fail")
         } catch {
             // Expected failure
@@ -745,7 +765,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -769,7 +790,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .emailOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
@@ -808,7 +830,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .emailOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .confirmSignInWithOTP = signInResult.nextStep else {
                 XCTFail("SignIn should return a .confirmSignInWithOTP")
@@ -838,13 +861,14 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
 
         try await signUp(username: username, password: password)
 
-        var otpString: String = ""
+        var otpString = ""
 
         do {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .emailOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the correct OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
@@ -892,7 +916,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthSignInOptions(authFlowType: .userAuth(preferredFirstFactor: .smsOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the OTP sent to the phone and confirm the sign-in
             guard let otp = try await otp(for: username) else {
@@ -932,7 +957,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
                 authFlowType: .userAuth(preferredFirstFactor: .smsOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             guard case .confirmSignInWithOTP(let codeDeliverDetails) = signInResult.nextStep else {
                 XCTFail("SignIn should return a .confirmSignInWithOTP")
@@ -981,7 +1007,8 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
                 authFlowType: .userAuth(preferredFirstFactor: .smsOTP))
             let signInResult = try await Amplify.Auth.signIn(
                 username: username,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
 
             // Retrieve the correct OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {

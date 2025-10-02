@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 @testable import Amplify
 @testable import AWSDataStorePlugin
-import Foundation
 
-struct DataStoreInternal {
+enum DataStoreInternal {
 
     static var dbFilePath: URL? { getAdapter()?.dbFilePath }
 

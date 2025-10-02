@@ -7,12 +7,12 @@
 
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
+import AWSClientRuntime
+import AWSLocation
 import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
-import AWSLocation
-import AWSClientRuntime
 
-extension AWSLocationGeoPlugin {
+public extension AWSLocationGeoPlugin {
     /// Configures AWSLocationPlugin with the specified configuration.
     ///
     /// This method will be invoked as part of the Amplify configuration flow.
@@ -20,7 +20,7 @@ extension AWSLocationGeoPlugin {
     /// - Parameter configuration: The configuration specified for this plugin.
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty.
-    public func configure(using configuration: Any?) throws {
+    func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSLocationGeoPluginConfiguration
         if let configuration = configuration as? AmplifyOutputsData {
             pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configuration)
@@ -34,7 +34,7 @@ extension AWSLocationGeoPlugin {
     }
 
     /// Configure AWSLocationPlugin programatically using AWSLocationPluginConfiguration
-    public func configure(using configuration: AWSLocationGeoPluginConfiguration) throws {
+    func configure(using configuration: AWSLocationGeoPluginConfiguration) throws {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialIdentityResolver()
         let region = configuration.regionName
@@ -50,9 +50,11 @@ extension AWSLocationGeoPlugin {
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
 
-        configure(locationService: locationService,
-                  authService: authService,
-                  pluginConfig: configuration)
+        configure(
+            locationService: locationService,
+            authService: authService,
+            pluginConfig: configuration
+        )
     }
 
     // MARK: - Internal
@@ -65,9 +67,11 @@ extension AWSLocationGeoPlugin {
     ///   - locationService: The location service object.
     ///   - authService: The authentication service object.
     ///   - pluginConfig: The configuration for the plugin.
-    func configure(locationService: AWSLocationBehavior,
-                   authService: AWSAuthServiceBehavior,
-                   pluginConfig: AWSLocationGeoPluginConfiguration) {
+    internal func configure(
+        locationService: AWSLocationBehavior,
+        authService: AWSAuthServiceBehavior,
+        pluginConfig: AWSLocationGeoPluginConfiguration
+    ) {
         self.locationService = locationService
         self.authService = authService
         self.pluginConfig = pluginConfig

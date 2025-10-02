@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import Foundation
 import Combine
+import Foundation
 
 // Most APIs will return an operation that exposes a `resultPublisher`. The
 // Storage and API category methods that expose both a result and an in-process

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AVFoundation
 import XCTest
 @testable import Amplify
 @testable import AWSPredictionsPlugin
-import AVFoundation
 
 import Combine
 
@@ -26,7 +26,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
             .speechToText(url: url), options: options
         )
         let responses = result.map(\.transcription)
-        
+
         for try await response in responses {
             print("Response in test", response)
         }

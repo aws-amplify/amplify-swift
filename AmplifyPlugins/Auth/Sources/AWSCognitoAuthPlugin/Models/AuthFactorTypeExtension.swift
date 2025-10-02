@@ -9,7 +9,7 @@ import Amplify
 
 extension AuthFactorType: DefaultLogger {
 
-    internal init?(rawValue: String) {
+    init?(rawValue: String) {
         switch rawValue {
         case "PASSWORD": self = .password
         case "PASSWORD_SRP": self = .passwordSRP

@@ -15,15 +15,17 @@ class LocalStoreIntegrationTestBase: XCTestCase {
     override func setUp() async throws {
         await Amplify.reset()
     }
-    
+
     func setUp(withModels models: AmplifyModelRegistration) {
 
         continueAfterFailure = false
 
         do {
             #if os(watchOS)
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, 
-                                                       configuration: .subscriptionsDisabled))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .subscriptionsDisabled
+            ))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             #endif
@@ -36,7 +38,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
 
     override func tearDown() async throws {
         let clearComplete = expectation(description: "clear completed")
-        
+
         Task {
             try await Amplify.DataStore.clear()
             clearComplete.fulfill()

@@ -20,8 +20,10 @@ public class UserProfile: Model {
     // belongsTo(associatedWith: "profile")
     public var account: UserAccount
 
-    public init(id: String = UUID().uuidString,
-                account: UserAccount) {
+    public init(
+        id: String = UUID().uuidString,
+        account: UserAccount
+    ) {
         self.id = id
         self.account = account
     }

@@ -4,8 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import XCTest
+
 import AWSPluginsCore
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -22,12 +23,14 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let newPost = try PostWrapper(
             title: title,
-            content: "Original content from DataStoreEndToEndTests at \(date)")
+            content: "Original content from DataStoreEndToEndTests at \(date)"
+        )
 
         let updatedPost = try PostWrapper(
             id: newPost.idString(),
             title: title,
-            content: "UPDATED CONTENT from DataStoreEndToEndTests at \(date)")
+            content: "UPDATED CONTENT from DataStoreEndToEndTests at \(date)"
+        )
 
         let createReceived = expectation(description: "Create notification received")
         let updateReceived = expectation(description: "Update notification received")
@@ -35,7 +38,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -102,7 +106,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         let newPost = try PostWrapper(
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
+            createdAt: date
+        )
 
         let updatedPost = try PostWrapper(
             id: newPost.idString(),
@@ -116,7 +121,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -259,11 +265,13 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         let newPost = try PostWrapper(
             title: "This is a new post I created",
             content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: Temporal.DateTime.now().iso8601String)
+            createdAt: Temporal.DateTime.now().iso8601String
+        )
         let createReceived = expectation(description: "Create notification received")
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")

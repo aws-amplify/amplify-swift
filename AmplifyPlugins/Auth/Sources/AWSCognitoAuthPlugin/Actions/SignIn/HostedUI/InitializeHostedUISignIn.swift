@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import CryptoKit
+import Foundation
 
 struct InitializeHostedUISignIn: Action {
 
@@ -19,7 +19,8 @@ struct InitializeHostedUISignIn: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIEnvironment = environment.hostedUIEnvironment else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment
+        else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -32,13 +33,16 @@ struct InitializeHostedUISignIn: Action {
             presentationAnchor: options.presentationAnchor,
             environment: environment,
             hostedUIEnvironment: hostedUIEnvironment,
-            dispatcher: dispatcher)
+            dispatcher: dispatcher
+        )
     }
 
-    func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor?,
-                            environment: AuthEnvironment,
-                            hostedUIEnvironment: HostedUIEnvironment,
-                            dispatcher: EventDispatcher) async {
+    func initializeHostedUI(
+        presentationAnchor: AuthUIPresentationAnchor?,
+        environment: AuthEnvironment,
+        hostedUIEnvironment: HostedUIEnvironment,
+        dispatcher: EventDispatcher
+    ) async {
         let username = "unknown"
         let hostedUIConfig = hostedUIEnvironment.configuration
         let randomGenerator = hostedUIEnvironment.randomStringFactory()
@@ -53,23 +57,29 @@ struct InitializeHostedUISignIn: Action {
         do {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.credentialsClient)
+                credentialStoreClient: environment.credentialsClient
+            )
             let encodedData = await CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: environment.cognitoUserPoolASFFactory(),
-                userPoolConfiguration: environment.userPoolConfiguration)
+                userPoolConfiguration: environment.userPoolConfiguration
+            )
 
-            let url = try HostedUIRequestHelper.createSignInURL(state: state,
-                                                                proofKey: proofKey,
-                                                                userContextData: encodedData,
-                                                                configuration: hostedUIConfig,
-                                                                options: options)
-            let signInData = HostedUISigningInState(signInURL: url,
-                                                    state: state,
-                                                    codeChallenge: proofKey,
-                                                    presentationAnchor: presentationAnchor,
-                                                    options: options)
+            let url = try HostedUIRequestHelper.createSignInURL(
+                state: state,
+                proofKey: proofKey,
+                userContextData: encodedData,
+                configuration: hostedUIConfig,
+                options: options
+            )
+            let signInData = HostedUISigningInState(
+                signInURL: url,
+                state: state,
+                codeChallenge: proofKey,
+                presentationAnchor: presentationAnchor,
+                options: options
+            )
             let event = HostedUIEvent(eventType: .showHostedUI(signInData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)

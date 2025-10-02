@@ -34,7 +34,6 @@ extension CustomSignInState {
                 return resolveInitiating(from: oldState, byApplying: customSignInEvent)
             default:
                 return .from(oldState)
-
             }
         }
 
@@ -50,7 +49,8 @@ extension CustomSignInState {
                 let action = InitiateCustomAuth(
                     username: username,
                     clientMetadata: signInEventData.clientMetadata,
-                    deviceMetadata: deviceMetadata)
+                    deviceMetadata: deviceMetadata
+                )
                 return StateResolution(
                     newState: CustomSignInState.initiating(signInEventData),
                     actions: [action]
@@ -62,11 +62,14 @@ extension CustomSignInState {
 
         private func resolveInitiating(
             from oldState: CustomSignInState,
-            byApplying signInEvent: SignInEvent) -> StateResolution<CustomSignInState> {
+            byApplying signInEvent: SignInEvent
+        ) -> StateResolution<CustomSignInState> {
                 switch signInEvent.eventType {
                 case .finalizeSignIn(let signedInData):
-                    return .init(newState: .signedIn(signedInData),
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .signedIn(signedInData),
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 default:
                     return .from(oldState)
                 }

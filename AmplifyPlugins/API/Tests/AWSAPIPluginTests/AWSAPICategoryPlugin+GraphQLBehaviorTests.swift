@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-@testable import AWSAPIPlugin
 import AWSPluginsCore
+import XCTest
+@testable import AWSAPIPlugin
 
 class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
@@ -16,11 +16,13 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testQuery() async {
         let operationFinished = expectation(description: "Operation should finish")
-        let request = GraphQLRequest<JSONValue>(apiName: apiName,
-                                                document: testDocument,
-                                                variables: nil,
-                                                responseType: JSONValue.self,
-                                                authMode: AWSAuthorizationType.apiKey)
+        let request = GraphQLRequest<JSONValue>(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self,
+            authMode: AWSAuthorizationType.apiKey
+        )
         let operation = apiPlugin.query(request: request) { _ in
             operationFinished.fulfill()
         }
@@ -46,10 +48,12 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testMutate() async {
         let operationFinished = expectation(description: "Operation should finish")
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
         let operation = apiPlugin.mutate(request: request) { _ in
             operationFinished.fulfill()
         }
@@ -75,10 +79,12 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testSubscribe() async {
         let operationFinished = expectation(description: "Operation should finish")
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest(
+            apiName: apiName,
+            document: testDocument,
+            variables: nil,
+            responseType: JSONValue.self
+        )
         let operation = apiPlugin.subscribe(request: request, valueListener: nil) { _ in
             operationFinished.fulfill()
         }

@@ -11,18 +11,16 @@ extension MigrateSignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
-        let additionalMetadataDictionary: [String: Any]
-
-        switch self {
+        let additionalMetadataDictionary: [String: Any] = switch self {
 
         case .notStarted:
-            additionalMetadataDictionary = [:]
+            [:]
         case .signingIn:
-            additionalMetadataDictionary = [:]
+            [:]
         case .signedIn(let signedInData):
-            additionalMetadataDictionary = ["SignedInData": signedInData.debugDictionary]
+            ["SignedInData": signedInData.debugDictionary]
         case .error:
-            additionalMetadataDictionary = [:]
+            [:]
         }
         return [type: additionalMetadataDictionary]
     }

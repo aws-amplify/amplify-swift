@@ -17,7 +17,8 @@ class InitializeFetchAuthSessionTests: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 
-        await action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
 
                 guard let event = event as? FetchAuthSessionEvent else {
                     XCTFail("Expected event to be FetchAuthSessionEvent")

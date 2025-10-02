@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
@@ -27,41 +27,49 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
     static let phoneTypeKey = "PhoneType"
     static let asfVersion = "IOS20171114"
 
-    func userContextData(for username: String = "unknown",
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) async throws -> String {
+    func userContextData(
+        for username: String = "unknown",
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) async throws -> String {
 
         let contextData = await prepareUserContextData(deviceInfo: deviceInfo, appInfo: appInfo)
-        let payload = try prepareJsonPayload(username: username,
-                                             contextData: contextData,
-                                             userPoolId: configuration.poolId)
-        let signature = try calculateSecretHash(contextJson: payload,
-                                                clientId: configuration.clientId)
+        let payload = try prepareJsonPayload(
+            username: username,
+            contextData: contextData,
+            userPoolId: configuration.poolId
+        )
+        let signature = try calculateSecretHash(
+            contextJson: payload,
+            clientId: configuration.clientId
+        )
         let result = try prepareJsonResult(payload: payload, signature: signature)
         return result
     }
 
-    func prepareUserContextData(deviceInfo: ASFDeviceBehavior,
-                                appInfo: ASFAppInfoBehavior) async -> [String: String] {
+    func prepareUserContextData(
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior
+    ) async -> [String: String] {
         var build = "release"
 #if DEBUG
         build = "debug"
 #endif
         let fingerPrint = await deviceInfo.deviceInfo()
-        var contextData: [String: String] = [
+        var contextData: [String: String] = await [
             Self.targetSDKKey: appInfo.targetSDK,
             Self.appVersionKey: appInfo.version,
-            Self.deviceNameKey: await deviceInfo.name,
-            Self.phoneTypeKey: await deviceInfo.type,
+            Self.deviceNameKey: deviceInfo.name,
+            Self.phoneTypeKey: deviceInfo.type,
             Self.deviceIdKey: deviceInfo.id,
-            Self.releaseVersionKey: await deviceInfo.version,
-            Self.platformKey: await deviceInfo.platform,
+            Self.releaseVersionKey: deviceInfo.version,
+            Self.platformKey: deviceInfo.platform,
             Self.buildTypeKey: build,
             Self.timezoneKey: timeZoneOffet(),
-            Self.deviceHeightKey: await deviceInfo.height,
-            Self.deviceWidthKey: await deviceInfo.width,
-            Self.deviceLanguageKey: await deviceInfo.locale,
+            Self.deviceHeightKey: deviceInfo.height,
+            Self.deviceWidthKey: deviceInfo.width,
+            Self.deviceLanguageKey: deviceInfo.locale,
             Self.deviceFingerPrintKey: fingerPrint
         ]
         if let appName = appInfo.name {
@@ -73,10 +81,12 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         return contextData
     }
 
-    func prepareJsonPayload(username: String,
-                            contextData: [String: String],
-                            userPoolId: String) throws -> String {
-        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1000))
+    func prepareJsonPayload(
+        username: String,
+        contextData: [String: String],
+        userPoolId: String
+    ) throws -> String {
+        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1_000))
         let payload = [
             "contextData": contextData,
             "username": username,
@@ -92,8 +102,8 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
 
     func timeZoneOffet(seconds: Int = TimeZone.current.secondsFromGMT()) -> String {
 
-        let hours = seconds/3600
-        let minutes = abs(seconds/60) % 60
+        let hours = seconds / 3_600
+        let minutes = abs(seconds / 60) % 60
         return String(format: "%+.2d:%.2d", hours, minutes)
     }
 

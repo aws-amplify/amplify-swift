@@ -9,9 +9,9 @@ import Combine
 import XCTest
 
 import Amplify
+@_implementationOnly import AmplifyAsyncTesting
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@_implementationOnly import AmplifyAsyncTesting
 
 class GraphQLSubscribeTasksTests: OperationTestBase {
 
@@ -82,7 +82,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
             timeout: 0.05
         )
     }
-    
+
     func testHappyPath() async throws {
         receivedCompletionFailure.isInverted = true
         receivedDataValueError.isInverted = true
@@ -134,7 +134,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         expectedCompletionFailureError = APIError.operationError("", "", AppSyncRealTimeRequest.Error.limitExceeded)
         await waitForSubscriptionExpectations()
     }
-    
+
     func testConnectionErrorWithConnectionUnauthorizedError() async throws {
         receivedCompletionSuccess.isInverted = true
         receivedStateValueConnected.isInverted = true
@@ -155,7 +155,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         )
         await waitForSubscriptionExpectations()
     }
-    
+
     func testConnectionErrorWithAppSyncConnectionError() async throws {
         receivedCompletionSuccess.isInverted = true
         receivedStateValueConnected.isInverted = true
@@ -174,7 +174,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
 
     func testDecodingError() async throws {
         let testData: JSONValue = [
-            "data": [ "foo": true ],
+            "data": ["foo": true],
             "errors": []
         ]
         receivedCompletionFailure.isInverted = true
@@ -193,7 +193,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
     func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
         let testData: JSONValue = [
-            "data": [ "foo": true ]
+            "data": ["foo": true]
         ]
 
         receivedCompletionFailure.isInverted = true
@@ -214,10 +214,10 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
 
     func testMixedSuccessAndErrorValues() async throws {
         let successfulTestData: JSONValue = [
-            "data": [ "foo": true ]
+            "data": ["foo": true]
         ]
         let invalidTestData: JSONValue = [
-            "data": [ "foo": true ],
+            "data": ["foo": true],
             "errors": []
         ]
 
@@ -281,7 +281,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
                     case .data(let result):
                         switch result {
                         case .success(let actualValue):
-                            if let expectedValue = expectedValue {
+                            if let expectedValue {
                                 XCTAssertEqual(actualValue, expectedValue)
                             }
                             self.receivedDataValueSuccess.fulfill()
@@ -290,20 +290,20 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
                         }
                     }
                 }
-                
+
                 self.receivedCompletionSuccess.fulfill()
             } catch {
                 if let apiError = error as? APIError,
                    let expectedError = expectedCompletionFailureError {
                     XCTAssertEqual(apiError, expectedError)
                 }
-                
+
                 self.receivedCompletionFailure.fulfill()
             }
         }
     }
 }
- 
+
 extension APIError: Equatable {
     public static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
@@ -323,7 +323,6 @@ extension APIError: Equatable {
             case (.none, .none): return true
             default: return false
             }
-
         case (.networkError(_, _, let lhs), .networkError(_, _, let rhs)):
             if let lhs = lhs as? URLError, let rhs = rhs as? URLError {
                 return lhs.code == rhs.code

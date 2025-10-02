@@ -44,14 +44,14 @@ class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDe
 
     func preconditionCheck() throws {
         stepsCalled.append(.precondition)
-        if let preconditionCheckError = preconditionCheckError {
+        if let preconditionCheckError {
             throw preconditionCheckError
         }
     }
 
     func transaction(_ basicClosure: () throws -> Void) throws {
         stepsCalled.append(.transaction)
-        if let transactionError = transactionError {
+        if let transactionError {
             throw transactionError
         }
 

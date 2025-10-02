@@ -50,8 +50,8 @@ extension EventStream {
                 .bigEndianFixedWidth()
 
             // bytes of all headers determined by the headerByteLength
-            let headerBytes = Data(
-                try data.readBytes(
+            let headerBytes = try Data(
+                data.readBytes(
                     count: Int(headerByteLength)
                 )
             )
@@ -61,7 +61,7 @@ extension EventStream {
 
             // bytes of the payload
             // variable length based on total length - constant length - headers length
-            let payloadBytes = Data(try data.readBytes(count: data.count - 4))
+            let payloadBytes = try Data(data.readBytes(count: data.count - 4))
 
             // last 4 bytes of messagee make up the CRC for the whole message.
             let messageCRC: Int32 = Data(data).bigEndianFixedWidth()
@@ -136,7 +136,7 @@ extension EventStream {
                 let valueLength: Int16 = try Data(data.readBytes(count: 2))
                     .bigEndianFixedWidth()
 
-                let headerValueBytes = Data(try data.readBytes(count: Int(valueLength)))
+                let headerValueBytes = try Data(data.readBytes(count: Int(valueLength)))
                 let headerValue = String(decoding: headerValueBytes, as: UTF8.self)
 
                 let header = Header(
@@ -160,9 +160,9 @@ extension EventStream {
     }
 }
 
-fileprivate extension Data {
+private extension Data {
     func bigEndianFixedWidth<T: FixedWidthInteger>(_ type: T.Type = T.self) -> T {
-        self.withUnsafeBytes { $0.load(as: type) }.bigEndian
+        withUnsafeBytes { $0.load(as: type) }.bigEndian
     }
 }
 

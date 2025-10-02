@@ -19,11 +19,11 @@ class QueryPredicateTests: XCTestCase {
         encoder.outputFormatting = [.sortedKeys]
         return encoder
     }()
-    
+
     var encoder: JSONEncoder {
         _encoder
     }
-    
+
     /// it should create a simple `QueryPredicateOperation`
     func testSingleQueryPredicateOperation() {
         let post = Post.keys
@@ -47,7 +47,7 @@ class QueryPredicateTests: XCTestCase {
         )
 
         XCTAssertEqual(predicate, expected)
-        
+
         let predicateString = String(data: try! encoder.encode(predicate), encoding: .utf8)!
         let expectedString = String(data: try! encoder.encode(expected), encoding: .utf8)!
         XCTAssert(predicateString == expectedString)
@@ -83,7 +83,7 @@ class QueryPredicateTests: XCTestCase {
             ]
         )
         XCTAssert(predicate == expected)
-        
+
         let predicateString = String(data: try! encoder.encode(predicate), encoding: .utf8)!
         let expectedString = String(data: try! encoder.encode(expected), encoding: .utf8)!
         XCTAssert(predicateString == expectedString)
@@ -163,7 +163,7 @@ class QueryPredicateTests: XCTestCase {
             && !(post.updatedAt == nil)
 
         XCTAssertEqual(funcationPredicate, operatorPredicate)
-        
+
         let funcationPredicateString = String(data: try! encoder.encode(funcationPredicate), encoding: .utf8)!
         let operatorPredicateString = String(data: try! encoder.encode(operatorPredicate), encoding: .utf8)!
         XCTAssert(funcationPredicateString == operatorPredicateString)

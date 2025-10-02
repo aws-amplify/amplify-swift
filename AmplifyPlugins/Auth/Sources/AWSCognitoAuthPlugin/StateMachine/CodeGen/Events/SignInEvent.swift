@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 #if os(iOS) || os(macOS) || os(visionOS)
 import typealias Amplify.AuthUIPresentationAnchor
 #endif
@@ -34,7 +34,7 @@ struct SignInEvent: StateMachineEvent {
         case initiateUserAuth(SignInEventData, DeviceMetadata)
 
         case initiateWebAuthnSignIn(WebAuthnSignInData, RespondToAuthChallenge)
-        
+
         case initiateAutoSignIn(SignInEventData, DeviceMetadata)
 
         case respondPasswordVerifier(SRPStateData, SignInResponseBehavior, ClientMetadata)
@@ -94,9 +94,11 @@ struct SignInEvent: StateMachineEvent {
         }
     }
 
-    init(id: String = UUID().uuidString,
-         eventType: EventType,
-         time: Date? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        eventType: EventType,
+        time: Date? = nil
+    ) {
         self.id = id
         self.eventType = eventType
         self.time = time

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Convenience class that is used by Amplify to include metadata such as values for a "User-Agent" during
 /// server interactions.

@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -5,29 +12,35 @@ import Foundation
 public struct StrangeExplicitChild: Model {
   public let strangeId: String
   public let content: String
-  internal var _parent: LazyReference<CompositePKParent>
+  var _parent: LazyReference<CompositePKParent>
   public var parent: CompositePKParent   {
-      get async throws { 
+      get async throws {
         try await _parent.require()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-  
-  public init(strangeId: String,
-      content: String,
-      parent: CompositePKParent) {
-    self.init(strangeId: strangeId,
+
+  public init(
+    strangeId: String,
+    content: String,
+    parent: CompositePKParent
+  ) {
+    self.init(
+      strangeId: strangeId,
       content: content,
       parent: parent,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(strangeId: String,
-      content: String,
-      parent: CompositePKParent,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    strangeId: String,
+    content: String,
+    parent: CompositePKParent,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.strangeId = strangeId
       self.content = content
       self._parent = LazyReference(parent)
@@ -35,15 +48,15 @@ public struct StrangeExplicitChild: Model {
       self.updatedAt = updatedAt
   }
   public mutating func setParent(_ parent: CompositePKParent) {
-    self._parent = LazyReference(parent)
+    _parent = LazyReference(parent)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      strangeId = try values.decode(String.self, forKey: .strangeId)
-      content = try values.decode(String.self, forKey: .content)
-      _parent = try values.decodeIfPresent(LazyReference<CompositePKParent>.self, forKey: .parent) ?? LazyReference(identifiers: nil)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.strangeId = try values.decode(String.self, forKey: .strangeId)
+      self.content = try values.decode(String.self, forKey: .content)
+      self._parent = try values.decodeIfPresent(LazyReference<CompositePKParent>.self, forKey: .parent) ?? LazyReference(identifiers: nil)
+      self.createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

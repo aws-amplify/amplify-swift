@@ -5,21 +5,23 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
+import SQLite3
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
-import SQLite3
 
 class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase {
 
     // MARK: - Precondition tests
     func testPreconditionSuccess() throws {
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         try delegate.preconditionCheck()
     }
 
@@ -28,8 +30,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
     func testSelectMutationSyncMetadataWithoutTableShouldThrow() {
         let shouldCatchFailure = expectation(description: "select MutationSyncMetadata without table should fail")
         do {
-            let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                       modelSchemas: modelSchemas)
+            let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+                storageAdapter: storageAdapter,
+                modelSchemas: modelSchemas
+            )
             _ = try delegate.selectMutationSyncMetadataRecords()
         } catch {
             guard let resultError = error as? Result,
@@ -50,8 +54,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         try setUpAllModels()
         let metadata = MutationSyncMetadata(id: UUID().uuidString, deleted: false, lastChangedAt: 1, version: 1)
         save(metadata)
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
 
         XCTAssertFalse(try delegate.mutationSyncMetadataStoreEmptyOrMigrated())
     }
@@ -59,14 +65,18 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
     /// Set up MutationSyncMetadata records where the id is in the correct format. Check that it does not need migration
     func testMutationSyncMetadataStoreNotEmptyAndMigrated() throws {
         try setUpAllModels()
-        let metadata = MutationSyncMetadata(modelId: UUID().uuidString,
-                                            modelName: "modelName",
-                                            deleted: false,
-                                            lastChangedAt: 1,
-                                            version: 1)
+        let metadata = MutationSyncMetadata(
+            modelId: UUID().uuidString,
+            modelName: "modelName",
+            deleted: false,
+            lastChangedAt: 1,
+            version: 1
+        )
         save(metadata)
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
 
         XCTAssertTrue(try delegate.mutationSyncMetadataStoreEmptyOrMigrated())
     }
@@ -75,8 +85,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
 
     func testSelectDuplicateIdCountAcrossModelsWithoutTableShouldThrow() {
         let shouldCatchFailure = expectation(description: "select duplicate id count without model tables should fail")
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         do {
             _ = try delegate.containsDuplicateIdsAcrossModels()
         } catch {
@@ -95,8 +107,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
 
     func testSelectDuplicateIdAcrossModelsStatement() throws {
         try setUpAllModels()
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         let expected = "SELECT id, tableName, count(id) as count FROM " +
         "(SELECT id, 'Restaurant' as tableName FROM Restaurant UNION ALL " +
         "SELECT id, 'Menu' as tableName FROM Menu UNION ALL " +
@@ -106,8 +120,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
 
     func testSelectDuplicateIdCountAcrossModels_NoData() throws {
         try setUpAllModels()
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         XCTAssertFalse(try delegate.containsDuplicateIdsAcrossModels())
     }
 
@@ -119,8 +135,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         save(menu)
         let dish = Dish(dishName: "name", menu: menu)
         save(dish)
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         XCTAssertFalse(try delegate.containsDuplicateIdsAcrossModels())
     }
 
@@ -134,8 +152,10 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
         save(menu)
         let dish = Dish(id: "1", dishName: "name", menu: menu)
         save(dish)
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
-                                                                   modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: storageAdapter,
+            modelSchemas: modelSchemas
+        )
         XCTAssertTrue(try delegate.containsDuplicateIdsAcrossModels())
     }
 }

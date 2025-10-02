@@ -15,7 +15,7 @@ protocol SignInResponseBehavior {
     /// The challenge name.
     var challengeName: CognitoIdentityProviderClientTypes.ChallengeNameType? { get }
 
-    /// Available challenges  in UserAuth flow. The output is only available in InitiateAuth API's response. 
+    /// Available challenges  in UserAuth flow. The output is only available in InitiateAuth API's response.
     var availableChallenges: [CognitoIdentityProviderClientTypes.ChallengeNameType]? { get }
 
     /// The challenge parameters.

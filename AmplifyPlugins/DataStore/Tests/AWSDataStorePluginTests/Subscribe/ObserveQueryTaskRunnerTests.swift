@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class ObserveQueryTaskRunnerTests: XCTestCase {
     var storageEngine: MockStorageEngineBehavior!
@@ -24,7 +24,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         storageEngine = MockStorageEngineBehavior()
         dataStorePublisher = DataStorePublisher()
     }
-    
+
     ///  An item changed observed will be returned in a single snapshot
     ///
     /// - Given:  The operation has started and the first query has completed.
@@ -45,7 +45,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -64,14 +65,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-    
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
 
         let post = try createPost(id: "1")
         dataStorePublisher.send(input: post)
         await fulfillment(of: [secondSnapshot], timeout: 10)
     }
-    
+
     ///  ObserveQuery will send a single snapshot when the sync state toggles
     ///  from false to true. The operation internally listens to `.modelSynced` event from
     ///  the Hub.
@@ -98,7 +99,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -122,23 +124,32 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 5)
-        
+
         dispatchedModelSyncedEvent.set(true)
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true,
-                                                                        isDeltaSync: false, added: 0, updated: 0,
-                                                                        deleted: 0))
+        let modelSyncedEventPayload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.modelSynced,
+            data: ModelSyncedEvent(
+                modelName: Post.modelName,
+                isFullSync: true,
+                isDeltaSync: false,
+                added: 0,
+                updated: 0,
+                deleted: 0
+            )
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         await fulfillment(of: [secondSnapshot], timeout: 10)
-        
-        let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                  data: ModelSyncedEvent.Builder().modelName)
+
+        let modelSyncedEventNotMatch = HubPayload(
+            eventName: HubPayload.EventName.DataStore.modelSynced,
+            data: ModelSyncedEvent.Builder().modelName
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
         await fulfillment(of: [thirdSnapshot], timeout: 10)
     }
-    
+
     /// ObserveQuery will send the first snapshot with 2 items when storage engine
     /// is mocked to return 2 items.
     ///
@@ -159,10 +170,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
-        let post = Post(title: "model1",
-                        content: "content1",
-                        createdAt: .now())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
+        let post = Post(
+            title: "model1",
+            content: "content1",
+            createdAt: .now()
+        )
         storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
         })
@@ -177,14 +191,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                         firstSnapshot.fulfill()
                     }
                 }
-                
+
             } catch {
                 XCTFail("Failed with error \(error)")
             }
         }
         await fulfillment(of: [firstSnapshot], timeout: 10)
     }
-    
+
     /// Multiple item changed observed will be returned in a single snapshot
     ///
     /// - Given:  The operation has started and the first query has completed.
@@ -206,7 +220,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -225,7 +240,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
 
         let post1 = try createPost(id: "1")
@@ -236,7 +251,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         dataStorePublisher.send(input: post3)
         await fulfillment(of: [secondSnapshot], timeout: 10)
     }
-    
+
     /// Multiple published objects (more than the `.collect` count of 1000) in a relatively short time window
     /// will cause the operation in test to exceed the limit of 1000 in its collection of items before sending a snapshot.
     /// The first snapshot will have 1000 items, and subsequent snapshots will follow as the remaining objects are published and processed.
@@ -262,7 +277,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -277,7 +293,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                         thirdSnapshot.fulfill()
                     }
                 }
-                
+
                 XCTAssertTrue(querySnapshots.count >= 3)
                 XCTAssertTrue(querySnapshots[0].items.count <= querySnapshots[1].items.count)
                 XCTAssertTrue(querySnapshots[1].items.count <= querySnapshots[2].items.count)
@@ -287,7 +303,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
 
         for postId in 1 ... 1_100 {
@@ -299,7 +315,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         snapshots.cancel()
         await fulfillment(of: [validateSnapshotsComplete], timeout: 1.0)
     }
-    
+
     /// Cancelling the subscription will no longer receive snapshots
     ///
     /// - Given:  subscriber to the operation
@@ -322,7 +338,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -340,14 +357,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
         snapshots.cancel()
         let post1 = try createPost(id: "1")
         dataStorePublisher.send(input: post1)
         await fulfillment(of: [secondSnapshot], timeout: 1)
     }
-    
+
     /// Cancelling the underlying operation will emit a completion to the subscribers
     ///
     /// - Given:  subscriber to the operation
@@ -371,7 +388,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -397,7 +415,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
 
         await fulfillment(of: [secondSnapshot, completedEvent], timeout: 1)
     }
-    
+
     ///  ObserveQuery's state should be able to be reset and initial query able to be started again.
     func testObserveQueryResetStateThenStartObserveQuery() async {
         let firstSnapshot = expectation(description: "first query snapshot")
@@ -411,7 +429,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -428,13 +447,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
         dataStoreStateSubject.send(.stop)
         dataStoreStateSubject.send(.start(storageEngine: storageEngine))
         await fulfillment(of: [secondSnapshot], timeout: 1)
     }
-    
+
     /// Multiple calls to start the observeQuery should not start again
     ///
     /// - Given: ObserverQuery operation is created, and then reset
@@ -457,7 +476,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -476,7 +496,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        
+
         await fulfillment(of: [firstSnapshot], timeout: 1)
         dataStoreStateSubject.send(.stop)
         dataStoreStateSubject.send(.start(storageEngine: storageEngine))
@@ -484,7 +504,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         await fulfillment(of: [secondSnapshot, thirdSnapshot], timeout: 1)
         XCTAssertTrue(taskRunner.observeQueryStarted)
     }
-    
+
     /// ObserveQuery operation entry points are `resetState`, `startObserveQuery`, and `onItemChanges(mutationEvents)`.
     /// Ensure concurrent random sequences of these API calls do not cause issues such as data race.
     func testConcurrent() async {
@@ -499,10 +519,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
-        let post = Post(title: "model1",
-                        content: "content1",
-                        createdAt: .now())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
+        let post = Post(
+            title: "model1",
+            content: "content1",
+            createdAt: .now()
+        )
         storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
         })
@@ -517,7 +540,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         await withTaskGroup(of: Void.self) { group in
-            for _ in 0..<3000 {
+            for _ in 0 ..< 3_000 {
                 group.addTask {
                     let index = Int.random(in: 1 ... 5)
                     if index == 1 {
@@ -540,7 +563,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         }
         await fulfillment(of: [completeReceived], timeout: 10)
     }
-    
+
     /// When a predicate like `title.beginsWith("title")` is given, the models that matched the predicate
     /// should be added to the snapshots, like `post` and `post2`. When `post2.title` is updated to no longer
     /// match the predicate, it should be removed from the snapshot.
@@ -558,7 +581,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dataStorePublisher: dataStorePublisher,
             dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: true),
-            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher()
+        )
 
         let snapshots = taskRunner.sequence
         Task {
@@ -604,16 +628,20 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         dataStorePublisher.send(input: updatedPost2)
         await fulfillment(of: [secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
     }
-    
-    
+
+
     // MARK: - Helpers
 
     func createPost(id: String = UUID().uuidString, title: String? = nil) throws -> MutationEvent {
-        try MutationEvent(model: Post(id: id,
-                                      title: title ?? "model1",
-                                      content: "content1",
-                                      createdAt: .now()),
-                          modelSchema: Post.schema,
-                          mutationType: MutationEvent.MutationType.create)
+        try MutationEvent(
+            model: Post(
+                id: id,
+                title: title ?? "model1",
+                content: "content1",
+                createdAt: .now()
+            ),
+            modelSchema: Post.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
     }
 }

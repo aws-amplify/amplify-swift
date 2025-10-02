@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthSignUpTests: AWSAuthBaseTest {
 
@@ -24,10 +24,13 @@ class AuthSignUpTests: AWSAuthBaseTest {
         let password = "P123@\(UUID().uuidString)"
 
         let options = AuthSignUpRequest.Options(userAttributes: [
-            AuthUserAttribute(.email, value: defaultTestEmail)])
-        let signUpResult = try await Amplify.Auth.signUp(username: username,
-                                            password: password,
-                                            options: options)
+            AuthUserAttribute(.email, value: defaultTestEmail)
+        ])
+        let signUpResult = try await Amplify.Auth.signUp(
+            username: username,
+            password: password,
+            options: options
+        )
         XCTAssertTrue(signUpResult.isSignUpComplete, "Signup should be complete")
 
     }
@@ -37,7 +40,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "Sign up completed")
         signUpExpectation.expectedFulfillmentCount = 2
 
-        for _ in 0..<signUpExpectation.expectedFulfillmentCount {
+        for _ in 0 ..< signUpExpectation.expectedFulfillmentCount {
 
             Task {
                 let username = "integTest\(UUID().uuidString)"
@@ -47,7 +50,8 @@ class AuthSignUpTests: AWSAuthBaseTest {
                     let result = try await AuthSignInHelper.signUpUser(
                         username: username,
                         password: password,
-                        email: defaultTestEmail)
+                        email: defaultTestEmail
+                    )
                     XCTAssertTrue(result, "Signup should be complete")
                 } catch {
                     XCTFail("Failed to Sign up user \(username): \(error)")

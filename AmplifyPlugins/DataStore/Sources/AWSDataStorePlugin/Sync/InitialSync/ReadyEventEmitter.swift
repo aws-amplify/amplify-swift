@@ -28,7 +28,7 @@ final class ReadyEventEmitter {
         let syncEngineStartedPublisher = ReadyEventEmitter.makeRemoteSyncEngineStartedPublisher(
             remoteSyncEnginePublisher: remoteSyncEnginePublisher
         )
-        readySink = Publishers
+        self.readySink = Publishers
             .Merge(queriesReadyPublisher, syncEngineStartedPublisher)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -62,10 +62,10 @@ final class ReadyEventEmitter {
 }
 
 extension ReadyEventEmitter: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

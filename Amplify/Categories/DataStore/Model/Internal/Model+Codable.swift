@@ -8,7 +8,7 @@
 import Foundation
 
 /// Adds JSON serialization behavior to all types that conform to the `Model` protocol.
-extension Model where Self: Codable {
+public extension Model where Self: Codable {
 
     /// De-serialize a JSON string into an instance of the concrete type that conforms
     /// to the `Model` protocol.
@@ -24,13 +24,14 @@ extension Model where Self: Codable {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public static func from(json: String,
-                            decoder: JSONDecoder? = nil) throws -> Self {
-        let resolvedDecoder: JSONDecoder
-        if let decoder = decoder {
-            resolvedDecoder = decoder
+    static func from(
+        json: String,
+        decoder: JSONDecoder? = nil
+    ) throws -> Self {
+        let resolvedDecoder: JSONDecoder = if let decoder {
+            decoder
         } else {
-            resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
+            JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
 
         return try resolvedDecoder.decode(Self.self, from: Data(json.utf8))
@@ -47,7 +48,7 @@ extension Model where Self: Codable {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public static func from(dictionary: [String: Any]) throws -> Self {
+    static func from(dictionary: [String: Any]) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
         let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         return try decoder.decode(Self.self, from: data)
@@ -63,7 +64,7 @@ extension Model where Self: Codable {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public func toJSON(encoder: JSONEncoder? = nil) throws -> String {
+    func toJSON(encoder: JSONEncoder? = nil) throws -> String {
         var resolvedEncoder = encoder ?? JSONEncoder(
             dateEncodingStrategy: ModelDateFormatting.encodingStrategy
         )

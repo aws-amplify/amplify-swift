@@ -19,14 +19,17 @@ struct CreateMultipartUploadRequest {
     let contentType: String?
     let metadata: [String: String]?
 
-    init(bucket: String, key: String,
-         expires: String? = nil,
-         cacheControl: String? = nil,
-         contentDisposition: String? = nil,
-         contentEncoding: String? = nil,
-         contentLanguage: String? = nil,
-         contentType: String? = nil,
-         metadata: [String: String]? = nil) {
+    init(
+        bucket: String,
+        key: String,
+        expires: String? = nil,
+        cacheControl: String? = nil,
+        contentDisposition: String? = nil,
+        contentEncoding: String? = nil,
+        contentLanguage: String? = nil,
+        contentType: String? = nil,
+        metadata: [String: String]? = nil
+    ) {
         self.bucket = bucket
         self.key = key
 

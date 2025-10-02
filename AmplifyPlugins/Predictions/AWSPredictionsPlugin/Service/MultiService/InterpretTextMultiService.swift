@@ -97,7 +97,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
         offlineResult: Predictions.Sentiment?
     ) -> Predictions.Sentiment? {
         guard let onlineSentiment = onlineResult,
-            onlineSentiment.predominantSentiment != .unknown else {
+            onlineSentiment.predominantSentiment != .unknown
+        else {
                 return offlineResult
         }
         return onlineSentiment

@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import XCTest
 @testable import AWSAPIPlugin
 
@@ -82,7 +81,7 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }
 
     private func areDictionariesEqual(_ lhs: [String: Any]?, _ rhs: [String: Any]?) -> Bool {
-        guard let lhs = lhs, let rhs = rhs else { return false }
+        guard let lhs, let rhs else { return false }
         return NSDictionary(dictionary: lhs).isEqual(to: rhs)
     }
 
@@ -180,9 +179,9 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }
 }
 
-fileprivate extension String {
+private extension String {
     func shrink() -> String {
-        return self.replacingOccurrences(of: "\n", with: "")
+        return replacingOccurrences(of: "\n", with: "")
             .replacingOccurrences(of: " ", with: "")
     }
 }

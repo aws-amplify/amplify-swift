@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 extension RemoteSyncEngine: AuthModeStrategyDelegate {
 
@@ -29,10 +29,10 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
             return isLoggedInWithOIDC
         }
 
-        guard let auth = auth else {
+        guard let auth else {
             return false
         }
 
-        return (try? await auth.getCurrentUser()) != nil
+        return await (try? auth.getCurrentUser()) != nil
     }
 }

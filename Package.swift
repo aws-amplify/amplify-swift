@@ -162,12 +162,13 @@ let apiTargets: [Target] = [
 ]
 
 let authTargets: [Target] = [
-    .target(name: "AmplifyBigInteger",
-            dependencies: [
-                "libtommathAmplify"
-            ],
-            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
-           ),
+    .target(
+        name: "AmplifyBigInteger",
+        dependencies: [
+            "libtommathAmplify"
+        ],
+        path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+    ),
     .target(
         name: "AmplifySRP",
         dependencies: [
@@ -231,7 +232,8 @@ let dataStoreTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "SQLite", package: "SQLite.swift")],
+            .product(name: "SQLite", package: "SQLite.swift")
+        ],
         path: "AmplifyPlugins/DataStore/Sources/AWSDataStorePlugin",
         exclude: [
             "Info.plist",
@@ -262,7 +264,8 @@ let storageTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
-            .product(name: "AWSS3", package: "aws-sdk-swift")],
+            .product(name: "AWSS3", package: "aws-sdk-swift")
+        ],
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
@@ -293,7 +296,8 @@ let geoTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
-            .product(name: "AWSLocation", package: "aws-sdk-swift")],
+            .product(name: "AWSLocation", package: "aws-sdk-swift")
+        ],
         path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
@@ -308,7 +312,7 @@ let geoTargets: [Target] = [
             "AWSLocationGeoPlugin",
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
-            ],
+        ],
         path: "AmplifyPlugins/Geo/Tests/AWSLocationGeoPluginTests",
         exclude: [
             "Resources/Info.plist"
@@ -412,7 +416,7 @@ let predictionsTargets: [Target] = [
         name: "AWSPredictionsPluginUnitTests",
         dependencies: ["AWSPredictionsPlugin"],
         path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
-        resources: [.copy("TestResources/TestImages") ]
+        resources: [.copy("TestResources/TestImages")]
     ),
     .target(
         name: "CoreMLPredictionsPlugin",

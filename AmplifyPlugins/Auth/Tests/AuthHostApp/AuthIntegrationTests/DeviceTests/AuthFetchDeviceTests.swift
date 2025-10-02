@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthFetchDeviceTests: AWSAuthBaseTest {
 
@@ -52,11 +52,12 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             print(error)
         }
-        
+
         await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         // fetch devices

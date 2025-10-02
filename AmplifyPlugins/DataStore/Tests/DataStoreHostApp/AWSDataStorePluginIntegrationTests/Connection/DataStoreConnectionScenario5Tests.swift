@@ -101,7 +101,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         let post = try await savePost(title: "title")
         let user = try await saveUser(username: "username")
         _ = try await savePostEditor(post: post, editor: user)
-        
+
         let queriedUserOptional = try await Amplify.DataStore.query(User5.self, byId: user.id)
         guard let queriedUser = queriedUserOptional else {
             XCTFail("Missing queried user")

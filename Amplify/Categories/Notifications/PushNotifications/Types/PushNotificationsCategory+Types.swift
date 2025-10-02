@@ -7,6 +7,6 @@
 
 import Foundation
 
-extension Notifications {
-    public enum Push {}
+public extension Notifications {
+    enum Push {}
 }

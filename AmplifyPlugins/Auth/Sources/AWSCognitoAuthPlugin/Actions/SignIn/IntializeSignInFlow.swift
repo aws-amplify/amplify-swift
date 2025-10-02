@@ -13,7 +13,7 @@ struct InitializeSignInFlow: Action {
     var identifier: String = "IntializeSignInFlow"
 
     let signInEventData: SignInEventData
-    
+
     let autoSignIn: Bool
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
@@ -27,7 +27,8 @@ struct InitializeSignInFlow: Action {
     func createSignInEvent(from environment: Environment) async -> SignInEvent {
 
         guard let authEnvironment = environment as? AuthEnvironment,
-              authEnvironment.configuration.getUserPoolConfiguration() != nil else {
+              authEnvironment.configuration.getUserPoolConfiguration() != nil
+        else {
             let message = AuthPluginErrorConstants.configurationError
             let event = SignInEvent(eventType: .throwAuthError(.configuration(message: message)))
             return event
@@ -37,23 +38,25 @@ struct InitializeSignInFlow: Action {
         if let username = signInEventData.username {
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
         }
 
-        let event: SignInEvent
-        switch signInEventData.signInMethod {
+        let event: SignInEvent = switch signInEventData.signInMethod {
 
         case .apiBased(let authflowType):
-            event = signInEvent(for: authflowType, with: deviceMetadata)
+            signInEvent(for: authflowType, with: deviceMetadata)
         case .hostedUI(let hostedUIOptions):
-            event = .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
+            .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
         }
 
         return event
     }
 
-    func signInEvent(for authflow: AuthFlowType,
-                     with deviceMetadata: DeviceMetadata) -> SignInEvent {
+    func signInEvent(
+        for authflow: AuthFlowType,
+        with deviceMetadata: DeviceMetadata
+    ) -> SignInEvent {
         switch authflow {
         case .userSRP:
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata, nil))

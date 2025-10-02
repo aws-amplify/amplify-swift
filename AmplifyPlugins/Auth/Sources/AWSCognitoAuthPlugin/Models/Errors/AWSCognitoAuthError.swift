@@ -115,7 +115,7 @@ public enum AWSCognitoAuthError: Error {
 
 extension AWSCognitoAuthError: LocalizedError {
     public var errorDescription: String? {
-        var message: String = ""
+        var message = ""
         switch self {
         case .userNotFound:
             message = "User not found in the system."

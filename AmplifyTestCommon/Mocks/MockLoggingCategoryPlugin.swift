@@ -17,7 +17,7 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger 
     func logger(forCategory category: String) -> Logger {
         self
     }
-    
+
     func logger(forNamespace namespace: String) -> Logger {
         self
     }
@@ -25,15 +25,15 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger 
     func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         self
     }
-    
+
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
         self
     }
-    
+
     func enable() {
         notify("enable")
     }
-    
+
     func disable() {
         notify("disable")
     }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class StorageTransferTask {
     typealias Action = () -> Void
@@ -20,7 +20,7 @@ class StorageTransferTask {
     let storageTransferDatabase: StorageTransferDatabase
     let logger: Logger
 
-    internal var sessionTask: StorageSessionTask? {
+    var sessionTask: StorageSessionTask? {
         didSet {
             if sessionTask?.state == .suspended {
                 status = .paused
@@ -29,7 +29,7 @@ class StorageTransferTask {
     }
     private let taskQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage-transfer-task", target: .global())
     private var _status: StorageTransferStatus = .unknown
-    internal private(set) var status: StorageTransferStatus {
+    private(set) var status: StorageTransferStatus {
         get {
             dispatchPrecondition(condition: .notOnQueue(taskQueue))
             return taskQueue.sync {
@@ -44,14 +44,14 @@ class StorageTransferTask {
         }
     }
 
-    internal var location: URL?
-    internal var error: Error?
+    var location: URL?
+    var error: Error?
 
     // support for multipart uploads
-    internal var uploadId: UploadID?
-    internal var multipartUpload: StorageMultipartUpload? {
+    var uploadId: UploadID?
+    var multipartUpload: StorageMultipartUpload? {
         didSet {
-            if let multipartUpload = multipartUpload {
+            if let multipartUpload {
                 if multipartUpload.inProgress {
                     if status != .paused {
                         status = .inProgress
@@ -68,12 +68,12 @@ class StorageTransferTask {
             }
         }
     }
-    internal var uploadPart: StorageUploadPart?
+    var uploadPart: StorageUploadPart?
 
     // proxy for StorageMultipartUploadSession
-    internal var proxyStorageTask: StorageTask?
+    var proxyStorageTask: StorageTask?
 
-    internal var partNumber: PartNumber? {
+    var partNumber: PartNumber? {
         switch transferType {
         case .multiPartUploadPart(_, let partNumber):
             return partNumber
@@ -82,31 +82,34 @@ class StorageTransferTask {
         }
     }
 
-    internal private(set) var contentType: String?
-    internal private(set) var requestHeaders: [String: String]?
+    private(set) var contentType: String?
+    private(set) var requestHeaders: [String: String]?
 
-    internal private(set) var file: String?
-    internal private(set) var retryCount: Int = 0
-    internal private(set) var retryLimit: Int = 3
+    private(set) var file: String?
+    private(set) var retryCount: Int = 0
+    private(set) var retryLimit: Int = 3
 
-    internal var responseData: Data?
-    internal var responseText: String? {
+    var responseData: Data?
+    var responseText: String? {
         guard let data = responseData, data.count < 5_120,
-            let text = String(bytes: data, encoding: .utf8) else {
+            let text = String(bytes: data, encoding: .utf8)
+        else {
             return nil
         }
         return text
     }
 
-    init(transferID: String = UUID().uuidString,
-         transferType: StorageTransferType,
-         bucket: String,
-         key: String,
-         location: URL? = nil,
-         contentType: String? = nil,
-         requestHeaders: [String: String]? = nil,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         logger: Logger = storageLogger) {
+    init(
+        transferID: String = UUID().uuidString,
+        transferType: StorageTransferType,
+        bucket: String,
+        key: String,
+        location: URL? = nil,
+        contentType: String? = nil,
+        requestHeaders: [String: String]? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        logger: Logger = storageLogger
+    ) {
         self.transferID = transferID
         self.transferType = transferType
         self.bucket = bucket
@@ -120,11 +123,13 @@ class StorageTransferTask {
         storageTransferDatabase.insertTransferRequest(task: self)
     }
 
-    init(persistableTransferTask: StoragePersistableTransferTask,
-         transferType: StorageTransferType,
-         sessionTask: StorageSessionTask? = nil,
-         storageTransferDatabase: StorageTransferDatabase = .default,
-         logger: Logger = storageLogger) {
+    init(
+        persistableTransferTask: StoragePersistableTransferTask,
+        transferType: StorageTransferType,
+        sessionTask: StorageSessionTask? = nil,
+        storageTransferDatabase: StorageTransferDatabase = .default,
+        logger: Logger = storageLogger
+    ) {
 
         // swiftlint:disable line_length
         guard let rawValue = StorageTransferType.RawValues(rawValue: persistableTransferTask.transferTypeRawValue) else {
@@ -213,13 +218,13 @@ class StorageTransferTask {
                 return nil
             }
 
-            if let sessionTask = sessionTask {
+            if let sessionTask {
                 logger.debug("Cancelling storage transfer task: \(sessionTask.taskIdentifier)")
                 action = {
                     sessionTask.cancel()
                 }
                 _status = .cancelled
-            } else if let proxyStorageTask = proxyStorageTask {
+            } else if let proxyStorageTask {
                 logger.debug("Cancelling multipart upload: \(uploadId ?? "-")")
                 action = {
                     proxyStorageTask.cancel()
@@ -246,13 +251,13 @@ class StorageTransferTask {
                 return nil
             }
 
-            if let sessionTask = sessionTask {
+            if let sessionTask {
                 logger.debug("Resuming storage transfer task: \(sessionTask.taskIdentifier)")
                 action = {
                     sessionTask.resume()
                 }
                 _status = .inProgress
-            } else if let proxyStorageTask = proxyStorageTask {
+            } else if let proxyStorageTask {
                 logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
                 action = {
                     proxyStorageTask.resume()
@@ -290,13 +295,13 @@ class StorageTransferTask {
                 return nil
             }
 
-            if let sessionTask = sessionTask {
+            if let sessionTask {
                 logger.debug("Suspending storage transfer task: \(sessionTask.taskIdentifier)")
                 action = {
                     sessionTask.suspend()
                 }
                 _status = .paused
-            } else if let proxyStorageTask = proxyStorageTask {
+            } else if let proxyStorageTask {
                 logger.debug("Pausing multipart upload: \(uploadId ?? "-")")
                 action = {
                     proxyStorageTask.pause()
@@ -325,7 +330,7 @@ class StorageTransferTask {
                 return
             }
 
-            if let sessionTask = sessionTask {
+            if let sessionTask {
                 logger.debug("Completing storage transfer task: \(sessionTask.taskIdentifier)")
             }
 
@@ -348,7 +353,7 @@ extension URLRequest {
             return
         }
 
-        requestHeaders.forEach { key, value in
+        for (key, value) in requestHeaders {
             setValue(value, forHTTPHeaderField: key)
         }
     }

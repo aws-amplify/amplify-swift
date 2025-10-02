@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ArgumentParser
+import Foundation
 
 /// The following extensions on ArgumentParser commands parameters property wrappers
 /// help us providing a hook to generate a JSON representation of a CLI command.
@@ -22,7 +22,7 @@ extension Option where Value: ExpressibleByArgument {
             parsing: .next,
             completion: nil,
             help: ArgumentHelp(help)
-          )
+        )
         let type = String(describing: Value.self)
         parameters.insert(.option(name: name, type: type, help: help))
     }
@@ -33,7 +33,7 @@ extension Option where Value: ExpressibleByArgument {
             parsing: .next,
             help: ArgumentHelp(help),
             completion: nil
-          )
+        )
         let type = String(describing: Value.self)
         parameters.insert(.option(name: name, type: type, help: help))
     }

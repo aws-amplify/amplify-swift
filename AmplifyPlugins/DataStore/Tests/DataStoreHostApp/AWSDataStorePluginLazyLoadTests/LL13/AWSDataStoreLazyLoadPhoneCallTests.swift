@@ -5,21 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
-    
+
     func testStart() async throws {
         await setup(withModels: PhoneCallModels())
         try await startAndWaitForReady()
         printDBPath()
     }
-    
+
     /// Saving a person should be successfully
     ///
     /// - Given: A model instance of a Person
@@ -32,7 +32,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let person = Person(name: "name")
         try await createAndWaitForSync(person)
     }
-    
+
     /// Saving a PhoneCall, requires a caller and a callee, should be successful.
     ///
     /// - Given: Two saved persons
@@ -52,24 +52,28 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         let queriedPhoneCall = try await query(for: savedPhoneCall)
-        assertLazyReference(queriedPhoneCall._caller,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: caller.id)]))
-        assertLazyReference(queriedPhoneCall._callee,
-                            state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)]))
+        assertLazyReference(
+            queriedPhoneCall._caller,
+            state: .notLoaded(identifiers: [.init(name: "id", value: caller.id)])
+        )
+        assertLazyReference(
+            queriedPhoneCall._callee,
+            state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)])
+        )
         let loadedCaller = try await queriedPhoneCall.caller
         let loadedCallee = try await queriedPhoneCall.callee
         assertLazyReference(queriedPhoneCall._caller, state: .loaded(model: savedCaller))
         assertLazyReference(queriedPhoneCall._callee, state: .loaded(model: savedCallee))
-        
+
         let queriedCaller = try await query(for: caller)
         try await queriedCaller.callerOf?.fetch()
         XCTAssertEqual(queriedCaller.callerOf!.count, 1)
-        
+
         let queriedCallee = try await query(for: callee)
         try await queriedCallee.calleeOf?.fetch()
         XCTAssertEqual(queriedCallee.calleeOf!.count, 1)
     }
-    
+
     /// Saving a Transcript with a PhoneCall and a PhoneCall with a Transcript, should be successful
     ///
     /// - Given:  A Transcript with a PhoneCall. A PhoneCall with a Transcript
@@ -89,44 +93,50 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let savedCallee = try await createAndWaitForSync(callee)
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
-        
+
         // When the explicit FK and the connected model exists on the model, setting the connected model
         // has no effect, we have to set the explicit field `phoneCallTranscriptId`.
         // phoneCall.setTranscript(transcript)
         phoneCall.phoneCallTranscriptId = transcript.id
-        
+
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         XCTAssertEqual(savedPhoneCall.phoneCallTranscriptId, transcript.id)
         let savedTranscript = try await createAndWaitForSync(transcript)
-        assertLazyReference(savedTranscript._phoneCall,
-                            state: .notLoaded(identifiers: [
-                                .init(name: PhoneCall.keys.id.stringValue, value: savedPhoneCall.id)
-                            ]))
-        
+        assertLazyReference(
+            savedTranscript._phoneCall,
+            state: .notLoaded(identifiers: [
+                .init(name: PhoneCall.keys.id.stringValue, value: savedPhoneCall.id)
+            ])
+        )
+
         let queriedTranscript = try await query(for: savedTranscript)
-        assertLazyReference(queriedTranscript._phoneCall,
-                            state: .notLoaded(identifiers: [
-                                .init(name: PhoneCall.keys.id.stringValue, value: savedPhoneCall.id)
-                            ]))
+        assertLazyReference(
+            queriedTranscript._phoneCall,
+            state: .notLoaded(identifiers: [
+                .init(name: PhoneCall.keys.id.stringValue, value: savedPhoneCall.id)
+            ])
+        )
         let loadedPhoneCall = try await queriedTranscript.phoneCall!
-        assertLazyReference(queriedTranscript._phoneCall,
-                            state: .loaded(model: savedPhoneCall))
+        assertLazyReference(
+            queriedTranscript._phoneCall,
+            state: .loaded(model: savedPhoneCall)
+        )
         let loadedCaller = try await loadedPhoneCall.caller
         let loadedCallee = try await loadedPhoneCall.callee
-        
+
         try await loadedCaller.callerOf?.fetch()
         XCTAssertEqual(loadedCaller.callerOf!.count, 1)
-        
+
         try await loadedCaller.calleeOf?.fetch()
         XCTAssertEqual(loadedCaller.calleeOf!.count, 0)
-        
+
         try await loadedCallee.callerOf?.fetch()
         XCTAssertEqual(loadedCallee.callerOf!.count, 0)
-        
+
         try await loadedCallee.calleeOf?.fetch()
         XCTAssertEqual(loadedCallee.calleeOf!.count, 1)
     }
-    
+
     func testUpdatePhoneCallToTranscript() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
@@ -138,23 +148,23 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertNil(savedPhoneCall.phoneCallTranscriptId)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         let savedTranscript = try await createAndWaitForSync(transcript)
-        
-        
+
+
         var queriedPhoneCall = try await query(for: savedPhoneCall)
         queriedPhoneCall.phoneCallTranscriptId = transcript.id
         let updatedPhoneCall = try await updateAndWaitForSync(queriedPhoneCall)
         XCTAssertEqual(updatedPhoneCall.phoneCallTranscriptId, transcript.id)
     }
-    
+
     func testDeletePerson() async throws {
         await setup(withModels: PhoneCallModels())
         let person = Person(name: "name")
         let savedPerson = try await createAndWaitForSync(person)
-        
+
         try await deleteAndWaitForSync(savedPerson)
         try await assertModelDoesNotExist(savedPerson)
     }
-    
+
     /// Deleting a PhoneCall is successful
     ///
     /// - Given: PhoneCall, belongs to two Persons
@@ -171,12 +181,12 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let savedCallee = try await createAndWaitForSync(callee)
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
-        
+
         try await deleteAndWaitForSync(savedPhoneCall)
         try await assertModelExists(caller)
         try await assertModelExists(callee)
     }
-    
+
     /// Delete a Person with PhoneCall will delete the PhoneCall as well, cascade delete the Person's hasMany
     ///
     /// - Given: PhoneCall which belongs to two different Persons (caller and callee)
@@ -194,13 +204,13 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         let savedCallee = try await createAndWaitForSync(callee)
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
-     
+
         try await deleteAndWaitForSync(savedCaller)
         try await assertModelDoesNotExist(savedCaller)
         try await assertModelDoesNotExist(savedPhoneCall)
         try await assertModelExists(savedCallee)
     }
-    
+
     /// Delete Transcript does not delete its belongs-to PhoneCall
     ///
     /// - Given: Transcript belongs to a PhoneCall
@@ -219,15 +229,15 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         phoneCall.phoneCallTranscriptId = transcript.id
-        
+
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         let savedTranscript = try await createAndWaitForSync(transcript)
-        
+
         try await deleteAndWaitForSync(transcript)
         try await assertModelDoesNotExist(transcript)
         try await assertModelExists(phoneCall)
     }
-    
+
     /// Deleting a PhoneCall cascades to the hasOne Transcript
     ///
     /// - Given: PhoneCall with Transcript
@@ -245,10 +255,10 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         phoneCall.phoneCallTranscriptId = transcript.id
-        
+
         let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         let savedTranscript = try await createAndWaitForSync(transcript)
-        
+
         try await deleteAndWaitForSync(savedPhoneCall)
         try await assertModelDoesNotExist(savedPhoneCall)
         try await assertModelDoesNotExist(savedTranscript)
@@ -256,9 +266,9 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
 }
 
 extension AWSDataStoreLazyLoadPhoneCallTests {
-    
+
     struct PhoneCallModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PhoneCall.self)
             ModelRegistry.register(modelType: Person.self)

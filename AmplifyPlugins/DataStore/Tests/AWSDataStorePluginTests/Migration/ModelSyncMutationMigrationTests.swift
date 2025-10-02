@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
-@testable import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 final class ModelSyncMetadataMigrationTests: XCTestCase {
 
@@ -19,10 +19,10 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
     var storageEngine: StorageEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
     var dataStorePlugin: AWSDataStorePlugin!
-    
+
     override func setUp() async throws {
         await Amplify.reset()
-        
+
         do {
             connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -31,21 +31,22 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
             return
         }
     }
-    
+
     /// Use the latest schema and create the table with it.
     /// The column should be found and no upgrade should occur.
     func testPerformModelMetadataSyncPredicateUpgrade_ColumnExists() throws {
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
         guard let field = ModelSyncMetadata.schema.field(
-            withName: ModelSyncMetadata.keys.syncPredicate.stringValue) else {
+            withName: ModelSyncMetadata.keys.syncPredicate.stringValue)
+        else {
             XCTFail("Could not find corresponding ModelField from ModelSyncMetadata for syncPredicate")
             return
         }
         let modelSyncMetadataMigration = ModelSyncMetadataMigration(storageAdapter: storageAdapter)
-        
+
         let exists = try modelSyncMetadataMigration.columnExists(modelSchema: ModelSyncMetadata.schema, field: field)
         XCTAssertTrue(exists)
-        
+
         do {
             let result = try modelSyncMetadataMigration.performModelMetadataSyncPredicateUpgrade()
             XCTAssertFalse(result)
@@ -53,7 +54,7 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
             XCTFail("Failed to perform upgrade \(error)")
         }
     }
-    
+
     /// Create a local copy of the previous ModelSyncMetadata, without sync predicate
     /// Create the table with the previous schema, and perform the upgrade.
     /// The upgrade should have occurred successfully.
@@ -61,9 +62,11 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
         struct ModelSyncMetadata: Model {
             public let id: String
             public var lastSync: Int?
-            
-            public init(id: String,
-                        lastSync: Int?) {
+
+            public init(
+                id: String,
+                lastSync: Int?
+            ) {
                 self.id = id
                 self.lastSync = lastSync
             }
@@ -83,14 +86,15 @@ final class ModelSyncMetadataMigrationTests: XCTestCase {
 
         try storageAdapter.setUp(modelSchemas: [ModelSyncMetadata.schema])
         guard let field = AWSPluginsCore.ModelSyncMetadata.schema.field(
-            withName: AWSPluginsCore.ModelSyncMetadata.keys.syncPredicate.stringValue) else {
+            withName: AWSPluginsCore.ModelSyncMetadata.keys.syncPredicate.stringValue)
+        else {
             XCTFail("Could not find corresponding ModelField from ModelSyncMetadata for syncPredicate")
             return
         }
         let modelSyncMetadataMigration = ModelSyncMetadataMigration(storageAdapter: storageAdapter)
         let exists = try modelSyncMetadataMigration.columnExists(modelSchema: AWSPluginsCore.ModelSyncMetadata.schema, field: field)
         XCTAssertFalse(exists)
-        
+
         do {
             let result = try modelSyncMetadataMigration.performModelMetadataSyncPredicateUpgrade()
             XCTAssertTrue(result)

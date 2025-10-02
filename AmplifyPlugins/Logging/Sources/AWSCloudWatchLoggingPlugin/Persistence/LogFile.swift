@@ -32,7 +32,7 @@ final class LogFile {
         if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             self.count = try self.handle.offset()
         } else {
-            self.count = self.handle.offsetInFile
+            self.count = handle.offsetInFile
         }
     }
 
@@ -51,17 +51,17 @@ final class LogFile {
 
     /// Attempts to close the underlying log file.
     func close() throws {
-        try self.handle.close()
+        try handle.close()
     }
 
     /// Atempts to flush the receivers contents to disk.
     func synchronize() throws {
-        try self.handle.synchronize()
+        try handle.synchronize()
     }
 
     /// - Returns: true if writing to the underlying log file will keep its size below the limit.
     func hasSpace(for data: Data) -> Bool {
-        return UInt64(data.count) <= self.available
+        return UInt64(data.count) <= available
     }
 
     /// Writes the given **single line of text** represented as a
@@ -70,9 +70,9 @@ final class LogFile {
         if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             try self.handle.write(contentsOf: data)
         } else {
-            self.handle.write(data)
+            handle.write(data)
         }
-        try self.handle.synchronize()
+        try handle.synchronize()
         count = count + UInt64(data.count) // swiftlint:disable:this shorthand_operator
     }
 

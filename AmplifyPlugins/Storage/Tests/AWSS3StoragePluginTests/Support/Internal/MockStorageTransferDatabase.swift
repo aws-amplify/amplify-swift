@@ -6,14 +6,16 @@
 //
 
 import Foundation
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class MockStorageTransferDatabase: StorageTransferDatabase {
 
-    private let queue = DispatchQueue(label: "com.amazon.aws.amplify.storage-tests",
-                                      qos: .background,
-                                      target: .global())
+    private let queue = DispatchQueue(
+        label: "com.amazon.aws.amplify.storage-tests",
+        qos: .background,
+        target: .global()
+    )
     private var tasks: [TransferID: StorageTransferTask] = [:]
 
     private var uploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?
@@ -46,8 +48,10 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
         completion?()
     }
 
-    func recover(urlSession: StorageURLSession,
-                 completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void) {
+    func recover(
+        urlSession: StorageURLSession,
+        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+    ) {
         // do nothing
     }
 
@@ -79,14 +83,16 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     }
 
     // swiftlint:disable line_length
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
-                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil) {
+    func attachEventHandlers(
+        onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+        onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+        onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil
+    ) {
         queue.async { [weak self] in
-            guard let self = self else { fatalError("self cannot be weak") }
-            self.uploadEventHandler = onUpload
-            self.downloadEventHandler = onDownload
-            self.multipartUploadEventHandler = onMultipartUpload
+            guard let self else { fatalError("self cannot be weak") }
+            uploadEventHandler = onUpload
+            downloadEventHandler = onDownload
+            multipartUploadEventHandler = onMultipartUpload
         }
     }
     // swiftlint:enable line_length

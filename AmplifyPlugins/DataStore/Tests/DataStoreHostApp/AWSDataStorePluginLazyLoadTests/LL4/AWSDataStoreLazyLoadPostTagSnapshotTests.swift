@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadPostTagTests {
-    
+
     func testPostSelectionSets() async throws {
         await setup(withModels: PostTagModels())
         continueAfterFailure = true
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Post.self)
         let syncDocument = """
@@ -40,11 +40,11 @@ extension AWSDataStoreLazyLoadPostTagTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testTagSelectionSets() async throws {
         await setup(withModels: PostTagModels())
         continueAfterFailure = true
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Tag.self)
         let syncDocument = """
@@ -67,11 +67,11 @@ extension AWSDataStoreLazyLoadPostTagTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testPostTagSelectionSets() async throws {
         await setup(withModels: PostTagModels())
         continueAfterFailure = true
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: PostTag.self)
         let syncDocument = """

@@ -17,16 +17,20 @@ enum Defaults {
     static let appClientSecret = "XXX"
 
     static func makeDefaultUserPoolConfigData() -> UserPoolConfigurationData {
-        UserPoolConfigurationData(poolId: userPoolId,
-                                  clientId: appClientId,
-                                  region: regionString,
-                                  clientSecret: appClientSecret,
-                                  pinpointAppId: "")
+        UserPoolConfigurationData(
+            poolId: userPoolId,
+            clientId: appClientId,
+            region: regionString,
+            clientSecret: appClientSecret,
+            pinpointAppId: ""
+        )
     }
 
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
-        IdentityPoolConfigurationData(poolId: identityPoolId,
-                                      region: regionString)
+        IdentityPoolConfigurationData(
+            poolId: identityPoolId,
+            region: regionString
+        )
     }
 
 }
@@ -38,15 +42,17 @@ extension AuthAWSCognitoCredentials {
             accessKeyId: "xx",
             secretAccessKey: "xx",
             sessionToken: "xx",
-            expiration: Date())
+            expiration: Date()
+        )
     }
-    
+
     static var nonimmediateExpiryTestData: AuthAWSCognitoCredentials {
         return AuthAWSCognitoCredentials(
             accessKeyId: "xx",
             secretAccessKey: "xx",
             sessionToken: "xx",
-            expiration: Date() + TimeInterval(200))
+            expiration: Date() + TimeInterval(200)
+        )
     }
 }
 
@@ -61,9 +67,11 @@ extension SignedInData {
 
     static var testData: SignedInData {
         let tokens = AWSCognitoUserPoolTokens.testData
-        return SignedInData(signedInDate: Date(),
-                            signInMethod: .apiBased(.userSRP),
-                            cognitoUserPoolTokens: tokens)
+        return SignedInData(
+            signedInDate: Date(),
+            signInMethod: .apiBased(.userSRP),
+            cognitoUserPoolTokens: tokens
+        )
     }
 
 }

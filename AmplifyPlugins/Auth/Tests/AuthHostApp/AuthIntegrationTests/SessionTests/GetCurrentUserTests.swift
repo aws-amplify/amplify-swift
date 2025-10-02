@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
+@testable import Amplify
 
 class GetCurrentUserTests: AWSAuthBaseTest {
 
@@ -36,7 +36,8 @@ class GetCurrentUserTests: AWSAuthBaseTest {
         _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: defaultTestEmail
+        )
 
         let authUser = try await Amplify.Auth.getCurrentUser()
 

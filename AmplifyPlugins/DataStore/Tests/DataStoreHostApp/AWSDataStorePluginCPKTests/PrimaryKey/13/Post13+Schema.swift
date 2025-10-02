@@ -1,29 +1,36 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Post13 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Post13 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case postId
     case sk
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let post13 = Post13.keys
-    
+
     model.pluralName = "Post13s"
-    
+
     model.attributes(
       .index(fields: ["postId", "sk"], name: nil),
       .primaryKey(fields: [post13.postId, post13.sk])
     )
-    
+
     model.fields(
       .field(post13.postId, is: .required, ofType: .string),
       .field(post13.sk, is: .required, ofType: .dateTime),
@@ -38,9 +45,11 @@ extension Post13: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension Post13.IdentifierProtocol {
-  public static func identifier(postId: String,
-      sk: Temporal.DateTime) -> Self {
-    .make(fields:[(name: "postId", value: postId), (name: "sk", value: sk)])
+public extension Post13.IdentifierProtocol {
+  static func identifier(
+    postId: String,
+    sk: Temporal.DateTime
+  ) -> Self {
+    .make(fields: [(name: "postId", value: postId), (name: "sk", value: sk)])
   }
 }

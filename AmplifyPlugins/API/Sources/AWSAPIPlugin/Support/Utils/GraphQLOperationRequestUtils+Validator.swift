@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension GraphQLOperationRequestUtils {
 
@@ -17,7 +17,7 @@ extension GraphQLOperationRequestUtils {
     }
 
     static func validateVariables(_ variables: [String: Any]?) throws {
-        if let variables = variables {
+        if let variables {
 
             if !JSONSerialization.isValidJSONObject(variables) {
                 throw APIError.operationError("Variables is a not a valid JSON object", "")

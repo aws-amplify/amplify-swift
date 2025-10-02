@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -7,39 +14,45 @@ public struct User14: Model {
   public var username: String
   public var posts: List<Post14>?
   public var comments: List<Comment14>?
-  internal var _settings: LazyReference<UserSettings14>
+  var _settings: LazyReference<UserSettings14>
   public var settings: UserSettings14?   {
-      get async throws { 
+      get async throws {
         try await _settings.get()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var user14SettingsId: String?
-  
-  public init(id: String = UUID().uuidString,
-      username: String,
-      posts: List<Post14>? = [],
-      comments: List<Comment14>? = [],
-      settings: UserSettings14? = nil,
-      user14SettingsId: String? = nil) {
-    self.init(id: id,
+
+  public init(
+    id: String = UUID().uuidString,
+    username: String,
+    posts: List<Post14>? = [],
+    comments: List<Comment14>? = [],
+    settings: UserSettings14? = nil,
+    user14SettingsId: String? = nil
+  ) {
+    self.init(
+      id: id,
       username: username,
       posts: posts,
       comments: comments,
       settings: settings,
       createdAt: nil,
       updatedAt: nil,
-      user14SettingsId: user14SettingsId)
+      user14SettingsId: user14SettingsId
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      username: String,
-      posts: List<Post14>? = [],
-      comments: List<Comment14>? = [],
-      settings: UserSettings14? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      user14SettingsId: String? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    username: String,
+    posts: List<Post14>? = [],
+    comments: List<Comment14>? = [],
+    settings: UserSettings14? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    user14SettingsId: String? = nil
+  ) {
       self.id = id
       self.username = username
       self.posts = posts
@@ -50,18 +63,18 @@ public struct User14: Model {
       self.user14SettingsId = user14SettingsId
   }
   public mutating func setSettings(_ settings: UserSettings14? = nil) {
-    self._settings = LazyReference(settings)
+    _settings = LazyReference(settings)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      username = try values.decode(String.self, forKey: .username)
-      posts = try values.decodeIfPresent(List<Post14>?.self, forKey: .posts) ?? .init()
-      comments = try values.decodeIfPresent(List<Comment14>?.self, forKey: .comments) ?? .init()
-      _settings = try values.decodeIfPresent(LazyReference<UserSettings14>.self, forKey: .settings) ?? LazyReference(identifiers: nil)
-      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-      user14SettingsId = try? values.decode(String?.self, forKey: .user14SettingsId)
+      self.id = try values.decode(String.self, forKey: .id)
+      self.username = try values.decode(String.self, forKey: .username)
+      self.posts = try values.decodeIfPresent(List<Post14>?.self, forKey: .posts) ?? .init()
+      self.comments = try values.decodeIfPresent(List<Comment14>?.self, forKey: .comments) ?? .init()
+      self._settings = try values.decodeIfPresent(LazyReference<UserSettings14>.self, forKey: .settings) ?? LazyReference(identifiers: nil)
+      self.createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      self.updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      self.user14SettingsId = try? values.decode(String?.self, forKey: .user14SettingsId)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

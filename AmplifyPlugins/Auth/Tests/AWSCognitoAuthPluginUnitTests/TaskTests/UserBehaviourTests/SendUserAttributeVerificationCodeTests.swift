@@ -7,11 +7,11 @@
 
 import Foundation
 
+import AWSCognitoIdentityProvider
+import ClientRuntime
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
 
 class SendUserAttributeVerificationCodeTests: BasePluginTest {
 
@@ -30,7 +30,8 @@ class SendUserAttributeVerificationCodeTests: BasePluginTest {
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
-                    destination: "destination"))
+                    destination: "destination"
+                ))
         })
 
         let attribute = try await plugin.sendVerificationCode(forUserAttributeKey: .email)

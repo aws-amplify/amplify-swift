@@ -6,8 +6,8 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
-import Foundation
 import Amplify
+import Foundation
 
 protocol AuthWebUISignInTask: AmplifyAuthTask where Request == AuthWebUISignInRequest, Success == AuthSignInResult, Failure == AuthError { }
 

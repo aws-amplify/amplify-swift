@@ -22,10 +22,14 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
 
     func testOnCreateSubscriptionGraphQLRequestCustomIdentityClaim() throws {
         let modelType = ScenarioATest6Post.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: modelType.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
@@ -43,9 +47,11 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
       }
     }
     """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onCreate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onCreate,
+            claims: claims
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -63,8 +69,10 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
 
     func testOnUpdateSubscriptionGraphQLRequestCustomIdentityClaim() throws {
         let modelType = ScenarioATest6Post.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
@@ -83,9 +91,11 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
       }
     }
     """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onUpdate,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onUpdate,
+            claims: claims
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
@@ -99,8 +109,10 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
 
     func testOnDeleteSubscriptionGraphQLRequestCustomIdentityClaim() throws {
         let modelType = ScenarioATest6Post.self as Model.Type
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
@@ -119,9 +131,11 @@ class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
       }
     }
     """
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType.schema,
-                                                                      subscriptionType: .onDelete,
-                                                                      claims: claims)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: modelType.schema,
+            subscriptionType: .onDelete,
+            claims: claims
+        )
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)

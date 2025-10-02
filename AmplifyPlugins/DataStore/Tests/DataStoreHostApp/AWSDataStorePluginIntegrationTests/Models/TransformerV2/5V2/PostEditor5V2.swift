@@ -16,20 +16,26 @@ public struct PostEditor5V2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      post5V2: Post5V2,
-      user5V2: User5V2) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    post5V2: Post5V2,
+    user5V2: User5V2
+  ) {
+    self.init(
+      id: id,
       post5V2: post5V2,
       user5V2: user5V2,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      post5V2: Post5V2,
-      user5V2: User5V2,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    post5V2: Post5V2,
+    user5V2: User5V2,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.post5V2 = post5V2
       self.user5V2 = user5V2

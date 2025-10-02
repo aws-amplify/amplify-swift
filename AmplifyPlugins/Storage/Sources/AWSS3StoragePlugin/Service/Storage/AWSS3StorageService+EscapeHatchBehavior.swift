@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSS3
+import Foundation
 
 extension AWSS3StorageService {
 

@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 public extension AWSAPICategoryPluginConfiguration {
     struct EndpointConfig {
@@ -27,10 +27,12 @@ public extension AWSAPICategoryPluginConfiguration {
 
         var apiKey: String?
 
-        public init(name: String,
-                    jsonValue: JSONValue,
-                    apiAuthProviderFactory: APIAuthProviderFactory,
-                    authService: AWSAuthServiceBehavior? = nil) throws {
+        public init(
+            name: String,
+            jsonValue: JSONValue,
+            apiAuthProviderFactory: APIAuthProviderFactory,
+            authService: AWSAuthServiceBehavior? = nil
+        ) throws {
 
             guard case .object(let endpointJSON) = jsonValue else {
                 throw PluginError.pluginConfigurationError(
@@ -49,54 +51,66 @@ public extension AWSAPICategoryPluginConfiguration {
                 apiKeyValue = apiKey
             }
 
-            try self.init(name: name,
-                          baseURL: EndpointConfig.getBaseURL(from: endpointJSON),
-                          region: AWSRegionType.region(from: endpointJSON),
-                          authorizationType: AWSAuthorizationType.from(endpointJSON: endpointJSON),
-                          endpointType: EndpointConfig.getEndpointType(from: endpointJSON),
-                          apiKey: apiKeyValue,
-                          apiAuthProviderFactory: apiAuthProviderFactory,
-                          authService: authService)
+            try self.init(
+                name: name,
+                baseURL: EndpointConfig.getBaseURL(from: endpointJSON),
+                region: AWSRegionType.region(from: endpointJSON),
+                authorizationType: AWSAuthorizationType.from(endpointJSON: endpointJSON),
+                endpointType: EndpointConfig.getEndpointType(from: endpointJSON),
+                apiKey: apiKeyValue,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
         }
 
-        init(name: String,
-             config: AmplifyOutputsData.DataCategory,
-             apiAuthProviderFactory: APIAuthProviderFactory,
-             authService: AWSAuthServiceBehavior? = nil) throws {
+        init(
+            name: String,
+            config: AmplifyOutputsData.DataCategory,
+            apiAuthProviderFactory: APIAuthProviderFactory,
+            authService: AWSAuthServiceBehavior? = nil
+        ) throws {
 
-            try self.init(name: name,
-                          baseURL: try EndpointConfig.getBaseURL(from: config.url),
-                          region: config.awsRegion,
-                          authorizationType: try AWSAuthorizationType.from(authorizationTypeString: config.defaultAuthorizationType.rawValue),
-                          endpointType: .graphQL,
-                          apiKey: config.apiKey,
-                          apiAuthProviderFactory: apiAuthProviderFactory,
-                          authService: authService)
+            try self.init(
+                name: name,
+                baseURL: EndpointConfig.getBaseURL(from: config.url),
+                region: config.awsRegion,
+                authorizationType: AWSAuthorizationType.from(authorizationTypeString: config.defaultAuthorizationType.rawValue),
+                endpointType: .graphQL,
+                apiKey: config.apiKey,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
         }
 
-        init(name: String,
-             baseURL: URL,
-             region: AWSRegionType?,
-             authorizationType: AWSAuthorizationType,
-             endpointType: AWSAPICategoryPluginEndpointType,
-             apiKey: String? = nil,
-             apiAuthProviderFactory: APIAuthProviderFactory,
-             authService: AWSAuthServiceBehavior? = nil) throws {
+        init(
+            name: String,
+            baseURL: URL,
+            region: AWSRegionType?,
+            authorizationType: AWSAuthorizationType,
+            endpointType: AWSAPICategoryPluginEndpointType,
+            apiKey: String? = nil,
+            apiAuthProviderFactory: APIAuthProviderFactory,
+            authService: AWSAuthServiceBehavior? = nil
+        ) throws {
             self.name = name
             self.baseURL = baseURL
             self.region = region
             self.authorizationType = authorizationType
-            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(authType: authorizationType,
-                                                                                         region: region,
-                                                                                         apiKey: apiKey)
+            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(
+                authType: authorizationType,
+                region: region,
+                apiKey: apiKey
+            )
             self.endpointType = endpointType
             self.apiKey = apiKey
         }
 
         public func authorizationConfigurationFor(authType: AWSAuthorizationType) throws -> AWSAuthorizationConfiguration {
-            return try AWSAuthorizationConfiguration.makeConfiguration(authType: authType,
-                                                              region: region,
-                                                              apiKey: apiKey)
+            return try AWSAuthorizationConfiguration.makeConfiguration(
+                authType: authType,
+                region: region,
+                apiKey: apiKey
+            )
         }
 
         // MARK: - Configuration file helpers
@@ -165,12 +179,10 @@ public extension AWSAPICategoryPluginConfiguration {
 
 private extension AWSRegionType {
     static func region(from endpointJSON: [String: JSONValue]) throws -> AWSRegionType? {
-        let region: AWSRegionType?
-
-        if case .string(let endpointRegion) = endpointJSON["region"] {
-            region = endpointRegion
+        let region: AWSRegionType? = if case .string(let endpointRegion) = endpointJSON["region"] {
+            endpointRegion
         } else {
-            region = nil
+            nil
         }
 
         return region
@@ -198,7 +210,7 @@ private extension AWSAuthorizationType {
 
     static func from(authorizationTypeString: String) throws -> AWSAuthorizationType {
         guard let authorizationType = AWSAuthorizationType(rawValue: authorizationTypeString) else {
-            let authTypes = AWSAuthorizationType.allCases.map { $0.rawValue }.joined(separator: ", ")
+            let authTypes = AWSAuthorizationType.allCases.map(\.rawValue).joined(separator: ", ")
             throw PluginError.pluginConfigurationError(
                 "Could not convert `\(authorizationTypeString)` to an AWSAuthorizationType",
                 """
@@ -215,20 +227,22 @@ private extension AWSAuthorizationType {
 
 // MARK: - Dictionary + AWSAPICategoryPluginConfiguration.EndpointConfig
 
-extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfiguration.EndpointConfig {
+extension [String: AWSAPICategoryPluginConfiguration.EndpointConfig] {
 
     /// Getting the `EndpointConfig` resolves to the following rules:
     /// 1. If `apiName` is specified, retrieve the endpoint configuration for this api
     /// 2. If `apiName` is not specified, and `endpointType` is, retrieve the endpoint if there is only one.
     /// 3. If nothing is specified, return the endpoint only if there is a single one, with GraphQL taking precedent
     /// over REST.
-    func getConfig(for apiName: String? = nil,
-                   endpointType: AWSAPICategoryPluginEndpointType? = nil) throws ->
+    func getConfig(
+        for apiName: String? = nil,
+        endpointType: AWSAPICategoryPluginEndpointType? = nil
+    ) throws ->
         AWSAPICategoryPluginConfiguration.EndpointConfig {
-        if let apiName = apiName {
+        if let apiName {
             return try getConfig(for: apiName)
         }
-        if let endpointType = endpointType {
+        if let endpointType {
             return try getConfig(for: endpointType)
         }
 
@@ -255,26 +269,29 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
     /// Retrieve the endpoint configuration when there is only one endpoint of the specified `endpointType`
     private func getConfig(for endpointType: AWSAPICategoryPluginEndpointType) throws ->
         AWSAPICategoryPluginConfiguration.EndpointConfig {
-            let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
+            let apiForEndpointType = filter { _, endpointConfig -> Bool in
                 return endpointConfig.endpointType == endpointType
             }
 
             guard let endpointConfig = apiForEndpointType.first else {
-                throw APIError.invalidConfiguration("Missing API for \(endpointType) endpointType",
-                                                    "Add the \(endpointType) API to configuration.")
+                throw APIError.invalidConfiguration(
+                    "Missing API for \(endpointType) endpointType",
+                    "Add the \(endpointType) API to configuration."
+                )
             }
 
             if apiForEndpointType.count > 1 {
                 throw APIError.invalidConfiguration(
                     "More than one \(endpointType) API configured. Could not infer which API to call",
-                    "Use the apiName to specify which API to call")
+                    "Use the apiName to specify which API to call"
+                )
             }
             return endpointConfig.value
     }
 
     /// Retrieve the endpoint only if there is a single one, with GraphQL taking precedent over REST.
     private func getConfig() throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
-        let graphQLEndpoints = filter { (_, endpointConfig) -> Bool in
+        let graphQLEndpoints = filter { _, endpointConfig -> Bool in
             return endpointConfig.endpointType == .graphQL
         }
 
@@ -282,7 +299,7 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
             return endpoint.value
         }
 
-        let restEndpoints = filter { (_, endpointConfig) -> Bool in
+        let restEndpoints = filter { _, endpointConfig -> Bool in
             return endpointConfig.endpointType == .rest
         }
 
@@ -290,10 +307,12 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
             return endpoint.value
         }
 
-        throw APIError.invalidConfiguration("Unable to resolve endpoint configuration",
-                                            """
+        throw APIError.invalidConfiguration(
+            "Unable to resolve endpoint configuration",
+            """
                                             Pass in the apiName to specify the endpoint you are
                                             retrieving the config for
-                                            """)
+                                            """
+        )
     }
 }

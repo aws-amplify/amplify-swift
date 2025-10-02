@@ -40,9 +40,11 @@ class AuthSignOutTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                    password: password,
-                                    email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup operation failed")
 
@@ -61,9 +63,11 @@ class AuthSignOutTests: AWSAuthBaseTest {
     func testNonGlobalSignOut() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
-                                    password: password,
-                                    email: defaultTestEmail)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(didSucceed, "Signup operation failed")
         print("calling signOut...")
         try await signOut(globalSignOut: false)

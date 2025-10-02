@@ -12,10 +12,10 @@ import Combine
 import Amplify
 
 public class FastOperationRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable : Any]
+    public let options: [AnyHashable: Any]
     public let numbers: [Int]
 
-    public init(options: [AnyHashable : Any] = [:], numbers: [Int]) {
+    public init(options: [AnyHashable: Any] = [:], numbers: [Int]) {
         self.options = options
         self.numbers = numbers
     }
@@ -76,13 +76,15 @@ public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperation
 #endif
 
     public init(request: FastOperationRequest, resultListener: FastOperationResultListener? = nil) {
-        super.init(categoryType: .storage,
-                   eventName: "FastOperation",
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: "FastOperation",
+            request: request,
+            resultListener: resultListener
+        )
     }
 
-    public override func main() {
+    override public func main() {
         if isCancelled {
             finish()
             return

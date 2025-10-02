@@ -7,28 +7,30 @@
 
 import Foundation
 
-import XCTest
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import AWSCognitoIdentityProvider
 
 class ClientSecretConfigurationTests: XCTestCase {
 
     let networkTimeout = TimeInterval(2)
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var plugin: AWSCognitoAuthPlugin!
-    
+
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
+                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     override func setUp() {
@@ -39,25 +41,30 @@ class ClientSecretConfigurationTests: XCTestCase {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session"
+            )
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
 
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
+            mockGetCredentialsResponse: getCredentials
+        )
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
@@ -65,7 +72,8 @@ class ClientSecretConfigurationTests: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
     }
 
 
@@ -157,23 +165,26 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { request in
                 XCTAssertNotNil(request.secretHash)
                 return .init(
                     codeDeliveryDetails: .init(
                         attributeName: "some attribute",
                         deliveryMedium: .email,
-                        destination: "random@random.com"),
+                        destination: "random@random.com"
+                    ),
                     userConfirmed: false,
-                    userSub: "userId")
+                    userSub: "userId"
+                )
             }
         )
 
-        let result = try await self.plugin.signUp(
+        let result = try await plugin.signUp(
             username: "jeffb",
             password: "Valid&99",
-            options: nil)
+            options: nil
+        )
 
         guard case .confirmUser = result.nextStep else {
             XCTFail("Result should be .confirmUser for next step")
@@ -191,14 +202,14 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithConfirmSignUp() async throws {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { request in
                 XCTAssertNotNil(request.secretHash)
                 return .init()
             }
         )
 
-        _ = try await self.plugin.confirmSignUp(
+        _ = try await plugin.confirmSignUp(
             for: "someuser",
             confirmationCode: "code",
             options: nil
@@ -214,15 +225,17 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///    - Plugin should pass the secret hash created with client secret
     ///
     func testClientSecretWithRevokeToken() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { request in
                 XCTAssertNotNil(request.clientSecret)
                 return .testData
             }, mockGlobalSignOutResponse: { _ in
                 return .testData
-            })
+            }
+        )
         guard let result = await plugin.signOut() as? AWSCognitoSignOutResult,
-              case .complete = result else {
+              case .complete = result
+        else {
             XCTFail("Did not return complete signOut")
             return
         }
@@ -238,7 +251,7 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithInitiateAuth() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { request in
                 XCTAssertNotNil(request.clientSecret)
                 return .testData
@@ -248,7 +261,8 @@ class ClientSecretConfigurationTests: XCTestCase {
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
                     challengeParameters: InitiateAuthOutput.validChalengeParams,
-                    session: "someSession")
+                    session: "someSession"
+                )
 
             }, mockGlobalSignOutResponse: { _ in
                 return .testData
@@ -262,23 +276,29 @@ class ClientSecretConfigurationTests: XCTestCase {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""),
+                        tokenType: ""
+                    ),
                     challengeName: .none,
                     challengeParameters: [:],
-                    session: "session")
-            })
+                    session: "session"
+                )
+            }
+        )
 
         _ = await plugin.signOut()
-        
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+
+        let pluginOptions = AWSAuthSignInOptions(
+            validationData: ["somekey": "somevalue"],
+            metadata: ["somekey": "somevalue"]
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .done = result.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return

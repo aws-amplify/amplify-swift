@@ -31,7 +31,8 @@ public final class AmplifyDevMenu: @preconcurrency DevMenuBehavior, @preconcurre
 
     public func showMenu() {
         guard let rootViewController =
-            devMenuPresentationContextProvider?.devMenuPresentationContext().rootViewController else {
+            devMenuPresentationContextProvider?.devMenuPresentationContext().rootViewController
+        else {
                 Amplify.Logging.warn(DevMenuStringConstants.logTag +
                     "RootViewController of the UIWindow is nil")
                 return

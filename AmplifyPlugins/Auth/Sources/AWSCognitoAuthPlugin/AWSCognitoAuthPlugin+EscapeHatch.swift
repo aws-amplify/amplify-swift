@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
+import Foundation
 
 public extension AWSCognitoAuthPlugin {
 
@@ -37,13 +37,16 @@ public extension AWSCognitoAuthPlugin {
                let identityPoolClient = identityPoolClient
                 as? CognitoIdentityClient {
 
-                service = .userPoolAndIdentityPool(userPoolClient,
-                                                   identityPoolClient)
+                service = .userPoolAndIdentityPool(
+                    userPoolClient,
+                    identityPoolClient
+                )
             }
+
         case .none:
             service = nil
         }
-        guard let service = service else {
+        guard let service else {
             fatalError("""
             Could not find any escape hatch, invoke Amplify configuration
             before accessing the escape hatch.

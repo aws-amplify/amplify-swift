@@ -27,11 +27,13 @@ public class RESTRequest {
     public let body: Data?
 
     /// Initializer with all properties
-    public init(apiName: String? = nil,
-                path: String? = nil,
-                headers: [String: String]? = nil,
-                queryParameters: [String: String]? = nil,
-                body: Data? = nil) {
+    public init(
+        apiName: String? = nil,
+        path: String? = nil,
+        headers: [String: String]? = nil,
+        queryParameters: [String: String]? = nil,
+        body: Data? = nil
+    ) {
         let inputHeaders = headers ?? [:]
         self.headers = inputHeaders.merging(
             ["Cache-Control": "no-store"],

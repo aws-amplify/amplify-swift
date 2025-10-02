@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSPluginsCore
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -16,10 +16,12 @@ import Combine
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     static let factory: InitialSyncOrchestratorFactory = {
         dataStoreConfiguration, _, api, reconciliationQueue, storageAdapter  in
-        MockAWSInitialSyncOrchestrator(dataStoreConfiguration: dataStoreConfiguration,
-                                       api: api,
-                                       reconciliationQueue: reconciliationQueue,
-                                       storageAdapter: storageAdapter)
+        MockAWSInitialSyncOrchestrator(
+            dataStoreConfiguration: dataStoreConfiguration,
+            api: api,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter
+        )
     }
 
     typealias SyncOperationResult = Result<Void, DataStoreError>
@@ -33,10 +35,12 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         return initialSyncOrchestratorTopic.eraseToAnyPublisher()
     }
 
-    init(dataStoreConfiguration: DataStoreConfiguration,
-         api: APICategoryGraphQLBehavior?,
-         reconciliationQueue: IncomingEventReconciliationQueue?,
-         storageAdapter: StorageEngineAdapter?) {
+    init(
+        dataStoreConfiguration: DataStoreConfiguration,
+        api: APICategoryGraphQLBehavior?,
+        reconciliationQueue: IncomingEventReconciliationQueue?,
+        storageAdapter: StorageEngineAdapter?
+    ) {
         self.initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
     }
 
