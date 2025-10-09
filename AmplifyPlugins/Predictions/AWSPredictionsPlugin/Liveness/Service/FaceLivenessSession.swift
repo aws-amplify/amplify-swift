@@ -211,6 +211,10 @@ public final class FaceLivenessSession: LivenessService {
                           let savedURLForReconnect,
                           let serverDate else {
                         onServiceException(.init(event: exceptionEvent))
+                        // send onComplete with runtime error close code
+                        if let runtimeError = URLSessionWebSocketTask.CloseCode(rawValue: 4005) {
+                            onComplete(.unexpectedClosure(runtimeError))
+                        }
                         return .stopAndInvalidateSession
                     }
 
