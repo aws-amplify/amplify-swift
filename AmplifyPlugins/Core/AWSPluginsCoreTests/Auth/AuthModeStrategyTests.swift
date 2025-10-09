@@ -159,14 +159,14 @@ class AuthModeStrategyTests: XCTestCase {
 
 /// Model with two auth rules
 private struct ModelWithOwnerAndPublicAuth: Model {
-    let id: String
+    public let id: String
 
-    enum CodingKeys: String, ModelKey {
+    public enum CodingKeys: String, ModelKey {
         case id
     }
-    static let keys = CodingKeys.self
+    public static let keys = CodingKeys.self
 
-    static let schema = defineSchema { model in
+    public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete])
@@ -176,14 +176,14 @@ private struct ModelWithOwnerAndPublicAuth: Model {
 
 /// Model with multiple auth rules with equal strategy
 private struct ModelWithMultiplePublicRules: Model {
-    let id: String
+    public let id: String
 
-    enum CodingKeys: String, ModelKey {
+    public enum CodingKeys: String, ModelKey {
         case id
     }
-    static let keys = CodingKeys.self
+    public static let keys = CodingKeys.self
 
-    static let schema = defineSchema { model in
+    public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete]),
@@ -195,14 +195,14 @@ private struct ModelWithMultiplePublicRules: Model {
 
 /// Model with two auth rules but no auth provider
 private struct ModelNoProvider: Model {
-    let id: String
+    public let id: String
 
-    enum CodingKeys: String, ModelKey {
+    public enum CodingKeys: String, ModelKey {
         case id
     }
-    static let keys = CodingKeys.self
+    public static let keys = CodingKeys.self
 
-    static let schema = defineSchema { model in
+    public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, operations: [.read])
@@ -212,14 +212,14 @@ private struct ModelNoProvider: Model {
 
 /// Model with multiple auth rules but no auth provider
 private struct ModelAllStrategies: Model {
-    let id: String
+    public let id: String
 
-    enum CodingKeys: String, ModelKey {
+    public enum CodingKeys: String, ModelKey {
         case id
     }
-    static let keys = CodingKeys.self
+    public static let keys = CodingKeys.self
 
-    static let schema = defineSchema { model in
+    public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .iam, operations: [.read]),
@@ -231,14 +231,14 @@ private struct ModelAllStrategies: Model {
 
 /// Model with custom auth rule
 private struct ModelWithCustomStrategy: Model {
-    let id: String
+    public let id: String
 
-    enum CodingKeys: String, ModelKey {
+    public enum CodingKeys: String, ModelKey {
         case id
     }
-    static let keys = CodingKeys.self
+    public static let keys = CodingKeys.self
 
-    static let schema = defineSchema { model in
+    public static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
             rule(allow: .custom, provider: .function, operations: [.create, .read, .update, .delete]),
