@@ -210,11 +210,11 @@ public final class FaceLivenessSession: LivenessService {
                           connectingState == .normal,
                           let savedURLForReconnect,
                           let serverDate else {
-                        onServiceException(.init(event: exceptionEvent))
-                        // send onComplete with runtime error close code
                         if let runtimeError = URLSessionWebSocketTask.CloseCode(rawValue: 4_005) {
-                            onComplete(.unexpectedClosure(runtimeError))
+                            Amplify.log.verbose("\(#function): Closing websocket with runtime error")
+                            closeSocket(with: runtimeError)
                         }
+                        onServiceException(.init(event: exceptionEvent))
                         return .stopAndInvalidateSession
                     }
 
