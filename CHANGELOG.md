@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.51.2 (2025-10-13)
+
+### Bug Fixes
+
+- **predictions**: close websocket with runtime error on service exception (#4072)
+
 ## 2.51.1 (2025-10-02)
 
 ## 2.51.0 (2025-09-16)
