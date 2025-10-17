@@ -62,7 +62,13 @@ struct AWSCognitoAuthCredentialStore {
         saveStoredAccessGroup()
 
         if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
-            try? clearAllCredentials()
+            // We can't reliably clear credentials if the Keychain has a shared access group.
+            // This is because each app/extension has its own UserDefaults.
+            // If a user authenticates in an app, the app or extension that shares the keychain would clear the shared credentials.
+            // We must only clear credentials if a shared Keychain is not being used.
+            if accessGroup == nil {
+                try? clearAllCredentials() // clear if not using shared keychain
+            }
             userDefaults.set(true, forKey: isKeychainConfiguredKey)
         }
 
