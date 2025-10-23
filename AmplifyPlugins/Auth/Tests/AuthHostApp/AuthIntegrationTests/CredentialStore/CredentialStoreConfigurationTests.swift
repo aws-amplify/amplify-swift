@@ -571,4 +571,159 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         XCTAssertNotNil(retrievedCredentials)
         XCTAssertNotEqual(retrievedCredentials, awsCredentials)
     }
+
+    /// Test that shared keychain credentials are NOT cleared on fresh install when using access group
+    ///
+    /// - Given: A user has credentials stored in shared keychain
+    /// - When: The credential store is initialized with fresh UserDefaults but same access group
+    /// - Then: The shared keychain credentials should NOT be cleared
+    ///
+    func testSharedKeychainCredentialsNotClearedOnFreshInstall() {
+        // Given: Save credentials to shared keychain
+        let identityId = "identityId"
+        let awsCredentials = AuthAWSCognitoCredentials.testData
+        let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+            signedInData: .testData,
+            identityID: identityId,
+            credentials: awsCredentials
+        )
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
+        
+        #if os(watchOS)
+        let accessGroup = keychainAccessGroupWatch
+        #else
+        let accessGroup = keychainAccessGroup
+        #endif
+        
+        let credentialStore = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfig,
+            accessGroup: accessGroup
+        )
+        
+        do {
+            try credentialStore.saveCredential(initialCognitoCredentials)
+        } catch {
+            XCTFail("Unable to save credentials")
+        }
+        
+        // Verify credentials are saved
+        guard let savedCredentials = try? credentialStore.retrieveCredential() else {
+            XCTFail("Unable to retrieve saved credentials")
+            return
+        }
+        XCTAssertNotNil(savedCredentials)
+        
+        // When: Simulate fresh install by clearing UserDefaults flag
+        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
+        
+        // Initialize new credential store with same access group (simulates app extension scenario)
+        let newCredentialStore = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfig,
+            accessGroup: accessGroup
+        )
+        
+        // Then: Shared keychain credentials should NOT be cleared
+        guard let retrievedCredentials = try? newCredentialStore.retrieveCredential(),
+              case .userPoolAndIdentityPool(
+                  let retrievedTokens,
+                  let retrievedIdentityID,
+                  let retrievedAWSCredentials
+              ) = retrievedCredentials else {
+            XCTFail("Shared keychain credentials should not be cleared")
+            return
+        }
+        
+        XCTAssertNotNil(retrievedCredentials)
+        XCTAssertNotNil(retrievedTokens)
+        XCTAssertNotNil(retrievedIdentityID)
+        XCTAssertNotNil(retrievedAWSCredentials)
+        XCTAssertEqual(retrievedIdentityID, identityId)
+        XCTAssertEqual(retrievedAWSCredentials, awsCredentials)
+    }
+
+    /// Test that non-shared keychain credentials ARE cleared on fresh install
+    ///
+    /// - Given: A user has credentials stored in non-shared keychain
+    /// - When: The credential store is initialized with fresh UserDefaults and no access group
+    /// - Then: The keychain credentials should be cleared
+    ///
+    func testNonSharedKeychainCredentialsClearedOnFreshInstall() {
+        // Given: Save credentials to non-shared keychain
+        let identityId = "identityId"
+        let awsCredentials = AuthAWSCognitoCredentials.testData
+        let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+            signedInData: .testData,
+            identityID: identityId,
+            credentials: awsCredentials
+        )
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
+        
+        let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
+        
+        do {
+            try credentialStore.saveCredential(initialCognitoCredentials)
+        } catch {
+            XCTFail("Unable to save credentials")
+        }
+        
+        // Verify credentials are saved
+        guard let savedCredentials = try? credentialStore.retrieveCredential() else {
+            XCTFail("Unable to retrieve saved credentials")
+            return
+        }
+        XCTAssertNotNil(savedCredentials)
+        
+        // When: Simulate fresh install by clearing UserDefaults flag
+        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
+        
+        // Initialize new credential store without access group
+        let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
+        
+        // Then: Non-shared keychain credentials should be cleared
+        let retrievedCredentials = try? newCredentialStore.retrieveCredential()
+        XCTAssertNil(retrievedCredentials, "Non-shared keychain credentials should be cleared on fresh install")
+    }
+
+    /// Test that UserDefaults flag is properly set regardless of access group usage
+    ///
+    /// - Given: Fresh UserDefaults state
+    /// - When: Credential store is initialized with or without access group
+    /// - Then: UserDefaults flag should be set in both cases
+    ///
+    func testUserDefaultsFlagSetRegardlessOfAccessGroup() {
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
+        let userDefaultsKey = "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured"
+        
+        // Test without access group
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
+        
+        _ = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
+        
+        // Test with access group
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
+        
+        #if os(watchOS)
+        let accessGroup = keychainAccessGroupWatch
+        #else
+        let accessGroup = keychainAccessGroup
+        #endif
+        
+        _ = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfig,
+            accessGroup: accessGroup
+        )
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
+    }
 }
