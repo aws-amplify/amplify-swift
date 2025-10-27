@@ -58,7 +58,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
     /// Test auto sign in success
     ///
     /// - Given: Given an auth plugin with mocked service set up to return `.selectChallenge` with `.password` and `.passwordSrp`
@@ -85,7 +85,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 XCTFail("Result should be .continueSignInWithFirstFactorSelection for next step")
                 return
             }
-            
+
             XCTAssertTrue(authFactorTypes.count == 2)
             XCTAssertTrue(authFactorTypes.contains(.password))
             XCTAssertTrue(authFactorTypes.contains(.passwordSRP))
