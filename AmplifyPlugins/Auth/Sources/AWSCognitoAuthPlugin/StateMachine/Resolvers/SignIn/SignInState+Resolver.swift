@@ -684,7 +684,48 @@ extension SignInState {
                 )
             #endif
 
-            case .autoSigningIn:
+            case .autoSigningIn(let signInEventData):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(
+                        challenge: challenge,
+                        signInMethod: signInEventData.signInMethod
+                    )
+                    let subState = SignInChallengeState.notStarted
+                    return .init(
+                        newState:
+                                .resolvingChallenge(
+                                    subState,
+                                    challenge.challenge.authChallengeType,
+                                    signInEventData.signInMethod
+                                ),
+                        actions: [action]
+                    )
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse
+                    )
+                    return .init(
+                        newState: .resolvingDeviceSrpa(.notStarted),
+                        actions: [action]
+                    )
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(
+                        newState: .resolvingTOTPSetup(.notStarted, signInEventData),
+                        actions: [action]
+                    )
+                }
+
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
                     return .init(
                         newState: .signedIn(signedInData),
