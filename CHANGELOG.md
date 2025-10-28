@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.51.4 (2025-10-28)
+
+### Bug Fixes
+
+- **auth**: add missing state transitions during auto sign in (#4065)
+
 ## 2.51.3 (2025-10-23)
 
 ## 2.51.2 (2025-10-13)
