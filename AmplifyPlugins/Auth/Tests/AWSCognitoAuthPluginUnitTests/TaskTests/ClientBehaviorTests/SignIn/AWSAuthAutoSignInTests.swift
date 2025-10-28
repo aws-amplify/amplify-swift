@@ -61,6 +61,41 @@ class AWSAuthAutoSignInTests: BasePluginTest {
 
     /// Test auto sign in success
     ///
+    /// - Given: Given an auth plugin with mocked service set up to return `.selectChallenge` with `.password` and `.passwordSrp`
+    ///          for `InitiateAuth` and in signed up state
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a result with `.continueSignInWithFirstFactorSelection`
+    ///
+    func testAutoSignInSuccessWithContinueFirstFactorSelection() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    availableChallenges: [.password, .passwordSrp],
+                    challengeName: .selectChallenge,
+                    session: "session"
+                )
+            }
+        )
+
+        do {
+            let result = try await plugin.autoSignIn()
+            guard case .continueSignInWithFirstFactorSelection(let authFactorTypes) = result.nextStep else {
+                XCTFail("Result should be .continueSignInWithFirstFactorSelection for next step")
+                return
+            }
+
+            XCTAssertTrue(authFactorTypes.count == 2)
+            XCTAssertTrue(authFactorTypes.contains(.password))
+            XCTAssertTrue(authFactorTypes.contains(.passwordSRP))
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test auto sign in success
+    ///
     /// - Given: Given an auth plugin with mocked service and in `.signingIn` authentication state and
     /// `.signedUp` sign up state
     ///
