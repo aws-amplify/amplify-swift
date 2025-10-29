@@ -23,7 +23,7 @@ private struct TestModels: AmplifyModelRegistration {
         ModelRegistry.register(modelType: Post18.self)
     }
 
-    public let version: String = "test"
+    let version: String = "test"
 }
 
 
