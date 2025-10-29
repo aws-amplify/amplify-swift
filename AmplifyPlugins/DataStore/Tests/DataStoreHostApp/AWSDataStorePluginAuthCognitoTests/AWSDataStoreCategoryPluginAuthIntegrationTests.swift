@@ -85,7 +85,7 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
     private struct ModelsRegistration: AmplifyModelRegistration {
         var version: String = "version"
 
-        public func registerModels(registry: ModelRegistry.Type) {
+        func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoExplicitOwnerField.self)
             ModelRegistry.register(modelType: TodoImplicitOwnerField.self)
           }

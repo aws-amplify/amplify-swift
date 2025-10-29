@@ -21,7 +21,7 @@ private struct TestModels: AmplifyModelRegistration {
         ModelRegistry.register(modelType: Comment9.self)
     }
 
-    public let version: String = "test"
+    let version: String = "test"
 }
 
 class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase {
