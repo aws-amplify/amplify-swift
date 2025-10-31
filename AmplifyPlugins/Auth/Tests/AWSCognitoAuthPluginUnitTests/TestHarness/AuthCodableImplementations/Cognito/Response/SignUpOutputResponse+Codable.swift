@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension SignUpOutput: Codable {
+extension SignUpOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case codeDeliveryDetails = "CodeDeliveryDetails"
         case userConfirmed = "UserConfirmed"

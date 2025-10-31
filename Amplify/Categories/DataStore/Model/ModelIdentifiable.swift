@@ -121,7 +121,7 @@ public extension DefaultModelIdentifier {
 // MARK: - Persistable + stringValue
 private extension Persistable {
     var stringValue: String {
-        var value: String = switch self {
+        let value: String = switch self {
         case let self as Temporal.Date:
             self.iso8601String
 

@@ -172,7 +172,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
             // to prevent breaking behavioral changes.
             // in vNext, the `validationData` property will be removed
             // and we'll use only the `metadata` property.
-            pluginOptions?.validationData ?? [:],
+            pluginOptions?.metadata ?? [:],
             uniquingKeysWith: { _, new in new }
         )
 

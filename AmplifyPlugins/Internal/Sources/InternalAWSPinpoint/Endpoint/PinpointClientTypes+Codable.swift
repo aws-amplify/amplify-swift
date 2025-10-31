@@ -8,7 +8,7 @@
 import AWSPinpoint
 import Foundation
 
-extension PinpointClientTypes.EndpointLocation: Codable, Equatable {
+extension PinpointClientTypes.EndpointLocation: @retroactive Decodable, @retroactive Encodable, @retroactive Equatable {
     private enum CodingKeys: CodingKey {
         case city
         case country
@@ -53,7 +53,7 @@ extension PinpointClientTypes.EndpointLocation: Codable, Equatable {
     }
 }
 
-extension PinpointClientTypes.EndpointDemographic: Codable, Equatable {
+extension PinpointClientTypes.EndpointDemographic: @retroactive Decodable, @retroactive Encodable, Equatable {
     private enum CodingKeys: CodingKey {
         case appVersion
         case locale
@@ -106,7 +106,7 @@ extension PinpointClientTypes.EndpointDemographic: Codable, Equatable {
     }
 }
 
-extension PinpointClientTypes.EndpointUser: Codable, Equatable {
+extension PinpointClientTypes.EndpointUser: @retroactive Decodable, @retroactive Encodable, @retroactive Equatable {
     private enum CodingKeys: CodingKey {
         case userAttributes
         case userId

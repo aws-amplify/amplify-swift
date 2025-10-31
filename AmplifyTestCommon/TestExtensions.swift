@@ -8,4 +8,4 @@
 /// A set of extensions used in testing
 
 /// Enable tests to `throw` string literals
-extension String: Error { }
+extension String: @retroactive Error { }

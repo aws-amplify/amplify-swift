@@ -9,7 +9,7 @@ import AWSCognitoIdentityProvider
 import ClientRuntime
 
 // Already conforms to encodable
-extension ChangePasswordInput: Decodable {
+extension ChangePasswordInput: @retroactive Decodable {
 
     enum CodingKeys: String, CodingKey {
         case accessToken = "AccessToken"

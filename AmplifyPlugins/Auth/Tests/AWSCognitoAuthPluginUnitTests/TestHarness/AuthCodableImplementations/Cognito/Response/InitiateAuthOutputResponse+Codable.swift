@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension InitiateAuthOutput: Codable {
+extension InitiateAuthOutput: @retroactive Decodable, @retroactive Encodable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case authenticationResult = "AuthenticationResult"
@@ -45,7 +45,7 @@ extension InitiateAuthOutput: Codable {
 
 }
 
-extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable {
+extension CognitoIdentityProviderClientTypes.AuthenticationResultType: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case accessToken = "AccessToken"
         case expiresIn = "ExpiresIn"
@@ -71,7 +71,7 @@ extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable
     }
 }
 
-extension CognitoIdentityProviderClientTypes.NewDeviceMetadataType: Decodable {
+extension CognitoIdentityProviderClientTypes.NewDeviceMetadataType: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case deviceGroupKey = "DeviceGroupKey"
         case deviceKey = "DeviceKey"
