@@ -58,7 +58,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
         Task {
             try await Task.sleep(nanoseconds: 80 * 1_000)
-            await appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
+            appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
         }
         await fulfillment(of: [finishExpectation], timeout: timeout + 1)
     }
@@ -90,7 +90,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
         Task {
             try await Task.sleep(nanoseconds: 80 * 1_000)
-            await appSyncClient.subject.send(.success(.init(
+            appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([
@@ -133,7 +133,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         Task {
             try await Task.sleep(nanoseconds: 80 * 1_000)
-            await appSyncClient.subject.send(.success(.init(
+            appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([
@@ -180,7 +180,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         Task {
             try await Task.sleep(nanoseconds: 80 * 1_000)
-            await appSyncClient.subject.send(.success(.init(
+            appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([

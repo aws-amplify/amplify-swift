@@ -8,7 +8,7 @@
 import AWSCognitoIdentity
 import ClientRuntime
 
-extension GetIdOutput: Codable {
+extension GetIdOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case identityId = "IdentityId"
     }

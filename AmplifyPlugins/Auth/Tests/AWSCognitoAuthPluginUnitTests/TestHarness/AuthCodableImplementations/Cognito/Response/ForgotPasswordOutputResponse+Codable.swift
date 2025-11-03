@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ForgotPasswordOutput: Codable {
+extension ForgotPasswordOutput: @retroactive Decodable, @retroactive Encodable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case codeDeliveryDetails = "CodeDeliveryDetails"
@@ -30,7 +30,7 @@ extension ForgotPasswordOutput: Codable {
 
 }
 
-extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType: Decodable {
+extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case attributeName = "AttributeName"
         case deliveryMedium = "DeliveryMedium"
@@ -50,4 +50,4 @@ extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType: Decodable 
     }
 }
 
-extension CognitoIdentityProviderClientTypes.DeliveryMediumType: Decodable {}
+extension CognitoIdentityProviderClientTypes.DeliveryMediumType: @retroactive Decodable {}

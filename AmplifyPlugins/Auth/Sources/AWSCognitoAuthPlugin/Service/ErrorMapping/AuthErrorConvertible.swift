@@ -19,5 +19,3 @@ extension AuthError: AuthErrorConvertible {
         return self
     }
 }
-
-extension AuthError: @unchecked Sendable { }

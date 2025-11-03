@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import ClientRuntime
 import Foundation
 
-extension GetCredentialsForIdentityOutput: Codable {
+extension GetCredentialsForIdentityOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case credentials = "Credentials"
         case identityId = "IdentityId"
@@ -29,7 +29,7 @@ extension GetCredentialsForIdentityOutput: Codable {
     }
 }
 
-extension CognitoIdentityClientTypes.Credentials: Decodable {
+extension CognitoIdentityClientTypes.Credentials: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case accessKeyId = "AccessKeyId"
         case expiration = "Expiration"

@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ConfirmDeviceInput: Decodable {
+extension ConfirmDeviceInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case accessToken
         case deviceKey

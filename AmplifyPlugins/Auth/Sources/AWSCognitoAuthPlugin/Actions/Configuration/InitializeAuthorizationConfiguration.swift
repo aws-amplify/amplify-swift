@@ -19,7 +19,7 @@ struct InitializeAuthorizationConfiguration: Action {
     ) async {
         // ATM this is a no-op action
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        var event = switch storedCredentials {
+        let event = switch storedCredentials {
         case .noCredentials:
             AuthorizationEvent(eventType: .configure)
         default:

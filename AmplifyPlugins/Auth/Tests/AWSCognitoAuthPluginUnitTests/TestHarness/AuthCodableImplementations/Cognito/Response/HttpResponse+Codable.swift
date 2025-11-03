@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import SmithyHTTPAPI
 
-extension SmithyHTTPAPI.HTTPResponse: Codable { }
+extension SmithyHTTPAPI.HTTPResponse: @retroactive Decodable, @retroactive Encodable { }
 
 enum HTTPResponseCodingKeys: String, CodingKey {
     case statusCode

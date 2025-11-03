@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension GetIdInput: Decodable {
+extension GetIdInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case logins
     }

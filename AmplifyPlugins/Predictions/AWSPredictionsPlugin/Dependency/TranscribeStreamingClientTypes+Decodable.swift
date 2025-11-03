@@ -8,7 +8,7 @@
 import AWSTranscribeStreaming
 import Foundation
 
-extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
+extension TranscribeStreamingClientTypes.TranscriptEvent: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case transcript = "Transcript"
     }
@@ -24,7 +24,7 @@ extension TranscribeStreamingClientTypes.TranscriptEvent: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.Transcript: Decodable {
+extension TranscribeStreamingClientTypes.Transcript: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case results = "Results"
     }
@@ -37,7 +37,7 @@ extension TranscribeStreamingClientTypes.Transcript: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.Result: Decodable {
+extension TranscribeStreamingClientTypes.Result: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case alternatives = "Alternatives"
         case channelId = "ChannelId"
@@ -73,7 +73,7 @@ extension TranscribeStreamingClientTypes.Result: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.Alternative: Decodable {
+extension TranscribeStreamingClientTypes.Alternative: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case entities = "Entities"
         case items = "Items"
@@ -96,7 +96,7 @@ extension TranscribeStreamingClientTypes.Alternative: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.Entity: Decodable {
+extension TranscribeStreamingClientTypes.Entity: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case category = "Category"
         case confidence = "Confidence"
@@ -119,7 +119,7 @@ extension TranscribeStreamingClientTypes.Entity: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.Item: Decodable {
+extension TranscribeStreamingClientTypes.Item: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case confidence = "Confidence"
         case content = "Content"
@@ -146,7 +146,7 @@ extension TranscribeStreamingClientTypes.Item: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.LanguageWithScore: Decodable {
+extension TranscribeStreamingClientTypes.LanguageWithScore: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case languageCode = "LanguageCode"
         case score = "Score"
@@ -164,6 +164,6 @@ extension TranscribeStreamingClientTypes.LanguageWithScore: Decodable {
     }
 }
 
-extension TranscribeStreamingClientTypes.ItemType: Decodable {}
+extension TranscribeStreamingClientTypes.ItemType: @retroactive Decodable {}
 
-extension TranscribeStreamingClientTypes.LanguageCode: Decodable {}
+extension TranscribeStreamingClientTypes.LanguageCode: @retroactive Decodable {}

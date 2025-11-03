@@ -19,7 +19,7 @@ struct InformSessionError: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        var event: AuthorizationEvent = switch error {
+        let event: AuthorizationEvent = switch error {
         case .service(let serviceError):
             if isNotAuthorizedError(serviceError) {
                 .init(eventType: .throwError(
