@@ -31,6 +31,11 @@ final class WebSocketSession {
         )
     }
 
+    deinit {
+        Amplify.log.verbose("\(#fileID)-\(#function)")
+        task?.cancel(with: .normalClosure, reason: nil)
+    }
+
     func onMessageReceived(_ receive: @escaping (Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult) {
         receiveMessage = receive
     }
@@ -92,10 +97,14 @@ final class WebSocketSession {
         )
     }
 
-    final class Delegate: NSObject, URLSessionWebSocketDelegate, URLSessionTaskDelegate {
+    final class Delegate: NSObject, URLSessionWebSocketDelegate {
         var onClose: (URLSessionWebSocketTask.CloseCode) -> Void = { _ in }
         var onOpen: () -> Void = {}
         var onServerDateReceived: (Date?) -> Void = { _ in }
+
+        deinit {
+            Amplify.log.verbose("\(#fileID).Delegate-\(#function)")
+        }
 
         // MARK: - URLSessionWebSocketDelegate methods
         func urlSession(
@@ -149,6 +158,14 @@ final class WebSocketSession {
             didCompleteWithError error: Error?
         ) {
             Amplify.log.verbose("\(#fileID)-\(#function): Session task didCompleteWithError : \(error)")
+        }
+
+        // MARK: - URLSessionDelegate methods
+        func urlSession(
+            _ session: URLSession,
+            didBecomeInvalidWithError error: Error?
+        ) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Session task didBecomeInvalidWithError : \(error)")
         }
     }
 
