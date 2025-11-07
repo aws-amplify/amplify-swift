@@ -61,7 +61,7 @@ public final class FaceLivenessSession: LivenessService {
             self?.serverDate = serverDate
         }
     }
-    
+
     deinit {
         Amplify.log.verbose("\(#fileID)-\(#function)")
     }
@@ -129,8 +129,8 @@ public final class FaceLivenessSession: LivenessService {
     ) {
         Amplify.log.verbose("\(#fileID)-\(#function): Sending websocket event: \(event)")
         livenessServiceDispatchQueue.async { [weak self] in
-            guard let self = self else { return }
-            let encodedPayload = self.eventStreamEncoder.encode(
+            guard let self else { return }
+            let encodedPayload = eventStreamEncoder.encode(
                 payload: event.payload,
                 headers: [
                     ":content-type": .string("application/json"),
@@ -140,18 +140,18 @@ public final class FaceLivenessSession: LivenessService {
             )
 
             let dateForSigning: Date
-            if let serverDate = self.serverDate {
+            if let serverDate {
                 dateForSigning = serverDate
             } else {
                 dateForSigning = eventDate()
             }
 
-            let signedPayload = self.signer.signWithPreviousSignature(
+            let signedPayload = signer.signWithPreviousSignature(
                 payload: encodedPayload,
                 dateHeader: (key: ":date", value: dateForSigning)
             )
 
-            let encodedEvent = self.eventStreamEncoder.encode(
+            let encodedEvent = eventStreamEncoder.encode(
                 payload: encodedPayload,
                 headers: [
                     ":date": .timestamp(dateForSigning),
@@ -159,7 +159,7 @@ public final class FaceLivenessSession: LivenessService {
                 ]
             )
 
-            self.websocket.send(
+            websocket.send(
                 message: .data(encodedEvent),
                 onError: { error in
                     Amplify.log.verbose("\(#fileID)-\(#function): Error sending web socket message: \(error)")
@@ -260,7 +260,7 @@ public final class FaceLivenessSession: LivenessService {
             return .stopAndInvalidateSession
         }
     }
-    
+
     private func removeLivenessEventListeners() {
         serverEventListeners.removeAll()
         challengeTypeListeners.removeAll()

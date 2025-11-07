@@ -142,7 +142,7 @@ final class WebSocketSession {
 
             onServerDateReceived(serverDate)
         }
-        
+
         func urlSession(
             _ session: URLSession,
             task: URLSessionTask,
