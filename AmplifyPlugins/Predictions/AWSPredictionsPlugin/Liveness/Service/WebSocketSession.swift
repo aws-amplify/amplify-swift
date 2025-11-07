@@ -103,6 +103,7 @@ final class WebSocketSession {
             webSocketTask: URLSessionWebSocketTask,
             didOpenWithProtocol protocol: String?
         ) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Web socket task didOpen")
             onOpen()
         }
 
@@ -112,6 +113,7 @@ final class WebSocketSession {
             didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
             reason: Data?
         ) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Web socket task didCloseWith: \(closeCode)")
             onClose(closeCode)
         }
 
@@ -123,7 +125,7 @@ final class WebSocketSession {
         ) {
             guard let httpResponse = metrics.transactionMetrics.first?.response as? HTTPURLResponse,
                   let dateString = httpResponse.value(forHTTPHeaderField: "Date") else {
-                Amplify.log.verbose("\(#function): Couldn't find Date header in URLSession metrics")
+                Amplify.log.verbose("\(#fileID)-\(#function): Couldn't find Date header in URLSession metrics")
                 onServerDateReceived(nil)
                 return
             }
@@ -133,12 +135,20 @@ final class WebSocketSession {
             dateFormatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss z"
             dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
             guard let serverDate = dateFormatter.date(from: dateString) else {
-                Amplify.log.verbose("\(#function): Error parsing Date header in expected format")
+                Amplify.log.verbose("\(#fileID)-\(#function): Error parsing Date header in expected format")
                 onServerDateReceived(nil)
                 return
             }
 
             onServerDateReceived(serverDate)
+        }
+        
+        func urlSession(
+            _ session: URLSession,
+            task: URLSessionTask,
+            didCompleteWithError error: Error?
+        ) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Session task didCompleteWithError : \(error)")
         }
     }
 

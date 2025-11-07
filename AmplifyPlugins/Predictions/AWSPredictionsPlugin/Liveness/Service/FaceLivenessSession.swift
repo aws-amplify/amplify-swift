@@ -45,16 +45,25 @@ public final class FaceLivenessSession: LivenessService {
         self.websocket = websocket
 
         websocket.onMessageReceived { [weak self] result in
-            self?.receive(result: result) ?? .stopAndInvalidateSession
+            guard let receiveResult = self?.receive(result: result) else {
+                self?.removeLivenessEventListeners()
+                return .stopAndInvalidateSession
+            }
+            return receiveResult
         }
 
         websocket.onSocketClosed { [weak self] closeCode in
             self?.onComplete(.unexpectedClosure(closeCode))
+            self?.removeLivenessEventListeners()
         }
 
         websocket.onServerDateReceived { [weak self] serverDate in
             self?.serverDate = serverDate
         }
+    }
+    
+    deinit {
+        Amplify.log.verbose("\(#fileID)-\(#function)")
     }
 
     public var onServiceException: (FaceLivenessSessionError) -> Void = { _ in }
@@ -77,18 +86,19 @@ public final class FaceLivenessSession: LivenessService {
     }
 
     public func closeSocket(with code: URLSessionWebSocketTask.CloseCode) {
-        livenessServiceDispatchQueue.async {
-            self.websocket.close(with: code)
+        Amplify.log.verbose("\(#fileID)-\(#function): closeSocket with code: \(code)")
+        livenessServiceDispatchQueue.async { [weak self] in
+            self?.websocket.close(with: code)
         }
     }
 
     public func initializeLivenessStream(
         withSessionID sessionID: String,
-
-                                         userAgent: String = "",
+        userAgent: String = "",
         challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
         options: FaceLivenessSession.Options
     ) throws {
+        Amplify.log.verbose("\(#fileID)-\(#function): Initialize liveness stream")
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
@@ -108,8 +118,8 @@ public final class FaceLivenessSession: LivenessService {
 
         savedURLForReconnect = url
         let signedConnectionURL = signer.sign(url: url)
-        livenessServiceDispatchQueue.async {
-            self.websocket.open(url: signedConnectionURL)
+        livenessServiceDispatchQueue.async { [weak self] in
+            self?.websocket.open(url: signedConnectionURL)
         }
     }
 
@@ -117,7 +127,9 @@ public final class FaceLivenessSession: LivenessService {
         _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date = Date.init
     ) {
-        livenessServiceDispatchQueue.async {
+        Amplify.log.verbose("\(#fileID)-\(#function): Sending websocket event: \(event)")
+        livenessServiceDispatchQueue.async { [weak self] in
+            guard let self = self else { return }
             let encodedPayload = self.eventStreamEncoder.encode(
                 payload: event.payload,
                 headers: [
@@ -149,23 +161,28 @@ public final class FaceLivenessSession: LivenessService {
 
             self.websocket.send(
                 message: .data(encodedEvent),
-                onError: { _ in }
+                onError: { error in
+                    Amplify.log.verbose("\(#fileID)-\(#function): Error sending web socket message: \(error)")
+                }
             )
         }
     }
 
     private func fallbackDecoding(_ message: EventStream.Message) -> WebSocketSession.WebSocketMessageResult {
-        // We only care about two events above.
         // Just in case the header value changes (it shouldn't)
         // We'll try to decode each of these events
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Fallback decoding server session information: \(payload)")
             let sessionConfiguration = sessionConfiguration(from: payload)
             serverEventListeners[.challenge]?(sessionConfiguration)
         } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Fallback decoding challenge: \(payload)")
             let challenge = challenge(from: payload)
             challengeTypeListeners[.challenge]?(challenge)
-        } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
+        } else if let payload = try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload) {
+            Amplify.log.verbose("\(#fileID)-\(#function): Fallback decoding disconnect: \(payload)")
             onComplete(.disconnectionEvent)
+            removeLivenessEventListeners()
             return .stopAndInvalidateSession
         }
         return .continueToReceive
@@ -179,6 +196,7 @@ public final class FaceLivenessSession: LivenessService {
 
                 if let eventType = message.headers.first(where: { $0.name == ":event-type" }) {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
+                    Amplify.log.verbose("\(#fileID)-\(#function): Received server event: \(serverEvent)")
                     switch serverEvent {
                     case .challenge:
                         // :event-type ChallengeEvent
@@ -199,22 +217,24 @@ public final class FaceLivenessSession: LivenessService {
                     case .disconnect:
                         // :event-type DisconnectionEvent
                         onComplete(.disconnectionEvent)
+                        removeLivenessEventListeners()
                         return .stopAndInvalidateSession
                     default:
                         return .continueToReceive
                     }
                 } else if let exceptionType = message.headers.first(where: { $0.name == ":exception-type" }) {
                     let exceptionEvent = LivenessEventKind.Exception(rawValue: exceptionType.value)
-                    Amplify.log.verbose("\(#function): Received exception: \(exceptionEvent)")
+                    Amplify.log.verbose("\(#fileID)-\(#function): Received exception: \(exceptionEvent)")
                     guard exceptionEvent == .invalidSignature,
                           connectingState == .normal,
                           let savedURLForReconnect,
                           let serverDate else {
                         if let runtimeError = URLSessionWebSocketTask.CloseCode(rawValue: 4_005) {
-                            Amplify.log.verbose("\(#function): Closing websocket with runtime error")
+                            Amplify.log.verbose("\(#fileID)-\(#function): Closing websocket with runtime error")
                             closeSocket(with: runtimeError)
                         }
                         onServiceException(.init(event: exceptionEvent))
+                        removeLivenessEventListeners()
                         return .stopAndInvalidateSession
                     }
 
@@ -228,12 +248,21 @@ public final class FaceLivenessSession: LivenessService {
                     return fallbackDecoding(message)
                 }
             } catch {
+                Amplify.log.verbose("\(#fileID)-\(#function): Error decoding web socket message: \(error)")
+                removeLivenessEventListeners()
                 return .stopAndInvalidateSession
             }
         case .success:
             return .continueToReceive
-        case .failure:
+        case .failure(let error):
+            Amplify.log.verbose("\(#fileID)-\(#function): Failure result in web socket message: \(error)")
+            removeLivenessEventListeners()
             return .stopAndInvalidateSession
         }
+    }
+    
+    private func removeLivenessEventListeners() {
+        serverEventListeners.removeAll()
+        challengeTypeListeners.removeAll()
     }
 }
