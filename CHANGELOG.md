@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.51.5 (2025-11-10)
+
+### Bug Fixes
+
+- **predictions**: remove liveness event listeners on session completion (#4092)
+
 ## 2.51.4 (2025-10-28)
 
 ### Bug Fixes
