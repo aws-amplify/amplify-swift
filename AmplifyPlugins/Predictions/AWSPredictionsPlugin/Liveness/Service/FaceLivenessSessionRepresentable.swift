@@ -21,8 +21,7 @@ public protocol LivenessService {
 
     func initializeLivenessStream(
         withSessionID sessionID: String,
-
-                                  userAgent: String,
+        userAgent: String,
         challenges: [Challenge],
         options: FaceLivenessSession.Options
     ) throws

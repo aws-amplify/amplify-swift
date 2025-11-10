@@ -122,7 +122,7 @@ class DefaultStorageTransferDatabase {
             let subTasks = pair.value.filter { $0.partNumber != nil }.compactMap(\.subTask)
 
             // all parts are defaulted to pending
-            for (index, subTask) in subTasks.enumerated() {
+            for (_, subTask) in subTasks.enumerated() {
                 guard subTask.partNumber <= parts.count, subTask.partNumber > 0 else { continue }
                 let index = subTask.partNumber - 1
 

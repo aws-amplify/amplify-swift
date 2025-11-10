@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension DeleteUserInput: Decodable {
+extension DeleteUserInput: @retroactive Decodable {
 
     public init(from decoder: Decoder) throws {
         self.init()

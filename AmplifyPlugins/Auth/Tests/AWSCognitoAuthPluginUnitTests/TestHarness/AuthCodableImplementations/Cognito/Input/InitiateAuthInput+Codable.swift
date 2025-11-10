@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension InitiateAuthInput: Decodable {
+extension InitiateAuthInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case authFlow
         case authParameters
@@ -32,4 +32,4 @@ extension InitiateAuthInput: Decodable {
     }
 }
 
-extension CognitoIdentityProviderClientTypes.AuthFlowType: Decodable { }
+extension CognitoIdentityProviderClientTypes.AuthFlowType: @retroactive Decodable { }

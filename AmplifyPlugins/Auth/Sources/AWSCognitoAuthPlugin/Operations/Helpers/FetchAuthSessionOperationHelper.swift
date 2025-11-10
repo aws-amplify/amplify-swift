@@ -75,7 +75,7 @@ class FetchAuthSessionOperationHelper {
     ) async throws -> AuthSession {
 
             if forceRefresh || !credentials.areValid() {
-                var event = switch credentials {
+                let event = switch credentials {
                 case .identityPoolWithFederation(let federatedToken, let identityId, _):
                     AuthorizationEvent(eventType: .startFederationToIdentityPool(federatedToken, identityId))
                 case .noCredentials:

@@ -111,7 +111,7 @@ extension AWSCognitoAuthPlugin {
             return nil
         }
 
-        var headers = urlRequest.allHTTPHeaderFields ?? [:]
+        let headers = urlRequest.allHTTPHeaderFields ?? [:]
         let httpMethod = (urlRequest.httpMethod?.uppercased())
             .flatMap(HTTPMethodType.init(rawValue:)) ?? .get
 

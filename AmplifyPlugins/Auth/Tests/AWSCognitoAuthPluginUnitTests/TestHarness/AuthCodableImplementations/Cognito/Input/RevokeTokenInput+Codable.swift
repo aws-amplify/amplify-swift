@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension RevokeTokenInput: Decodable {
+extension RevokeTokenInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case token
         case clientId

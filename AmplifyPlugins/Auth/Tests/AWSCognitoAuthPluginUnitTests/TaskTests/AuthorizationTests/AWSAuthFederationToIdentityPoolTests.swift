@@ -549,8 +549,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
                 }
-            } catch {
-                XCTFail("Should throw Auth Error \(error)")
             }
 
         } catch {
@@ -633,8 +631,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
                 }
-            } catch {
-                XCTFail("Should throw Auth Error \(error)")
             }
         } catch {
             XCTFail("Received failure with error \(error)")
@@ -730,8 +726,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     XCTFail("Should throw Auth Error with invalid state \(error)")
                     return
                 }
-            } catch {
-                XCTFail("Should throw Auth Error \(error)")
             }
         } catch {
             XCTFail("Received failure with error \(error)")

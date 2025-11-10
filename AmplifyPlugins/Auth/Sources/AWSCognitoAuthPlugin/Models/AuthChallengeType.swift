@@ -34,7 +34,7 @@ enum AuthChallengeType {
 
 }
 
-extension CognitoIdentityProviderClientTypes.ChallengeNameType: Codable {
+extension CognitoIdentityProviderClientTypes.ChallengeNameType: @retroactive Decodable, @retroactive Encodable {
     var authChallengeType: AuthChallengeType {
         switch self {
         case .customChallenge:

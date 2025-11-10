@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import SmithyHTTPAPI
 
-extension ChangePasswordOutput: Codable {
+extension ChangePasswordOutput: @retroactive Decodable, @retroactive Encodable {
 
     enum CodingKeys: String, CodingKey {
         case httpResponse

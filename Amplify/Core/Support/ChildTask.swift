@@ -35,25 +35,28 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     var value: Success {
         get async throws {
-            try await withTaskCancellationHandler(handler: {
-                Task {
-                    await cancel()
-                }
-            }, operation: {
-                try await withCheckedThrowingContinuation { continuation in
-                    if isCancelled {
-                        // immediately cancel is already cancelled
-                        continuation.resume(throwing: CancellationError())
-                    } else if let result = storedResult {
-                        // immediately send result if it is available
-                        valueContinuations.append(continuation)
-                        send(result)
-                    } else {
-                        // capture contination to use later
-                        valueContinuations.append(continuation)
+            try await withTaskCancellationHandler(
+                operation: {
+                    try await withCheckedThrowingContinuation { continuation in
+                        if isCancelled {
+                            // immediately cancel is already cancelled
+                            continuation.resume(throwing: CancellationError())
+                        } else if let result = storedResult {
+                            // immediately send result if it is available
+                            valueContinuations.append(continuation)
+                            send(result)
+                        } else {
+                            // capture contination to use later
+                            valueContinuations.append(continuation)
+                        }
+                    }
+                },
+                onCancel: {
+                    Task {
+                        await cancel()
                     }
                 }
-            })
+            )
         }
     }
 
