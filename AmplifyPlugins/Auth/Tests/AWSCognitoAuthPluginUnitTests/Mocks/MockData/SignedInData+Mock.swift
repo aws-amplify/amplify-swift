@@ -30,6 +30,7 @@ extension SignedInData {
 
     static var hostedUISignInData: SignedInData {
         let tokens = AWSCognitoUserPoolTokens.testData
+#if os(iOS) || os(macOS) || os(visionOS)
         return SignedInData(
             signedInDate: Date(),
             signInMethod: .hostedUI(.init(
@@ -45,5 +46,21 @@ extension SignedInData {
             )),
             cognitoUserPoolTokens: tokens
         )
+#else
+        return SignedInData(
+            signedInDate: Date(),
+            signInMethod: .hostedUI(.init(
+                scopes: [],
+                providerInfo: .init(authProvider: .google, idpIdentifier: ""),
+                presentationAnchor: nil,
+                preferPrivateSession: false,
+                nonce: nil,
+                language: nil,
+                loginHint: nil,
+                resource: nil
+            )),
+            cognitoUserPoolTokens: tokens
+        )
+#endif
     }
 }

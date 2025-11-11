@@ -11,6 +11,7 @@ import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
+#if os(iOS) || os(macOS) || os(visionOS)
 class HostedUIRequestHelperTests: XCTestCase {
     private var configuration: HostedUIConfigurationData!
     private let result = HostedUIResult(
@@ -124,3 +125,4 @@ class HostedUIRequestHelperTests: XCTestCase {
         XCTAssertEqual("http://localhost", urlComponents.queryItems?.first(where: { $0.name == "resource"})?.value)
     }
 }
+#endif
