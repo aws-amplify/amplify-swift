@@ -145,7 +145,8 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error")),
+                   .init(username: "username", session: "sessio"))
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -286,7 +287,8 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error")),
+                   .init(username: "username", session: "sessio"))
         )
 
         let authPluginError = configureCustomPluginWith(
