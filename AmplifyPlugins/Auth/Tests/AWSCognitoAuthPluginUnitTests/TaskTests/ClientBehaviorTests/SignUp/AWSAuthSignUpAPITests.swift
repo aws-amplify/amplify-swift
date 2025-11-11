@@ -1024,8 +1024,10 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Previous error", "Recovery")),
-                   .init(username: "old-user", session: "old-session"))
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "old-user", session: "old-session")
+            )
         )
 
         let authPluginError = configureCustomPluginWith(

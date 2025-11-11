@@ -140,8 +140,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")),
-                   .init(username: "username", session: "sessio"))
+            .error(
+                .service(error: AuthError.service("Unknown error", "Unknown error")),
+                .init(username: "username", session: "sessio")
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -281,8 +283,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")),
-                   .init(username: "username", session: "sessio"))
+            .error(
+                .service(error: AuthError.service("Unknown error", "Unknown error")),
+                .init(username: "username", session: "sessio")
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -616,8 +620,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Previous error", "Recovery")),
-                   .init(username: "jeffb", session: cachedSession))
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "jeffb", session: cachedSession)
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -655,8 +661,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Previous error", "Recovery")),
-                   .init(username: "different-user", session: cachedSession))
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "different-user", session: cachedSession)
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -692,8 +700,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Previous error", "Recovery")),
-                   .init(username: "jeffb", session: nil))
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "jeffb", session: nil)
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
