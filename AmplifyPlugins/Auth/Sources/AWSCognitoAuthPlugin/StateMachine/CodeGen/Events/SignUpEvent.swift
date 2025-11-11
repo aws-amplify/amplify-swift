@@ -21,7 +21,7 @@ struct SignUpEvent: StateMachineEvent {
         case initiateSignUpComplete(SignUpEventData, AuthSignUpResult)
         case confirmSignUp(SignUpEventData, ConfirmationCode, ForceAliasCreation?)
         case signedUp(SignUpEventData, AuthSignUpResult)
-        case throwAuthError(SignUpError)
+        case throwAuthError(SignUpError, SignUpEventData)
     }
 
     init(

@@ -62,7 +62,7 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
                 return result
             case .signedUp(_, let result):
                 return result
-            case .error(let signUpError):
+            case .error(let signUpError, _):
                 throw signUpError.authError
             default:
                 continue
