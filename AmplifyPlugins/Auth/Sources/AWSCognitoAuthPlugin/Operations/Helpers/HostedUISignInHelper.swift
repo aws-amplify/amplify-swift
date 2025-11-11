@@ -131,7 +131,12 @@ struct HostedUISignInHelper: DefaultLogger {
             scopes: request.options.scopes ?? scopeFromConfig,
             providerInfo: providerInfo,
             presentationAnchor: request.presentationAnchor,
-            preferPrivateSession: privateSession
+            preferPrivateSession: privateSession,
+            nonce: pluginOptions?.nonce,
+            language: pluginOptions?.language,
+            loginHint: pluginOptions?.loginHint,
+            prompt: pluginOptions?.prompt,
+            resource: pluginOptions?.resource
         )
         let signInData = SignInEventData(
             username: nil,
