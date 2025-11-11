@@ -81,7 +81,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             // only include session if the cached username matches
             // the username in confirmSignUp() call
             session = data.session
-        } else if case .error(_, let data,) = signUpState,
+        } else if case .error(_, let data) = signUpState,
                   request.username == data.username {
             // only include session if the cached username matches
             // the username in confirmSignUp() call
