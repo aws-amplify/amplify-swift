@@ -312,6 +312,7 @@ struct MigrateLegacyCredentialStore: Action {
                     authProvider: nil,
                     idpIdentifier: nil
                 )
+#if os(iOS) || os(macOS) || os(visionOS)
                 return .hostedUI(.init(
                     scopes: scopes ?? [],
                     providerInfo: provider,
@@ -323,6 +324,18 @@ struct MigrateLegacyCredentialStore: Action {
                     prompt: nil,
                     resource: nil
                 ))
+#else
+                return .hostedUI(.init(
+                    scopes: scopes ?? [],
+                    providerInfo: provider,
+                    presentationAnchor: nil,
+                    preferPrivateSession: false,
+                    nonce: nil,
+                    language: nil,
+                    loginHint: nil,
+                    resource: nil
+                ))
+#endif
             default:
                 return .apiBased(.userSRP)
             }

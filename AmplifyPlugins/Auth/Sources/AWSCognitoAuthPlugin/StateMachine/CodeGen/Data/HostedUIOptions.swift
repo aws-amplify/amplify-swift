@@ -24,8 +24,9 @@ struct HostedUIOptions {
 
     let loginHint: String?
 
+#if os(iOS) || os(macOS) || os(visionOS)
     let prompt: [AWSAuthWebUISignInOptions.Prompt]?
-
+#endif
     let resource: String?
 }
 
@@ -59,7 +60,9 @@ extension HostedUIOptions: Codable {
         self.nonce = try values.decode(String.self, forKey: .nonce)
         self.language = try values.decode(String.self, forKey: .language)
         self.loginHint = try values.decode(String.self, forKey: .loginHint)
+#if os(iOS) || os(macOS) || os(visionOS)
         self.prompt = try values.decode(Array.self, forKey: .prompt)
+#endif
         self.resource = try values.decode(String.self, forKey: .resource)
     }
 
@@ -71,7 +74,9 @@ extension HostedUIOptions: Codable {
         try container.encode(nonce, forKey: .nonce)
         try container.encode(language, forKey: .language)
         try container.encode(loginHint, forKey: .loginHint)
+#if os(iOS) || os(macOS) || os(visionOS)
         try container.encodeIfPresent(prompt, forKey: .prompt)
+#endif
         try container.encode(resource, forKey: .resource)
     }
 }

@@ -67,10 +67,12 @@ enum HostedUIRequestHelper {
         if let loginHint = options.loginHint {
             components.queryItems?.append(.init(name: "login_hint", value: loginHint))
         }
+#if os(iOS) || os(macOS) || os(visionOS)
         if let prompt = options.prompt {
-            let promptValue = prompt.map{ "\($0.rawValue)" }.joined(separator: " ")
+            let promptValue = prompt.map { "\($0.rawValue)" }.joined(separator: " ")
             components.queryItems?.append(.init(name: "prompt", value: promptValue))
         }
+#endif
         if let resource = options.resource {
             components.queryItems?.append(.init(name: "resource", value: resource))
         }
