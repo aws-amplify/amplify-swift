@@ -140,7 +140,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+            .error(
+                .service(error: AuthError.service("Unknown error", "Unknown error")),
+                .init(username: "username", session: "sessio")
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -280,7 +283,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error")))
+            .error(
+                .service(error: AuthError.service("Unknown error", "Unknown error")),
+                .init(username: "username", session: "sessio")
+            )
         )
 
         let authPluginError = configureCustomPluginWith(
@@ -595,4 +601,227 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 XCTAssertEqual(awsCognitoAuthError, expectedCognitoError)
             }
         }
+
+    // MARK: - Session Caching Tests
+
+    /// Given: Configured auth machine in `.error` sign up state with a cached session for matching username
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked with the same username
+    /// Then: The cached session is used and confirm sign up completes with `.completeAutoSignIn`
+    func testConfirmSignUpUsesSessionFromErrorStateWithMatchingUsername() async throws {
+        let cachedSession = "cached-session-from-error"
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                // Verify the cached session is passed through
+                XCTAssertEqual(request.session, cachedSession)
+                return .init(session: "new-session")
+            }
+        )
+
+        let initialStateError = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "jeffb", session: cachedSession)
+            )
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
+
+        let result = try await authPluginError.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options
+        )
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .completeAutoSignIn for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Sign up result should be complete")
+        XCTAssertEqual(session, "new-session")
+    }
+
+    /// Given: Configured auth machine in `.error` sign up state with a cached session for different username
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked with a different username
+    /// Then: The cached session is NOT used
+    func testConfirmSignUpDoesNotUseSessionFromErrorStateWithDifferentUsername() async throws {
+        let cachedSession = "cached-session-from-error"
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                // Verify the cached session is NOT passed through
+                XCTAssertNil(request.session)
+                return .init(session: "new-session")
+            }
+        )
+
+        let initialStateError = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "different-user", session: cachedSession)
+            )
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
+
+        let result = try await authPluginError.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options
+        )
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .completeAutoSignIn for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Sign up result should be complete")
+        XCTAssertEqual(session, "new-session")
+    }
+
+    /// Given: Configured auth machine in `.error` sign up state with nil session
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked
+    /// Then: No session is passed and confirm sign up completes successfully
+    func testConfirmSignUpFromErrorStateWithNilSession() async throws {
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.session)
+                return .init()
+            }
+        )
+
+        let initialStateError = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .error(
+                .service(error: AuthError.service("Previous error", "Recovery")),
+                .init(username: "jeffb", session: nil)
+            )
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
+
+        let result = try await authPluginError.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options
+        )
+
+        guard case .done = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Sign up result should be complete")
+    }
+
+    /// Given: Configured auth machine in `.awaitingUserConfirmation` with a session
+    /// When: `Auth.confirmSignUp(for:confirmationCode:options:)` is invoked with matching username
+    /// Then: The cached session is used for auto sign-in
+    func testConfirmSignUpUsesSessionFromAwaitingUserConfirmationState() async throws {
+        let cachedSession = "cached-session-awaiting"
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertEqual(request.session, cachedSession)
+                return .init(session: "new-session")
+            }
+        )
+
+        let initialState = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .awaitingUserConfirmation(
+                SignUpEventData(username: "jeffb", session: cachedSession),
+                .init(.confirmUser())
+            )
+        )
+
+        let authPlugin = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialState
+        )
+
+        let result = try await authPlugin.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options
+        )
+
+        guard case .completeAutoSignIn(let session) = result.nextStep else {
+            XCTFail("Result should be .completeAutoSignIn for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Sign up result should be complete")
+        XCTAssertEqual(session, "new-session")
+    }
+
+    /// Given: Configured auth machine transitions to error state during confirm sign up
+    /// When: The error state contains session data
+    /// Then: The session is preserved in the error state for potential retry
+    func testSessionPreservedInErrorStateDuringConfirmSignUp() async throws {
+        let initialSession = "initial-session"
+        let mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { _ in
+                throw AWSCognitoIdentityProvider.CodeMismatchException()
+            }
+        )
+
+        let initialState = AuthState.configured(
+            .signedOut(.init(lastKnownUserName: nil)),
+            .configured,
+            .awaitingUserConfirmation(
+                SignUpEventData(username: "jeffb", session: initialSession),
+                .init(.confirmUser())
+            )
+        )
+
+        let authPlugin = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialState
+        )
+
+        do {
+            _ = try await authPlugin.confirmSignUp(
+                for: "jeffb",
+                confirmationCode: "wrong-code",
+                options: options
+            )
+            XCTFail("Should throw error")
+        } catch {
+            guard let authError = error as? AuthError else {
+                XCTFail("Should throw Auth error")
+                return
+            }
+
+            guard case .service = authError else {
+                XCTFail("Auth error should be of type service error")
+                return
+            }
+
+            // Verify the state machine is now in error state
+            let currentState = await authPlugin.authStateMachine.currentState
+            guard case .configured(_, _, let signUpState) = currentState else {
+                XCTFail("Should be in configured state")
+                return
+            }
+
+            guard case .error(_, let data) = signUpState else {
+                XCTFail("Should be in error state")
+                return
+            }
+
+            // Verify session is preserved in error state
+            XCTAssertEqual(data.session, initialSession)
+            XCTAssertEqual(data.username, "jeffb")
+        }
+    }
 }

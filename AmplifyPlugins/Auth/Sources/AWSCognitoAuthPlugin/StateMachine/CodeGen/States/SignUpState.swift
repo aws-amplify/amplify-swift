@@ -14,7 +14,7 @@ enum SignUpState: State {
     case awaitingUserConfirmation(SignUpEventData, AuthSignUpResult)
     case confirmingSignUp(SignUpEventData)
     case signedUp(SignUpEventData, AuthSignUpResult)
-    case error(SignUpError)
+    case error(SignUpError, SignUpEventData)
 }
 
 extension SignUpState {
