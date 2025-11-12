@@ -135,7 +135,7 @@ struct HostedUISignInHelper: DefaultLogger {
             nonce: pluginOptions?.nonce,
             language: pluginOptions?.language,
             loginHint: pluginOptions?.loginHint,
-            prompt: pluginOptions?.prompt,
+            promptValues: pluginOptions?.prompt,
             resource: pluginOptions?.resource
         )
         let signInData = SignInEventData(

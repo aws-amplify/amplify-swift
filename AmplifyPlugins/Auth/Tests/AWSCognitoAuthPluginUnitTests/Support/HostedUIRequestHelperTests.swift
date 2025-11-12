@@ -11,7 +11,6 @@ import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-#if os(iOS) || os(macOS) || os(visionOS)
 class HostedUIRequestHelperTests: XCTestCase {
     private var configuration: HostedUIConfigurationData!
     private let result = HostedUIResult(
@@ -90,6 +89,7 @@ class HostedUIRequestHelperTests: XCTestCase {
         XCTAssertEqual("Basic \(encodedSecret)", header)
     }
 
+    #if os(iOS) || os(macOS) || os(visionOS)
     /// Given: A HostedUI configuration that defines a client secret
     /// When: HostedUIRequestHelper.createSignInURL is invoked with cognito oidc parameters
     /// Then: A URL is generated that contains all the cognito oidc parameters in url query parameters
@@ -108,7 +108,7 @@ class HostedUIRequestHelperTests: XCTestCase {
                 nonce: "nonce",
                 language: "en",
                 loginHint: "username",
-                prompt: [.login, .consent],
+                promptValues: [.login, .consent],
                 resource: "http://localhost"
             )
         )
@@ -124,5 +124,5 @@ class HostedUIRequestHelperTests: XCTestCase {
         XCTAssertEqual("login consent", urlComponents.queryItems?.first(where: { $0.name == "prompt"})?.value)
         XCTAssertEqual("http://localhost", urlComponents.queryItems?.first(where: { $0.name == "resource"})?.value)
     }
+    #endif
 }
-#endif
