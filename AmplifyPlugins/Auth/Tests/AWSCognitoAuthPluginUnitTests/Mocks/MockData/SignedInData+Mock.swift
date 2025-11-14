@@ -36,7 +36,12 @@ extension SignedInData {
                 scopes: [],
                 providerInfo: .init(authProvider: .google, idpIdentifier: ""),
                 presentationAnchor: nil,
-                preferPrivateSession: false
+                preferPrivateSession: false,
+                nonce: nil,
+                language: nil,
+                loginHint: nil,
+                prompt: nil,
+                resource: nil
             )),
             cognitoUserPoolTokens: tokens
         )

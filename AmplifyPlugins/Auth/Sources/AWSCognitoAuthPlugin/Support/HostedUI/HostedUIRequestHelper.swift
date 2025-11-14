@@ -58,6 +58,21 @@ enum HostedUIRequestHelper {
             components.queryItems?.append(
                 .init(name: "identity_provider", value: authProvider.userPoolProviderName))
         }
+        if let nonce = options.nonce {
+            components.queryItems?.append(.init(name: "nonce", value: nonce))
+        }
+        if let language = options.language {
+            components.queryItems?.append(.init(name: "lang", value: language))
+        }
+        if let loginHint = options.loginHint {
+            components.queryItems?.append(.init(name: "login_hint", value: loginHint))
+        }
+        if let prompt = options.prompt {
+            components.queryItems?.append(.init(name: "prompt", value: prompt))
+        }
+        if let resource = options.resource {
+            components.queryItems?.append(.init(name: "resource", value: resource))
+        }
 
         guard let url = components.url else {
             throw HostedUIError.signInURI
