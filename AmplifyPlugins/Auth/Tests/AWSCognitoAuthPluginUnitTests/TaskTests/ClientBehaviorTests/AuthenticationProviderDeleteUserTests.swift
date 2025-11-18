@@ -142,7 +142,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             mockRevokeTokenResponse: { _ in
                 RevokeTokenOutput()
             },
-            mockGetTokensFromRefreshTokenResponse:{ _ in
+            mockGetTokensFromRefreshTokenResponse: { _ in
                 return GetTokensFromRefreshTokenOutput(
                     authenticationResult: .init(
                         accessToken: "accessTokenNew",
