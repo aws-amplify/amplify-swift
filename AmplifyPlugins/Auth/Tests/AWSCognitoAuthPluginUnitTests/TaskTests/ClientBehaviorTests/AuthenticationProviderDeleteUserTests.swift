@@ -141,6 +141,14 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 RevokeTokenOutput()
+            }, mockGetTokensFromRefreshTokenResponse:{ _ in
+                return GetTokensFromRefreshTokenOutput(
+                    authenticationResult: .init(
+                        accessToken: "accessTokenNew",
+                        expiresIn: 100,
+                        idToken: "idTokenNew",
+                        refreshToken: "refreshTokenNew"
+                    ))
             }, mockGlobalSignOutResponse: { _ in
                 GlobalSignOutOutput()
             },

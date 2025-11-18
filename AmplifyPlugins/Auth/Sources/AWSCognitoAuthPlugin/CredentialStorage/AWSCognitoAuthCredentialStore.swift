@@ -59,15 +59,7 @@ struct AWSCognitoAuthCredentialStore {
         // because protected data is not available. Check proactively before any keychain/UserDefaults access.
         #if canImport(UIKit) && !os(watchOS)
         guard UIApplication.shared.isProtectedDataAvailable else {
-            log.verbose("[AWSCognitoAuthCredentialStore] Protected data not available - deferring initialization (expected during prewarming)")
-            // Initialize required properties but skip all keychain/UserDefaults operations
-            self.authConfiguration = authConfiguration
-            self.accessGroup = accessGroup
-            if let accessGroup {
-                self.keychain = KeychainStore(service: sharedService, accessGroup: accessGroup)
-            } else {
-                self.keychain = KeychainStore(service: service)
-            }
+            log.verbose("[AWSCognitoAuthCredentialStore] Protected data not available")
             return
         }
         #endif
