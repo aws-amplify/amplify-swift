@@ -8,9 +8,6 @@
 import Amplify
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
-#if canImport(UIKit)
-import UIKit
-#endif
 
 struct AWSCognitoAuthCredentialStore {
 
@@ -54,15 +51,6 @@ struct AWSCognitoAuthCredentialStore {
         } else {
             self.keychain = KeychainStore(service: service)
         }
-
-        // During iOS prewarming or before first device unlock, keychain operations will fail
-        // because protected data is not available. Check proactively before any keychain/UserDefaults access.
-        #if canImport(UIKit) && !os(watchOS)
-        guard UIApplication.shared.isProtectedDataAvailable else {
-            log.verbose("[AWSCognitoAuthCredentialStore] Protected data not available")
-            return
-        }
-        #endif
 
         let oldAccessGroup = retrieveStoredAccessGroup()
         if migrateKeychainItemsOfUserSession {
