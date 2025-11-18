@@ -21,7 +21,7 @@ struct InformSessionError: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event: AuthorizationEvent = switch error {
         case .service(let serviceError):
-            if isNotAuthorizedError(serviceError) {
+            if serviceError is AWSCognitoIdentityProvider.NotAuthorizedException {
                 .init(eventType: .throwError(
                     .sessionExpired(error: serviceError)))
             } else {
@@ -33,11 +33,6 @@ struct InformSessionError: Action {
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
-    }
-
-    func isNotAuthorizedError(_ error: Error) -> Bool {
-        error is AWSCognitoIdentity.NotAuthorizedException
-        || error is AWSCognitoIdentityProvider.NotAuthorizedException
     }
 }
 
