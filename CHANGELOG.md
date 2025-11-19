@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.52.0 (2025-11-19)
+
+### Features
+
+- **auth**: add support for cognito oidc parameters in managed login (#4096)
+
+### Bug Fixes
+
+- **auth**: add checks against random logouts (#4099)
+- **auth**: resolve format string mismatch in ASF timestamp generation (#4095)
+- **auth**: caching session during error transitions while auto signin (#4094)
+
 ## 2.51.5 (2025-11-10)
 
 ### Bug Fixes
