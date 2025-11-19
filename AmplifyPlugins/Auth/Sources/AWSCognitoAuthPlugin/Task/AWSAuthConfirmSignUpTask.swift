@@ -58,7 +58,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             switch signUpState {
             case .signedUp(_, let result):
                 return result
-            case .error(let signUpError):
+            case .error(let signUpError, _):
                 throw signUpError.authError
             default:
                 continue
@@ -78,6 +78,11 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
         var session: String?
         if case .awaitingUserConfirmation(let data, _) = signUpState,
            request.username == data.username {
+            // only include session if the cached username matches
+            // the username in confirmSignUp() call
+            session = data.session
+        } else if case .error(_, let data) = signUpState,
+                  request.username == data.username {
             // only include session if the cached username matches
             // the username in confirmSignUp() call
             session = data.session

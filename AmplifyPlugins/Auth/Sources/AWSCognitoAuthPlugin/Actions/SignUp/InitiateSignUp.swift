@@ -63,7 +63,7 @@ struct InitiateSignUp: Action {
             }
             await dispatcher.send(event)
         } catch let error as SignUpError {
-            let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
             logVerbose(
                 "\(#fileID) Sending event \(errorEvent)",
                 environment: environment
@@ -71,7 +71,7 @@ struct InitiateSignUp: Action {
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignUpError.service(error: error)
-            let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
             logVerbose(
                 "\(#fileID) Sending event \(errorEvent)",
                 environment: environment

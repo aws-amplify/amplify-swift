@@ -86,7 +86,7 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         contextData: [String: String],
         userPoolId: String
     ) throws -> String {
-        let timestamp = String(format: "%lli", floor(Date().timeIntervalSince1970 * 1_000))
+        let timestamp = String(format: "%lli", Int64(Date().timeIntervalSince1970 * 1_000))
         let payload = [
             "contextData": contextData,
             "username": username,

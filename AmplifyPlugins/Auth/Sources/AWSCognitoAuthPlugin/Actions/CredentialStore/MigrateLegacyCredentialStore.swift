@@ -316,7 +316,12 @@ struct MigrateLegacyCredentialStore: Action {
                     scopes: scopes ?? [],
                     providerInfo: provider,
                     presentationAnchor: nil,
-                    preferPrivateSession: false
+                    preferPrivateSession: false,
+                    nonce: nil,
+                    language: nil,
+                    loginHint: nil,
+                    prompt: nil,
+                    resource: nil
                 ))
             default:
                 return .apiBased(.userSRP)

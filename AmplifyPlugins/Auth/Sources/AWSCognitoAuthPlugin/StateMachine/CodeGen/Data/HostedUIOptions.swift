@@ -17,6 +17,16 @@ struct HostedUIOptions {
     let presentationAnchor: AuthUIPresentationAnchor?
 
     let preferPrivateSession: Bool
+
+    let nonce: String?
+
+    let language: String?
+
+    let loginHint: String?
+
+    let prompt: String?
+
+    let resource: String?
 }
 
 extension HostedUIOptions: Codable {
@@ -28,6 +38,16 @@ extension HostedUIOptions: Codable {
         case providerInfo
 
         case preferPrivateSession
+
+        case nonce
+
+        case language = "lang"
+
+        case loginHint = "login_hint"
+
+        case prompt
+
+        case resource
     }
 
     init(from decoder: Decoder) throws {
@@ -36,6 +56,11 @@ extension HostedUIOptions: Codable {
         self.providerInfo = try values.decode(HostedUIProviderInfo.self, forKey: .providerInfo)
         self.preferPrivateSession = try values.decode(Bool.self, forKey: .preferPrivateSession)
         self.presentationAnchor = nil
+        self.nonce = try values.decode(String.self, forKey: .nonce)
+        self.language = try values.decode(String.self, forKey: .language)
+        self.loginHint = try values.decode(String.self, forKey: .loginHint)
+        self.prompt = try values.decode(String.self, forKey: .prompt)
+        self.resource = try values.decode(String.self, forKey: .resource)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -43,7 +68,40 @@ extension HostedUIOptions: Codable {
         try container.encode(scopes, forKey: .scopes)
         try container.encode(providerInfo, forKey: .providerInfo)
         try container.encode(preferPrivateSession, forKey: .preferPrivateSession)
+        try container.encode(nonce, forKey: .nonce)
+        try container.encode(language, forKey: .language)
+        try container.encode(loginHint, forKey: .loginHint)
+        try container.encodeIfPresent(prompt, forKey: .prompt)
+        try container.encode(resource, forKey: .resource)
     }
 }
 
 extension HostedUIOptions: Equatable { }
+
+#if os(iOS) || os(macOS) || os(visionOS)
+extension HostedUIOptions {
+    init(
+        scopes: [String],
+        providerInfo: HostedUIProviderInfo,
+        presentationAnchor: AuthUIPresentationAnchor?,
+        preferPrivateSession: Bool,
+        nonce: String?,
+        language: String?,
+        loginHint: String?,
+        promptValues: [AWSAuthWebUISignInOptions.Prompt]?,
+        resource: String?
+    ) {
+        self.init(
+            scopes: scopes,
+            providerInfo: providerInfo,
+            presentationAnchor: presentationAnchor,
+            preferPrivateSession: preferPrivateSession,
+            nonce: nonce,
+            language: language,
+            loginHint: loginHint,
+            prompt: promptValues?.map { "\($0.rawValue)" }.joined(separator: " "),
+            resource: resource
+        )
+    }
+}
+#endif

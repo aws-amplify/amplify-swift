@@ -46,8 +46,8 @@ extension SignUpState {
             case .confirmSignUp(let data, let code, let forceAliasCreation):
                 let action = ConfirmSignUp(data: data, confirmationCode: code, forceAliasCreation: forceAliasCreation)
                 return .init(newState: .confirmingSignUp(data), actions: [action])
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
+            case .throwAuthError(let error, let signUpData):
+                return .init(newState: .error(error, signUpData))
             default:
                 return .from(oldState)
             }
@@ -84,8 +84,8 @@ extension SignUpState {
                 return .init(newState: .confirmingSignUp(data), actions: [action])
             case .signedUp(let data, let result):
                 return .init(newState: .signedUp(data, result))
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
+            case .throwAuthError(let error, let signUpData):
+                return .init(newState: .error(error, signUpData))
             }
         }
 
@@ -100,8 +100,8 @@ extension SignUpState {
             case .confirmSignUp(let data, let code, let forceAliasCreation):
                 let action = ConfirmSignUp(data: data, confirmationCode: code, forceAliasCreation: forceAliasCreation)
                 return .init(newState: .confirmingSignUp(data), actions: [action])
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
+            case .throwAuthError(let error, let signUpData):
+                return .init(newState: .error(error, signUpData))
             default:
                 return .from(oldState)
             }
@@ -120,8 +120,8 @@ extension SignUpState {
                 return .init(newState: .confirmingSignUp(data), actions: [action])
             case .signedUp(let data, let result):
                 return .init(newState: .signedUp(data, result))
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
+            case .throwAuthError(let error, let signUpData):
+                return .init(newState: .error(error, signUpData))
             default:
                 return .from(oldState)
             }
@@ -138,8 +138,8 @@ extension SignUpState {
             case .confirmSignUp(let data, let code, let forceAliasCreation):
                 let action = ConfirmSignUp(data: data, confirmationCode: code, forceAliasCreation: forceAliasCreation)
                 return .init(newState: .confirmingSignUp(data), actions: [action])
-            case .throwAuthError(let error):
-                return .init(newState: .error(error))
+            case .throwAuthError(let error, let signUpData):
+                return .init(newState: .error(error, signUpData))
             default:
                 return .from(oldState)
             }
