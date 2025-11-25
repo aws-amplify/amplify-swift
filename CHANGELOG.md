@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.52.1 (2025-11-25)
+
+### Bug Fixes
+
+- **auth**: fix HostedUIOptions decoding for optional fields (#4102)
+
 ## 2.52.0 (2025-11-19)
 
 ### Features
