@@ -56,11 +56,11 @@ extension HostedUIOptions: Codable {
         self.providerInfo = try values.decode(HostedUIProviderInfo.self, forKey: .providerInfo)
         self.preferPrivateSession = try values.decode(Bool.self, forKey: .preferPrivateSession)
         self.presentationAnchor = nil
-        self.nonce = try values.decode(String.self, forKey: .nonce)
-        self.language = try values.decode(String.self, forKey: .language)
-        self.loginHint = try values.decode(String.self, forKey: .loginHint)
-        self.prompt = try values.decode(String.self, forKey: .prompt)
-        self.resource = try values.decode(String.self, forKey: .resource)
+        self.nonce = try values.decodeIfPresent(String.self, forKey: .nonce)
+        self.language = try values.decodeIfPresent(String.self, forKey: .language)
+        self.loginHint = try values.decodeIfPresent(String.self, forKey: .loginHint)
+        self.prompt = try values.decodeIfPresent(String.self, forKey: .prompt)
+        self.resource = try values.decodeIfPresent(String.self, forKey: .resource)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -68,11 +68,11 @@ extension HostedUIOptions: Codable {
         try container.encode(scopes, forKey: .scopes)
         try container.encode(providerInfo, forKey: .providerInfo)
         try container.encode(preferPrivateSession, forKey: .preferPrivateSession)
-        try container.encode(nonce, forKey: .nonce)
-        try container.encode(language, forKey: .language)
-        try container.encode(loginHint, forKey: .loginHint)
+        try container.encodeIfPresent(nonce, forKey: .nonce)
+        try container.encodeIfPresent(language, forKey: .language)
+        try container.encodeIfPresent(loginHint, forKey: .loginHint)
         try container.encodeIfPresent(prompt, forKey: .prompt)
-        try container.encode(resource, forKey: .resource)
+        try container.encodeIfPresent(resource, forKey: .resource)
     }
 }
 
