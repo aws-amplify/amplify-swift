@@ -6,13 +6,13 @@
 //
 
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class HostedUIOptionsTests: XCTestCase {
-    
+
     // MARK: - Decoding
-    
+
     /// - Given: A valid json payload with non-nil values depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The payload is decoded successfully
@@ -56,7 +56,7 @@ class HostedUIOptionsTests: XCTestCase {
             XCTFail("Decoding failed with error: \(error)")
         }
     }
-    
+
     /// - Given: A valid json payload with null values for optional fields depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The payload is decoded successfully
@@ -105,7 +105,7 @@ class HostedUIOptionsTests: XCTestCase {
             XCTFail("Decoding failed with error: \(error)")
         }
     }
-    
+
     /// - Given: A valid json payload with valid values for optional fields depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The payload is decoded successfully
@@ -159,7 +159,7 @@ class HostedUIOptionsTests: XCTestCase {
             XCTFail("Decoding failed with error: \(error)")
         }
     }
-    
+
     /// - Given: A valid json payload with null value for scopes field depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The operation should throw an error
@@ -181,11 +181,11 @@ class HostedUIOptionsTests: XCTestCase {
                 XCTFail("Input JSON is invalid")
                 return
             }
-            
+
             _ = try JSONDecoder().decode(
                 HostedUIOptions.self, from: data
             )
-            
+
             XCTFail("Decoding should not succeed")
         } catch {
             XCTAssertNotNil(error)
@@ -195,7 +195,7 @@ class HostedUIOptionsTests: XCTestCase {
             }
         }
     }
-    
+
     /// - Given: A valid json payload with invalid value type for scopes field depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The operation should throw an error
@@ -217,11 +217,11 @@ class HostedUIOptionsTests: XCTestCase {
                 XCTFail("Input JSON is invalid")
                 return
             }
-            
+
             _ = try JSONDecoder().decode(
                 HostedUIOptions.self, from: data
             )
-            
+
             XCTFail("Decoding should not succeed")
         } catch {
             XCTAssertNotNil(error)
@@ -231,7 +231,7 @@ class HostedUIOptionsTests: XCTestCase {
             }
         }
     }
-    
+
     /// - Given: A valid json payload with missing key for scopes field depicting a `HostedUIOptions`
     /// - When: The payload is decoded
     /// - Then: The operation should throw an error
@@ -252,11 +252,11 @@ class HostedUIOptionsTests: XCTestCase {
                 XCTFail("Input JSON is invalid")
                 return
             }
-            
+
             _ = try JSONDecoder().decode(
                 HostedUIOptions.self, from: data
             )
-            
+
             XCTFail("Decoding should not succeed")
         } catch {
             XCTAssertNotNil(error)
