@@ -72,7 +72,8 @@ extension NotAuthorizedException: AuthErrorConvertible {
     var authError: AuthError {
         .notAuthorized(
             properties.message ?? fallbackDescription,
-            AuthPluginErrorConstants.notAuthorizedError
+            AuthPluginErrorConstants.notAuthorizedError,
+            self
         )
     }
 }
