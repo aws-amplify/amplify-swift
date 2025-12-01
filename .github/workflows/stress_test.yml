@@ -68,6 +68,7 @@ jobs:
           scheme: AuthStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+          other_flags: -parallel-testing-enabled NO
 
   geo-stress-test:
     needs: prepare-for-test
@@ -99,6 +100,7 @@ jobs:
           scheme: GeoStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+          other_flags: -parallel-testing-enabled NO
 
   storage-stress-test:
     needs: prepare-for-test
@@ -130,6 +132,7 @@ jobs:
           scheme: StorageStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+          other_flags: -parallel-testing-enabled NO
 
   datastore-stress-test:
     needs: prepare-for-test
@@ -161,6 +164,7 @@ jobs:
           scheme: DatastoreStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+          other_flags: -parallel-testing-enabled NO
 
   graphql-api-stress-test:
     needs: prepare-for-test
@@ -192,3 +196,4 @@ jobs:
           scheme: GraphQLAPIStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+          other_flags: -parallel-testing-enabled NO
