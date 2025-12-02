@@ -80,33 +80,30 @@ final class APIStressTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
-                Task {
-                    for try await subscriptionEvent in subscription {
-                        switch subscriptionEvent {
-                        case .connection(let state):
-                            switch state {
-                            case .connecting:
-                                break
-                            case .connected:
-                                connectedInvoked.fulfill()
-                            case .disconnected:
-                                disconnectedInvoked.fulfill()
+                await sequenceActor.append(sequence: subscription)
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            break
+                        case .connected:
+                            connectedInvoked.fulfill()
+                        case .disconnected:
+                            disconnectedInvoked.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let post):
+                            if post.title == title {
+                                progressInvoked.fulfill()
                             }
-                        case .data(let result):
-                            switch result {
-                            case .success(let post):
-                                if post.title == title {
-                                    progressInvoked.fulfill()
-                                }
-                            case .failure(let error):
-                                XCTFail("\(error)")
-                            }
+                        case .failure(let error):
+                            XCTFail("\(error)")
                         }
                     }
-                    completedInvoked.fulfill()
                 }
-
-                await sequenceActor.append(sequence: subscription)
+                completedInvoked.fulfill()
             }
         }
 
