@@ -209,9 +209,9 @@ final class LogRotation {
             contents: nil,
             attributes: [FileAttributeKey: Any]()
         )
-        if #available(macOS 11.0, *) {
+        if #available(macOS 11.0, iOS 9.0, *) {
             let resourceValues: [URLResourceKey: Any] = [
-                URLResourceKey.fileProtectionKey: URLFileProtection.complete,
+                URLResourceKey.fileProtectionKey: URLFileProtection.completeUntilFirstUserAuthentication,
                 URLResourceKey.isExcludedFromBackupKey: true
             ]
             try (fileURL as NSURL).setResourceValues(resourceValues)
