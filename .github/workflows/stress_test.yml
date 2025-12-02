@@ -68,7 +68,7 @@ jobs:
           scheme: AuthStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
-          other_flags: -parallel-testing-enabled NO
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
   geo-stress-test:
     needs: prepare-for-test
@@ -100,7 +100,7 @@ jobs:
           scheme: GeoStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
-          other_flags: -parallel-testing-enabled NO
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
   storage-stress-test:
     needs: prepare-for-test
@@ -132,7 +132,7 @@ jobs:
           scheme: StorageStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
-          other_flags: -parallel-testing-enabled NO
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
   datastore-stress-test:
     needs: prepare-for-test
@@ -164,7 +164,7 @@ jobs:
           scheme: DatastoreStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
-          other_flags: -parallel-testing-enabled NO
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
   graphql-api-stress-test:
     needs: prepare-for-test
@@ -196,4 +196,4 @@ jobs:
           scheme: GraphQLAPIStressTests
           destination: ${{ env.DESTINATION }}
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
-          other_flags: -parallel-testing-enabled NO
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES

@@ -41,13 +41,10 @@ final class APIStressTests: XCTestCase {
     }
 
     override func setUp() async throws {
-        await Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
-        let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
-
         do {
+            Amplify.Logging.logLevel = .verbose
+            let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
             try Amplify.add(plugin: plugin)
-
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
@@ -58,6 +55,7 @@ final class APIStressTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     // MARK: - Stress tests
