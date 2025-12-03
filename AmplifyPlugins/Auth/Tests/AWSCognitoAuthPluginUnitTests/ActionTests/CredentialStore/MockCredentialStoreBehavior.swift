@@ -43,4 +43,8 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     func _removeAll() throws {
         removeAllHandler?()
     }
+
+    func _hasItems() throws -> Bool {
+        return !data.isEmpty
+    }
 }

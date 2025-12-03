@@ -53,6 +53,12 @@ public protocol KeychainStoreBehavior {
     @_spi(KeychainStore)
     func _removeAll() throws
 
+    /// Checks if the Keychain contains any items for this service and access group.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Returns: `true` if at least one item exists, `false` otherwise
+    @_spi(KeychainStore)
+    func _hasItems() throws -> Bool
+
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -231,6 +237,29 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.securityError(status)
         }
         log.verbose("[KeychainStore] Successfully removed all items from keychain")
+    }
+
+    /// Checks if the Keychain contains any items for this service and access group.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Returns: `true` if at least one item exists, `false` otherwise
+    @_spi(KeychainStore)
+    public func _hasItems() throws -> Bool {
+        log.verbose("[KeychainStore] Checking if keychain has any items")
+        var query = attributes.defaultGetQuery()
+        query[Constants.MatchLimit] = Constants.MatchLimitOne
+
+        let status = SecItemCopyMatching(query as CFDictionary, nil)
+        switch status {
+        case errSecSuccess:
+            log.verbose("[KeychainStore] Keychain has items")
+            return true
+        case errSecItemNotFound:
+            log.verbose("[KeychainStore] Keychain has no items")
+            return false
+        default:
+            log.error("[KeychainStore] Error checking keychain items with status=\(status)")
+            throw KeychainStoreError.securityError(status)
+        }
     }
 
 }

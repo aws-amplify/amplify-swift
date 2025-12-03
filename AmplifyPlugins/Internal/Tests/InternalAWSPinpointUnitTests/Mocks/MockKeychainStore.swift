@@ -62,6 +62,10 @@ class MockKeychainStore: KeychainStoreBehavior {
         dataValues.removeAll()
     }
 
+    func _hasItems() throws -> Bool {
+        return !stringValues.isEmpty || !dataValues.isEmpty
+    }
+
     func resetCounters() {
         dataForKeyCount = 0
         stringForKeyCount = 0
