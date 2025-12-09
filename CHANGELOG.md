@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.53.0 (2025-12-09)
+
+### Features
+
+- **core**: update the aws-sdk-swift version (#4107)
+
+### Bug Fixes
+
+- **auth**: don't remove items from keychain if it already has items (#4105)
+- **logging**: update protection level (#4106)
+
 ## 2.52.1 (2025-11-25)
 
 ### Bug Fixes
