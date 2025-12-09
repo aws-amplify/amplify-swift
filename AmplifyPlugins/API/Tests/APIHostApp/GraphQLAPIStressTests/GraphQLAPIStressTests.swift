@@ -41,13 +41,10 @@ final class APIStressTests: XCTestCase {
     }
 
     override func setUp() async throws {
-        await Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
-        let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
-
         do {
+            Amplify.Logging.logLevel = .verbose
+            let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
             try Amplify.add(plugin: plugin)
-
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
@@ -58,6 +55,7 @@ final class APIStressTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     // MARK: - Stress tests
@@ -75,7 +73,6 @@ final class APIStressTests: XCTestCase {
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = concurrencyLimit
 
-        let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
@@ -83,33 +80,30 @@ final class APIStressTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
-                Task {
-                    for try await subscriptionEvent in subscription {
-                        switch subscriptionEvent {
-                        case .connection(let state):
-                            switch state {
-                            case .connecting:
-                                break
-                            case .connected:
-                                connectedInvoked.fulfill()
-                            case .disconnected:
-                                disconnectedInvoked.fulfill()
+                await sequenceActor.append(sequence: subscription)
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            break
+                        case .connected:
+                            connectedInvoked.fulfill()
+                        case .disconnected:
+                            disconnectedInvoked.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let post):
+                            if post.title == title {
+                                progressInvoked.fulfill()
                             }
-                        case .data(let result):
-                            switch result {
-                            case .success(let post):
-                                if post.id == uuid {
-                                    progressInvoked.fulfill()
-                                }
-                            case .failure(let error):
-                                XCTFail("\(error)")
-                            }
+                        case .failure(let error):
+                            XCTFail("\(error)")
                         }
                     }
-                    completedInvoked.fulfill()
                 }
-
-                await sequenceActor.append(sequence: subscription)
+                completedInvoked.fulfill()
             }
         }
 
@@ -118,7 +112,7 @@ final class APIStressTests: XCTestCase {
         let sequenceCount = await sequenceActor.sequences.count
         XCTAssertEqual(sequenceCount, concurrencyLimit)
 
-        guard try await createPost(id: uuid, title: title) != nil else {
+        guard try await Self.createPost(id: UUID().uuidString, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
@@ -144,7 +138,7 @@ final class APIStressTests: XCTestCase {
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
-                let post = try await createPost(id: id, title: title)
+                let post = try await APIStressTests.createPost(id: id, title: title)
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
@@ -169,7 +163,7 @@ final class APIStressTests: XCTestCase {
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
-                let post = try await createPost(id: id, title: title)
+                let post = try await APIStressTests.createPost(id: id, title: title)
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
@@ -184,7 +178,7 @@ final class APIStressTests: XCTestCase {
             Task {
                 var post = await postActor.posts[index]
                 post.title = "newTitle" + String(index)
-                let updatedPost = try await mutatePost(post)
+                let updatedPost = try await APIStressTests.mutatePost(post)
                 XCTAssertNotNil(updatedPost)
                 XCTAssertEqual(post.id, updatedPost.id)
                 XCTAssertEqual(post.title, updatedPost.title)
@@ -211,7 +205,7 @@ final class APIStressTests: XCTestCase {
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
-                let post = try await createPost(id: id, title: title)
+                let post = try await APIStressTests.createPost(id: id, title: title)
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
@@ -225,7 +219,7 @@ final class APIStressTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let post = await postActor.posts[index]
-                let deletedPost = try await deletePost(post: post)
+                let deletedPost = try await APIStressTests.deletePost(post: post)
                 XCTAssertNotNil(deletedPost)
                 XCTAssertEqual(post.id, deletedPost.id)
                 XCTAssertEqual(post.title, deletedPost.title)
@@ -252,7 +246,7 @@ final class APIStressTests: XCTestCase {
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
-                let post = try await createPost(id: id, title: title)
+                let post = try await APIStressTests.createPost(id: id, title: title)
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
@@ -301,12 +295,12 @@ final class APIStressTests: XCTestCase {
 
     // MARK: - Helpers
 
-    func createPost(id: String, title: String) async throws -> Post? {
+    static func createPost(id: String, title: String) async throws -> Post? {
         let post = Post(id: id, title: title, status: .active, content: "content")
         return try await createPost(post: post)
     }
 
-    func createPost(post: Post) async throws -> Post? {
+    static func createPost(post: Post) async throws -> Post? {
         let data = try await Amplify.API.mutate(request: .create(post))
         switch data {
         case .success(let post):
@@ -316,7 +310,7 @@ final class APIStressTests: XCTestCase {
         }
     }
 
-    func mutatePost(_ post: Post) async throws -> Post {
+    static func mutatePost(_ post: Post) async throws -> Post {
         let data = try await Amplify.API.mutate(request: .update(post))
         switch data {
         case .success(let post):
@@ -326,7 +320,7 @@ final class APIStressTests: XCTestCase {
         }
     }
 
-    func deletePost(post: Post) async throws -> Post {
+    static func deletePost(post: Post) async throws -> Post {
         let data = try await Amplify.API.mutate(request: .delete(post))
         switch data {
         case .success(let post):
