@@ -56,7 +56,13 @@ struct AWSCognitoAuthCredentialStore {
         if migrateKeychainItemsOfUserSession {
             try? migrateKeychainItemsToAccessGroup()
         } else if oldAccessGroup == nil && oldAccessGroup != accessGroup {
-            try? KeychainStore(service: service)._removeAll()
+            // Only clear the old keychain if the shared keychain doesn't already have items.
+            // This prevents data loss when an app extension (e.g., widget) initializes before
+            // the main app has a chance to record the migration in UserDefaults, since
+            // UserDefaults is not shared between app and extensions.
+            if !sharedKeychainHasItems(accessGroup: accessGroup) {
+                try? KeychainStore(service: service)._removeAll()
+            }
         }
 
         saveStoredAccessGroup()
@@ -252,6 +258,15 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
             return
         }
 
+        // If the shared keychain already has items, migration has already occurred
+        // (likely by the main app). Skip migration to prevent data loss.
+        // This check is necessary because UserDefaults is not shared between app and extensions,
+        // so the extension may not know that migration already happened.
+        if sharedKeychainHasItems(accessGroup: accessGroup) {
+            log.info("[AWSCognitoAuthCredentialStore] Shared keychain already has items, migration already completed, aborting")
+            return
+        }
+
         let oldService = oldAccessGroup != nil ? sharedService : service
         let newService = accessGroup != nil ? sharedService : service
 
@@ -263,6 +278,17 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         }
 
         log.verbose("[AWSCognitoAuthCredentialStore] Migration of keychain items from old access group to new access group successful")
+    }
+
+    /// Checks if the shared keychain (with the given access group) already contains items.
+    /// This is used to determine if migration has already occurred, which helps prevent
+    /// data loss when app extensions initialize with their own UserDefaults that don't
+    /// reflect the migration state recorded by the main app.
+    private func sharedKeychainHasItems(accessGroup: String?) -> Bool {
+        guard let accessGroup else { return false }
+
+        let sharedKeychain = KeychainStore(service: sharedService, accessGroup: accessGroup)
+        return (try? sharedKeychain._hasItems()) ?? false
     }
 
 }
