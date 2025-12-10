@@ -35,6 +35,7 @@ class AWSCognitoAuthCredentialStoreTests: XCTestCase {
     /// - Then:
     ///    - The isKeychainConfigured flag should NOT be set in UserDefaults
     ///    - No keychain operations should be attempted
+    @MainActor
     func testInitSkipsWhenProtectedDataUnavailable() {
         // Given: Simulate protected data unavailable (iOS prewarming scenario)
         let protectedDataAvailable = false
@@ -63,6 +64,7 @@ class AWSCognitoAuthCredentialStoreTests: XCTestCase {
     /// - When: AWSCognitoAuthCredentialStore is initialized
     /// - Then:
     ///    - The isKeychainConfigured flag should be set in UserDefaults
+    @MainActor
     func testInitProceedsWhenProtectedDataAvailable() {
         // Given: Simulate protected data available (normal launch)
         let protectedDataAvailable = true
@@ -93,6 +95,7 @@ class AWSCognitoAuthCredentialStoreTests: XCTestCase {
     /// - Then:
     ///    - The initialization should skip without clearing credentials
     ///    - The isKeychainConfigured flag should remain unchanged
+    @MainActor
     func testCredentialsPreservedDuringPrewarming() {
         // Given: Simulate a scenario where keychain was previously configured
         UserDefaults.standard.set(true, forKey: isKeychainConfiguredKey)

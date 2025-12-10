@@ -193,6 +193,7 @@ extension AWSCognitoAuthPlugin {
         return analyticsHandler
     }
 
+    @MainActor
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         return AWSCognitoAuthCredentialStore(
             authConfiguration: authConfiguration,

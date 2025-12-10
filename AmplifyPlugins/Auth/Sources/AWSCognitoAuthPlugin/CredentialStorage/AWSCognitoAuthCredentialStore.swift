@@ -42,11 +42,12 @@ struct AWSCognitoAuthCredentialStore {
     private let userDefaults = UserDefaults.standard
     private let accessGroup: String?
 
+    @MainActor
     init(
         authConfiguration: AuthConfiguration,
         accessGroup: String? = nil,
         migrateKeychainItemsOfUserSession: Bool = false,
-        isProtectedDataAvailable: @escaping () -> Bool = Self.isProtectedDataAvailable
+        isProtectedDataAvailable: () -> Bool = Self.isProtectedDataAvailable
     ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = accessGroup
@@ -100,15 +101,10 @@ struct AWSCognitoAuthCredentialStore {
     /// During iOS prewarming or before first device unlock, protected data may not be available,
     /// which affects both UserDefaults (returns default values) and Keychain (operations fail).
     /// - Note: watchOS is excluded because `UIApplication.shared` is not available on watchOS.
+    @MainActor
     static func isProtectedDataAvailable() -> Bool {
         #if canImport(UIKit) && !os(watchOS)
-        if Thread.isMainThread {
-            return UIApplication.shared.isProtectedDataAvailable
-        } else {
-            return DispatchQueue.main.sync {
-                UIApplication.shared.isProtectedDataAvailable
-            }
-        }
+        return UIApplication.shared.isProtectedDataAvailable
         #else
         return true
         #endif
