@@ -46,7 +46,7 @@ struct AWSCognitoAuthCredentialStore {
         authConfiguration: AuthConfiguration,
         accessGroup: String? = nil,
         migrateKeychainItemsOfUserSession: Bool = false,
-        isProtectedDataAvailable: @escaping () -> Bool = Self.isProtectedDataAvailable
+        isProtectedDataAvailable: @escaping () -> Bool = AWSCognitoAuthCredentialStore.isProtectedDataAvailable
     ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = accessGroup
