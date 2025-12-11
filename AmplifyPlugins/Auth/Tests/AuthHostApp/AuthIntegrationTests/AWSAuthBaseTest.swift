@@ -49,6 +49,7 @@ class AWSAuthBaseTest: XCTestCase {
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
+        Amplify.Logging.logLevel = .verbose
         _ = await Amplify.Auth.signOut()
     }
 
