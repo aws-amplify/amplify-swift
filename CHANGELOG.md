@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.53.1 (2025-12-11)
+
+### Bug Fixes
+
+- **auth**: add prewarming check keychain store (#4115)
+
 ## 2.53.0 (2025-12-09)
 
 ### Features
