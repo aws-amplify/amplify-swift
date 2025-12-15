@@ -8,9 +8,6 @@
 import Amplify
 @preconcurrency import Foundation
 import Security
-#if canImport(UIKit)
-import UIKit
-#endif
 
 // swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {
@@ -92,19 +89,6 @@ public struct KeychainStore: KeychainStoreBehavior {
         )
     }
 
-    /// Checks if protected data is available for keychain operations.
-    /// During iOS prewarming or before first device unlock, protected data may not be available.
-    /// - Note: watchOS is excluded because `UIApplication.shared` is not available on watchOS.
-    /// - Throws: `KeychainStoreError.protectedDataUnavailable` if protected data is not available
-    private func ensureProtectedDataAvailable() throws {
-        #if canImport(UIKit) && !os(watchOS)
-        guard UIApplication.shared.isProtectedDataAvailable else {
-            log.verbose("[KeychainStore] Protected data is not available - deferring keychain access")
-            throw KeychainStoreError.protectedDataUnavailable
-        }
-        #endif
-    }
-
     /// Get a string value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
@@ -128,7 +112,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: A data value
     @_spi(KeychainStore)
     public func _getData(_ key: String) throws -> Data {
-        try ensureProtectedDataAvailable()
         log.verbose("[KeychainStore] Started retrieving `Data` from the store with key=\(key)")
         var query = attributes.defaultGetQuery()
 
@@ -180,7 +163,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - key: A String key for the value to store in the Keychain
     @_spi(KeychainStore)
     public func _set(_ value: Data, key: String) throws {
-        try ensureProtectedDataAvailable()
         log.verbose("[KeychainStore] Started setting `Data` for key=\(key)")
         var getQuery = attributes.defaultGetQuery()
         getQuery[Constants.AttributeAccount] = key
@@ -227,7 +209,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Parameter key: A String key to delete the key-value pair
     @_spi(KeychainStore)
     public func _remove(_ key: String) throws {
-        try ensureProtectedDataAvailable()
         log.verbose("[KeychainStore] Starting to remove item from keychain with key=\(key)")
         var query = attributes.defaultGetQuery()
         query[Constants.AttributeAccount] = key
@@ -244,7 +225,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     @_spi(KeychainStore)
     public func _removeAll() throws {
-        try ensureProtectedDataAvailable()
         log.verbose("[KeychainStore] Starting to remove all items from keychain")
         var query = attributes.defaultGetQuery()
         #if os(macOS)
@@ -264,7 +244,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: `true` if at least one item exists, `false` otherwise
     @_spi(KeychainStore)
     public func _hasItems() throws -> Bool {
-        try ensureProtectedDataAvailable()
         log.verbose("[KeychainStore] Checking if keychain has any items")
         var query = attributes.defaultGetQuery()
         query[Constants.MatchLimit] = Constants.MatchLimitOne

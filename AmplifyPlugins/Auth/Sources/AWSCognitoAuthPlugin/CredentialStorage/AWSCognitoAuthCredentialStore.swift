@@ -8,9 +8,6 @@
 import Amplify
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
-#if canImport(UIKit)
-import UIKit
-#endif
 
 struct AWSCognitoAuthCredentialStore {
 
@@ -45,8 +42,7 @@ struct AWSCognitoAuthCredentialStore {
     init(
         authConfiguration: AuthConfiguration,
         accessGroup: String? = nil,
-        migrateKeychainItemsOfUserSession: Bool = false,
-        isProtectedDataAvailable: @escaping () -> Bool = AWSCognitoAuthCredentialStore.isProtectedDataAvailable
+        migrateKeychainItemsOfUserSession: Bool = false
     ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = accessGroup
@@ -54,15 +50,6 @@ struct AWSCognitoAuthCredentialStore {
             self.keychain = KeychainStore(service: sharedService, accessGroup: accessGroup)
         } else {
             self.keychain = KeychainStore(service: service)
-        }
-
-        // During iOS prewarming or before first device unlock, both UserDefaults and Keychain
-        // may return incorrect values or fail. UserDefaults silently returns default values,
-        // while Keychain operations fail. Skip all initialization that depends on these
-        // to prevent credential loss.
-        guard isProtectedDataAvailable() else {
-            log.verbose("[AWSCognitoAuthCredentialStore] Protected data not available - deferring initialization (expected during prewarming)")
-            return
         }
 
         let oldAccessGroup = retrieveStoredAccessGroup()
@@ -94,18 +81,6 @@ struct AWSCognitoAuthCredentialStore {
         restoreCredentialsOnConfigurationChanges(currentAuthConfig: authConfiguration)
         // Save the current configuration
         saveAuthConfiguration(authConfig: authConfiguration)
-    }
-
-    /// Checks if protected data is available.
-    /// During iOS prewarming or before first device unlock, protected data may not be available,
-    /// which affects both UserDefaults (returns default values) and Keychain (operations fail).
-    /// - Note: watchOS is excluded because `UIApplication.shared` is not available on watchOS.
-    static func isProtectedDataAvailable() -> Bool {
-        #if canImport(UIKit) && !os(watchOS)
-        return UIApplication.shared.isProtectedDataAvailable
-        #else
-        return true
-        #endif
     }
 
     // The method is responsible for migrating any old credentials to the new namespace
