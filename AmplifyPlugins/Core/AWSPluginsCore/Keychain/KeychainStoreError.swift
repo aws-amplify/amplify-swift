@@ -28,9 +28,6 @@ public enum KeychainStoreError {
 
     /// Caused trying to perform a keychain operation, examples, missing entitlements, missing required attributes, etc
     case securityError(OSStatus)
-
-    /// Protected data is not available (device is locked or during iOS prewarming)
-    case protectedDataUnavailable
 }
 
 extension KeychainStoreError: AmplifyError {
@@ -63,8 +60,6 @@ extension KeychainStoreError: AmplifyError {
             return "Unable to find the keychain item"
         case .configuration(let message):
             return message
-        case .protectedDataUnavailable:
-            return "Protected data is not available. The device may be locked or the app may be launching during iOS prewarming."
         }
     }
 
@@ -91,8 +86,6 @@ extension KeychainStoreError: AmplifyError {
 #else
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
 #endif
-        case .protectedDataUnavailable:
-            return "Wait until the device is unlocked and protected data becomes available before retrying the operation."
         case .unknown, .conversionError, .codingError, .configuration:
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
@@ -124,8 +117,6 @@ extension KeychainStoreError: Equatable {
         case (.itemNotFound, .itemNotFound):
             return true
         case (.securityError, .securityError):
-            return true
-        case (.protectedDataUnavailable, .protectedDataUnavailable):
             return true
         default:
             return false

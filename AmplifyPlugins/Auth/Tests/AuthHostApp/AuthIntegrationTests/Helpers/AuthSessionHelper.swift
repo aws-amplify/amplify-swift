@@ -30,9 +30,6 @@ struct AuthSessionHelper {
     static func clearSession() {
         let store = KeychainStore(service: "com.amplify.awsCognitoAuthPlugin")
         try? store._removeAll()
-
-        let sharedStore = KeychainStore(service: "com.amplify.awsCognitoAuthPluginShared")
-        try? sharedStore._removeAll()
     }
 
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
