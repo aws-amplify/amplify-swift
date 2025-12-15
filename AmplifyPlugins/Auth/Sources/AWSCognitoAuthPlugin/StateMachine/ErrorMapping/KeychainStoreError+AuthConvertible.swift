@@ -25,8 +25,6 @@ extension KeychainStoreError: AuthErrorConvertible {
             return .service(errorDescription, recoverySuggestion)
         case .securityError:
             return .service(errorDescription, recoverySuggestion)
-        case .protectedDataUnavailable:
-            return .service(errorDescription, recoverySuggestion)
         }
     }
 }
