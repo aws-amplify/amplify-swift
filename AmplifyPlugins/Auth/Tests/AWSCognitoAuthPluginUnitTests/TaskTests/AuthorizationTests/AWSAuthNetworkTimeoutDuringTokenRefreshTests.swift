@@ -24,7 +24,7 @@ import XCTest
 class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
 
     // MARK: - Test: Network timeout during token refresh should preserve isSignedIn = true
-    
+
     /// Test that network timeout during token refresh preserves signed-in state
     ///
     /// - Given: A signed-in user with expired tokens that need refresh
@@ -38,7 +38,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     func testNetworkTimeoutDuringTokenRefresh_ShouldPreserveSignedInState() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         // Setup: User is signed in with expired tokens
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
@@ -51,7 +51,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
         let getTokensFromRefreshToken: MockIdentityProvider.MockGetTokensFromRefreshTokenResponse = { _ in
             // Fulfill expectation to prove this mock was called
             tokenRefreshExpectation.fulfill()
-            
+
             // Simulate NSURLErrorTimedOut (-1001)
             let networkError = NSError(
                 domain: NSURLErrorDomain,
@@ -111,7 +111,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     }
 
     // MARK: - Test: Network timeout should NOT clear credentials
-    
+
     /// Test that network timeout during token refresh does not clear stored credentials
     ///
     /// - Given: A signed-in user with expired tokens
@@ -121,7 +121,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     func testNetworkTimeoutDuringTokenRefresh_ShouldNotClearCredentials() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -152,19 +152,19 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
         XCTAssertTrue(session.isSignedIn)
 
         // Identity ID should still be available (from cached credentials)
-        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        _ = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
         // Note: Identity ID may fail if it depends on token refresh, but the key point
         // is that isSignedIn remains true
     }
 
     // MARK: - Test: Connection lost during token refresh
-    
+
     /// Test that connection lost error during token refresh preserves signed-in state
     ///
     func testConnectionLostDuringTokenRefresh_ShouldPreserveSignedInState() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -199,13 +199,13 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     }
 
     // MARK: - Test: No internet connection during token refresh
-    
+
     /// Test that no internet connection error during token refresh preserves signed-in state
     ///
     func testNoInternetDuringTokenRefresh_ShouldPreserveSignedInState() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -240,7 +240,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     }
 
     // MARK: - Test: Contrast with actual session expiry (NotAuthorizedException)
-    
+
     /// Test that NotAuthorizedException correctly results in sessionExpired error
     /// This contrasts with network errors to show the difference in handling
     ///
@@ -253,7 +253,7 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     func testNotAuthorizedException_ShouldResultInSessionExpired() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -290,14 +290,14 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
     }
 
     // MARK: - Test: App-level error handling simulation
-    
+
     /// This test demonstrates how apps might incorrectly handle session errors
     /// and provides guidance on correct error handling
     ///
     func testAppErrorHandling_ShouldDistinguishNetworkFromSessionExpiry() async throws {
         // Expectation to verify the mock was actually called
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-        
+
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -330,29 +330,29 @@ class AWSAuthNetworkTimeoutDuringTokenRefreshTests: BaseAuthorizationTests {
         if session.isSignedIn {
             // User is authenticated, check token availability
             let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-            
+
             switch tokensResult {
             case .success:
                 // Tokens available - proceed normally
                 break
-                
+
             case .failure(let error):
                 switch error {
                 case .sessionExpired:
                     // ONLY in this case should the app prompt for re-login
                     // This means the refresh token is invalid
                     break
-                    
+
                 case .service:
                     // Network or service error - DO NOT log out!
                     // Retry later or show "offline" message
                     XCTAssertTrue(session.isSignedIn, "User should remain signed in for service errors")
-                    
+
                 default:
                     // Other errors - handle appropriately but don't log out
                     break
                 }
-                
+
             case .none:
                 break
             }
