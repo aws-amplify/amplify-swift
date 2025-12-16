@@ -68,7 +68,7 @@ final class LogFile {
     /// Data  to the underlying log file.
     func write(data: Data) throws {
         if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            try self.handle.write(contentsOf: data)
+            try handle.write(contentsOf: data)
         } else {
             handle.write(data)
         }
