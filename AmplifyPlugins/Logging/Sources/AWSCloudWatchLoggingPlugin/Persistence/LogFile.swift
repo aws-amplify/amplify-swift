@@ -30,14 +30,14 @@ final class LogFile {
         self.sizeLimitInBytes = sizeLimitInBytes
         self.handle = try FileHandle(forUpdating: fileURL)
         if #available(macOS 12.0, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
-            self.count = try self.handle.offset()
+            self.count = try handle.offset()
         } else {
             self.count = handle.offsetInFile
         }
     }
 
     deinit {
-        try? self.handle.close()
+        try? handle.close()
     }
 
     /// Returns the number of bytes available in the underlying file.
