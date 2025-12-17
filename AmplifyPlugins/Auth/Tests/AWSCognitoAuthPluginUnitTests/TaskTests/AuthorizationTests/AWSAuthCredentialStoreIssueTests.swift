@@ -282,4 +282,167 @@ class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
             }
         }
     }
+
+    // MARK: - Test: Keychain security error during credential fetch
+
+    /// Test that keychain security errors during credential fetch don't cause logout
+    ///
+    /// - Given: A signed-in user with valid authentication state
+    /// - When: Credential store throws a keychain security error (errSecInteractionNotAllowed)
+    /// - Then: isSignedIn should still be true based on authentication state
+    ///
+    func testKeychainSecurityError_ShouldNotCauseLogout() async throws {
+        // Create a plugin with a credential store that throws security errors
+        let plugin = AWSCognitoAuthPlugin()
+
+        // Set up initial signed-in state
+        let initialState = AuthState.configured(
+            AuthenticationState.signedIn(.testData),
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
+            .notStarted
+        )
+
+        // Create environment with a failing credential store client
+        let failingCredentialClient = MockFailingCredentialStoreClient(
+            errorToThrow: KeychainStoreError.securityError(-25308) // errSecInteractionNotAllowed
+        )
+
+        let environment = makeAuthEnvironmentWithFailingCredentialStore(
+            credentialsClient: failingCredentialClient
+        )
+
+        let statemachine = AuthStateMachine(
+            resolver: AuthState.Resolver(),
+            environment: environment,
+            initialState: initialState
+        )
+
+        plugin.configure(
+            authConfiguration: Defaults.makeDefaultAuthConfigData(),
+            authEnvironment: environment,
+            authStateMachine: statemachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler()
+        )
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+
+        // CRITICAL: User should still be reported as signed in based on auth state
+        // even when credential store has security errors
+        XCTAssertTrue(
+            session.isSignedIn,
+            "User should remain signed in even when keychain throws security error"
+        )
+    }
+
+    /// Test that keychain decode/coding errors during credential fetch don't cause logout
+    ///
+    /// - Given: A signed-in user with valid authentication state
+    /// - When: Credential store throws a decoding error
+    /// - Then: isSignedIn should still be true based on authentication state
+    ///
+    func testKeychainDecodingError_ShouldNotCauseLogout() async throws {
+        let plugin = AWSCognitoAuthPlugin()
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedIn(.testData),
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
+            .notStarted
+        )
+
+        // Create environment with a credential store that throws decoding errors
+        let decodingError = DecodingError.dataCorrupted(
+            DecodingError.Context(codingPath: [], debugDescription: "Corrupted credential data")
+        )
+        let failingCredentialClient = MockFailingCredentialStoreClient(
+            errorToThrow: KeychainStoreError.codingError("Failed to decode credentials", decodingError)
+        )
+
+        let environment = makeAuthEnvironmentWithFailingCredentialStore(
+            credentialsClient: failingCredentialClient
+        )
+
+        let statemachine = AuthStateMachine(
+            resolver: AuthState.Resolver(),
+            environment: environment,
+            initialState: initialState
+        )
+
+        plugin.configure(
+            authConfiguration: Defaults.makeDefaultAuthConfigData(),
+            authEnvironment: environment,
+            authStateMachine: statemachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler()
+        )
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+
+        // User should still be signed in even when credential decoding fails
+        XCTAssertTrue(
+            session.isSignedIn,
+            "User should remain signed in even when credential decoding fails"
+        )
+    }
+
+    // MARK: - Helper: Create environment with failing credential store
+
+    private func makeAuthEnvironmentWithFailingCredentialStore(
+        credentialsClient: CredentialStoreStateBehavior
+    ) -> AuthEnvironment {
+        let userPoolConfigData = Defaults.makeDefaultUserPoolConfigData()
+        let identityPoolConfigData = Defaults.makeIdentityConfigData()
+
+        let srpAuthEnvironment = BasicSRPAuthEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: Defaults.makeDefaultUserPool
+        )
+        let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
+        let userPoolEnvironment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
+            cognitoUserPoolASFFactory: { MockASF() },
+            cognitoUserPoolAnalyticsHandlerFactory: { MockAnalyticsHandler() }
+        )
+        let authenticationEnvironment = BasicAuthenticationEnvironment(
+            srpSignInEnvironment: srpSignInEnvironment,
+            userPoolEnvironment: userPoolEnvironment,
+            hostedUIEnvironment: nil
+        )
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: identityPoolConfigData,
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
+
+        return AuthEnvironment(
+            configuration: Defaults.makeDefaultAuthConfigData(),
+            userPoolConfigData: userPoolConfigData,
+            identityPoolConfigData: identityPoolConfigData,
+            authenticationEnvironment: authenticationEnvironment,
+            authorizationEnvironment: authorizationEnvironment,
+            credentialsClient: credentialsClient,
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
+    }
+}
+
+// MARK: - Mock Failing Credential Store Client
+
+/// A mock credential store client that throws specified errors when fetching credentials
+struct MockFailingCredentialStoreClient: CredentialStoreStateBehavior {
+    let errorToThrow: Error
+
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
+        throw errorToThrow
+    }
+
+    func storeData(data: CredentialStoreData) async throws {
+        // Allow stores to succeed
+    }
+
+    func deleteData(type: CredentialStoreDataType) async throws {
+        // Allow deletes to succeed
+    }
 }
