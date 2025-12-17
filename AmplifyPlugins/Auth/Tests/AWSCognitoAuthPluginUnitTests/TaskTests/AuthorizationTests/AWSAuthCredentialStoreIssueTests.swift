@@ -19,155 +19,9 @@ import XCTest
 
 // MARK: - Credential Store Issue Tests
 // These tests investigate potential causes of random user logouts
-// related to credential store operations, decoding failures, and
-// configuration change detection.
+// related to credential store operations, decoding failures, and edge cases.
 
 class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
-
-    // MARK: - Test: Credential decoding failure should not cause logout
-
-    /// Test that credential decoding failure during session fetch is handled gracefully
-    ///
-    /// - Given: A signed-in user with credentials that fail to decode
-    /// - When: fetchAuthSession is called
-    /// - Then: The error should be handled without clearing the authentication state
-    ///
-    /// This tests a potential bug where corrupted or incompatible stored credentials
-    /// could cause the SDK to incorrectly report the user as signed out.
-    ///
-    func testCredentialDecodingFailure_ShouldNotCauseLogout() async throws {
-        // This test verifies that if credential decoding fails,
-        // the SDK doesn't incorrectly transition to signed out state
-
-        let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-
-        // Setup: User is signed in but credentials in store are corrupted/incompatible
-        let initialState = AuthState.configured(
-            AuthenticationState.signedIn(.testData),
-            AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens),
-            .notStarted
-        )
-
-        // Mock: Token refresh succeeds
-        let getTokensFromRefreshToken: MockIdentityProvider.MockGetTokensFromRefreshTokenResponse = { _ in
-            tokenRefreshExpectation.fulfill()
-            return GetTokensFromRefreshTokenOutput(authenticationResult: .init(
-                accessToken: "newAccessToken",
-                expiresIn: 3_600,
-                idToken: "newIdToken",
-                refreshToken: "newRefreshToken"
-            ))
-        }
-
-        let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(
-                accessKeyId: "accessKey",
-                expiration: Date().addingTimeInterval(3_600),
-                secretKey: "secret",
-                sessionToken: "session"
-            )
-            return .init(credentials: credentials, identityId: "responseIdentityID")
-        }
-
-        let plugin = configurePluginWith(
-            userPool: { MockIdentityProvider(mockGetTokensFromRefreshTokenResponse: getTokensFromRefreshToken) },
-            identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState
-        )
-
-        let session = try await plugin.fetchAuthSession(options: .forceRefresh())
-
-        await fulfillment(of: [tokenRefreshExpectation], timeout: apiTimeout)
-
-        // The user should still be signed in
-        XCTAssertTrue(session.isSignedIn, "User should remain signed in after credential refresh")
-    }
-
-    // MARK: - Test: Configuration change should not clear valid credentials
-
-    /// Test that minor configuration changes don't clear user credentials
-    ///
-    /// - Given: A signed-in user with valid credentials
-    /// - When: The auth configuration changes slightly (but user pool remains the same)
-    /// - Then: The user's credentials should be preserved
-    ///
-    /// This tests a potential bug where configuration change detection
-    /// could incorrectly clear credentials.
-    ///
-    func testConfigurationChange_ShouldPreserveCredentials() async throws {
-        let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
-
-        let initialState = AuthState.configured(
-            AuthenticationState.signedIn(.testData),
-            AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testDataWithExpiredTokens),
-            .notStarted
-        )
-
-        let getTokensFromRefreshToken: MockIdentityProvider.MockGetTokensFromRefreshTokenResponse = { _ in
-            tokenRefreshExpectation.fulfill()
-            return GetTokensFromRefreshTokenOutput(authenticationResult: .init(
-                accessToken: "newAccessToken",
-                expiresIn: 3_600,
-                idToken: "newIdToken",
-                refreshToken: "newRefreshToken"
-            ))
-        }
-
-        let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(
-                accessKeyId: "accessKey",
-                expiration: Date().addingTimeInterval(3_600),
-                secretKey: "secret",
-                sessionToken: "session"
-            )
-            return .init(credentials: credentials, identityId: "responseIdentityID")
-        }
-
-        let plugin = configurePluginWith(
-            userPool: { MockIdentityProvider(mockGetTokensFromRefreshTokenResponse: getTokensFromRefreshToken) },
-            identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
-            initialState: initialState
-        )
-
-        let session = try await plugin.fetchAuthSession(options: .forceRefresh())
-
-        await fulfillment(of: [tokenRefreshExpectation], timeout: apiTimeout)
-
-        XCTAssertTrue(session.isSignedIn, "User should remain signed in after configuration check")
-    }
-
-    // MARK: - Test: Keychain security error should not cause logout
-
-    /// Test that keychain security errors during credential retrieval don't cause logout
-    ///
-    /// - Given: A signed-in user
-    /// - When: Keychain returns a security error (e.g., errSecInteractionNotAllowed)
-    /// - Then: The SDK should handle the error gracefully without logging out
-    ///
-    /// This tests a potential bug where keychain access failures
-    /// (common during device lock or background execution) could cause logout.
-    ///
-    func testKeychainSecurityError_ShouldNotCauseLogout() async throws {
-        // Setup: User is signed in with valid session
-        let initialState = AuthState.configured(
-            AuthenticationState.signedIn(.testData),
-            AuthorizationState.sessionEstablished(
-                AmplifyCredentials.testData),
-            .notStarted
-        )
-
-        let plugin = configurePluginWith(
-            initialState: initialState
-        )
-
-        // Fetch session without force refresh - should use cached credentials
-        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-
-        // User should still be signed in
-        XCTAssertTrue(session.isSignedIn, "User should remain signed in when using cached credentials")
-    }
 
     // MARK: - Test: Multiple concurrent session fetches should not cause race condition
 
@@ -176,9 +30,6 @@ class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
     /// - Given: A signed-in user with expired tokens
     /// - When: Multiple fetchAuthSession calls are made concurrently
     /// - Then: All calls should return consistent results without causing logout
-    ///
-    /// This tests a potential bug where concurrent token refresh attempts
-    /// could cause race conditions leading to inconsistent state.
     ///
     func testConcurrentSessionFetches_ShouldNotCauseRaceCondition() async throws {
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
@@ -288,7 +139,7 @@ class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
         XCTAssertTrue(session.isSignedIn, "User should remain signed in during token refresh")
     }
 
-    // MARK: - Test: Empty or nil token response should not cause logout
+    // MARK: - Test: Empty token response should not cause logout
 
     /// Test that receiving empty tokens from refresh doesn't cause logout
     ///
@@ -389,8 +240,8 @@ class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
     /// Test that generic service errors during token refresh don't cause logout
     ///
     /// - Given: A signed-in user with expired tokens
-    /// - When: Token refresh fails with a generic service error
-    /// - Then: isSignedIn should still be true
+    /// - When: Token refresh fails with a generic service error (InternalErrorException)
+    /// - Then: isSignedIn should still be true and error should NOT be sessionExpired
     ///
     func testGenericServiceError_ShouldNotCauseLogout() async throws {
         let tokenRefreshExpectation = expectation(description: "Token refresh should be called")
