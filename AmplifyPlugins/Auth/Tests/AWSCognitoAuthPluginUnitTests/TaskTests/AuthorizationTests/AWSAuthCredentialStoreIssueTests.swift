@@ -304,7 +304,7 @@ class AWSAuthCredentialStoreIssueTests: BaseAuthorizationTests {
 
         // Create environment with a failing credential store client
         let failingCredentialClient = MockFailingCredentialStoreClient(
-            errorToThrow: KeychainStoreError.securityError(-25308) // errSecInteractionNotAllowed
+            errorToThrow: KeychainStoreError.securityError(-25_308) // errSecInteractionNotAllowed
         )
 
         let environment = makeAuthEnvironmentWithFailingCredentialStore(
