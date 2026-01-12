@@ -21,11 +21,6 @@ struct AWSCognitoAuthCredentialStore {
 
     // User defaults constants
     private let userDefaultsNameSpace = "amplify_secure_storage_scopes.awsCognitoAuthPlugin"
-    /// This UserDefault Key is used to check if Keychain already has items stored on a fresh install
-    /// If this flag doesn't exist, previous keychain values for Amplify would be wiped out
-    private var isKeychainConfiguredKey: String {
-        "\(userDefaultsNameSpace).isKeychainConfigured"
-    }
     /// This UserDefaults Key is use to retrieve the stored access group to determine
     /// which access group the migration should happen from
     /// If none is found, the unshared service is used for migration and all items
@@ -67,16 +62,16 @@ struct AWSCognitoAuthCredentialStore {
 
         saveStoredAccessGroup()
 
-        if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
-            // We can't reliably clear credentials if the Keychain has a shared access group.
-            // This is because each app/extension has its own UserDefaults.
-            // If a user authenticates in an app, the app or extension that shares the keychain would clear the shared credentials.
-            // We must only clear credentials if a shared Keychain is not being used.
-            if accessGroup == nil {
-                try? clearAllCredentials() // clear if not using shared keychain
-            }
-            userDefaults.set(true, forKey: isKeychainConfiguredKey)
-        }
+        // NOTE: We intentionally do NOT clear keychain credentials on app reinstall.
+        // Previously, this code checked a UserDefaults flag (isKeychainConfiguredKey) to detect
+        // fresh installs and clear orphaned keychain items. However, this approach was unreliable
+        // because UserDefaults can return false during iOS prewarming (background app launch after
+        // device reboot) when protected data is not yet available. This caused valid credentials
+        // to be incorrectly cleared, resulting in random user logouts.
+        //
+        // Keychain items persisting across app reinstalls is iOS's default behavior. Any stale
+        // credentials will naturally fail authentication and trigger a proper sign-out flow.
+        // See: https://github.com/aws-amplify/amplify-swift/issues/3972
 
         restoreCredentialsOnConfigurationChanges(currentAuthConfig: authConfiguration)
         // Save the current configuration
