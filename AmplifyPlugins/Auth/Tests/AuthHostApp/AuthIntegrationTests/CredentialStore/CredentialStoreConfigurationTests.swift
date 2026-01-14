@@ -13,15 +13,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
     override func setUp() async throws {
         try await super.setUp()
         AuthSessionHelper.clearSession()
-        // Clear access group UserDefaults to ensure clean state for migration tests
-        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup")
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
-        // Clear access group UserDefaults
-        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup")
     }
 
     /// Test successful migration of credentials when auth configuration changes
@@ -204,17 +200,13 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         XCTAssertNil(credentials)
     }
 
-    /// Test that credentials persist across app reinstall
+    /// Test clearing of existing credentials when a new app is installed
     ///
     /// - Given: A user registered
     /// - When:
     ///    - We invoke a new Credential store when the app is reinstalled
     /// - Then:
-    ///    - The keychain credentials should persist (iOS default behavior)
-    ///
-    /// Note: Previously, credentials were cleared on reinstall by checking a UserDefaults flag.
-    /// This was removed because UserDefaults is unreliable during iOS prewarming, causing
-    /// random user logouts. See: https://github.com/aws-amplify/amplify-swift/issues/3972
+    ///    - The keychain should be cleared
     ///
     func testCredentialClearingOnAppReinstall() {
         // Given
@@ -236,13 +228,13 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
             XCTFail("Unable to save credentials")
         }
 
-        // When simulating app reinstall (UserDefaults cleared but keychain persists - iOS default)
+        // When configuration don't change changed
         UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
 
-        // Then credentials should persist (new behavior - matches iOS default keychain behavior)
+        // Then credentials should be nil
         let credentials = try? newCredentialStore.retrieveCredential()
-        XCTAssertNotNil(credentials, "Credentials should persist across app reinstall")
+        XCTAssertNil(credentials)
     }
 
     /// Test migrating to a shared access group keeps credentials
@@ -652,15 +644,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         XCTAssertEqual(retrievedAWSCredentials, awsCredentials)
     }
 
-    /// Test that non-shared keychain credentials persist on fresh install
+    /// Test that non-shared keychain credentials ARE cleared on fresh install
     ///
     /// - Given: A user has credentials stored in non-shared keychain
     /// - When: The credential store is initialized with fresh UserDefaults and no access group
-    /// - Then: The keychain credentials should persist (iOS default behavior)
-    ///
-    /// Note: Previously, credentials were cleared on reinstall by checking a UserDefaults flag.
-    /// This was removed because UserDefaults is unreliable during iOS prewarming, causing
-    /// random user logouts. See: https://github.com/aws-amplify/amplify-swift/issues/3972
+    /// - Then: The keychain credentials should be cleared
     ///
     func testNonSharedKeychainCredentialsClearedOnFreshInstall() {
         // Given: Save credentials to non-shared keychain
@@ -697,9 +685,45 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Initialize new credential store without access group
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
 
-        // Then: Credentials should persist (new behavior - matches iOS default keychain behavior)
+        // Then: Non-shared keychain credentials should be cleared
         let retrievedCredentials = try? newCredentialStore.retrieveCredential()
-        XCTAssertNotNil(retrievedCredentials, "Credentials should persist across app reinstall")
+        XCTAssertNil(retrievedCredentials, "Non-shared keychain credentials should be cleared on fresh install")
     }
 
+    /// Test that UserDefaults flag is properly set regardless of access group usage
+    ///
+    /// - Given: Fresh UserDefaults state
+    /// - When: Credential store is initialized with or without access group
+    /// - Then: UserDefaults flag should be set in both cases
+    ///
+    func testUserDefaultsFlagSetRegardlessOfAccessGroup() {
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
+        let userDefaultsKey = "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured"
+
+        // Test without access group
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
+
+        _ = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
+
+        // Test with access group
+        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
+
+        #if os(watchOS)
+        let accessGroup = keychainAccessGroupWatch
+        #else
+        let accessGroup = keychainAccessGroup
+        #endif
+
+        _ = AWSCognitoAuthCredentialStore(
+            authConfiguration: authConfig,
+            accessGroup: accessGroup
+        )
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
+    }
 }
