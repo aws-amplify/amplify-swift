@@ -23,7 +23,7 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
     }
 
     func dispatch(to channel: HubChannel, payload: HubPayload) {
-        notify("dispatch")
+        notify("\(payload.eventName)")
     }
 
     func listen(
