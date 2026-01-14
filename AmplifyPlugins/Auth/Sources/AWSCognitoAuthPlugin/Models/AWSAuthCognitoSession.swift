@@ -170,3 +170,15 @@ extension AWSAuthCognitoSession: CustomDebugStringConvertible {
 }
 
 extension AWSAuthCognitoSession: Sendable { }
+
+extension AWSAuthCognitoSession {
+
+    func areTokensValid() -> Bool {
+        guard case .success(let tokens) = userPoolTokensResult,
+              let cognitoTokens = tokens as? AWSCognitoUserPoolTokens else {
+            return false
+        }
+
+        return !cognitoTokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds)
+    }
+}

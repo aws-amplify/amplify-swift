@@ -41,6 +41,26 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     @_spi(InternalAmplifyConfiguration)
     public internal(set) var jsonConfiguration: JSONValue?
 
+    let cachedSessionLock = NSLock()
+    var _cachedSession: AWSAuthCognitoSession?
+
+    var cachedSession: AWSAuthCognitoSession? {
+        get {
+            cachedSessionLock.lock()
+            defer { cachedSessionLock.unlock() }
+            return _cachedSession
+        }
+        set {
+            cachedSessionLock.lock()
+            defer { cachedSessionLock.unlock() }
+            _cachedSession = newValue
+        }
+    }
+
+    func clearCachedSession() {
+        cachedSession = nil
+    }
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

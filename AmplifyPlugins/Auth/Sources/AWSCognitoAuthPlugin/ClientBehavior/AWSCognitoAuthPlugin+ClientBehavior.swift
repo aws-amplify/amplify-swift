@@ -121,6 +121,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
+        clearCachedSession()
+
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
         let task = AWSAuthSignOutTask(request, authStateMachine: authStateMachine)
@@ -135,6 +137,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
         let options = options ?? AuthFetchSessionRequest.Options()
+
+        if !options.forceRefresh,
+           let cached = cachedSession,
+           cached.areTokensValid() {
+            return cached
+        }
+
         let request = AuthFetchSessionRequest(options: options)
         let forceReconfigure = secureStoragePreferences?.accessGroup?.name != nil
         let task = AWSAuthFetchSessionTask(
@@ -144,9 +153,16 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             environment: authEnvironment,
             forceReconfigure: forceReconfigure
         )
-        return try await taskQueue.sync {
+
+        let session = try await taskQueue.sync {
             return try await task.value
         } as! AuthSession
+
+        if let cognitoSession = session as? AWSAuthCognitoSession {
+            cachedSession = cognitoSession
+        }
+
+        return session
     }
 
     public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult {
