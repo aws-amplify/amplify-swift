@@ -7,17 +7,44 @@
 
 import XCTest
 @testable import AWSCognitoAuthPlugin
+@_spi(KeychainStore) import AWSPluginsCore
 
 class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
+    private let service = "com.amplify.awsCognitoAuthPlugin"
+    private let sharedService = "com.amplify.awsCognitoAuthPluginShared"
+
     override func setUp() async throws {
         try await super.setUp()
-        AuthSessionHelper.clearSession()
+        clearAllKeychains()
+        // Clear access group UserDefaults to ensure clean state for migration tests
+        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup")
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
-        AuthSessionHelper.clearSession()
+        clearAllKeychains()
+        // Clear access group UserDefaults
+        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.accessGroup")
+    }
+
+    /// Clears all keychain items (both shared and non-shared) to ensure clean test state
+    private func clearAllKeychains() {
+        // Clear non-shared keychain
+        let nonSharedKeychain = KeychainStore(service: service)
+        try? nonSharedKeychain._removeAll()
+
+        // Clear shared keychains for all access groups used in tests
+        #if os(watchOS)
+        let accessGroups = [keychainAccessGroupWatch, keychainAccessGroupWatch2]
+        #else
+        let accessGroups = [keychainAccessGroup, keychainAccessGroup2]
+        #endif
+
+        for accessGroup in accessGroups {
+            let sharedKeychain = KeychainStore(service: sharedService, accessGroup: accessGroup)
+            try? sharedKeychain._removeAll()
+        }
     }
 
     /// Test successful migration of credentials when auth configuration changes
@@ -229,12 +256,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         }
 
         // When configuration don't change changed
-        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
 
         // Then credentials should be nil
         let credentials = try? newCredentialStore.retrieveCredential()
-        XCTAssertNil(credentials)
+        XCTAssertNotNil(credentials)
     }
 
     /// Test migrating to a shared access group keeps credentials
@@ -679,51 +705,11 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         }
         XCTAssertNotNil(savedCredentials)
 
-        // When: Simulate fresh install by clearing UserDefaults flag
-        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
-
         // Initialize new credential store without access group
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
 
         // Then: Non-shared keychain credentials should be cleared
         let retrievedCredentials = try? newCredentialStore.retrieveCredential()
-        XCTAssertNil(retrievedCredentials, "Non-shared keychain credentials should be cleared on fresh install")
-    }
-
-    /// Test that UserDefaults flag is properly set regardless of access group usage
-    ///
-    /// - Given: Fresh UserDefaults state
-    /// - When: Credential store is initialized with or without access group
-    /// - Then: UserDefaults flag should be set in both cases
-    ///
-    func testUserDefaultsFlagSetRegardlessOfAccessGroup() {
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
-            Defaults.makeDefaultUserPoolConfigData(),
-            Defaults.makeIdentityConfigData()
-        )
-        let userDefaultsKey = "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured"
-
-        // Test without access group
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
-        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
-
-        _ = AWSCognitoAuthCredentialStore(authConfiguration: authConfig)
-        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
-
-        // Test with access group
-        UserDefaults.standard.removeObject(forKey: userDefaultsKey)
-        XCTAssertFalse(UserDefaults.standard.bool(forKey: userDefaultsKey))
-
-        #if os(watchOS)
-        let accessGroup = keychainAccessGroupWatch
-        #else
-        let accessGroup = keychainAccessGroup
-        #endif
-
-        _ = AWSCognitoAuthCredentialStore(
-            authConfiguration: authConfig,
-            accessGroup: accessGroup
-        )
-        XCTAssertTrue(UserDefaults.standard.bool(forKey: userDefaultsKey))
+        XCTAssertNotNil(retrievedCredentials, "Non-shared keychain credentials should NOT be cleared on fresh install")
     }
 }
