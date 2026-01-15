@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.53.3 (2026-01-15)
+
+### Bug Fixes
+
+- **auth**: remove is keychain configured check (#4129)
+
 ## 2.53.2 (2025-12-15)
 
 ## 2.53.1 (2025-12-11)
