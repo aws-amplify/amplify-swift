@@ -7,7 +7,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 [**API Documentation**](https://aws-amplify.github.io/amplify-swift/docs/)
 
-[**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
+[**Getting Started Guide**](https://docs.amplify.aws/swift/start/quickstart/)
 
 [![CI/CD](https://img.shields.io/github/actions/workflow/status/aws-amplify/amplify-swift/deploy_unstable.yml?logo=github&label=CI%2FCD)](https://github.com/aws-amplify/amplify-swift/actions/workflows/deploy_unstable.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/aws-amplify/amplify-swift?logo=codecov&label=codecov)](https://app.codecov.io/gh/aws-amplify/amplify-swift)
@@ -15,15 +15,18 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 ## Features/APIs
 
-- [Analytics](https://docs.amplify.aws/lib/analytics/getting-started/q/platform/ios) - for logging metrics and understanding your users.
-- [API (GraphQL)](https://docs.amplify.aws/lib/graphqlapi/getting-started/q/platform/ios) - for adding a GraphQL endpoint to your app.
-- [API (REST)](https://docs.amplify.aws/lib/restapi/getting-started/q/platform/ios) - for adding a REST endpoint to your app.
-- [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
-- [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
-- [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
-- [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/) - for connecting your app with machine learning services.
-- [Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/) - for integrating push notifications in your app.
-- [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
+
+| Category                                                                                                            | AWS Provider | Description                                                                                   | Gen2 | Gen1 |
+|-----------------------------------------------------------------------------------------------------------------------|--------------|-----------------------------------------------------------------------------------------------|------|------|
+| **[Authentication](https://docs.amplify.aws/swift/build-a-backend/auth/set-up-auth/)**                              | Cognito      | Building blocks to create auth experiences                                                    | ✅   | ✅   |
+| **[Storage](https://docs.amplify.aws/swift/build-a-backend/storage/set-up-storage/)**                               | S3           | Manages content in public, protected, private storage buckets                                 | ✅   | ✅   |
+| **[Analytics](https://docs.amplify.aws/swift/build-a-backend/add-aws-services/analytics/set-up-analytics/)**        | Pinpoint     | Collect Analytics data for your app including tracking user sessions                          | ✅   | ✅   |
+| **[Geo](https://docs.amplify.aws/swift/build-a-backend/add-aws-services/geo/set-up-geo/)**                          | Location     | Add maps to your app with APIs and map UI components                                          | ✅   | ✅   |
+| **[Data (API GraphQL)](https://docs.amplify.aws/swift/build-a-backend/data/set-up-data/)**                          | AppSync, DynamoDB | Real-time API and data storage                                                           | ✅   | ✅   |
+| **[DataStore](https://docs.amplify.aws/gen1/swift/build-a-backend/more-features/datastore/)**                       | AppSync      | Programming model for shared and distributed data, with simple online/offline synchronization |      | ✅   |
+| **[API (REST)](https://docs.amplify.aws/gen1/swift/build-a-backend/restapi/set-up-rest-api/)**                      | API Gateway  | Sigv4 signing and AWS auth for API Gateway and other REST endpoints                           |      | ✅   |
+| **[Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/)**                         | Various*     | Connect your app with machine learning services like NLP, computer vision, TTS, and more.     |      | ✅   |
+| **[Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/)**           | Pinpoint     | Segment users, trigger push notifications, and record metrics                                 |      | ✅   |
 
 ## Platform Support
 
