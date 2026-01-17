@@ -28,6 +28,8 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | **[Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/)**                         | Various*     | Connect your app with machine learning services like NLP, computer vision, TTS, and more.     |      | ✅   |
 | **[Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/)**           | Pinpoint     | Segment users, trigger push notifications, and record metrics                                 |      | ✅   |
 
+\* Predictions utilizes a range of Amazon's Machine Learning services, including: Amazon Comprehend, Amazon Polly, Amazon Rekognition, Amazon Textract, and Amazon Translate.
+
 ## Platform Support
 
 | Platform  | Versions  | Support Level |
