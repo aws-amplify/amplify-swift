@@ -47,7 +47,7 @@ public extension AWSPinpointAnalyticsPlugin {
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
     func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
         log.warn(
-            """
+        """
             AWS will end support for Amazon Pinpoint on October 30, 2026.
             The guidance is to use AWS End User Messaging for push notifications and SMS,
             Amazon Simple Email Service for sending emails, Amazon Connect for campaigns, journeys, endpoints, 
