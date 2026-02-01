@@ -470,7 +470,13 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets
+let foundationTarget: Target = .target(
+    name: "AmplifyFoundation",
+    dependencies: [],
+    path: "AmplifyFoundation"
+)
+
+var targets: [Target] = amplifyTargets
     + apiTargets
     + authTargets
     + dataStoreTargets
@@ -481,6 +487,8 @@ let targets: [Target] = amplifyTargets
     + internalPinpointTargets
     + predictionsTargets
     + loggingTargets
+
+targets.append(foundationTarget)
 
 let package = Package(
     name: "Amplify",
