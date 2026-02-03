@@ -6,17 +6,17 @@
 //
 import Foundation
 
-public typealias FoundationErrorDescription = String
-public typealias FoundationRecoverySuggestion = String
+public typealias ErrorDescription = String
+public typealias RecoverySuggestion = String
 
-public struct FoundationAmplifyException: Error {
-    var errorDescription: FoundationErrorDescription
-    var recoverySuggestion: FoundationRecoverySuggestion
+public struct AmplifyException: Error {
+    var errorDescription: ErrorDescription
+    var recoverySuggestion: RecoverySuggestion
     var underlyingError: Error?
     
     init(
-        errorDescription: FoundationErrorDescription,
-        recoverySuggestion: FoundationRecoverySuggestion,
+        errorDescription: ErrorDescription,
+        recoverySuggestion: RecoverySuggestion,
         error: Error
     ) {
         self.errorDescription = errorDescription

@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol FoundationLogger {
+public protocol Logger {
     /// namespace
     var namespace: String {get set}
 
     /// The log level of the logger.
-    var logLevel: FoundationLogLevel { get set }
+    var logLevel: LogLevel { get set }
 
     /// Logs a message at `error` level
     func error(_ message: @autoclosure () -> String)
@@ -31,15 +31,15 @@ public protocol FoundationLogger {
     func verbose(_ message: @autoclosure () -> String)
 }
 
-public protocol FoundationLoggerProvider {
-    func resolve(forNamespace namespace: String) -> FoundationLogger
+public protocol LoggerProvider {
+    func resolve(forNamespace namespace: String) -> Logger
 }
 
 /// An enumeration of the different levels of logging.
 /// The levels are progressive, with lower-value items being lower priority
 /// than higher-value items. For example, `info` is lower priority than `warn`
 /// or `error`.
-public enum FoundationLogLevel: Int {
+public enum LogLevel: Int {
     case error
     case warn
     case info

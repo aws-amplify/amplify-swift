@@ -8,9 +8,9 @@
 import os
 import Foundation
 
-public final class FoundationAmplifyLogger: FoundationLogger {
+public final class AmplifyLogger: Logger {
     static let lock: NSLocking = NSLock()
-    static var _logLevel = FoundationLogLevel.error
+    static var _logLevel = LogLevel.error
     
     private let osLog: OSLog
     private let subsystem: String
@@ -23,27 +23,27 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     
     public var namespace: String
     
-    public var logLevel: FoundationLogLevel {
+    public var logLevel: LogLevel {
         get {
-            FoundationAmplifyLogger.lock.lock()
+            AmplifyLogger.lock.lock()
             defer {
-                FoundationAmplifyLogger.lock.unlock()
+                AmplifyLogger.lock.unlock()
             }
             
-            return FoundationAmplifyLogger._logLevel
+            return AmplifyLogger._logLevel
         }
         set {
-            FoundationAmplifyLogger.lock.lock()
+            AmplifyLogger.lock.lock()
             defer {
-                FoundationAmplifyLogger.lock.unlock()
+                AmplifyLogger.lock.unlock()
             }
             
-            FoundationAmplifyLogger._logLevel = newValue
+            AmplifyLogger._logLevel = newValue
         }
     }
     
     public func error(_ message: @autoclosure () -> String) {
-        guard logLevel.rawValue >= FoundationLogLevel.error.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.error.rawValue else { return }
         os_log(
             "%@",
             log: osLog,
@@ -53,7 +53,7 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
     
     public func error(_ error: @autoclosure () -> Error) {
-        guard logLevel.rawValue >= FoundationLogLevel.error.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.error.rawValue else { return }
         os_log(
             "%@",
             log: osLog,
@@ -63,7 +63,7 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
     
     public func warn(_ message: @autoclosure () -> String) {
-        guard logLevel.rawValue >= FoundationLogLevel.warn.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.warn.rawValue else { return }
         
         os_log(
             "%@",
@@ -74,7 +74,7 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
     
     public func info(_ message: @autoclosure () -> String) {
-        guard logLevel.rawValue >= FoundationLogLevel.info.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.info.rawValue else { return }
         
         os_log(
             "%@",
@@ -85,7 +85,7 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
     
     public func debug(_ message: @autoclosure () -> String) {
-        guard logLevel.rawValue >= FoundationLogLevel.debug.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.debug.rawValue else { return }
         
         os_log(
             "%@",
@@ -96,7 +96,7 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
     
     public func verbose(_ message: @autoclosure () -> String) {
-        guard logLevel.rawValue >= FoundationLogLevel.verbose.rawValue else { return }
+        guard logLevel.rawValue >= LogLevel.verbose.rawValue else { return }
         
         os_log(
             "%@",
@@ -107,8 +107,8 @@ public final class FoundationAmplifyLogger: FoundationLogger {
     }
 }
 
-public final class FoundationAmplifyLoggerProvider: FoundationLoggerProvider {
-    public func resolve(forNamespace namespace: String) -> any FoundationLogger {
-        FoundationAmplifyLogger(namespace: namespace)
+public final class AmplifyLoggerProvider: LoggerProvider {
+    public func resolve(forNamespace namespace: String) -> Logger {
+        AmplifyLogger(namespace: namespace)
     }
 }

@@ -6,16 +6,16 @@
 //
 import Foundation
 
-public protocol FoundationAWSCredentials {
+public protocol AWSCredentials {
     var accessKeyId: String { get }
     var secretAccessKey: String { get }
 }
 
-public protocol FoundationAWSTemporaryCredentials: FoundationAWSCredentials {
+public protocol AWSTemporaryCredentials: AWSCredentials {
     var sessionToken: String { get }
     var expiration: Date { get }
 }
 
-public protocol FoundationAWSCredentialsProvider {
-    func resolve() async throws -> FoundationAWSCredentials
+public protocol AWSCredentialsProvider {
+    func resolve() async throws -> AWSCredentials
 }
