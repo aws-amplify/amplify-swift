@@ -470,17 +470,25 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets
-    + apiTargets
-    + authTargets
-    + dataStoreTargets
-    + storageTargets
-    + geoTargets
-    + analyticsTargets
-    + pushNotificationsTargets
-    + internalPinpointTargets
-    + predictionsTargets
-    + loggingTargets
+let foundationTarget: Target = .target(
+    name: "AmplifyFoundation",
+    dependencies: [],
+    path: "AmplifyFoundation"
+)
+
+var targets: [Target] = []
+targets.append(contentsOf: amplifyTargets)
+targets.append(contentsOf: apiTargets)
+targets.append(contentsOf: authTargets)
+targets.append(contentsOf: dataStoreTargets)
+targets.append(contentsOf: storageTargets)
+targets.append(contentsOf: geoTargets)
+targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: pushNotificationsTargets)
+targets.append(contentsOf: internalPinpointTargets)
+targets.append(contentsOf: predictionsTargets)
+targets.append(contentsOf: loggingTargets)
+targets.append(foundationTarget)
 
 let package = Package(
     name: "Amplify",
@@ -533,6 +541,10 @@ let package = Package(
         .library(
             name: "AWSCloudWatchLoggingPlugin",
             targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
+        .library(
+            name: "AmplifyFoundation",
+            targets: ["AmplifyFoundation"]
         ),
     ],
     dependencies: dependencies,
