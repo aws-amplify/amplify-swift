@@ -7,7 +7,7 @@
 
 public protocol Logger {
     /// namespace
-    var namespace: String {get set}
+    var namespace: String { get set }
 
     /// The log level of the logger.
     var logLevel: LogLevel { get set }
@@ -45,4 +45,10 @@ public enum LogLevel: Int {
     case info
     case debug
     case verbose
+}
+
+extension LogLevel: Comparable {
+    public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
 }
