@@ -65,7 +65,7 @@ final class RESTOperationRequestUtils {
     }
 
     private static let permittedQueryParamCharacters = CharacterSet.alphanumerics
-        .union(.init(charactersIn: "/_-.~"))
+        .union(.init(charactersIn: "/_-.~+"))
 
     private static func prepareQueryParamsForSigning(params: [String: String]) throws -> [URLQueryItem] {
         // remove percent encoding to prepare for request signing
@@ -78,8 +78,10 @@ final class RESTOperationRequestUtils {
         // there by removing any invalid parameters. We're conducting this check here to inform the call-
         // site.
         func confirmOnlyPermittedCharactersPresent(key: String, value: String) throws -> (String, String) {
-            guard value.rangeOfCharacter(from: permittedQueryParamCharacters) != nil,
-                key.rangeOfCharacter(from: permittedQueryParamCharacters) != nil
+            // Check if there are any characters that are NOT in the permitted set.
+            // If rangeOfCharacter(from: invertedSet) returns nil, it means ALL characters are permitted.
+            guard value.rangeOfCharacter(from: permittedQueryParamCharacters.inverted) == nil,
+                key.rangeOfCharacter(from: permittedQueryParamCharacters.inverted) == nil
             else {
                 throw APIError.invalidURL(
                     "Invalid query parameter.",
