@@ -21,14 +21,16 @@ public protocol Logger {
     /// Logs a message at `verbose` level
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?)
     
+    /// Logs a message at the given level
     func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?)
 }
 
 /// An enumeration of the different levels of logging.
-/// The levels are progressive, with lower-value items being lower priority
+/// The levels are progressive, with lower-value items being higher priority
 /// than higher-value items. For example, `info` is lower priority than `warn`
-/// or `error`.
+/// or `error`. At a given level, only log messages of higher level(lower in value) are allowed.
 public enum LogLevel: Int {
+    case none
     case error
     case warn
     case info
@@ -40,4 +42,9 @@ extension LogLevel: Comparable {
     public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
+    
+    public static func == (lhs: LogLevel, rhs: LogLevel) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
 }
+

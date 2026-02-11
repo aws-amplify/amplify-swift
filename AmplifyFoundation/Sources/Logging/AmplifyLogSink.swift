@@ -7,6 +7,8 @@
 import Foundation
 import os.log
 
+/// A ready to use implementation of `LogSinkBehavior` which uses `OSLog`
+/// to log messages to the console
 public final class AmplifyLogSink : LogSinkBehavior {
     public var id: String
     private let logLevel : LogLevel
@@ -19,7 +21,7 @@ public final class AmplifyLogSink : LogSinkBehavior {
     }
     
     public func isEnabled(for logLevel: LogLevel) -> Bool {
-        self.logLevel >= logLevel
+        logLevel <= self.logLevel
     }
     
     public func emit(message: LogMessage) {
@@ -61,6 +63,8 @@ public final class AmplifyLogSink : LogSinkBehavior {
                     type: OSLogType.debug,
                     message.content + (message.error?.localizedDescription ?? "")
                 )
+            case .none:
+                break
             }
         }
     }

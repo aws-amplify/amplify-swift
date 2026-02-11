@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// This class acts as a layer of indirection that conforms to Logger
-/// protocol that delegates all work to its targets.
+/// This class acts as a layer of indirection conforming to Logger
+/// protocol that delegates all work to its sinks.
 ///
 final class BroadcastLogger {
     
@@ -17,7 +17,6 @@ final class BroadcastLogger {
         self.name = name
         self.sinks = sinks
     }
-
 }
 
 extension BroadcastLogger: Logger {
@@ -44,7 +43,7 @@ extension BroadcastLogger: Logger {
     func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         sinks.forEach { sink in
             if sink.isEnabled(for: logLevel) {
-                sink.emit(message: .init(level: logLevel, name: name, content: message()))
+                sink.emit(message: .init(level: logLevel, name: name, content: message(), error: error()))
             }
         }
     }

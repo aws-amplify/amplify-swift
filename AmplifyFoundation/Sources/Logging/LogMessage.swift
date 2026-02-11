@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// A struct representing a single log message
 public struct LogMessage {
     
     let level: LogLevel
@@ -18,5 +19,4 @@ public struct LogMessage {
         self.content = content
         self.error = error
     }
-    
 }

@@ -10,25 +10,22 @@ import Foundation
 public final class AmplifyLogging {
     
     /// Synchronize access to the log sinks
-    private static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
-    private static var registeredLogSinks: [any LogSinkBehavior] = []
+    internal static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
+    internal static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
     
     public static func addSink(_ logSink: any LogSinkBehavior) {
         return Self.concurrencyQueue.sync {
-            Self.registeredLogSinks.append(logSink)
+            Self.registeredLogSinks[logSink.id] = logSink
         }
     }
     
     static func removeSink(_ logSink: any LogSinkBehavior) {
         return Self.concurrencyQueue.sync {
-            guard let index = registeredLogSinks.firstIndex(where: { $0.id == logSink.id }) else {
-                return
-            }
-            Self.registeredLogSinks.remove(at: index)
+            Self.registeredLogSinks.removeValue(forKey: logSink.id)
         }
     }
     
     public static func logger(for name: String) -> Logger {
-        BroadcastLogger(name: name, sinks: registeredLogSinks)
+        BroadcastLogger(name: name, sinks: Array(registeredLogSinks.values))
     }
 }
