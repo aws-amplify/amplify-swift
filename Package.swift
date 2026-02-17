@@ -12,7 +12,8 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.6.7"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.3"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
-    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
+    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0"),
+    .package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0")
 ]
 
 let amplifyTargets: [Target] = [
@@ -367,6 +368,31 @@ let analyticsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    ),
+    .target(
+        name: "AWSKinesisStreamsPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSKinesis", package: "aws-sdk-swift"),
+            .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+        ],
+        path: "AmplifyPlugins/Analytics/Sources/AWSKinesisStreamsPlugin",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AWSKinesisStreamsPluginTests",
+        dependencies: [
+            "AWSKinesisStreamsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Analytics/Tests/AWSKinesisStreamsPluginTests"
     )
 ]
 
@@ -533,6 +559,10 @@ let package = Package(
         .library(
             name: "AWSCloudWatchLoggingPlugin",
             targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
+        .library(
+            name: "AWSKinesisStreamsPlugin",
+            targets: ["AWSKinesisStreamsPlugin"]
         ),
     ],
     dependencies: dependencies,
