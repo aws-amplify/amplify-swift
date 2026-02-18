@@ -11,13 +11,13 @@ import Foundation
 public enum RecordCacheError {
     /// Storage error - database operations failed
     case storage(ErrorDescription, RecoverySuggestion, Error? = nil)
-    
+
     /// Cache limit exceeded - no space for new records
     case limitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
-    
+
     /// Network error - failed to send records
     case network(ErrorDescription, RecoverySuggestion, Error? = nil)
-    
+
     /// Unknown error
     case unknown(ErrorDescription, Error? = nil)
 }

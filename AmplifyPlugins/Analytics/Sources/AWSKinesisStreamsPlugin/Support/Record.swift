@@ -13,7 +13,9 @@ struct Record: Sendable {
     let streamName: String
     let partitionKey: String
     let data: Data
-    var dataSize: Int { data.count }
+    var dataSize: Int {
+        data.count
+    }
     let retryCount: Int
     let createdAt: Date
 }
@@ -23,5 +25,7 @@ struct RecordInput: Sendable {
     let streamName: String
     let partitionKey: String
     let data: Data
-    var dataSize: Int { data.count }
+    var dataSize: Int {
+        data.count
+    }
 }

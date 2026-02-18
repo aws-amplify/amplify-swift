@@ -6,13 +6,13 @@
 //
 
 import Amplify
-import AWSPluginsCore
-import InternalAmplifyCredentials
-import Foundation
-import AWSKinesis
 import AWSClientRuntime
-import SmithyIdentity
+import AWSKinesis
+import AWSPluginsCore
+import Foundation
+import InternalAmplifyCredentials
 @preconcurrency import struct os.OSAllocatedUnfairLock
+import SmithyIdentity
 
 public typealias KinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
 
@@ -28,7 +28,7 @@ public class KinesisDataStreams {
 
     /// Configuration options for KinesisDataStreams
     public struct Options {
-        public static let defaultCacheMaxBytes: Int64 = 5 * 1024 * 1024 // 5MB
+        public static let defaultCacheMaxBytes: Int64 = 5 * 1_024 * 1_024 // 5MB
         public static let defaultMaxRecords: Int = 500
         public static let defaultMaxRetries: Int = 5
 
@@ -88,13 +88,13 @@ public class KinesisDataStreams {
             kinesisClient: kinesisClient,
             maxRetries: options.maxRetries
         )
-        
+
         let storage = try SQLiteRecordStorage(
             identifier: region,
             maxRecords: options.maxRecords,
             maxBytes: options.cacheMaxBytes
         )
-        
+
         self.recordClient = RecordClient(
             sender: sender,
             storage: storage,
@@ -107,7 +107,7 @@ public class KinesisDataStreams {
         case .interval(let value):
             interval = value
         }
-        
+
         self.scheduler = AutoFlushScheduler(
             interval: interval,
             recordClient: recordClient
@@ -167,7 +167,7 @@ public class KinesisDataStreams {
     public func getKinesisClient() -> AWSKinesis.KinesisClient {
         return kinesisClient
     }
-    
+
     deinit {
         Task { [scheduler] in
             await scheduler.disable()
