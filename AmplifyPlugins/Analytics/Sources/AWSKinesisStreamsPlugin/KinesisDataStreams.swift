@@ -6,11 +6,12 @@
 //
 
 import Amplify
-import AWSPluginsCore
-import InternalAmplifyCredentials
-import Foundation
-import AWSKinesis
 import AWSClientRuntime
+import AWSKinesis
+import AWSPluginsCore
+import Foundation
+import InternalAmplifyCredentials
+@preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
 
 public typealias KinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
@@ -22,10 +23,12 @@ public class KinesisDataStreams {
     private let recordClient: RecordClient
     private let options: Options
     private let scheduler: AutoFlushScheduler
+    private let logger: Logger?
+    private let isEnabled = OSAllocatedUnfairLock(initialState: false)
 
     /// Configuration options for KinesisDataStreams
     public struct Options {
-        public static let defaultCacheMaxBytes: Int64 = 5 * 1024 * 1024 // 5MB
+        public static let defaultCacheMaxBytes: Int64 = 5 * 1_024 * 1_024 // 5MB
         public static let defaultMaxRecords: Int = 500
         public static let defaultMaxRetries: Int = 5
 
@@ -56,20 +59,21 @@ public class KinesisDataStreams {
     /// Initializes a new KinesisDataStreams instance
     /// - Parameters:
     ///   - region: AWS region
-    ///   - credentialIdentityResolver: Optional custom credential identity resolver. If nil, uses Amplify Auth credentials.
+    ///   - credentialsProvider: Optional custom credential identity resolver. If nil, uses Amplify Auth credentials.
     ///   - options: Configuration options
     public init(
         region: String,
-        credentialIdentityResolver: (any AWSCredentialIdentityResolver)? = nil,
+        credentialsProvider: (any AWSCredentialIdentityResolver)? = nil, // TODO: Pending V3 types
         options: Options = Options()
     ) throws {
         self.options = options
+        self.logger = options.logger
 
         // Create Kinesis client configuration
         var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
 
         // Set credentials provider - use provided resolver or default to Amplify Auth
-        let resolver = credentialIdentityResolver ?? AWSAuthService().getCredentialIdentityResolver()
+        let resolver = credentialsProvider ?? AWSAuthService().getCredentialIdentityResolver()
         clientConfig.awsCredentialIdentityResolver = resolver
 
         // Apply custom configuration if provided
@@ -84,13 +88,13 @@ public class KinesisDataStreams {
             kinesisClient: kinesisClient,
             maxRetries: options.maxRetries
         )
-        
+
         let storage = try SQLiteRecordStorage(
             identifier: region,
             maxRecords: options.maxRecords,
             maxBytes: options.cacheMaxBytes
         )
-        
+
         self.recordClient = RecordClient(
             sender: sender,
             storage: storage,
@@ -103,7 +107,7 @@ public class KinesisDataStreams {
         case .interval(let value):
             interval = value
         }
-        
+
         self.scheduler = AutoFlushScheduler(
             interval: interval,
             recordClient: recordClient
@@ -117,6 +121,10 @@ public class KinesisDataStreams {
     ///   - streamName: The name of the Kinesis stream
     /// - Throws: RecordCacheError if the record cannot be saved
     public func record(data: Data, partitionKey: String, streamName: String) async throws {
+        guard isEnabled.withLock({ $0 }) else {
+            logger?.debug("Record collection is disabled, dropping record")
+            return
+        }
         let input = RecordInput(
             streamName: streamName,
             partitionKey: partitionKey,
@@ -134,13 +142,16 @@ public class KinesisDataStreams {
         return try await recordClient.flush()
     }
 
-    /// Disables data collection
+    /// Disables record collection and automatic flushing. Records submitted while
+    /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
+        isEnabled.withLock { $0 = false }
         await scheduler.disable()
     }
 
-    /// Enables data collection
+    /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
+        isEnabled.withLock { $0 = true }
         await scheduler.start()
     }
 
@@ -156,7 +167,7 @@ public class KinesisDataStreams {
     public func getKinesisClient() -> AWSKinesis.KinesisClient {
         return kinesisClient
     }
-    
+
     deinit {
         Task { [scheduler] in
             await scheduler.disable()
