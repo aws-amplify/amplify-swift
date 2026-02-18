@@ -61,15 +61,13 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
         for (record, resultEntry) in zip(records, output.records ?? []) {
             if resultEntry.errorCode == nil {
                 successfulIds.append(record.id)
-            }
             // According to AWS SDK documentation, `PutRecordsResultEntry.errorCode` can be:
             // - `ProvisionedThroughputExceededException`: Retryable - throughput limit exceeded
             // - `InternalFailure`: Retryable - internal service error
             // Both are retried
-            else if record.retryCount >= self.maxRetries {
+            } else if record.retryCount >= self.maxRetries {
                 failedIds.append(record.id)
-            }
-            else {
+            } else {
                 retryableIds.append(record.id)
             }
         }

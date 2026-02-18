@@ -62,14 +62,14 @@ actor SQLiteRecordStorage: RecordStorage {
         let dbPath = path.appendingPathComponent("kinesis_records_\(identifier).db").path
         let connection = try Connection(dbPath)
 
-        try connection.run(records.create(ifNotExists: true) { t in
-            t.column(id, primaryKey: .autoincrement)
-            t.column(streamName)
-            t.column(partitionKey)
-            t.column(data)
-            t.column(dataSize)
-            t.column(retryCount, defaultValue: 0)
-            t.column(createdAt, defaultValue: Date().timeIntervalSince1970)
+        try connection.run(records.create(ifNotExists: true) { table in
+            table.column(id, primaryKey: .autoincrement)
+            table.column(streamName)
+            table.column(partitionKey)
+            table.column(data)
+            table.column(dataSize)
+            table.column(retryCount, defaultValue: 0)
+            table.column(createdAt, defaultValue: Date().timeIntervalSince1970)
         })
 
         try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
