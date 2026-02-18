@@ -53,29 +53,31 @@ actor SQLiteRecordStorage: RecordStorage {
             appropriateFor: nil,
             create: true
         ) else {
-            throw RecordCacheError.storage(
+            throw RecordCacheError.database(
                 "Failed to locate application support directory",
-                "Ensure app has proper file system permissions"
+                defaultRecoverySuggestion
             )
         }
 
         let dbPath = path.appendingPathComponent("kinesis_records_\(identifier).db").path
-        let connection = try Connection(dbPath)
+        return try wrapDatabaseError {
+            let connection = try Connection(dbPath)
 
-        try connection.run(records.create(ifNotExists: true) { t in
-            t.column(id, primaryKey: .autoincrement)
-            t.column(streamName)
-            t.column(partitionKey)
-            t.column(data)
-            t.column(dataSize)
-            t.column(retryCount, defaultValue: 0)
-            t.column(createdAt, defaultValue: Date().timeIntervalSince1970)
-        })
+            try connection.run(records.create(ifNotExists: true) { t in
+                t.column(id, primaryKey: .autoincrement)
+                t.column(streamName)
+                t.column(partitionKey)
+                t.column(data)
+                t.column(dataSize)
+                t.column(retryCount, defaultValue: 0)
+                t.column(createdAt, defaultValue: Date().timeIntervalSince1970)
+            })
 
-        try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
-        try connection.execute("CREATE INDEX IF NOT EXISTS idx_data_size ON records (data_size)")
-        
-        return connection
+            try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
+            try connection.execute("CREATE INDEX IF NOT EXISTS idx_data_size ON records (data_size)")
+            
+            return connection
+        }
     }
 
     func addRecord(_ input: RecordInput) throws {
@@ -83,7 +85,7 @@ actor SQLiteRecordStorage: RecordStorage {
         if cachedSize + Int64(input.dataSize) > maxBytes {
             throw RecordCacheError.limitExceeded(
                 "Cache size limit exceeded: \(cachedSize + Int64(input.dataSize)) bytes > \(maxBytes) bytes",
-                "Call flush() to send cached records or increase cache size limit"
+                "Call flush() to send cached records or increase the cacheMaxBytes option."
             )
         }
 
@@ -96,63 +98,69 @@ actor SQLiteRecordStorage: RecordStorage {
             Self.createdAt <- Date().timeIntervalSince1970
         )
         
-        try db.run(insert)
+        _ = try Self.wrapDatabaseError {
+            try db.run(insert)
+        }
         cachedSize += Int64(input.dataSize)
     }
 
     func getRecordsByStream() throws -> [[Record]] {
-        // Must use raw SQL for window functions
-        let query = """
-            SELECT id, stream_name, partition_key, data, data_size, retry_count, created_at
-            FROM (
-                SELECT *, 
-                       ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
-                       SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
-                FROM records
-            ) 
-            WHERE rn <= ? AND running_size <= ?
-            ORDER BY stream_name, id
-            """
-        
-        var recordsByStream: [String: [Record]] = [:]
-        
-        for row in try db.prepare(query, maxRecords, maxBytes) {
-            guard let id = row[0] as? Int64,
-                  let streamName = row[1] as? String,
-                  let partitionKey = row[2] as? String,
-                  let blob = row[3] as? SQLite.Blob,
-                  let retryCount = row[5] as? Int64,
-                  let createdAt = row[6] as? Double else {
-                throw RecordCacheError.storage(
-                    "Failed to parse record from database",
-                    "Database may be corrupted. Try calling clearCache()"
+        try Self.wrapDatabaseError {
+            // Must use raw SQL for window functions
+            let query = """
+                SELECT id, stream_name, partition_key, data, data_size, retry_count, created_at
+                FROM (
+                    SELECT *, 
+                           ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
+                           SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
+                    FROM records
+                ) 
+                WHERE rn <= ? AND running_size <= ?
+                ORDER BY stream_name, id
+                """
+            
+            var recordsByStream: [String: [Record]] = [:]
+            
+            for row in try db.prepare(query, maxRecords, maxBytes) {
+                guard let id = row[0] as? Int64,
+                      let streamName = row[1] as? String,
+                      let partitionKey = row[2] as? String,
+                      let blob = row[3] as? SQLite.Blob,
+                      let retryCount = row[5] as? Int64,
+                      let createdAt = row[6] as? Double else {
+                    throw RecordCacheError.database(
+                        "Failed to parse record from database",
+                        defaultRecoverySuggestion
+                    )
+                }
+                
+                let record = Record(
+                    id: id,
+                    streamName: streamName,
+                    partitionKey: partitionKey,
+                    data: Data(blob.bytes),
+                    retryCount: Int(retryCount),
+                    createdAt: Date(timeIntervalSince1970: createdAt)
                 )
+                
+                recordsByStream[record.streamName, default: []].append(record)
             }
             
-            let record = Record(
-                id: id,
-                streamName: streamName,
-                partitionKey: partitionKey,
-                data: Data(blob.bytes),
-                retryCount: Int(retryCount),
-                createdAt: Date(timeIntervalSince1970: createdAt)
-            )
-            
-            recordsByStream[record.streamName, default: []].append(record)
+            // Return as list of lists to match Android
+            return Array(recordsByStream.values)
         }
-        
-        // Return as list of lists to match Android
-        return Array(recordsByStream.values)
     }
 
     func deleteRecords(ids: [Int64]) throws {
         guard !ids.isEmpty else { return }
 
-        let placeholders = ids.map { _ in "?" }.joined(separator: ",")
-        let sql = "DELETE FROM records WHERE id IN (\(placeholders))"
-        
-        let statement = try db.prepare(sql)
-        try statement.run(ids.map { $0 as Binding })
+        try Self.wrapDatabaseError {
+            let placeholders = ids.map { _ in "?" }.joined(separator: ",")
+            let sql = "DELETE FROM records WHERE id IN (\(placeholders))"
+            
+            let statement = try db.prepare(sql)
+            try statement.run(ids.map { $0 as Binding })
+        }
         
         try resetCacheSizeFromDb()
     }
@@ -160,16 +168,21 @@ actor SQLiteRecordStorage: RecordStorage {
     func incrementRetryCount(ids: [Int64]) throws {
         guard !ids.isEmpty else { return }
 
-        let placeholders = ids.map { _ in "?" }.joined(separator: ",")
-        let sql = "UPDATE records SET retry_count = retry_count + 1 WHERE id IN (\(placeholders))"
-        
-        let statement = try db.prepare(sql)
-        try statement.run(ids.map { $0 as Binding })
+        try Self.wrapDatabaseError {
+            let placeholders = ids.map { _ in "?" }.joined(separator: ",")
+            let sql = "UPDATE records SET retry_count = retry_count + 1 WHERE id IN (\(placeholders))"
+            
+            let statement = try db.prepare(sql)
+            try statement.run(ids.map { $0 as Binding })
+        }
     }
 
     func clearRecords() throws -> Int {
-        let count = try db.scalar(Self.records.count)
-        try db.run(Self.records.delete())
+        let count = try Self.wrapDatabaseError {
+            let count = try db.scalar(Self.records.count)
+            try db.run(Self.records.delete())
+            return count
+        }
         cachedSize = 0
         return count
     }
@@ -181,7 +194,25 @@ actor SQLiteRecordStorage: RecordStorage {
     /// Resets the cached size by recalculating from the database
     /// Used internally after delete operations to ensure accuracy
     private func resetCacheSizeFromDb() throws {
-        let size = try db.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+        let size = try Self.wrapDatabaseError {
+            try db.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+        }
         cachedSize = Int64(size)
+    }
+
+    /// Wraps a throwing closure so that any non-RecordCacheError is converted
+    /// to `.database` with the underlying SQLite error attached.
+    private static func wrapDatabaseError<T>(_ operation: () throws -> T) throws -> T {
+        do {
+            return try operation()
+        } catch let error as RecordCacheError {
+            throw error
+        } catch {
+            throw RecordCacheError.database(
+                "A database error occurred",
+                defaultRecoverySuggestion,
+                error
+            )
+        }
     }
 }

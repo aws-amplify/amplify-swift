@@ -49,7 +49,12 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
             streamName: streamName
         )
         
-        let output: PutRecordsOutput = try await kinesisClient.putRecords(input: input)
+        let output: PutRecordsOutput
+        do {
+            output = try await kinesisClient.putRecords(input: input)
+        } catch {
+            throw KinesisError.from(error)
+        }
         
         var successfulIds: [Int64] = []
         var retryableIds: [Int64] = []
