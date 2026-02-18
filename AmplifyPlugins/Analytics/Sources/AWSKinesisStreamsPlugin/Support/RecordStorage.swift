@@ -7,8 +7,7 @@
 
 import Foundation
 
-/// Protocol for record storage operations
-protocol RecordStorage {
+protocol RecordStorage: Actor {
     /// Adds a new record to storage
     func addRecord(_ input: RecordInput) async throws
     

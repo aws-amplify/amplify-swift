@@ -13,6 +13,7 @@ actor RecordClient {
     private let sender: RecordSender
     private let storage: RecordStorage
     private let logger: Logger?
+    private var isFlushing = false
     
     init(
         sender: RecordSender,
@@ -31,6 +32,14 @@ actor RecordClient {
     
     /// Flushes all locally stored records
     func flush() async throws -> FlushData {
+        guard !isFlushing else {
+            logger?.debug("Flush already in progress, skipping")
+            return FlushData(recordsFlushed: 0, flushInProgress: true)
+        }
+        
+        isFlushing = true
+        defer { isFlushing = false }
+        
         var totalFlushed = 0
         let recordsByStreamList = try await storage.getRecordsByStream()
         
