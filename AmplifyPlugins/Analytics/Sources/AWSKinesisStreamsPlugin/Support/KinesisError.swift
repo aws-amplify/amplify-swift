@@ -101,49 +101,58 @@ extension KinesisError: AmplifyError {
         }
 
         if let cacheError = error as? RecordCacheError {
-            switch cacheError {
-            case .database(let desc, let recovery, let underlyingError):
-                return .cache(desc, recovery, underlyingError)
-            case .limitExceeded(let desc, let recovery, let underlyingError):
-                return .cacheLimitExceeded(desc, recovery, underlyingError)
-            }
+            return fromCacheError(cacheError)
         }
 
-        let sdkError: KinesisPutRecordsSdkError
-        switch error {
-        case let e as AccessDeniedException:
-            sdkError = .accessDenied(e)
-        case let e as InternalFailureException:
-            sdkError = .internalFailure(e)
-        case let e as InvalidArgumentException:
-            sdkError = .invalidArgument(e)
-        case let e as KMSAccessDeniedException:
-            sdkError = .kmsAccessDenied(e)
-        case let e as KMSDisabledException:
-            sdkError = .kmsDisabled(e)
-        case let e as KMSInvalidStateException:
-            sdkError = .kmsInvalidState(e)
-        case let e as KMSNotFoundException:
-            sdkError = .kmsNotFound(e)
-        case let e as KMSOptInRequired:
-            sdkError = .kmsOptInRequired(e)
-        case let e as KMSThrottlingException:
-            sdkError = .kmsThrottling(e)
-        case let e as ProvisionedThroughputExceededException:
-            sdkError = .provisionedThroughputExceeded(e)
-        case let e as ResourceNotFoundException:
-            sdkError = .resourceNotFound(e)
-        default:
+        guard let sdkError = mapToSdkError(error) else {
             return .unknown(
-                "An unknown error occured",
+                "An unknown error occurred",
                 defaultRecoverySuggestion,
                 error
             )
         }
         return .service(
-            "A service error occured",
+            "A service error occurred",
             defaultRecoverySuggestion,
             sdkError
         )
+    }
+
+    private static func fromCacheError(_ cacheError: RecordCacheError) -> KinesisError {
+        switch cacheError {
+        case .database(let desc, let recovery, let underlyingError):
+            return .cache(desc, recovery, underlyingError)
+        case .limitExceeded(let desc, let recovery, let underlyingError):
+            return .cacheLimitExceeded(desc, recovery, underlyingError)
+        }
+    }
+
+    private static func mapToSdkError(_ error: Error) -> KinesisPutRecordsSdkError? {
+        switch error {
+        case let err as AccessDeniedException:
+            return .accessDenied(err)
+        case let err as InternalFailureException:
+            return .internalFailure(err)
+        case let err as InvalidArgumentException:
+            return .invalidArgument(err)
+        case let err as KMSAccessDeniedException:
+            return .kmsAccessDenied(err)
+        case let err as KMSDisabledException:
+            return .kmsDisabled(err)
+        case let err as KMSInvalidStateException:
+            return .kmsInvalidState(err)
+        case let err as KMSNotFoundException:
+            return .kmsNotFound(err)
+        case let err as KMSOptInRequired:
+            return .kmsOptInRequired(err)
+        case let err as KMSThrottlingException:
+            return .kmsThrottling(err)
+        case let err as ProvisionedThroughputExceededException:
+            return .provisionedThroughputExceeded(err)
+        case let err as ResourceNotFoundException:
+            return .resourceNotFound(err)
+        default:
+            return nil
+        }
     }
 }

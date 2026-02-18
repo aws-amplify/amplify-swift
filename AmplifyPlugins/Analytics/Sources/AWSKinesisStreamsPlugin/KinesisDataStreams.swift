@@ -88,13 +88,13 @@ public class KinesisDataStreams {
             kinesisClient: kinesisClient,
             maxRetries: options.maxRetries
         )
-        
+
         let storage = try SQLiteRecordStorage(
             identifier: region,
             maxRecords: options.maxRecords,
             maxBytes: options.cacheMaxBytes
         )
-        
+
         self.recordClient = RecordClient(
             sender: sender,
             storage: storage,
@@ -107,7 +107,7 @@ public class KinesisDataStreams {
         case .interval(let value):
             interval = value
         }
-        
+
         self.scheduler = AutoFlushScheduler(
             interval: interval,
             recordClient: recordClient
@@ -173,7 +173,7 @@ public class KinesisDataStreams {
     public func getKinesisClient() -> AWSKinesis.KinesisClient {
         return kinesisClient
     }
-    
+
     /// Wraps an async operation, converting internal errors to KinesisError via ``KinesisError/from(_:)``.
     private func wrapError<T>(_ operation: () async throws -> T) async throws -> T {
         do {

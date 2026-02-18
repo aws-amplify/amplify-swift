@@ -15,16 +15,16 @@ actor AutoFlushScheduler {
     private let interval: Duration
     private let recordClient: RecordClient
     private var flushTask: Task<Void, Never>?
-    
+
     init(interval: Duration, recordClient: RecordClient) {
         self.interval = interval
         self.recordClient = recordClient
     }
-    
+
     /// Starts the automatic flush scheduler
     func start() {
         flushTask?.cancel()
-        
+
         flushTask = Task { [weak self, interval] in
             for await _ in AsyncTimerSequence.repeating(every: interval) {
                 guard let self, !Task.isCancelled else { break }
@@ -36,13 +36,13 @@ actor AutoFlushScheduler {
             }
         }
     }
-    
+
     /// Stops the automatic flush scheduler
     func disable() {
         flushTask?.cancel()
         flushTask = nil
     }
-    
+
     deinit {
         flushTask?.cancel()
     }

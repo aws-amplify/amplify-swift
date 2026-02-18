@@ -10,7 +10,7 @@ import Foundation
 
 /// Uses actor for thread-safe access (Swift's recommended approach)
 actor SQLiteRecordStorage: RecordStorage {
-    private let db: Connection
+    private let database: Connection
     private let maxBytes: Int64
     private let maxRecords: Int
     private let identifier: String
@@ -33,8 +33,8 @@ actor SQLiteRecordStorage: RecordStorage {
 
         // Setup database connection and schema
         let connection = try Self.setupDatabase(identifier: identifier)
-        self.db = connection
-        
+        self.database = connection
+
         // Initialize cached size from database
         do {
             let size = try connection.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
@@ -43,7 +43,7 @@ actor SQLiteRecordStorage: RecordStorage {
             self.cachedSize = 0
         }
     }
-    
+
     /// Sets up the database connection and creates tables/indices if needed
     /// This is a static method so it can be called before the actor is fully initialized
     private static func setupDatabase(identifier: String) throws -> Connection {
@@ -63,25 +63,25 @@ actor SQLiteRecordStorage: RecordStorage {
         return try wrapDatabaseError {
             let connection = try Connection(dbPath)
 
-            try connection.run(records.create(ifNotExists: true) { t in
-                t.column(id, primaryKey: .autoincrement)
-                t.column(streamName)
-                t.column(partitionKey)
-                t.column(data)
-                t.column(dataSize)
-                t.column(retryCount, defaultValue: 0)
-                t.column(createdAt, defaultValue: Date().timeIntervalSince1970)
+            try connection.run(records.create(ifNotExists: true) { table in
+                table.column(id, primaryKey: .autoincrement)
+                table.column(streamName)
+                table.column(partitionKey)
+                table.column(data)
+                table.column(dataSize)
+                table.column(retryCount, defaultValue: 0)
+                table.column(createdAt, defaultValue: Date().timeIntervalSince1970)
             })
 
             try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
             try connection.execute("CREATE INDEX IF NOT EXISTS idx_data_size ON records (data_size)")
-            
+
             return connection
         }
     }
 
     func addRecord(_ input: RecordInput) throws {
-        // Check cache size limit before adding 
+        // Check cache size limit before adding
         if cachedSize + Int64(input.dataSize) > maxBytes {
             throw RecordCacheError.limitExceeded(
                 "Cache size limit exceeded: \(cachedSize + Int64(input.dataSize)) bytes > \(maxBytes) bytes",
@@ -97,9 +97,9 @@ actor SQLiteRecordStorage: RecordStorage {
             Self.retryCount <- 0,
             Self.createdAt <- Date().timeIntervalSince1970
         )
-        
+
         _ = try Self.wrapDatabaseError {
-            try db.run(insert)
+            try database.run(insert)
         }
         cachedSize += Int64(input.dataSize)
     }
@@ -110,18 +110,18 @@ actor SQLiteRecordStorage: RecordStorage {
             let query = """
                 SELECT id, stream_name, partition_key, data, data_size, retry_count, created_at
                 FROM (
-                    SELECT *, 
+                    SELECT *,
                            ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
                            SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
                     FROM records
-                ) 
+                )
                 WHERE rn <= ? AND running_size <= ?
                 ORDER BY stream_name, id
                 """
-            
+
             var recordsByStream: [String: [Record]] = [:]
-            
-            for row in try db.prepare(query, maxRecords, maxBytes) {
+
+            for row in try database.prepare(query, maxRecords, maxBytes) {
                 guard let id = row[0] as? Int64,
                       let streamName = row[1] as? String,
                       let partitionKey = row[2] as? String,
@@ -133,7 +133,7 @@ actor SQLiteRecordStorage: RecordStorage {
                         defaultRecoverySuggestion
                     )
                 }
-                
+
                 let record = Record(
                     id: id,
                     streamName: streamName,
@@ -142,10 +142,10 @@ actor SQLiteRecordStorage: RecordStorage {
                     retryCount: Int(retryCount),
                     createdAt: Date(timeIntervalSince1970: createdAt)
                 )
-                
+
                 recordsByStream[record.streamName, default: []].append(record)
             }
-            
+
             // Return as list of lists to match Android
             return Array(recordsByStream.values)
         }
@@ -157,11 +157,11 @@ actor SQLiteRecordStorage: RecordStorage {
         try Self.wrapDatabaseError {
             let placeholders = ids.map { _ in "?" }.joined(separator: ",")
             let sql = "DELETE FROM records WHERE id IN (\(placeholders))"
-            
-            let statement = try db.prepare(sql)
+
+            let statement = try database.prepare(sql)
             try statement.run(ids.map { $0 as Binding })
         }
-        
+
         try resetCacheSizeFromDb()
     }
 
@@ -171,16 +171,16 @@ actor SQLiteRecordStorage: RecordStorage {
         try Self.wrapDatabaseError {
             let placeholders = ids.map { _ in "?" }.joined(separator: ",")
             let sql = "UPDATE records SET retry_count = retry_count + 1 WHERE id IN (\(placeholders))"
-            
-            let statement = try db.prepare(sql)
+
+            let statement = try database.prepare(sql)
             try statement.run(ids.map { $0 as Binding })
         }
     }
 
     func clearRecords() throws -> Int {
         let count = try Self.wrapDatabaseError {
-            let count = try db.scalar(Self.records.count)
-            try db.run(Self.records.delete())
+            let count = try database.scalar(Self.records.count)
+            try database.run(Self.records.delete())
             return count
         }
         cachedSize = 0
@@ -195,7 +195,7 @@ actor SQLiteRecordStorage: RecordStorage {
     /// Used internally after delete operations to ensure accuracy
     private func resetCacheSizeFromDb() throws {
         let size = try Self.wrapDatabaseError {
-            try db.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+            try database.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
         }
         cachedSize = Int64(size)
     }
