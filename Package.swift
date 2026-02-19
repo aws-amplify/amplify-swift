@@ -476,6 +476,24 @@ let foundationTarget: Target = .target(
     path: "AmplifyFoundation"
 )
 
+let foundationBridgeTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundationBridge",
+        dependencies: [
+            "AmplifyFoundation",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyFoundationBridge/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationBridgeTests",
+        dependencies: [
+            "AmplifyFoundationBridge"
+        ],
+        path: "AmplifyFoundationBridge/Tests"
+    ),
+]
+
 var targets: [Target] = []
 targets.append(contentsOf: amplifyTargets)
 targets.append(contentsOf: apiTargets)
@@ -489,6 +507,7 @@ targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
 targets.append(foundationTarget)
+targets.append(contentsOf: foundationBridgeTargets)
 
 let package = Package(
     name: "Amplify",
@@ -545,6 +564,10 @@ let package = Package(
         .library(
             name: "AmplifyFoundation",
             targets: ["AmplifyFoundation"]
+        ),
+        .library(
+            name: "AmplifyFoundationBridge",
+            targets: ["AmplifyFoundationBridge"]
         ),
     ],
     dependencies: dependencies,
