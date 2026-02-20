@@ -13,6 +13,8 @@ public final class AmplifyLogging {
     internal static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
     internal static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
     
+    private init() {}
+    
     public static func addSink(_ logSink: any LogSinkBehavior) {
         return Self.concurrencyQueue.sync {
             Self.registeredLogSinks[logSink.id] = logSink
@@ -26,6 +28,8 @@ public final class AmplifyLogging {
     }
     
     public static func logger(for name: String) -> Logger {
-        BroadcastLogger(name: name, sinks: Array(registeredLogSinks.values))
+        return Self.concurrencyQueue.sync {
+            BroadcastLogger(name: name, sinks: Array(registeredLogSinks.values))
+        }
     }
 }

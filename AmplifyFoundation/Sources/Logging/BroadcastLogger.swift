@@ -41,10 +41,10 @@ extension BroadcastLogger: Logger {
     }
     
     func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
+        let messageValue = message()
+        let errorValue = error()
         sinks.forEach { sink in
-            if sink.isEnabled(for: logLevel) {
-                sink.emit(message: .init(level: logLevel, name: name, content: message(), error: error()))
-            }
+            sink.emit(message: .init(level: logLevel, name: name, content: messageValue, error: errorValue))
         }
     }
 }

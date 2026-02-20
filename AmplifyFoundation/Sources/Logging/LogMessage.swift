@@ -8,10 +8,10 @@
 /// A struct representing a single log message
 public struct LogMessage {
     
-    let level: LogLevel
-    let name: String
-    let content: String
-    let error: Error?
+    public let level: LogLevel
+    public let name: String
+    public let content: String
+    public let error: Error?
     
     public init(level: LogLevel, name: String, content: String, error: Error? = nil) {
         self.level = level

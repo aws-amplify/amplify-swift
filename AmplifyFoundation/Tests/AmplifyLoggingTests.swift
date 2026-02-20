@@ -15,6 +15,10 @@ class AmplifyLoggingTests: XCTestCase {
         logSink = MockLogSink()
     }
     
+    override func tearDown() {
+        AmplifyLogging.removeSink(logSink)
+    }
+    
     func testAmplifyLoggingSinkAddedSuccess() {
         AmplifyLogging.addSink(logSink)
         XCTAssertEqual(AmplifyLogging.registeredLogSinks.keys.count, 1)
@@ -74,11 +78,11 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 1)
         XCTAssertEqual(logSink.logMessages[0].level, .error)
@@ -89,11 +93,11 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 2)
         XCTAssertEqual(logSink.logMessages[0].level, .error)
@@ -105,11 +109,11 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 3)
         XCTAssertEqual(logSink.logMessages[0].level, .error)
@@ -122,11 +126,11 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 4)
         XCTAssertEqual(logSink.logMessages[0].level, .error)
@@ -140,11 +144,11 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 5)
         XCTAssertEqual(logSink.logMessages[0].level, .error)
@@ -159,22 +163,58 @@ class AmplifyLoggingTests: XCTestCase {
         AmplifyLogging.addSink(logSink)
         
         let logger = AmplifyLogging.logger(for: "testCategory")
-        logger.error("errorMessage", nil)
-        logger.warn("warnMessage", nil)
-        logger.info("infoMessage", nil)
-        logger.debug("debugMessage", nil)
-        logger.verbose("verboseMessage", nil)
+        logger.error("errorMessage")
+        logger.warn("warnMessage")
+        logger.info("infoMessage")
+        logger.debug("debugMessage")
+        logger.verbose("verboseMessage")
         
         XCTAssertEqual(logSink.logMessages.count, 0)
     }
     
+    func testSinkAddedAfterLoggerCreatedShouldNotReceiveLogs() {
+        AmplifyLogging.addSink(logSink) // .debug log level
+        let logger = AmplifyLogging.logger(for: "testCategory")
+        
+        let newSink = MockLogSink() // .debug log level
+        AmplifyLogging.addSink(newSink)
+        
+        logger.debug("debugMessage")
+        XCTAssertEqual(logSink.logMessages.count, 1)
+        XCTAssertEqual(newSink.logMessages.count, 0)
+    }
     
+    func testMultipleSinksLogMessageSuccess() {
+        AmplifyLogging.addSink(logSink) // .debug log level
+        
+        let newSink = MockLogSink() // .debug log level
+        AmplifyLogging.addSink(newSink)
+        let logger = AmplifyLogging.logger(for: "testCategory")
+        
+        logger.debug("debugMessage")
+        XCTAssertEqual(logSink.logMessages.count, 1)
+        XCTAssertEqual(newSink.logMessages.count, 1)
+    }
+    
+    func testMultipleSinksWithDifferentLogLevels() {
+        AmplifyLogging.addSink(logSink) // .debug log level
+        
+        let newSink = MockLogSink()
+        newSink.logLevel = .verbose // .verbose log level
+        AmplifyLogging.addSink(newSink)
+        
+        let logger = AmplifyLogging.logger(for: "testCategory")
+        
+        logger.verbose("verboseMessage")
+        XCTAssertEqual(logSink.logMessages.count, 0)
+        XCTAssertEqual(newSink.logMessages.count, 1)
+    }
 }
 
 
 /// Mock LogSink for testing which stores the list of log messages in memory
-class MockLogSink : LogSinkBehavior {
-    var id: String = "MockLogSink"
+final class MockLogSink : LogSinkBehavior {
+    let id: String = UUID().uuidString
     var logLevel: LogLevel = .debug
     var logMessages: [LogMessage] = []
     
@@ -185,11 +225,13 @@ class MockLogSink : LogSinkBehavior {
     }
     
     func emit(message: AmplifyFoundation.LogMessage) {
-        logMessages.append(message)
+        if isEnabled(for: message.level) {
+            logMessages.append(message)
+        }
     }
 }
 
-class MockAmplifyError: AmplifyError {
+final class MockAmplifyError: AmplifyError {
     let errorDescription: ErrorDescription
     let recoverySuggestion: RecoverySuggestion
     let underlyingError: Error?
