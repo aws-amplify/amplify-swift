@@ -470,11 +470,18 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let foundationTarget: Target = .target(
-    name: "AmplifyFoundation",
-    dependencies: [],
-    path: "AmplifyFoundation"
-)
+let foundationTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundation",
+        dependencies: [],
+        path: "AmplifyFoundation/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationTests",
+        dependencies: ["AmplifyFoundation"],
+        path: "AmplifyFoundation/Tests"
+    ),
+]
 
 let foundationBridgeTargets: [Target] = [
     .target(
@@ -506,7 +513,7 @@ targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
-targets.append(foundationTarget)
+targets.append(contentsOf: foundationTargets)
 targets.append(contentsOf: foundationBridgeTargets)
 
 let package = Package(
