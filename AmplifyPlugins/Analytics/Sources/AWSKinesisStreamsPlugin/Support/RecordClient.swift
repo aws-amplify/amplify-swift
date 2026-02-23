@@ -6,23 +6,23 @@
 //
 
 import Amplify
+import AmplifyFoundation
 import Foundation
 
 /// Generic RecordClient that coordinates storage and sending of records
 actor RecordClient {
     private let sender: RecordSender
     private let storage: RecordStorage
-    private let logger: Logger?
+    private let logger: AmplifyFoundation.Logger
     private var isFlushing = false
 
     init(
         sender: RecordSender,
-        storage: RecordStorage,
-        logger: Logger?
+        storage: RecordStorage
     ) {
         self.sender = sender
         self.storage = storage
-        self.logger = logger
+        self.logger = AmplifyLogging.logger(for: String(describing: Self.self))
     }
 
     /// Records data to local storage
@@ -33,7 +33,7 @@ actor RecordClient {
     /// Flushes all locally stored records
     func flush() async throws -> FlushData {
         guard !isFlushing else {
-            logger?.debug("Flush already in progress, skipping")
+            logger.debug("Flush already in progress, skipping")
             return FlushData(recordsFlushed: 0, flushInProgress: true)
         }
 
@@ -61,7 +61,7 @@ actor RecordClient {
                     try await group.waitForAll()
                 }
             } catch {
-                logger?.error("Failed to submit batch for stream \(streamName): \(error)")
+                logger.error("Failed to submit batch for stream \(streamName)", error)
                 throw error
             }
         }

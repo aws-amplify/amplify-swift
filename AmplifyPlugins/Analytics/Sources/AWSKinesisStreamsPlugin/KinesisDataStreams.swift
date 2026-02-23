@@ -8,6 +8,8 @@
 import Amplify
 import AWSPluginsCore
 import InternalAmplifyCredentials
+import AmplifyFoundation
+import AmplifyFoundationBridge
 import Foundation
 import AWSKinesis
 import AWSClientRuntime
@@ -23,7 +25,7 @@ public class KinesisDataStreams {
     private let recordClient: RecordClient
     private let options: Options
     private let scheduler: AutoFlushScheduler
-    private let logger: Logger?
+    private let logger: AmplifyFoundation.Logger
     private let isEnabled = OSAllocatedUnfairLock(initialState: false)
 
     /// Configuration options for KinesisDataStreams
@@ -36,7 +38,6 @@ public class KinesisDataStreams {
         public let maxRecords: Int
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
-        public let logger: Logger?
         public let configureClient: KinesisClientConfigurationProvider?
 
         public init(
@@ -44,14 +45,12 @@ public class KinesisDataStreams {
             maxRecords: Int = defaultMaxRecords,
             maxRetries: Int = defaultMaxRetries,
             flushStrategy: FlushStrategy = .interval(),
-            logger: Logger? = nil,
             configureClient: KinesisClientConfigurationProvider? = nil
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRecords = maxRecords
             self.maxRetries = maxRetries
             self.flushStrategy = flushStrategy
-            self.logger = logger
             self.configureClient = configureClient
         }
     }
@@ -59,22 +58,27 @@ public class KinesisDataStreams {
     /// Initializes a new KinesisDataStreams instance
     /// - Parameters:
     ///   - region: AWS region
-    ///   - credentialsProvider: Optional custom credential identity resolver. If nil, uses Amplify Auth credentials.
+    ///   - credentialsProvider: Optional custom credentials provider. If nil, uses Amplify Auth credentials.
     ///   - options: Configuration options
     public init(
         region: String,
-        credentialsProvider: (any AWSCredentialIdentityResolver)? = nil, // TODO: Pending V3 types
+        credentialsProvider: (any AmplifyFoundation.AWSCredentialsProvider)? = nil,
         options: Options = Options()
     ) throws {
         self.options = options
-        self.logger = options.logger
+        self.logger = AmplifyLogging.logger(for: String(describing: Self.self))
 
         // Create Kinesis client configuration
         var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
 
         // Set credentials provider - use provided resolver or default to Amplify Auth
-        let resolver = credentialsProvider ?? AWSAuthService().getCredentialIdentityResolver()
-        clientConfig.awsCredentialIdentityResolver = resolver
+        if let credentialsProvider = credentialsProvider {
+            // Bridge the foundation credentials provider to SDK resolver
+            clientConfig.awsCredentialIdentityResolver = credentialsProvider as? any AWSCredentialIdentityResolver
+                ?? AWSAuthService().getCredentialIdentityResolver()
+        } else {
+            clientConfig.awsCredentialIdentityResolver = AWSAuthService().getCredentialIdentityResolver()
+        }
 
         // Apply custom configuration if provided
         if let configureClient = options.configureClient {
@@ -97,8 +101,7 @@ public class KinesisDataStreams {
 
         self.recordClient = RecordClient(
             sender: sender,
-            storage: storage,
-            logger: options.logger
+            storage: storage
         )
 
         // Create and setup flush scheduler
@@ -122,7 +125,7 @@ public class KinesisDataStreams {
     /// - Throws: KinesisError if the record cannot be saved
     public func record(data: Data, partitionKey: String, streamName: String) async throws {
         guard isEnabled.withLock({ $0 }) else {
-            logger?.debug("Record collection is disabled, dropping record")
+            logger.debug("Record collection is disabled, dropping record")
             return
         }
         let input = RecordInput(
