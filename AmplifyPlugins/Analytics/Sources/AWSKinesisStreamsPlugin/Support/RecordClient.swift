@@ -13,7 +13,7 @@ import Foundation
 actor RecordClient {
     private let sender: RecordSender
     private let storage: RecordStorage
-    private let logger: AmplifyFoundation.Logger
+    private let logger = AmplifyLogging.logger(for: String(describing: RecordClient.self))
     private var isFlushing = false
 
     init(
@@ -22,12 +22,12 @@ actor RecordClient {
     ) {
         self.sender = sender
         self.storage = storage
-        self.logger = AmplifyLogging.logger(for: String(describing: Self.self))
     }
 
     /// Records data to local storage
-    func record(_ input: RecordInput) async throws {
+    func record(_ input: RecordInput) async throws -> RecordData {
         try await storage.addRecord(input)
+        return RecordData()
     }
 
     /// Flushes all locally stored records
@@ -42,10 +42,13 @@ actor RecordClient {
 
         var totalFlushed = 0
         let recordsByStreamList = try await storage.getRecordsByStream()
+        logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
 
         for records in recordsByStreamList {
             guard !records.isEmpty else { continue }
             let streamName = records[0].streamName
+            let recordCount = records.count
+            logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
 
             do {
                 let response = try await sender.putRecords(streamName: streamName, records: records)
@@ -60,6 +63,11 @@ actor RecordClient {
                     group.addTask { try await self.storage.deleteRecords(ids: response.failedIds) }
                     try await group.waitForAll()
                 }
+
+                logger.verbose(
+                    "Stream \(streamName): \(response.successfulIds.count) succeeded, " +
+                    "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
+                )
             } catch {
                 logger.error("Failed to submit batch for stream \(streamName)", error)
                 throw error

@@ -8,17 +8,17 @@
 import XCTest
 @testable import AWSKinesisStreamsPlugin
 
-class KinesisDataStreamsResourceCleanupTests: XCTestCase {
+class AmplifyKinesisClientResourceCleanupTests: XCTestCase {
     
     func testDeinitStopsScheduler() async throws {
         // Create a weak reference to track deallocation
-        weak var weakKinesis: KinesisDataStreams?
+        weak var weakKinesis: AmplifyKinesisClient?
         
-        // Create KinesisDataStreams in a scope that will end
+        // Create AmplifyKinesisClient in a scope that will end
         do {
-            let kinesis = try KinesisDataStreams(
+            let kinesis = try AmplifyKinesisClient(
                 region: "us-east-1",
-                options: KinesisDataStreams.Options(
+                options: AmplifyKinesisClient.Options(
                     flushStrategy: .interval(.seconds(1)) // Short interval for testing
                 )
             )
@@ -40,6 +40,6 @@ class KinesisDataStreamsResourceCleanupTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100))
         
         // Verify the object was deallocated (deinit was called)
-        XCTAssertNil(weakKinesis, "KinesisDataStreams should be deallocated")
+        XCTAssertNil(weakKinesis, "AmplifyKinesisClient should be deallocated")
     }
 }

@@ -5,6 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Result data for record operations
+public struct RecordData: Sendable {
+    public init() {}
+}
+
 /// Result of flushing records
 public struct FlushData: Sendable {
     /// The number of records successfully flushed to the remote service.
