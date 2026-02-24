@@ -11,16 +11,39 @@ import Foundation
 import Smithy
 import SmithyIdentity
 
-extension AWSCredentialsProvider where Self: AwsCommonRuntimeKit.CredentialsProviding {
-    public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
+/**
+ Converts CRT credentials provider to AWSCredentialsProvider
+ */
+public extension AWSCredentialsProvider where Self: AwsCommonRuntimeKit.CredentialsProviding {
+    func resolve() async throws -> AWSCredentials {
+        return try await getCredentials().toAWSCredentials()
+    }
+}
+
+/**
+ Converts Smithy credentials provider AWSCredentialsProvider 
+ */
+public extension AWSCredentialsProvider where Self: AWSCredentialIdentityResolver {
+    func resolve() async throws -> AWSCredentials {
+        return try await getIdentity(identityProperties: nil).toAWSCredentials()
+    }
+}
+
+/**
+ Converts AWSCredentialsProvider to CRT credentials provider
+ */
+public extension AwsCommonRuntimeKit.CredentialsProviding where Self: AWSCredentialsProvider {
+    func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
         let credentials = try await resolve()
         return try credentials.toAWSSDKCredentials()
     }
 }
 
-
-extension AWSCredentialsProvider where Self: AWSCredentialIdentityResolver {
-    public func getIdentity(identityProperties: Smithy.Attributes? = nil) async throws -> AWSCredentialIdentity {
+/**
+ Converts AWSCredentialsProvider to Smithy credentials provider
+ */
+public extension AWSCredentialIdentityResolver where Self: AWSCredentialsProvider {
+    func getIdentity(identityProperties: Smithy.Attributes? = nil) async throws -> AWSCredentialIdentity {
         let credentials = try await resolve()
         return try credentials.toAWSCredentialIdentity()
     }
