@@ -10,7 +10,7 @@ import AWSKinesis
 import Foundation
 
 /// Errors that can occur during a [`PutRecords`](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecords.html) operation.
-public enum KinesisPutRecordsSdkError: Error {
+public enum KinesisPutRecordsSdkError {
     /// You do not have the permissions required to perform this operation.
     case accessDenied(AccessDeniedException)
     /// The processing of the request failed because of an unknown error, exception, or failure.
@@ -36,6 +36,38 @@ public enum KinesisPutRecordsSdkError: Error {
     /// An unexpected SDK error.
     case unknown(Error)
 }
+
+extension KinesisPutRecordsSdkError: Error {
+    public var message: String? {
+        switch self {
+        case .accessDenied(let err):
+            return err.properties.message
+        case .internalFailure(let err):
+            return err.properties.message
+        case .invalidArgument(let err):
+            return err.properties.message
+        case .kmsAccessDenied(let err):
+            return err.properties.message
+        case .kmsDisabled(let err):
+            return err.properties.message
+        case .kmsInvalidState(let err):
+            return err.properties.message
+        case .kmsNotFound(let err):
+            return err.properties.message
+        case .kmsOptInRequired(let err):
+            return err.properties.message
+        case .kmsThrottling(let err):
+            return err.properties.message
+        case .provisionedThroughputExceeded(let err):
+            return err.properties.message
+        case .resourceNotFound(let err):
+            return err.properties.message
+        case .unknown:
+            return nil
+        }
+    }
+}
+
 
 /// Top-level error type for KinesisDataStreams operations.
 public enum KinesisError {
@@ -112,7 +144,7 @@ extension KinesisError: AmplifyError {
             )
         }
         return .service(
-            "A service error occurred",
+            sdkError.message ?? "A service error occurred",
             defaultRecoverySuggestion,
             sdkError
         )
