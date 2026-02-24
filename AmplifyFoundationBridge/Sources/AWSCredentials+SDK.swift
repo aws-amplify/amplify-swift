@@ -10,7 +10,7 @@ import AwsCommonRuntimeKit
 import Foundation
 import SmithyIdentity
 
-extension AWSCredentials {
+public extension AWSCredentials {
 
     func toAWSSDKCredentials() throws -> AwsCommonRuntimeKit.Credentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {
@@ -36,4 +36,58 @@ extension AWSCredentials {
             sessionToken: (self as? AWSTemporaryCredentials)?.sessionToken
         )
     }
+}
+
+public extension AwsCommonRuntimeKit.Credentials {
+    
+    func toAWSCredentials() throws -> AWSCredentials {
+        guard let accessKeyId = getAccessKey(), let secretAccessKey = getSecret() else {
+            throw FoundationBridgeError.unknown("CRT Credentials do not contain accessKeyId or secretAccessKey.")
+        }
+        
+        guard let sessionToken = getSessionToken(), let expiration = getExpiration() else {
+            return FoundationBridgeStaticCredentials(
+                accessKeyId: accessKeyId,
+                secretAccessKey: secretAccessKey
+            )
+        }
+        
+        return FoundationBridgeTemporaryCredentials(
+            sessionToken: sessionToken,
+            expiration: expiration,
+            accessKeyId: accessKeyId,
+            secretAccessKey: secretAccessKey
+        )
+    }
+}
+
+public extension SmithyIdentity.AWSCredentialIdentity {
+    func toAWSCredentials() throws -> AWSCredentials {
+        
+        guard let sessionToken = sessionToken,
+              let expiration = expiration  else {
+            return FoundationBridgeStaticCredentials(
+                accessKeyId: accessKey,
+                secretAccessKey: secret
+            )
+        }
+        
+        return FoundationBridgeTemporaryCredentials(
+            sessionToken: sessionToken,
+            expiration: expiration,
+            accessKeyId: accessKey,
+            secretAccessKey: secret)
+    }
+}
+
+struct FoundationBridgeStaticCredentials: AWSCredentials {
+    public var accessKeyId: String
+    public var secretAccessKey: String
+}
+
+struct FoundationBridgeTemporaryCredentials: AWSTemporaryCredentials {
+    public var sessionToken: String
+    public var expiration: Date
+    public var accessKeyId: String
+    public var secretAccessKey: String
 }
