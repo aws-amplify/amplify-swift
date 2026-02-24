@@ -34,7 +34,7 @@ actor SQLiteRecordStorage: RecordStorage {
         // Setup database connection and schema
         let connection = try Self.setupDatabase(identifier: identifier)
         self.db = connection
-        
+
         // Initialize cached size from database
         do {
             let size = try connection.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
@@ -43,7 +43,7 @@ actor SQLiteRecordStorage: RecordStorage {
             self.cachedSize = 0
         }
     }
-    
+
     /// Sets up the database connection and creates tables/indices if needed
     /// This is a static method so it can be called before the actor is fully initialized
     private static func setupDatabase(identifier: String) throws -> Connection {
@@ -62,24 +62,24 @@ actor SQLiteRecordStorage: RecordStorage {
         let dbPath = path.appendingPathComponent("kinesis_records_\(identifier).db").path
         let connection = try Connection(dbPath)
 
-        try connection.run(records.create(ifNotExists: true) { t in
-            t.column(id, primaryKey: .autoincrement)
-            t.column(streamName)
-            t.column(partitionKey)
-            t.column(data)
-            t.column(dataSize)
-            t.column(retryCount, defaultValue: 0)
-            t.column(createdAt, defaultValue: Date().timeIntervalSince1970)
+        try connection.run(records.create(ifNotExists: true) { table in
+            table.column(id, primaryKey: .autoincrement)
+            table.column(streamName)
+            table.column(partitionKey)
+            table.column(data)
+            table.column(dataSize)
+            table.column(retryCount, defaultValue: 0)
+            table.column(createdAt, defaultValue: Date().timeIntervalSince1970)
         })
 
         try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
         try connection.execute("CREATE INDEX IF NOT EXISTS idx_data_size ON records (data_size)")
-        
+
         return connection
     }
 
     func addRecord(_ input: RecordInput) throws {
-        // Check cache size limit before adding 
+        // Check cache size limit before adding
         if cachedSize + Int64(input.dataSize) > maxBytes {
             throw RecordCacheError.limitExceeded(
                 "Cache size limit exceeded: \(cachedSize + Int64(input.dataSize)) bytes > \(maxBytes) bytes",
@@ -95,7 +95,7 @@ actor SQLiteRecordStorage: RecordStorage {
             Self.retryCount <- 0,
             Self.createdAt <- Date().timeIntervalSince1970
         )
-        
+
         try db.run(insert)
         cachedSize += Int64(input.dataSize)
     }
@@ -113,9 +113,9 @@ actor SQLiteRecordStorage: RecordStorage {
             WHERE rn <= ? AND running_size <= ?
             ORDER BY stream_name, id
             """
-        
+
         var recordsByStream: [String: [Record]] = [:]
-        
+
         for row in try db.prepare(query, maxRecords, maxBytes) {
             guard let id = row[0] as? Int64,
                   let streamName = row[1] as? String,
@@ -128,7 +128,7 @@ actor SQLiteRecordStorage: RecordStorage {
                     "Database may be corrupted. Try calling clearCache()"
                 )
             }
-            
+
             let record = Record(
                 id: id,
                 streamName: streamName,
@@ -137,10 +137,10 @@ actor SQLiteRecordStorage: RecordStorage {
                 retryCount: Int(retryCount),
                 createdAt: Date(timeIntervalSince1970: createdAt)
             )
-            
+
             recordsByStream[record.streamName, default: []].append(record)
         }
-        
+
         // Return as list of lists to match Android
         return Array(recordsByStream.values)
     }
@@ -150,10 +150,10 @@ actor SQLiteRecordStorage: RecordStorage {
 
         let placeholders = ids.map { _ in "?" }.joined(separator: ",")
         let sql = "DELETE FROM records WHERE id IN (\(placeholders))"
-        
+
         let statement = try db.prepare(sql)
         try statement.run(ids.map { $0 as Binding })
-        
+
         try resetCacheSizeFromDb()
     }
 
@@ -162,7 +162,7 @@ actor SQLiteRecordStorage: RecordStorage {
 
         let placeholders = ids.map { _ in "?" }.joined(separator: ",")
         let sql = "UPDATE records SET retry_count = retry_count + 1 WHERE id IN (\(placeholders))"
-        
+
         let statement = try db.prepare(sql)
         try statement.run(ids.map { $0 as Binding })
     }
