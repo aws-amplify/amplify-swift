@@ -17,7 +17,6 @@ extension FoundationBridgeError: AmplifyError {
         case .unknown(let description, _):
             return "An unexpected error occurred with message: \(description)"
         }
-
     }
 
     public var recoverySuggestion: RecoverySuggestion {
