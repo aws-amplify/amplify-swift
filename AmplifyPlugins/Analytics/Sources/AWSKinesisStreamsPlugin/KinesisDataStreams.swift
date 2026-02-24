@@ -6,11 +6,12 @@
 //
 
 import Amplify
-import AWSPluginsCore
-import InternalAmplifyCredentials
-import Foundation
-import AWSKinesis
 import AWSClientRuntime
+import AWSKinesis
+import AWSPluginsCore
+import Foundation
+import InternalAmplifyCredentials
+@preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
 @preconcurrency import struct os.OSAllocatedUnfairLock
 
@@ -28,7 +29,7 @@ public class KinesisDataStreams {
 
     /// Configuration options for KinesisDataStreams
     public struct Options {
-        public static let defaultCacheMaxBytes: Int64 = 5 * 1024 * 1024 // 5MB
+        public static let defaultCacheMaxBytes: Int64 = 5 * 1_024 * 1_024 // 5MB
         public static let defaultMaxRecords: Int = 500
         public static let defaultMaxRetries: Int = 5
 

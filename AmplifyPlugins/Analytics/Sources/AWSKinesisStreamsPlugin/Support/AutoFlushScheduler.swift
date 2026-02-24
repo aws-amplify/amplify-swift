@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AsyncAlgorithms
 import Amplify
+import AsyncAlgorithms
+import Foundation
 
 /// Schedules automatic flushing of records at a specified interval
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
