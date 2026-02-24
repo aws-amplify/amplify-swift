@@ -154,16 +154,6 @@ actor SQLiteRecordStorage: RecordStorage {
                 recordsByStream[record.streamName, default: []].append(record)
             }
 
-            // Verify max count per stream (defensive coding)
-            for (streamName, records) in recordsByStream {
-                guard records.count <= maxRecords else {
-                    throw RecordCacheError.database(
-                        "Stream '\(streamName)' exceeded max records limit: \(records.count) > \(maxRecords)",
-                        defaultRecoverySuggestion
-                    )
-                }
-            }
-
             // Return as list of lists to match Android
             return Array(recordsByStream.values)
         }
