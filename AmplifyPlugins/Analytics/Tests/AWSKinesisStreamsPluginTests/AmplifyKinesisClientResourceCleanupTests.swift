@@ -7,6 +7,19 @@
 
 import XCTest
 @testable import AWSKinesisStreamsPlugin
+import AmplifyFoundation
+
+// Mock credentials provider for testing
+struct MockCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider {
+    func resolve() async throws -> AmplifyFoundation.AWSCredentials {
+        return MockCredentials()
+    }
+}
+
+struct MockCredentials: AmplifyFoundation.AWSCredentials {
+    var accessKeyId: String { "mock-access-key" }
+    var secretAccessKey: String { "mock-secret-key" }
+}
 
 class AmplifyKinesisClientResourceCleanupTests: XCTestCase {
     
@@ -18,6 +31,7 @@ class AmplifyKinesisClientResourceCleanupTests: XCTestCase {
         do {
             let kinesis = try AmplifyKinesisClient(
                 region: "us-east-1",
+                credentialsProvider: MockCredentialsProvider(),
                 options: AmplifyKinesisClient.Options(
                     flushStrategy: .interval(.seconds(1)) // Short interval for testing
                 )

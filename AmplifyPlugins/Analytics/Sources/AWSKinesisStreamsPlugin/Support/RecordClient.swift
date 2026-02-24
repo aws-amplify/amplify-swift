@@ -13,7 +13,7 @@ import Foundation
 actor RecordClient {
     private let sender: RecordSender
     private let storage: RecordStorage
-    private let logger = AmplifyLogging.logger(for: String(describing: RecordClient.self))
+    private let logger = AmplifyFoundation.AmplifyLogging.logger(for: RecordClient.self)
     private var isFlushing = false
 
     init(

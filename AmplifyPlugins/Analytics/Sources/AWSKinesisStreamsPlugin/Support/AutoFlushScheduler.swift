@@ -15,7 +15,7 @@ import AmplifyFoundation
 actor AutoFlushScheduler {
     private let interval: Duration
     private let recordClient: RecordClient
-    private let logger = AmplifyLogging.logger(for: String(describing: AutoFlushScheduler.self))
+    private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AutoFlushScheduler.self)
     private var flushTask: Task<Void, Never>?
 
     init(interval: Duration, recordClient: RecordClient) {

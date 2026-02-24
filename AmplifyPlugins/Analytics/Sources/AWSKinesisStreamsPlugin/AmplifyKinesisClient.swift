@@ -46,13 +46,24 @@ private let maxRecordsPerStream = 500
 /// // Flush cached records
 /// let flushResult = try await kinesis.flush()
 /// ```
+///
+/// Converting AWS SDK v2 credentials provider to v3:
+/// ```swift
+/// // V2 credentials provider (from Auth Plugin)
+/// let provider = ... //TODO
+///
+/// let kinesis = try AmplifyKinesisClient(
+///     region: "us-east-1",
+///     credentialsProvider: provider
+/// )
+/// ```
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
 public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
     private let recordClient: RecordClient
     private let options: Options
     private let scheduler: AutoFlushScheduler
-    private let logger = AmplifyLogging.logger(for: String(describing: AmplifyKinesisClient.self))
+    private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabled = OSAllocatedUnfairLock(initialState: false)
 
     /// Configuration options for AmplifyKinesisClient
@@ -81,11 +92,11 @@ public class AmplifyKinesisClient {
     /// Initializes a new AmplifyKinesisClient instance
     /// - Parameters:
     ///   - region: AWS region
-    ///   - credentialsProvider: Optional custom credentials provider. If nil, uses Amplify Auth credentials.
+    ///   - credentialsProvider: Foundation credential provider for AWS authentication
     ///   - options: Configuration options
     public init(
         region: String,
-        credentialsProvider: (any AmplifyFoundation.AWSCredentialsProvider)? = nil,
+        credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
         options: Options = Options()
     ) throws {
         self.options = options
@@ -93,14 +104,9 @@ public class AmplifyKinesisClient {
         // Create Kinesis client configuration
         var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
 
-        // Set credentials provider - use provided resolver or default to Amplify Auth
-        if let credentialsProvider = credentialsProvider {
-            // Bridge the foundation credentials provider to SDK resolver
-            clientConfig.awsCredentialIdentityResolver = credentialsProvider as? any AWSCredentialIdentityResolver
-                ?? AWSAuthService().getCredentialIdentityResolver()
-        } else {
-            clientConfig.awsCredentialIdentityResolver = AWSAuthService().getCredentialIdentityResolver()
-        }
+        // Bridge the foundation credentials provider to SDK resolver
+        clientConfig.awsCredentialIdentityResolver = credentialsProvider as? any AWSCredentialIdentityResolver
+            ?? AWSAuthService().getCredentialIdentityResolver()
 
         // Apply custom configuration if provided
         if let configureClient = options.configureClient {
