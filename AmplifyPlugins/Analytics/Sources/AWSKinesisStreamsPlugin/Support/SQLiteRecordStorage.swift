@@ -121,7 +121,15 @@ actor SQLiteRecordStorage: RecordStorage {
 
             var recordsByStream: [String: [Record]] = [:]
 
-            for row in try database.prepare(query, maxRecords, maxBytes) {
+            for row: Statement.Element in try database.prepare(query, maxRecords, maxBytes) {
+                // Ensure row has expected number of columns (in case DB format is invalid)
+                guard row.count >= 7 else {
+                    throw RecordCacheError.database(
+                        "Unexpected row format: expected 7 columns, got \(row.count)",
+                        defaultRecoverySuggestion
+                    )
+                }
+                
                 guard let id = row[0] as? Int64,
                       let streamName = row[1] as? String,
                       let partitionKey = row[2] as? String,
@@ -144,6 +152,16 @@ actor SQLiteRecordStorage: RecordStorage {
                 )
 
                 recordsByStream[record.streamName, default: []].append(record)
+            }
+
+            // Verify max count per stream (defensive coding)
+            for (streamName, records) in recordsByStream {
+                guard records.count <= maxRecords else {
+                    throw RecordCacheError.database(
+                        "Stream '\(streamName)' exceeded max records limit: \(records.count) > \(maxRecords)",
+                        defaultRecoverySuggestion
+                    )
+                }
             }
 
             // Return as list of lists to match Android
