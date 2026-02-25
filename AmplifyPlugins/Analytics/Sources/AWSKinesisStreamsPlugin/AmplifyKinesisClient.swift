@@ -109,7 +109,7 @@ public class AmplifyKinesisClient {
         var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
 
         // Use the bridge adapter to convert foundation credentials provider to SDK resolver
-        clientConfig.awsCredentialIdentityResolver = credentialsProvider as (any SmithyIdentity.AWSCredentialIdentityResolver) // TODO: We will need to bridge this
+        clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
 
         // Apply custom configuration if provided
         if let configureClient = options.configureClient {
