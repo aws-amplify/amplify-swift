@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+import AmplifyFoundation
 import Foundation
 
 /// Default recovery suggestion for errors.

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+import AmplifyFoundation
 import AWSKinesis
 import Foundation
 
@@ -117,7 +117,7 @@ extension KinesisError: AmplifyError {
     public init(
         errorDescription: ErrorDescription,
         recoverySuggestion: RecoverySuggestion,
-        error: Error
+        error: Error?
     ) {
         if let error = error as? Self {
             self = error

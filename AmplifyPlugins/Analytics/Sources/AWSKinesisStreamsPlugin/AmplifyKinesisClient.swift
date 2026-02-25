@@ -5,20 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
-import InternalAmplifyCredentials
 import AmplifyFoundation
 import AmplifyFoundationBridge
-import Foundation
-import AWSKinesis
 import AWSClientRuntime
 import AWSKinesis
-import AWSPluginsCore
 import Foundation
-import InternalAmplifyCredentials
 @preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
-@preconcurrency import struct os.OSAllocatedUnfairLock
 
 public typealias KinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
 
