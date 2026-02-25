@@ -496,17 +496,51 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets
-    + apiTargets
-    + authTargets
-    + dataStoreTargets
-    + storageTargets
-    + geoTargets
-    + analyticsTargets
-    + pushNotificationsTargets
-    + internalPinpointTargets
-    + predictionsTargets
-    + loggingTargets
+let foundationTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundation",
+        dependencies: [],
+        path: "AmplifyFoundation/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationTests",
+        dependencies: ["AmplifyFoundation"],
+        path: "AmplifyFoundation/Tests"
+    ),
+]
+
+let foundationBridgeTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundationBridge",
+        dependencies: [
+            "AmplifyFoundation",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyFoundationBridge/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationBridgeTests",
+        dependencies: [
+            "AmplifyFoundationBridge"
+        ],
+        path: "AmplifyFoundationBridge/Tests"
+    ),
+]
+
+var targets: [Target] = []
+targets.append(contentsOf: amplifyTargets)
+targets.append(contentsOf: apiTargets)
+targets.append(contentsOf: authTargets)
+targets.append(contentsOf: dataStoreTargets)
+targets.append(contentsOf: storageTargets)
+targets.append(contentsOf: geoTargets)
+targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: pushNotificationsTargets)
+targets.append(contentsOf: internalPinpointTargets)
+targets.append(contentsOf: predictionsTargets)
+targets.append(contentsOf: loggingTargets)
+targets.append(contentsOf: foundationTargets)
+targets.append(contentsOf: foundationBridgeTargets)
 
 let package = Package(
     name: "Amplify",
@@ -563,6 +597,14 @@ let package = Package(
         .library(
             name: "AWSKinesisStreamsPlugin",
             targets: ["AWSKinesisStreamsPlugin"]
+        ),
+        .library(
+            name: "AmplifyFoundation",
+            targets: ["AmplifyFoundation"]
+        ),
+        .library(
+            name: "AmplifyFoundationBridge",
+            targets: ["AmplifyFoundationBridge"]
         ),
     ],
     dependencies: dependencies,

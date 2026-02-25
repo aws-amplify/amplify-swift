@@ -76,7 +76,9 @@ jobs:
           AWSPredictionsPlugin,
           AWSPinpointAnalyticsPlugin,
           AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin
+          AWSS3StoragePlugin,
+          AmplifyFoundation,
+          AmplifyFoundationBridge
         ]
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
@@ -101,7 +103,9 @@ jobs:
           { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' }
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
+          { scheme: AmplifyFoundation, flags: 'Amplify_Foundation_unit_test,unit_tests' },
+          { scheme: AmplifyFoundationBridge, flags: 'Amplify_Foundation_Bridge_unit_test,unit_tests' }
         ]
     uses: ./.github/workflows/upload_coverage_report.yml
     with:
