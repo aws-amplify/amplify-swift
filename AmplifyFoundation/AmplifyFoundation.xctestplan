@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "ED15D4A7-6C95-44D8-AEB3-02F1B0880CFF",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AmplifyFoundationTests",
+        "name" : "AmplifyFoundationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
