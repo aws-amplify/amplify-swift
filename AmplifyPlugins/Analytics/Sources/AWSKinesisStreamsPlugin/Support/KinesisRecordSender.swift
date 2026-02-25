@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSKinesis
+import Foundation
 
 /// Protocol wrapper for KinesisClient to enable dependency injection for testing
 /// Implementations must be thread-safe as they will be used from actor contexts
@@ -48,14 +48,9 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
             records: kinesisRecords,
             streamName: streamName
         )
-
-        let output: PutRecordsOutput
-        do {
-            output = try await kinesisClient.putRecords(input: input)
-        } catch {
-            throw KinesisError.from(error)
-        }
-
+        
+        let output: PutRecordsOutput = try await kinesisClient.putRecords(input: input)
+        
         var successfulIds: [Int64] = []
         var retryableIds: [Int64] = []
         var failedIds: [Int64] = []
@@ -66,11 +61,12 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
         for (record, resultEntry) in zip(records, output.records ?? []) {
             if resultEntry.errorCode == nil {
                 successfulIds.append(record.id)
-            } else if record.retryCount >= self.maxRetries {
-                // According to AWS SDK documentation, `PutRecordsResultEntry.errorCode` can be:
-                // - `ProvisionedThroughputExceededException`: Retryable - throughput limit exceeded
-                // - `InternalFailure`: Retryable - internal service error
-                // Both are retried, but if max retries exceeded, mark as failed
+            }
+            // According to AWS SDK documentation, `PutRecordsResultEntry.errorCode` can be:
+            // - `ProvisionedThroughputExceededException`: Retryable - throughput limit exceeded
+            // - `InternalFailure`: Retryable - internal service error
+            // Both are retried
+            else if record.retryCount >= self.maxRetries {
                 failedIds.append(record.id)
             } else {
                 retryableIds.append(record.id)

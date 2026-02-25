@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import AWSPluginsCore
 import InternalAmplifyCredentials
 import AmplifyFoundation
@@ -13,6 +12,11 @@ import AmplifyFoundationBridge
 import Foundation
 import AWSKinesis
 import AWSClientRuntime
+import AWSKinesis
+import AWSPluginsCore
+import Foundation
+import InternalAmplifyCredentials
+@preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
 @preconcurrency import struct os.OSAllocatedUnfairLock
 
@@ -68,7 +72,7 @@ public class AmplifyKinesisClient {
 
     /// Configuration options for AmplifyKinesisClient
     public struct Options {
-        public static let defaultCacheMaxBytes: Int64 = 5 * 1024 * 1024 // 5MB
+        public static let defaultCacheMaxBytes: Int64 = 5 * 1_024 * 1_024 // 5MB
         public static let defaultMaxRetries: Int = 5
 
         public let cacheMaxBytes: Int64
