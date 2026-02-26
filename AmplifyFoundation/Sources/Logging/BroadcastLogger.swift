@@ -8,7 +8,7 @@
 /// This class acts as a layer of indirection conforming to Logger
 /// protocol that delegates all work to its sinks.
 ///
-final class BroadcastLogger {
+final class BroadcastLogger: Sendable {
     
     let sinks: [any LogSinkBehavior]
     let name: String

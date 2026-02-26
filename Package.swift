@@ -372,8 +372,8 @@ let analyticsTargets: [Target] = [
     .target(
         name: "AWSKinesisStreamsPlugin",
         dependencies: [
-            .target(name: "Amplify"),
-            .target(name: "AWSPluginsCore"),
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSKinesis", package: "aws-sdk-swift"),
             .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
@@ -389,8 +389,7 @@ let analyticsTargets: [Target] = [
     .testTarget(
         name: "AWSKinesisStreamsPluginTests",
         dependencies: [
-            "AWSKinesisStreamsPlugin",
-            "AmplifyTestCommon"
+            "AWSKinesisStreamsPlugin"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSKinesisStreamsPluginTests"
     )

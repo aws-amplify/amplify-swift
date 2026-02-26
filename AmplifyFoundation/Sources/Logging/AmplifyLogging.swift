@@ -32,4 +32,8 @@ public final class AmplifyLogging {
             BroadcastLogger(name: name, sinks: Array(registeredLogSinks.values))
         }
     }
+    
+    public static func logger<T>(for type: T.Type) -> Logger {
+        return logger(for: String(describing: type))
+    }
 }

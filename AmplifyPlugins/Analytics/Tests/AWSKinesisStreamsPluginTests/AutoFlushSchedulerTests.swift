@@ -21,8 +21,7 @@ class AutoFlushSchedulerTests: XCTestCase {
         mockSender = MockRecordSender()
         recordClient = RecordClient(
             sender: mockSender,
-            storage: mockStorage,
-            logger: nil
+            storage: mockStorage
         )
     }
     
@@ -140,8 +139,7 @@ class FlushTracker {
     init(storage: MockRecordStorage, sender: MockRecordSender) {
         self.client = RecordClient(
             sender: sender,
-            storage: storage,
-            logger: nil
+            storage: storage
         )
     }
     
