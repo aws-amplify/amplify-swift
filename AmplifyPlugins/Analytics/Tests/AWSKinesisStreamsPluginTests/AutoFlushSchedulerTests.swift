@@ -36,12 +36,12 @@ class AutoFlushSchedulerTests: XCTestCase {
     
     func testStartShouldBeginPeriodicFlushing() async throws {
         // Given
-        let interval: Duration = .seconds(1)
+        let interval: TimeInterval = 1
         scheduler = AutoFlushScheduler(interval: interval, recordClient: recordClient)
         
         // When
         await scheduler.start()
-        try await Task.sleep(for: .seconds(2.5))
+        try await Task.sleep(nanoseconds: 2_500_000_000) // 2.5s
         await scheduler.disable()
         
         // Then - should have called getRecordsByStream at least 2 times (flush calls it)
@@ -52,16 +52,16 @@ class AutoFlushSchedulerTests: XCTestCase {
     
     func testDisableShouldStopPeriodicFlushing() async throws {
         // Given
-        let interval: Duration = .seconds(1)
+        let interval: TimeInterval = 1
         scheduler = AutoFlushScheduler(interval: interval, recordClient: recordClient)
         
         // When
         await scheduler.start()
-        try await Task.sleep(for: .seconds(1.5))
+        try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5s
         await scheduler.disable()
         
         let countAfterDisable = await mockStorage.getRecordsByStreamCallCount
-        try await Task.sleep(for: .seconds(2))
+        try await Task.sleep(nanoseconds: 2_000_000_000) // 2s
         
         // Then - should have flushed exactly 1 time, no more after disable
         XCTAssertEqual(countAfterDisable, 1,
@@ -73,14 +73,14 @@ class AutoFlushSchedulerTests: XCTestCase {
     
     func testStartShouldCancelPreviousJobAndRestart() async throws {
         // Given
-        let interval: Duration = .seconds(1)
+        let interval: TimeInterval = 1
         scheduler = AutoFlushScheduler(interval: interval, recordClient: recordClient)
         
         // When
         await scheduler.start()
-        try await Task.sleep(for: .milliseconds(500))
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5s
         await scheduler.start() // Restart - should cancel previous job
-        try await Task.sleep(for: .seconds(1.5))
+        try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5s
         await scheduler.disable()
         
         // Then - should flush exactly 1 time (from the restarted scheduler)
