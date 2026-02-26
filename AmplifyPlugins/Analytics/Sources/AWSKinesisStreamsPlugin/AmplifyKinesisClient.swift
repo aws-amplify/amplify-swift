@@ -10,7 +10,6 @@ import AmplifyFoundationBridge
 import AWSClientRuntime
 import AWSKinesis
 import Foundation
-@preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
 
 public typealias AmplifyKinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
@@ -56,14 +55,21 @@ private let maxRecordsPerStream = 500
 ///     credentialsProvider: credentialsProvider
 /// )
 /// ```
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
+@available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
     private let recordClient: RecordClient
     private let options: Options
     private let scheduler: AutoFlushScheduler
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
-    private let isEnabled = OSAllocatedUnfairLock(initialState: false)
+    private let isEnabledLock = NSLock()
+    private var _isEnabled = false
+
+    private var isEnabledLocked: Bool {
+        isEnabledLock.lock()
+        defer { isEnabledLock.unlock() }
+        return _isEnabled
+    }
 
     /// Configuration options for AmplifyKinesisClient
     public struct Options {
@@ -131,7 +137,7 @@ public class AmplifyKinesisClient {
         )
 
         // Create and setup flush scheduler
-        let interval: Duration
+        let interval: TimeInterval
         switch options.flushStrategy {
         case .interval(let value):
             interval = value
@@ -152,7 +158,7 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if the record cannot be saved
     @discardableResult
     public func record(data: Data, partitionKey: String, streamName: String) async throws -> RecordData {
-        guard isEnabled.withLock({ $0 }) else {
+        guard isEnabledLocked else {
             logger.debug("Record collection is disabled, dropping record")
             return RecordData()
         }
@@ -198,14 +204,20 @@ public class AmplifyKinesisClient {
     /// Disables record collection and automatic flushing. Records submitted while
     /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
-        isEnabled.withLock { $0 = false }
+        setEnabled(false)
         await scheduler.disable()
     }
 
     /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
-        isEnabled.withLock { $0 = true }
+        setEnabled(true)
         await scheduler.start()
+    }
+
+    private func setEnabled(_ value: Bool) {
+        isEnabledLock.lock()
+        _isEnabled = value
+        isEnabledLock.unlock()
     }
 
     /// Clears all cached records
@@ -251,17 +263,15 @@ public class AmplifyKinesisClient {
     ) async throws -> T {
         var result: T!
         var error: Error?
-        
-        let duration = await ContinuousClock().measure {
-            do {
-                result = try await wrapError(operation)
-            } catch let caughtError {
-                error = caughtError
-            }
+
+        let start = CFAbsoluteTimeGetCurrent()
+        do {
+            result = try await wrapError(operation)
+        } catch let caughtError {
+            error = caughtError
         }
-        
-        let timeMs = Int(duration.components.seconds * 1000 + Int64(duration.components.attoseconds) / 1_000_000_000_000_000)
-        
+        let timeMs = Int((CFAbsoluteTimeGetCurrent() - start) * 1000)
+
         if let error = error {
             logFailure(error, timeMs)
             throw error
