@@ -13,6 +13,7 @@ import Foundation
 import InternalAmplifyCredentials
 @preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
+@preconcurrency import struct os.OSAllocatedUnfairLock
 
 public typealias KinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
 
@@ -119,7 +120,7 @@ public class KinesisDataStreams {
     ///   - data: The data to record
     ///   - partitionKey: The partition key for the record
     ///   - streamName: The name of the Kinesis stream
-    /// - Throws: RecordCacheError if the record cannot be saved
+    /// - Throws: KinesisError if the record cannot be saved
     public func record(data: Data, partitionKey: String, streamName: String) async throws {
         guard isEnabled.withLock({ $0 }) else {
             logger?.debug("Record collection is disabled, dropping record")
@@ -131,15 +132,19 @@ public class KinesisDataStreams {
             data: data
         )
 
-        try await recordClient.record(input)
+        try await wrapError {
+            try await recordClient.record(input)
+        }
     }
 
     /// Flushes all cached records to Kinesis
     /// - Returns: FlushData containing the number of records flushed
-    /// - Throws: Error if flush fails
+    /// - Throws: KinesisError if flush fails
     @discardableResult
     public func flush() async throws -> FlushData {
-        return try await recordClient.flush()
+        try await wrapError {
+            try await recordClient.flush()
+        }
     }
 
     /// Disables record collection and automatic flushing. Records submitted while
@@ -157,15 +162,28 @@ public class KinesisDataStreams {
 
     /// Clears all cached records
     /// - Returns: ClearCacheData containing the number of records cleared
-    /// - Throws: Error if cache cannot be cleared
+    /// - Throws: KinesisError if cache cannot be cleared
     @discardableResult
     public func clearCache() async throws -> ClearCacheData {
-        return try await recordClient.clearCache()
+        try await wrapError {
+            try await recordClient.clearCache()
+        }
     }
 
     /// Returns the underlying Kinesis client for advanced use cases
     public func getKinesisClient() -> AWSKinesis.KinesisClient {
         return kinesisClient
+    }
+
+    /// Wraps an async operation, converting internal errors to KinesisError via ``KinesisError/from(_:)``.
+    private func wrapError<T>(_ operation: () async throws -> T) async throws -> T {
+        do {
+            return try await operation()
+        } catch let error as KinesisError {
+            throw error
+        } catch {
+            throw KinesisError.from(error)
+        }
     }
 
     deinit {
