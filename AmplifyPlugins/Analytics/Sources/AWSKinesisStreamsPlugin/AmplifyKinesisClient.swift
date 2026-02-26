@@ -59,7 +59,7 @@ public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
     private let recordClient: RecordClient
     private let options: Options
-    private let scheduler: AutoFlushScheduler
+    private let scheduler: AutoFlushScheduler?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabled = OSAllocatedUnfairLock(initialState: false)
 
@@ -128,17 +128,22 @@ public class AmplifyKinesisClient {
             storage: storage
         )
 
-        // Create and setup flush scheduler
-        let interval: Duration
+        // Create and setup flush scheduler based on strategy
         switch options.flushStrategy {
-        case .interval(let value):
-            interval = value
-        }
-
+        case .interval(let interval):
         self.scheduler = AutoFlushScheduler(
             interval: interval,
             recordClient: recordClient
         )
+        case .none:
+            // No scheduler needed for manual-only flushing
+            self.scheduler = nil
+        }
+        
+        // Auto-enable the client
+        Task {
+            await self.enable()
+        }
     }
 
     /// Records data to a Kinesis stream
@@ -201,13 +206,13 @@ public class AmplifyKinesisClient {
     /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
         isEnabled.withLock { $0 = false }
-        await scheduler.disable()
+        await scheduler?.disable()
     }
 
     /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
         isEnabled.withLock { $0 = true }
-        await scheduler.start()
+        await scheduler?.start()
     }
 
     /// Clears all cached records
@@ -277,7 +282,7 @@ public class AmplifyKinesisClient {
 
     deinit {
         Task { [scheduler] in
-            await scheduler.disable()
+            await scheduler?.disable()
         }
     }
 }

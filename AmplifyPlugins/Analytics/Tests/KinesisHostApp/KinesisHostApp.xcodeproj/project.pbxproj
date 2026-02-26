@@ -1,0 +1,821 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EA3C8E912F5070AC003FF786 /* AWSKinesisStreamsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */; };
+		EA3C8E932F5070AC003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E922F5070AC003FF786 /* AWSPluginsCore */; };
+		EA3C8E952F5070AC003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E942F5070AC003FF786 /* Amplify */; };
+		EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E962F5070AC003FF786 /* AmplifyFoundation */; };
+		EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */; };
+		EA3C8EA22F50809E003FF786 /* AWSKinesisStreamsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */; };
+		EA3C8EA42F50809E003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA32F50809E003FF786 /* AWSPluginsCore */; };
+		EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA52F50809E003FF786 /* Amplify */; };
+		EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA72F50809E003FF786 /* AmplifyFoundation */; };
+		EA3C8EAA2F50809E003FF786 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA92F50809E003FF786 /* AmplifyFoundationBridge */; };
+		EA3C8EAC2F5080EA003FF786 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EAB2F5080EA003FF786 /* AWSCognitoAuthPlugin */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EA6AF6752F50680800D372FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA6AF65F2F50680500D372FB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA6AF6662F50680500D372FB;
+			remoteInfo = KinesisHostApp;
+		};
+		EA6AF67F2F50680800D372FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA6AF65F2F50680500D372FB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA6AF6662F50680500D372FB;
+			remoteInfo = KinesisHostApp;
+		};
+		EA6AF69B2F506E3500D372FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA6AF65F2F50680500D372FB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA6AF6662F50680500D372FB;
+			remoteInfo = KinesisHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EA6AF6672F50680500D372FB /* KinesisHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KinesisHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6AF6742F50680800D372FB /* KinesisHostAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KinesisHostAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6AF67E2F50680800D372FB /* KinesisHostAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KinesisHostAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6AF6972F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSKinesisStreamsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EA6AF6692F50680500D372FB /* KinesisHostApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KinesisHostApp;
+			sourceTree = "<group>";
+		};
+		EA6AF6772F50680800D372FB /* KinesisHostAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KinesisHostAppTests;
+			sourceTree = "<group>";
+		};
+		EA6AF6812F50680800D372FB /* KinesisHostAppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KinesisHostAppUITests;
+			sourceTree = "<group>";
+		};
+		EA6AF6982F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AWSKinesisStreamsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EA6AF6642F50680500D372FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6712F50680800D372FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF67B2F50680800D372FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6942F506E3500D372FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA3C8EA22F50809E003FF786 /* AWSKinesisStreamsPlugin in Frameworks */,
+				EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */,
+				EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */,
+				EA3C8EAA2F50809E003FF786 /* AmplifyFoundationBridge in Frameworks */,
+				EA3C8EA42F50809E003FF786 /* AWSPluginsCore in Frameworks */,
+				EA3C8E952F5070AC003FF786 /* Amplify in Frameworks */,
+				EA3C8E932F5070AC003FF786 /* AWSPluginsCore in Frameworks */,
+				EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */,
+				EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */,
+				EA3C8EAC2F5080EA003FF786 /* AWSCognitoAuthPlugin in Frameworks */,
+				EA3C8E912F5070AC003FF786 /* AWSKinesisStreamsPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EA3C8E9D2F507EBB003FF786 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EA6AF65E2F50680500D372FB = {
+			isa = PBXGroup;
+			children = (
+				EA6AF6692F50680500D372FB /* KinesisHostApp */,
+				EA6AF6772F50680800D372FB /* KinesisHostAppTests */,
+				EA6AF6812F50680800D372FB /* KinesisHostAppUITests */,
+				EA6AF6982F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests */,
+				EA3C8E9D2F507EBB003FF786 /* Frameworks */,
+				EA6AF6682F50680500D372FB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EA6AF6682F50680500D372FB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EA6AF6672F50680500D372FB /* KinesisHostApp.app */,
+				EA6AF6742F50680800D372FB /* KinesisHostAppTests.xctest */,
+				EA6AF67E2F50680800D372FB /* KinesisHostAppUITests.xctest */,
+				EA6AF6972F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EA6AF6662F50680500D372FB /* KinesisHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6AF6882F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostApp" */;
+			buildPhases = (
+				EA6AF6632F50680500D372FB /* Sources */,
+				EA6AF6642F50680500D372FB /* Frameworks */,
+				EA6AF6652F50680500D372FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EA6AF6692F50680500D372FB /* KinesisHostApp */,
+			);
+			name = KinesisHostApp;
+			packageProductDependencies = (
+			);
+			productName = KinesisHostApp;
+			productReference = EA6AF6672F50680500D372FB /* KinesisHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EA6AF6732F50680800D372FB /* KinesisHostAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6AF68B2F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostAppTests" */;
+			buildPhases = (
+				EA6AF6702F50680800D372FB /* Sources */,
+				EA6AF6712F50680800D372FB /* Frameworks */,
+				EA6AF6722F50680800D372FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA6AF6762F50680800D372FB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA6AF6772F50680800D372FB /* KinesisHostAppTests */,
+			);
+			name = KinesisHostAppTests;
+			packageProductDependencies = (
+			);
+			productName = KinesisHostAppTests;
+			productReference = EA6AF6742F50680800D372FB /* KinesisHostAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EA6AF67D2F50680800D372FB /* KinesisHostAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6AF68E2F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostAppUITests" */;
+			buildPhases = (
+				EA6AF67A2F50680800D372FB /* Sources */,
+				EA6AF67B2F50680800D372FB /* Frameworks */,
+				EA6AF67C2F50680800D372FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA6AF6802F50680800D372FB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA6AF6812F50680800D372FB /* KinesisHostAppUITests */,
+			);
+			name = KinesisHostAppUITests;
+			packageProductDependencies = (
+			);
+			productName = KinesisHostAppUITests;
+			productReference = EA6AF67E2F50680800D372FB /* KinesisHostAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		EA6AF6962F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA6AF69D2F506E3500D372FB /* Build configuration list for PBXNativeTarget "AWSKinesisStreamsPluginIntegrationTests" */;
+			buildPhases = (
+				EA3C8E9C2F50714F003FF786 /* Copy Configuration folder */,
+				EA6AF6932F506E3500D372FB /* Sources */,
+				EA6AF6942F506E3500D372FB /* Frameworks */,
+				EA6AF6952F506E3500D372FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA6AF69C2F506E3500D372FB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA6AF6982F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests */,
+			);
+			name = AWSKinesisStreamsPluginIntegrationTests;
+			packageProductDependencies = (
+				EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */,
+				EA3C8E922F5070AC003FF786 /* AWSPluginsCore */,
+				EA3C8E942F5070AC003FF786 /* Amplify */,
+				EA3C8E962F5070AC003FF786 /* AmplifyFoundation */,
+				EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */,
+				EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */,
+				EA3C8EA32F50809E003FF786 /* AWSPluginsCore */,
+				EA3C8EA52F50809E003FF786 /* Amplify */,
+				EA3C8EA72F50809E003FF786 /* AmplifyFoundation */,
+				EA3C8EA92F50809E003FF786 /* AmplifyFoundationBridge */,
+				EA3C8EAB2F5080EA003FF786 /* AWSCognitoAuthPlugin */,
+			);
+			productName = AWSKinesisStreamsPluginIntegrationTests;
+			productReference = EA6AF6972F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EA6AF65F2F50680500D372FB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					EA6AF6662F50680500D372FB = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					EA6AF6732F50680800D372FB = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = EA6AF6662F50680500D372FB;
+					};
+					EA6AF67D2F50680800D372FB = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = EA6AF6662F50680500D372FB;
+					};
+					EA6AF6962F506E3500D372FB = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = EA6AF6662F50680500D372FB;
+					};
+				};
+			};
+			buildConfigurationList = EA6AF6622F50680500D372FB /* Build configuration list for PBXProject "KinesisHostApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EA6AF65E2F50680500D372FB;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EA6AF6682F50680500D372FB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EA6AF6662F50680500D372FB /* KinesisHostApp */,
+				EA6AF6732F50680800D372FB /* KinesisHostAppTests */,
+				EA6AF67D2F50680800D372FB /* KinesisHostAppUITests */,
+				EA6AF6962F506E3500D372FB /* AWSKinesisStreamsPluginIntegrationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EA6AF6652F50680500D372FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6722F50680800D372FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF67C2F50680800D372FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6952F506E3500D372FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EA3C8E9C2F50714F003FF786 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n   echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n   exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n   rm $DEST_PATH\nfi\n\ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EA6AF6632F50680500D372FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6702F50680800D372FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF67A2F50680800D372FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA6AF6932F506E3500D372FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EA6AF6762F50680800D372FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA6AF6662F50680500D372FB /* KinesisHostApp */;
+			targetProxy = EA6AF6752F50680800D372FB /* PBXContainerItemProxy */;
+		};
+		EA6AF6802F50680800D372FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA6AF6662F50680500D372FB /* KinesisHostApp */;
+			targetProxy = EA6AF67F2F50680800D372FB /* PBXContainerItemProxy */;
+		};
+		EA6AF69C2F506E3500D372FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA6AF6662F50680500D372FB /* KinesisHostApp */;
+			targetProxy = EA6AF69B2F506E3500D372FB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EA6AF6862F50680800D372FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EA6AF6872F50680800D372FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EA6AF6892F50680800D372FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KinesisHostApp/KinesisHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EA6AF68A2F50680800D372FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KinesisHostApp/KinesisHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EA6AF68C2F50680800D372FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KinesisHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KinesisHostApp";
+			};
+			name = Debug;
+		};
+		EA6AF68D2F50680800D372FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KinesisHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KinesisHostApp";
+			};
+			name = Release;
+		};
+		EA6AF68F2F50680800D372FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = KinesisHostApp;
+			};
+			name = Debug;
+		};
+		EA6AF6902F50680800D372FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = KinesisHostApp;
+			};
+			name = Release;
+		};
+		EA6AF69E2F506E3500D372FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.AWSKinesisStreamsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KinesisHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KinesisHostApp";
+			};
+			name = Debug;
+		};
+		EA6AF69F2F506E3500D372FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.AWSKinesisStreamsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KinesisHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KinesisHostApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EA6AF6622F50680500D372FB /* Build configuration list for PBXProject "KinesisHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6AF6862F50680800D372FB /* Debug */,
+				EA6AF6872F50680800D372FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6AF6882F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6AF6892F50680800D372FB /* Debug */,
+				EA6AF68A2F50680800D372FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6AF68B2F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6AF68C2F50680800D372FB /* Debug */,
+				EA6AF68D2F50680800D372FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6AF68E2F50680800D372FB /* Build configuration list for PBXNativeTarget "KinesisHostAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6AF68F2F50680800D372FB /* Debug */,
+				EA6AF6902F50680800D372FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA6AF69D2F506E3500D372FB /* Build configuration list for PBXNativeTarget "AWSKinesisStreamsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA6AF69E2F506E3500D372FB /* Debug */,
+				EA6AF69F2F506E3500D372FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../../amplify-swift";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSKinesisStreamsPlugin;
+		};
+		EA3C8E922F5070AC003FF786 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPluginsCore;
+		};
+		EA3C8E942F5070AC003FF786 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		EA3C8E962F5070AC003FF786 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundation;
+		};
+		EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundationBridge;
+		};
+		EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSKinesisStreamsPlugin;
+		};
+		EA3C8EA32F50809E003FF786 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPluginsCore;
+		};
+		EA3C8EA52F50809E003FF786 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		EA3C8EA72F50809E003FF786 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundation;
+		};
+		EA3C8EA92F50809E003FF786 /* AmplifyFoundationBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundationBridge;
+		};
+		EA3C8EAB2F5080EA003FF786 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../amplify-swift" */;
+			productName = AWSCognitoAuthPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EA6AF65F2F50680500D372FB /* Project object */;
+}
