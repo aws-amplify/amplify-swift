@@ -13,7 +13,7 @@ import Foundation
 @preconcurrency import struct os.OSAllocatedUnfairLock
 import SmithyIdentity
 
-public typealias KinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
+public typealias AmplifyKinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
 
 /**
  * Kinesis supports up to 500 records per stream.
@@ -71,13 +71,13 @@ public class AmplifyKinesisClient {
         public let cacheMaxBytes: Int64
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
-        public let configureClient: KinesisClientConfigurationProvider?
+        public let configureClient: AmplifyKinesisClientConfigurationProvider?
 
         public init(
             cacheMaxBytes: Int64 = defaultCacheMaxBytes,
             maxRetries: Int = defaultMaxRetries,
             flushStrategy: FlushStrategy = .interval(),
-            configureClient: KinesisClientConfigurationProvider? = nil
+            configureClient: AmplifyKinesisClientConfigurationProvider? = nil
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRetries = maxRetries
@@ -259,8 +259,8 @@ public class AmplifyKinesisClient {
         let duration = await ContinuousClock().measure {
             do {
                 result = try await operation()
-            } catch let e {
-                error = e
+            } catch let caughtError {
+                error = caughtError
             }
         }
         
