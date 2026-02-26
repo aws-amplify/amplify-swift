@@ -46,12 +46,14 @@ private let maxRecordsPerStream = 500
 ///
 /// Converting AWS SDK v2 credentials provider to v3:
 /// ```swift
-/// // V2 credentials provider (from Auth Plugin)
-/// let provider = ... //TODO
+/// // Create credentials provider from Amplify Auth
+/// let credentialsProvider = SDKToFoundationCredentialsAdapter(
+///     resolver: AWSAuthService().getCredentialIdentityResolver()
+/// )
 ///
 /// let kinesis = try AmplifyKinesisClient(
 ///     region: "us-east-1",
-///     credentialsProvider: provider
+///     credentialsProvider: credentialsProvider
 /// )
 /// ```
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
@@ -65,17 +67,20 @@ public class AmplifyKinesisClient {
 
     /// Configuration options for AmplifyKinesisClient
     public struct Options {
-        public static let defaultCacheMaxBytes: Int64 = 5 * 1_024 * 1_024 // 5MB
-        public static let defaultMaxRetries: Int = 5
-
         public let cacheMaxBytes: Int64
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
+
+        /// Optional closure for advanced customization of the underlying `KinesisClientConfiguration`.
+        ///
+        /// This closure is applied before the credentials resolver is set. The `credentialsProvider`
+        /// passed to ``AmplifyKinesisClient/init(region:credentialsProvider:options:)`` will always
+        /// take precedence over any `awsCredentialIdentityResolver` set in this closure.
         public let configureClient: AmplifyKinesisClientConfigurationProvider?
 
         public init(
-            cacheMaxBytes: Int64 = defaultCacheMaxBytes,
-            maxRetries: Int = defaultMaxRetries,
+            cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
+            maxRetries: Int = 5,
             flushStrategy: FlushStrategy = .interval(),
             configureClient: AmplifyKinesisClientConfigurationProvider? = nil
         ) {
@@ -101,13 +106,10 @@ public class AmplifyKinesisClient {
         // Create Kinesis client configuration
         var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
 
-        // Use the bridge adapter to convert foundation credentials provider to SDK resolver
-        clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
-
-        // Apply custom configuration if provided
         if let configureClient = options.configureClient {
             configureClient(&clientConfig)
         }
+        clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
 
         self.kinesisClient = AWSKinesis.KinesisClient(config: clientConfig)
 
@@ -156,22 +158,20 @@ public class AmplifyKinesisClient {
         }
         logger.verbose("Recording to stream: \(streamName)")
         
-        return try await logOp(
+        return try await wrapErrorAndLog(
             operation: {
                 let input = RecordInput(
                     streamName: streamName,
                     partitionKey: partitionKey,
                     data: data
                 )
-                return try await wrapError {
-                    try await recordClient.record(input)
-                }
+                return try await recordClient.record(input)
             },
             logSuccess: { _, timeMs in
                 logger.debug("Record completed successfully in \(timeMs)ms")
             },
             logFailure: { error, timeMs in
-                logger.warn("Record failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.error("Record failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -182,17 +182,15 @@ public class AmplifyKinesisClient {
     @discardableResult
     public func flush() async throws -> FlushData {
         logger.info("Starting flush")
-        return try await logOp(
+        return try await wrapErrorAndLog(
             operation: {
-                try await wrapError {
-                    try await recordClient.flush()
-                }
+                try await recordClient.flush()
             },
             logSuccess: { data, timeMs in
                 logger.info("Flush completed successfully in \(timeMs)ms - \(data.recordsFlushed) records flushed")
             },
             logFailure: { error, timeMs in
-                logger.warn("Flush failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.error("Flush failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -216,17 +214,15 @@ public class AmplifyKinesisClient {
     @discardableResult
     public func clearCache() async throws -> ClearCacheData {
         logger.info("Clearing cache")
-        return try await logOp(
+        return try await wrapErrorAndLog(
             operation: {
-                try await wrapError {
-                    try await recordClient.clearCache()
-                }
+                try await recordClient.clearCache()
             },
             logSuccess: { data, timeMs in
                 logger.info("Clear cache completed successfully in \(timeMs)ms - \(data.recordsCleared) records cleared")
             },
             logFailure: { error, timeMs in
-                logger.warn("Clear cache failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.error("Clear cache failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -247,8 +243,8 @@ public class AmplifyKinesisClient {
         }
     }
 
-    /// Measures and logs the execution time of an async operation
-    private func logOp<T>(
+    /// Measures and logs the execution time of an async operation, wrapping errors via ``KinesisError/from(_:)``.
+    private func wrapErrorAndLog<T>(
         operation: () async throws -> T,
         logSuccess: (T, Int) -> Void,
         logFailure: (Error, Int) -> Void
@@ -258,7 +254,7 @@ public class AmplifyKinesisClient {
         
         let duration = await ContinuousClock().measure {
             do {
-                result = try await operation()
+                result = try await wrapError(operation)
             } catch let caughtError {
                 error = caughtError
             }
