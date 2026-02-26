@@ -86,7 +86,7 @@ class AWSKinesisStreamsPluginIntegrationTests: XCTestCase {
 
     override func tearDown() async throws {
         await kinesis?.disable()
-        try? await kinesis?.clearCache()
+        _ = try? await kinesis?.clearCache()
         _ = await Amplify.Auth.signOut()
         await Amplify.reset()
     }
