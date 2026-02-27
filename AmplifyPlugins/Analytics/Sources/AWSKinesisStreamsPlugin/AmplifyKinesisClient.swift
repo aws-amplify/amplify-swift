@@ -137,7 +137,6 @@ public class AmplifyKinesisClient {
         )
 
         // Create and setup flush scheduler
-        let interval: TimeInterval
         switch options.flushStrategy {
         case .interval(let interval):
             self.scheduler = AutoFlushScheduler(
@@ -205,13 +204,13 @@ public class AmplifyKinesisClient {
     /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
         setEnabled(false)
-        await scheduler.disable()
+        await scheduler?.disable()
     }
 
     /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
         setEnabled(true)
-        await scheduler.start()
+        await scheduler?.start()
     }
 
     private func setEnabled(_ value: Bool) {
