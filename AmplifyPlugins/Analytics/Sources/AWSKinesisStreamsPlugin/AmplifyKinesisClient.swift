@@ -60,10 +60,10 @@ public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
     private let recordClient: RecordClient
     private let options: Options
-    private let scheduler: AutoFlushScheduler
+    private let scheduler: AutoFlushScheduler?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabledLock = NSLock()
-    private var _isEnabled = false
+    private var _isEnabled = true
 
     private var isEnabledLocked: Bool {
         isEnabledLock.lock()
@@ -137,16 +137,17 @@ public class AmplifyKinesisClient {
         )
 
         // Create and setup flush scheduler
-        let interval: TimeInterval
         switch options.flushStrategy {
-        case .interval(let value):
-            interval = value
+        case .interval(let interval):
+            let scheduler = AutoFlushScheduler(
+                interval: interval,
+                recordClient: recordClient
+            )
+            self.scheduler = scheduler
+            Task { await scheduler.start() }
+        case .none:
+            self.scheduler = nil
         }
-
-        self.scheduler = AutoFlushScheduler(
-            interval: interval,
-            recordClient: recordClient
-        )
     }
 
     /// Records data to a Kinesis stream
@@ -205,13 +206,13 @@ public class AmplifyKinesisClient {
     /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
         setEnabled(false)
-        await scheduler.disable()
+        await scheduler?.disable()
     }
 
     /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
         setEnabled(true)
-        await scheduler.start()
+        await scheduler?.start()
     }
 
     private func setEnabled(_ value: Bool) {
@@ -283,7 +284,7 @@ public class AmplifyKinesisClient {
 
     deinit {
         Task { [scheduler] in
-            await scheduler.disable()
+            await scheduler?.disable()
         }
     }
 }
