@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EA3C8E912F5070AC003FF786 /* AWSKinesisStreamsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */; };
+		EA3C8E912F5070AC003FF786 /* AmplifyKinesisClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E902F5070AC003FF786 /* AmplifyKinesisClient */; };
 		EA3C8E932F5070AC003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E922F5070AC003FF786 /* AWSPluginsCore */; };
 		EA3C8E952F5070AC003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E942F5070AC003FF786 /* Amplify */; };
 		EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E962F5070AC003FF786 /* AmplifyFoundation */; };
 		EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */; };
-		EA3C8EA22F50809E003FF786 /* AWSKinesisStreamsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */; };
+		EA3C8EA22F50809E003FF786 /* AmplifyKinesisClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA12F50809E003FF786 /* AmplifyKinesisClient */; };
 		EA3C8EA42F50809E003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA32F50809E003FF786 /* AWSPluginsCore */; };
 		EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA52F50809E003FF786 /* Amplify */; };
 		EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA72F50809E003FF786 /* AmplifyFoundation */; };
@@ -100,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA3C8EA22F50809E003FF786 /* AWSKinesisStreamsPlugin in Frameworks */,
+				EA3C8EA22F50809E003FF786 /* AmplifyKinesisClient in Frameworks */,
 				EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */,
 				EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */,
 				EA3C8EAA2F50809E003FF786 /* AmplifyFoundationBridge in Frameworks */,
@@ -110,7 +110,7 @@
 				EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */,
 				EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */,
 				EA3C8EAC2F5080EA003FF786 /* AWSCognitoAuthPlugin in Frameworks */,
-				EA3C8E912F5070AC003FF786 /* AWSKinesisStreamsPlugin in Frameworks */,
+				EA3C8E912F5070AC003FF786 /* AmplifyKinesisClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,12 +237,12 @@
 			);
 			name = AWSKinesisStreamsPluginIntegrationTests;
 			packageProductDependencies = (
-				EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */,
+				EA3C8E902F5070AC003FF786 /* AmplifyKinesisClient */,
 				EA3C8E922F5070AC003FF786 /* AWSPluginsCore */,
 				EA3C8E942F5070AC003FF786 /* Amplify */,
 				EA3C8E962F5070AC003FF786 /* AmplifyFoundation */,
 				EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */,
-				EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */,
+				EA3C8EA12F50809E003FF786 /* AmplifyKinesisClient */,
 				EA3C8EA32F50809E003FF786 /* AWSPluginsCore */,
 				EA3C8EA52F50809E003FF786 /* Amplify */,
 				EA3C8EA72F50809E003FF786 /* AmplifyFoundation */,
@@ -760,9 +760,9 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EA3C8E902F5070AC003FF786 /* AWSKinesisStreamsPlugin */ = {
+		EA3C8E902F5070AC003FF786 /* AmplifyKinesisClient */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AWSKinesisStreamsPlugin;
+			productName = AmplifyKinesisClient;
 		};
 		EA3C8E922F5070AC003FF786 /* AWSPluginsCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -780,9 +780,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AmplifyFoundationBridge;
 		};
-		EA3C8EA12F50809E003FF786 /* AWSKinesisStreamsPlugin */ = {
+		EA3C8EA12F50809E003FF786 /* AmplifyKinesisClient */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AWSKinesisStreamsPlugin;
+			productName = AmplifyKinesisClient;
 		};
 		EA3C8EA32F50809E003FF786 /* AWSPluginsCore */ = {
 			isa = XCSwiftPackageProductDependency;
