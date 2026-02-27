@@ -353,7 +353,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n   echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n   exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n   rm $DEST_PATH\nfi\n\ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\necho \"DEBUG: TEMP_FILE=$TEMP_FILE\"\necho \"DEBUG: DEST_PATH=$DEST_PATH\"\necho \"DEBUG: Contents of source dir:\"\nls -la $HOME/.aws-amplify/amplify-ios/testconfiguration/ || echo \"DEBUG: source dir does not exist or is empty\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n   echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n   exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n   rm $DEST_PATH\nfi\n\ncp -r $TEMP_FILE $DEST_PATH\n\necho \"DEBUG: Contents of dest dir:\"\nls -la $DEST_PATH || echo \"DEBUG: dest dir does not exist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
