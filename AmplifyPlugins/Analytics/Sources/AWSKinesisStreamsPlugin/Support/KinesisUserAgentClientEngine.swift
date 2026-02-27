@@ -14,11 +14,11 @@ import SmithyHTTPAPI
 let kinesisPluginVersion = "2.53.3"
 
 /// HTTP client engine wrapper that appends `lib/amplify-swift#<version>` and
-/// `md/kinesis#<version>` to the User-Agent header.
+/// `md/amplify-kinesis#<version>` to the User-Agent header.
 struct KinesisUserAgentClientEngine: HTTPClient {
     private let target: HTTPClient
     private let userAgentKey = "User-Agent"
-    private let userAgentSuffix = "lib/amplify-swift#\(kinesisPluginVersion) md/kinesis#\(kinesisPluginVersion)"
+    private let userAgentSuffix = "lib/amplify-swift#\(kinesisPluginVersion) md/amplify-kinesis#\(kinesisPluginVersion)"
 
     init(target: HTTPClient) {
         self.target = target

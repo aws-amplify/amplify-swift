@@ -66,8 +66,8 @@ class AmplifyKinesisClientUserAgentTests: XCTestCase {
             "User-Agent should contain lib/amplify-swift#\(kinesisPluginVersion), got: \(userAgent)"
         )
         XCTAssertTrue(
-            userAgent.contains("md/kinesis#\(kinesisPluginVersion)"),
-            "User-Agent should contain md/kinesis#\(kinesisPluginVersion), got: \(userAgent)"
+            userAgent.contains("md/amplify-kinesis#\(kinesisPluginVersion)"),
+            "User-Agent should contain md/amplify-kinesis#\(kinesisPluginVersion), got: \(userAgent)"
         )
     }
 }
