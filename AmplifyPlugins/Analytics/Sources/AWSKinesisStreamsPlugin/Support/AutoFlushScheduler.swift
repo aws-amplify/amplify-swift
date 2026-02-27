@@ -6,17 +6,16 @@
 //
 
 import AmplifyFoundation
-import AsyncAlgorithms
+import Foundation
 
 /// Schedules automatic flushing of records at a specified interval
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
 actor AutoFlushScheduler {
-    private let interval: Duration
+    private let interval: TimeInterval
     private let recordClient: RecordClient
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AutoFlushScheduler.self)
     private var flushTask: Task<Void, Never>?
 
-    init(interval: Duration, recordClient: RecordClient) {
+    init(interval: TimeInterval, recordClient: RecordClient) {
         self.interval = interval
         self.recordClient = recordClient
     }
@@ -26,7 +25,13 @@ actor AutoFlushScheduler {
         flushTask?.cancel()
 
         flushTask = Task { [weak self, interval] in
-            for await _ in AsyncTimerSequence.repeating(every: interval) {
+            let nanoseconds = UInt64(interval * 1_000_000_000)
+            while !Task.isCancelled {
+                do {
+                    try await Task.sleep(nanoseconds: nanoseconds)
+                } catch {
+                    break // Task was cancelled
+                }
                 guard let self, !Task.isCancelled else { break }
                 do {
                     let data = try await self.recordClient.flush()

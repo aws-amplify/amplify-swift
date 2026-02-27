@@ -375,8 +375,7 @@ let analyticsTargets: [Target] = [
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifyFoundationBridge"),
             .product(name: "SQLite", package: "SQLite.swift"),
-            .product(name: "AWSKinesis", package: "aws-sdk-swift"),
-            .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            .product(name: "AWSKinesis", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Analytics/Sources/AWSKinesisStreamsPlugin",
         resources: [

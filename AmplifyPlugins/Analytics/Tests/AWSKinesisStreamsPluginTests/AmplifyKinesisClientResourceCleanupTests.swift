@@ -33,7 +33,7 @@ class AmplifyKinesisClientResourceCleanupTests: XCTestCase {
                 region: "us-east-1",
                 credentialsProvider: MockCredentialsProvider(),
                 options: AmplifyKinesisClient.Options(
-                    flushStrategy: .interval(.seconds(1)) // Short interval for testing
+                    flushStrategy: .interval(1) // Short interval for testing
                 )
             )
             
@@ -46,12 +46,12 @@ class AmplifyKinesisClientResourceCleanupTests: XCTestCase {
             XCTAssertNotNil(weakKinesis)
             
             // Let it run briefly
-            try await Task.sleep(for: .milliseconds(100))
+            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
         }
         
         // After scope ends, kinesis should be deallocated
         // Give it a moment for deallocation to complete
-        try await Task.sleep(for: .milliseconds(100))
+        try await Task.sleep(nanoseconds: 100_000_000) // 100ms
         
         // Verify the object was deallocated (deinit was called)
         XCTAssertNil(weakKinesis, "AmplifyKinesisClient should be deallocated")

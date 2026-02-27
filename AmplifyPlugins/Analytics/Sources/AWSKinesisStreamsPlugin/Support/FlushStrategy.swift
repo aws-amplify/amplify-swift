@@ -8,8 +8,7 @@
 import Foundation
 
 /// Strategy for flushing cached records
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, visionOS 1.0, *)
 public enum FlushStrategy: Sendable {
-    case interval(Duration = .seconds(30))
-    case none
+    /// Automatically flush at a regular interval (in seconds). Default is 30 seconds.
+    case interval(TimeInterval = 30)
 }
