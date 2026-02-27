@@ -25,8 +25,19 @@ class TestConfigHelper {
     }
 
     static func retrieve(forResource: String) throws -> Data {
-        guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
-            throw "Could not retrieve configuration file: \(forResource)"
+        let bundle = Bundle(for: self)
+        guard let path = bundle.path(forResource: forResource, ofType: "json") else {
+            let bundlePath = bundle.bundlePath
+            let resourcePath = bundle.resourcePath ?? "nil"
+            let allFiles = (try? FileManager.default.contentsOfDirectory(atPath: resourcePath)) ?? []
+            let testconfigFiles = (try? FileManager.default.contentsOfDirectory(atPath: resourcePath + "/testconfiguration")) ?? ["<testconfiguration dir not found>"]
+            throw """
+                Could not retrieve configuration file: \(forResource)
+                Bundle path: \(bundlePath)
+                Resource path: \(resourcePath)
+                Top-level items (\(allFiles.count)): \(allFiles.sorted().joined(separator: ", "))
+                testconfiguration/ contents: \(testconfigFiles.sorted().joined(separator: ", "))
+                """
         }
         let url = URL(fileURLWithPath: path)
         return try Data(contentsOf: url)
