@@ -8,6 +8,7 @@
 import XCTest
 @testable import AWSKinesisStreamsPlugin
 import AmplifyFoundation
+import AmplifyFoundationBridge
 import AWSKinesis
 import SmithyHTTPAPI
 
@@ -34,7 +35,7 @@ class AmplifyKinesisClientUserAgentTests: XCTestCase {
                 flushStrategy: .none,
                 configureClient: { config in
                     // Replace the HTTP engine with our capturing engine.
-                    // KinesisUserAgentClientEngine wraps whatever engine is set,
+                    // UserAgentClientEngine wraps whatever engine is set,
                     // so we set our capturing engine BEFORE the client applies its wrapper.
                     config.httpClientEngine = capturingEngine
                 }
@@ -61,13 +62,14 @@ class AmplifyKinesisClientUserAgentTests: XCTestCase {
         }
 
         let userAgent = try XCTUnwrap(capturingEngine.capturedUserAgent, "User-Agent header should be captured")
+        let version = AmplifyFoundationVersion.version
         XCTAssertTrue(
-            userAgent.contains("lib/amplify-swift#\(kinesisPluginVersion)"),
-            "User-Agent should contain lib/amplify-swift#\(kinesisPluginVersion), got: \(userAgent)"
+            userAgent.contains("lib/amplify-swift#\(version)"),
+            "User-Agent should contain lib/amplify-swift#\(version), got: \(userAgent)"
         )
         XCTAssertTrue(
-            userAgent.contains("md/amplify-kinesis#\(kinesisPluginVersion)"),
-            "User-Agent should contain md/amplify-kinesis#\(kinesisPluginVersion), got: \(userAgent)"
+            userAgent.contains("md/amplify-kinesis#\(version)"),
+            "User-Agent should contain md/amplify-kinesis#\(version), got: \(userAgent)"
         )
     }
 }

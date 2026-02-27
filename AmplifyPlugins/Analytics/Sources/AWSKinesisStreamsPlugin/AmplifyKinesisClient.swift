@@ -118,8 +118,9 @@ public class AmplifyKinesisClient {
         clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
 
         // Wrap the default HTTP engine to append kinesis user agent metadata
-        clientConfig.httpClientEngine = KinesisUserAgentClientEngine(
-            target: clientConfig.httpClientEngine
+        clientConfig.httpClientEngine = UserAgentClientEngine(
+            target: clientConfig.httpClientEngine,
+            additionalMetadata: ["md/amplify-kinesis"]
         )
 
         self.kinesisClient = AWSKinesis.KinesisClient(config: clientConfig)
