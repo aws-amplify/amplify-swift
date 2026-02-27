@@ -353,7 +353,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\necho \"warning: COPY_CONFIG: TEMP_FILE=$TEMP_FILE\"\necho \"warning: COPY_CONFIG: DEST_PATH=$DEST_PATH\"\necho \"warning: COPY_CONFIG: Source dir contents: $(ls -la $HOME/.aws-amplify/amplify-ios/testconfiguration/ 2>&1 || echo 'NOT FOUND')\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n   echo \"warning: COPY_CONFIG: ${TEMP_FILE} does not exist. Using empty configuration.\"\n   exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n   rm $DEST_PATH\nfi\n\ncp -r $TEMP_FILE $DEST_PATH\n\necho \"warning: COPY_CONFIG: Dest dir contents: $(ls -la $DEST_PATH 2>&1 || echo 'NOT FOUND')\"\n";
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n   echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n   exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n   rm $DEST_PATH\nfi\n\ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -549,9 +549,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -578,9 +580,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.kinesis.KinesisHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Release;
 		};
