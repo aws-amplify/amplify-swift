@@ -222,10 +222,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA6AF69D2F506E3500D372FB /* Build configuration list for PBXNativeTarget "AWSKinesisStreamsPluginIntegrationTests" */;
 			buildPhases = (
-				EA3C8E9C2F50714F003FF786 /* Copy Configuration folder */,
 				EA6AF6932F506E3500D372FB /* Sources */,
 				EA6AF6942F506E3500D372FB /* Frameworks */,
 				EA6AF6952F506E3500D372FB /* Resources */,
+				EA3C8E9C2F50714F003FF786 /* Copy Configuration folder */,
 			);
 			buildRules = (
 			);
