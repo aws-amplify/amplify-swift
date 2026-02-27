@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSKinesisStreamsPlugin
+@testable import AmplifyKinesisClient
 import AWSKinesis
 
 class KinesisRecordSenderTests: XCTestCase {

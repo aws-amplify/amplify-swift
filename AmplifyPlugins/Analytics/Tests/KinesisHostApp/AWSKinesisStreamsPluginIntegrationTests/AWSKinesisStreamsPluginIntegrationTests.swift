@@ -7,7 +7,7 @@
 
 import XCTest
 import AWSCognitoAuthPlugin
-import AWSKinesisStreamsPlugin
+import AmplifyKinesisClient
 import AWSPluginsCore
 import AmplifyFoundation
 import AmplifyFoundationBridge

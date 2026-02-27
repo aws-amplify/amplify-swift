@@ -370,7 +370,7 @@ let analyticsTargets: [Target] = [
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     ),
     .target(
-        name: "AWSKinesisStreamsPlugin",
+        name: "AmplifyKinesisClient",
         dependencies: [
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifyFoundationBridge"),
@@ -386,9 +386,9 @@ let analyticsTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSKinesisStreamsPluginTests",
+        name: "AmplifyKinesisClientTests",
         dependencies: [
-            "AWSKinesisStreamsPlugin"
+            "AmplifyKinesisClient"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSKinesisStreamsPluginTests"
     )
@@ -593,8 +593,8 @@ let package = Package(
             targets: ["AWSCloudWatchLoggingPlugin"]
         ),
         .library(
-            name: "AWSKinesisStreamsPlugin",
-            targets: ["AWSKinesisStreamsPlugin"]
+            name: "AmplifyKinesisClient",
+            targets: ["AmplifyKinesisClient"]
         ),
         .library(
             name: "AmplifyFoundation",

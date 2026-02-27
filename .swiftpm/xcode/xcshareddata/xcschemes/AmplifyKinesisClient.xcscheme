@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSKinesisStreamsPlugin"
-               BuildableName = "AWSKinesisStreamsPlugin"
-               BlueprintName = "AWSKinesisStreamsPlugin"
+               BlueprintIdentifier = "AmplifyKinesisClient"
+               BuildableName = "AmplifyKinesisClient"
+               BlueprintName = "AmplifyKinesisClient"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSKinesisStreamsPlugin"
-            BuildableName = "AWSKinesisStreamsPlugin"
-            BlueprintName = "AWSKinesisStreamsPlugin"
+            BlueprintIdentifier = "AmplifyKinesisClient"
+            BuildableName = "AmplifyKinesisClient"
+            BlueprintName = "AmplifyKinesisClient"
             ReferencedContainer = "container:">
          </BuildableReference>
       </CodeCoverageTargets>
@@ -43,9 +43,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSKinesisStreamsPluginTests"
-               BuildableName = "AWSKinesisStreamsPluginTests"
-               BlueprintName = "AWSKinesisStreamsPluginTests"
+               BlueprintIdentifier = "AmplifyKinesisClientTests"
+               BuildableName = "AmplifyKinesisClientTests"
+               BlueprintName = "AmplifyKinesisClientTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -71,9 +71,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSKinesisStreamsPlugin"
-            BuildableName = "AWSKinesisStreamsPlugin"
-            BlueprintName = "AWSKinesisStreamsPlugin"
+            BlueprintIdentifier = "AmplifyKinesisClient"
+            BuildableName = "AmplifyKinesisClient"
+            BlueprintName = "AmplifyKinesisClient"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
