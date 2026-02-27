@@ -62,7 +62,7 @@ class AmplifyKinesisClientUserAgentTests: XCTestCase {
         }
 
         let userAgent = try XCTUnwrap(capturingEngine.capturedUserAgent, "User-Agent header should be captured")
-        let version = AmplifyFoundationVersion.version
+        let version = AmplifyMetadata.version
         XCTAssertTrue(
             userAgent.contains("lib/amplify-swift#\(version)"),
             "User-Agent should contain lib/amplify-swift#\(version), got: \(userAgent)"

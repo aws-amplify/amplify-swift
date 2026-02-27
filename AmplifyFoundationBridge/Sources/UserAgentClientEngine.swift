@@ -34,8 +34,8 @@ public struct UserAgentClientEngine: HTTPClient {
     ///     Each entry is appended as `<entry>#<version>`.
     public init(target: HTTPClient, additionalMetadata: [String] = []) {
         self.target = target
-        let version = AmplifyFoundationVersion.version
-        var parts = ["lib/\(AmplifyFoundationVersion.platformName)#\(version)"]
+        let version = AmplifyMetadata.version
+        var parts = ["lib/\(AmplifyMetadata.platformName)#\(version)"]
         for entry in additionalMetadata {
             parts.append("\(entry)#\(version)")
         }
