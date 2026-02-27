@@ -63,7 +63,7 @@ public class AmplifyKinesisClient {
     private let scheduler: AutoFlushScheduler?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabledLock = NSLock()
-    private var _isEnabled = false
+    private var _isEnabled = true
 
     private var isEnabledLocked: Bool {
         isEnabledLock.lock()
@@ -139,10 +139,12 @@ public class AmplifyKinesisClient {
         // Create and setup flush scheduler
         switch options.flushStrategy {
         case .interval(let interval):
-            self.scheduler = AutoFlushScheduler(
+            let scheduler = AutoFlushScheduler(
                 interval: interval,
                 recordClient: recordClient
             )
+            self.scheduler = scheduler
+            Task { await scheduler.start() }
         case .none:
             self.scheduler = nil
         }
