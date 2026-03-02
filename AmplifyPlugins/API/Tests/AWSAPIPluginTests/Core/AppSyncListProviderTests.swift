@@ -62,7 +62,7 @@ class AppSyncListProviderTests: XCTestCase {
         let appSyncPayload = AppSyncListPayload(
             graphQLData: json,
             apiName: "apiName",
-            authMode: nil,
+            authMode: .amazonCognitoUserPools,
             variables: variables
         )
         let provider = try AppSyncListProvider<Post4>(payload: appSyncPayload)
@@ -73,6 +73,7 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(elements.count, 2)
         XCTAssertEqual(nextToken, "nextToken")
         XCTAssertEqual(provider.apiName, "apiName")
+        XCTAssertEqual(provider.authMode, .amazonCognitoUserPools)
         XCTAssertEqual(provider.limit, 500)
         XCTAssertNotNil(filter)
     }
