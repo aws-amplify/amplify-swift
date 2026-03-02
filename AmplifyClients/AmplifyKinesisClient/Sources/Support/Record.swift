@@ -14,7 +14,7 @@ struct Record: Sendable {
     let partitionKey: String
     let data: Data
     var dataSize: Int {
-        data.count
+        data.count + partitionKey.utf8.count
     }
     let retryCount: Int
     let createdAt: Date
@@ -26,6 +26,6 @@ struct RecordInput: Sendable {
     let partitionKey: String
     let data: Data
     var dataSize: Int {
-        data.count
+        data.count + partitionKey.utf8.count
     }
 }

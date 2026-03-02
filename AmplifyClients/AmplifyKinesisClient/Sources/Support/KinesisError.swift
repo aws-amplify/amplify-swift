@@ -78,6 +78,8 @@ public enum KinesisError {
     case cache(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Cache limit exceeded — no space for new records.
     case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error? = nil)
+    /// Record input validation failed (e.g. oversized record, invalid partition key).
+    case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// An error that doesn't fall into the known categories above.
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
@@ -88,6 +90,7 @@ extension KinesisError: AmplifyError {
         case .service(let description, _, _),
              .cache(let description, _, _),
              .cacheLimitExceeded(let description, _, _),
+             .validation(let description, _, _),
              .unknown(let description, _, _):
             return description
         }
@@ -98,6 +101,7 @@ extension KinesisError: AmplifyError {
         case .service(_, let suggestion, _),
              .cache(_, let suggestion, _),
              .cacheLimitExceeded(_, let suggestion, _),
+             .validation(_, let suggestion, _),
              .unknown(_, let suggestion, _):
             return suggestion
         }
@@ -109,6 +113,7 @@ extension KinesisError: AmplifyError {
             return error
         case .cache(_, _, let error),
              .cacheLimitExceeded(_, _, let error),
+             .validation(_, _, let error),
              .unknown(_, _, let error):
             return error
         }
@@ -156,6 +161,8 @@ extension KinesisError: AmplifyError {
             return .cache(desc, recovery, underlyingError)
         case .limitExceeded(let desc, let recovery, let underlyingError):
             return .cacheLimitExceeded(desc, recovery, underlyingError)
+        case .validation(let desc, let recovery, let underlyingError):
+            return .validation(desc, recovery, underlyingError)
         }
     }
 

@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import SQLite
 @testable import AmplifyKinesisClient
 
 class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
@@ -14,7 +15,14 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
     
     override func setUp() async throws {
         try await super.setUp()
-        storage = try SQLiteRecordStorage(identifier: "test", maxRecords: 1000, maxBytes: 1024 * 1024)
+        storage = try SQLiteRecordStorage(
+            identifier: "test",
+            maxRecords: 1000,
+            cacheMaxBytes: 1024 * 1024,
+            maxRecordSizeBytes: 10 * 1024 * 1024,
+            maxBytesPerStream: 10 * 1024 * 1024,
+            maxPartitionKeyLength: 256
+        )
     }
     
     override func tearDown() async throws {
@@ -25,23 +33,23 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
     
     func testCachedSizeMatchesDatabaseAfterAddOperations() async throws {
         // Given
-        let record1 = RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1, 2, 3]))
-        let record2 = RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([4, 5, 6, 7]))
+        let record1 = RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3]))
+        let record2 = RecordInput(streamName: "stream1", partitionKey: "b", data: Data([4, 5, 6, 7]))
         
         // When
         try await storage.addRecord(record1)
         try await storage.addRecord(record2)
         
-        // Then
+        // Then — "a"(1) + data(3) + "b"(1) + data(4) = 9
         let cachedSize = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(cachedSize, 7)
+        XCTAssertEqual(cachedSize, 9)
     }
     
     func testCachedSizeMatchesDatabaseAfterDeleteOperations() async throws {
         // Given: Add records
-        let record1 = RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1, 2, 3]))
-        let record2 = RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([4, 5, 6, 7]))
-        let record3 = RecordInput(streamName: "stream2", partitionKey: "key3", data: Data([8, 9]))
+        let record1 = RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3]))
+        let record2 = RecordInput(streamName: "stream1", partitionKey: "b", data: Data([4, 5, 6, 7]))
+        let record3 = RecordInput(streamName: "stream2", partitionKey: "c", data: Data([8, 9]))
         
         try await storage.addRecord(record1)
         try await storage.addRecord(record2)
@@ -50,20 +58,20 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         // Get record IDs for deletion - delete first two by creation order
         let recordsByStreamList = try await storage.getRecordsByStream()
         let allRecords = recordsByStreamList.flatMap { $0 }.sorted { $0.createdAt < $1.createdAt }
-        let idsToDelete = Array(allRecords.prefix(2)).map { $0.id }  // Select first 2 records
+        let idsToDelete = Array(allRecords.prefix(2)).map { $0.id }
         
         // When
         try await storage.deleteRecords(ids: idsToDelete)
         
-        // Then
+        // Then — remaining: "c"(1) + data(2) = 3
         let cachedSize = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(cachedSize, 2)
+        XCTAssertEqual(cachedSize, 3)
     }
     
     func testCachedSizeMatchesDatabaseAfterClearOperations() async throws {
         // Given: Add records
-        try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1, 2, 3])))
-        try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "key2", data: Data([4, 5])))
+        try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3])))
+        try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "b", data: Data([4, 5])))
         
         // When
         _ = try await storage.clearRecords()
@@ -74,27 +82,28 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
     }
     
     func testCachedSizeRemainsAccurateThroughMixedOperations() async throws {
-        // Given: Complex sequence of operations
-        try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1, 2, 3, 4, 5])))
-        try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "key2", data: Data([6, 7, 8])))
+        // "a"(1) + data(5) = 6
+        try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "a", data: Data([1, 2, 3, 4, 5])))
+        // "b"(1) + data(3) = 4
+        try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "b", data: Data([6, 7, 8])))
         
         var cachedSize = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(cachedSize, 8)
+        XCTAssertEqual(cachedSize, 10) // 6 + 4
         
-        // Delete the first record (5 bytes from stream1)
+        // Delete the first record (6 bytes from stream1)
         let recordsList = try await storage.getRecordsByStream()
         let records = recordsList.flatMap { $0 }
         let firstRecord = records.first { $0.streamName == "stream1" }!
         try await storage.deleteRecords(ids: [firstRecord.id])
         
         cachedSize = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(cachedSize, 3)
+        XCTAssertEqual(cachedSize, 4)
         
-        // Add another record
-        try await storage.addRecord(RecordInput(streamName: "stream3", partitionKey: "key3", data: Data([9, 10])))
+        // Add another record: "c"(1) + data(2) = 3
+        try await storage.addRecord(RecordInput(streamName: "stream3", partitionKey: "c", data: Data([9, 10])))
         
         cachedSize = try await storage.getCurrentCacheSize()
-        XCTAssertEqual(cachedSize, 5)
+        XCTAssertEqual(cachedSize, 7) // 4 + 3
     }
     
     func testConcurrentProducerConsumerOperationsAreThreadSafe() async throws {
@@ -218,5 +227,48 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         XCTAssertFalse(allCreatedKeys.isEmpty)
         XCTAssertFalse(deletedRecords.isEmpty)
         XCTAssertFalse(remainingKeys.isEmpty)
+    }
+
+    func testGetRecordsByStreamRespectsPerStreamByteLimitAcrossMultipleStreams() async throws {
+        // Storage with a large cache but a tight 200-byte per-stream limit
+        let perStreamStorage = try SQLiteRecordStorage(
+            identifier: "test_per_stream",
+            maxRecords: 100,
+            cacheMaxBytes: 10_000,
+            maxRecordSizeBytes: 1024,
+            maxBytesPerStream: 200,
+            maxPartitionKeyLength: 256,
+            connection: Connection(.inMemory)
+        )
+
+        // Each record: "a" (1 byte key) + 50 bytes data = 51 bytes per record
+        // 200 / 51 = 3.9 → at most 3 records per stream fit under 200 bytes (3 × 51 = 153)
+        for i in 0..<6 {
+            try await perStreamStorage.addRecord(
+                RecordInput(streamName: "stream-A", partitionKey: "a", data: Data(repeating: UInt8(i), count: 50))
+            )
+        }
+        for i in 0..<6 {
+            try await perStreamStorage.addRecord(
+                RecordInput(streamName: "stream-B", partitionKey: "b", data: Data(repeating: UInt8(i), count: 50))
+            )
+        }
+
+        let recordsByStream = try await perStreamStorage.getRecordsByStream()
+        XCTAssertEqual(recordsByStream.count, 2)
+
+        for records in recordsByStream {
+            let streamName = records.first!.streamName
+            let totalSize = records.reduce(0) { $0 + $1.dataSize }
+
+            // Each stream should return at most 3 records (153 bytes ≤ 200)
+            XCTAssertEqual(records.count, 3, "Stream \(streamName) should have 3 records")
+            XCTAssertEqual(totalSize, 153, "Stream \(streamName) total size should be 153")
+
+            // Verify all records belong to the same stream
+            for record in records {
+                XCTAssertEqual(record.streamName, streamName)
+            }
+        }
     }
 }
