@@ -26,22 +26,17 @@ actor SQLiteRecordStorage: RecordStorage {
     private static let retryCount = Expression<Int>("retry_count")
     private static let createdAt = Expression<Double>("created_at")
 
-    init(identifier: String, maxRecords: Int, maxBytes: Int64) throws {
+    init(identifier: String, maxRecords: Int, maxBytes: Int64, connection: Connection? = nil) throws {
         self.identifier = identifier
         self.maxRecords = maxRecords
         self.maxBytes = maxBytes
+        self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
-        // Setup database connection and schema
-        let connection = try Self.setupDatabase(identifier: identifier)
-        self.database = connection
-
-        // Initialize cached size from database
+        try Self.setupSchema(on: database)
         try self.resetCacheSizeFromDb()
     }
 
-    /// Sets up the database connection and creates tables/indices if needed
-    /// This is a static method so it can be called before the actor is fully initialized
-    private static func setupDatabase(identifier: String) throws -> Connection {
+    private static func createFileConnection(identifier: String) throws -> Connection {
         guard let path = try? FileManager.default.url(
             for: .applicationSupportDirectory,
             in: .userDomainMask,
@@ -56,8 +51,13 @@ actor SQLiteRecordStorage: RecordStorage {
 
         let dbPath = path.appendingPathComponent("kinesis_records_\(identifier).db").path
         return try wrapDatabaseError {
-            let connection = try Connection(dbPath)
+            try Connection(dbPath)
+        }
+    }
 
+    /// Sets up the database schema (tables and indices)
+    private static func setupSchema(on connection: Connection) throws {
+        try wrapDatabaseError {
             try connection.run(records.create(ifNotExists: true) { table in
                 table.column(id, primaryKey: .autoincrement)
                 table.column(streamName)
@@ -70,8 +70,6 @@ actor SQLiteRecordStorage: RecordStorage {
 
             try connection.execute("CREATE INDEX IF NOT EXISTS idx_stream_id ON records (stream_name, id)")
             try connection.execute("CREATE INDEX IF NOT EXISTS idx_data_size ON records (data_size)")
-
-            return connection
         }
     }
 
