@@ -40,11 +40,12 @@ actor RecordClient {
         defer { isFlushing = false }
 
         var totalFlushed = 0
-        let recordsByStreamList = try await storage.getRecordsByStream()
+        let recordsByStreamList: [[Record]] = try await storage.getRecordsByStream()
         logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
 
         for records in recordsByStreamList {
             guard !records.isEmpty else { continue }
+            // getRecordsByStream returns records grouped by stream
             let streamName = records[0].streamName
             let recordCount = records.count
             logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
@@ -68,7 +69,7 @@ actor RecordClient {
                     "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
                 )
             } catch {
-                logger.error("Failed to submit batch for stream \(streamName)", error)
+                logger.error("Failed to process batch for stream \(streamName)", error)
                 throw error
             }
         }

@@ -36,12 +36,7 @@ actor SQLiteRecordStorage: RecordStorage {
         self.database = connection
 
         // Initialize cached size from database
-        do {
-            let size = try connection.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
-            self.cachedSize = Int64(size)
-        } catch {
-            self.cachedSize = 0
-        }
+        try self.resetCacheSizeFromDb()
     }
 
     /// Sets up the database connection and creates tables/indices if needed
@@ -154,7 +149,6 @@ actor SQLiteRecordStorage: RecordStorage {
                 recordsByStream[record.streamName, default: []].append(record)
             }
 
-            // Return as list of lists to match Android
             return Array(recordsByStream.values)
         }
     }

@@ -125,26 +125,9 @@ actor MockRecordStorage: RecordStorage {
     }
 }
 
-class MockRecordSender: RecordSender {
+final class MockRecordSender: RecordSender {
     func putRecords(streamName: String, records: [Record]) async throws -> PutRecordsResponse {
         return PutRecordsResponse(successfulIds: [], retryableIds: [], failedIds: [])
     }
 }
 
-/// Wrapper to track flush calls on RecordClient
-class FlushTracker {
-    var flushCallCount = 0
-    let client: RecordClient
-    
-    init(storage: MockRecordStorage, sender: MockRecordSender) {
-        self.client = RecordClient(
-            sender: sender,
-            storage: storage
-        )
-    }
-    
-    func trackFlush() async throws -> FlushData {
-        flushCallCount += 1
-        return try await client.flush()
-    }
-}

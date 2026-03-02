@@ -37,7 +37,7 @@ actor AutoFlushScheduler {
                     let data = try await self.recordClient.flush()
                     self.logger.debug("Auto-flush completed: \(data.recordsFlushed) records flushed")
                 } catch {
-                    // Expected failures (network, throttling, etc.) - will retry on next cycle
+                    // Will retry on next cycle
                     self.logger.warn("Auto-flush failed", error)
                 }
             }
