@@ -118,12 +118,12 @@ mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration
 Copy the Amplify outputs:
 ```bash
 cp amplify_outputs.json \
-  ~/.aws-amplify/amplify-ios/testconfiguration/AWSKinesisStreamsPluginIntegrationTests-amplify_outputs.json
+  ~/.aws-amplify/amplify-ios/testconfiguration/AmplifyKinesisClientIntegrationTests-amplify_outputs.json
 ```
 
 Create the credentials file:
 ```bash
-cat > ~/.aws-amplify/amplify-ios/testconfiguration/AWSKinesisStreamsPluginIntegrationTests-credentials.json << 'EOF'
+cat > ~/.aws-amplify/amplify-ios/testconfiguration/AmplifyKinesisClientIntegrationTests-credentials.json << 'EOF'
 {
   "username": "[EMAIL]",
   "password": "[PASSWORD]"

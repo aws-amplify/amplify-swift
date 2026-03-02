@@ -15,22 +15,14 @@ import AmplifyFoundationBridge
 @testable import Amplify
 
 /// Integration tests for AmplifyKinesisClient against a real
-/// Kinesis Data Stream using pre-provisioned Cognito credentials.
-///
-/// Prerequisites:
-/// 1. Deploy the backend: `cd infra && npx ampx sandbox`
-/// 2. Create a test user in the Cognito User Pool
-/// 3. Copy configs to ~/.aws-amplify/amplify-ios/testconfiguration/:
-///    - AWSKinesisStreamsPluginIntegrationTests-amplify_outputs.json
-///    - AWSKinesisStreamsPluginIntegrationTests-credentials.json
-/// 4. Run from the KinesisHostApp Xcode project
+/// Kinesis Data Stream using pre-provisioned backend.
 @available(iOS 16.0, macOS 13.0, *)
-class AWSKinesisStreamsPluginIntegrationTests: XCTestCase {
+class AmplifyKinesisClientIntegrationTests: XCTestCase {
 
     static let amplifyOutputs =
-        "testconfiguration/AWSKinesisStreamsPluginIntegrationTests-amplify_outputs"
+        "testconfiguration/AmplifyKinesisClientIntegrationTests-amplify_outputs"
     static let credentialsResource =
-        "testconfiguration/AWSKinesisStreamsPluginIntegrationTests-credentials"
+        "testconfiguration/AmplifyKinesisClientIntegrationTests-credentials"
     static let streamName = "amplify-kinesis-swift-test-stream"
     static let region = "us-east-1"
 
@@ -171,8 +163,13 @@ class AWSKinesisStreamsPluginIntegrationTests: XCTestCase {
                 streamName: Self.streamName
             )
             XCTFail("Expected cache limit error")
+        } catch let error as KinesisError {
+            guard case .cacheLimitExceeded = error else {
+                XCTFail("Expected KinesisError.cacheLimitExceeded, got \(error)")
+                return
+            }
         } catch {
-            // Expected — cache limit exceeded
+            XCTFail("Expected KinesisError.cacheLimitExceeded, got unexpected error: \(error)")
         }
         try await smallKinesis.clearCache()
     }
@@ -231,6 +228,82 @@ class AWSKinesisStreamsPluginIntegrationTests: XCTestCase {
         await autoKinesis.disable()
         try await autoKinesis.clearCache()
     }
+
+    // // MARK: - PutRecords size limits
+    //
+    // /// Fills the cache with >5 MB of data (using large partition keys) for a single
+    // /// stream, then flushes. This exercises the PutRecords API limit of 5 MiB per
+    // /// request and verifies the client handles batching/size correctly.
+    // func testFlushLargePayloadWithLargePartitionKeys() async throws {
+    //     let largeKinesis = try AmplifyKinesisClient(
+    //         region: Self.region,
+    //         credentialsProvider: SDKToFoundationCredentialsAdapter(
+    //             resolver: AWSAuthService().getCredentialIdentityResolver()
+    //         ),
+    //         options: .init(
+    //             cacheMaxBytes: 6 * 1_024 * 1_024, // 6 MB cache to hold >5 MB
+    //             flushStrategy: .none
+    //         )
+    //     )
+    //     try await largeKinesis.clearCache()
+    //
+    //     // Each record: ~50 KB data + ~200-char partition key
+    //     // 110 records ≈ 5.5 MB total (exceeds the 5 MiB PutRecords request limit)
+    //     let recordDataSize = 50 * 1_024 // 50 KB
+    //     let recordCount = 110
+    //
+    //     for i in 0..<recordCount {
+    //         let partitionKey = String(repeating: "k", count: 200) + "-\(i)"
+    //         let data = Data(repeating: UInt8(i % 256), count: recordDataSize)
+    //         try await largeKinesis.record(
+    //             data: data,
+    //             partitionKey: partitionKey,
+    //             streamName: Self.streamName
+    //         )
+    //     }
+    //
+    //     let flushResult = try await largeKinesis.flush()
+    //     XCTAssertEqual(flushResult.recordsFlushed, recordCount,
+    //                    "All \(recordCount) records should be flushed despite exceeding 5 MiB per-request limit")
+    //
+    //     try await largeKinesis.clearCache()
+    // }
+    //
+    // /// Attempts to record a single entry whose total size (partition key + data blob)
+    // /// exceeds the 1 MiB per-record limit. The record call should fail, and a
+    // /// subsequent flush of a valid record should still succeed — proving the client
+    // /// is not left in a broken state.
+    // func testOversizedRecordIsRejectedAndFlushStillWorks() async throws {
+    //     // 1 MiB = 1_048_576 bytes. Use a 256-char partition key (~256 bytes UTF-8)
+    //     // plus a data blob that pushes the total over 1 MiB.
+    //     let largePartitionKey = String(repeating: "k", count: 256)
+    //     let oversizedData = Data(repeating: 0x42, count: 1_048_576) // 1 MiB data + 256 bytes key > 1 MiB
+    //
+    //     do {
+    //         try await kinesis.record(
+    //             data: oversizedData,
+    //             partitionKey: largePartitionKey,
+    //             streamName: Self.streamName
+    //         )
+    //         XCTFail("Expected record to fail with oversized payload")
+    //     } catch let error as KinesisError {
+    //         guard case .cacheLimitExceeded = error else {
+    //             XCTFail("Expected KinesisError.cacheLimitExceeded, got \(error)")
+    //             return
+    //         }
+    //     }
+    //
+    //     // Now record a valid small record and flush — client should still work
+    //     try await kinesis.record(
+    //         data: "still-works".data(using: .utf8)!,
+    //         partitionKey: "partition-1",
+    //         streamName: Self.streamName
+    //     )
+    //
+    //     let flushResult = try await kinesis.flush()
+    //     XCTAssertEqual(flushResult.recordsFlushed, 1,
+    //                    "Valid record should flush successfully after oversized record was rejected")
+    // }
 
     // MARK: - Escape hatch
 

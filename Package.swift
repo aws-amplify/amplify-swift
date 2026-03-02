@@ -369,6 +369,9 @@ let analyticsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     ),
+]
+
+let kinesisTargets: [Target] = [
     .target(
         name: "AmplifyKinesisClient",
         dependencies: [
@@ -377,7 +380,7 @@ let analyticsTargets: [Target] = [
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSKinesis", package: "aws-sdk-swift")
         ],
-        path: "AmplifyPlugins/Analytics/Sources/AWSKinesisStreamsPlugin",
+        path: "AmplifyClients/AmplifyKinesisClient/Sources",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ],
@@ -390,7 +393,7 @@ let analyticsTargets: [Target] = [
         dependencies: [
             "AmplifyKinesisClient"
         ],
-        path: "AmplifyPlugins/Analytics/Tests/AWSKinesisStreamsPluginTests"
+        path: "AmplifyClients/AmplifyKinesisClient/Tests"
     )
 ]
 
@@ -533,6 +536,7 @@ targets.append(contentsOf: dataStoreTargets)
 targets.append(contentsOf: storageTargets)
 targets.append(contentsOf: geoTargets)
 targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
