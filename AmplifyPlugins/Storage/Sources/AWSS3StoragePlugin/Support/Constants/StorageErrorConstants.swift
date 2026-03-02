@@ -78,3 +78,22 @@ enum StorageErrorConstants {
         ""
     )
 }
+
+// MARK: - Transfer utility errors (S3 upload timeout / stall)
+
+/// Error domain for S3 transfer utility (aligned with AWSS3TransferUtilityErrorDomain).
+let AWSS3TransferUtilityErrorDomain = "com.amazonaws.AWSS3TransferUtilityErrorDomain"
+
+/// Upload was cancelled because progress did not advance within the configured stall timeout.
+let AWSS3TransferUtilityErrorProgressStallTimeout: Int = 10
+
+/// Returns an NSError for progress stall timeout, suitable for passing to completion handler.
+func makeProgressStallTimeoutError() -> NSError {
+    NSError(
+        domain: AWSS3TransferUtilityErrorDomain,
+        code: AWSS3TransferUtilityErrorProgressStallTimeout,
+        userInfo: [
+            NSLocalizedDescriptionKey: "Upload was cancelled because progress did not advance within the configured timeout."
+        ]
+    )
+}

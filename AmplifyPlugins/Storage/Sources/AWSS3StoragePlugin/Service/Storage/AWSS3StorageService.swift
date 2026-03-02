@@ -179,6 +179,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     func resetURLSession() {
         let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
+        delegate.storageService = self
         urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
@@ -205,6 +206,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                     client: client,
                     transferTask: pair.transferTask,
                     multipartUpload: multipartUpload,
+                    progressStallTimeoutInterval: storageConfiguration.progressStallTimeoutInterval,
                     logger: logger
                 ) else {
                     return

@@ -16,9 +16,13 @@ public struct AWSS3StoragePluginConfiguration {
     @available(*, deprecated)
     public let prefixResolver: AWSS3PluginPrefixResolver?
 
+    /// If upload progress does not advance for this many seconds, the upload is cancelled. 0 = disabled.
+    public let progressStallTimeoutInterval: TimeInterval
+
     /// - Tag: AWSS3StoragePluginConfiguration.init
-    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil) {
+    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil, progressStallTimeoutInterval: TimeInterval = 0) {
         self.prefixResolver = prefixResolver
+        self.progressStallTimeoutInterval = progressStallTimeoutInterval
     }
 
     /// - Tag: AWSS3StoragePluginConfiguration.prefixResolverFunc
