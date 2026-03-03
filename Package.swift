@@ -393,7 +393,7 @@ let kinesisTargets: [Target] = [
         dependencies: [
             "AmplifyKinesisClient"
         ],
-        path: "AmplifyClients/AmplifyKinesisClient/Tests"
+        path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )
 ]
 
