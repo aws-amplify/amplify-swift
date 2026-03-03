@@ -71,7 +71,7 @@ class RecordClientFlushTests: XCTestCase {
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
     }
 
-    func testFlushShouldIncrementRetryCountWhenRequestFailsWithNonSdkError() async throws {
+    func testFlushShouldIncrementRetryCountWhenNonSdkErrorOccurs() async throws {
         let streamName = "test-stream"
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key2", data: Data([2])))
@@ -83,7 +83,7 @@ class RecordClientFlushTests: XCTestCase {
             _ = try await recordClient.flush()
             XCTFail("Expected flush to throw")
         } catch {
-            // Expected
+            // Expected — non-SDK errors are critical
         }
 
         let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
@@ -93,7 +93,7 @@ class RecordClientFlushTests: XCTestCase {
         }
     }
 
-    func testFlushShouldDeleteRecordsAtMaxRetriesWhenRequestFailsWithNonSdkError() async throws {
+    func testFlushShouldDeleteRecordsAtMaxRetriesWhenNonSdkErrorOccurs() async throws {
         let streamName = "test-stream"
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key2", data: Data([2])))
@@ -111,7 +111,7 @@ class RecordClientFlushTests: XCTestCase {
             _ = try await recordClient.flush()
             XCTFail("Expected flush to throw")
         } catch {
-            // Expected
+            // Expected — non-SDK errors are critical
         }
 
         let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
@@ -120,13 +120,13 @@ class RecordClientFlushTests: XCTestCase {
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
     }
 
-    func testFlushShouldStopProcessingStreamsWhenCriticalErrorOccurs() async throws {
+    func testFlushShouldStopProcessingStreamsWhenNonSdkErrorOccurs() async throws {
         let stream1 = "stream-1"
         let stream2 = "stream-2"
         try await storage.addRecord(RecordInput(streamName: stream1, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: stream2, partitionKey: "key2", data: Data([2])))
 
-        // Both streams fail with critical (non-SDK) errors
+        // Non-SDK errors are critical and should throw
         await sender.setHandler { _, _ in
             throw NSError(domain: "test", code: -1, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         }

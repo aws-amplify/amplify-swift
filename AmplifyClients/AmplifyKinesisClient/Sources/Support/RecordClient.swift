@@ -6,6 +6,8 @@
 //
 
 import AmplifyFoundation
+import AWSClientRuntime
+import ClientRuntime
 import Foundation
 
 /// Generic RecordClient that coordinates storage and sending of records
@@ -73,7 +75,7 @@ actor RecordClient {
         await handleFailedRequest(records)
 
         // SDK errors are logged but not thrown — one stream shouldn't block others
-        if KinesisError.isSdkError(error) {
+        if error is ModeledError || error is AWSServiceError {
           logger.warn(
             "Kinesis SDK error flushing stream \(streamName): \(error.localizedDescription)"
           )

@@ -6,7 +6,6 @@
 //
 
 import AmplifyFoundation
-import AWSKinesis
 import Foundation
 
 /// Top-level error type for KinesisDataStreams operations.
@@ -80,21 +79,6 @@ extension KinesisError: AmplifyError {
       defaultRecoverySuggestion,
       error
     )
-  }
-
-  /// Returns true if the error originates from the Kinesis SDK.
-  static func isSdkError(_ error: Error) -> Bool {
-    return error is AccessDeniedException
-      || error is InternalFailureException
-      || error is InvalidArgumentException
-      || error is KMSAccessDeniedException
-      || error is KMSDisabledException
-      || error is KMSInvalidStateException
-      || error is KMSNotFoundException
-      || error is KMSOptInRequired
-      || error is KMSThrottlingException
-      || error is ProvisionedThroughputExceededException
-      || error is ResourceNotFoundException
   }
 
   private static func fromCacheError(_ cacheError: RecordCacheError) -> KinesisError {

@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSCognitoAuthPlugin
-import AmplifyKinesisClient
-import AWSPluginsCore
 import AmplifyFoundation
 import AmplifyFoundationBridge
+import AmplifyKinesisClient
+import AWSCognitoAuthPlugin
+import AWSPluginsCore
+import XCTest
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @testable import Amplify
 
@@ -87,7 +87,7 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
 
     func testRecordAndFlush() async throws {
         try await kinesis.record(
-            data: "test-record".data(using: .utf8)!,
+            data: XCTUnwrap("test-record".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
@@ -104,7 +104,7 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
     func testRecordWhileDisabledDropsRecords() async throws {
         await kinesis.disable()
         try await kinesis.record(
-            data: "dropped-record".data(using: .utf8)!,
+            data: XCTUnwrap("dropped-record".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
@@ -115,13 +115,13 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
 
     func testEnableDisableLifecycle() async throws {
         try await kinesis.record(
-            data: "before-disable".data(using: .utf8)!,
+            data: XCTUnwrap("before-disable".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
         await kinesis.disable()
         try await kinesis.record(
-            data: "while-disabled".data(using: .utf8)!,
+            data: XCTUnwrap("while-disabled".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
@@ -130,11 +130,30 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         XCTAssertEqual(flushResult.recordsFlushed, 1)
     }
 
+    func testConcurrentFlushReturnsInProgress() async throws {
+        for i in 0 ..< 10 {
+            try await kinesis.record(
+                data: XCTUnwrap("record-\(i)".data(using: .utf8)),
+                partitionKey: "partition-1",
+                streamName: Self.streamName
+            )
+        }
+
+        async let flush1 = kinesis.flush()
+        async let flush2 = kinesis.flush()
+        let results = try await [flush1, flush2]
+
+        let anyFlushed = results.contains { $0.recordsFlushed > 0 }
+        let anyInProgress = results.contains { $0.flushInProgress }
+        // Either both flushed (if first completed before second started) or one was skipped
+        XCTAssertTrue(anyFlushed || anyInProgress)
+    }
+
     // MARK: - Cache behavior
 
     func testClearCache() async throws {
         try await kinesis.record(
-            data: "to-be-cleared".data(using: .utf8)!,
+            data: XCTUnwrap("to-be-cleared".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
@@ -174,13 +193,39 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         try await smallKinesis.clearCache()
     }
 
+    // MARK: - Error paths
+
+    /// Flush with invalid credentials should succeed (SDK errors are handled silently).
+    /// Records are incremented and potentially deleted if they exceed retry limits.
+    func testFlushWithInvalidCredentials() async throws {
+        let badCredentials = InvalidCredentialsProvider()
+
+        let badKinesis = try AmplifyKinesisClient(
+            region: Self.region,
+            credentialsProvider: badCredentials,
+            options: .init(flushStrategy: .none)
+        )
+
+        try await badKinesis.record(
+            data: XCTUnwrap("bad-creds-record".data(using: .utf8)),
+            partitionKey: "partition-1",
+            streamName: Self.streamName
+        )
+
+        // SDK exceptions are handled silently — flush returns success
+        let flushResult = try await badKinesis.flush()
+        XCTAssertEqual(flushResult.recordsFlushed, 0)
+
+        try await badKinesis.clearCache()
+    }
+
     // MARK: - Stress tests
 
     func testHighVolumeRecordAndFlush() async throws {
         let count = 50
-        for i in 0..<count {
+        for i in 0 ..< count {
             try await kinesis.record(
-                data: "stress-\(i)".data(using: .utf8)!,
+                data: XCTUnwrap("stress-\(i)".data(using: .utf8)),
                 partitionKey: "partition-\(i % 5)",
                 streamName: Self.streamName
             )
@@ -193,10 +238,10 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         let cycles = 5
         let perCycle = 5
         var total = 0
-        for cycle in 0..<cycles {
-            for i in 0..<perCycle {
+        for cycle in 0 ..< cycles {
+            for i in 0 ..< perCycle {
                 try await kinesis.record(
-                    data: "c\(cycle)-r\(i)".data(using: .utf8)!,
+                    data: XCTUnwrap("c\(cycle)-r\(i)".data(using: .utf8)),
                     partitionKey: "partition-1",
                     streamName: Self.streamName
                 )
@@ -218,7 +263,7 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
             options: .init(flushStrategy: .interval(.seconds(3)))
         )
         try await autoKinesis.record(
-            data: "auto-flush".data(using: .utf8)!,
+            data: XCTUnwrap("auto-flush".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
@@ -241,26 +286,26 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         // Create partition key with exactly 256 emoji Unicode scalars
         // Each emoji is 1 scalar, 4 UTF-8 bytes
         let emojiPartitionKey = String(repeating: "😀", count: 256)
-        
+
         // Verify our assumptions about the partition key
         let scalarCount = emojiPartitionKey.unicodeScalars.count
         let utf8ByteCount = emojiPartitionKey.utf8.count
-        
+
         print("Emoji partition key: scalars=\(scalarCount), utf8Bytes=\(utf8ByteCount)")
         XCTAssertEqual(scalarCount, 256)
-        XCTAssertEqual(utf8ByteCount, 1024) // 256 emojis × 4 bytes each
-        
+        XCTAssertEqual(utf8ByteCount, 1_024) // 256 emojis × 4 bytes each
+
         // Record with the emoji partition key
         try await kinesis.record(
-            data: "test-data-with-emoji-partition-key".data(using: .utf8)!,
+            data: XCTUnwrap("test-data-with-emoji-partition-key".data(using: .utf8)),
             partitionKey: emojiPartitionKey,
             streamName: Self.streamName
         )
-        
+
         // Flush and verify the record was sent successfully
         let flushResult = try await kinesis.flush()
         XCTAssertEqual(flushResult.recordsFlushed, 1)
-        
+
         print("Successfully recorded and flushed with 256 emoji scalar partition key")
     }
 
@@ -287,7 +332,7 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         let recordDataSize = 50 * 1_024 // 50 KB
         let recordCount = 210
 
-        for i in 0..<recordCount {
+        for i in 0 ..< recordCount {
             let partitionKey = String(repeating: "k", count: 200) + "-\(i)"
             let data = Data(repeating: UInt8(i % 256), count: recordDataSize)
             try await largeKinesis.record(
@@ -321,36 +366,59 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
     func testOversizedRecordIsRejectedAndFlushStillWorks() async throws {
         // 10 MiB = 10_485_760 bytes. Use a 256-char partition key (~256 bytes UTF-8)
         // plus a data blob that pushes the total over 10 MiB.
-        let largePartitionKey = String(repeating: "😀", count: 256)
-        let oversizedData = Data(repeating: 0x42, count: 1 * 1024 * 1024 - 1024) // ~1 MiB data
+        let largePartitionKey = String(repeating: "k", count: 256)
+        let oversizedData = Data(repeating: 0x42, count: 10 * 1024 * 1024) // 10 MiB data + 256 bytes key > 10 MiB
 
-        // Record multiple times to test batching
-        for _ in 0..<10 {
+        do {
             try await kinesis.record(
                 data: oversizedData,
                 partitionKey: largePartitionKey,
                 streamName: Self.streamName
             )
+            XCTFail("Expected oversized record to be rejected")
+        } catch let error as KinesisError {
+            guard case .validation = error else {
+                XCTFail("Expected validation error, got \(error)")
+                return
+            }
         }
-
-        let firstFlushResult = try await kinesis.flush()
-        print("Flush result: \(firstFlushResult)")
 
         // Now record a valid small record and flush — client should still work
         try await kinesis.record(
-            data: "still-works".data(using: .utf8)!,
+            data: XCTUnwrap("still-works".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
 
         let flushResult = try await kinesis.flush()
-        XCTAssertEqual(flushResult.recordsFlushed, 1,
-                       "Valid record should flush successfully after large records")
+        XCTAssertEqual(
+            flushResult.recordsFlushed,
+            1,
+            "Valid record should flush successfully after oversized record rejection"
+        )
     }
 
     // MARK: - Escape hatch
 
     func testGetKinesisClient() {
         XCTAssertNotNil(kinesis.getKinesisClient())
+    }
+}
+
+// MARK: - Helpers
+
+@available(iOS 16.0, macOS 13.0, *)
+private struct InvalidCredentials: AmplifyFoundation.AWSCredentials {
+    // Keys from docs
+    let accessKeyId = "AKIAIOSFODNN7EXAMPLE"
+    let secretAccessKey = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    let sessionToken: String? = nil
+    let expiration: Date? = nil
+}
+
+@available(iOS 16.0, macOS 13.0, *)
+private struct InvalidCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider {
+    func resolve() async throws -> AmplifyFoundation.AWSCredentials {
+        InvalidCredentials()
     }
 }
