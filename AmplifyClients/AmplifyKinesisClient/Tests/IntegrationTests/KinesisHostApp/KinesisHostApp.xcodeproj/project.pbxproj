@@ -290,7 +290,7 @@
 			mainGroup = EA6AF65E2F50680500D372FB;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../" */,
+				EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EA6AF6682F50680500D372FB /* Products */;
@@ -753,9 +753,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../" */ = {
+		EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../../;
+			relativePath = ../../../../../;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -802,7 +802,7 @@
 		};
 		EA3C8EAB2F5080EA003FF786 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../" */;
+			package = EA3C8EA02F50809E003FF786 /* XCLocalSwiftPackageReference "../../../../../" */;
 			productName = AWSCognitoAuthPlugin;
 		};
 /* End XCSwiftPackageProductDependency section */

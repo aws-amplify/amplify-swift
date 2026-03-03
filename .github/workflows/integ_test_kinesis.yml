@@ -32,7 +32,7 @@ jobs:
     with:
       scheme: AmplifyKinesisClientIntegrationTests
       platform: ${{ matrix.platform }}
-      project_path: ./AmplifyClients/AmplifyKinesisClient/IntegrationTests/KinesisHostApp
+      project_path: ./AmplifyClients/AmplifyKinesisClient/Tests/IntegrationTests/KinesisHostApp
       resource_subfolder: kinesis
       timeout-minutes: 30
     secrets: inherit
