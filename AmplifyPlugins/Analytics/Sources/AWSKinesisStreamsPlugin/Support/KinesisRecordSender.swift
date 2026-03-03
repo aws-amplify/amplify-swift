@@ -10,18 +10,18 @@ import AWSKinesis
 import Foundation
 
 /// Protocol wrapper for KinesisClient to enable dependency injection for testing
-/// Implementations must be thread-safe as they will be used from actor contexts
 protocol KinesisClientProtocol {
     func putRecords(input: PutRecordsInput) async throws -> PutRecordsOutput
 }
 
-/// Extension to make the real KinesisClient conform to the protocol
+/// Extension to make the SDK KinesisClient conform to the protocol
 extension AWSKinesis.KinesisClient: KinesisClientProtocol {}
 
 /// Kinesis-specific implementation of RecordSender
 final class KinesisRecordSender: RecordSender, @unchecked Sendable {
     private let kinesisClient: KinesisClientProtocol
     private let maxRetries: Int
+    private let logger = AmplifyFoundation.AmplifyLogging.logger(for: KinesisRecordSender.self)
 
     init(kinesisClient: KinesisClientProtocol, maxRetries: Int) {
         self.kinesisClient = kinesisClient
@@ -56,7 +56,7 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
         var failedIds: [Int64] = []
 
         if records.count != output.records?.count {
-            // TODO: Log warning
+            logger.warn("PutRecords response count (\(output.records?.count ?? 0)) does not match request count (\(records.count))")
         }
         for (record, resultEntry) in zip(records, output.records ?? []) {
             if resultEntry.errorCode == nil {

@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AmplifyFoundation
-import AmplifyFoundationBridge
 import AWSClientRuntime
 import AWSKinesis
+import AmplifyFoundation
+import AmplifyFoundationBridge
 import Foundation
 import SmithyIdentity
 
-public typealias AmplifyKinesisClientConfigurationProvider = (inout AWSKinesis.KinesisClient.KinesisClientConfiguration) -> Void
+public typealias AmplifyKinesisClientConfigurationProvider = (
+    inout AWSKinesis.KinesisClient.KinesisClientConfiguration
+) -> Void
 
-/**
- * Kinesis supports up to 500 records per stream.
- * See [the docs](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecords.html)
- */
+/// Kinesis supports up to 500 records per stream.
+/// See [the docs](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecords.html)
 private let maxRecordsPerStream = 500
 
 /// A client for sending data to Amazon Kinesis Data Streams.
@@ -115,7 +115,8 @@ public class AmplifyKinesisClient {
         if let configureClient = options.configureClient {
             configureClient(&clientConfig)
         }
-        clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
+        clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(
+            provider: credentialsProvider)
 
         // Wrap the default HTTP engine to append kinesis user agent metadata
         clientConfig.httpClientEngine = UserAgentClientEngine(
@@ -164,13 +165,15 @@ public class AmplifyKinesisClient {
     /// - Returns: RecordData containing the result of the record operation
     /// - Throws: KinesisError if the record cannot be saved
     @discardableResult
-    public func record(data: Data, partitionKey: String, streamName: String) async throws -> RecordData {
+    public func record(data: Data, partitionKey: String, streamName: String) async throws
+        -> RecordData
+    {
         guard isEnabledLocked else {
             logger.debug("Record collection is disabled, dropping record")
             return RecordData()
         }
-        logger.verbose("Recording to stream: \(streamName)")
-        
+        logger.debug("Recording to stream: \(streamName)")
+
         return try await wrapErrorAndLog(
             operation: {
                 let input = RecordInput(
@@ -200,7 +203,9 @@ public class AmplifyKinesisClient {
                 try await recordClient.flush()
             },
             logSuccess: { data, timeMs in
-                logger.info("Flush completed successfully in \(timeMs)ms - \(data.recordsFlushed) records flushed")
+                logger.info(
+                    "Flush completed successfully in \(timeMs)ms - \(data.recordsFlushed) records flushed"
+                )
             },
             logFailure: { error, timeMs in
                 logger.error("Flush failed in \(timeMs)ms: \(error.localizedDescription)")
@@ -211,12 +216,14 @@ public class AmplifyKinesisClient {
     /// Disables record collection and automatic flushing. Records submitted while
     /// disabled are silently dropped. Already-cached records remain in storage.
     public func disable() async {
+        logger.info("Disabling record collection")
         setEnabled(false)
         await scheduler?.disable()
     }
 
     /// Enables record collection and automatic flushing of cached records.
     public func enable() async {
+        logger.info("Enabling record collection")
         setEnabled(true)
         await scheduler?.start()
     }
@@ -238,7 +245,9 @@ public class AmplifyKinesisClient {
                 try await recordClient.clearCache()
             },
             logSuccess: { data, timeMs in
-                logger.info("Clear cache completed successfully in \(timeMs)ms - \(data.recordsCleared) records cleared")
+                logger.info(
+                    "Clear cache completed successfully in \(timeMs)ms - \(data.recordsCleared) records cleared"
+                )
             },
             logFailure: { error, timeMs in
                 logger.error("Clear cache failed in \(timeMs)ms: \(error.localizedDescription)")
@@ -246,7 +255,7 @@ public class AmplifyKinesisClient {
         )
     }
 
-    /// Returns the underlying Kinesis client for advanced use cases
+    /// Returns the underlying Kinesis client for escape hatching
     public func getKinesisClient() -> AWSKinesis.KinesisClient {
         return kinesisClient
     }

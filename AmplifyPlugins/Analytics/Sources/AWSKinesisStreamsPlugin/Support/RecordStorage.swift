@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 protocol RecordStorage: Actor {
     /// Adds a new record to storage
     func addRecord(_ input: RecordInput) async throws
