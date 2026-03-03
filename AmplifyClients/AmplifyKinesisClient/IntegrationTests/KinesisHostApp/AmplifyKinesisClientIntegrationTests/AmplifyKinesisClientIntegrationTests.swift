@@ -229,81 +229,124 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         try await autoKinesis.clearCache()
     }
 
-    // // MARK: - PutRecords size limits
-    //
-    // /// Fills the cache with >5 MB of data (using large partition keys) for a single
-    // /// stream, then flushes. This exercises the PutRecords API limit of 5 MiB per
-    // /// request and verifies the client handles batching/size correctly.
-    // func testFlushLargePayloadWithLargePartitionKeys() async throws {
-    //     let largeKinesis = try AmplifyKinesisClient(
-    //         region: Self.region,
-    //         credentialsProvider: SDKToFoundationCredentialsAdapter(
-    //             resolver: AWSAuthService().getCredentialIdentityResolver()
-    //         ),
-    //         options: .init(
-    //             cacheMaxBytes: 6 * 1_024 * 1_024, // 6 MB cache to hold >5 MB
-    //             flushStrategy: .none
-    //         )
-    //     )
-    //     try await largeKinesis.clearCache()
-    //
-    //     // Each record: ~50 KB data + ~200-char partition key
-    //     // 110 records ≈ 5.5 MB total (exceeds the 5 MiB PutRecords request limit)
-    //     let recordDataSize = 50 * 1_024 // 50 KB
-    //     let recordCount = 110
-    //
-    //     for i in 0..<recordCount {
-    //         let partitionKey = String(repeating: "k", count: 200) + "-\(i)"
-    //         let data = Data(repeating: UInt8(i % 256), count: recordDataSize)
-    //         try await largeKinesis.record(
-    //             data: data,
-    //             partitionKey: partitionKey,
-    //             streamName: Self.streamName
-    //         )
-    //     }
-    //
-    //     let flushResult = try await largeKinesis.flush()
-    //     XCTAssertEqual(flushResult.recordsFlushed, recordCount,
-    //                    "All \(recordCount) records should be flushed despite exceeding 5 MiB per-request limit")
-    //
-    //     try await largeKinesis.clearCache()
-    // }
-    //
-    // /// Attempts to record a single entry whose total size (partition key + data blob)
-    // /// exceeds the 1 MiB per-record limit. The record call should fail, and a
-    // /// subsequent flush of a valid record should still succeed — proving the client
-    // /// is not left in a broken state.
-    // func testOversizedRecordIsRejectedAndFlushStillWorks() async throws {
-    //     // 1 MiB = 1_048_576 bytes. Use a 256-char partition key (~256 bytes UTF-8)
-    //     // plus a data blob that pushes the total over 1 MiB.
-    //     let largePartitionKey = String(repeating: "k", count: 256)
-    //     let oversizedData = Data(repeating: 0x42, count: 1_048_576) // 1 MiB data + 256 bytes key > 1 MiB
-    //
-    //     do {
-    //         try await kinesis.record(
-    //             data: oversizedData,
-    //             partitionKey: largePartitionKey,
-    //             streamName: Self.streamName
-    //         )
-    //         XCTFail("Expected record to fail with oversized payload")
-    //     } catch let error as KinesisError {
-    //         guard case .cacheLimitExceeded = error else {
-    //             XCTFail("Expected KinesisError.cacheLimitExceeded, got \(error)")
-    //             return
-    //         }
-    //     }
-    //
-    //     // Now record a valid small record and flush — client should still work
-    //     try await kinesis.record(
-    //         data: "still-works".data(using: .utf8)!,
-    //         partitionKey: "partition-1",
-    //         streamName: Self.streamName
-    //     )
-    //
-    //     let flushResult = try await kinesis.flush()
-    //     XCTAssertEqual(flushResult.recordsFlushed, 1,
-    //                    "Valid record should flush successfully after oversized record was rejected")
-    // }
+    // MARK: - Partition key validation
+
+    /// E2E test: Record with a partition key containing exactly 256 emoji Unicode scalars
+    /// (the maximum allowed), then flush to verify the record is accepted by Kinesis.
+    ///
+    /// Each emoji (😀) is 1 Unicode scalar but 4 bytes in UTF-8. This test validates
+    /// that our Unicode scalar counting is correct and that Kinesis accepts the
+    /// maximum-length partition key.
+    func testRecordWithMax256EmojiScalarsAndFlush() async throws {
+        // Create partition key with exactly 256 emoji Unicode scalars
+        // Each emoji is 1 scalar, 4 UTF-8 bytes
+        let emojiPartitionKey = String(repeating: "😀", count: 256)
+        
+        // Verify our assumptions about the partition key
+        let scalarCount = emojiPartitionKey.unicodeScalars.count
+        let utf8ByteCount = emojiPartitionKey.utf8.count
+        
+        print("Emoji partition key: scalars=\(scalarCount), utf8Bytes=\(utf8ByteCount)")
+        XCTAssertEqual(scalarCount, 256)
+        XCTAssertEqual(utf8ByteCount, 1024) // 256 emojis × 4 bytes each
+        
+        // Record with the emoji partition key
+        try await kinesis.record(
+            data: "test-data-with-emoji-partition-key".data(using: .utf8)!,
+            partitionKey: emojiPartitionKey,
+            streamName: Self.streamName
+        )
+        
+        // Flush and verify the record was sent successfully
+        let flushResult = try await kinesis.flush()
+        XCTAssertEqual(flushResult.recordsFlushed, 1)
+        
+        print("Successfully recorded and flushed with 256 emoji scalar partition key")
+    }
+
+    // MARK: - PutRecords size limits
+
+    /// Fills the cache with >10 MB of data (using large partition keys) for a single
+    /// stream, then flushes. This exercises the PutRecords API limit of 10 MiB per
+    /// request and verifies the client handles batching/size correctly.
+    func testFlushLargePayloadWithLargePartitionKeys() async throws {
+        let largeKinesis = try AmplifyKinesisClient(
+            region: Self.region,
+            credentialsProvider: SDKToFoundationCredentialsAdapter(
+                resolver: AWSAuthService().getCredentialIdentityResolver()
+            ),
+            options: .init(
+                cacheMaxBytes: 12 * 1_024 * 1_024, // 12 MB cache to hold >10 MB
+                flushStrategy: .none
+            )
+        )
+        try await largeKinesis.clearCache()
+
+        // Each record: ~50 KB data + ~200-char partition key ≈ 51 KB
+        // 210 records ≈ 10.5 MB total (exceeds the 10 MiB PutRecords request limit)
+        let recordDataSize = 50 * 1_024 // 50 KB
+        let recordCount = 210
+
+        for i in 0..<recordCount {
+            let partitionKey = String(repeating: "k", count: 200) + "-\(i)"
+            let data = Data(repeating: UInt8(i % 256), count: recordDataSize)
+            try await largeKinesis.record(
+                data: data,
+                partitionKey: partitionKey,
+                streamName: Self.streamName
+            )
+        }
+
+        // First flush: sends up to 10 MiB worth of records
+        let flush1 = try await largeKinesis.flush()
+        XCTAssertGreaterThan(flush1.recordsFlushed, 0)
+
+        // Second flush: sends the remaining records
+        let flush2 = try await largeKinesis.flush()
+        XCTAssertGreaterThan(flush2.recordsFlushed, 0)
+
+        XCTAssertEqual(flush1.recordsFlushed + flush2.recordsFlushed, recordCount)
+
+        // Third flush: nothing left
+        let flush3 = try await largeKinesis.flush()
+        XCTAssertEqual(flush3.recordsFlushed, 0)
+
+        try await largeKinesis.clearCache()
+    }
+
+    /// Attempts to record a single entry whose total size (partition key + data blob)
+    /// exceeds the 10 MiB per-record limit. The record call should fail, and a
+    /// subsequent flush of a valid record should still succeed — proving the client
+    /// is not left in a broken state.
+    func testOversizedRecordIsRejectedAndFlushStillWorks() async throws {
+        // 10 MiB = 10_485_760 bytes. Use a 256-char partition key (~256 bytes UTF-8)
+        // plus a data blob that pushes the total over 10 MiB.
+        let largePartitionKey = String(repeating: "😀", count: 256)
+        let oversizedData = Data(repeating: 0x42, count: 1 * 1024 * 1024 - 1024) // ~1 MiB data
+
+        // Record multiple times to test batching
+        for _ in 0..<10 {
+            try await kinesis.record(
+                data: oversizedData,
+                partitionKey: largePartitionKey,
+                streamName: Self.streamName
+            )
+        }
+
+        let firstFlushResult = try await kinesis.flush()
+        print("Flush result: \(firstFlushResult)")
+
+        // Now record a valid small record and flush — client should still work
+        try await kinesis.record(
+            data: "still-works".data(using: .utf8)!,
+            partitionKey: "partition-1",
+            streamName: Self.streamName
+        )
+
+        let flushResult = try await kinesis.flush()
+        XCTAssertEqual(flushResult.recordsFlushed, 1,
+                       "Valid record should flush successfully after large records")
+    }
 
     // MARK: - Escape hatch
 

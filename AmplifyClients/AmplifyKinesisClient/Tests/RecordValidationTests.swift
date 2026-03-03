@@ -172,6 +172,23 @@ class RecordValidationTests: XCTestCase {
         )
     }
 
+    func testPartitionKeyExceeding256ScalarsWithEmojiIsRejected() async throws {
+        // Each emoji (😀) is 1 Unicode scalar
+        // 257 emoji = 257 scalars > 256 limit
+        let partitionKey = String(repeating: "😀", count: 257)
+        do {
+            try await storage.addRecord(
+                RecordInput(streamName: "stream", partitionKey: partitionKey, data: Data([1]))
+            )
+            XCTFail("Expected validation error")
+        } catch let error as RecordCacheError {
+            guard case .validation = error else {
+                XCTFail("Expected RecordCacheError.validation, got \(error)")
+                return
+            }
+        }
+    }
+
     // MARK: - Recovery after rejection
 
     func testStorageAcceptsValidRecordsAfterRejectingOversizedOne() async throws {
