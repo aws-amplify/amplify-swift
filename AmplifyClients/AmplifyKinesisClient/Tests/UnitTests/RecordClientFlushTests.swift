@@ -39,12 +39,14 @@ class RecordClientFlushTests: XCTestCase {
     }
 
     func testFlushShouldHandleMixedRecordStatesCorrectly() async throws {
+        // Given: Records with different states
         let streamName = "test-stream"
 
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key2", data: Data([2])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key3", data: Data([3])))
 
+        // Get all records and set retry count for record 3 to max (3)
         let allRecordsByStream = try await storage.getRecordsByStream()
         let allRecords = allRecordsByStream.flatMap { $0 }
         let record3Id = allRecords[2].id

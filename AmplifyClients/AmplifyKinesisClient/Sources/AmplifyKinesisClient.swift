@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AmplifyFoundation
-import AmplifyFoundationBridge
 import AWSClientRuntime
 import AWSKinesis
+import AmplifyFoundation
+import AmplifyFoundationBridge
 import Foundation
 import SmithyIdentity
 
@@ -183,7 +183,8 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if the record cannot be saved
     @discardableResult
     public func record(data: Data, partitionKey: String, streamName: String) async throws
-        -> RecordData {
+        -> RecordData 
+    {
         guard isEnabledLocked else {
             logger.debug("Record collection is disabled, dropping record")
             return RecordData()
