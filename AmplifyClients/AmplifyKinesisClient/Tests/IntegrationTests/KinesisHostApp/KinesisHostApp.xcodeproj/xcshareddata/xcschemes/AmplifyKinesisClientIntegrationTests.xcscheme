@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EA6AF6962F506E3500D372FB"
-               BuildableName = "AWSKinesisStreamsPluginIntegrationTests.xctest"
-               BlueprintName = "AWSKinesisStreamsPluginIntegrationTests"
+               BuildableName = "AmplifyKinesisClientIntegrationTests.xctest"
+               BlueprintName = "AmplifyKinesisClientIntegrationTests"
                ReferencedContainer = "container:KinesisHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
