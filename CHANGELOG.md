@@ -1052,6 +1052,9 @@ The **Push Notifications** category allows you to integrate push notifications i
 
 ## Unreleased
 
+### Features
+- **Storage**: Add configurable progress stall timeout for S3 uploads (`progressStallTimeoutInterval`). When upload progress does not advance for the specified interval, the upload is cancelled and the completion handler receives an error. Default is 0 (disabled).
+
 ## 2.0.0 (2022-10-17)
 
 ### Breaking Changes
