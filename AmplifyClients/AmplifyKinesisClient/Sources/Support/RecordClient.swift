@@ -10,76 +10,107 @@ import Foundation
 
 /// Generic RecordClient that coordinates storage and sending of records
 actor RecordClient {
-    private let sender: RecordSender
-    private let storage: RecordStorage
-    private let logger = AmplifyFoundation.AmplifyLogging.logger(for: RecordClient.self)
-    private var isFlushing = false
+  private let sender: RecordSender
+  private let storage: RecordStorage
+  private let maxRetries: Int
+  private let logger = AmplifyFoundation.AmplifyLogging.logger(for: RecordClient.self)
+  private var isFlushing = false
 
-    init(
-        sender: RecordSender,
-        storage: RecordStorage
-    ) {
-        self.sender = sender
-        self.storage = storage
+  init(
+    sender: RecordSender,
+    storage: RecordStorage,
+    maxRetries: Int = 3
+  ) {
+    self.sender = sender
+    self.storage = storage
+    self.maxRetries = maxRetries
+  }
+
+  /// Records data to local storage
+  func record(_ input: RecordInput) async throws -> RecordData {
+    try await storage.addRecord(input)
+    return RecordData()
+  }
+
+  /// Flushes all locally stored records
+  func flush() async throws -> FlushData {
+    guard !isFlushing else {
+      logger.debug("Flush already in progress, skipping")
+      return FlushData(recordsFlushed: 0, flushInProgress: true)
     }
 
-    /// Records data to local storage
-    func record(_ input: RecordInput) async throws -> RecordData {
-        try await storage.addRecord(input)
-        return RecordData()
-    }
+    isFlushing = true
+    defer { isFlushing = false }
 
-    /// Flushes all locally stored records
-    func flush() async throws -> FlushData {
-        guard !isFlushing else {
-            logger.debug("Flush already in progress, skipping")
-            return FlushData(recordsFlushed: 0, flushInProgress: true)
+    var totalFlushed = 0
+    let recordsByStreamList: [[Record]] = try await storage.getRecordsByStream()
+    logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
+
+    for records in recordsByStreamList {
+      guard !records.isEmpty else { continue }
+      let streamName = records[0].streamName
+      let recordCount = records.count
+      logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
+
+      do {
+        let response = try await sender.putRecords(streamName: streamName, records: records)
+
+        totalFlushed += response.successfulIds.count
+
+        try await withThrowingTaskGroup(of: Void.self) { group in
+          group.addTask { try await self.storage.deleteRecords(ids: response.successfulIds) }
+          group.addTask { try await self.storage.incrementRetryCount(ids: response.retryableIds) }
+          group.addTask { try await self.storage.deleteRecords(ids: response.failedIds) }
+          try await group.waitForAll()
         }
 
-        isFlushing = true
-        defer { isFlushing = false }
+        logger.verbose(
+          "Stream \(streamName): \(response.successfulIds.count) succeeded, "
+            + "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
+        )
+      } catch {
+        // Increment retry count for retryable records and delete those at the limit
+        await handleFailedRequest(records)
 
-        var totalFlushed = 0
-        let recordsByStreamList: [[Record]] = try await storage.getRecordsByStream()
-        logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
-
-        for records in recordsByStreamList {
-            guard !records.isEmpty else { continue }
-            // getRecordsByStream returns records grouped by stream
-            let streamName = records[0].streamName
-            let recordCount = records.count
-            logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
-
-            do {
-                let response = try await sender.putRecords(streamName: streamName, records: records)
-
-                // Track successfully flushed records
-                totalFlushed += response.successfulIds.count
-
-                // Execute storage operations in parallel
-                try await withThrowingTaskGroup(of: Void.self) { group in
-                    group.addTask { try await self.storage.deleteRecords(ids: response.successfulIds) }
-                    group.addTask { try await self.storage.incrementRetryCount(ids: response.retryableIds) }
-                    group.addTask { try await self.storage.deleteRecords(ids: response.failedIds) }
-                    try await group.waitForAll()
-                }
-
-                logger.verbose(
-                    "Stream \(streamName): \(response.successfulIds.count) succeeded, " +
-                    "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
-                )
-            } catch {
-                logger.error("Failed to process batch for stream \(streamName)", error)
-                throw error
-            }
+        // SDK errors are logged but not thrown — one stream shouldn't block others
+        if KinesisError.isSdkError(error) {
+          logger.warn(
+            "Kinesis SDK error flushing stream \(streamName): \(error.localizedDescription)"
+          )
+        } else {
+          // Cache/storage errors, network errors, and unexpected errors are critical
+          logger.error(
+            "Critical error flushing stream \(streamName): \(error.localizedDescription)"
+          )
+          throw error
         }
-
-        return FlushData(recordsFlushed: totalFlushed)
+      }
     }
 
-    /// Clears all cached records
-    func clearCache() async throws -> ClearCacheData {
-        let count = try await storage.clearRecords()
-        return ClearCacheData(recordsCleared: count)
+    return FlushData(recordsFlushed: totalFlushed)
+  }
+
+  private func handleFailedRequest(_ records: [Record]) async {
+    let retryable = records.filter { $0.retryCount + 1 < maxRetries }
+    let expired = records.filter { $0.retryCount + 1 >= maxRetries }
+
+    do {
+      try await storage.incrementRetryCount(ids: retryable.map(\.id))
+      try await storage.deleteRecords(ids: expired.map(\.id))
+
+      let streamName = records[0].streamName
+      logger.warn(
+        "Deleted \(expired.count) records from stream \(streamName) "
+          + "that exceeded retry limit of \(maxRetries) after failed request"
+      )
+    } catch {
+      logger.error("Failed to update records for failed request: \(error.localizedDescription)")
     }
+  }
+
+  /// Clears all cached records
+  func clearCache() async throws -> ClearCacheData {
+    let count = try await storage.clearRecords()
+    return ClearCacheData(recordsCleared: count)
+  }
 }

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSKinesis
 import AmplifyFoundation
 import AmplifyFoundationBridge
+import AWSClientRuntime
+import AWSKinesis
 import Foundation
 import SmithyIdentity
 
@@ -128,7 +128,8 @@ public class AmplifyKinesisClient {
             configureClient(&clientConfig)
         }
         clientConfig.awsCredentialIdentityResolver = FoundationToSDKCredentialsAdapter(
-            provider: credentialsProvider)
+            provider: credentialsProvider
+        )
 
         // Wrap the default HTTP engine to append kinesis user agent metadata
         clientConfig.httpClientEngine = UserAgentClientEngine(
@@ -155,7 +156,8 @@ public class AmplifyKinesisClient {
 
         self.recordClient = RecordClient(
             sender: sender,
-            storage: storage
+            storage: storage,
+            maxRetries: options.maxRetries
         )
 
         // Create and setup flush scheduler
@@ -181,8 +183,7 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if the record cannot be saved
     @discardableResult
     public func record(data: Data, partitionKey: String, streamName: String) async throws
-        -> RecordData
-    {
+        -> RecordData {
         guard isEnabledLocked else {
             logger.debug("Record collection is disabled, dropping record")
             return RecordData()
@@ -301,7 +302,7 @@ public class AmplifyKinesisClient {
         } catch let caughtError {
             error = caughtError
         }
-        let timeMs = Int((CFAbsoluteTimeGetCurrent() - start) * 1000)
+        let timeMs = Int((CFAbsoluteTimeGetCurrent() - start) * 1_000)
 
         if let error = error {
             logFailure(error, timeMs)
