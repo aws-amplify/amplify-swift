@@ -195,6 +195,27 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
 
     // MARK: - Error paths
 
+    /// Flush with a nonexistent stream name should succeed (SDK errors are handled silently).
+    /// The valid stream's record should still be flushed, proving one bad stream
+    /// doesn't block others.
+    func testFlushWithNonexistentStreamName() async throws {
+        try await kinesis.record(
+            data: XCTUnwrap("wrong-stream-record".data(using: .utf8)),
+            partitionKey: "partition-1",
+            streamName: "nonexistent-stream-name"
+        )
+        try await kinesis.record(
+            data: XCTUnwrap("valid-stream-record".data(using: .utf8)),
+            partitionKey: "partition-1",
+            streamName: Self.streamName
+        )
+
+        let flushResult = try await kinesis.flush()
+        XCTAssertEqual(flushResult.recordsFlushed, 1)
+
+        try await kinesis.clearCache()
+    }
+
     /// Flush with invalid credentials should succeed (SDK errors are handled silently).
     /// Records are incremented and potentially deleted if they exceed retry limits.
     func testFlushWithInvalidCredentials() async throws {
