@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.54.0 (2026-03-04)
+
+### Features
+
+- **kinesis**: fix retry logic for request-level errors (#4167)
+- **kinesis**: add Kinesis Client (#4141)
+- **foundation**: Add Foundation libraries (#4150)
+
 ## 2.53.3 (2026-01-15)
 
 ### Bug Fixes
