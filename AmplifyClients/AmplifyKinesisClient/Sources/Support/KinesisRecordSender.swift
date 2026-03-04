@@ -48,9 +48,9 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
             records: kinesisRecords,
             streamName: streamName
         )
-        
+
         let output: PutRecordsOutput = try await kinesisClient.putRecords(input: input)
-        
+
         var successfulIds: [Int64] = []
         var retryableIds: [Int64] = []
         var failedIds: [Int64] = []
@@ -66,7 +66,7 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
             // - `ProvisionedThroughputExceededException`: Retryable - throughput limit exceeded
             // - `InternalFailure`: Retryable - internal service error
             // Both are retried
-            else if record.retryCount >= self.maxRetries {
+            else if record.retryCount >= maxRetries {
                 failedIds.append(record.id)
             } else {
                 retryableIds.append(record.id)

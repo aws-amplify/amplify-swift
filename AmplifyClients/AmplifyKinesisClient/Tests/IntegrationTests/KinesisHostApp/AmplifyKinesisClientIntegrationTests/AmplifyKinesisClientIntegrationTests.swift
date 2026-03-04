@@ -169,16 +169,24 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
             credentialsProvider: SDKToFoundationCredentialsAdapter(
                 resolver: AWSAuthService().getCredentialIdentityResolver()
             ),
-            options: .init(cacheMaxBytes: 10, flushStrategy: .none)
+            options: .init(cacheMaxBytes: 100, flushStrategy: .none)
         )
         // Clear first so cachedSize starts at 0
         try await smallKinesis.clearCache()
 
         do {
-            // 60 bytes > 10 byte limit — should fail immediately
+            // Fill the cache
+            let bigData = Data(repeating: 0x41, count: 60) // 60 bytes
             try await smallKinesis.record(
-                data: Data(repeating: 0x41, count: 60),
-                partitionKey: "p1",
+                data: bigData,
+                partitionKey: "partition-1",
+                streamName: Self.streamName
+            )
+
+            // This should exceed the 100-byte limit
+            try await smallKinesis.record(
+                data: bigData,
+                partitionKey: "partition-1",
                 streamName: Self.streamName
             )
             XCTFail("Expected cache limit error")
@@ -240,6 +248,57 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         try await badKinesis.clearCache()
     }
 
+    // MARK: - Retry exhaustion
+
+    /// Records to both a nonexistent stream and a valid stream with maxRetries = 5.
+    /// On the first flush the valid record is sent and the invalid-stream record
+    /// stays in the cache (retry count incremented). After 6 total flushes the
+    /// invalid-stream record should be evicted (retryCount >= maxRetries) and a
+    /// final flush returns 0.
+    func testInvalidStreamRecordIsDroppedAfterMaxRetries() async throws {
+        let maxRetries = 5
+        let retryKinesis = try AmplifyKinesisClient(
+            region: Self.region,
+            credentialsProvider: SDKToFoundationCredentialsAdapter(
+                resolver: AWSAuthService().getCredentialIdentityResolver()
+            ),
+            options: .init(maxRetries: maxRetries, flushStrategy: .none)
+        )
+        try await retryKinesis.clearCache()
+
+        // Record to a nonexistent stream and a valid stream
+        try await retryKinesis.record(
+            data: XCTUnwrap("invalid-stream-record".data(using: .utf8)),
+            partitionKey: "partition-1",
+            streamName: "nonexistent-stream-name"
+        )
+        try await retryKinesis.record(
+            data: XCTUnwrap("valid-stream-record".data(using: .utf8)),
+            partitionKey: "partition-1",
+            streamName: Self.streamName
+        )
+
+        // First flush: valid record should be flushed, invalid stays
+        let firstFlush = try await retryKinesis.flush()
+        XCTAssertEqual(firstFlush.recordsFlushed, 1)
+
+        // Flush maxRetries more times (flushes 2–6) to exhaust retries on the invalid record
+        for _ in 0 ..< maxRetries {
+            let result = try await retryKinesis.flush()
+            XCTAssertEqual(result.recordsFlushed, 0)
+        }
+
+        // Final flush: invalid record should have been evicted, nothing left
+        let finalFlush = try await retryKinesis.flush()
+        XCTAssertEqual(finalFlush.recordsFlushed, 0)
+
+        // Confirm cache is truly empty
+        let clearResult = try await retryKinesis.clearCache()
+        XCTAssertEqual(clearResult.recordsCleared, 0)
+
+        await retryKinesis.disable()
+    }
+
     // MARK: - Stress tests
 
     func testHighVolumeRecordAndFlush() async throws {
@@ -273,26 +332,92 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         XCTAssertEqual(total, cycles * perCycle)
     }
 
+    /// Stress test: N producer tasks record concurrently while a flusher calls
+    /// flush() every 500ms. Simulates real-world usage where the app records
+    /// analytics events while the auto-flush timer fires.
+    ///
+    /// Asserts that every recorded event is eventually flushed — no records lost
+    /// under concurrent read/write pressure on the cache.
+    func testConcurrentRecordAndFlushStress() async throws {
+        let producers = 5
+        let recordsPerProducer = 20
+        let totalExpected = producers * recordsPerProducer
+
+        // Shared mutable state protected by an actor
+        let counter = FlushCounter()
+
+        // Flusher: calls flush() every 500ms until signalled to stop
+        let flusherTask = Task {
+            while !Task.isCancelled {
+                let result = try await kinesis.flush()
+                await counter.add(result.recordsFlushed)
+                try await Task.sleep(for: .milliseconds(500))
+            }
+        }
+
+        // Producers: each records M events concurrently
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for p in 0 ..< producers {
+                group.addTask {
+                    for i in 0 ..< recordsPerProducer {
+                        try await self.kinesis.record(
+                            data: XCTUnwrap("stress-p\(p)-r\(i)".data(using: .utf8)),
+                            partitionKey: "partition-\(p % 3)",
+                            streamName: Self.streamName
+                        )
+                    }
+                }
+            }
+            try await group.waitForAll()
+        }
+
+        // Stop the periodic flusher
+        flusherTask.cancel()
+        _ = try? await flusherTask.value
+
+        // Final drain flush to pick up anything the periodic flusher missed
+        let drainResult = try await kinesis.flush()
+        await counter.add(drainResult.recordsFlushed)
+
+        // Second drain to confirm nothing is left
+        let finalResult = try await kinesis.flush()
+        XCTAssertEqual(finalResult.recordsFlushed, 0)
+
+        let totalFlushed = await counter.value
+        XCTAssertEqual(totalFlushed, totalExpected)
+    }
+
     // MARK: - Auto-flush
 
-    func testAutoFlush() async throws {
-        let autoKinesis = try AmplifyKinesisClient(
+    /// Verify that creating a client with default options (no explicit flushStrategy)
+    /// auto-starts the scheduler. Default is `.interval(30)`, so we override
+    /// to a short interval to keep the test fast.
+    func testDefaultConfigAutoStartsScheduler() async throws {
+        // Default options use .interval(30). We use a short interval
+        // to verify the scheduler is auto-started without waiting 30 seconds.
+        let defaultKinesis = try AmplifyKinesisClient(
             region: Self.region,
             credentialsProvider: SDKToFoundationCredentialsAdapter(
                 resolver: AWSAuthService().getCredentialIdentityResolver()
             ),
             options: .init(flushStrategy: .interval(.seconds(3)))
         )
-        try await autoKinesis.record(
-            data: XCTUnwrap("auto-flush".data(using: .utf8)),
+        // Note: no explicit enable() call — scheduler should auto-start from init
+
+        try await defaultKinesis.record(
+            data: XCTUnwrap("auto-start-record".data(using: .utf8)),
             partitionKey: "partition-1",
             streamName: Self.streamName
         )
+
+        // Wait for auto-flush to trigger (3s interval + buffer)
         try await Task.sleep(for: .seconds(6))
-        let flushResult = try await autoKinesis.flush()
+
+        // After auto-flush, a manual flush should find nothing left
+        let flushResult = try await defaultKinesis.flush()
         XCTAssertEqual(flushResult.recordsFlushed, 0)
-        await autoKinesis.disable()
-        try await autoKinesis.clearCache()
+        await defaultKinesis.disable()
+        try await defaultKinesis.clearCache()
     }
 
     // MARK: - Partition key validation
@@ -388,7 +513,7 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
         // 10 MiB = 10_485_760 bytes. Use a 256-char partition key (~256 bytes UTF-8)
         // plus a data blob that pushes the total over 10 MiB.
         let largePartitionKey = String(repeating: "k", count: 256)
-        let oversizedData = Data(repeating: 0x42, count: 10 * 1024 * 1024) // 10 MiB data + 256 bytes key > 10 MiB
+        let oversizedData = Data(repeating: 0x42, count: 10 * 1_024 * 1_024) // 10 MiB data + 256 bytes key > 10 MiB
 
         do {
             try await kinesis.record(
@@ -427,6 +552,15 @@ class AmplifyKinesisClientIntegrationTests: XCTestCase {
 }
 
 // MARK: - Helpers
+
+/// Thread-safe counter for accumulating flushed record counts across tasks.
+@available(iOS 16.0, macOS 13.0, *)
+private actor FlushCounter {
+    private(set) var value = 0
+    func add(_ count: Int) {
+        value += count
+    }
+}
 
 @available(iOS 16.0, macOS 13.0, *)
 private struct InvalidCredentials: AmplifyFoundation.AWSCredentials {

@@ -34,11 +34,11 @@ actor AutoFlushScheduler {
                 }
                 guard let self, !Task.isCancelled else { break }
                 do {
-                    let data = try await self.recordClient.flush()
-                    self.logger.debug("Auto-flush completed: \(data.recordsFlushed) records flushed")
+                    let data = try await recordClient.flush()
+                    logger.debug("Auto-flush completed: \(data.recordsFlushed) records flushed")
                 } catch {
                     // Will retry on next cycle
-                    self.logger.warn("Auto-flush failed", error)
+                    logger.warn("Auto-flush failed", error)
                 }
             }
         }

@@ -80,9 +80,9 @@ actor RecordClient {
             "Kinesis SDK error flushing stream \(streamName): \(error.localizedDescription)"
           )
         } else {
-          // Cache/storage errors, network errors, and unexpected errors are critical
-          logger.error(
-            "Critical error flushing stream \(streamName): \(error.localizedDescription)"
+          // Network errors, storage errors, and unexpected errors — throw to caller
+          logger.warn(
+            "Error flushing stream \(streamName): \(error.localizedDescription)"
           )
           throw error
         }
@@ -100,11 +100,13 @@ actor RecordClient {
       try await storage.incrementRetryCount(ids: retryable.map(\.id))
       try await storage.deleteRecords(ids: expired.map(\.id))
 
-      let streamName = records[0].streamName
-      logger.warn(
-        "Deleted \(expired.count) records from stream \(streamName) "
-          + "that exceeded retry limit of \(maxRetries) after failed request"
-      )
+      if !expired.isEmpty {
+        let streamName = records[0].streamName
+        logger.warn(
+          "Deleted \(expired.count) records from stream \(streamName) "
+            + "that exceeded retry limit of \(maxRetries) after failed request"
+        )
+      }
     } catch {
       logger.error("Failed to update records for failed request: \(error.localizedDescription)")
     }

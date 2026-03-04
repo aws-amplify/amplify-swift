@@ -47,7 +47,7 @@ actor SQLiteRecordStorage: RecordStorage {
         self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
         try Self.setupSchema(on: database)
-        try self.resetCacheSizeFromDb()
+        try resetCacheSizeFromDb()
     }
 
     private static func createFileConnection(identifier: String) throws -> Connection {
@@ -153,7 +153,7 @@ actor SQLiteRecordStorage: RecordStorage {
                         defaultRecoverySuggestion
                     )
                 }
-                
+
                 guard let id = row[0] as? Int64,
                       let streamName = row[1] as? String,
                       let partitionKey = row[2] as? String,

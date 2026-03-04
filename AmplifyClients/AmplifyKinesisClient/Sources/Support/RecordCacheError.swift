@@ -13,7 +13,7 @@ let defaultRecoverySuggestion: RecoverySuggestion = "Inspect the underlying erro
 
 /// Internal error type used by RecordClient/RecordStorage.
 /// Mapped to KinesisError via ``KinesisError/from(_:)``.
-internal enum RecordCacheError: Error {
+enum RecordCacheError: Error {
     /// Database operation failed.
     case database(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Cache limit exceeded — no space for new records.

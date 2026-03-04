@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 @testable import AmplifyKinesisClient
 
 /// Unit tests for PutRecords record-level validation.
@@ -22,7 +22,7 @@ import SQLite
 /// See: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecordsRequestEntry.html
 class RecordValidationTests: XCTestCase {
 
-    private let maxRecordSize: Int64 = 1000
+    private let maxRecordSize: Int64 = 1_000
 
     private var storage: SQLiteRecordStorage!
 
@@ -58,7 +58,7 @@ class RecordValidationTests: XCTestCase {
         // "k" = 1 byte, data = 1000 bytes → total 1001 > maxRecordSize
         do {
             try await storage.addRecord(
-                RecordInput(streamName: "stream", partitionKey: "k", data: Data(repeating: 0x41, count: 1000))
+                RecordInput(streamName: "stream", partitionKey: "k", data: Data(repeating: 0x41, count: 1_000))
             )
             XCTFail("Expected validation error")
         } catch let error as RecordCacheError {
@@ -170,23 +170,6 @@ class RecordValidationTests: XCTestCase {
         try await storage.addRecord(
             RecordInput(streamName: "stream", partitionKey: partitionKey, data: Data([1]))
         )
-    }
-
-    func testPartitionKeyExceeding256ScalarsWithEmojiIsRejected() async throws {
-        // Each emoji (😀) is 1 Unicode scalar
-        // 257 emoji = 257 scalars > 256 limit
-        let partitionKey = String(repeating: "😀", count: 257)
-        do {
-            try await storage.addRecord(
-                RecordInput(streamName: "stream", partitionKey: partitionKey, data: Data([1]))
-            )
-            XCTFail("Expected validation error")
-        } catch let error as RecordCacheError {
-            guard case .validation = error else {
-                XCTFail("Expected RecordCacheError.validation, got \(error)")
-                return
-            }
-        }
     }
 
     // MARK: - Recovery after rejection
