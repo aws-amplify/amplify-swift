@@ -367,6 +367,32 @@ let analyticsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    ),
+]
+
+let kinesisTargets: [Target] = [
+    .target(
+        name: "AmplifyKinesisClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSKinesis", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyKinesisClientTests",
+        dependencies: [
+            "AmplifyKinesisClient"
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )
 ]
 
@@ -509,6 +535,7 @@ targets.append(contentsOf: dataStoreTargets)
 targets.append(contentsOf: storageTargets)
 targets.append(contentsOf: geoTargets)
 targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
@@ -567,6 +594,10 @@ let package = Package(
         .library(
             name: "AWSCloudWatchLoggingPlugin",
             targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
+        .library(
+            name: "AmplifyKinesisClient",
+            targets: ["AmplifyKinesisClient"]
         ),
         .library(
             name: "AmplifyFoundation",

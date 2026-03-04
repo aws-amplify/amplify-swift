@@ -7,7 +7,7 @@
 
 /// Protocol to implement to send log messages to a specific destination
 /// For example, logging to the console or a custom logging framework
-public protocol LogSinkBehavior: Identifiable {
+public protocol LogSinkBehavior: Identifiable, Sendable {
     /// A unique identifier for a log sink
     var id: String { get }
     
