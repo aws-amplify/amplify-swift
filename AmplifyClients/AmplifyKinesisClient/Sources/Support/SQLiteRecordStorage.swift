@@ -11,8 +11,11 @@ import Foundation
 /// Uses actor for thread-safe access (Swift's recommended approach)
 actor SQLiteRecordStorage: RecordStorage {
     private let database: Connection
-    private let maxBytes: Int64
+    private let cacheMaxBytes: Int64
     private let maxRecords: Int
+    private let maxRecordSizeBytes: Int64
+    private let maxBytesPerStream: Int64
+    private let maxPartitionKeyLength: Int
     private let identifier: String
     private var cachedSize: Int64 = 0
 
@@ -26,10 +29,21 @@ actor SQLiteRecordStorage: RecordStorage {
     private static let retryCount = Expression<Int>("retry_count")
     private static let createdAt = Expression<Double>("created_at")
 
-    init(identifier: String, maxRecords: Int, maxBytes: Int64, connection: Connection? = nil) throws {
+    init(
+        identifier: String,
+        maxRecords: Int,
+        cacheMaxBytes: Int64,
+        maxRecordSizeBytes: Int64,
+        maxBytesPerStream: Int64,
+        maxPartitionKeyLength: Int,
+        connection: Connection? = nil
+    ) throws {
         self.identifier = identifier
         self.maxRecords = maxRecords
-        self.maxBytes = maxBytes
+        self.cacheMaxBytes = cacheMaxBytes
+        self.maxRecordSizeBytes = maxRecordSizeBytes
+        self.maxBytesPerStream = maxBytesPerStream
+        self.maxPartitionKeyLength = maxPartitionKeyLength
         self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
         try Self.setupSchema(on: database)
@@ -74,10 +88,27 @@ actor SQLiteRecordStorage: RecordStorage {
     }
 
     func addRecord(_ input: RecordInput) throws {
+        // Validate partition key length (1–256 Unicode scalars)
+        let partitionKeyScalarCount = input.partitionKey.unicodeScalars.count
+        if partitionKeyScalarCount == 0 || partitionKeyScalarCount > maxPartitionKeyLength {
+            throw RecordCacheError.validation(
+                "Partition key length \(partitionKeyScalarCount) is outside the allowed range of 1–\(maxPartitionKeyLength) characters",
+                "Use a partition key between 1 and \(maxPartitionKeyLength) characters."
+            )
+        }
+
+        // Validate per-record size limit (partition key + data blob)
+        if Int64(input.dataSize) > maxRecordSizeBytes {
+            throw RecordCacheError.validation(
+                "Record size \(input.dataSize) bytes exceeds the maximum of \(maxRecordSizeBytes) bytes (partition key + data blob)",
+                "Reduce the size of the data blob or partition key so their combined size does not exceed \(maxRecordSizeBytes) bytes."
+            )
+        }
+
         // Check cache size limit before adding
-        if cachedSize + Int64(input.dataSize) > maxBytes {
+        if cachedSize + Int64(input.dataSize) > cacheMaxBytes {
             throw RecordCacheError.limitExceeded(
-                "Cache size limit exceeded: \(cachedSize + Int64(input.dataSize)) bytes > \(maxBytes) bytes",
+                "Cache size limit exceeded: \(cachedSize + Int64(input.dataSize)) bytes > \(cacheMaxBytes) bytes",
                 "Call flush() to send cached records or increase the cacheMaxBytes option."
             )
         }
@@ -114,7 +145,7 @@ actor SQLiteRecordStorage: RecordStorage {
 
             var recordsByStream: [String: [Record]] = [:]
 
-            for row: Statement.Element in try database.prepare(query, maxRecords, maxBytes) {
+            for row: Statement.Element in try database.prepare(query, maxRecords, maxBytesPerStream) {
                 // Ensure row has expected number of columns (in case DB format is invalid)
                 guard row.count >= 7 else {
                     throw RecordCacheError.database(

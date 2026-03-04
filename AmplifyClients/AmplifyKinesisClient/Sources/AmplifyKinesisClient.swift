@@ -16,9 +16,21 @@ public typealias AmplifyKinesisClientConfigurationProvider = (
     inout AWSKinesis.KinesisClient.KinesisClientConfiguration
 ) -> Void
 
-/// Kinesis supports up to 500 records per stream.
+/// Kinesis supports up to 500 records per PutRecords request.
 /// See [the docs](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecords.html)
 private let maxRecordsPerStream = 500
+
+/// Maximum size of a single record (partition key + data blob) in bytes (10 MiB).
+/// See [PutRecordsRequestEntry](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecordsRequestEntry.html)
+private let maxRecordSizeBytes: Int64 = 10 * 1_024 * 1_024
+
+/// Maximum total payload size per PutRecords request in bytes (10 MiB).
+/// See [PutRecords](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecords.html)
+private let maxBytesPerStream: Int64 = 10 * 1_024 * 1_024
+
+/// Maximum length of a partition key in Unicode scalars.
+/// See [PutRecordsRequestEntry](https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecordsRequestEntry.html)
+private let maxPartitionKeyLength = 256
 
 /// A client for sending data to Amazon Kinesis Data Streams.
 ///
@@ -135,7 +147,10 @@ public class AmplifyKinesisClient {
         let storage = try SQLiteRecordStorage(
             identifier: region,
             maxRecords: maxRecordsPerStream,
-            maxBytes: options.cacheMaxBytes
+            cacheMaxBytes: options.cacheMaxBytes,
+            maxRecordSizeBytes: maxRecordSizeBytes,
+            maxBytesPerStream: maxBytesPerStream,
+            maxPartitionKeyLength: maxPartitionKeyLength
         )
 
         self.recordClient = RecordClient(

@@ -20,7 +20,10 @@ class RecordClientFlushTests: XCTestCase {
         storage = try SQLiteRecordStorage(
             identifier: "test_flush",
             maxRecords: 1000,
-            maxBytes: 1024 * 1024,
+            cacheMaxBytes: 1024 * 1024,
+            maxRecordSizeBytes: 10 * 1024 * 1024,
+            maxBytesPerStream: 10 * 1024 * 1024,
+            maxPartitionKeyLength: 256,
             connection: Connection(.inMemory)
         )
         sender = ConfigurableMockSender()
