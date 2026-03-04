@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import AmplifyKinesisClient
 import AmplifyFoundation
 import AmplifyFoundationBridge
 import AWSKinesis
 import SmithyHTTPAPI
+import XCTest
+@testable import AmplifyKinesisClient
 
 /// Mock HTTP client engine that captures the User-Agent header from outgoing requests.
 private class UserAgentCapturingEngine: HTTPClient {

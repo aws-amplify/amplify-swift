@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSKinesis
 import AmplifyFoundation
 import AmplifyFoundationBridge
+import AWSClientRuntime
+import AWSKinesis
 import Foundation
 import SmithyIdentity
 
@@ -183,13 +183,12 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if the record cannot be saved
     @discardableResult
     public func record(data: Data, partitionKey: String, streamName: String) async throws
-        -> RecordData 
-    {
+        -> RecordData {
         guard isEnabledLocked else {
             logger.debug("Record collection is disabled, dropping record")
             return RecordData()
         }
-        logger.debug("Recording to stream: \(streamName)")
+        logger.verbose("Recording to stream: \(streamName)")
 
         return try await wrapErrorAndLog(
             operation: {
@@ -204,7 +203,7 @@ public class AmplifyKinesisClient {
                 logger.debug("Record completed successfully in \(timeMs)ms")
             },
             logFailure: { error, timeMs in
-                logger.error("Record failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.warn("Record failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -214,18 +213,18 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if flush fails
     @discardableResult
     public func flush() async throws -> FlushData {
-        logger.info("Starting flush")
+        logger.verbose("Starting flush")
         return try await wrapErrorAndLog(
             operation: {
                 try await recordClient.flush()
             },
             logSuccess: { data, timeMs in
-                logger.info(
+                logger.debug(
                     "Flush completed successfully in \(timeMs)ms - \(data.recordsFlushed) records flushed"
                 )
             },
             logFailure: { error, timeMs in
-                logger.error("Flush failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.warn("Flush failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -256,18 +255,18 @@ public class AmplifyKinesisClient {
     /// - Throws: KinesisError if cache cannot be cleared
     @discardableResult
     public func clearCache() async throws -> ClearCacheData {
-        logger.info("Clearing cache")
+        logger.verbose("Clearing cache")
         return try await wrapErrorAndLog(
             operation: {
                 try await recordClient.clearCache()
             },
             logSuccess: { data, timeMs in
-                logger.info(
+                logger.debug(
                     "Clear cache completed successfully in \(timeMs)ms - \(data.recordsCleared) records cleared"
                 )
             },
             logFailure: { error, timeMs in
-                logger.error("Clear cache failed in \(timeMs)ms: \(error.localizedDescription)")
+                logger.warn("Clear cache failed in \(timeMs)ms: \(error.localizedDescription)")
             }
         )
     }
@@ -305,7 +304,7 @@ public class AmplifyKinesisClient {
         }
         let timeMs = Int((CFAbsoluteTimeGetCurrent() - start) * 1_000)
 
-        if let error = error {
+        if let error {
             logFailure(error, timeMs)
             throw error
         } else {
