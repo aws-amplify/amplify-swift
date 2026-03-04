@@ -102,6 +102,9 @@ class RecordClientFlushTests: XCTestCase {
         let allRecords = try await storage.getRecordsByStream().flatMap { $0 }
         let record2Id = allRecords[1].id
         let record3Id = allRecords[2].id
+
+        // Increment to maxRetries (3) so they are expired on next failed flush
+        try await storage.incrementRetryCount(ids: [record2Id, record3Id])
         try await storage.incrementRetryCount(ids: [record2Id, record3Id])
         try await storage.incrementRetryCount(ids: [record2Id, record3Id])
 
