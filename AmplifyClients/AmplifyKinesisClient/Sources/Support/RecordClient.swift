@@ -93,8 +93,8 @@ actor RecordClient {
   }
 
   private func handleFailedRequest(_ records: [Record]) async {
-    let retryable = records.filter { $0.retryCount + 1 < maxRetries }
-    let expired = records.filter { $0.retryCount + 1 >= maxRetries }
+    let retryable = records.filter { $0.retryCount < maxRetries }
+    let expired = records.filter { $0.retryCount >= maxRetries }
 
     do {
       try await storage.incrementRetryCount(ids: retryable.map(\.id))
@@ -104,7 +104,7 @@ actor RecordClient {
         let streamName = records[0].streamName
         logger.warn(
           "Deleted \(expired.count) records from stream \(streamName) "
-            + "that exceeded retry limit of \(maxRetries) after failed request"
+            + "that exceeded retry limit of \(maxRetries) after failed retries"
         )
       }
     } catch {
