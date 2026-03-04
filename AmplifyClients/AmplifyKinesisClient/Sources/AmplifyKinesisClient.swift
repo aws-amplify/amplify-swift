@@ -208,9 +208,22 @@ public class AmplifyKinesisClient {
         )
     }
 
-    /// Flushes all cached records to Kinesis
-    /// - Returns: FlushData containing the number of records flushed
-    /// - Throws: KinesisError if flush fails
+    /// Flushes cached records to Kinesis.
+    ///
+    /// Each invocation sends at most one batch per stream, limited by the Kinesis
+    /// `PutRecords` constraints (up to 500 records or 10 MB per stream). If the cache
+    /// contains more records than a single batch can hold, the remaining records are
+    /// sent on subsequent flush invocations — either manually or via the auto-flush
+    /// scheduler.
+    ///
+    /// Records that fail within a batch are marked for retry on the next flush. Records
+    /// that exceed ``Options/maxRetries`` are removed from the cache.
+    ///
+    /// If a flush is already in progress, the call returns immediately with
+    /// `FlushData(recordsFlushed: 0, flushInProgress: true)`.
+    ///
+    /// - Returns: FlushData containing the number of records successfully flushed
+    /// - Throws: KinesisError if flush fails due to a non-recoverable error (e.g. network failure)
     @discardableResult
     public func flush() async throws -> FlushData {
         logger.verbose("Starting flush")
