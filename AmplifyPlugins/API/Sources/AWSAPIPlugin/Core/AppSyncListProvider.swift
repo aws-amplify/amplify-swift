@@ -59,6 +59,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             elements: listResponse.items,
             nextToken: listResponse.nextToken,
             apiName: payload.apiName,
+            authMode: payload.authMode,
             limit: payload.limit,
             filter: payload.graphQLFilter
         )
