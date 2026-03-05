@@ -56,7 +56,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         try await storage.addRecord(record3)
 
         // Get record IDs for deletion - delete first two by creation order
-        let recordsByStreamList = try await storage.getRecordsByStream()
+        let recordsByStreamList = try await storage.getRecordsByStream(excludingIds: [])
         let allRecords = recordsByStreamList.flatMap { $0 }.sorted { $0.createdAt < $1.createdAt }
         let idsToDelete = Array(allRecords.prefix(2)).map { $0.id }
 
@@ -91,7 +91,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         XCTAssertEqual(cachedSize, 10) // 6 + 4
 
         // Delete the first record (6 bytes from stream1)
-        let recordsList = try await storage.getRecordsByStream()
+        let recordsList = try await storage.getRecordsByStream(excludingIds: [])
         let records = recordsList.flatMap { $0 }
         let firstRecord = try XCTUnwrap(records.first { $0.streamName == "stream1" })
         try await storage.deleteRecords(ids: [firstRecord.id])
@@ -170,7 +170,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
                 for _ in 0 ..< deletionsPerConsumer {
                     try? await Task.sleep(nanoseconds: 1_000_000) // 1ms
 
-                    if let recordsList = try? await storage.getRecordsByStream(),
+                    if let recordsList = try? await storage.getRecordsByStream(excludingIds: []),
                        let records = recordsList.first,
                        !records.isEmpty {
                         let recordsToDelete = Array(records.prefix(1))
@@ -196,7 +196,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         // Verify data integrity
         let (totalCreated, totalDeleted) = await tracker.getCounts()
 
-        let finalRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let finalRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
         print("Created \(totalCreated) records, deleted \(totalDeleted) records, found in DB \(finalRecords.count)")
 
         let finalCacheSize = try await storage.getCurrentCacheSize()
@@ -254,7 +254,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
             )
         }
 
-        let recordsByStream = try await perStreamStorage.getRecordsByStream()
+        let recordsByStream = try await perStreamStorage.getRecordsByStream(excludingIds: [])
         XCTAssertEqual(recordsByStream.count, 2)
 
         for records in recordsByStream {

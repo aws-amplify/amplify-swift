@@ -9,8 +9,8 @@ protocol RecordStorage: Actor {
     /// Adds a new record to storage
     func addRecord(_ input: RecordInput) async throws
 
-    /// Gets all records grouped by stream name as a list of lists
-    func getRecordsByStream() async throws -> [[Record]]
+    /// Gets all records grouped by stream name as a list of lists, excluding specified IDs
+    func getRecordsByStream(excludingIds: Set<Int64>) async throws -> [[Record]]
 
     /// Deletes records by their IDs
     func deleteRecords(ids: [Int64]) async throws
