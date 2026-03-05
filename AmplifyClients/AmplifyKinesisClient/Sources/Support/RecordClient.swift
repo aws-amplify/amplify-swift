@@ -45,48 +45,58 @@ actor RecordClient {
     defer { isFlushing = false }
 
     var totalFlushed = 0
-    let recordsByStreamList: [[Record]] = try await storage.getRecordsByStream()
-    logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
+    var attemptedIds: Set<Int64> = []
 
-    for records in recordsByStreamList {
-      guard !records.isEmpty else { continue }
-      let streamName = records[0].streamName
-      let recordCount = records.count
-      logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
+    var recordsByStreamList: [[Record]] = try await storage.getRecordsByStream(excludingIds: attemptedIds)
+    while !recordsByStreamList.isEmpty {
 
-      do {
-        let response = try await sender.putRecords(streamName: streamName, records: records)
+      logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
 
-        totalFlushed += response.successfulIds.count
+      for records in recordsByStreamList {
+        guard !records.isEmpty else { continue }
+        let streamName = records[0].streamName
+        let recordCount = records.count
+        logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
-          group.addTask { try await self.storage.deleteRecords(ids: response.successfulIds) }
-          group.addTask { try await self.storage.incrementRetryCount(ids: response.retryableIds) }
-          group.addTask { try await self.storage.deleteRecords(ids: response.failedIds) }
-          try await group.waitForAll()
-        }
+        // Track all attempted record IDs so they are excluded from the next batch
+        attemptedIds.formUnion(records.map(\.id))
 
-        logger.verbose(
-          "Stream \(streamName): \(response.successfulIds.count) succeeded, "
-            + "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
-        )
-      } catch {
-        // Increment retry count for retryable records and delete those at the limit
-        await handleFailedRequest(records)
+        do {
+          let response = try await sender.putRecords(streamName: streamName, records: records)
 
-        // SDK errors are logged but not thrown — one stream shouldn't block others
-        if error is ModeledError || error is AWSServiceError {
-          logger.warn(
-            "Kinesis SDK error flushing stream \(streamName): \(error.localizedDescription)"
+          totalFlushed += response.successfulIds.count
+
+          try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask { try await self.storage.deleteRecords(ids: response.successfulIds) }
+            group.addTask { try await self.storage.incrementRetryCount(ids: response.retryableIds) }
+            group.addTask { try await self.storage.deleteRecords(ids: response.failedIds) }
+            try await group.waitForAll()
+          }
+
+          logger.verbose(
+            "Stream \(streamName): \(response.successfulIds.count) succeeded, "
+              + "\(response.retryableIds.count) retryable, \(response.failedIds.count) failed"
           )
-        } else {
-          // Network errors, storage errors, and unexpected errors — throw to caller
-          logger.warn(
-            "Error flushing stream \(streamName): \(error.localizedDescription)"
-          )
-          throw error
+        } catch {
+          // Increment retry count for retryable records and delete those at the limit
+          await handleFailedRequest(records)
+
+          // SDK errors are logged but not thrown — one stream shouldn't block others
+          let isSdkError = error is ModeledError || error is AWSServiceError
+          if isSdkError {
+            logger.warn(
+              "Kinesis SDK error flushing stream \(streamName): \(error.localizedDescription)"
+            )
+          } else {
+            // Network errors, storage errors, and unexpected errors — throw to caller
+            logger.warn(
+              "Error flushing stream \(streamName): \(error.localizedDescription)"
+            )
+            throw error
+          }
         }
       }
+      recordsByStreamList = try await storage.getRecordsByStream(excludingIds: attemptedIds)
     }
 
     return FlushData(recordsFlushed: totalFlushed)

@@ -128,8 +128,16 @@ actor SQLiteRecordStorage: RecordStorage {
         cachedSize += Int64(input.dataSize)
     }
 
-    func getRecordsByStream() throws -> [[Record]] {
+    func getRecordsByStream(excludingIds: Set<Int64>) throws -> [[Record]] {
         try Self.wrapDatabaseError {
+            let excludeClause: String
+            if excludingIds.isEmpty {
+                excludeClause = ""
+            } else {
+                let placeholders = excludingIds.map { _ in "?" }.joined(separator: ",")
+                excludeClause = "WHERE id NOT IN (\(placeholders))"
+            }
+
             // Must use raw SQL for window functions
             let query = """
                 SELECT id, stream_name, partition_key, data, data_size, retry_count, created_at
@@ -138,14 +146,19 @@ actor SQLiteRecordStorage: RecordStorage {
                            ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
                            SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
                     FROM records
+                    \(excludeClause)
                 )
                 WHERE rn <= ? AND running_size <= ?
                 ORDER BY stream_name, id
                 """
 
+            var bindings: [Binding?] = excludingIds.sorted().map { $0 as Binding? }
+            bindings.append(maxRecords as Binding?)
+            bindings.append(maxBytesPerStream as Binding?)
+
             var recordsByStream: [String: [Record]] = [:]
 
-            for row: Statement.Element in try database.prepare(query, maxRecords, maxBytesPerStream) {
+            for row: Statement.Element in try database.prepare(query, bindings) {
                 // Ensure row has expected number of columns (in case DB format is invalid)
                 guard row.count >= 7 else {
                     throw RecordCacheError.database(
