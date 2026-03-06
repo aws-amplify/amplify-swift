@@ -88,6 +88,8 @@ extension AWSS3StorageService {
         // register task so it can be accessed in URLSession delegate functions
         register(task: transferTask)
 
+        (urlSession.delegate as? StorageServiceSessionDelegate)?.startProgressStallTimerIfNeeded(taskIdentifier: uploadTask.taskIdentifier)
+
         if startTransfer {
             transferTask.resume()
         }

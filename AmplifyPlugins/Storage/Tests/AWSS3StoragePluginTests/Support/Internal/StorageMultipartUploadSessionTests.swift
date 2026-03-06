@@ -16,6 +16,47 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         case testFailure
     }
 
+    /// Given: A StorageMultipartUploadSession with progressStallTimeoutInterval and a client that stalls (no progress)
+    /// When: startUpload is invoked
+    /// Then: After the interval, .failed event is received with progress stall timeout error
+    func testProgressStallTimeout_whenNoProgress_failsWithStallError() throws {
+        let stallInterval: TimeInterval = 0.05
+        let failedExp = expectation(description: "Failed with stall error")
+
+        let client = MockMultipartUploadClient()
+        client.shouldStallPartUpload = true
+
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated:
+                break
+            case .inProcess:
+                break
+            case .failed(let error):
+                let underlying = (error as? StorageError)?.underlyingError ?? error
+                let nsError = underlying as NSError
+                if nsError.domain == AWSS3TransferUtilityErrorDomain, nsError.code == AWSS3TransferUtilityErrorProgressStallTimeout {
+                    failedExp.fulfill()
+                }
+            case .completed:
+                XCTFail("Should not complete when stalling")
+            }
+        }
+
+        let session = StorageMultipartUploadSession(
+            client: client,
+            bucket: "bucket",
+            key: "key",
+            onEvent: onEvent,
+            progressStallTimeoutInterval: stallInterval
+        )
+        session.startUpload()
+
+        wait(for: [failedExp], timeout: stallInterval + 0.5)
+        XCTAssertTrue(session.isAborted)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+    }
+
     func testSessionCreation() throws {
         let bucket = "my-bucket"
         let key = "key.txt"

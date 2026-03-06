@@ -82,3 +82,6 @@ GraphQLWithIAMIntegrationTests-credentials.json
 
 AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
 *.code-workspace
+
+# Local documentation (not for upstream)
+UPLOAD_PROGRESS_STALL_CHANGES.md

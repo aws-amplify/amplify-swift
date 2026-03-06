@@ -16,9 +16,18 @@ public struct AWSS3StoragePluginConfiguration {
     @available(*, deprecated)
     public let prefixResolver: AWSS3PluginPrefixResolver?
 
+    /// If upload progress does not advance for this many seconds, the upload is cancelled and the completion
+    /// handler receives an error. Useful on unreliable networks where uploads may stall indefinitely.
+    /// Set to `0` to disable (default). Applies to both single and multipart uploads.
+    public let progressStallTimeoutInterval: TimeInterval
+
     /// - Tag: AWSS3StoragePluginConfiguration.init
-    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil) {
+    /// - Parameters:
+    ///   - prefixResolver: Deprecated. Use `StoragePath` instead.
+    ///   - progressStallTimeoutInterval: Seconds to wait for progress before cancelling. `0` = disabled.
+    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil, progressStallTimeoutInterval: TimeInterval = 0) {
         self.prefixResolver = prefixResolver
+        self.progressStallTimeoutInterval = progressStallTimeoutInterval
     }
 
     /// - Tag: AWSS3StoragePluginConfiguration.prefixResolverFunc
