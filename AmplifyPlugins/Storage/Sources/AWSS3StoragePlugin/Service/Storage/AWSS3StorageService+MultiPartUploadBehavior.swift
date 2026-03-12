@@ -44,7 +44,8 @@ extension AWSS3StorageService {
             key: serviceKey,
             contentType: contentType,
             requestHeaders: requestHeaders,
-            onEvent: onEvent
+            onEvent: onEvent,
+            progressStallTimeoutInterval: storageConfiguration.progressStallTimeoutInterval
         )
 
         register(multipartUploadSession: multipartUploadSession)

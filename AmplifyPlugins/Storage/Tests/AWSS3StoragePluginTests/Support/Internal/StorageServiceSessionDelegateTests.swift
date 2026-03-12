@@ -265,6 +265,65 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(taskIdentifier, task.taskIdentifier)
     }
 
+    /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval > 0 and an upload task
+    /// When: startProgressStallTimerIfNeeded is called and no progress (didSendBodyData) arrives
+    /// Then: After the interval, the task fails with progress stall timeout error
+    func testProgressStallTimeout_whenNoProgress_failsTaskWithStallError() async throws {
+        let stallInterval: TimeInterval = 0.05
+        let serviceWithStall: AWSS3StorageServiceMock = try AWSS3StorageServiceMock(progressStallTimeoutInterval: stallInterval)
+        let delegateWithStall = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
+        XCTAssertNotNil(delegateWithStall, "Delegate should be StorageServiceSessionDelegate")
+
+        let expectation = expectation(description: "Task fails with stall timeout")
+        let sessionTask = URLSession.shared.dataTask(with: URL(string: "https://example.com")!)
+        let storageTask = StorageTransferTask(
+            transferType: .upload(onEvent: { event in
+                guard case .failed(let error) = event else {
+                    XCTFail("Expected .failed event, got \(event)")
+                    return
+                }
+                let underlying = (error as? StorageError)?.underlyingError ?? error
+                let nsError = underlying as NSError
+                XCTAssertEqual(nsError.domain, AWSS3TransferUtilityErrorDomain)
+                XCTAssertEqual(nsError.code, AWSS3TransferUtilityErrorProgressStallTimeout)
+                expectation.fulfill()
+            }),
+            bucket: "bucket",
+            key: "key"
+        )
+        storageTask.sessionTask = sessionTask
+        serviceWithStall.mockedTask = storageTask
+        serviceWithStall.register(task: storageTask)
+        delegateWithStall?.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
+
+        await fulfillment(of: [expectation], timeout: stallInterval + 0.5)
+        XCTAssertEqual(storageTask.status, .error)
+    }
+
+    /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval = 0
+    /// When: startProgressStallTimerIfNeeded is called
+    /// Then: No timer is started (no-op)
+    func testProgressStallTimeout_whenDisabled_doesNotStartTimer() async {
+        service = try! AWSS3StorageServiceMock()
+        delegate = StorageServiceSessionDelegate(identifier: "delegateTest", logger: logger)
+        delegate.storageService = service
+
+        let sessionTask = URLSession.shared.dataTask(with: URL(string: "https://example.com")!)
+        let storageTask = StorageTransferTask(
+            transferType: .upload(onEvent: { _ in }),
+            bucket: "bucket",
+            key: "key"
+        )
+        storageTask.sessionTask = sessionTask
+        service.mockedTask = storageTask
+        service.register(task: storageTask)
+
+        delegate.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
+
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        XCTAssertNotEqual(storageTask.status, .error, "Task should not fail when stall timer is disabled")
+    }
+
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .download
     /// When: didWriteData is invoked
     /// Then: An .inProcess event is reported, with the corresponding values
@@ -330,6 +389,17 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
             authService: MockAWSAuthService(),
             region: "region",
             bucket: "bucket",
+            storageTransferDatabase: MockStorageTransferDatabase()
+        )
+    }
+
+    convenience init(progressStallTimeoutInterval: TimeInterval) throws {
+        let storageConfig = StorageConfiguration(forBucket: "bucket", progressStallTimeoutInterval: progressStallTimeoutInterval)
+        try self.init(
+            authService: MockAWSAuthService(),
+            region: "region",
+            bucket: "bucket",
+            storageConfiguration: storageConfig,
             storageTransferDatabase: MockStorageTransferDatabase()
         )
     }

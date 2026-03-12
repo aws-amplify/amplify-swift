@@ -185,8 +185,16 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
             }
             finish()
         case .failed(let error):
-            dispatch(error)
-            finish()
+            // Dispatch failure on main to minimize UI update latency (e.g. progress stall timeout)
+            if Thread.isMainThread {
+                dispatch(error)
+                finish()
+            } else {
+                DispatchQueue.main.async {
+                    self.dispatch(error)
+                    self.finish()
+                }
+            }
         }
     }
 

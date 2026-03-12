@@ -17,6 +17,17 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
         XCTAssertNotNil(storagePlugin.storageConfiguration.prefixResolver as? MockPrefixResolver)
     }
 
+    /// Given: AWSS3StoragePluginConfiguration with progressStallTimeoutInterval
+    /// When: Configuration is created
+    /// Then: progressStallTimeoutInterval is stored correctly
+    func testProgressStallTimeoutInterval_configuration() {
+        let config = AWSS3StoragePluginConfiguration(progressStallTimeoutInterval: 60)
+        XCTAssertEqual(config.progressStallTimeoutInterval, 60)
+
+        let defaultConfig = AWSS3StoragePluginConfiguration()
+        XCTAssertEqual(defaultConfig.progressStallTimeoutInterval, 0)
+    }
+
     struct MockPrefixResolver: AWSS3PluginPrefixResolver {
         func resolvePrefix(
             for accessLevel: StorageAccessLevel,

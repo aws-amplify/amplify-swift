@@ -104,11 +104,16 @@ extension AWSS3StoragePlugin {
         authService: AWSAuthCredentialsProviderBehavior,
         bucketInfo: BucketInfo
     ) throws -> AWSS3StorageServiceBehavior {
+        let storageConfig = StorageConfiguration(
+            forBucket: bucketInfo.bucketName,
+            progressStallTimeoutInterval: storageConfiguration.progressStallTimeoutInterval
+        )
         let storageService = try AWSS3StorageService(
             authService: authService,
             region: bucketInfo.region,
             bucket: bucketInfo.bucketName,
-            httpClientEngineProxy: httpClientEngineProxy
+            httpClientEngineProxy: httpClientEngineProxy,
+            storageConfiguration: storageConfig
         )
         storageService.urlRequestDelegate = urlRequestDelegate
         return storageService
