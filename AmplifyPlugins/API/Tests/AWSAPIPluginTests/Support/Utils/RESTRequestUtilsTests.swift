@@ -95,6 +95,24 @@ class RESTRequestUtilsTests: XCTestCase {
             )
         )
     }
+
+    func testConstructURLWithPlusSign() throws {
+        let baseURL = URL(string: "https://aws.amazon.com")!
+        let queryParams = ["q": "swift+amplify"]
+        let expected = ["q": "swift+amplify"]
+        
+        let resultURL = try RESTOperationRequestUtils.constructURL(
+            for: baseURL,
+            withPath: "/search",
+            withParams: queryParams
+        )
+        
+        try assertQueryParameters(
+            testCase: 0,
+            withURL: resultURL,
+            expected: expected
+        )
+    }
 }
 
 extension RESTRequestUtilsTests {
