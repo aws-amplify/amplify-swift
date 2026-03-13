@@ -45,7 +45,7 @@ class RecordClientConcurrentFlushTests: XCTestCase {
             )
         }
 
-        let allRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let allRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
 
         // Make the sender slow so the first flush holds the lock
         await sender.setDelay(nanoseconds: 500_000_000) // 500ms

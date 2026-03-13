@@ -115,7 +115,7 @@ actor MockRecordStorage: RecordStorage {
         addRecordCallCount += 1
     }
 
-    func getRecordsByStream() throws -> [[Record]] {
+    func getRecordsByStream(excludingIds: Set<Int64>) throws -> [[Record]] {
         getRecordsByStreamCallCount += 1
         return []
     }
