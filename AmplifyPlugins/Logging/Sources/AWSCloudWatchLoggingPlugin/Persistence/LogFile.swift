@@ -37,7 +37,7 @@ final class LogFile {
     }
 
     deinit {
-        try? self.handle.close()
+        try? handle.close()
     }
 
     /// Returns the number of bytes available in the underlying file.
