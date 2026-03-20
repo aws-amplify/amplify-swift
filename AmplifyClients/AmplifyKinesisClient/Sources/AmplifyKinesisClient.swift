@@ -12,6 +12,13 @@ import AWSKinesis
 import Foundation
 import SmithyIdentity
 
+/// Closure for advanced customization of the underlying Kinesis client configuration.
+public typealias AmplifyKinesisClientConfigProvider = (
+    inout AWSKinesis.KinesisClient.KinesisClientConfig
+) -> Void
+
+/// Closure for advanced customization of the underlying Kinesis client configuration.
+@available(*, deprecated, renamed: "AmplifyKinesisClientConfigProvider")
 public typealias AmplifyKinesisClientConfigurationProvider = (
     inout AWSKinesis.KinesisClient.KinesisClientConfiguration
 ) -> Void
@@ -89,18 +96,31 @@ public class AmplifyKinesisClient {
         public let maxRetries: Int
         public let flushStrategy: FlushStrategy
 
-        /// Optional closure for advanced customization of the underlying `KinesisClientConfiguration`.
+        /// Optional closure for advanced customization of the underlying `KinesisClientConfig`.
         ///
         /// This closure is applied before the credentials resolver is set. The `credentialsProvider`
         /// passed to ``AmplifyKinesisClient/init(region:credentialsProvider:options:)`` will always
         /// take precedence over any `awsCredentialIdentityResolver` set in this closure.
-        public let configureClient: AmplifyKinesisClientConfigurationProvider?
+        public let configureClient: AmplifyKinesisClientConfigProvider?
 
         public init(
             cacheMaxBytes: Int64 = 5 * 1_024 * 1_024, // 5MB
             maxRetries: Int = 5,
             flushStrategy: FlushStrategy = .interval(),
-            configureClient: AmplifyKinesisClientConfigurationProvider? = nil
+            configureClient: AmplifyKinesisClientConfigProvider? = nil
+        ) {
+            self.cacheMaxBytes = cacheMaxBytes
+            self.maxRetries = maxRetries
+            self.flushStrategy = flushStrategy
+            self.configureClient = configureClient
+        }
+
+        @available(*, deprecated, message: "Use init with AmplifyKinesisClientConfigProvider instead")
+        public init(
+            cacheMaxBytes: Int64 = 5 * 1_024 * 1_024,
+            maxRetries: Int = 5,
+            flushStrategy: FlushStrategy = .interval(),
+            configureClient: AmplifyKinesisClientConfigurationProvider?
         ) {
             self.cacheMaxBytes = cacheMaxBytes
             self.maxRetries = maxRetries
@@ -122,7 +142,7 @@ public class AmplifyKinesisClient {
         self.options = options
 
         // Create Kinesis client configuration
-        var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfiguration(region: region)
+        var clientConfig = try AWSKinesis.KinesisClient.KinesisClientConfig(region: region)
 
         if let configureClient = options.configureClient {
             configureClient(&clientConfig)
