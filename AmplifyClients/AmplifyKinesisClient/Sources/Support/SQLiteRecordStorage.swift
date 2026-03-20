@@ -44,11 +44,13 @@ actor SQLiteRecordStorage: RecordStorage {
         self.maxRecordSizeBytes = maxRecordSizeBytes
         self.maxBytesPerStream = maxBytesPerStream
         self.maxPartitionKeyLength = maxPartitionKeyLength
-        self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
-        try Self.setupSchema(on: database)
+        let db = try connection ?? Self.createFileConnection(identifier: identifier)
+        self.database = db
+
+        try Self.setupSchema(on: db)
         let size = try Self.wrapDatabaseError {
-            try database.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+            try db.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
         }
         self.cachedSize = Int64(size)
     }
