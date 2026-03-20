@@ -45,9 +45,9 @@ actor RecordClient {
     defer { isFlushing = false }
 
     var totalFlushed = 0
-    var attemptedIds: Set<Int64> = []
+    var lastIdByStream: [String: Int64] = [:]
 
-    var recordsByStreamList: [[Record]] = try await storage.getRecordsByStream(excludingIds: attemptedIds)
+    var recordsByStreamList: [[Record]] = try await storage.getRecordsByStream(afterIdByStream: lastIdByStream)
     while !recordsByStreamList.isEmpty {
 
       logger.debug("Retrieved \(recordsByStreamList.count) stream(s) with records to flush")
@@ -58,8 +58,9 @@ actor RecordClient {
         let recordCount = records.count
         logger.verbose("Flushing \(recordCount) records to stream: \(streamName)")
 
-        // Track all attempted record IDs so they are excluded from the next batch
-        attemptedIds.formUnion(records.map(\.id))
+        // Track the last record ID per stream so subsequent batches start after it
+        let maxId = records.map(\.id).max() ?? 0
+        lastIdByStream[streamName] = maxId
 
         do {
           let response = try await sender.putRecords(streamName: streamName, records: records)
@@ -96,7 +97,7 @@ actor RecordClient {
           }
         }
       }
-      recordsByStreamList = try await storage.getRecordsByStream(excludingIds: attemptedIds)
+      recordsByStreamList = try await storage.getRecordsByStream(afterIdByStream: lastIdByStream)
     }
 
     return FlushData(recordsFlushed: totalFlushed)

@@ -56,7 +56,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         try await storage.addRecord(record3)
 
         // Get record IDs for deletion - delete first two by creation order
-        let recordsByStreamList = try await storage.getRecordsByStream(excludingIds: [])
+        let recordsByStreamList = try await storage.getRecordsByStream(afterIdByStream: [:])
         let allRecords = recordsByStreamList.flatMap { $0 }.sorted { $0.createdAt < $1.createdAt }
         let idsToDelete = Array(allRecords.prefix(2)).map { $0.id }
 
@@ -91,7 +91,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         XCTAssertEqual(cachedSize, 10) // 6 + 4
 
         // Delete the first record (6 bytes from stream1)
-        let recordsList = try await storage.getRecordsByStream(excludingIds: [])
+        let recordsList = try await storage.getRecordsByStream(afterIdByStream: [:])
         let records = recordsList.flatMap { $0 }
         let firstRecord = try XCTUnwrap(records.first { $0.streamName == "stream1" })
         try await storage.deleteRecords(ids: [firstRecord.id])
@@ -170,7 +170,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
                 for _ in 0 ..< deletionsPerConsumer {
                     try? await Task.sleep(nanoseconds: 1_000_000) // 1ms
 
-                    if let recordsList = try? await storage.getRecordsByStream(excludingIds: []),
+                    if let recordsList = try? await storage.getRecordsByStream(afterIdByStream: [:]),
                        let records = recordsList.first,
                        !records.isEmpty {
                         let recordsToDelete = Array(records.prefix(1))
@@ -196,7 +196,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         // Verify data integrity
         let (totalCreated, totalDeleted) = await tracker.getCounts()
 
-        let finalRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
+        let finalRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         print("Created \(totalCreated) records, deleted \(totalDeleted) records, found in DB \(finalRecords.count)")
 
         let finalCacheSize = try await storage.getCurrentCacheSize()
@@ -254,7 +254,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
             )
         }
 
-        let recordsByStream = try await perStreamStorage.getRecordsByStream(excludingIds: [])
+        let recordsByStream = try await perStreamStorage.getRecordsByStream(afterIdByStream: [:])
         XCTAssertEqual(recordsByStream.count, 2)
 
         for records in recordsByStream {
@@ -272,62 +272,66 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         }
     }
 
-    func testGetRecordsByStreamWithEmptyExcludingIdsReturnsAllRecords() async throws {
+    func testGetRecordsByStreamWithEmptyAfterIdByStreamReturnsAllRecords() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
         try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "key3", data: Data([3])))
 
-        let result = try await storage.getRecordsByStream(excludingIds: [])
+        let result = try await storage.getRecordsByStream(afterIdByStream: [:])
         let allRecords = result.flatMap { $0 }
 
         XCTAssertEqual(allRecords.count, 3)
     }
 
-    func testGetRecordsByStreamExcludesSpecifiedRecordIds() async throws {
+    func testGetRecordsByStreamExcludesRecordsUpToLastIdPerStream() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key3", data: Data([3])))
 
-        let allRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
+        let allRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(allRecords.count, 3)
 
-        let excludeIds: Set<Int64> = [allRecords[0].id, allRecords[2].id]
-        let filtered = try await storage.getRecordsByStream(excludingIds: excludeIds).flatMap { $0 }
+        // Exclude records up to the first record's ID — should return the remaining 2
+        let afterId = allRecords[0].id
+        let filtered = try await storage.getRecordsByStream(afterIdByStream: ["stream1": afterId]).flatMap { $0 }
 
-        XCTAssertEqual(filtered.count, 1)
-        XCTAssertEqual(filtered[0].id, allRecords[1].id)
+        XCTAssertEqual(filtered.count, 2)
+        XCTAssertTrue(filtered.allSatisfy { $0.id > afterId })
     }
 
-    func testGetRecordsByStreamWithAllIdsExcludedReturnsEmpty() async throws {
+    func testGetRecordsByStreamWithAllRecordsExcludedReturnsEmpty() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
 
-        let allRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
-        let excludeAll: Set<Int64> = Set(allRecords.map(\.id))
+        let allRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
+        let maxId = allRecords.map(\.id).max()!
 
-        let result = try await storage.getRecordsByStream(excludingIds: excludeAll)
+        let result = try await storage.getRecordsByStream(afterIdByStream: ["stream1": maxId])
         XCTAssertEqual(result.count, 0)
     }
 
-    func testGetRecordsByStreamExcludesIdsAcrossMultipleStreams() async throws {
+    func testGetRecordsByStreamExcludesPerStreamAcrossMultipleStreams() async throws {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
         try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "key3", data: Data([3])))
         try await storage.addRecord(RecordInput(streamName: "stream2", partitionKey: "key4", data: Data([4])))
 
-        let allRecords = try await storage.getRecordsByStream(excludingIds: []).flatMap { $0 }
-        let stream1Record = try XCTUnwrap(allRecords.first { $0.streamName == "stream1" })
-        let stream2Record = try XCTUnwrap(allRecords.first { $0.streamName == "stream2" })
+        let allRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
+        let stream1First = try XCTUnwrap(allRecords.first { $0.streamName == "stream1" })
+        let stream2First = try XCTUnwrap(allRecords.first { $0.streamName == "stream2" })
 
-        let filtered = try await storage.getRecordsByStream(excludingIds: [stream1Record.id, stream2Record.id])
+        // Exclude up to the first record in each stream — should return 1 per stream
+        let filtered = try await storage.getRecordsByStream(
+            afterIdByStream: ["stream1": stream1First.id, "stream2": stream2First.id]
+        )
         let remaining = filtered.flatMap { $0 }
 
         XCTAssertEqual(remaining.count, 2)
-        XCTAssertTrue(remaining.allSatisfy { $0.id != stream1Record.id })
-        XCTAssertTrue(remaining.allSatisfy { $0.id != stream2Record.id })
+        XCTAssertTrue(remaining.allSatisfy { $0.id != stream1First.id })
+        XCTAssertTrue(remaining.allSatisfy { $0.id != stream2First.id })
     }
 
-    func testGetRecordsByStreamRespectsBatchLimitAfterExcludingIds() async throws {
+    func testGetRecordsByStreamRespectsBatchLimitWithAfterIdByStream() async throws {
         let batchStorage = try SQLiteRecordStorage(
             identifier: "test_batch_exclude",
             maxRecords: 2,
@@ -345,18 +349,18 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         try await batchStorage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key4", data: Data([4])))
 
         // First batch: 2 records (batch limit)
-        let batch1 = try await batchStorage.getRecordsByStream(excludingIds: []).flatMap { $0 }
+        let batch1 = try await batchStorage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(batch1.count, 2)
 
-        // Second batch: exclude first 2, get next 2
-        let excludeIds: Set<Int64> = Set(batch1.map(\.id))
-        let batch2 = try await batchStorage.getRecordsByStream(excludingIds: excludeIds).flatMap { $0 }
+        // Second batch: skip past the max ID from batch 1, get next 2
+        let maxIdBatch1 = batch1.map(\.id).max()!
+        let batch2 = try await batchStorage.getRecordsByStream(afterIdByStream: ["stream1": maxIdBatch1]).flatMap { $0 }
         XCTAssertEqual(batch2.count, 2)
-        XCTAssertTrue(batch2.allSatisfy { !excludeIds.contains($0.id) })
+        XCTAssertTrue(batch2.allSatisfy { $0.id > maxIdBatch1 })
 
-        // Third batch: exclude all 4, get nothing
-        let allIds: Set<Int64> = Set((batch1 + batch2).map(\.id))
-        let batch3 = try await batchStorage.getRecordsByStream(excludingIds: allIds)
+        // Third batch: skip past all 4, get nothing
+        let maxIdBatch2 = batch2.map(\.id).max()!
+        let batch3 = try await batchStorage.getRecordsByStream(afterIdByStream: ["stream1": maxIdBatch2])
         XCTAssertEqual(batch3.count, 0)
     }
 }

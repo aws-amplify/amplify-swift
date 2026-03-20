@@ -47,7 +47,10 @@ actor SQLiteRecordStorage: RecordStorage {
         self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
         try Self.setupSchema(on: database)
-        try resetCacheSizeFromDb()
+        let size = try Self.wrapDatabaseError {
+            try database.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+        }
+        self.cachedSize = Int64(size)
     }
 
     private static func createFileConnection(identifier: String) throws -> Connection {
@@ -128,14 +131,17 @@ actor SQLiteRecordStorage: RecordStorage {
         cachedSize += Int64(input.dataSize)
     }
 
-    func getRecordsByStream(excludingIds: Set<Int64>) throws -> [[Record]] {
+    func getRecordsByStream(afterIdByStream: [String: Int64] = [:]) throws -> [[Record]] {
         try Self.wrapDatabaseError {
-            let excludeClause: String
-            if excludingIds.isEmpty {
-                excludeClause = ""
+            // Build per-stream WHERE clauses: id > lastProcessedId for streams we've already seen
+            let streamFilter: String
+            if afterIdByStream.isEmpty {
+                streamFilter = ""
             } else {
-                let placeholders = excludingIds.map { _ in "?" }.joined(separator: ",")
-                excludeClause = "WHERE id NOT IN (\(placeholders))"
+                let conditions = afterIdByStream.map { _ in
+                    "NOT (stream_name = ? AND id <= ?)"
+                }.joined(separator: " AND ")
+                streamFilter = "WHERE \(conditions)"
             }
 
             // Must use raw SQL for window functions
@@ -146,13 +152,16 @@ actor SQLiteRecordStorage: RecordStorage {
                            ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
                            SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
                     FROM records
-                    \(excludeClause)
+                    \(streamFilter)
                 )
                 WHERE rn <= ? AND running_size <= ?
                 ORDER BY stream_name, id
                 """
 
-            var bindings: [Binding?] = excludingIds.sorted().map { $0 as Binding? }
+            // Bind per-stream after-id filters
+            var bindings: [Binding?] = afterIdByStream.flatMap { (streamName, afterId) in
+                [streamName as Binding?, afterId as Binding?]
+            }
             bindings.append(maxRecords as Binding?)
             bindings.append(maxBytesPerStream as Binding?)
 
