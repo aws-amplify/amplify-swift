@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.54.1 (2026-03-11)
+
+### Bug Fixes
+
+- **api**: populate the auth mode when parsing the request response. So AppSyncListProvider.getNextPage() will have the auth mode. (#4156)
+
 ## 2.54.0 (2026-03-04)
 
 ### Features
