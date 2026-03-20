@@ -197,30 +197,23 @@ class RecordClientFlushTests: XCTestCase {
 
 // MARK: - Configurable Mock Sender
 
-final class ConfigurableMockSender: RecordSender, @unchecked Sendable {
-    private let lock = NSLock()
+actor ConfigurableMockSender: RecordSender {
     private var handler: (@Sendable (String, [Record]) throws -> PutRecordsResponse)?
     private var errorToThrow: Error?
 
-    func setHandler(_ handler: @escaping @Sendable (String, [Record]) throws -> PutRecordsResponse) async {
-        lock.lock()
+    func setHandler(_ handler: @escaping @Sendable (String, [Record]) throws -> PutRecordsResponse) {
         self.handler = handler
         errorToThrow = nil
-        lock.unlock()
     }
 
-    func setError(_ error: Error) async {
-        lock.lock()
+    func setError(_ error: Error) {
         errorToThrow = error
         handler = nil
-        lock.unlock()
     }
 
     func putRecords(streamName: String, records: [Record]) async throws -> PutRecordsResponse {
-        lock.lock()
         let currentHandler = handler
         let currentError = errorToThrow
-        lock.unlock()
 
         if let error = currentError {
             throw error
