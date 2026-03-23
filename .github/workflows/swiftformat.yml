@@ -37,12 +37,11 @@ jobs:
           curl -sL "https://github.com/nicklockwood/SwiftFormat/releases/download/$SWIFTFORMAT_VERSION/swiftformat.artifactbundle.zip" -o sf.zip
           echo "$SWIFTFORMAT_SHA256  sf.zip" | shasum -a 256 --check
           unzip -q sf.zip
-          sudo cp swiftformat.artifactbundle/swiftformat-*/bin/swiftformat /usr/local/bin/
 
       - name: SwiftFormat
         run: |
-          swiftformat --version
-          swiftformat --lint . --reporter github-actions-log --swiftversion 5.9
+          ./swiftformat.artifactbundle/swiftformat-$SWIFTFORMAT_VERSION-macos/bin/swiftformat --version
+          ./swiftformat.artifactbundle/swiftformat-$SWIFTFORMAT_VERSION-macos/bin/swiftformat --lint . --reporter github-actions-log --swiftversion 5.9
 
   confirm-pass:
     runs-on: macos-latest
