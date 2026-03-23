@@ -24,13 +24,24 @@ concurrency:
 jobs:
   run-swiftformat:
     runs-on: macos-latest
+    env:
+      SWIFTFORMAT_VERSION: '0.60.1'
+      SWIFTFORMAT_SHA256: 'cb4738085cf39c08da00b79b4a3683e77458ca12909934d04e5087d8e73f5e43'
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
 
+      - name: Install SwiftFormat
+        run: |
+          curl -sL "https://github.com/nicklockwood/SwiftFormat/releases/download/$SWIFTFORMAT_VERSION/swiftformat.artifactbundle.zip" -o sf.zip
+          echo "$SWIFTFORMAT_SHA256  sf.zip" | shasum -a 256 --check
+          unzip -q sf.zip
+          sudo cp swiftformat.artifactbundle/swiftformat-*/bin/swiftformat /usr/local/bin/
+
       - name: SwiftFormat
         run: |
+          swiftformat --version
           swiftformat --lint . --reporter github-actions-log --swiftversion 5.9
 
   confirm-pass:
