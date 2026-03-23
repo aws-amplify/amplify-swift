@@ -65,7 +65,7 @@
 --enable void
   --empty void
 
---enable wrapArguments
+--disable wrapArguments
   --closingparen balanced
   --wraparguments before-first
   --wrapcollections before-first

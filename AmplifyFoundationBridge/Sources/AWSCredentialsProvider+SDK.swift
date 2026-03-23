@@ -21,7 +21,7 @@ public extension AWSCredentialsProvider where Self: AwsCommonRuntimeKit.Credenti
 }
 
 /**
- Converts Smithy credentials provider AWSCredentialsProvider 
+ Converts Smithy credentials provider AWSCredentialsProvider
  */
 public extension AWSCredentialsProvider where Self: AWSCredentialIdentityResolver {
     func resolve() async throws -> AWSCredentials {
@@ -54,15 +54,15 @@ public extension AWSCredentialIdentityResolver where Self: AWSCredentialsProvide
  */
 public struct FoundationToSDKCredentialsAdapter: AWSCredentialsProvider, AWSCredentialIdentityResolver, @unchecked Sendable {
     private let provider: any AWSCredentialsProvider
-    
+
     public init(provider: any AWSCredentialsProvider) {
         self.provider = provider
     }
-    
+
     public func resolve() async throws -> AWSCredentials {
         return try await provider.resolve()
     }
-    
+
     // getIdentity() is automatically provided by the bridge extension:
     // extension AWSCredentialIdentityResolver where Self: AWSCredentialsProvider
 }
@@ -72,15 +72,15 @@ public struct FoundationToSDKCredentialsAdapter: AWSCredentialsProvider, AWSCred
  */
 public struct SDKToFoundationCredentialsAdapter: AWSCredentialIdentityResolver, AWSCredentialsProvider, @unchecked Sendable {
     private let resolver: any AWSCredentialIdentityResolver
-    
+
     public init(resolver: any AWSCredentialIdentityResolver) {
         self.resolver = resolver
     }
-    
+
     public func getIdentity(identityProperties: Smithy.Attributes? = nil) async throws -> AWSCredentialIdentity {
         return try await resolver.getIdentity(identityProperties: identityProperties)
     }
-    
+
     // resolve() is automatically provided by the bridge extension:
     // extension AWSCredentialsProvider where Self: AWSCredentialIdentityResolver
 }
@@ -90,15 +90,15 @@ public struct SDKToFoundationCredentialsAdapter: AWSCredentialIdentityResolver, 
  */
 public struct FoundationToCRTCredentialsAdapter: AWSCredentialsProvider, AwsCommonRuntimeKit.CredentialsProviding, @unchecked Sendable {
     private let provider: any AWSCredentialsProvider
-    
+
     public init(provider: any AWSCredentialsProvider) {
         self.provider = provider
     }
-    
+
     public func resolve() async throws -> AWSCredentials {
         return try await provider.resolve()
     }
-    
+
     // getCredentials() is automatically provided by the bridge extension:
     // extension AWSCredentialIdentityResolver where Self: AWSCredentialsProvider
 }
@@ -108,15 +108,15 @@ public struct FoundationToCRTCredentialsAdapter: AWSCredentialsProvider, AwsComm
  */
 public struct CRTToFoundationCredentialsAdapter: AwsCommonRuntimeKit.CredentialsProviding, AWSCredentialsProvider, @unchecked Sendable {
     private let provider: any AwsCommonRuntimeKit.CredentialsProviding
-    
+
     public init(provider: any AwsCommonRuntimeKit.CredentialsProviding) {
         self.provider = provider
     }
-    
+
     public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
         return try await provider.getCredentials()
     }
-    
+
     // resolve() is automatically provided by the bridge extension:
     // extension AWSCredentialsProvider where Self: AwsCommonRuntimeKit.CredentialsProviding
 }
