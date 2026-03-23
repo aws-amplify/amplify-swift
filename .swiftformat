@@ -103,7 +103,6 @@
 --disable redundantPattern
 --enable redundantRawValues
 --disable redundantReturn
---disable redundantVariable
 --enable redundantVoidReturnType
 --disable spaceAroundBraces
 --enable spaceAroundBrackets
