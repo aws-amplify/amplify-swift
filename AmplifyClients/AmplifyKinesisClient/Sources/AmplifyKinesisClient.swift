@@ -7,7 +7,7 @@
 
 import AmplifyFoundation
 import AmplifyFoundationBridge
-import AmplifyRecordCache
+@_exported import AmplifyRecordCache
 import AWSClientRuntime
 import AWSKinesis
 import Foundation
