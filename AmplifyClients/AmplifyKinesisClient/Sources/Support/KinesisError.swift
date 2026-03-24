@@ -6,6 +6,7 @@
 //
 
 import AmplifyFoundation
+import AmplifyRecordCache
 import Foundation
 
 /// Top-level error type for KinesisDataStreams operations.

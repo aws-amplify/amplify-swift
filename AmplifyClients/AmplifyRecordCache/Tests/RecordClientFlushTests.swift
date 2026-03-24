@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSKinesis
+import AWSClientRuntime
+import ClientRuntime
 import SQLite
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class RecordClientFlushTests: XCTestCase {
 
@@ -144,7 +145,7 @@ class RecordClientFlushTests: XCTestCase {
         // The first stream processed should have retry incremented, the second should not be processed
         let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 2)
-        let retryCountSum = remainingRecords.map(\.retryCount).reduce(0, +)
+        let retryCountSum = remainingRecords.map { $0.retryCount }.reduce(0, +)
         XCTAssertEqual(retryCountSum, 1) // Only one stream was processed before throwing
     }
 
@@ -153,7 +154,7 @@ class RecordClientFlushTests: XCTestCase {
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key2", data: Data([2])))
 
-        await sender.setError(ResourceNotFoundException(message: "Stream not found"))
+        await sender.setError(MockSdkError(message: "Stream not found"))
 
         let result = try await recordClient.flush()
 
@@ -176,7 +177,7 @@ class RecordClientFlushTests: XCTestCase {
 
         await sender.setHandler { streamName, _ in
             if streamName == stream1 {
-                throw ResourceNotFoundException(message: "Stream not found")
+                throw MockSdkError(message: "Stream not found")
             }
             return PutRecordsResponse(
                 successfulIds: [stream2RecordId],
@@ -192,6 +193,31 @@ class RecordClientFlushTests: XCTestCase {
         XCTAssertEqual(remainingRecords.count, 1)
         XCTAssertTrue(remainingRecords.allSatisfy { $0.streamName != stream2 })
         XCTAssertEqual(remainingRecords.first { $0.streamName == stream1 }?.retryCount, 1)
+    }
+}
+
+// MARK: - Mock SDK Error
+
+/// A mock error that conforms to ModeledError, simulating an AWS SDK service error.
+/// Used in place of Kinesis/Firehose-specific exceptions so these tests remain service-agnostic.
+struct MockSdkError: Error, ModeledError {
+    let message: String
+
+    static var typeName: String {
+        "MockSdkError"
+    }
+    static var fault: ErrorFault {
+        .server
+    }
+    static var isRetryable: Bool {
+        false
+    }
+    static var isThrottling: Bool {
+        false
+    }
+
+    var localizedDescription: String {
+        message
     }
 }
 

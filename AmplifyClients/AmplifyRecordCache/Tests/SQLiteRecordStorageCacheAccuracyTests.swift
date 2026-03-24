@@ -7,7 +7,7 @@
 
 import SQLite
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
 
@@ -175,7 +175,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
                        !records.isEmpty {
                         let recordsToDelete = Array(records.prefix(1))
                         let idsToDelete = recordsToDelete.map { $0.id }
-                        let keysToDelete = recordsToDelete.map { $0.partitionKey }
+                        let keysToDelete = recordsToDelete.compactMap { $0.partitionKey }
 
                         try? await storage.deleteRecords(ids: idsToDelete)
 
@@ -207,7 +207,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         // Get tracking data from actor
         let (createdRecords, deletedRecords) = await tracker.getTrackingData()
 
-        let remainingKeys = Set(finalRecords.map { $0.partitionKey })
+        let remainingKeys = Set(finalRecords.compactMap { $0.partitionKey })
         let allCreatedKeys = Set(createdRecords.values.flatMap { $0 })
 
         // Verify each created key is either in DB or was deleted
@@ -304,7 +304,7 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         try await storage.addRecord(RecordInput(streamName: "stream1", partitionKey: "key2", data: Data([2])))
 
         let allRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
-        let maxId = allRecords.map(\.id).max()!
+        let maxId = try XCTUnwrap(allRecords.map { $0.id }.max())
 
         let result = try await storage.getRecordsByStream(afterIdByStream: ["stream1": maxId])
         XCTAssertEqual(result.count, 0)
@@ -353,13 +353,13 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         XCTAssertEqual(batch1.count, 2)
 
         // Second batch: skip past the max ID from batch 1, get next 2
-        let maxIdBatch1 = batch1.map(\.id).max()!
+        let maxIdBatch1 = try XCTUnwrap(batch1.map { $0.id }.max())
         let batch2 = try await batchStorage.getRecordsByStream(afterIdByStream: ["stream1": maxIdBatch1]).flatMap { $0 }
         XCTAssertEqual(batch2.count, 2)
         XCTAssertTrue(batch2.allSatisfy { $0.id > maxIdBatch1 })
 
         // Third batch: skip past all 4, get nothing
-        let maxIdBatch2 = batch2.map(\.id).max()!
+        let maxIdBatch2 = try XCTUnwrap(batch2.map { $0.id }.max())
         let batch3 = try await batchStorage.getRecordsByStream(afterIdByStream: ["stream1": maxIdBatch2])
         XCTAssertEqual(batch3.count, 0)
     }

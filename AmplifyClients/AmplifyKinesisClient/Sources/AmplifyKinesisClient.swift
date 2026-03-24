@@ -7,10 +7,17 @@
 
 import AmplifyFoundation
 import AmplifyFoundationBridge
+import AmplifyRecordCache
 import AWSClientRuntime
 import AWSKinesis
 import Foundation
 import SmithyIdentity
+
+// Re-export shared types so existing `import AmplifyKinesisClient` code continues to compile.
+public typealias RecordData = AmplifyRecordCache.RecordData
+public typealias FlushData = AmplifyRecordCache.FlushData
+public typealias ClearCacheData = AmplifyRecordCache.ClearCacheData
+public typealias FlushStrategy = AmplifyRecordCache.FlushStrategy
 
 public typealias AmplifyKinesisClientConfigurationProvider = (
     inout AWSKinesis.KinesisClient.KinesisClientConfiguration
@@ -70,9 +77,9 @@ private let maxPartitionKeyLength = 256
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
-    private let recordClient: RecordClient
+    private let recordClient: AmplifyRecordCache.RecordClient
     private let options: Options
-    private let scheduler: AutoFlushScheduler?
+    private let scheduler: AmplifyRecordCache.AutoFlushScheduler?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabledLock = NSLock()
     private var _isEnabled = true
@@ -145,7 +152,8 @@ public class AmplifyKinesisClient {
             maxRetries: options.maxRetries
         )
 
-        let storage = try SQLiteRecordStorage(
+        let storage = try AmplifyRecordCache.SQLiteRecordStorage(
+            dbPrefix: "kinesis_records",
             identifier: region,
             maxRecords: maxRecordsPerStream,
             cacheMaxBytes: options.cacheMaxBytes,
@@ -154,7 +162,7 @@ public class AmplifyKinesisClient {
             maxPartitionKeyLength: maxPartitionKeyLength
         )
 
-        self.recordClient = RecordClient(
+        self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,
             storage: storage,
             maxRetries: options.maxRetries
@@ -163,7 +171,7 @@ public class AmplifyKinesisClient {
         // Create and setup flush scheduler
         switch options.flushStrategy {
         case .interval(let interval):
-            let scheduler = AutoFlushScheduler(
+            let scheduler = AmplifyRecordCache.AutoFlushScheduler(
                 interval: interval,
                 recordClient: recordClient
             )
@@ -192,7 +200,7 @@ public class AmplifyKinesisClient {
 
         return try await wrapErrorAndLog(
             operation: {
-                let input = RecordInput(
+                let input = AmplifyRecordCache.RecordInput(
                     streamName: streamName,
                     partitionKey: partitionKey,
                     data: data

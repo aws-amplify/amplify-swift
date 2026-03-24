@@ -11,6 +11,6 @@ import Foundation
 public enum FlushStrategy: Sendable {
     /// Automatically flush at a regular interval (in seconds). Default is 30 seconds.
     case interval(TimeInterval = 30)
-    /// Disable automatic flushing. Records are only sent when ``AmplifyKinesisClient/flush()`` is called manually.
+    /// Disable automatic flushing. Records are only sent when flush() is called manually.
     case none
 }
