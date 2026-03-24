@@ -422,6 +422,26 @@ let kinesisTargets: [Target] = [
     )
 ]
 
+let firehoseTargets: [Target] = [
+    .target(
+        name: "AmplifyFirehoseClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "AmplifyRecordCache"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSFirehose", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyFirehoseClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    )
+]
+
 let pushNotificationsTargets: [Target] = [
     .target(
         name: "AWSPinpointPushNotificationsPlugin",
@@ -563,6 +583,7 @@ targets.append(contentsOf: geoTargets)
 targets.append(contentsOf: analyticsTargets)
 targets.append(contentsOf: recordCacheTargets)
 targets.append(contentsOf: kinesisTargets)
+targets.append(contentsOf: firehoseTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
@@ -625,6 +646,10 @@ let package = Package(
         .library(
             name: "AmplifyKinesisClient",
             targets: ["AmplifyKinesisClient"]
+        ),
+        .library(
+            name: "AmplifyFirehoseClient",
+            targets: ["AmplifyFirehoseClient"]
         ),
         .library(
             name: "AmplifyFoundation",
