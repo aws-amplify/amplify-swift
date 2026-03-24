@@ -48,28 +48,28 @@ extension LogLevel: Comparable {
     }
 }
 
-extension Logger {
-    public func error(_ message: @autoclosure () -> String) {
+public extension Logger {
+    func error(_ message: @autoclosure () -> String) {
         error(message(), nil)
     }
 
-    public func warn(_ message: @autoclosure () -> String) {
+    func warn(_ message: @autoclosure () -> String) {
         warn(message(), nil)
     }
 
-    public func info(_ message: @autoclosure () -> String) {
+    func info(_ message: @autoclosure () -> String) {
         info(message(), nil)
     }
 
-    public func debug(_ message: @autoclosure () -> String) {
+    func debug(_ message: @autoclosure () -> String) {
         debug(message(), nil)
     }
 
-    public func verbose(_ message: @autoclosure () -> String) {
+    func verbose(_ message: @autoclosure () -> String) {
         verbose(message(), nil)
     }
 
-    public func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String) {
+    func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String) {
         log(logLevel, message(), nil)
     }
 }
