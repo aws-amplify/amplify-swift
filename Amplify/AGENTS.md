@@ -2,7 +2,7 @@
 
 ## Overview
 
-`Amplify/` is the core framework that defines the public API surface. It contains **category interfaces**, **plugin protocols**, **error types**, **configuration**, and the **Hub event system**. It has zero AWS SDK dependencies.
+`Amplify/` is the core framework that defines the public API surface. It contains **category interfaces**, **plugin protocols**, **error types**, **configuration**, and the **Hub event system**. The core module itself has zero AWS SDK dependencies — plugins (in `AmplifyPlugins/`) are where AWS SDK dependencies live.
 
 ## Category/Plugin Architecture
 

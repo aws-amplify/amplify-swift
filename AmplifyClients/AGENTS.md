@@ -23,7 +23,7 @@ Amplify Clients are **standalone AWS service clients** independent of the core `
 └─────────────────────────────────────────────────────────┘
 ```
 
-**Key rule**: Clients depend on `AmplifyFoundation` + `AmplifyFoundationBridge` only — never on `Amplify` or `AWSPluginsCore`.
+**Current rule**: Clients depend on `AmplifyFoundation` + `AmplifyFoundationBridge`. They may eventually depend on types from `Amplify` core (e.g., error types), but should avoid depending on `AWSPluginsCore` or the plugin registration system.
 
 ## AmplifyFoundation (`AmplifyFoundation/Sources/`)
 
@@ -69,25 +69,6 @@ public class AmplifyKinesisClient {
 }
 ```
 
-### Internal Architecture
-
-```
-AmplifyKinesisClient (public facade)
-  → RecordClient (actor — orchestration, flush guard)
-    → RecordStorage (protocol) ← SQLiteRecordStorage (actor, local cache)
-    → RecordSender (protocol)  ← KinesisRecordSender (wraps SDK PutRecords)
-    → AutoFlushScheduler (actor — periodic flush timer)
-```
-
-### Key Patterns
-
-- **All actors**: RecordClient, SQLiteRecordStorage, AutoFlushScheduler — strict concurrency enabled
-- **SQLite caching**: Records persisted locally before sending; enables offline + retry
-- **Protocol-driven**: Storage and sender abstracted for testability (in-memory SQLite, mock senders)
-- **Smart error handling**: SDK errors → logged, don't block other streams. Network errors → thrown to caller
-- **Kinesis constraints enforced**: 500 records/stream, 10MB/stream, partition key 1–256 Unicode scalars
-- **Concurrent flush guard**: `isFlushing` flag prevents overlapping flushes
-
 ### Error Type
 
 ```swift
@@ -129,7 +110,7 @@ AmplifyClients/Amplify<Service>Client/
 
 | Rule | Details |
 |------|---------|
-| No Amplify core dep | Import `AmplifyFoundation` + `AmplifyFoundationBridge` only |
+| Minimal deps | Import `AmplifyFoundation` + `AmplifyFoundationBridge`; may use `Amplify` core types if needed, avoid `AWSPluginsCore` |
 | Actor internals | All mutable shared state in actors |
 | Strict concurrency | Enable flag, all types `Sendable` |
 | Protocol-driven | Abstract storage/network/scheduler behind protocols |

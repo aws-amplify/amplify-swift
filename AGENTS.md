@@ -17,13 +17,12 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 ## Linting & Formatting (MUST pass)
 
+Run before committing. CI enforces both. See `.swiftlint.yml` and `.swiftformat` for full rules.
+
 ```bash
 swiftformat .     # Format first
 swiftlint --fix   # Then lint
 ```
-
-- **SwiftLint** (`.swiftlint.yml`): 160-char lines, 150-line functions, `unused_import`/`unused_declaration` analyzers. Scoped to `Amplify/` and `AmplifyPlugins/` only.
-- **SwiftFormat** (`.swiftformat`): 4-space indent, LF, same-line braces, no trailing commas, `self` in init only, `before-first` wrapping.
 
 ## License Header (Required on ALL Swift files)
 
@@ -112,8 +111,6 @@ New enum cases = **minor** bump. Breaking API changes = **major** (rare, needs a
 
 | Task | Key steps |
 |------|-----------|
-| **Add API to category** | Edit `<Cat>CategoryBehavior.swift` → `<Cat>Category+ClientBehavior.swift` → plugin impl → tests |
-| **Add plugin** | Create dir in `AmplifyPlugins/`, implement `<Cat>CategoryPlugin`, add to `Package.swift`, add tests + CI |
 | **Add Amplify Client** | See [`AmplifyClients/AGENTS.md`](AmplifyClients/AGENTS.md) — use Foundation/Bridge, actors, strict concurrency |
 | **Fix bug** | Write failing test → fix → verify all tests pass → `fix(<scope>): <desc>` |
 
