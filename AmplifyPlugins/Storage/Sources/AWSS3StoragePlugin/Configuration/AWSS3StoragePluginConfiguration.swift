@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
 /// Plugin specific configuration
@@ -16,18 +17,23 @@ public struct AWSS3StoragePluginConfiguration {
     @available(*, deprecated)
     public let prefixResolver: AWSS3PluginPrefixResolver?
 
-    /// If upload progress does not advance for this many seconds, the upload is cancelled and the completion
-    /// handler receives an error. Useful on unreliable networks where uploads may stall indefinitely.
-    /// Set to `0` to disable (default). Applies to both single and multipart uploads.
-    public let progressStallTimeoutInterval: TimeInterval
+    /// Default strategy for cancelling uploads when progress stops advancing.
+    /// Override per upload with ``StorageUploadFileRequest/Options/progressStallTimeout`` or
+    /// ``StorageUploadDataRequest/Options/progressStallTimeout``.
+    public let progressStallTimeout: ProgressStallTimeout
 
     /// - Tag: AWSS3StoragePluginConfiguration.init
     /// - Parameters:
     ///   - prefixResolver: Deprecated. Use `StoragePath` instead.
-    ///   - progressStallTimeoutInterval: Seconds to wait for progress before cancelling. `0` = disabled.
-    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil, progressStallTimeoutInterval: TimeInterval = 0) {
+    ///   - progressStallTimeout: Stall detection strategy. Default is ``ProgressStallTimeout/disabled``.
+    public init(prefixResolver: AWSS3PluginPrefixResolver? = nil, progressStallTimeout: ProgressStallTimeout = .disabled) {
         self.prefixResolver = prefixResolver
-        self.progressStallTimeoutInterval = progressStallTimeoutInterval
+        self.progressStallTimeout = progressStallTimeout
+    }
+
+    /// Resolves stall timeout seconds for an upload: per-operation override when non-`nil`, otherwise plugin default.
+    func resolvedStallTimeoutSeconds(operationOverride: ProgressStallTimeout?) -> TimeInterval {
+        (operationOverride ?? progressStallTimeout).secondsForStallTimer
     }
 
     /// - Tag: AWSS3StoragePluginConfiguration.prefixResolverFunc

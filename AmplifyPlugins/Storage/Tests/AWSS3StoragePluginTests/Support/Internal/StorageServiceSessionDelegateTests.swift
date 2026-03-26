@@ -270,7 +270,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Then: After the interval, the task fails with progress stall timeout error
     func testProgressStallTimeout_whenNoProgress_failsTaskWithStallError() async throws {
         let stallInterval: TimeInterval = 0.05
-        let serviceWithStall: AWSS3StorageServiceMock = try AWSS3StorageServiceMock(progressStallTimeoutInterval: stallInterval)
+        let serviceWithStall: AWSS3StorageServiceMock = try AWSS3StorageServiceMock(progressStallTimeoutSeconds: stallInterval)
         let delegateWithStall = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
         XCTAssertNotNil(delegateWithStall, "Delegate should be StorageServiceSessionDelegate")
 
@@ -289,7 +289,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
                 expectation.fulfill()
             }),
             bucket: "bucket",
-            key: "key"
+            key: "key",
+            progressStallTimeoutSeconds: stallInterval,
+            usesExplicitProgressStallTimeout: true
         )
         storageTask.sessionTask = sessionTask
         serviceWithStall.mockedTask = storageTask
@@ -393,8 +395,8 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
         )
     }
 
-    convenience init(progressStallTimeoutInterval: TimeInterval) throws {
-        let storageConfig = StorageConfiguration(forBucket: "bucket", progressStallTimeoutInterval: progressStallTimeoutInterval)
+    convenience init(progressStallTimeoutSeconds: TimeInterval) throws {
+        let storageConfig = StorageConfiguration(forBucket: "bucket", progressStallTimeout: .interval(progressStallTimeoutSeconds))
         try self.init(
             authService: MockAWSAuthService(),
             region: "region",

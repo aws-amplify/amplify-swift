@@ -106,7 +106,7 @@ extension AWSS3StoragePlugin {
     ) throws -> AWSS3StorageServiceBehavior {
         let storageConfig = StorageConfiguration(
             forBucket: bucketInfo.bucketName,
-            progressStallTimeoutInterval: storageConfiguration.progressStallTimeoutInterval
+            progressStallTimeout: storageConfiguration.progressStallTimeout
         )
         let storageService = try AWSS3StorageService(
             authService: authService,

@@ -67,6 +67,7 @@ protocol AWSS3StorageServiceBehavior {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceUploadEventHandler
     )
 
@@ -76,6 +77,7 @@ protocol AWSS3StorageServiceBehavior {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler
     )
 

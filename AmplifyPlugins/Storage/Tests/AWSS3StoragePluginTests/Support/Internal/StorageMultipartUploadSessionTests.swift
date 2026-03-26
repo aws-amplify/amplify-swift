@@ -48,7 +48,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
             bucket: "bucket",
             key: "key",
             onEvent: onEvent,
-            progressStallTimeoutInterval: stallInterval
+            progressStallTimeoutSeconds: stallInterval
         )
         session.startUpload()
 

@@ -42,8 +42,11 @@ class StorageServiceSessionDelegate: NSObject {
     /// Reset progress stall timer (cancel existing and schedule new). Call on every progress.
     func resetProgressStallTimer(taskIdentifier: TaskIdentifier) {
         guard let storageService,
-              storageService.storageConfiguration.progressStallTimeoutInterval > 0 else { return }
-        let interval = storageService.storageConfiguration.progressStallTimeoutInterval
+              let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else { return }
+        let interval = transferTask.effectiveProgressStallTimeoutSeconds(
+            storageConfiguration: storageService.storageConfiguration
+        )
+        guard interval > 0 else { return }
         stallTimerQueue.async { [weak self] in
             self?.stallTimerWorkItems[taskIdentifier]?.cancel()
             let workItem = DispatchWorkItem { [weak self] in

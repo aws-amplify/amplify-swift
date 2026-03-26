@@ -105,6 +105,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceUploadEventHandler
     ) {
         interactions.append(#function)
@@ -126,6 +127,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler
     ) {
         interactions.append(#function)

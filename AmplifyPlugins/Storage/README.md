@@ -9,44 +9,46 @@ Amplify Storage plugin for Amazon S3. Manages content in public, protected, and 
 ```swift
 try Amplify.add(plugin: AWSS3StoragePlugin(
     configuration: AWSS3StoragePluginConfiguration(
-        progressStallTimeoutInterval: 10
+        progressStallTimeout: .interval(30)
     )
 ))
 ```
 
-### progressStallTimeoutInterval
+### progressStallTimeout
 
-When upload progress does not advance for the specified number of seconds (e.g. due to network issues), the upload is cancelled and the completion handler receives an error.
+Uses `ProgressStallTimeout` (same pattern as flush strategies in other Amplify clients):
 
-- **Type:** `TimeInterval`
-- **Default:** `0` (disabled)
-- **Behavior:** A timer starts at upload start and resets on each progress callback. If no progress arrives within the interval, the upload is aborted.
+- `.disabled` — do not cancel when progress stalls (default).
+- `.interval(seconds)` — cancel if progress does not advance within the given duration.
 
-Recommended values: 10–60 seconds depending on expected network conditions. Set to `0` to keep the previous behavior (no timeout).
+### Per-upload override
+
+Use `progressStallTimeout` on `StorageUploadFileRequest.Options` or `StorageUploadDataRequest.Options`. Pass `nil` to use the plugin default. Pass `.disabled` to turn off stall detection for that upload even when the plugin default is `.interval(...)`.
 
 ```swift
-// Disabled (default)
-AWSS3StoragePluginConfiguration(progressStallTimeoutInterval: 0)
+// Plugin default: 30s
+let plugin = AWSS3StoragePlugin(
+    configuration: AWSS3StoragePluginConfiguration(progressStallTimeout: .interval(30))
+)
 
-// 10 second timeout
-AWSS3StoragePluginConfiguration(progressStallTimeoutInterval: 10)
+// Override for a large upload: 120s
+let options = StorageUploadFileRequest.Options(progressStallTimeout: .interval(120))
+try await Amplify.Storage.uploadFile(path: path, local: url, options: options)
 ```
 
 ### Detecting stall timeout errors
 
-When an upload fails due to progress stall timeout, the error is wrapped in `StorageError` with the underlying cause preserved. To detect this case:
+When an upload fails due to progress stall timeout, the error is wrapped in `StorageError` with the underlying cause preserved:
 
 ```swift
 if let storageError = error as? StorageError,
    let underlying = storageError.underlyingError as NSError?,
    underlying.domain == "com.amazonaws.AWSS3TransferUtilityErrorDomain",
    underlying.code == 10 {
-    // Progress stall timeout - consider retrying or informing the user
+    // Progress stall timeout
 }
 ```
 
-Alternatively, check the error description for `"progress did not advance"` or `"timeout"`.
+### Recovered uploads
 
-### Per-bucket configuration
-
-When using Amplify configuration files (e.g. `amplify_outputs.json`), the stall timeout is applied to the default bucket. For programmatic configuration with multiple buckets, use `StorageConfiguration(forBucket:progressStallTimeoutInterval:)`.
+Multipart sessions restored from the transfer database use the storage service configuration for stall timeout (per-operation overrides are not persisted).

@@ -9,6 +9,15 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
+extension StorageTransferTask {
+    func effectiveProgressStallTimeoutSeconds(storageConfiguration: StorageConfiguration) -> TimeInterval {
+        if usesExplicitProgressStallTimeout {
+            return progressStallTimeoutSeconds
+        }
+        return storageConfiguration.progressStallTimeout.secondsForStallTimer
+    }
+}
+
 class StorageTransferTask {
     typealias Action = () -> Void
 
@@ -73,6 +82,11 @@ class StorageTransferTask {
     // proxy for StorageMultipartUploadSession
     var proxyStorageTask: StorageTask?
 
+    /// Resolved stall timeout in seconds when ``usesExplicitProgressStallTimeout`` is true (`0` = disabled).
+    /// When false, ``effectiveProgressStallTimeoutSeconds(storageConfiguration:)`` uses ``StorageConfiguration``.
+    let progressStallTimeoutSeconds: TimeInterval
+    let usesExplicitProgressStallTimeout: Bool
+
     var partNumber: PartNumber? {
         switch transferType {
         case .multiPartUploadPart(_, let partNumber):
@@ -107,6 +121,8 @@ class StorageTransferTask {
         location: URL? = nil,
         contentType: String? = nil,
         requestHeaders: [String: String]? = nil,
+        progressStallTimeoutSeconds: TimeInterval = 0,
+        usesExplicitProgressStallTimeout: Bool = true,
         storageTransferDatabase: StorageTransferDatabase = .default,
         logger: Logger = storageLogger
     ) {
@@ -117,6 +133,8 @@ class StorageTransferTask {
         self.location = location
         self.contentType = contentType
         self.requestHeaders = requestHeaders
+        self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
+        self.usesExplicitProgressStallTimeout = usesExplicitProgressStallTimeout
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
 
@@ -147,6 +165,8 @@ class StorageTransferTask {
         self.location = persistableTransferTask.location
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
+        self.progressStallTimeoutSeconds = 0
+        self.usesExplicitProgressStallTimeout = false
 
         // set multiPartUpload with default value which can resume upload process
         if rawValue == .multiPartUpload,

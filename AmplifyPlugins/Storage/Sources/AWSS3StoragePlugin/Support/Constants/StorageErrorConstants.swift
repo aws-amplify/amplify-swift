@@ -86,7 +86,7 @@ enum StorageErrorConstants {
 let AWSS3TransferUtilityErrorDomain = "com.amazonaws.AWSS3TransferUtilityErrorDomain"
 
 /// Error code indicating the upload was cancelled because progress did not advance within the
-/// configured `progressStallTimeoutInterval`. Check `(error as? StorageError)?.underlyingError`
+/// configured ``ProgressStallTimeout``. Check `(error as? StorageError)?.underlyingError`
 /// when handling completion failures.
 let AWSS3TransferUtilityErrorProgressStallTimeout: Int = 10
 
