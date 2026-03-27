@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Foundation
 
 public typealias ErrorDescription = String
@@ -14,13 +15,13 @@ public typealias RecoverySuggestion = String
 public protocol AmplifyError: Error {
     /// A localized message describing what error occurred.
     var errorDescription: ErrorDescription { get }
-    
+
     /// A localized message describing how one might recover from the failure.
     var recoverySuggestion: RecoverySuggestion { get }
-    
+
     /// The underlying error that caused the error condition
     var underlyingError: Error? { get }
-    
+
     init(
         errorDescription: ErrorDescription,
         recoverySuggestion: RecoverySuggestion,

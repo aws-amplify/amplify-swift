@@ -20,7 +20,7 @@ public protocol Logger: Sendable {
 
     /// Logs a message at `verbose` level
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?)
-    
+
     /// Logs a message at the given level
     func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?)
 }
@@ -42,34 +42,34 @@ extension LogLevel: Comparable {
     public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
-    
+
     public static func == (lhs: LogLevel, rhs: LogLevel) -> Bool {
         lhs.rawValue == rhs.rawValue
     }
 }
 
-extension Logger {
-    public func error(_ message: @autoclosure () -> String) {
+public extension Logger {
+    func error(_ message: @autoclosure () -> String) {
         error(message(), nil)
     }
-      
-    public func warn(_ message: @autoclosure () -> String) {
+
+    func warn(_ message: @autoclosure () -> String) {
         warn(message(), nil)
     }
 
-    public func info(_ message: @autoclosure () -> String) {
+    func info(_ message: @autoclosure () -> String) {
         info(message(), nil)
     }
 
-    public func debug(_ message: @autoclosure () -> String) {
+    func debug(_ message: @autoclosure () -> String) {
         debug(message(), nil)
     }
 
-    public func verbose(_ message: @autoclosure () -> String) {
+    func verbose(_ message: @autoclosure () -> String) {
         verbose(message(), nil)
     }
-    
-    public func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String) {
+
+    func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String) {
         log(logLevel, message(), nil)
     }
 }

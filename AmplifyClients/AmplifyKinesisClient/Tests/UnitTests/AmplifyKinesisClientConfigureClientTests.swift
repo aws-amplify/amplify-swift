@@ -15,7 +15,7 @@ import XCTest
 class AmplifyKinesisClientConfigureClientTests: XCTestCase {
 
     /// Verifies that the `configureClient` closure is applied to the underlying
-    /// SDK client configuration. 
+    /// SDK client configuration.
     func testConfigureClientAppliesConfiguration() throws {
         let client = try AmplifyKinesisClient(
             region: "us-east-1",
