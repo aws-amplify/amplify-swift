@@ -47,7 +47,7 @@ class RecordClientFlushTests: XCTestCase {
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key3", data: Data([3])))
 
         // Get all records and set retry count for record 3 to max (3)
-        let allRecordsByStream = try await storage.getRecordsByStream()
+        let allRecordsByStream = try await storage.getRecordsByStream(afterIdByStream: [:])
         let allRecords = allRecordsByStream.flatMap { $0 }
         let record3Id = allRecords[2].id
         try await storage.incrementRetryCount(ids: [record3Id])
@@ -65,7 +65,7 @@ class RecordClientFlushTests: XCTestCase {
         let result = try await recordClient.flush()
 
         XCTAssertEqual(result.recordsFlushed, 1)
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 1)
         XCTAssertEqual(remainingRecords[0].id, allRecords[1].id)
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
@@ -86,7 +86,7 @@ class RecordClientFlushTests: XCTestCase {
             // Expected — non-SDK errors are critical
         }
 
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 3)
         for record in remainingRecords {
             XCTAssertEqual(record.retryCount, 1)
@@ -99,7 +99,7 @@ class RecordClientFlushTests: XCTestCase {
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key2", data: Data([2])))
         try await storage.addRecord(RecordInput(streamName: streamName, partitionKey: "key3", data: Data([3])))
 
-        let allRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let allRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         let record2Id = allRecords[1].id
         let record3Id = allRecords[2].id
 
@@ -117,7 +117,7 @@ class RecordClientFlushTests: XCTestCase {
             // Expected — non-SDK errors are critical
         }
 
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 1)
         XCTAssertEqual(remainingRecords[0].id, allRecords[0].id)
         XCTAssertEqual(remainingRecords[0].retryCount, 1)
@@ -142,7 +142,7 @@ class RecordClientFlushTests: XCTestCase {
         }
 
         // The first stream processed should have retry incremented, the second should not be processed
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 2)
         let retryCountSum = remainingRecords.map(\.retryCount).reduce(0, +)
         XCTAssertEqual(retryCountSum, 1) // Only one stream was processed before throwing
@@ -158,7 +158,7 @@ class RecordClientFlushTests: XCTestCase {
         let result = try await recordClient.flush()
 
         XCTAssertEqual(result.recordsFlushed, 0)
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 2)
         for record in remainingRecords {
             XCTAssertEqual(record.retryCount, 1)
@@ -171,7 +171,7 @@ class RecordClientFlushTests: XCTestCase {
         try await storage.addRecord(RecordInput(streamName: stream1, partitionKey: "key1", data: Data([1])))
         try await storage.addRecord(RecordInput(streamName: stream2, partitionKey: "key2", data: Data([2])))
 
-        let initialRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let initialRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         let stream2RecordId = try XCTUnwrap(initialRecords.first { $0.streamName == stream2 }?.id)
 
         await sender.setHandler { streamName, _ in
@@ -188,7 +188,7 @@ class RecordClientFlushTests: XCTestCase {
         let result = try await recordClient.flush()
 
         XCTAssertEqual(result.recordsFlushed, 1)
-        let remainingRecords = try await storage.getRecordsByStream().flatMap { $0 }
+        let remainingRecords = try await storage.getRecordsByStream(afterIdByStream: [:]).flatMap { $0 }
         XCTAssertEqual(remainingRecords.count, 1)
         XCTAssertTrue(remainingRecords.allSatisfy { $0.streamName != stream2 })
         XCTAssertEqual(remainingRecords.first { $0.streamName == stream1 }?.retryCount, 1)
@@ -197,30 +197,23 @@ class RecordClientFlushTests: XCTestCase {
 
 // MARK: - Configurable Mock Sender
 
-final class ConfigurableMockSender: RecordSender, @unchecked Sendable {
-    private let lock = NSLock()
+actor ConfigurableMockSender: RecordSender {
     private var handler: (@Sendable (String, [Record]) throws -> PutRecordsResponse)?
     private var errorToThrow: Error?
 
-    func setHandler(_ handler: @escaping @Sendable (String, [Record]) throws -> PutRecordsResponse) async {
-        lock.lock()
+    func setHandler(_ handler: @escaping @Sendable (String, [Record]) throws -> PutRecordsResponse) {
         self.handler = handler
         errorToThrow = nil
-        lock.unlock()
     }
 
-    func setError(_ error: Error) async {
-        lock.lock()
+    func setError(_ error: Error) {
         errorToThrow = error
         handler = nil
-        lock.unlock()
     }
 
     func putRecords(streamName: String, records: [Record]) async throws -> PutRecordsResponse {
-        lock.lock()
         let currentHandler = handler
         let currentError = errorToThrow
-        lock.unlock()
 
         if let error = currentError {
             throw error
