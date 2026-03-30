@@ -41,7 +41,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         let sdkCredentials = try credentials.toAWSSDKCredentials()
         XCTAssertNotNil(sdkCredentials)
     }
-    
+
     /// Given: A credentials that will expire after 100 second
     /// When: I convert the credentials to AWS SDK ClientRuntime
     /// Then: I should get a valid CRT credentials
@@ -71,7 +71,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         let smithyCredentials = try credentials.toAWSCredentialIdentity()
         XCTAssertNotNil(smithyCredentials)
     }
-    
+
     /// Given: A smithy credential without expiration and session token
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a static AWSCredentials
@@ -80,7 +80,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         let awsCredentials = try credentials.toAWSCredentials()
         XCTAssertNotNil(awsCredentials)
     }
-    
+
     /// Given: A smithy credential that will expire after 100 second
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a temporary AWSCredentials
@@ -94,7 +94,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials)
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
-    
+
     /// Given: A smithy credential that expired 100 second back
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a temporary AWSCredentials
@@ -108,7 +108,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials)
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
-    
+
     /// Given: A CRT credential without expiration and session token
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a static AWSCredentials
@@ -117,7 +117,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         let awsCredentials = try credentials.toAWSCredentials()
         XCTAssertNotNil(awsCredentials)
     }
-    
+
     /// Given: A CRT credential that will expire after 100 second
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a temporary AWSCredentials
@@ -131,7 +131,7 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials)
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
-    
+
     /// Given: A CRT credential that that expired 100 second back
     /// When: I convert the credentials to AWSCredentials
     /// Then: I should get a temporary AWSCredentials

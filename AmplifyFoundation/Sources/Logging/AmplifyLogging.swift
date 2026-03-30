@@ -8,31 +8,31 @@
 import Foundation
 
 public final class AmplifyLogging {
-    
+
     /// Synchronize access to the log sinks
-    internal static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
-    internal static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
-    
+    static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
+    static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
+
     private init() {}
-    
+
     public static func addSink(_ logSink: any LogSinkBehavior) {
-        return Self.concurrencyQueue.sync {
+        return concurrencyQueue.sync {
             Self.registeredLogSinks[logSink.id] = logSink
         }
     }
-    
+
     static func removeSink(_ logSink: any LogSinkBehavior) {
-        return Self.concurrencyQueue.sync {
+        return concurrencyQueue.sync {
             Self.registeredLogSinks.removeValue(forKey: logSink.id)
         }
     }
-    
+
     public static func logger(for name: String) -> Logger {
-        return Self.concurrencyQueue.sync {
+        return concurrencyQueue.sync {
             BroadcastLogger(name: name, sinks: Array(registeredLogSinks.values))
         }
     }
-    
+
     public static func logger<T>(for type: T.Type) -> Logger {
         return logger(for: String(describing: type))
     }

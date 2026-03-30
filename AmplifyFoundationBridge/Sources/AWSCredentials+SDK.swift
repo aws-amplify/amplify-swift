@@ -39,19 +39,19 @@ public extension AWSCredentials {
 }
 
 public extension AwsCommonRuntimeKit.Credentials {
-    
+
     func toAWSCredentials() throws -> AWSCredentials {
         guard let accessKeyId = getAccessKey(), let secretAccessKey = getSecret() else {
             throw FoundationBridgeError.unknown("CRT Credentials do not contain accessKeyId or secretAccessKey.")
         }
-        
+
         guard let sessionToken = getSessionToken(), let expiration = getExpiration() else {
             return FoundationBridgeStaticCredentials(
                 accessKeyId: accessKeyId,
                 secretAccessKey: secretAccessKey
             )
         }
-        
+
         return FoundationBridgeTemporaryCredentials(
             sessionToken: sessionToken,
             expiration: expiration,
@@ -63,15 +63,15 @@ public extension AwsCommonRuntimeKit.Credentials {
 
 public extension SmithyIdentity.AWSCredentialIdentity {
     func toAWSCredentials() throws -> AWSCredentials {
-        
-        guard let sessionToken = sessionToken,
-              let expiration = expiration  else {
+
+        guard let sessionToken,
+              let expiration  else {
             return FoundationBridgeStaticCredentials(
                 accessKeyId: accessKey,
                 secretAccessKey: secret
             )
         }
-        
+
         return FoundationBridgeTemporaryCredentials(
             sessionToken: sessionToken,
             expiration: expiration,
@@ -81,13 +81,13 @@ public extension SmithyIdentity.AWSCredentialIdentity {
 }
 
 struct FoundationBridgeStaticCredentials: AWSCredentials {
-    public var accessKeyId: String
-    public var secretAccessKey: String
+    var accessKeyId: String
+    var secretAccessKey: String
 }
 
 struct FoundationBridgeTemporaryCredentials: AWSTemporaryCredentials {
-    public var sessionToken: String
-    public var expiration: Date
-    public var accessKeyId: String
-    public var secretAccessKey: String
+    var sessionToken: String
+    var expiration: Date
+    var accessKeyId: String
+    var secretAccessKey: String
 }
