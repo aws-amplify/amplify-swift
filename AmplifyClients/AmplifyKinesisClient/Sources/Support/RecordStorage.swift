@@ -9,8 +9,10 @@ protocol RecordStorage: Actor {
     /// Adds a new record to storage
     func addRecord(_ input: RecordInput) async throws
 
-    /// Gets all records grouped by stream name as a list of lists
-    func getRecordsByStream() async throws -> [[Record]]
+    /// Gets all records grouped by stream name as a list of lists.
+    /// - Parameter afterIdByStream: A map of stream name to the last processed record ID.
+    ///   Records with `id <= afterIdByStream[streamName]` are excluded from the results.
+    func getRecordsByStream(afterIdByStream: [String: Int64]) async throws -> [[Record]]
 
     /// Deletes records by their IDs
     func deleteRecords(ids: [Int64]) async throws
