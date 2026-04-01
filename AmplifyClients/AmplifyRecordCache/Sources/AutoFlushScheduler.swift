@@ -9,19 +9,19 @@ import AmplifyFoundation
 import Foundation
 
 /// Schedules automatic flushing of records at a specified interval
-actor AutoFlushScheduler {
+public actor AutoFlushScheduler {
     private let interval: TimeInterval
     private let recordClient: RecordClient
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AutoFlushScheduler.self)
     private var flushTask: Task<Void, Never>?
 
-    init(interval: TimeInterval, recordClient: RecordClient) {
+    public init(interval: TimeInterval, recordClient: RecordClient) {
         self.interval = interval
         self.recordClient = recordClient
     }
 
     /// Starts the automatic flush scheduler
-    func start() {
+    public func start() {
         flushTask?.cancel()
 
         flushTask = Task { [weak self, interval] in
@@ -45,7 +45,7 @@ actor AutoFlushScheduler {
     }
 
     /// Stops the automatic flush scheduler
-    func disable() {
+    public func disable() {
         flushTask?.cancel()
         flushTask = nil
     }

@@ -8,6 +8,7 @@
 import AmplifyFoundation
 import XCTest
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 /// Mock credentials provider for testing
 struct MockCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider {

@@ -29,4 +29,8 @@ public struct FlushData: Sendable {
 /// Result of clearing cache
 public struct ClearCacheData: Sendable {
     public let recordsCleared: Int
+
+    public init(recordsCleared: Int) {
+        self.recordsCleared = recordsCleared
+    }
 }

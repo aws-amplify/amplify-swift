@@ -10,6 +10,9 @@ import Foundation
 public typealias ErrorDescription = String
 public typealias RecoverySuggestion = String
 
+/// Default recovery suggestion for errors.
+public let defaultRecoverySuggestion: RecoverySuggestion = "Inspect the underlying error for more details."
+
 /// This is the high level exception in the Amplify framework. Client specific exceptions should extend this.
 /// It includes user friendly message
 public protocol AmplifyError: Error {

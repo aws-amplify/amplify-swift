@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class KinesisErrorConversionTests: XCTestCase {
 
