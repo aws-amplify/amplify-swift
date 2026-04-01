@@ -77,7 +77,7 @@ extension FirehoseError: AmplifyError {
 
         return .unknown(
             "An unknown error occurred",
-            "Inspect the underlying error for more details.",
+            defaultRecoverySuggestion,
             error
         )
     }

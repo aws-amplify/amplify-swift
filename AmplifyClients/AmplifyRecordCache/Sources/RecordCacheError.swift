@@ -10,7 +10,7 @@ import Foundation
 
 /// Internal error type used by RecordClient/RecordStorage.
 /// Mapped to a client-specific error type (e.g. KinesisError, FirehoseError).
-public enum RecordCacheError: Error {
+package enum RecordCacheError: Error {
     /// Database operation failed.
     case database(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Cache limit exceeded — no space for new records.

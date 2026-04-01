@@ -11,14 +11,14 @@ import ClientRuntime
 import Foundation
 
 /// Generic RecordClient that coordinates storage and sending of records
-public actor RecordClient {
+package actor RecordClient {
     private let sender: RecordSender
     private let storage: RecordStorage
     private let maxRetries: Int
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: RecordClient.self)
     private var isFlushing = false
 
-    public init(
+    package init(
         sender: RecordSender,
         storage: RecordStorage,
         maxRetries: Int = 3
@@ -29,13 +29,13 @@ public actor RecordClient {
     }
 
     /// Records data to local storage
-    public func record(_ input: RecordInput) async throws -> RecordData {
+    package func record(_ input: RecordInput) async throws -> RecordData {
         try await storage.addRecord(input)
         return RecordData()
     }
 
     /// Flushes all locally stored records
-    public func flush() async throws -> FlushData {
+    package func flush() async throws -> FlushData {
         guard !isFlushing else {
             logger.debug("Flush already in progress, skipping")
             return FlushData(recordsFlushed: 0, flushInProgress: true)
@@ -124,7 +124,7 @@ public actor RecordClient {
     }
 
     /// Clears all cached records
-    public func clearCache() async throws -> ClearCacheData {
+    package func clearCache() async throws -> ClearCacheData {
         let count = try await storage.clearRecords()
         return ClearCacheData(recordsCleared: count)
     }

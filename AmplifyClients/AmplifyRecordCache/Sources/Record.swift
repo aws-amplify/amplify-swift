@@ -8,18 +8,18 @@
 import Foundation
 
 /// Represents a record stored locally
-public struct Record: Sendable {
-    public let id: Int64
-    public let streamName: String
-    public let partitionKey: String?
-    public let data: Data
-    public var dataSize: Int {
+package struct Record: Sendable {
+    package let id: Int64
+    package let streamName: String
+    package let partitionKey: String?
+    package let data: Data
+    package var dataSize: Int {
         data.count + (partitionKey?.utf8.count ?? 0)
     }
-    public let retryCount: Int
-    public let createdAt: Date
+    package let retryCount: Int
+    package let createdAt: Date
 
-    public init(
+    package init(
         id: Int64,
         streamName: String,
         partitionKey: String?,
@@ -37,15 +37,15 @@ public struct Record: Sendable {
 }
 
 /// Input for recording a new record
-public struct RecordInput: Sendable {
-    public let streamName: String
-    public let partitionKey: String?
-    public let data: Data
-    public var dataSize: Int {
+package struct RecordInput: Sendable {
+    package let streamName: String
+    package let partitionKey: String?
+    package let data: Data
+    package var dataSize: Int {
         data.count + (partitionKey?.utf8.count ?? 0)
     }
 
-    public init(streamName: String, partitionKey: String? = nil, data: Data) {
+    package init(streamName: String, partitionKey: String? = nil, data: Data) {
         self.streamName = streamName
         self.partitionKey = partitionKey
         self.data = data
