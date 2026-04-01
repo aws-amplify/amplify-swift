@@ -44,10 +44,15 @@ actor SQLiteRecordStorage: RecordStorage {
         self.maxRecordSizeBytes = maxRecordSizeBytes
         self.maxBytesPerStream = maxBytesPerStream
         self.maxPartitionKeyLength = maxPartitionKeyLength
-        self.database = try connection ?? Self.createFileConnection(identifier: identifier)
 
-        try Self.setupSchema(on: database)
-        try resetCacheSizeFromDb()
+        let db = try connection ?? Self.createFileConnection(identifier: identifier)
+        self.database = db
+
+        try Self.setupSchema(on: db)
+        let size = try Self.wrapDatabaseError {
+            try db.scalar(Self.records.select(Self.dataSize.sum)) ?? 0
+        }
+        self.cachedSize = Int64(size)
     }
 
     private static func createFileConnection(identifier: String) throws -> Connection {
@@ -128,8 +133,19 @@ actor SQLiteRecordStorage: RecordStorage {
         cachedSize += Int64(input.dataSize)
     }
 
-    func getRecordsByStream() throws -> [[Record]] {
+    func getRecordsByStream(afterIdByStream: [String: Int64] = [:]) throws -> [[Record]] {
         try Self.wrapDatabaseError {
+            // Build per-stream WHERE clauses: id > lastProcessedId for streams we've already seen
+            let streamFilter: String
+            if afterIdByStream.isEmpty {
+                streamFilter = ""
+            } else {
+                let conditions = afterIdByStream.map { _ in
+                    "NOT (stream_name = ? AND id <= ?)"
+                }.joined(separator: " AND ")
+                streamFilter = "WHERE \(conditions)"
+            }
+
             // Must use raw SQL for window functions
             let query = """
                 SELECT id, stream_name, partition_key, data, data_size, retry_count, created_at
@@ -138,14 +154,22 @@ actor SQLiteRecordStorage: RecordStorage {
                            ROW_NUMBER() OVER (PARTITION BY stream_name ORDER BY id) as rn,
                            SUM(data_size) OVER (PARTITION BY stream_name ORDER BY id) as running_size
                     FROM records
+                    \(streamFilter)
                 )
                 WHERE rn <= ? AND running_size <= ?
                 ORDER BY stream_name, id
                 """
 
+            // Bind per-stream after-id filters
+            var bindings: [Binding?] = afterIdByStream.flatMap { (streamName, afterId) in
+                [streamName as Binding?, afterId as Binding?]
+            }
+            bindings.append(maxRecords as Binding?)
+            bindings.append(maxBytesPerStream as Binding?)
+
             var recordsByStream: [String: [Record]] = [:]
 
-            for row: Statement.Element in try database.prepare(query, maxRecords, maxBytesPerStream) {
+            for row: Statement.Element in try database.prepare(query, bindings) {
                 // Ensure row has expected number of columns (in case DB format is invalid)
                 guard row.count >= 7 else {
                     throw RecordCacheError.database(
