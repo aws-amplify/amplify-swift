@@ -370,12 +370,37 @@ let analyticsTargets: [Target] = [
     ),
 ]
 
+let recordCacheTargets: [Target] = [
+    .target(
+        name: "AmplifyRecordCache",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyRecordCache/Sources",
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyRecordCacheTests",
+        dependencies: [
+            "AmplifyRecordCache",
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyRecordCache/Tests"
+    )
+]
+
 let kinesisTargets: [Target] = [
     .target(
         name: "AmplifyKinesisClient",
         dependencies: [
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifyFoundationBridge"),
+            .target(name: "AmplifyRecordCache"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSKinesis", package: "aws-sdk-swift")
         ],
@@ -390,7 +415,8 @@ let kinesisTargets: [Target] = [
     .testTarget(
         name: "AmplifyKinesisClientTests",
         dependencies: [
-            "AmplifyKinesisClient"
+            "AmplifyKinesisClient",
+            "AmplifyRecordCache"
         ],
         path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )
@@ -535,6 +561,7 @@ targets.append(contentsOf: dataStoreTargets)
 targets.append(contentsOf: storageTargets)
 targets.append(contentsOf: geoTargets)
 targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: recordCacheTargets)
 targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)

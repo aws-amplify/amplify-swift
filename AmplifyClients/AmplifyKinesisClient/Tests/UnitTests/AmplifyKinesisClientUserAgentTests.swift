@@ -11,6 +11,7 @@ import AWSKinesis
 import SmithyHTTPAPI
 import XCTest
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 /// Mock HTTP client engine that captures the User-Agent header from outgoing requests.
 private class UserAgentCapturingEngine: HTTPClient {

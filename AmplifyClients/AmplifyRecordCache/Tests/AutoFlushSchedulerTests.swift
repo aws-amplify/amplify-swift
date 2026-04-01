@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class AutoFlushSchedulerTests: XCTestCase {
 
@@ -102,7 +102,7 @@ class AutoFlushSchedulerTests: XCTestCase {
     }
 }
 
-// MARK: - Mock Record Client
+// MARK: - Mock Record Storage
 
 /// Mock storage that tracks operations
 actor MockRecordStorage: RecordStorage {
@@ -142,4 +142,3 @@ final class MockRecordSender: RecordSender {
         return PutRecordsResponse(successfulIds: [], retryableIds: [], failedIds: [])
     }
 }
-

@@ -9,8 +9,9 @@ import AmplifyFoundation
 import SmithyRetries
 import SmithyRetriesAPI
 import XCTest
-@testable import AWSKinesis
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
+@testable import AWSKinesis
 
 class AmplifyKinesisClientConfigureClientTests: XCTestCase {
 

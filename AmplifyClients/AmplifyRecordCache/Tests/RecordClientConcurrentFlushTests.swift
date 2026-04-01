@@ -7,7 +7,7 @@
 
 import SQLite
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class RecordClientConcurrentFlushTests: XCTestCase {
 
@@ -51,7 +51,7 @@ class RecordClientConcurrentFlushTests: XCTestCase {
         await sender.setDelay(nanoseconds: 500_000_000) // 500ms
         await sender.setResponse(
             PutRecordsResponse(
-                successfulIds: allRecords.map(\.id),
+                successfulIds: allRecords.map { $0.id },
                 retryableIds: [],
                 failedIds: []
             )
