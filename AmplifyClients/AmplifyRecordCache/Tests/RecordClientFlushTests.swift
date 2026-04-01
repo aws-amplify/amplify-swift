@@ -206,15 +206,12 @@ struct MockSdkError: Error, ModeledError {
     static var typeName: String {
         "MockSdkError"
     }
-
     static var fault: ErrorFault {
         .server
     }
-
     static var isRetryable: Bool {
         false
     }
-
     static var isThrottling: Bool {
         false
     }

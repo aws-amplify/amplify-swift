@@ -9,7 +9,7 @@
 /// protocol that delegates all work to its sinks.
 ///
 final class BroadcastLogger: Sendable {
-    
+
     let sinks: [any LogSinkBehavior]
     let name: String
 
@@ -23,23 +23,23 @@ extension BroadcastLogger: Logger {
     func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         log(.error, message(), error())
     }
-    
+
     func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         log(.warn, message(), error())
     }
-    
+
     func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         log(.info, message(), error())
     }
-    
+
     func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         log(.debug, message(), error())
     }
-    
+
     func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         log(.verbose, message(), error())
     }
-    
+
     func log(_ logLevel: LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> (any Error)?) {
         let messageValue = message()
         let errorValue = error()

@@ -333,7 +333,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
                 if !modelSchema.isSystem {
                     log.error("Unable to sync model (\(modelSchema.name)) where isSyncable is false")
                 }
-                if self.syncEngine == nil {
+                if syncEngine == nil {
                     log.error("Unable to sync because syncEngine is nil")
                 }
                 completionForWithId?(.success(queryAndDeleteResult.deletedModels.first))
