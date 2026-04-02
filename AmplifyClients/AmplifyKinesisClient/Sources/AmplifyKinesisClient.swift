@@ -13,12 +13,6 @@ import AWSKinesis
 import Foundation
 import SmithyIdentity
 
-// Re-export shared types so existing `import AmplifyKinesisClient` code continues to compile.
-public typealias RecordData = AmplifyRecordCache.RecordData
-public typealias FlushData = AmplifyRecordCache.FlushData
-public typealias ClearCacheData = AmplifyRecordCache.ClearCacheData
-public typealias FlushStrategy = AmplifyRecordCache.FlushStrategy
-
 public typealias AmplifyKinesisClientConfigurationProvider = (
     inout AWSKinesis.KinesisClient.KinesisClientConfiguration
 ) -> Void

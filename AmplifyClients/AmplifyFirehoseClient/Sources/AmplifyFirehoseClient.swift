@@ -13,12 +13,6 @@ import AWSFirehose
 import Foundation
 import SmithyIdentity
 
-// Re-export shared types so `import AmplifyFirehoseClient` is sufficient for consumers.
-public typealias RecordData = AmplifyRecordCache.RecordData
-public typealias FlushData = AmplifyRecordCache.FlushData
-public typealias ClearCacheData = AmplifyRecordCache.ClearCacheData
-public typealias FlushStrategy = AmplifyRecordCache.FlushStrategy
-
 public typealias AmplifyFirehoseClientConfigurationProvider = (
     inout AWSFirehose.FirehoseClient.FirehoseClientConfiguration
 ) -> Void
