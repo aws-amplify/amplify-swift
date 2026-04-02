@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct KinesisHostAppApp: App {
+struct KinesisFirehoseClientHostAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
