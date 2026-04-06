@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 #if canImport(WatchKit)
 import WatchKit
 #elseif canImport(UIKit)
@@ -15,50 +15,59 @@ import UIKit
 
 extension SignUpInput {
     typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
-    init(username: String,
-         password: String?,
-         clientMetadata: [String: String]?,
-         validationData: [String: String]?,
-         attributes: [String: String],
-         asfDeviceId: String?,
-         environment: UserPoolEnvironment) async {
+    init(
+        username: String,
+        password: String?,
+        clientMetadata: [String: String]?,
+        validationData: [String: String]?,
+        attributes: [String: String],
+        asfDeviceId: String?,
+        environment: UserPoolEnvironment
+    ) async {
 
         let configuration = environment.userPoolConfiguration
-        let secretHash = ClientSecretHelper.calculateSecretHash(username: username,
-                                                  userPoolConfiguration: configuration)
+        let secretHash = ClientSecretHelper.calculateSecretHash(
+            username: username,
+            userPoolConfiguration: configuration
+        )
         let validationData = await Self.getValidationData(with: validationData)
         let convertedAttributes = Self.convertAttributes(attributes)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-        if let asfDeviceId = asfDeviceId,
+        if let asfDeviceId,
            let encodedData = await CognitoUserPoolASF.encodedContext(
-            username: username,
-            asfDeviceId: asfDeviceId,
-            asfClient: environment.cognitoUserPoolASFFactory(),
-            userPoolConfiguration: environment.userPoolConfiguration) {
+               username: username,
+               asfDeviceId: asfDeviceId,
+               asfClient: environment.cognitoUserPoolASFFactory(),
+               userPoolConfiguration: environment.userPoolConfiguration
+           ) {
             userContextData = .init(encodedData: encodedData)
         }
         let analyticsMetadata = environment
             .cognitoUserPoolAnalyticsHandlerFactory()
             .analyticsMetadata()
-        self.init(analyticsMetadata: analyticsMetadata,
-                  clientId: configuration.clientId,
-                  clientMetadata: clientMetadata,
-                  password: password,
-                  secretHash: secretHash,
-                  userAttributes: convertedAttributes,
-                  userContextData: userContextData,
-                  username: username,
-                  validationData: validationData)
+        self.init(
+            analyticsMetadata: analyticsMetadata,
+            clientId: configuration.clientId,
+            clientMetadata: clientMetadata,
+            password: password,
+            secretHash: secretHash,
+            userAttributes: convertedAttributes,
+            userContextData: userContextData,
+            username: username,
+            validationData: validationData
+        )
     }
 
     private static func getValidationData(with devProvidedData: [String: String]?)
     async -> [CognitoIdentityProviderClientTypes.AttributeType]? {
 
-        if let devProvidedData = devProvidedData {
-            return devProvidedData.compactMap { (key, value) in
+        // swiftformat:disable all
+        if let devProvidedData {
+            return devProvidedData.compactMap { key, value in
                 return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
             } + (await cognitoValidationData ?? [])
         }
+        // swiftformat:enable all
         return await cognitoValidationData
     }
 
@@ -98,8 +107,10 @@ extension SignUpInput {
     private static func convertAttributes(_ attributes: [String: String]) -> [CognitoIdentityProviderClientTypes.AttributeType] {
 
         return attributes.reduce(into: [CognitoIdentityProviderClientTypes.AttributeType]()) {
-            $0.append(CognitoIdentityProviderClientTypes.AttributeType(name: $1.key,
-                                                                       value: $1.value))
+            $0.append(CognitoIdentityProviderClientTypes.AttributeType(
+                name: $1.key,
+                value: $1.value
+            ))
         }
     }
 }

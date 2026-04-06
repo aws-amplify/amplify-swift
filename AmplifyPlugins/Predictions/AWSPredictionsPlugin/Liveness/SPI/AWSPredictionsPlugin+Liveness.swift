@@ -5,17 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
-extension AWSPredictionsPlugin {
+public extension AWSPredictionsPlugin {
     @_spi(PredictionsFaceLiveness)
-    public static func startFaceLivenessSession(
+    static func startFaceLivenessSession(
         withID sessionID: String,
         credentialsProvider: AWSCredentialsProvider? = nil,
         region: String,
-        options: FaceLivenessSession.Options,
         completion: @escaping (Result<Void, FaceLivenessSessionError>) -> Void
     ) async throws -> FaceLivenessSession {
 
@@ -45,10 +44,19 @@ extension AWSPredictionsPlugin {
     }
 }
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct Options {
-        public init() {}
+    struct Options {
+        public let attemptCount: Int
+        public let preCheckViewEnabled: Bool
+
+        public init(
+            attemptCount: Int,
+            preCheckViewEnabled: Bool
+        ) {
+            self.attemptCount = attemptCount
+            self.preCheckViewEnabled = preCheckViewEnabled
+        }
     }
 }
 

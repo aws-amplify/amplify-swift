@@ -7,11 +7,12 @@
 
 import AWSPluginsCore
 
-struct DeviceMetadataHelper {
+enum DeviceMetadataHelper {
 
     static func getDeviceMetadata(
         for username: String,
-        with environment: Environment) async -> DeviceMetadata {
+        with environment: Environment
+    ) async -> DeviceMetadata {
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             do {
                 let data = try await credentialStoreClient?.fetchData(
@@ -32,7 +33,8 @@ struct DeviceMetadataHelper {
 
     static func removeDeviceMetaData(
         for username: String,
-        with environment: Environment) async {
+        with environment: Environment
+    ) async {
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             do {
                 try await credentialStoreClient?.deleteData(

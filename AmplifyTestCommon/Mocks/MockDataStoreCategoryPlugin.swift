@@ -24,99 +24,121 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("reset")
     }
 
-    func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate? = nil,
-                        completion: @escaping (DataStoreResult<M>) -> Void) {
+    func save<M: Model>(
+        _ model: M,
+        where condition: QueryPredicate? = nil,
+        completion: @escaping (DataStoreResult<M>) -> Void
+    ) {
         notify("save")
 
         if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
             Task {
-                if let callback = await responder.callback((model: model,
-                                                      where: condition)) {
+                if let callback = responder.callback((
+                    model: model,
+                    where: condition
+                )) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate? = nil) async throws -> M {
+
+    func save<M: Model>(
+        _ model: M,
+        where condition: QueryPredicate? = nil
+    ) async throws -> M {
         notify("save")
         return model
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         byId id: String,
-                         completion: @escaping (DataStoreResult<M?>) -> Void) {
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byId id: String,
+        completion: @escaping (DataStoreResult<M?>) -> Void
+    ) {
         notify("queryById")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func query<M: Model>(_ modelType: M.Type,
-                         byId id: String) async throws -> M? {
+
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byId id: String
+    ) async throws -> M? {
         notify("queryById")
         return nil
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String,
-                         completion: @escaping (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier id: String,
+        completion: @escaping (DataStoreResult<M?>) -> Void
+    ) where M: ModelIdentifiable,
                                                                           M.IdentifierFormat == ModelIdentifierFormat.Default {
         notify("queryByIdentifier")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String) async throws -> M? where M: ModelIdentifiable,
+
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier id: String
+    ) async throws -> M? where M: ModelIdentifiable,
         M.IdentifierFormat == ModelIdentifierFormat.Default {
             notify("queryByIdentifier")
             return nil
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicate?,
-                         sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?,
-                         completion: @escaping (DataStoreResult<[M]>) -> Void) {
+    func query<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?,
+        paginate paginationInput: QueryPaginationInput?,
+        completion: @escaping (DataStoreResult<[M]>) -> Void
+    ) {
         notify("queryByPredicate")
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
             Task {
-                if let result = await responder.callback((modelType: modelType,
-                                                    where: predicate,
-                                                    sort: sortInput,
-                                                    paginate: paginationInput)) {
+                if let result = responder.callback((
+                    modelType: modelType,
+                    where: predicate,
+                    sort: sortInput,
+                    paginate: paginationInput
+                )) {
                     completion(result)
                 }
             }
         }
     }
-    
-    func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicate?,
-                         sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?) async throws -> [M] {
+
+    func query<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?,
+        paginate paginationInput: QueryPaginationInput?
+    ) async throws -> [M] {
         notify("queryByPredicate")
-        
+
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = await responder.callback((modelType: modelType,
-                                                  where: predicate,
-                                                  sort: sortInput,
-                                                  paginate: paginationInput)) {
+            if let result = responder.callback((
+                modelType: modelType,
+                where: predicate,
+                sort: sortInput,
+                paginate: paginationInput
+            )) {
                 switch result {
                 case .success(let models):
                     return models
@@ -125,132 +147,158 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                 }
             }
         }
-        
+
         return []
     }
 
-    func query<M>(_ modelType: M.Type,
-                  byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                  completion: @escaping (DataStoreResult<M?>) -> Void) where M: Model, M: ModelIdentifiable {
+    func query<M>(
+        _ modelType: M.Type,
+        byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+        completion: @escaping (DataStoreResult<M?>) -> Void
+    ) where M: Model, M: ModelIdentifiable {
         notify("queryWithIdentifier")
 
        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
            Task {
-               if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+               if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
                    completion(callback)
                }
            }
        }
     }
-    
-    func query<M>(_ modelType: M.Type,
-                  byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
+
+    func query<M>(
+        _ modelType: M.Type,
+        byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>
+    ) async throws -> M?
         where M: Model, M: ModelIdentifiable {
             notify("queryWithIdentifier")
             return nil
     }
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: String,
-                          where predicate: QueryPredicate? = nil,
-                          completion: @escaping (DataStoreResult<Void>) -> Void) {
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping (DataStoreResult<Void>) -> Void
+    ) {
         notify("deleteById")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: String,
-                          where predicate: QueryPredicate? = nil) async throws {
+
+    func delete(
+        _ modelType: (some Model).Type,
+        withId id: String,
+        where predicate: QueryPredicate? = nil
+    ) async throws {
         notify("deleteById")
     }
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: String,
-                          where predicate: QueryPredicate? = nil,
-                          completion: @escaping (DataStoreResult<Void>) -> Void) where M: ModelIdentifiable,
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier id: String,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping (DataStoreResult<Void>) -> Void
+    ) where M: ModelIdentifiable,
                                                                              M.IdentifierFormat == ModelIdentifierFormat.Default {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                if let callback = responder.callback((modelType: modelType, id: id)) {
                     completion(callback)
                 }
             }
         }
     }
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: String,
-                          where predicate: QueryPredicate? = nil) async throws
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier id: String,
+        where predicate: QueryPredicate? = nil
+    ) async throws
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
             notify("deleteByIdentifier")
     }
-    
-    func delete<M>(_ modelType: M.Type,
-                   withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                   where predicate: QueryPredicate?,
-                   completion: @escaping DataStoreCallback<Void>) where M: Model, M: ModelIdentifiable {
+
+    func delete<M>(
+        _ modelType: M.Type,
+        withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate?,
+        completion: @escaping DataStoreCallback<Void>
+    ) where M: Model, M: ModelIdentifiable {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+                if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
                     completion(callback)
                 }
             }
         }
     }
 
-    func delete<M>(_ modelType: M.Type,
-                   withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                   where predicate: QueryPredicate?) async throws where M: Model, M: ModelIdentifiable {
+    func delete<M>(
+        _ modelType: M.Type,
+        withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate?
+    ) async throws where M: Model, M: ModelIdentifiable {
         notify("deleteByIdentifier")
     }
-    
-    func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate,
-                           completion: @escaping (DataStoreResult<Void>) -> Void) {
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate,
+        completion: @escaping (DataStoreResult<Void>) -> Void
+    ) {
         notify("deleteModelTypeByPredicate")
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {
             Task {
-                if let callback = await responder.callback((modelType: modelType, where: predicate)) {
+                if let callback = responder.callback((modelType: modelType, where: predicate)) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate) async throws {
+
+    func delete(
+        _ modelType: (some Model).Type,
+        where predicate: QueryPredicate
+    ) async throws {
         notify("deleteModelTypeByPredicate")
     }
 
-    func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate? = nil,
-                          completion: @escaping DataStoreCallback<Void>) {
+    func delete<M: Model>(
+        _ model: M,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping DataStoreCallback<Void>
+    ) {
         notify("deleteByPredicate")
 
         if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
             Task {
-                if let callback = await responder.callback((model: model,
-                                                      where: predicate)) {
+                if let callback = responder.callback((
+                    model: model,
+                    where: predicate
+                )) {
                     completion(callback)
                 }
             }
         }
     }
-    
-    func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate? = nil) async throws {
+
+    func delete(
+        _ model: some Model,
+        where predicate: QueryPredicate? = nil
+    ) async throws {
         notify("deleteByPredicate")
     }
 
@@ -259,13 +307,13 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.clearListener] as? ClearResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }
         }
     }
-    
+
     func clear() async throws {
         notify("clear")
     }
@@ -275,13 +323,13 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.clearListener] as? ClearResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }
         }
     }
-    
+
     func start() async throws {
         notify("start")
     }
@@ -291,7 +339,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
         if let responder = responders[.stopListener] as? StopResponder {
             Task {
-                if let callback = await responder.callback(()) {
+                if let callback = responder.callback(()) {
                     completion(callback)
                 }
             }
@@ -301,36 +349,42 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func stop() async throws {
         notify("stop")
     }
-    
-    func publisher<M: Model>(for modelType: M.Type)
+
+    func publisher(for modelType: (some Model).Type)
     -> AnyPublisher<MutationEvent, DataStoreError> {
-        let mutationEvent = MutationEvent(id: "testevent",
-                                          modelId: "123",
-                                          modelName: modelType.modelName,
-                                          json: "",
-                                          mutationType: .create,
-                                          createdAt: .now())
+        let mutationEvent = MutationEvent(
+            id: "testevent",
+            modelId: "123",
+            modelName: modelType.modelName,
+            json: "",
+            mutationType: .create,
+            createdAt: .now()
+        )
         notify("publisher")
         return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }
 
-    func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
+    func observe(_ modelType: (some Model).Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
         return AmplifyAsyncThrowingSequence(parent: nil)
     }
-    
-    public func observeQuery<M: Model>(for modelType: M.Type,
-                                       where predicate: QueryPredicate? = nil,
-                                       sort sortInput: QuerySortInput? = nil)
+
+    func observeQuery<M: Model>(
+        for modelType: M.Type,
+        where predicate: QueryPredicate? = nil,
+        sort sortInput: QuerySortInput? = nil
+    )
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         notify("observeQuery")
         let snapshot = DataStoreQuerySnapshot<M>(items: [], isSynced: false)
         return Result.Publisher(snapshot).eraseToAnyPublisher()
     }
-    
-    func observeQuery<M: Model>(for modelType: M.Type,
-                                where predicate: QueryPredicate?,
-                                sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
-        
+
+    func observeQuery<M: Model>(
+        for modelType: M.Type,
+        where predicate: QueryPredicate?,
+        sort sortInput: QuerySortInput?
+    ) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
+
         let request = ObserveQueryRequest(options: [])
         let taskRunner = MockObserveQueryTaskRunner<M>(request: request)
         return taskRunner.sequence
@@ -346,21 +400,21 @@ class MockSecondDataStoreCategoryPlugin: MockDataStoreCategoryPlugin {
 
 class ObserveQueryRequest: AmplifyOperationRequest {
     var options: Any
-    
+
     typealias Options = Any
-    
+
     init(options: Any) {
         self.options = options
     }
-    
+
 }
 
 class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
 
-    public typealias Request = ObserveQueryRequest
-    public typealias InProcess = DataStoreQuerySnapshot<M>
-    public var request: ObserveQueryRequest
-    public var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
+    typealias Request = ObserveQueryRequest
+    typealias InProcess = DataStoreQuerySnapshot<M>
+    var request: ObserveQueryRequest
+    var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
     func run() async throws {
 
     }

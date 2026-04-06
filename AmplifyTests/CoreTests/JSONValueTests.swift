@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 class JSONValueTests: XCTestCase {
 
@@ -97,7 +97,7 @@ class JSONValueTests: XCTestCase {
     }
 
     func testIntValue() {
-        let offset = 100000
+        let offset = 100_000
         let badInt = JSONValue.number(Double(Int.max))
         XCTAssertNil(badInt.intValue)
         let badInt2 = JSONValue.number(Double(Int.min) - Double(offset))
@@ -107,7 +107,7 @@ class JSONValueTests: XCTestCase {
     }
 
     func testDoubleValue() {
-        let double = 1000.0
+        let double = 1_000.0
         XCTAssertEqual(JSONValue.number(double).doubleValue, double)
     }
 

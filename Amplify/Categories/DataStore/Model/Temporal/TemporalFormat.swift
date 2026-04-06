@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TemporalFormat {
+public struct TemporalFormat: @unchecked Sendable {
     let dateFormat: String
     let dateTimeFormat: String
     let timeFormat: String
@@ -64,35 +64,33 @@ public struct TemporalFormat {
     ]
 
     private func keyPath(for type: TemporalSpec.Type) -> KeyPath<TemporalFormat, String> {
-        let keyPath: KeyPath<TemporalFormat, String>
-        if type == Temporal.Time.self {
-            keyPath = \TemporalFormat.timeFormat
+        let keyPath: KeyPath<TemporalFormat, String> = if type == Temporal.Time.self {
+            \TemporalFormat.timeFormat
         } else if type == Temporal.Date.self {
-            keyPath = \TemporalFormat.dateFormat
+            \TemporalFormat.dateFormat
         } else {
-            keyPath = \TemporalFormat.dateTimeFormat
+            \TemporalFormat.dateTimeFormat
         }
         return keyPath
     }
 
     @usableFromInline
-    internal static func sortedFormats(for type: TemporalSpec.Type) -> [String] {
-        let formats: [String]
+    static func sortedFormats(for type: TemporalSpec.Type) -> [String] {
         // If the TemporalSpec is `Date`, let's only return `.full` and `.short`
         // because `.medium`, `.long`, and `.full` are all the same format.
         // If the formats ever differ, this needs to be updated.
-        if type == Temporal.Date.self {
-            formats = [TemporalFormat.full, .short]
+        let formats: [String] = if type == Temporal.Date.self {
+            [TemporalFormat.full, .short]
                 .map { $0(for: type) }
         } else {
-            formats = Self.allCases
+            Self.allCases
                 .map { $0(for: type) }
         }
         return formats
     }
 
     @usableFromInline
-    internal func callAsFunction(for type: TemporalSpec.Type) -> String {
+    func callAsFunction(for type: TemporalSpec.Type) -> String {
         self[keyPath: keyPath(for: type)]
     }
 }

@@ -58,7 +58,7 @@ struct InitializeWebAuthn: Action {
             await dispatcher.send(event)
         }
     }
-    
+
     private func webAuthnError(from error: Error) -> WebAuthnError {
         if let webAuthnError = error as? WebAuthnError {
             return webAuthnError

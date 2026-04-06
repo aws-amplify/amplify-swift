@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
 
@@ -64,12 +64,12 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         // populating `hasOneParentChildId` is required to sync successfully
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
         try await createAndWaitForSync(parent)
-        
+
         // Query from API
         let response = try await Amplify.API.query(request: .get(HasOneParent.self, byId: parent.id))
         switch response {
         case .success(let queriedParent):
-            guard let queriedParent = queriedParent else {
+            guard let queriedParent else {
                 XCTFail("Unexpected, query should return model")
                 return
             }
@@ -81,19 +81,19 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         case .failure(let error):
             XCTFail("Error querying for parent directly from AppSync \(error)")
         }
-        
+
         // Query from DataStore
         let queriedParent = try await query(for: parent)
-        
+
         // The child can be lazy loaded.
         assertLazyReference(queriedParent._child, state: .notLoaded(identifiers: [.init(name: "id", value: child.id)]))
         let queriedParentChild = try await queriedParent.child!
         XCTAssertEqual(queriedParentChild.id, child.id)
-        
+
         // The child model id can be found on the explicit field.
         let childId = queriedParent.hasOneParentChildId
         XCTAssertEqual(childId, child.id)
-        
+
         // Delete
         try await deleteAndWaitForSync(parent)
         try await assertModelDoesNotExist(parent)
@@ -121,10 +121,12 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
 
         // The child can be lazy loaded.
-        assertLazyReference(queriedParent._child,
-                            state: .notLoaded(identifiers: [
-                                .init(name: HasOneChild.keys.id.stringValue, value: child.id)
-                            ]))
+        assertLazyReference(
+            queriedParent._child,
+            state: .notLoaded(identifiers: [
+                .init(name: HasOneChild.keys.id.stringValue, value: child.id)
+            ])
+        )
 
         let newChild = HasOneChild()
         let savedNewChild = try await createAndWaitForSync(newChild)
@@ -162,8 +164,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
                 if let version = mutationEvent.version,
                    version == 1,
                    let receivedChild = try? mutationEvent.decodeModel(as: HasOneChild.self),
-                   receivedChild.identifier == child.identifier
-                {
+                   receivedChild.identifier == child.identifier {
                     mutationEventReceived.fulfill()
                 }
             }
@@ -268,9 +269,9 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
 }
 
 extension AWSDataStoreLazyLoadHasOneTests {
-    
+
     struct HasOneModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: HasOneChild.self)
             ModelRegistry.register(modelType: HasOneParent.self)

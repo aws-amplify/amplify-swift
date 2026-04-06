@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -18,9 +18,11 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
     func testObserveQuery() throws {
         let snapshotReceived = expectation(description: "query snapshot received")
         let predicate = Post.keys.content.contains("someValue")
-        let subscription = Amplify.DataStore.observeQuery(for: Post.self,
-                                                  where: predicate,
-                                                  sort: .ascending(Post.keys.createdAt))
+        let subscription = Amplify.DataStore.observeQuery(
+            for: Post.self,
+            where: predicate,
+            sort: .ascending(Post.keys.createdAt)
+        )
         let sink = Amplify.Publisher.create(subscription)
             .sink { completed in
                 switch completed {

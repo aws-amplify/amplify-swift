@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias PluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct PluginErrorMessage {
+enum PluginErrorMessage {
     static let decodeConfigurationError: PluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue"
@@ -48,7 +48,8 @@ struct PluginErrorMessage {
 
     static let invalidRegion: PluginErrorString = (
         "The region is invalid",
-        "Make sure the region is one of the AWS regions, like 'us-east-1', etc...")
+        "Make sure the region is one of the AWS regions, like 'us-east-1', etc..."
+    )
 
     static let serviceConfigurationInitializationError: PluginErrorString = (
         "Could not initialize service configuration",

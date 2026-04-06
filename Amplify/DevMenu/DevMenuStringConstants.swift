@@ -9,7 +9,7 @@
 import Foundation
 
 /// String constants used in the developer menu
-struct DevMenuStringConstants {
+enum DevMenuStringConstants {
     static let notAvailable = "Not available"
     static let unknownPlugin = "Unknown Plugin"
     static let versionNotAvailable = "Version not available"

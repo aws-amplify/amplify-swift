@@ -75,28 +75,30 @@ public struct AmplifyOutputsData: Codable {
 
         @_spi(InternalAmplifyConfiguration)
         public enum UsernameAttributes: String, Codable {
-            case email = "email"
+            case email
             case phoneNumber = "phone_number"
         }
 
         @_spi(InternalAmplifyConfiguration)
         public enum UserVerificationType: String, Codable {
-            case email = "email"
+            case email
             case phoneNumber = "phone_number"
         }
 
-        init(awsRegion: AWSRegion,
-             userPoolId: String,
-             userPoolClientId: String,
-             identityPoolId: String? = nil,
-             passwordPolicy: PasswordPolicy? = nil,
-             oauth: OAuth? = nil,
-             standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
-             usernameAttributes: [UsernameAttributes]? = nil,
-             userVerificationTypes: [UserVerificationType]? = nil,
-             unauthenticatedIdentitiesEnabled: Bool? = nil,
-             mfaConfiguration: String? = nil,
-             mfaMethods: [String]? = nil) {
+        init(
+            awsRegion: AWSRegion,
+            userPoolId: String,
+            userPoolClientId: String,
+            identityPoolId: String? = nil,
+            passwordPolicy: PasswordPolicy? = nil,
+            oauth: OAuth? = nil,
+            standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
+            usernameAttributes: [UsernameAttributes]? = nil,
+            userVerificationTypes: [UserVerificationType]? = nil,
+            unauthenticatedIdentitiesEnabled: Bool? = nil,
+            mfaConfiguration: String? = nil,
+            mfaMethods: [String]? = nil
+        ) {
             self.awsRegion = awsRegion
             self.userPoolId = userPoolId
             self.userPoolClientId = userPoolClientId
@@ -154,10 +156,12 @@ public struct AmplifyOutputsData: Codable {
         }
 
         // Internal init used for testing
-        init(awsRegion: AWSRegion,
-             maps: Maps? = nil,
-             searchIndices: SearchIndices? = nil,
-             geofenceCollections: GeofenceCollections? = nil) {
+        init(
+            awsRegion: AWSRegion,
+            maps: Maps? = nil,
+            searchIndices: SearchIndices? = nil,
+            geofenceCollections: GeofenceCollections? = nil
+        ) {
             self.awsRegion = awsRegion
             self.maps = maps
             self.searchIndices = searchIndices
@@ -244,14 +248,16 @@ public struct AmplifyOutputsData: Codable {
     }
 
     // Internal init used for testing
-    init(version: String = "",
-         analytics: Analytics? = nil,
-         auth: Auth? = nil,
-         data: DataCategory? = nil,
-         geo: Geo? = nil,
-         notifications: Notifications? = nil,
-         storage: Storage? = nil,
-         custom: CustomOutput? = nil) {
+    init(
+        version: String = "",
+        analytics: Analytics? = nil,
+        auth: Auth? = nil,
+        data: DataCategory? = nil,
+        geo: Geo? = nil,
+        notifications: Notifications? = nil,
+        storage: Storage? = nil,
+        custom: CustomOutput? = nil
+    ) {
         self.version = version
         self.analytics = analytics
         self.auth = auth
@@ -267,18 +273,16 @@ public struct AmplifyOutputsData: Codable {
 // MARK: - Configure
 
 /// Represents helper methods to configure with Amplify CLI Gen2 configuration.
-public struct AmplifyOutputs {
+public struct AmplifyOutputs: @unchecked Sendable {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
     @_spi(InternalAmplifyConfiguration)
     public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
-    public static let amplifyOutputs: AmplifyOutputs = {
-        .init {
+    public static let amplifyOutputs: AmplifyOutputs = .init {
             try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
         }
-    }()
 
     /// Resolves configuration with a data object, from the contents of an `amplify_outputs.json` file.
     public static func data(_ data: Data) -> AmplifyOutputs {
@@ -295,12 +299,12 @@ public struct AmplifyOutputs {
     }
 }
 
-extension Amplify {
+public extension Amplify {
 
     /// API to configure with Amplify CLI Gen2's configuration.
     ///
     /// - Parameter with: `AmplifyOutputs` configuration resolver
-    public static func configure(with amplifyOutputs: AmplifyOutputs) throws {
+    static func configure(with amplifyOutputs: AmplifyOutputs) throws {
         do {
             let resolvedConfiguration = try amplifyOutputs.resolveConfiguration()
             try configure(resolvedConfiguration)
@@ -333,7 +337,7 @@ extension Amplify {
     ///
     /// - Tag: Amplify.configure
     @_spi(InternalAmplifyConfiguration)
-    public static func configure(_ configuration: AmplifyOutputsData) throws {
+    static func configure(_ configuration: AmplifyOutputsData) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)
 

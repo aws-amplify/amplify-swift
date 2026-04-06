@@ -45,7 +45,7 @@ class KeychainStoreAttributesTests: XCTestCase {
         XCTAssertNil(defaultGetAttributes[KeychainStore.Constants.AttributeAccessible] as? String)
         XCTAssertNil(defaultGetAttributes[KeychainStore.Constants.UseDataProtectionKeyChain] as? String)
     }
-    
+
     /// Given: an instance of `KeychainStoreAttributes`
     /// When: `keychainStoreAttribute.defaultSetQuery()` is invoked with a required service param
     /// Then: Validate if the attributes contain the correct set query params

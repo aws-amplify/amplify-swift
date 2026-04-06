@@ -6,21 +6,21 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension Dish {
+public extension Dish {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case dishName
     case menu
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let dish = Dish.keys
 
     model.listPluralName = "Dishes"

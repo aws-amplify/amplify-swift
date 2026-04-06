@@ -5,18 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct KeychainStoreMigrator {
     let oldAttributes: KeychainStoreAttributes
     let newAttributes: KeychainStoreAttributes
-    
+
     public init(oldService: String, newService: String, oldAccessGroup: String?, newAccessGroup: String?) {
         self.oldAttributes = KeychainStoreAttributes(service: oldService, accessGroup: oldAccessGroup)
         self.newAttributes = KeychainStoreAttributes(service: newService, accessGroup: newAccessGroup)
     }
-    
+
     public func migrate() throws {
         log.verbose("[KeychainStoreMigrator] Starting to migrate items")
 
@@ -28,8 +28,8 @@ public struct KeychainStoreMigrator {
             // Remove existing items to avoid duplicate item error
             try? KeychainStore(service: newAttributes.service, accessGroup: newAttributes.accessGroup)._removeAll()
         }
-        
-        var updateQuery = oldAttributes.defaultGetQuery()
+
+        let updateQuery = oldAttributes.defaultGetQuery()
 
         var updateAttributes = [String: Any]()
         updateAttributes[KeychainStore.Constants.AttributeService] = newAttributes.service

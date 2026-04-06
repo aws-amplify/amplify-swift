@@ -5,29 +5,31 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSDataStorePlugin
 import XCTest
 @testable import Amplify
-import AWSDataStorePlugin
 
 class AWSDataStorePluginConfigurationTests: XCTestCase {
 
     override func setUp() async throws {
         await Amplify.reset()
     }
-    
+
     #if os(watchOS)
     func testSubscriptionDisabledTrue() throws {
         XCTAssertTrue(DataStoreConfiguration.subscriptionsDisabled.disableSubscriptions())
     }
     #endif
-    
+
     func testDoesNotThrowOnMissingConfig() throws {
         #if os(watchOS)
-        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                        configuration: .subscriptionsDisabled)
+        let plugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            configuration: .subscriptionsDisabled
+        )
         #else
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration())
-    
+
         #endif
         try Amplify.add(plugin: plugin)
 
@@ -39,5 +41,5 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
             XCTFail("Should not throw even if not supplied with a plugin-specific config.")
         }
     }
-    
+
 }

@@ -5,18 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import protocol Amplify.Logger
 import Amplify
-import AWSRekognition
-import AWSTranslate
-import AWSTextract
+import Amplify
+import protocol Amplify.Logger
+import AWSClientRuntime
 import AWSComprehend
-import AWSPolly
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
-import Foundation
-import AwsCommonRuntimeKit
+import AWSPolly
+import AWSRekognition
+import AWSTextract
 import AWSTranscribeStreaming
+import AWSTranslate
+import ClientRuntime
+import Foundation
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import SmithyIdentity
 
 class AWSPredictionsService {
@@ -131,10 +133,10 @@ class AWSPredictionsService {
 }
 
 extension AWSPredictionsService: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.predictions.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

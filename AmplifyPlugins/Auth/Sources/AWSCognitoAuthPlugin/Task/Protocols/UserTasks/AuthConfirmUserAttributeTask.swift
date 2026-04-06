@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 protocol AuthConfirmUserAttributeTask: AmplifyAuthTask where Request == AuthConfirmUserAttributeRequest, Success == Void, Failure == AuthError {}
 

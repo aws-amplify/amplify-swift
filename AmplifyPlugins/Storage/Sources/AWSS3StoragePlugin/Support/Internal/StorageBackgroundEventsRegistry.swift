@@ -52,7 +52,7 @@ class StorageBackgroundEventsRegistry {
     // Once the background event completion handler is used it can be cleared.
     static func removeContinuation(for identifier: String) {
         if self.identifier == identifier {
-            self.continuation = nil
+            continuation = nil
         }
     }
 

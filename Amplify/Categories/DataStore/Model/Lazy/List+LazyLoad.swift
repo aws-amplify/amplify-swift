@@ -10,7 +10,7 @@ import Foundation
 /// This extension adds lazy load logic to the `List<ModelType>`. Lazy loading means
 /// the contents of a list that represents an association between two models will only be
 /// loaded when it's needed.
-extension List {
+public extension List {
 
     // MARK: - Asynchronous API
 
@@ -26,12 +26,12 @@ extension List {
     ///
     /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
     /// has already been initialized and calling this method will have no effect.
-    public func fetch() async throws {
+    func fetch() async throws {
         guard case .notLoaded = loadedState else {
             return
         }
         do {
-            self.elements = try await listProvider.load()
+            elements = try await listProvider.load()
         } catch {
             throw error
         }

@@ -27,7 +27,7 @@ jobs:
     uses: ./.github/workflows/build_scheme.yml
     with:
       scheme: Amplify-Build
-      os-runner: 'macos-latest'
+      os-runner: 'macos-15'
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
       save_build_cache: false

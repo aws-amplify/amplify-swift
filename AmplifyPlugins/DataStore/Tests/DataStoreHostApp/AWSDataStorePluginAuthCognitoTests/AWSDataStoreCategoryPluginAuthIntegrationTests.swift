@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSDataStorePlugin
+import XCTest
 @testable import Amplify
 #if !os(watchOS)
 @testable import DataStoreHostApp
@@ -44,7 +44,8 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         var remoteTodoOptional: TodoExplicitOwnerField?
         let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent,
-                let todo = try? mutationEvent.decodeModel() as? TodoExplicitOwnerField else {
+                let todo = try? mutationEvent.decodeModel() as? TodoExplicitOwnerField
+            else {
                     print("Can't cast payload as mutation event")
                     return
             }
@@ -84,7 +85,7 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
     private struct ModelsRegistration: AmplifyModelRegistration {
         var version: String = "version"
 
-        public func registerModels(registry: ModelRegistry.Type) {
+        func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: TodoExplicitOwnerField.self)
             ModelRegistry.register(modelType: TodoImplicitOwnerField.self)
           }

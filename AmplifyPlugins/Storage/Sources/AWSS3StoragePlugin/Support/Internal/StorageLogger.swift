@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+@preconcurrency import Amplify
+import Foundation
 
 let storageLogger = Amplify.Logging.logger(forCategory: .storage)

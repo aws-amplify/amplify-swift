@@ -12,8 +12,8 @@ public protocol AmplifyVersionable {
     var version: String { get }
 }
 
-extension AmplifyVersionable where Self: AnyObject {
-    public var version: String {
+public extension AmplifyVersionable where Self: AnyObject {
+    var version: String {
         let bundle = Bundle(for: type(of: self))
         let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         return version ?? "Not Available"

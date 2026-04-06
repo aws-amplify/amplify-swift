@@ -6,7 +6,7 @@
 //
 
 /// Information about a conflict that occurred attempting to sync a local model with a remote model
-public struct DataStoreSyncConflict {
+public struct DataStoreSyncConflict: @unchecked Sendable {
     public let localModel: Model
     public let remoteModel: Model
     public let errors: [GraphQLError]?

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
 @testable import Amplify
@@ -22,16 +22,16 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         let user = User(username: "name")
         try await mutate(.create(user))
     }
-    
+
     func testSaveUserSettings() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
         let savedUser = try await mutate(.create(user))
-        
+
         let userSettings = UserSettings(language: "en-us", user: savedUser)
         try await mutate(.create(userSettings))
     }
-    
+
     func testSavePost() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
@@ -39,18 +39,18 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
         try await mutate(.create(post))
     }
-    
+
     func testSaveComment() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
         let savedUser = try await mutate(.create(user))
         let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
         let savedPost = try await mutate(.create(post))
-        
+
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
         try await mutate(.create(comment))
     }
-    
+
     /// LazyLoad from queried models
     ///
     /// - Given: Created models
@@ -69,7 +69,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         let savedPost = try await mutate(.create(post))
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
         try await mutate(.create(comment))
-        
+
         // Traverse from User
         let queriedUser = try await query(for: user)!
         try await queriedUser.posts?.fetch()
@@ -79,7 +79,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         // Cannot traverse from User to settings since no FK is set on the User
         //let queriedUserSettings = try await queriedUser.settings
         //XCTAssertNotNil(queriedUserSettings)
-        
+
         // Traverse from UserSettings
         let queriedSettings = try await query(for: userSettings)!
         let queriedSettingsUser = try await queriedSettings.user
@@ -109,7 +109,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         try await mutate(.delete(user))
         try await assertModelDoesNotExist(user)
     }
-    
+
     func testIncludesNestedModels() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
@@ -120,11 +120,15 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         let savedPost = try await mutate(.create(post))
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
         try await mutate(.create(comment))
-        
-        guard let queriedUser = try await query(.get(User.self,
-                                                     byIdentifier: user.id,
-                                                     includes: { user in [user.comments,
-                                                                          user.posts] })) else {
+
+        guard let queriedUser = try await query(.get(
+            User.self,
+            byIdentifier: user.id,
+            includes: { user in [
+                user.comments,
+                user.posts
+            ] }
+        )) else {
             XCTFail("Could not perform nested query for User")
             return
         }
@@ -144,10 +148,12 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
             comments = try await comments.getNextPage()
         }
         XCTAssertEqual(comments.count, 1)
-        
-        guard let queriedPost = try await query(.get(Post.self,
-                                                     byIdentifier: post.id,
-                                                     includes: { post in [post.author, post.comments] })) else {
+
+        guard let queriedPost = try await query(.get(
+            Post.self,
+            byIdentifier: post.id,
+            includes: { post in [post.author, post.comments] }
+        )) else {
             XCTFail("Could not perform nested query for Post")
             return
         }
@@ -160,28 +166,30 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
             queriedPostComments = try await queriedPostComments.getNextPage()
         }
         XCTAssertEqual(queriedPostComments.count, 1)
-        
-        guard let queriedComment = try await query(.get(Comment.self,
-                                                     byIdentifier: comment.id,
-                                                        includes: { comment in [comment.author, comment.post] })) else {
+
+        guard let queriedComment = try await query(.get(
+            Comment.self,
+            byIdentifier: comment.id,
+            includes: { comment in [comment.author, comment.post] }
+        )) else {
             XCTFail("Could not perform nested query for Comment")
             return
         }
         assertLazyReference(queriedComment._author, state: .loaded(model: user))
         assertLazyReference(queriedComment._post, state: .loaded(model: post))
     }
-    
+
     func testSaveUserWithUserSettings() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
         var savedUser = try await mutate(.create(user))
         let userSettings = UserSettings(language: "en-us", user: savedUser)
         try await mutate(.create(userSettings))
-        
+
         // Update the User with the UserSettings (this is required for bi-directional has-one belongs-to)
         savedUser.setSettings(userSettings)
         try await mutate(.update(savedUser))
-        
+
         let queriedUser = try await query(for: user)!
         let queriedUserSettings = try await queriedUser.settings
         XCTAssertNotNil(queriedUserSettings)
@@ -193,9 +201,9 @@ extension GraphQLLazyLoadUserPostCommentTests {
     typealias Post = Post14
     typealias Comment = Comment14
     typealias UserSettings = UserSettings14
-    
+
     struct UserPostCommentModels: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: User14.self)
             ModelRegistry.register(modelType: Post14.self)

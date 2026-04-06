@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import ClientRuntime
+import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
 
 class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
@@ -20,7 +20,7 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                try UpdateDeviceStatusOutput()
+                UpdateDeviceStatusOutput()
             }
         )
     }

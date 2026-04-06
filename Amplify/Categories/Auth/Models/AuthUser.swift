@@ -6,7 +6,7 @@
 //
 
 /// Defines the protocol for an auth user
-public protocol AuthUser {
+public protocol AuthUser: Sendable {
 
     /// User name of the auth user
     var username: String { get }

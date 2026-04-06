@@ -7,14 +7,15 @@
 
 import AWSCognitoIdentity
 import ClientRuntime
+import Foundation
 
-extension GetCredentialsForIdentityOutput: Codable {
+extension GetCredentialsForIdentityOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case credentials = "Credentials"
         case identityId = "IdentityId"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let identityIdDecoded = try containerValues.decodeIfPresent(Swift.String.self, forKey: .identityId)
@@ -28,7 +29,7 @@ extension GetCredentialsForIdentityOutput: Codable {
     }
 }
 
-extension CognitoIdentityClientTypes.Credentials: Decodable {
+extension CognitoIdentityClientTypes.Credentials: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case accessKeyId = "AccessKeyId"
         case expiration = "Expiration"

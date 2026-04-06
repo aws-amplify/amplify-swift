@@ -12,7 +12,7 @@ import Smithy
 import SmithyHTTPAPI
 
 class AWSS3StoragePluginRequestRecorder {
-    var target: HTTPClient? = nil
+    var target: HTTPClient?
     var sdkRequests: [HTTPRequest] = []
     var urlRequests: [URLRequest] = []
     init() {
@@ -21,7 +21,7 @@ class AWSS3StoragePluginRequestRecorder {
 
 extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
     func send(request: HTTPRequest) async throws -> HTTPResponse {
-        guard let target = target  else {
+        guard let target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
         sdkRequests.append(request)

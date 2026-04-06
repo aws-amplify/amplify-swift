@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -10,27 +17,33 @@ public struct Project2: Model {
   public var updatedAt: Temporal.DateTime?
   public var project2TeamTeamId: String?
   public var project2TeamName: String?
-  
-  public init(projectId: String,
-      name: String,
-      team: Team2? = nil,
-      project2TeamTeamId: String? = nil,
-      project2TeamName: String? = nil) {
-    self.init(projectId: projectId,
+
+  public init(
+    projectId: String,
+    name: String,
+    team: Team2? = nil,
+    project2TeamTeamId: String? = nil,
+    project2TeamName: String? = nil
+  ) {
+    self.init(
+      projectId: projectId,
       name: name,
       team: team,
       createdAt: nil,
       updatedAt: nil,
       project2TeamTeamId: project2TeamTeamId,
-      project2TeamName: project2TeamName)
+      project2TeamName: project2TeamName
+    )
   }
-  internal init(projectId: String,
-      name: String,
-      team: Team2? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil,
-      project2TeamTeamId: String? = nil,
-      project2TeamName: String? = nil) {
+  init(
+    projectId: String,
+    name: String,
+    team: Team2? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    project2TeamTeamId: String? = nil,
+    project2TeamName: String? = nil
+  ) {
       self.projectId = projectId
       self.name = name
       self.team = team

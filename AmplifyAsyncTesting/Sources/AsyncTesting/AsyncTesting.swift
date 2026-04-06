@@ -10,19 +10,25 @@ import XCTest
 
 public enum AsyncTesting {
 
-    public static func expectation(description: String,
-                                   isInverted: Bool = false,
-                                   expectedFulfillmentCount: Int = 1) -> AsyncExpectation {
-        AsyncExpectation(description: description,
-                         isInverted: isInverted,
-                         expectedFulfillmentCount: expectedFulfillmentCount)
+    public static func expectation(
+        description: String,
+        isInverted: Bool = false,
+        expectedFulfillmentCount: Int = 1
+    ) -> AsyncExpectation {
+        AsyncExpectation(
+            description: description,
+            isInverted: isInverted,
+            expectedFulfillmentCount: expectedFulfillmentCount
+        )
     }
 
     @MainActor
-    public static func waitForExpectations(_ expectations: [AsyncExpectation],
-                                           timeout: Double = 1.0,
-                                           file: StaticString = #filePath,
-                                           line: UInt = #line) async {
+    public static func waitForExpectations(
+        _ expectations: [AsyncExpectation],
+        timeout: Double = 1.0,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
         guard !expectations.isEmpty else { return }
 
         // check if all expectations are already satisfied and skip sleeping

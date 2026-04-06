@@ -19,7 +19,7 @@ import Foundation
 /// - Attention: **Don't** use `TimeUnit` to calculate dates, use `DateUnit` instead.
 ///   Also make sure to use the most applicable `Unit`, e.g. don't use `.minutes(60)` if you really want `.hours(1)`.
 ///   There are not always 24 hours in a day, 60 minutes in an hour, etc.
-public struct TimeUnit {
+public struct TimeUnit: @unchecked Sendable {
     public let calendarComponent: Calendar.Component
     public let value: Int
 
@@ -109,14 +109,14 @@ public protocol TimeUnitOperable {
     static func - (left: Self, right: TimeUnit) -> Self
 }
 
-extension TemporalSpec where Self: TimeUnitOperable {
+public extension TemporalSpec where Self: TimeUnitOperable {
 
     /// Add a `TimeUnit` to a `Temporal.Time` or `Temporal.DateTime`
     /// - Parameters:
     ///   - left: `Temporal.Time` or `Temporal.DateTime`
     ///   - right: `TimeUnit` to add to `left`
     /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was added to.
-    public static func + (left: Self, right: TimeUnit) -> Self {
+    static func + (left: Self, right: TimeUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)
     }
 
@@ -125,7 +125,7 @@ extension TemporalSpec where Self: TimeUnitOperable {
     ///   - left: `Temporal.Time` or `Temporal.DateTime`
     ///   - right: `TimeUnit` to subtract from `left`
     /// - Returns: A new `Temporal.Time` or `Temporal.DateTime` the `TimeUnit` was subtracted from.
-    public static func - (left: Self, right: TimeUnit) -> Self {
+    static func - (left: Self, right: TimeUnit) -> Self {
         return left.add(value: -right.value, to: right.calendarComponent)
     }
 }

@@ -64,6 +64,6 @@ extension WebAuthnError: AuthErrorConvertible {
         // } else {
         //     return code.rawValue == 1006
         // }
-        return code.rawValue == 1006
+        return code.rawValue == 1_006
     }
 }

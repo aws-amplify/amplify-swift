@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
 /**
  SigV4 Signing Process
@@ -178,7 +178,8 @@ struct SigV4Signer {
             hostHeader,
             uniquingKeysWith: { _, host in
                 host
-            })
+            }
+        )
 
         let url = url.path.isEmpty
         ? url.appendingPathComponent("/")
@@ -362,9 +363,9 @@ struct SigV4Signer {
     func _data(_ s: String) -> Data { .init(s.utf8) }
 
     // HMAC SHA256 Hash of data using a key
-    func _hash<D: ContiguousBytes>(
+    func _hash(
         data: Data,
-        key: D
+        key: some ContiguousBytes
     ) -> HashedAuthenticationCode<SHA256> {
         HMAC<SHA256>.authenticationCode(
             for: data,

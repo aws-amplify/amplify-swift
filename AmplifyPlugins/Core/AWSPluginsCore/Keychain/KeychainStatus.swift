@@ -24,11 +24,11 @@ extension KeychainStatus: CustomStringConvertible {
             self = .success
         case -128:
             self = .userCanceled
-        case -25299:
+        case -25_299:
             self = .duplicateItem
-        case -25300:
+        case -25_300:
             self = .itemNotFound
-        case -34018:
+        case -34_018:
             self = .missingEntitlement
         default:
             self = .unexpectedError(status)

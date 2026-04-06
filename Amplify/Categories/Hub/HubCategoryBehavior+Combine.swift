@@ -15,7 +15,7 @@ typealias HubSubject = PassthroughSubject<HubPayload, Never>
 /// Maintains a map of Subjects by Hub Channel. All downstream subscribers will
 /// attach to the same Subject.
 private struct HubSubjectMap {
-    static var `default` = HubSubjectMap()
+    nonisolated(unsafe) static var `default` = HubSubjectMap()
     var subjectsByChannel = AtomicValue<[HubChannel: HubSubject]>(initialValue: [:])
 }
 

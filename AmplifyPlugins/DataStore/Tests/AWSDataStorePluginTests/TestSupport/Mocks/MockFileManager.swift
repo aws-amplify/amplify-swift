@@ -24,7 +24,7 @@ class MockFileManager: FileManager {
         if hasError {
             throw MockFileManagerError.removeItemError
         }
-        if let removeItem = removeItem {
+        if let removeItem {
             removeItem(URL)
         }
     }

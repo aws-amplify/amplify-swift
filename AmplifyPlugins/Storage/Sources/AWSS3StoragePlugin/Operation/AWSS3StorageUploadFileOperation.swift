@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Upload File Operation.
 ///
@@ -19,7 +19,7 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     Progress,
     String,
     StorageError
->, StorageUploadFileOperation {
+>, StorageUploadFileOperation, @unchecked Sendable {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageServiceProvider: AWSS3StorageServiceProvider
@@ -36,25 +36,29 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
         }
     }
 
-    init(_ request: StorageUploadFileRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageServiceProvider: @escaping AWSS3StorageServiceProvider,
-         authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil) {
+    init(
+        _ request: StorageUploadFileRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageServiceProvider: @escaping AWSS3StorageServiceProvider,
+        authService: AWSAuthServiceBehavior,
+        progressListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageServiceProvider = storageServiceProvider
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.uploadFile,
-                   request: request,
-                   inProcessListener: progressListener,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.uploadFile,
+            request: request,
+            inProcessListener: progressListener,
+            resultListener: resultListener
+        )
     }
 
     /// Pauses operation.
-    override public func pause() {
+    override func pause() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
             super.pause()
@@ -62,7 +66,7 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Resumes operation.
-    override public func resume() {
+    override func resume() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
             super.resume()
@@ -70,7 +74,7 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Cancels operation.
-    override public func cancel() {
+    override func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
             super.cancel()
@@ -78,7 +82,7 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     }
 
     /// Performs the task to upload file.
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             return
@@ -94,8 +98,10 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
         // failed silently on access denied.
         if FileManager.default.fileExists(atPath: request.local.path) {
             guard FileManager.default.isReadableFile(atPath: request.local.path) else {
-                dispatch(StorageError.accessDenied("Access to local file denied: \(request.local.path)",
-                                                   "Please ensure that \(request.local) is readable"))
+                dispatch(StorageError.accessDenied(
+                    "Access to local file denied: \(request.local.path)",
+                    "Please ensure that \(request.local) is readable"
+                ))
                 finish()
                 return
             }

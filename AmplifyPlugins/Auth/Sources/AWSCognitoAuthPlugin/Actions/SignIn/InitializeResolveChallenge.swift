@@ -25,14 +25,18 @@ struct InitializeResolveChallenge: Action {
             await dispatcher.send(event)
         } catch let error as SignInError {
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }

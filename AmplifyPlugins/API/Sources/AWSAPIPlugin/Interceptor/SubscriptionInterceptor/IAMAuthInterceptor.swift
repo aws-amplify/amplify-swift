@@ -5,10 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSClientRuntime
 import Foundation
 @_spi(WebSocket) import AWSPluginsCore
+import ClientRuntime
 import InternalAmplifyCredentials
-import Amplify
 import SmithyHTTPAPI
 import SmithyIdentity
 
@@ -50,11 +52,13 @@ class IAMAuthInterceptor {
         /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
         /// the request headers as authorization and security token.
         do {
-            guard let urlRequest = try await signer.sigV4SignedRequest(requestBuilder: requestBuilder,
-                                                                 credentialIdentityResolver: authProvider,
-                                                                 signingName: "appsync",
-                                                                 signingRegion: region,
-                                                                 date: Date()) else {
+            guard let urlRequest = try await signer.sigV4SignedRequest(
+                requestBuilder: requestBuilder,
+                credentialIdentityResolver: authProvider,
+                signingName: "appsync",
+                signingRegion: region,
+                date: Date()
+            ) else {
                 Amplify.Logging.error("Unable to sign request")
                 return nil
             }
@@ -110,7 +114,8 @@ extension IAMAuthInterceptor: AppSyncRequestInterceptor {
 
         let authHeader = await getAuthHeader(
             AppSyncRealTimeClientFactory.appSyncApiEndpoint(url),
-            with: request.data)
+            with: request.data
+        )
         return .start(.init(
             id: request.id,
             data: request.data,

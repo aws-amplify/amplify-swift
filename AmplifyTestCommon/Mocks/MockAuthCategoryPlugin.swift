@@ -5,143 +5,162 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
-    public func getCurrentUser() async throws -> AuthUser {
+    func getCurrentUser() async throws -> any AuthUser {
         fatalError()
     }
 
-    func signIn(username: String,
-                password: String,
-                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+    func signIn(
+        username: String,
+        password: String,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signUp(username: String, password: String? = nil, options: AuthSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+    func signUp(username: String, password: String? = nil, options: AuthSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
         fatalError()
     }
 
-    public func confirmSignUp(for username: String,
-                              confirmationCode: String,
-                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+    func confirmSignUp(
+        for username: String,
+        confirmationCode: String,
+        options: AuthConfirmSignUpRequest.Options? = nil
+    ) async throws -> AuthSignUpResult {
         fatalError()
     }
 
-    public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
+    func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
             fatalError()
     }
 
-    public func signIn(username: String? = nil,
-                       password: String? = nil,
-                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    func signIn(
+        username: String? = nil,
+        password: String? = nil,
+        options: AuthSignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
 #if os(iOS) || os(macOS) || os(visionOS)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    func signInWithWebUI(
+        for authProvider: AuthProvider,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 #endif
 
-    public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    func confirmSignIn(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
+    func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
         fatalError()
     }
-    
+
     func autoSignIn() async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func deleteUser() async throws {
+    func deleteUser() async throws {
         fatalError()
     }
 
-    public func fetchAuthSession(options: AuthFetchSessionRequest.Options? = nil) async throws -> AuthSession {
+    func fetchAuthSession(options: AuthFetchSessionRequest.Options? = nil) async throws -> AuthSession {
         fatalError()
     }
 
-    public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
+    func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
         fatalError()
     }
 
-    public func confirmResetPassword(for username: String,
-                                     with newPassword: String,
-                                     confirmationCode: String,
-                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws {
+    func confirmResetPassword(
+        for username: String,
+        with newPassword: String,
+        confirmationCode: String,
+        options: AuthConfirmResetPasswordRequest.Options? = nil
+    ) async throws {
             fatalError()
     }
 
-    public func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
+    func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
             fatalError()
     }
 
-    public func update(userAttribute: AuthUserAttribute, options: AuthUpdateUserAttributeRequest.Options? = nil) async throws -> AuthUpdateAttributeResult {
+    func update(userAttribute: AuthUserAttribute, options: AuthUpdateUserAttributeRequest.Options? = nil) async throws -> AuthUpdateAttributeResult {
         fatalError()
     }
 
-    public func update(userAttributes: [AuthUserAttribute], options: AuthUpdateUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
+    func update(userAttributes: [AuthUserAttribute], options: AuthUpdateUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
             fatalError()
     }
 
-    public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
+    func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
         async throws -> AuthCodeDeliveryDetails {
             fatalError()
     }
 
-    public func sendVerificationCode(
+    func sendVerificationCode(
         forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil)
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil
+    )
     async throws -> AuthCodeDeliveryDetails {
         fatalError()
     }
 
-    public func setUpTOTP() async throws -> TOTPSetupDetails {
+    func setUpTOTP() async throws -> TOTPSetupDetails {
         fatalError()
     }
 
-    public func verifyTOTPSetup(
+    func verifyTOTPSetup(
         code: String,
         options: VerifyTOTPSetupRequest.Options?
     ) async throws {
         fatalError()
     }
 
-    public func confirm(userAttribute: AuthUserAttributeKey,
-                        confirmationCode: String,
-                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws {
+    func confirm(
+        userAttribute: AuthUserAttributeKey,
+        confirmationCode: String,
+        options: AuthConfirmUserAttributeRequest.Options? = nil
+    ) async throws {
             fatalError()
     }
 
-    public func update(oldPassword: String,
-                       to newPassword: String,
-                       options: AuthChangePasswordRequest.Options? = nil) async throws {
+    func update(
+        oldPassword: String,
+        to newPassword: String,
+        options: AuthChangePasswordRequest.Options? = nil
+    ) async throws {
         notify("changePassword")
 
     }
 
-    public func fetchDevices(options: AuthFetchDevicesRequest.Options? = nil) -> [AuthDevice] {
+    func fetchDevices(options: AuthFetchDevicesRequest.Options? = nil) -> [AuthDevice] {
         fatalError()
     }
 
-    public func forgetDevice(_ device: AuthDevice? = nil, options: AuthForgetDeviceRequest.Options? = nil) async throws {
+    func forgetDevice(_ device: AuthDevice? = nil, options: AuthForgetDeviceRequest.Options? = nil) async throws {
         fatalError()
     }
 
-    public func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
+    func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
         fatalError()
     }
 

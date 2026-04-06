@@ -16,20 +16,26 @@ public struct TodoCustomOwnerExplicit: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      title: String,
-      dominus: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    title: String,
+    dominus: String? = nil
+  ) {
+    self.init(
+      id: id,
       title: title,
       dominus: dominus,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      title: String,
-      dominus: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    title: String,
+    dominus: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.title = title
       self.dominus = dominus

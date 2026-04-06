@@ -16,7 +16,7 @@ import Foundation
 /// implementation of a `dispatch` method that sends a contextualized payload to the Hub.
 ///
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
-open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
+open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation, @unchecked Sendable {
 
     /// The concrete Request associated with this operation
     public typealias Request = Request
@@ -97,10 +97,12 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     /// - Parameter eventName: The event name of this operation, used in HubPayload messages dispatched by the operation
     /// - Parameter request: The request used to generate this operation
     /// - Parameter resultListener: The optional listener for the OperationResults associated with the operation
-    public init(categoryType: CategoryType,
-                eventName: HubPayloadEventName,
-                request: Request,
-                resultListener: ResultListener? = nil) {
+    public init(
+        categoryType: CategoryType,
+        eventName: HubPayloadEventName,
+        request: Request,
+        resultListener: ResultListener? = nil
+    ) {
         self.categoryType = categoryType
         self.eventName = eventName
         self.request = request
@@ -109,10 +111,10 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         super.init()
 
 #if canImport(Combine)
-        resultFuture = Future<Success, Failure> { self.resultPromise = $0 }
+        self.resultFuture = Future<Success, Failure> { self.resultPromise = $0 }
 #endif
 
-        if let resultListener = resultListener {
+        if let resultListener {
             self.resultListenerUnsubscribeToken = subscribe(resultListener: resultListener)
         }
     }
@@ -130,7 +132,7 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
             resultListener(result)
 
             // Automatically unsubscribe when event is received
-            guard let token = token else {
+            guard let token else {
                 return
             }
             Amplify.Hub.removeListener(token)
@@ -143,7 +145,7 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     }
 
     /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
-    open override func cancel() {
+    override open func cancel() {
         super.cancel()
 #if canImport(Combine)
         let cancellationError = Failure(

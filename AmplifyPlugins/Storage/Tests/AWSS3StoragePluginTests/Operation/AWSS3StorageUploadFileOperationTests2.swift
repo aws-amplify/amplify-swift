@@ -1,4 +1,4 @@
-////
+//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
@@ -7,18 +7,18 @@
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-@testable import AWSPluginsCore
 
 import AWSS3
 import XCTest
 
 final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase {
-    
+
     override func setUp() {
         super.setUp()
-        self.continueAfterFailure = false
+        continueAfterFailure = false
     }
 
     /// - Given: A file with no read permissions from the user
@@ -26,9 +26,11 @@ final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase
     /// - Then: An accessDenied error is returned before attempting proceed further
     func testAccessDenied() throws {
         let path = NSTemporaryDirectory().appending(UUID().uuidString)
-        FileManager.default.createFile(atPath: path,
-                                       contents: Data(UUID().uuidString.utf8),
-                                       attributes: [FileAttributeKey.posixPermissions: 000])
+        FileManager.default.createFile(
+            atPath: path,
+            contents: Data(UUID().uuidString.utf8),
+            attributes: [FileAttributeKey.posixPermissions: 000]
+        )
         defer {
             try? FileManager.default.removeItem(atPath: path)
         }
@@ -60,12 +62,14 @@ final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase
             }
         }
 
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: progressListner,
-                                                        resultListener: resultListener)
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: progressListner,
+            resultListener: resultListener
+        )
         operation.start()
 
         wait(for: [progressExpectation, resultExpectation], timeout: 1)

@@ -66,11 +66,16 @@
   --empty void
 
 --disable wrapArguments
-  --closingparen same-line
-  --wraparguments after-first
+  --closingparen balanced
+  --wraparguments before-first
   --wrapcollections before-first
+  --wrapconditions preserve
 
 # standalone rules
+--disable preferKeyPath
+--disable conditionalAssignment
+--disable wrapMultilineConditionalAssignment
+--disable wrapMultilineStatementBraces
 --disable andOperator
 --disable anyObjectProtocol
 --disable blankLinesAroundMark
@@ -115,3 +120,29 @@
 --disable todos
 --enable typeSugar
 --enable yodaConditions
+--disable blankLinesBetweenImports
+--disable docComments
+--disable redundantVariable
+--disable sortImports
+--disable wrapPropertyBodies
+--disable wrapFunctionBodies
+--disable simplifyGenericConstraints
+--disable redundantThrows
+--disable noForceUnwrapInTests
+--disable noForceTryInTests
+--disable hoistTry
+--disable hoistAwait
+--disable redundantAsync
+--enable redundantOptionalBinding
+--enable redundantPublic
+--enable redundantInternal
+--enable redundantStaticSelf
+--enable redundantType
+--disable redundantEquatable
+--disable redundantSendable
+--disable redundantMemberwiseInit
+--disable opaqueGenericParameters
+--enable extensionAccessControl
+--disable preferForLoop
+--enable emptyExtensions
+--disable environmentEntry

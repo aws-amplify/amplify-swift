@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /*
 Note: Multipart Uploads will have a request for the creation request, each part upload and the complete or abort
@@ -47,13 +47,15 @@ struct StoragePersistableTransferTask: Codable {
     }
 
     var uploadFile: UploadFile? {
-        guard let multipartUpload = multipartUpload else {
+        guard let multipartUpload else {
             return nil
         }
 
-        let uploadFile = UploadFile(fileURL: multipartUpload.fileURL,
-                                    temporaryFileCreated: multipartUpload.temporaryFileCreated,
-                                    size: multipartUpload.size)
+        let uploadFile = UploadFile(
+            fileURL: multipartUpload.fileURL,
+            temporaryFileCreated: multipartUpload.temporaryFileCreated,
+            size: multipartUpload.size
+        )
         return uploadFile
     }
 
@@ -70,7 +72,7 @@ struct StoragePersistableTransferTask: Codable {
         if case .multiPartUpload = task.transferType,
            let multipartUpload = task.multipartUpload {
             self.multipartUpload = StoragePersistableMultipartUpload(multipartUpload: multipartUpload)
-            subTask = nil
+            self.subTask = nil
         } else if case .multiPartUploadPart = task.transferType,
                   let uploadId = task.uploadId,
                   let partNumber = task.partNumber,
@@ -95,7 +97,8 @@ struct StoragePersistableMultipartUpload: Codable {
         guard let uploadId = multipartUpload.uploadId,
                   let fileURL = multipartUpload.uploadFile?.fileURL,
                   let temporaryFileCreated = multipartUpload.uploadFile?.temporaryFileCreated,
-                  let size = multipartUpload.uploadFile?.size else {
+                  let size = multipartUpload.uploadFile?.size
+        else {
             return nil
         }
         self.uploadId = uploadId

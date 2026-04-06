@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
-    public struct Voice {
+public extension Predictions {
+    struct Voice {
         public let id: String
 
         public init(id: String) {

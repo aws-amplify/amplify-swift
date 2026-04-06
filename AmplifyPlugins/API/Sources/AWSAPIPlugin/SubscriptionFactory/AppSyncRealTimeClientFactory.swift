@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
-import Amplify
+@preconcurrency import Amplify
 import Combine
-import InternalAmplifyCredentials
-@_spi(WebSocket) import AWSPluginsCore
+import Foundation
+@preconcurrency import InternalAmplifyCredentials
+@_spi(WebSocket) @preconcurrency import AWSPluginsCore
 
 protocol AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(
@@ -36,9 +35,9 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         let authType: AWSAuthorizationType?
     }
 
-    public private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
+    private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
 
-    public func getAppSyncRealTimeClient(
+    func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
         authService: AWSAuthCredentialsProviderBehavior,
@@ -47,8 +46,8 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     ) throws -> AppSyncRealTimeClientProtocol {
         let apiName = endpointConfig.name
 
-        let authInterceptor = try self.getInterceptor(
-            for: self.getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
+        let authInterceptor = try getInterceptor(
+            for: getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
             authService: authService,
             apiAuthProviderFactory: apiAuthProviderFactory
         )
@@ -82,7 +81,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         authType: AWSAuthorizationType?
     ) throws -> AWSAuthorizationConfiguration {
         // create a configuration if there's an override auth type
-        if let authType = authType {
+        if let authType {
             return try endpointConfig.authorizationConfigurationFor(authType: authType)
         }
 
@@ -101,20 +100,24 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             let provider = AWSOIDCAuthProvider(authService: authService)
             return AuthTokenInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
         case .awsIAM(let awsIAMConfiguration):
-            return IAMAuthInterceptor(authService.getCredentialIdentityResolver(),
-                                      region: awsIAMConfiguration.region)
+            return IAMAuthInterceptor(
+                authService.getCredentialIdentityResolver(),
+                region: awsIAMConfiguration.region
+            )
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
-                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
+                    "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil
+                )
             }
             return AuthTokenInterceptor(authTokenProvider: functionAuthProvider)
         case .none:

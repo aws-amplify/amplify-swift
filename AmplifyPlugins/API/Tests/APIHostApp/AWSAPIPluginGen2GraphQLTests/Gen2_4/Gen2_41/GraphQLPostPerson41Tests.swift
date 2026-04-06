@@ -24,7 +24,8 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
             title: "title",
             content: "content",
             author: author,
-            editor: editor)
+            editor: editor
+        )
         _ = try await Amplify.API.mutate(request: .create(post))
 
         // Code Snippet Begins
@@ -32,7 +33,8 @@ final class GraphQLPostPerson41Tests: AWSAPIPluginGen2GraphQLBaseTest {
             guard let queriedPost = try await Amplify.API.query(
                 request: .get(
                     Post.self,
-                    byIdentifier: post.identifier)).get() else {
+                    byIdentifier: post.identifier
+                )).get() else {
                 print("Missing post")
                 // Code Snippet Ends
                 XCTFail("Missing post")
@@ -62,7 +64,7 @@ extension GraphQLPostPerson41Tests {
     typealias Person = Person41
 
     struct PostPerson41Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post41.self)
             ModelRegistry.register(modelType: Person41.self)

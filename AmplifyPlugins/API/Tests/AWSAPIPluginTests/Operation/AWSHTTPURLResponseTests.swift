@@ -12,11 +12,15 @@ class AWSHTTPURLResponseTests: XCTestCase {
 
     func testAWSHTTPURLResponse() throws {
         let body = Data("responseBody".utf8)
-        let httpResponse = HTTPURLResponse(url: URL(string: "dummyString")!,
-                                           statusCode: 200,
-                                           httpVersion: "1.1",
-                                           headerFields: ["key1": "value1",
-                                                          "key2": "value2"])!
+        let httpResponse = HTTPURLResponse(
+            url: URL(string: "dummyString")!,
+            statusCode: 200,
+            httpVersion: "1.1",
+            headerFields: [
+                "key1": "value1",
+                "key2": "value2"
+            ]
+        )!
         if let response = AWSHTTPURLResponse(response: httpResponse, body: body) {
             XCTAssertNotNil(response.body)
             XCTAssertNotNil(response.url)
@@ -36,16 +40,20 @@ class AWSHTTPURLResponseTests: XCTestCase {
 
     func testAWSHTTPURLResponseNSCoding() {
         let body = Data("responseBody".utf8)
-        let httpResponse = HTTPURLResponse(url: URL(string: "dummyString")!,
-                                           statusCode: 200,
-                                           httpVersion: "1.1",
-                                           headerFields: ["key1": "value1",
-                                                          "key2": "value2"])!
+        let httpResponse = HTTPURLResponse(
+            url: URL(string: "dummyString")!,
+            statusCode: 200,
+            httpVersion: "1.1",
+            headerFields: [
+                "key1": "value1",
+                "key2": "value2"
+            ]
+        )!
         guard let response = AWSHTTPURLResponse(response: httpResponse, body: body) else {
             XCTFail("Failed to initialize `AWSHTTPURLResponse`")
             return
         }
-        let data : Data
+        let data: Data
         do {
             data = try NSKeyedArchiver.archivedData(withRootObject: response, requiringSecureCoding: false)
             XCTAssertNotNil(data)
@@ -53,7 +61,7 @@ class AWSHTTPURLResponseTests: XCTestCase {
             XCTFail("Failed to archive data : \(error)")
             return
         }
-        
+
         do {
             guard let unarchivedResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? AWSHTTPURLResponse else {
                 XCTFail("Failure while unarchiving")

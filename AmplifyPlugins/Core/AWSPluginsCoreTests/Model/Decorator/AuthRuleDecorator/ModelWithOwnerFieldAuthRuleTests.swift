@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
@@ -24,8 +24,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -46,8 +48,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_DeleteMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -68,8 +72,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_UpdateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -90,8 +96,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_GetQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
@@ -112,8 +120,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // Since the owner field already exists on the model, ensure that it is not added again
     func testModelWithOwnerField_ListQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
@@ -136,8 +146,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     }
 
     func testModelWithOwnerField_SyncQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
@@ -166,10 +178,14 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnCreateSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -194,10 +210,14 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.update` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnUpdateSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
@@ -222,10 +242,14 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelWithOwnerField_OnDeleteSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOwnerField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOwnerField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()
@@ -249,8 +273,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     }
 
     func testModelWithMultipleAuthRules_Subscription() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithMultipleAuthRules.schema,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithMultipleAuthRules.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, nil)))
         let document = documentBuilder.build()
@@ -269,11 +295,15 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     }
 
     func testModelWithMultipleAuthRulesAPIKey_Subscription() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithMultipleAuthRules.schema,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithMultipleAuthRules.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, nil),
-                                                         authType: .apiKey))
+        documentBuilder.add(decorator: AuthRuleDecorator(
+            .subscription(.onCreate, nil),
+            authType: .apiKey
+        ))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelWithMultipleAuthRules {
@@ -290,8 +320,10 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
     }
 
     func testModelWithOIDCOwner_Subscription() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelWithOIDCOwnerField.schema,
-                                                               operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelWithOIDCOwnerField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, nil)))
         let document = documentBuilder.build()
@@ -326,9 +358,11 @@ public struct ModelWithOwnerField: Model {
     public let id: String
     public var content: String
     public var author: String?
-    public init(id: String = UUID().uuidString,
-                content: String,
-                author: String?) {
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        author: String?
+    ) {
         self.id = id
         self.content = content
         self.author = author
@@ -348,7 +382,8 @@ public struct ModelWithOwnerField: Model {
         model.fields(
             .id(),
             .field(modelWithOwnerField.content, is: .required, ofType: .string),
-            .field(modelWithOwnerField.author, is: .optional, ofType: .string))
+            .field(modelWithOwnerField.author, is: .optional, ofType: .string)
+        )
     }
 }
 
@@ -366,9 +401,11 @@ public struct ModelWithOIDCOwnerField: Model {
     public let id: String
     public var content: String
     public var author: String?
-    public init(id: String = UUID().uuidString,
-                content: String,
-                author: String?) {
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        author: String?
+    ) {
         self.id = id
         self.content = content
         self.author = author
@@ -388,7 +425,8 @@ public struct ModelWithOIDCOwnerField: Model {
         model.fields(
             .id(),
             .field(modelWithOwnerField.content, is: .required, ofType: .string),
-            .field(modelWithOwnerField.author, is: .optional, ofType: .string))
+            .field(modelWithOwnerField.author, is: .optional, ofType: .string)
+        )
     }
 }
 
@@ -412,9 +450,11 @@ public struct ModelWithMultipleAuthRules: Model {
     public let id: String
     public var content: String
     public var author: String?
-    public init(id: String = UUID().uuidString,
-                content: String,
-                author: String?) {
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        author: String?
+    ) {
         self.id = id
         self.content = content
         self.author = author
@@ -435,6 +475,7 @@ public struct ModelWithMultipleAuthRules: Model {
         model.fields(
             .id(),
             .field(modelWithMultipleAuthRules.content, is: .required, ofType: .string),
-            .field(modelWithMultipleAuthRules.author, is: .optional, ofType: .string))
+            .field(modelWithMultipleAuthRules.author, is: .optional, ofType: .string)
+        )
     }
 }

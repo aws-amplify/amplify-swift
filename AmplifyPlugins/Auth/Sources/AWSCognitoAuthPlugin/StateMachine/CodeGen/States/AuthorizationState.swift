@@ -20,12 +20,15 @@ enum AuthorizationState: State {
     case federatingToIdentityPool(
         FetchAuthSessionState,
         FederatedToken,
-        existingCredentials: AmplifyCredentials)
+        existingCredentials: AmplifyCredentials
+    )
 
     case fetchingUnAuthSession(FetchAuthSessionState)
 
-    case fetchingAuthSessionWithUserPool(FetchAuthSessionState,
-                                         SignedInData)
+    case fetchingAuthSessionWithUserPool(
+        FetchAuthSessionState,
+        SignedInData
+    )
 
     case refreshingSession(existingCredentials: AmplifyCredentials, RefreshSessionState)
 

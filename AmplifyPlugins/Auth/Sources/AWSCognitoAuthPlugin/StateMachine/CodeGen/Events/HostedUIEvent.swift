@@ -46,6 +46,7 @@ extension HostedUIEvent.EventType: Equatable {
         case (.showHostedUI, .showHostedUI),
             (.fetchToken, .fetchToken):
             return true
+
         case (.throwError(let lhsError), .throwError(let rhsError)):
             return lhsError == rhsError
 

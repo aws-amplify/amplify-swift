@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+@testable import AWSCognitoAuthPlugin
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
@@ -19,6 +19,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockInitiateAuthResponse = (InitiateAuthInput) async throws
     -> InitiateAuthOutput
+
+    typealias MockGetTokensFromRefreshTokenResponse = (GetTokensFromRefreshTokenInput) async throws
+    -> GetTokensFromRefreshTokenOutput
 
     typealias MockConfirmSignUpResponse = (ConfirmSignUpInput) async throws
     -> ConfirmSignUpOutput
@@ -88,6 +91,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
     let mockInitiateAuthResponse: MockInitiateAuthResponse?
+    let mockGetTokensFromRefreshTokenResponse: MockGetTokensFromRefreshTokenResponse?
     let mockGlobalSignOutResponse: MockGlobalSignOutResponse?
     let mockConfirmSignUpResponse: MockConfirmSignUpResponse?
     let mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse?
@@ -116,6 +120,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockSignUpResponse: MockSignUpResponse? = nil,
         mockRevokeTokenResponse: MockRevokeTokenResponse? = nil,
         mockInitiateAuthResponse: MockInitiateAuthResponse? = nil,
+        mockGetTokensFromRefreshTokenResponse: MockGetTokensFromRefreshTokenResponse? = nil,
         mockGlobalSignOutResponse: MockGlobalSignOutResponse? = nil,
         mockConfirmSignUpResponse: MockConfirmSignUpResponse? = nil,
         mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil,
@@ -139,6 +144,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
         self.mockInitiateAuthResponse = mockInitiateAuthResponse
+        self.mockGetTokensFromRefreshTokenResponse = mockGetTokensFromRefreshTokenResponse
         self.mockGlobalSignOutResponse = mockGlobalSignOutResponse
         self.mockConfirmSignUpResponse = mockConfirmSignUpResponse
         self.mockRespondToAuthChallengeResponse = mockRespondToAuthChallengeResponse
@@ -190,6 +196,11 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     /// Throws RevokeTokenOutputError
     func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutput {
         return try await mockRevokeTokenResponse!(input)
+    }
+
+    /// Throws GetTokensFromRefreshTokenOutputError
+    func getTokensFromRefreshToken(input: GetTokensFromRefreshTokenInput) async throws -> GetTokensFromRefreshTokenOutput {
+        return try await mockGetTokensFromRefreshTokenResponse!(input)
     }
 
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutput {

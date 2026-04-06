@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension PredictionsError {
-    public struct ServiceError: Equatable {
+public extension PredictionsError {
+    struct ServiceError: Equatable, @unchecked Sendable {
         public static func == (lhs: PredictionsError.ServiceError, rhs: PredictionsError.ServiceError) -> Bool {
             lhs.description == rhs.description
             && lhs.recoverySuggestion == rhs.recoverySuggestion
@@ -33,8 +33,8 @@ extension PredictionsError {
     }
 }
 
-extension PredictionsError.ServiceError {
-    public static let translationFailed = Self(
+public extension PredictionsError.ServiceError {
+    static let translationFailed = Self(
         description: "No result was found.",
         recoverySuggestion: """
         Please make sure a text string was sent over and
@@ -42,7 +42,7 @@ extension PredictionsError.ServiceError {
         """
     )
 
-    public static let internalServerError = Self(
+    static let internalServerError = Self(
         description: "An internal server error occurred.",
         recoverySuggestion: """
         This shouldn't never happen. There is a possibility that there is a bug if this error persists.
@@ -51,27 +51,27 @@ extension PredictionsError.ServiceError {
         """
     )
 
-    public static let detectedLanguageLowConfidence = Self(
+    static let detectedLanguageLowConfidence = Self(
         description: "A language was detected but with very low confidence.",
         recoverySuggestion: "Please make sure you use one of the available languages."
     )
 
-    public static let invalidRequest = Self(
+    static let invalidRequest = Self(
         description: "An invalid request was sent.",
         recoverySuggestion: "Please check your request and try again."
     )
 
-    public static let resourceNotFound = Self(
+    static let resourceNotFound = Self(
         description: "The specified resource doesn't exist.",
         recoverySuggestion: "Please make sure you configured the resource properly."
     )
 
-    public static let textSizeLimitExceeded = Self(
+    static let textSizeLimitExceeded = Self(
         description: "The size of the text string exceeded the limit.",
         recoverySuggestion: "Please send a shorter text string."
     )
 
-    public static let unsupportedLanguagePair = Self(
+    static let unsupportedLanguagePair = Self(
         description: "Your target language and source language are an unsupported language pair.",
         recoverySuggestion: """
         Please ensure the service supports translating from the specified source
@@ -79,22 +79,22 @@ extension PredictionsError.ServiceError {
         """
     )
 
-    public static let throttling = Self(
+    static let throttling = Self(
         description: "Your rate of request increase is too fast.",
         recoverySuggestion: "Slow down your request rate and gradually increase it."
     )
 
-    public static let unsupportedLanguage = Self(
+    static let unsupportedLanguage = Self(
         description: "The language specified is not currently supported by the service.",
         recoverySuggestion: "Choose a new language that is supported."
     )
 
-    public static let invalidSampleRate = Self(
+    static let invalidSampleRate = Self(
         description: "The specified sample rate is not valid.",
         recoverySuggestion: ""
     )
 
-    public static let accessDenied = Self(
+    static let accessDenied = Self(
         description: "Access denied",
         recoverySuggestion: """
         Please check that your Cognito IAM role has permissions

@@ -106,7 +106,7 @@ public extension StorageListRequest {
             targetIdentityId: String? = nil,
             path: String? = nil,
             subpathStrategy: SubpathStrategy = .include,
-            pageSize: UInt = 1000,
+            pageSize: UInt = 1_000,
             nextToken: String? = nil,
             pluginOptions: Any? = nil
         ) {
@@ -123,7 +123,7 @@ public extension StorageListRequest {
         /// - Tag: StorageListRequestOptions.init
         public init(
             subpathStrategy: SubpathStrategy = .include,
-            pageSize: UInt = 1000,
+            pageSize: UInt = 1_000,
             bucket: some StorageBucket,
             nextToken: String? = nil,
             pluginOptions: Any? = nil
@@ -169,3 +169,6 @@ public extension StorageListRequest.Options {
         }
     }
 }
+
+extension StorageListRequest.Options: @unchecked Sendable { }
+extension StorageListRequest.Options.SubpathStrategy: Sendable { }

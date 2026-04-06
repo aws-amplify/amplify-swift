@@ -30,3 +30,5 @@ public struct AuthSignInResult {
         self.nextStep = nextStep
     }
 }
+
+extension AuthSignInResult: Sendable { }

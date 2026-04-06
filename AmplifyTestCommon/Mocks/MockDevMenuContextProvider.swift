@@ -15,7 +15,7 @@ class MockDevMenuContextProvider: DevMenuPresentationContextProvider {
 
     let uiWindow = UIWindow()
 
-    func devMenuPresentationContext() -> UIWindow {
+    nonisolated func devMenuPresentationContext() -> UIWindow {
         return uiWindow
     }
 }

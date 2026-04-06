@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct AWSAuthDevice: AuthDevice {
 
@@ -28,12 +28,14 @@ public struct AWSAuthDevice: AuthDevice {
     /// The date this device was last updated.
     public let lastModifiedDate: Date?
 
-    public init(id: String,
-                name: String,
-                attributes: [String: String]?,
-                createdDate: Date?,
-                lastAuthenticatedDate: Date?,
-                lastModifiedDate: Date?) {
+    public init(
+        id: String,
+        name: String,
+        attributes: [String: String]?,
+        createdDate: Date?,
+        lastAuthenticatedDate: Date?,
+        lastModifiedDate: Date?
+    ) {
         self.id = id
         self.name = name
         self.attributes = attributes
@@ -42,3 +44,5 @@ public struct AWSAuthDevice: AuthDevice {
         self.lastModifiedDate = lastModifiedDate
     }
 }
+
+extension AWSAuthDevice: Sendable { }

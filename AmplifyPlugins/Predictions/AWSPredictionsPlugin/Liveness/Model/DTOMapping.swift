@@ -8,8 +8,18 @@
 import Foundation
 
 func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSession.OvalMatchChallenge {
-    let challengeConfig = event.sessionInformation.challenge.faceMovementAndLightChallenge.challengeConfig
-    let ovalParameters = event.sessionInformation.challenge.faceMovementAndLightChallenge.ovalParameters
+    let challengeConfig: ChallengeConfig
+    let ovalParameters: OvalParameters
+
+    switch event.sessionInformation.challenge.type {
+    case .faceMovementAndLightChallenge(let challenge):
+        challengeConfig = challenge.challengeConfig
+        ovalParameters = challenge.ovalParameters
+    case .faceMovementChallenge(let challenge):
+        challengeConfig = challenge.challengeConfig
+        ovalParameters = challenge.ovalParameters
+    }
+
     let ovalBoundingBox = FaceLivenessSession.BoundingBox.init(
         x: Double(ovalParameters.centerX - ovalParameters.width / 2),
         y: Double(ovalParameters.centerY - ovalParameters.height / 2),
@@ -37,10 +47,9 @@ func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSes
     )
 }
 
-func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSession.ColorChallenge {
-    let displayColors = event.sessionInformation.challenge
-        .faceMovementAndLightChallenge.colorSequences
-        .map({ color -> FaceLivenessSession.DisplayColor in
+func colorChallenge(from challenge: FaceMovementAndLightServerChallenge) -> FaceLivenessSession.ColorChallenge {
+    let displayColors = challenge.colorSequences
+        .map { color -> FaceLivenessSession.DisplayColor in
 
             let duration: Double
             let shouldScroll: Bool
@@ -56,9 +65,9 @@ func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSe
             precondition(
                 color.freshnessColor.rgb.count == 3,
                 """
-                Received invalid freshness colors.
-                Expected 3 values (r, g, b), received: \(color.freshnessColor.rgb.count)
-                """
+                    Received invalid freshness colors.
+                    Expected 3 values (r, g, b), received: \(color.freshnessColor.rgb.count)
+                    """
             )
 
             return .init(
@@ -71,15 +80,24 @@ func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSe
                 duration: duration,
                 shouldScroll: shouldScroll
             )
-        })
-    return .init(
-        colors: displayColors
-    )
+        }
+    return .init(colors: displayColors)
 }
 
 func sessionConfiguration(from event: ServerSessionInformationEvent) -> FaceLivenessSession.SessionConfiguration {
-    .init(
-        colorChallenge: colorChallenge(from: event),
-        ovalMatchChallenge: ovalChallenge(from: event)
-    )
+    switch event.sessionInformation.challenge.type {
+    case .faceMovementAndLightChallenge(let challenge):
+        return .faceMovementAndLight(colorChallenge(from: challenge), ovalChallenge(from: event))
+    case .faceMovementChallenge:
+        return .faceMovement(ovalChallenge(from: event))
+    }
+}
+
+func challenge(from event: ChallengeEvent) -> Challenge {
+    switch event.type {
+    case .faceMovementAndLightChallenge:
+        return .faceMovementAndLightChallenge(event.version)
+    case .faceMovementChallenge:
+        return .faceMovementChallenge(event.version)
+    }
 }

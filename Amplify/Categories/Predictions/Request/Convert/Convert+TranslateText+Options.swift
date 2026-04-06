@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Convert.TranslateText {
-    public struct Options {
+public extension Predictions.Convert.TranslateText {
+    struct Options {
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 

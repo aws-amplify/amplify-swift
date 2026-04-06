@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension SignUpError: AuthErrorConvertible {
     var authError: AuthError {
@@ -17,12 +17,14 @@ extension SignUpError: AuthErrorConvertible {
             return AuthError.validation(
                 AuthPluginErrorConstants.signUpUsernameError.field,
                 AuthPluginErrorConstants.signUpUsernameError.errorDescription,
-                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
+                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil
+            )
         case .invalidPassword:
             return AuthError.validation(
                 AuthPluginErrorConstants.signUpPasswordError.field,
                 AuthPluginErrorConstants.signUpPasswordError.errorDescription,
-                AuthPluginErrorConstants.signUpPasswordError.recoverySuggestion, nil)
+                AuthPluginErrorConstants.signUpPasswordError.recoverySuggestion, nil
+            )
         case .invalidConfirmationCode(message: let message):
             fatalError("Fix me \(message)")
         case .service(error: let error):

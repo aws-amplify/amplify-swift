@@ -10,9 +10,11 @@ import Amplify
 /// Convenience error types
 extension DataStoreError {
 
-    static func nilAPIHandle(file: StaticString = #file,
-                             function: StaticString = #function,
-                             line: UInt = #line) -> DataStoreError {
+    static func nilAPIHandle(
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) -> DataStoreError {
         .internalOperation(
             "The reference to Amplify API is unexpectedly nil in an internal operation",
             """
@@ -23,9 +25,11 @@ extension DataStoreError {
         )
     }
 
-    static func nilReconciliationQueue(file: StaticString = #file,
-                                       function: StaticString = #function,
-                                       line: UInt = #line) -> DataStoreError {
+    static func nilReconciliationQueue(
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) -> DataStoreError {
         .internalOperation(
             "The reference to IncomingEventReconciliationQueue is unexpectedly nil in an internal operation",
             """
@@ -37,9 +41,11 @@ extension DataStoreError {
         )
     }
 
-    static func nilStorageAdapter(file: StaticString = #file,
-                                  function: StaticString = #function,
-                                  line: UInt = #line) -> DataStoreError {
+    static func nilStorageAdapter(
+        file: StaticString = #file,
+        function: StaticString = #function,
+        line: UInt = #line
+    ) -> DataStoreError {
         .internalOperation(
             "storageAdapter is unexpectedly nil in an internal operation",
             """

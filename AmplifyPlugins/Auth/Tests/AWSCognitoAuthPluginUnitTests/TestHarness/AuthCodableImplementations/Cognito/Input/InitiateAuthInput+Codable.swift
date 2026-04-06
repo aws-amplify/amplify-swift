@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension InitiateAuthInput: Decodable {
+extension InitiateAuthInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case authFlow
         case authParameters
@@ -27,8 +27,9 @@ extension InitiateAuthInput: Decodable {
             authFlow: authFlow,
             authParameters: authParameters,
             clientId: clientId,
-            clientMetadata: clientMetadata)
+            clientMetadata: clientMetadata
+        )
     }
 }
 
-extension CognitoIdentityProviderClientTypes.AuthFlowType: Decodable { }
+extension CognitoIdentityProviderClientTypes.AuthFlowType: @retroactive Decodable { }

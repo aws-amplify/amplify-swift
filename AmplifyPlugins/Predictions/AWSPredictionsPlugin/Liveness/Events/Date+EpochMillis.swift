@@ -9,6 +9,6 @@ import Foundation
 
 extension Date {
     var epochMilliseconds: UInt64 {
-        UInt64(self.timeIntervalSince1970 * 1_000)
+        UInt64(timeIntervalSince1970 * 1_000)
     }
 }

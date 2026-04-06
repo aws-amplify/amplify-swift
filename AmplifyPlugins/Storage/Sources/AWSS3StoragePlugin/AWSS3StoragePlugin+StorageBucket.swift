@@ -33,10 +33,10 @@ extension AWSS3StoragePlugin {
     /// Returns a AWSS3StorageServiceProvider callback for the given StorageBucket
     func storageServiceProvider(for bucket: (any StorageBucket)?) -> AWSS3StorageServiceProvider {
         let storageServiceResolver: () throws -> AWSS3StorageServiceBehavior = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 throw StorageError.unknown("AWSS3StoragePlugin was deallocated", nil)
             }
-            return try self.storageService(for: bucket)
+            return try storageService(for: bucket)
         }
         return storageServiceResolver
     }

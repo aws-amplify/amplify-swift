@@ -6,9 +6,9 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
+import AwsCommonRuntimeKit
 import AWSPluginsCore
 import InternalAmplifyCredentials
-import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {
 
@@ -22,11 +22,15 @@ public extension AWSAPIPlugin {
     func configure(using configuration: Any?) throws {
         let dependencies: ConfigurationDependencies
         if let configuration = configuration as? AmplifyOutputsData {
-            dependencies = try ConfigurationDependencies(configuration: configuration,
-                                                         apiAuthProviderFactory: authProviderFactory)
+            dependencies = try ConfigurationDependencies(
+                configuration: configuration,
+                apiAuthProviderFactory: authProviderFactory
+            )
         } else if let jsonValue = configuration as? JSONValue {
-            dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
-                                                         apiAuthProviderFactory: authProviderFactory)
+            dependencies = try ConfigurationDependencies(
+                configurationValues: jsonValue,
+                apiAuthProviderFactory: authProviderFactory
+            )
 
         } else {
             throw PluginError.pluginConfigurationError(

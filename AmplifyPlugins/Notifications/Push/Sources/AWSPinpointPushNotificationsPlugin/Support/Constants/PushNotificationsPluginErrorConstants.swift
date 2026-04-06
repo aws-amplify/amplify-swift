@@ -10,7 +10,7 @@ import Foundation
 
 typealias PushNotificationsPluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct PushNotificationsPluginErrorConstants {
+enum PushNotificationsPluginErrorConstants {
     static let decodeConfigurationError: PushNotificationsPluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue"

@@ -13,7 +13,7 @@ import XCTest
 /// circumstances
 class AmplifyOutputsInitializationTests: XCTestCase {
 
-    static var tempDir: URL = {
+    static let tempDir: URL = {
         let fileManager = FileManager.default
         let tempDir = fileManager.temporaryDirectory.appendingPathComponent("ConfigurationInternalsTests")
         return tempDir
@@ -137,16 +137,20 @@ class AmplifyOutputsInitializationTests: XCTestCase {
 
     /// Creates the directory used as the container for the test bundle; each test will need this.
     static func makeTempDir() throws {
-        try FileManager.default.createDirectory(at: tempDir,
-                                                withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(
+            at: tempDir,
+            withIntermediateDirectories: true
+        )
     }
 
     /// Creates a Bundle object from the container directory
     static func makeTestBundle() throws -> Bundle {
         let customBundleDir = tempDir.appendingPathComponent("TestBundle.bundle")
 
-        try FileManager.default.createDirectory(at: customBundleDir,
-                                                withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(
+            at: customBundleDir,
+            withIntermediateDirectories: true
+        )
 
         guard let testBundle = Bundle(path: customBundleDir.path) else {
             throw "Could not create test bundle at \(customBundleDir.path)"

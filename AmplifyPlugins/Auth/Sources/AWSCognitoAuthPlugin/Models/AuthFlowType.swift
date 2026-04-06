@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
 
 public enum AuthFlowType {
 
@@ -34,7 +33,7 @@ public enum AuthFlowType {
     /// - `preferredFirstFactor`: the auth factor type the user should begin signing with if available. If the preferred first factor is not available, the flow would fallback to provide available first factors.
     case userAuth(preferredFirstFactor: AuthFactorType?)
 
-    internal init?(rawValue: String) {
+    init?(rawValue: String) {
         switch rawValue {
         case "CUSTOM_AUTH", "CUSTOM_AUTH_WITH_SRP":
             self = .customWithSRP
@@ -67,7 +66,7 @@ public enum AuthFlowType {
     }
 
     // This initializer has been added to migrate credentials that were created in the pre-passwordless era
-    internal static func legacyInit(rawValue: String) -> Self? {
+    static func legacyInit(rawValue: String) -> Self? {
         switch rawValue {
         case "userSRP":
             return .userSRP
@@ -91,7 +90,7 @@ public enum AuthFlowType {
 
 // MARK: - Equatable Conformance
 extension AuthFlowType: Equatable {
-    public static func ==(lhs: AuthFlowType, rhs: AuthFlowType) -> Bool {
+    public static func == (lhs: AuthFlowType, rhs: AuthFlowType) -> Bool {
         switch (lhs, rhs) {
         case (.userSRP, .userSRP),
             (.custom, .custom),
@@ -171,7 +170,8 @@ extension AuthFlowType: Codable {
                     throw DecodingError.dataCorruptedError(
                         forKey: .preferredFirstFactor,
                         in: container,
-                        debugDescription: "Unable to decode preferredFirstFactor value")
+                        debugDescription: "Unable to decode preferredFirstFactor value"
+                    )
                 }
             } else {
                 self = .userAuth(preferredFirstFactor: nil)
@@ -197,3 +197,5 @@ extension AuthFlowType {
         }
     }
 }
+
+extension AuthFlowType: Sendable { }

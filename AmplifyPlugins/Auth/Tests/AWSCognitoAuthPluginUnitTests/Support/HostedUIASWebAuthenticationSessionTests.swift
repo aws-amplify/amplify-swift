@@ -8,19 +8,19 @@
 #if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
-@testable import AWSCognitoAuthPlugin
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class HostedUIASWebAuthenticationSessionTests: XCTestCase {
     private var session: HostedUIASWebAuthenticationSession!
     private var factory: ASWebAuthenticationSessionFactory!
-    
+
     override func setUp() {
         session = HostedUIASWebAuthenticationSession()
         factory = ASWebAuthenticationSessionFactory()
         session.authenticationSessionFactory = factory.createSession(url:callbackURLScheme:completionHandler:)
     }
-    
+
     override func tearDown() {
         session = nil
         factory = nil
@@ -36,7 +36,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         XCTAssertEqual(queryItems.first?.name, "name")
         XCTAssertEqual(queryItems.first?.value, "value")
     }
-    
+
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns a URL without query items
     /// Then: An empty array should be returned
@@ -45,7 +45,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         let queryItems = try await session.showHostedUI()
         XCTAssertTrue(queryItems.isEmpty)
     }
-    
+
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns a URL with query items representing errors
     /// Then: A HostedUIError.serviceMessage should be returned
@@ -68,7 +68,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
             XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
         }
     }
-    
+
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns ASWebAuthenticationSessionErrors
     /// Then: A HostedUIError corresponding to the error code should be returned
@@ -98,7 +98,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
             }
         }
     }
-    
+
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns an error
     /// Then: A HostedUIError.unknown should be returned
@@ -170,9 +170,9 @@ class MockASWebAuthenticationSession: ASWebAuthenticationSession {
             completionHandler: completionHandler
         )
     }
-    
-    var mockedURL: URL? = nil
-    var mockedError: Error? = nil
+
+    var mockedURL: URL?
+    var mockedError: Error?
     override func start() -> Bool {
         callback(mockedURL, mockedError)
         return presentationContextProvider?.presentationAnchor(for: self) != nil
@@ -190,13 +190,14 @@ extension HostedUIASWebAuthenticationSession {
             url: URL(string: "https://test.com")!,
             callbackScheme: "https",
             inPrivate: false,
-            presentationAnchor: nil)
+            presentationAnchor: nil
+        )
     }
 }
 #else
 
-@testable import AWSCognitoAuthPlugin
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class HostedUIASWebAuthenticationSessionTests: XCTestCase {
     func testShowHostedUI_shouldThrowServiceError() async {
@@ -206,7 +207,8 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
                 url: URL(string: "https://test.com")!,
                 callbackScheme: "https",
                 inPrivate: false,
-                presentationAnchor: nil)
+                presentationAnchor: nil
+            )
         } catch let error as HostedUIError {
             if case .serviceMessage(let message) = error {
                 XCTAssertEqual(message, "HostedUI is only available in iOS, macOS and visionOS")

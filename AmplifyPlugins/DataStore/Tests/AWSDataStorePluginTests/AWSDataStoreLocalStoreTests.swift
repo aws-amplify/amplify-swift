@@ -7,8 +7,8 @@
 
 import XCTest
 
-import AWSPluginsCore
 import AmplifyTestCommon
+import AWSPluginsCore
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
@@ -40,7 +40,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let post = Post.keys
         let predicate = (post.id <= 1 && post.title == "title1")
             || (post.rating > 2 && post.status == PostStatus.private)
-        
+
         let queriedPosts = try await Amplify.DataStore.query(Post.self, where: predicate)
         XCTAssertEqual(queriedPosts.count, 2)
     }
@@ -59,11 +59,11 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let queriedPosts = try await Amplify.DataStore.query(Post.self, paginate: .page(0, limit: 10))
         XCTAssertEqual(queriedPosts.count, 10)
         posts.append(contentsOf: queriedPosts)
-        
+
         let queriedPosts2 = try await Amplify.DataStore.query(Post.self, paginate: .page(1, limit: 10))
         XCTAssertEqual(queriedPosts2.count, 5)
         posts.append(contentsOf: queriedPosts2)
-        
+
         let idSet = Set(posts.map { $0.id })
         XCTAssertEqual(idSet.count, 15)
     }
@@ -103,9 +103,13 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         setUp(withModels: TestModelRegistration())
         _ = try await setUpLocalStore(numberOfPosts: 50)
 
-        let posts = try await Amplify.DataStore.query(Post.self,
-                                                      sort: .by(.ascending(Post.keys.rating),
-                                                                .descending(Post.keys.title)))
+        let posts = try await Amplify.DataStore.query(
+            Post.self,
+            sort: .by(
+                .ascending(Post.keys.rating),
+                .descending(Post.keys.title)
+            )
+        )
         var previousRating: Double = 0
         for post in posts {
             guard let rating = post.rating else {
@@ -141,9 +145,11 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         setUp(withModels: TestModelRegistration())
         _ = try await setUpLocalStore(numberOfPosts: 20)
 
-        let posts = try await Amplify.DataStore.query(Post.self,
-                                                      where: Post.keys.rating >= 2,
-                                                      sort: .ascending(Post.keys.rating))
+        let posts = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.rating >= 2,
+            sort: .ascending(Post.keys.rating)
+        )
 
         var previousRating: Double = 0
         for post in posts {
@@ -170,10 +176,14 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     func testQueryWithSortAndPagintate() async throws {
         setUp(withModels: TestModelRegistration())
         _ = try await setUpLocalStore(numberOfPosts: 20)
-        let posts = try await Amplify.DataStore.query(Post.self,
-                                                      sort: .by(.ascending(Post.keys.rating),
-                                                                .descending(Post.keys.title)),
-                                                      paginate: .page(0, limit: 10))
+        let posts = try await Amplify.DataStore.query(
+            Post.self,
+            sort: .by(
+                .ascending(Post.keys.rating),
+                .descending(Post.keys.title)
+            ),
+            paginate: .page(0, limit: 10)
+        )
         XCTAssertEqual(posts.count, 10)
 
         var previousRating: Double = 0
@@ -201,10 +211,12 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let filteredPosts = localPosts.filter { $0.rating! >= 2.0 }
         let count = filteredPosts.count
 
-        let posts = try await Amplify.DataStore.query(Post.self,
-                                                      where: Post.keys.rating >= 2,
-                                                      sort: .ascending(Post.keys.rating),
-                                                      paginate: .page(0, limit: 10))
+        let posts = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.rating >= 2,
+            sort: .ascending(Post.keys.rating),
+            paginate: .page(0, limit: 10)
+        )
         if count >= 10 {
             XCTAssertEqual(posts.count, 10)
         } else {
@@ -237,17 +249,21 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         setUp(withModels: TestModelRegistration())
         _ = try await setUpLocalStore(numberOfPosts: 50)
 
-        let queriedPosts = try await Amplify.DataStore.query(Post.self,
-                                                      where: Post.keys.rating >= 2)
-            
+        let queriedPosts = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.rating >= 2
+        )
+
         var posts = [Post]()
         var currentPage: UInt = 0
         var shouldRepeat = true
         repeat {
-            let returnPosts = try await Amplify.DataStore.query(Post.self,
-                                                                where: Post.keys.rating >= 2,
-                                                                sort: .ascending(Post.keys.rating),
-                                                                paginate: .page(currentPage, limit: 10))
+            let returnPosts = try await Amplify.DataStore.query(
+                Post.self,
+                where: Post.keys.rating >= 2,
+                sort: .ascending(Post.keys.rating),
+                paginate: .page(currentPage, limit: 10)
+            )
             posts.append(contentsOf: returnPosts)
             if returnPosts.count == 10 {
                 currentPage += 1
@@ -420,7 +436,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let posts = try await Amplify.DataStore.query(Post.self)
         XCTAssertEqual(posts.count, numberOfPosts)
 
-        let randomTitleNumber = String(Int.random(in: 0..<numberOfPosts))
+        let randomTitleNumber = String(Int.random(in: 0 ..< numberOfPosts))
 
         let postWithDuplicateTitleAndDifferentStatus = Post(
             title: "title_\(randomTitleNumber)_",
@@ -440,7 +456,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(
             postsContainingRandomTitleNumber
                 .lazy
-                .filter({ $0.status == .draft })
+                .filter { $0.status == .draft }
                 .count,
             1
         )
@@ -448,7 +464,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(
             postsContainingRandomTitleNumber
                 .lazy
-                .filter({ $0.status == .published })
+                .filter { $0.status == .published }
                 .count,
             1
         )
@@ -643,7 +659,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     }
 
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
-        let posts = (0..<numberOfPosts).map {
+        let posts = (0 ..< numberOfPosts).map {
             Post(
                 title: "title_\($0)_",
                 content: "content",
@@ -663,14 +679,38 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     func setUpLocalStoreForGroupedPredicateTest() async throws {
         var savedPosts = [Post]()
-        savedPosts.append(Post(id: "1", title: "title1", content: "content1",
-                               createdAt: .now(), rating: 1, status: .draft))
-        savedPosts.append(Post(id: "2", title: "title2", content: "content2",
-                               createdAt: .now(), rating: 2, status: .private))
-        savedPosts.append(Post(id: "3", title: "title3", content: "content3",
-                               createdAt: .now(), rating: 3, status: .draft))
-        savedPosts.append(Post(id: "4", title: "title4", content: "content4",
-                               createdAt: .now(), rating: 4, status: .private))
+        savedPosts.append(Post(
+            id: "1",
+            title: "title1",
+            content: "content1",
+            createdAt: .now(),
+            rating: 1,
+            status: .draft
+        ))
+        savedPosts.append(Post(
+            id: "2",
+            title: "title2",
+            content: "content2",
+            createdAt: .now(),
+            rating: 2,
+            status: .private
+        ))
+        savedPosts.append(Post(
+            id: "3",
+            title: "title3",
+            content: "content3",
+            createdAt: .now(),
+            rating: 3,
+            status: .draft
+        ))
+        savedPosts.append(Post(
+            id: "4",
+            title: "title4",
+            content: "content4",
+            createdAt: .now(),
+            rating: 4,
+            status: .private
+        ))
         for post in savedPosts {
             _ = try await Amplify.DataStore.save(post)
         }

@@ -57,6 +57,15 @@ struct UserPoolConfigurationData: Equatable {
     func getIdentityProviderName() -> String {
         return "cognito-idp.\(region).amazonaws.com/\(poolId)"
     }
+
+    static func isNamespacingEqual(
+        lhs: UserPoolConfigurationData?,
+        rhs: UserPoolConfigurationData?
+    ) -> Bool {
+            return lhs?.poolId == rhs?.poolId
+            && lhs?.clientId == rhs?.clientId
+            && lhs?.region == rhs?.region
+        }
 }
 
 extension UserPoolConfigurationData: Codable { }

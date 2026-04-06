@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
+import SwiftUI
 
 struct ContentView: View {
     var body: some View {

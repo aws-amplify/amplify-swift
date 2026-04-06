@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Entity {
-    public struct Metadata {
+public extension Predictions.Entity {
+    struct Metadata {
         public let confidence: Double
         public let pose: Predictions.Pose
 

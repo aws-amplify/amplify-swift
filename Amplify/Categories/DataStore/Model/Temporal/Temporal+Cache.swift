@@ -12,21 +12,21 @@ extension Temporal {
     // of the formatter cache dictionary.
     //
     // DateFormatter itself is thread safe.
-    private static var formatterCache: [String: DateFormatter] = [:]
+    private nonisolated(unsafe) static var formatterCache: [String: DateFormatter] = [:]
 
-    @usableFromInline
     /// The `Calendar` used for date operations.
     ///
     /// `identifier` is `.iso8601`
     /// `timeZome` is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
-    internal static let iso8601Calendar: Calendar = {
+    @usableFromInline
+    static let iso8601Calendar: Calendar = {
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .utc
         return calendar
     }()
 
     /// Pointer to lock to ensure exclusive access.
-    private static let lock: UnsafeMutablePointer<os_unfair_lock> = {
+    private nonisolated(unsafe) static let lock: UnsafeMutablePointer<os_unfair_lock> = {
         let pointer = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
         pointer.initialize(to: os_unfair_lock())
         return pointer
@@ -37,7 +37,7 @@ extension Temporal {
     ///   - format: The `DateFormatter().dateFormat`
     ///   - timeZone: The `DateFormatter().timeZone`
     /// - Returns: A `DateFormatter`
-    internal static func formatter(
+    static func formatter(
         for format: String,
         in timeZone: TimeZone
     ) -> DateFormatter {
@@ -102,7 +102,6 @@ extension Temporal {
         // defer takes care of unlock
     }
 
-    @usableFromInline
     /// Turn a `String` into a `Foundation.Date`
     /// - Parameters:
     ///   - string: The date in `String` form.
@@ -111,7 +110,8 @@ extension Temporal {
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `Foundation.Date` if conversion was successful.
     /// - Throws: `DataStoreError.invalidDateFormat(_:)` if conversion was unsuccessful.
-    internal static func date(
+    @usableFromInline
+    static func date(
         from string: String,
         with formats: [String],
         in timeZone: TimeZone = .utc
@@ -126,7 +126,6 @@ extension Temporal {
             .invalidDateFormat(formats.joined(separator: " | "))
     }
 
-    @usableFromInline
     /// Turn a `Foundation.Date` into a `String`
     /// - Parameters:
     ///   - date: The `Foundation.Date` to be converted to `String` form.
@@ -134,7 +133,8 @@ extension Temporal {
     ///   - timeZone: The `TimeZone` used by the `DateFormatter` when converted.
     ///               Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: The `String` representation of the `date` formatted according to the `format` argument..
-    internal static func string(
+    @usableFromInline
+    static func string(
         from date: Foundation.Date,
         with format: String,
         in timeZone: TimeZone = .utc

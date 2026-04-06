@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSS3
+import Foundation
 
 typealias AWSS3StorageServiceProvider = () throws -> AWSS3StorageServiceBehavior
 protocol AWSS3StorageServiceBehavior {
@@ -44,38 +44,50 @@ protocol AWSS3StorageServiceBehavior {
 
     func getEscapeHatch() -> S3Client
 
-    func download(serviceKey: String,
-                  fileURL: URL?,
-                  accelerate: Bool?,
-                  onEvent: @escaping StorageServiceDownloadEventHandler)
+    func download(
+        serviceKey: String,
+        fileURL: URL?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceDownloadEventHandler
+    )
 
-    func getPreSignedURL(serviceKey: String,
-                         signingOperation: AWSS3SigningOperation,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         expires: Int) async throws -> URL
+    func getPreSignedURL(
+        serviceKey: String,
+        signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        expires: Int
+    ) async throws -> URL
 
     func validateObjectExistence(serviceKey: String) async throws
 
-    func upload(serviceKey: String,
-                uploadSource: UploadSource,
-                contentType: String?,
-                metadata: [String: String]?,
-                accelerate: Bool?,
-                onEvent: @escaping StorageServiceUploadEventHandler)
+    func upload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceUploadEventHandler
+    )
 
-    func multiPartUpload(serviceKey: String,
-                         uploadSource: UploadSource,
-                         contentType: String?,
-                         metadata: [String: String]?,
-                         accelerate: Bool?,
-                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
+    func multiPartUpload(
+        serviceKey: String,
+        uploadSource: UploadSource,
+        contentType: String?,
+        metadata: [String: String]?,
+        accelerate: Bool?,
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler
+    )
 
     @available(*, deprecated, message: "Use `AWSS3StorageListObjectsTask` instead")
-    func list(prefix: String,
-              options: StorageListRequest.Options) async throws -> StorageListResult
+    func list(
+        prefix: String,
+        options: StorageListRequest.Options
+    ) async throws -> StorageListResult
 
     @available(*, deprecated, message: "Use `AWSS3StorageRemoveTask` instead")
-    func delete(serviceKey: String,
-                onEvent: @escaping StorageServiceDeleteEventHandler)
+    func delete(
+        serviceKey: String,
+        onEvent: @escaping StorageServiceDeleteEventHandler
+    )
 }

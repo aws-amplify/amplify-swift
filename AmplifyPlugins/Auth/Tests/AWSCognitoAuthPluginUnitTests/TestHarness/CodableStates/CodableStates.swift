@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import Foundation
-import AWSPluginsCore
 import Amplify
+import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension DeviceMetadata {
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         self = .noData
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         fatalError()
     }
 }

@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Predictions {
+public extension Predictions {
     // swiftlint:disable file_length type_body_length
-    public struct Language: Equatable, Decodable {
+    struct Language: Equatable, Decodable, @unchecked Sendable {
         public let code: String
 
         public init(code: String) {
@@ -2396,8 +2396,8 @@ extension Predictions {
     }
 }
 
-extension Predictions.Language {
-    public init(locale: Locale) {
+public extension Predictions.Language {
+    init(locale: Locale) {
         guard let languageCode = locale.languageCode else {
             self = .undetermined
             return

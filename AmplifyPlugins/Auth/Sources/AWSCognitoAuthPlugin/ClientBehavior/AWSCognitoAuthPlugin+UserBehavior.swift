@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable force_cast
 public extension AWSCognitoAuthPlugin {
@@ -30,8 +30,10 @@ public extension AWSCognitoAuthPlugin {
         } as! AuthUpdateAttributeResult
     }
 
-    func update(userAttributes: [AuthUserAttribute],
-                options: AuthUpdateUserAttributesRequest.Options? = nil)
+    func update(
+        userAttributes: [AuthUserAttribute],
+        options: AuthUpdateUserAttributesRequest.Options? = nil
+    )
     async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
 
         let options = options ?? AuthUpdateUserAttributesRequest.Options()
@@ -50,7 +52,8 @@ public extension AWSCognitoAuthPlugin {
 
         let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
         let request = AuthAttributeResendConfirmationCodeRequest(
-            attributeKey: userAttributeKey, options: options)
+            attributeKey: userAttributeKey, options: options
+        )
         let task = AWSAuthAttributeResendConfirmationCodeTask(
             request,
             authStateMachine: authStateMachine,
@@ -68,10 +71,12 @@ public extension AWSCognitoAuthPlugin {
     ) async throws -> AuthCodeDeliveryDetails {
         let options = options ?? AuthSendUserAttributeVerificationCodeRequest.Options()
         let request = AuthSendUserAttributeVerificationCodeRequest(
-            attributeKey: userAttributeKey, options: options)
+            attributeKey: userAttributeKey, options: options
+        )
         let task = AWSAuthSendUserAttributeVerificationCodeTask(
             request, authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthCodeDeliveryDetails
@@ -82,7 +87,8 @@ public extension AWSCognitoAuthPlugin {
         let request = AuthConfirmUserAttributeRequest(
             attributeKey: userAttribute,
             confirmationCode: confirmationCode,
-            options: options)
+            options: options
+        )
         let task = AWSAuthConfirmUserAttributeTask(request, authStateMachine: authStateMachine, userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         _ = try await taskQueue.sync {
             return try await task.value
@@ -98,7 +104,7 @@ public extension AWSCognitoAuthPlugin {
         }
     }
 
-    func getCurrentUser() async throws -> AuthUser {
+    func getCurrentUser() async throws -> any AuthUser {
         let taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         return try await taskHelper.getCurrentUser()
     }

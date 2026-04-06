@@ -9,7 +9,7 @@ import Foundation
 
 enum LocalServer {
     static let endpoint = "http://127.0.0.1:9294"
-    
+
     case boot(String)
     case enroll(String)
     case match(String)
@@ -41,9 +41,9 @@ extension LocalServer {
     }
 
     var urlRequest: URLRequest {
-        var request = URLRequest(url: URL(string: Self.endpoint + self.path)!)
-        request.httpMethod = self.httpMethod
-        request.httpBody = self.payload
+        var request = URLRequest(url: URL(string: Self.endpoint + path)!)
+        request.httpMethod = httpMethod
+        request.httpBody = payload
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         return request
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 extension AuthenticationEvent {
 
@@ -65,9 +65,11 @@ extension AuthenticationError {
 }
 
 extension SignInEventData {
-    static let testData = SignInEventData(username: "testUserName",
-                                          password: "testPassword",
-                                          signInMethod: .apiBased(.userSRP))
+    static let testData = SignInEventData(
+        username: "testUserName",
+        password: "testPassword",
+        signInMethod: .apiBased(.userSRP)
+    )
 }
 
 extension SignOutEventData {
@@ -84,7 +86,8 @@ extension SignInState {
     static let testData = SignInState.signingInWithSRP(.notStarted, SignInEventData(
         username: "",
         password: "",
-        signInMethod:.apiBased(.userSRP)))
+        signInMethod: .apiBased(.userSRP)
+    ))
 }
 
 extension UserPoolConfigurationData {
@@ -98,8 +101,10 @@ extension UserPoolConfigurationData {
 }
 
 extension IdentityPoolConfigurationData {
-    static let testData = IdentityPoolConfigurationData(poolId: "poolId",
-                                                        region: "regionId")
+    static let testData = IdentityPoolConfigurationData(
+        poolId: "poolId",
+        region: "regionId"
+    )
 }
 
 struct MockInvalidEnvironment: Environment { }

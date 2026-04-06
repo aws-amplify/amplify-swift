@@ -5,13 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
+@testable import AWSPluginsCore
 
 class OutgoingMutationQueueTests: SyncEngineTestBase {
 
@@ -146,7 +147,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         mutationEventSaved.expectedFulfillmentCount = 2
 
-        let posts = (1...2).map { Post(
+        let posts = (1 ... 2).map { Post(
             id: "pendingPost-\($0)",
             title: "pendingPost-\($0) title",
             content: "pendingPost-\($0) content",
@@ -168,15 +169,16 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
             if let variables = request.variables?["input"] as? [String: Any],
                let postId = variables["id"] as? String,
-               let post = posts.first(where: { $0.id == postId })
-            {
+               let post = posts.first(where: { $0.id == postId }) {
                 try? await Task.sleep(seconds: timeout + 1)
                 let anyModel = try! post.eraseToAnyModel()
-                let remoteSyncMetadata = MutationSyncMetadata(modelId: post.id,
-                                                              modelName: Post.modelName,
-                                                              deleted: false,
-                                                              lastChangedAt: Date().unixSeconds,
-                                                              version: 2)
+                let remoteSyncMetadata = MutationSyncMetadata(
+                    modelId: post.id,
+                    modelName: Post.modelName,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: 2
+                )
                 let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
                 return .success(remoteMutationSync)
             }
@@ -184,7 +186,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
 
-        postMutationEvents.forEach { event in
+        for event in postMutationEvents {
             storageAdapter.save(event) { result in
                 switch result {
                 case .failure(let dataStoreError):
@@ -239,9 +241,11 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         await tryOrFail {
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .testDefault(),
-                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                authModeStrategy: AWSDefaultAuthModeStrategy()
+            ))
             try await startAmplify()
         }
 

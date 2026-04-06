@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ConfirmDeviceInput: Decodable {
+extension ConfirmDeviceInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case accessToken
         case deviceKey
@@ -33,7 +33,8 @@ extension ConfirmDeviceInput: Decodable {
             deviceName: deviceName,
             deviceSecretVerifierConfig: .init(
                 passwordVerifier: passwordVerifier,
-                salt: salt)
+                salt: salt
+            )
         )
     }
 }

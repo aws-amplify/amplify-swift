@@ -19,7 +19,8 @@ extension WebAuthnSignInState {
 
         func resolve(
             oldState: StateType,
-            byApplying event: StateMachineEvent)
+            byApplying event: StateMachineEvent
+        )
         -> StateResolution<StateType> {
             if case .error(let error, let challenge) = event.isWebAuthnEvent {
                 return .init(

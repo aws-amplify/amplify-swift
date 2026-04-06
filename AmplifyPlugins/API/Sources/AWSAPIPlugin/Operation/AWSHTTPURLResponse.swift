@@ -23,7 +23,7 @@ import Foundation
 /// **Note**: The class inheritance to `HTTPURLResponse` is to provide above mechanism, and actual
 /// implementation acts as a facade that stores an instance of `HTTPURLResponse` that delegates overidden methods to
 /// this stored property.
-public class AWSHTTPURLResponse: HTTPURLResponse {
+public class AWSHTTPURLResponse: HTTPURLResponse, @unchecked Sendable {
 
     /// The body of the response, if available
     public let body: Data?
@@ -37,10 +37,12 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
         // Call the super class initializer with dummy values to satisfy the requirement of the inheritance.
         // Subsequent access to any properties of this instance (including `url`) will be delegated to
         // the `response`.
-        super.init(url: URL(string: "dummyURL")!,
-                   statusCode: 0,
-                   httpVersion: nil,
-                   headerFields: nil)
+        super.init(
+            url: URL(string: "dummyURL")!,
+            statusCode: 0,
+            httpVersion: nil,
+            headerFields: nil
+        )
     }
 
     required init?(coder: NSCoder) {
@@ -49,45 +51,45 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
         super.init(coder: coder)
     }
 
-    public override class var supportsSecureCoding: Bool {
+    override public class var supportsSecureCoding: Bool {
         return true
     }
 
-    public override func encode(with coder: NSCoder) {
+    override public func encode(with coder: NSCoder) {
         coder.encode(body, forKey: "body")
         coder.encode(response, forKey: "response")
         super.encode(with: coder)
     }
 
-    public override var url: URL? {
+    override public var url: URL? {
         response.url
     }
 
-    public override var mimeType: String? {
+    override public var mimeType: String? {
         response.mimeType
     }
 
-    public override var expectedContentLength: Int64 {
+    override public var expectedContentLength: Int64 {
         response.expectedContentLength
     }
 
-    public override var textEncodingName: String? {
+    override public var textEncodingName: String? {
         response.textEncodingName
     }
 
-    public override var suggestedFilename: String? {
+    override public var suggestedFilename: String? {
         response.suggestedFilename
     }
 
-    public override var statusCode: Int {
+    override public var statusCode: Int {
         response.statusCode
     }
 
-    public override var allHeaderFields: [AnyHashable: Any] {
+    override public var allHeaderFields: [AnyHashable: Any] {
         response.allHeaderFields
     }
 
-    public override func value(forHTTPHeaderField field: String) -> String? {
+    override public func value(forHTTPHeaderField field: String) -> String? {
         response.value(forHTTPHeaderField: field)
     }
 }

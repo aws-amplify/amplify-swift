@@ -170,7 +170,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
                 if modelSyncedEvents.count == 2 {
                     guard let postModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Post" }),
-                            let commentModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Comment" }) else {
+                            let commentModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Comment" })
+                    else {
                         XCTFail("Could not get modelSyncedEvent for Post and Comment")
                         return
                     }

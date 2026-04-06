@@ -13,8 +13,10 @@ public struct ScenarioATest6Post: Model {
   public let id: String
   public var title: String
 
-  public init(id: String = UUID().uuidString,
-      title: String) {
+  public init(
+      id: String = UUID().uuidString,
+      title: String
+  ) {
       self.id = id
       self.title = title
   }

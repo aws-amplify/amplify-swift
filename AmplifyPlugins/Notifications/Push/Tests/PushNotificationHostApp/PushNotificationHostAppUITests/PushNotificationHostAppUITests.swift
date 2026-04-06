@@ -4,24 +4,46 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-		
 
 import XCTest
 
 final class PushNotificationHostAppUITests: XCTestCase {
-    let timeout = TimeInterval(6)
-    let app = XCUIApplication()
+    private let timeout = TimeInterval(6)
+    private let app = XCUIApplication()
 
-    lazy var deviceIdentifier: String? = {
+    private lazy var deviceIdentifier: String = {
+        let bundlePath = Bundle.main.bundleURL.path
         let paths = Bundle.main.bundleURL.pathComponents
-        guard let index = paths.firstIndex(where: { $0 == "XCTestDevices" }),
-              let identifier = paths.dropFirst(index + 1).first
-        else {
-            XCTFail("Failed to get device identifier")
-            return nil
+
+        // Standard approach: Look for Devices directory
+        if let devicesIndex = paths.firstIndex(where: { $0 == "Devices" }) {
+            let nextIndex = devicesIndex + 1
+            if nextIndex < paths.count {
+                return paths[nextIndex]
+            }
         }
 
-        return identifier
+        // For clone devices or alternative paths, find UUID-like identifiers
+        for component in paths {
+            // Device UUIDs are typically 36 characters with dashes
+            if component.contains("-") &&
+               component.count >= 30 &&
+               component.count <= 50 &&
+               component.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" }) {
+                return component
+            }
+        }
+
+        // Last resort: try to extract from the full path using regex
+        let uuidPattern = "[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}"
+        if let regex = try? NSRegularExpression(pattern: uuidPattern),
+           let match = regex.firstMatch(in: bundlePath, range: NSRange(bundlePath.startIndex..., in: bundlePath)),
+           let range = Range(match.range, in: bundlePath) {
+            return String(bundlePath[range])
+        }
+
+        // If all else fails, provide detailed error information
+        fatalError("Could not extract device identifier from bundle path: \(bundlePath)\nPath components: \(paths)")
     }()
 
     @MainActor
@@ -78,8 +100,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to identify user")
         }
     }
@@ -103,8 +124,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
-            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout)
-        {
+            !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout) {
             XCTFail("Failed to register device")
         }
     }
@@ -131,7 +151,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
                     journey: nil,
                     deeplink: nil
                 )),
-            deviceId: deviceIdentifier!
+            deviceId: deviceIdentifier
         ))
 
         let notification = notificationElement()
@@ -169,7 +189,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
                 body: #function
             ),
             data: nil,
-            deviceId: deviceIdentifier!
+            deviceId: deviceIdentifier
         ))
 
         let notification = notificationElement()
@@ -212,7 +232,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
                     journey: nil,
                     deeplink: nil
                 )),
-            deviceId: deviceIdentifier!
+            deviceId: deviceIdentifier
         ))
 
         let expectedEvent = anyElementContains(text: "Amplify.BasicAnalyticsEvent(name: \"_campaign.received_", scope: app)
@@ -234,7 +254,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
                 body: #function
             ),
             data: nil,
-            deviceId: deviceIdentifier!
+            deviceId: deviceIdentifier
         ))
 
         let unexpectedEvent = anyElementContains(text: "Amplify.BasicAnalyticsEvent(name: \"_campaign.received_", scope: app)
@@ -276,7 +296,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         #endif
         }
     }
-    
+
     private func firstAlertElement() -> XCUIElement {
     #if os(watchOS)
         // `SwiftUI.View.alert(isPresented:)` views re matched as tables in watchOS 🤷‍♂️
@@ -285,7 +305,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         return app.alerts.firstMatch
     #endif
     }
-    
+
     private func notificationElement() -> XCUIElement {
     #if os(watchOS)
         return XCUIApplication.homeScreen.otherElements["PushNotificationsWatchApp"]
@@ -301,13 +321,13 @@ final class PushNotificationHostAppUITests: XCTestCase {
     }
 
     private func uninstallApp() async throws {
-        let request = LocalServer.uninstall(deviceIdentifier!).urlRequest
+        let request = LocalServer.uninstall(deviceIdentifier).urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to uninstall the App")
     }
 
     private func bootDevice() async throws {
-        let request = LocalServer.boot(deviceIdentifier!).urlRequest
+        let request = LocalServer.boot(deviceIdentifier).urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to boot the device")
     }
@@ -387,7 +407,7 @@ extension XCUIRemote {
                 isEndReached = true
             }
         }
-        
+
         print("Element \(element) was found and has been focused, pressing SELECT")
         press(.select)
     }
@@ -404,7 +424,7 @@ extension XCUIApplication {
         XCUIApplication(bundleIdentifier: "com.apple.Carousel")
     #endif
     }
-    
+
     var focusedElement: XCUIElement {
         descendants(matching: .any).element(matching: NSPredicate(format: "hasFocus == true"))
     }

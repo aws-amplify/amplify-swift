@@ -13,7 +13,7 @@ import Foundation
 
 @_spi(InternalAWSPinpoint)
 public protocol EndpointClientBehaviour: Actor {
-    nonisolated var pinpointClient: PinpointClientProtocol { get }
+    var pinpointClient: PinpointClientProtocol { get }
 
     func currentEndpointProfile() async -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
@@ -28,7 +28,7 @@ actor EndpointClient: EndpointClientBehaviour {
         let isDebug: Bool
     }
 
-    let pinpointClient: PinpointClientProtocol
+    nonisolated let pinpointClient: PinpointClientProtocol
 
     private let configuration: EndpointClient.Configuration
     private let archiver: AmplifyArchiverBehaviour
@@ -40,13 +40,14 @@ actor EndpointClient: EndpointClientBehaviour {
     private var endpointProfile: PinpointEndpointProfile?
     private static let defaultDateFormatter = ISO8601DateFormatter()
 
-    init(configuration: EndpointClient.Configuration,
-         pinpointClient: PinpointClientProtocol,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-         endpointInformationProvider: EndpointInformationProvider,
-         userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
-         remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
+    init(
+        configuration: EndpointClient.Configuration,
+        pinpointClient: PinpointClientProtocol,
+        archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
+        endpointInformationProvider: EndpointInformationProvider,
+        userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
+        keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
+        remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
     ) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
@@ -76,7 +77,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
         // 1. Look for the local endpointProfile variable
-        if let endpointProfile = endpointProfile {
+        if let endpointProfile {
             return endpointProfile
         }
 
@@ -89,8 +90,10 @@ actor EndpointClient: EndpointClientBehaviour {
 
         try? keychain._remove(Constants.endpointProfileKey)
         // Create a new PinpointEndpointProfile
-        return await configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
-                                                                        endpointId: configuration.uniqueDeviceId))
+        return await configure(endpointProfile: PinpointEndpointProfile(
+            applicationId: configuration.appId,
+            endpointId: configuration.uniqueDeviceId
+        ))
     }
 
     private func configure(endpointProfile: PinpointEndpointProfile) async -> PinpointEndpointProfile {
@@ -132,7 +135,8 @@ actor EndpointClient: EndpointClientBehaviour {
     private func updateStoredAPNsToken(from endpointProfile: PinpointEndpointProfile) {
         do {
             guard let deviceToken = endpointProfile.deviceToken,
-                  let apnsToken = Data(hexString: deviceToken) else {
+                  let apnsToken = Data(hexString: deviceToken)
+            else {
                 try keychain._remove(Constants.deviceTokenKey)
                 return
             }
@@ -152,18 +156,22 @@ actor EndpointClient: EndpointClientBehaviour {
         let channelType = getChannelType(from: endpointProfile)
         let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)
         let optOut = getOptOut(from: endpointProfile)
-        let endpointRequest =  PinpointClientTypes.EndpointRequest(address: endpointProfile.deviceToken,
-                                                                   attributes: endpointProfile.attributes,
-                                                                   channelType: channelType,
-                                                                   demographic: endpointProfile.demographic,
-                                                                   effectiveDate: effectiveDate,
-                                                                   location: endpointProfile.location,
-                                                                   metrics: endpointProfile.metrics,
-                                                                   optOut: optOut,
-                                                                   user: endpointProfile.user)
-        return UpdateEndpointInput(applicationId: endpointProfile.applicationId,
-                                   endpointId: endpointProfile.endpointId,
-                                   endpointRequest: endpointRequest)
+        let endpointRequest =  PinpointClientTypes.EndpointRequest(
+            address: endpointProfile.deviceToken,
+            attributes: endpointProfile.attributes,
+            channelType: channelType,
+            demographic: endpointProfile.demographic,
+            effectiveDate: effectiveDate,
+            location: endpointProfile.location,
+            metrics: endpointProfile.metrics,
+            optOut: optOut,
+            user: endpointProfile.user
+        )
+        return UpdateEndpointInput(
+            applicationId: endpointProfile.applicationId,
+            endpointId: endpointProfile.endpointId,
+            endpointRequest: endpointRequest
+        )
     }
 
     nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
@@ -179,22 +187,23 @@ actor EndpointClient: EndpointClientBehaviour {
             location: endpointProfile.location,
             metrics: endpointProfile.metrics,
             optOut: optOut,
-            user: endpointProfile.user)
+            user: endpointProfile.user
+        )
         return publicEndpoint
     }
 
-    nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType? {
+    private nonisolated func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType? {
         if endpointProfile.deviceToken == nil {
             return nil
         }
         return endpointProfile.isDebug ? .apnsSandbox : .apns
     }
 
-    nonisolated private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
+    private nonisolated func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
         endpointProfile.effectiveDate.asISO8601String
     }
 
-    nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String? {
+    private nonisolated func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String? {
         if endpointProfile.deviceToken == nil {
             return nil
         }
@@ -236,17 +245,17 @@ actor EndpointClient: EndpointClientBehaviour {
 }
 
 extension EndpointClient: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public nonisolated var log: Logger {
+    nonisolated var log: Logger {
         Self.log
     }
 }
 
 extension EndpointClient {
-    struct Constants {
-        struct OptOut {
+    enum Constants {
+        enum OptOut {
             static let all = "ALL"
             static let none = "NONE"
         }
@@ -257,20 +266,24 @@ extension EndpointClient {
 }
 
 extension PinpointClientTypes.EndpointDemographic {
-    struct Constants {
+    enum Constants {
         static let appleMake = "apple"
         static let unknown = "Unknown"
     }
 
-    init(device: EndpointInformation,
-         locale: String = Locale.autoupdatingCurrent.identifier,
-         timezone: String = TimeZone.current.identifier) {
-        self.init(appVersion: device.appVersion,
-                  locale: locale,
-                  make: Constants.appleMake,
-                  model: device.model,
-                  platform: device.platform.name,
-                  platformVersion: device.platform.version,
-                  timezone: timezone)
+    init(
+        device: EndpointInformation,
+        locale: String = Locale.autoupdatingCurrent.identifier,
+        timezone: String = TimeZone.current.identifier
+    ) {
+        self.init(
+            appVersion: device.appVersion,
+            locale: locale,
+            make: Constants.appleMake,
+            model: device.model,
+            platform: device.platform.name,
+            platformVersion: device.platform.version,
+            timezone: timezone
+        )
     }
 }

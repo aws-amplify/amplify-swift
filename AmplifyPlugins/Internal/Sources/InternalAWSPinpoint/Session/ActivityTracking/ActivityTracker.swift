@@ -28,7 +28,7 @@ enum ApplicationState {
     case runningInBackground(isStale: Bool)
     case terminated
 
-    struct Resolver {
+    enum Resolver {
         static func resolve(currentState: ApplicationState, event: ActivityEvent) -> ApplicationState {
             if case .terminated = currentState {
                 log.warn("Unexpected state transition. Received event \(event) in \(currentState) state.")
@@ -52,11 +52,11 @@ enum ApplicationState {
 extension ApplicationState: Equatable {}
 
 extension ApplicationState: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }
@@ -122,25 +122,33 @@ class ActivityTracker: ActivityTrackerBehaviour {
         applicationWillTerminateNotification
     ]
 
-    init(backgroundTrackingTimeout: TimeInterval = .infinity,
-         stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil) {
+    init(
+        backgroundTrackingTimeout: TimeInterval = .infinity,
+        stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil
+    ) {
         self.backgroundTrackingTimeout = backgroundTrackingTimeout
-        self.stateMachine = stateMachine ?? StateMachine(initialState: .initializing,
-                                                         resolver: ApplicationState.Resolver.resolve(currentState:event:))
+        self.stateMachine = stateMachine ?? StateMachine(
+            initialState: .initializing,
+            resolver: ApplicationState.Resolver.resolve(currentState:event:)
+        )
 
         for notification in ActivityTracker.notifications {
-            NotificationCenter.default.addObserver(self,
-                                                   selector: #selector(handleApplicationStateChange),
-                                                   name: notification,
-                                                   object: nil)
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleApplicationStateChange),
+                name: notification,
+                object: nil
+            )
         }
     }
 
     deinit {
         for notification in ActivityTracker.notifications {
-            NotificationCenter.default.removeObserver(self,
-                                                      name: notification,
-                                                      object: nil)
+            NotificationCenter.default.removeObserver(
+                self,
+                name: notification,
+                object: nil
+            )
         }
         stateMachineSubscriberToken = nil
     }
@@ -197,7 +205,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
 
 #if canImport(UIKit)
 extension ActivityTracker {
-    struct Constants {
+    enum Constants {
         static let backgroundTask = "com.amazonaws.AWSPinpointSessionBackgroundTask"
     }
 }

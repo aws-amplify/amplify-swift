@@ -86,7 +86,7 @@ import Foundation
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelAssociation {
+public enum ModelAssociation: @unchecked Sendable {
     case hasMany(associatedFieldName: String?, associatedFieldNames: [String] = [])
     case hasOne(associatedFieldName: String?, associatedFieldNames: [String] = [], targetNames: [String])
     case belongsTo(associatedFieldName: String?, targetNames: [String])
@@ -104,7 +104,7 @@ public enum ModelAssociation {
     ) -> ModelAssociation {
         return .hasMany(
             associatedFieldName: associatedWith?.stringValue,
-            associatedFieldNames: associatedFields.map { $0.stringValue }
+            associatedFieldNames: associatedFields.map(\.stringValue)
         )
     }
 
@@ -117,11 +117,13 @@ public enum ModelAssociation {
     public static func hasOne(
         associatedWith: CodingKey? = nil,
         associatedFields: [CodingKey] = [],
-        targetNames: [String] = []) -> ModelAssociation {
+        targetNames: [String] = []
+    ) -> ModelAssociation {
             return .hasOne(
                 associatedFieldName: associatedWith?.stringValue,
-                associatedFieldNames: associatedFields.map { $0.stringValue },
-                targetNames: targetNames)
+                associatedFieldNames: associatedFields.map(\.stringValue),
+                targetNames: targetNames
+            )
     }
 
     @available(*, deprecated, message: "Use belongsTo(associatedWith:targetNames:)")
@@ -136,13 +138,13 @@ public enum ModelAssociation {
 
 }
 
-extension ModelField {
+public extension ModelField {
 
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var hasAssociation: Bool {
+    var hasAssociation: Bool {
         return association != nil
     }
 
@@ -156,7 +158,7 @@ extension ModelField {
     @available(*, deprecated, message: """
         Use of associated model type is deprecated, use `associatedModelName` instead.
         """)
-    public var associatedModel: Model.Type? {
+    var associatedModel: Model.Type? {
         switch type {
         case .model(let modelName), .collection(let modelName):
             return ModelRegistry.modelType(from: modelName)
@@ -172,7 +174,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var associatedModelName: ModelName? {
+    var associatedModelName: ModelName? {
         switch type {
         case .model(let modelName), .collection(let modelName):
             return modelName
@@ -196,7 +198,7 @@ extension ModelField {
         Use of requiredAssociatedModel with Model.Type is deprecated, use `requiredAssociatedModelName`
         that return ModelName instead.
         """)
-    public var requiredAssociatedModel: Model.Type {
+    var requiredAssociatedModel: Model.Type {
         guard let modelType = associatedModel else {
             return Fatal.preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
@@ -217,7 +219,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var requiredAssociatedModelName: ModelName {
+    var requiredAssociatedModelName: ModelName {
         guard let modelName = associatedModelName else {
             return Fatal.preconditionFailure("""
             Model fields that are foreign keys must be connected to another Model.
@@ -231,7 +233,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var isAssociationOwner: Bool {
+    var isAssociationOwner: Bool {
         guard case .belongsTo = association else {
             return false
         }
@@ -242,7 +244,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var _isBelongsToOrHasOne: Bool { // swiftlint:disable:this identifier_name
+    var _isBelongsToOrHasOne: Bool { // swiftlint:disable:this identifier_name
         switch association {
         case .belongsTo, .hasOne:
             return true
@@ -255,7 +257,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var associatedField: ModelField? {
+    var associatedField: ModelField? {
         if hasAssociation {
             let associatedModel = requiredAssociatedModelName
             switch association {
@@ -277,10 +279,10 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var associatedFieldNames: [String] {
+    var associatedFieldNames: [String] {
         switch association {
         case .hasMany(let associatedKey, let associatedKeys):
-            if associatedKeys.isEmpty, let associatedKey = associatedKey {
+            if associatedKeys.isEmpty, let associatedKey {
                 return [associatedKey]
             }
             return associatedKeys
@@ -300,7 +302,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var isOneToOne: Bool {
+    var isOneToOne: Bool {
         if case .hasOne = association {
             return true
         }
@@ -314,7 +316,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var isOneToMany: Bool {
+    var isOneToMany: Bool {
         if case .hasMany = association, case .belongsTo = associatedField?.association {
             return true
         }
@@ -325,7 +327,7 @@ extension ModelField {
     /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
     /// application making any change to these `public` types should be backward compatible, otherwise it will be a
     /// breaking change.
-    public var isManyToOne: Bool {
+    var isManyToOne: Bool {
         if case .belongsTo = association, case .hasMany = associatedField?.association {
             return true
         }
@@ -339,7 +341,7 @@ extension ModelField {
     @available(*, deprecated, message: """
         Use `embeddedType` is deprecated, use `embeddedTypeSchema` instead.
         """)
-    public var embeddedType: Embeddable.Type? {
+    var embeddedType: Embeddable.Type? {
         switch type {
         case .embedded(let type, _), .embeddedCollection(let type, _):
             if let embeddedType = type as? Embeddable.Type {
@@ -355,7 +357,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var embeddedTypeSchema: ModelSchema? {
+    var embeddedTypeSchema: ModelSchema? {
         switch type {
         case .embedded(_, let modelSchema), .embeddedCollection(_, let modelSchema):
             return modelSchema
@@ -368,7 +370,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var isEmbeddedType: Bool {
+    var isEmbeddedType: Bool {
         switch type {
         case .embedded, .embeddedCollection:
             return true

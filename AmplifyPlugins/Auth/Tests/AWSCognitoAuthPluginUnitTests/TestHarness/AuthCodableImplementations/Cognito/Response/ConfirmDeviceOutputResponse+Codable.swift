@@ -8,13 +8,13 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ConfirmDeviceOutput: Codable {
+extension ConfirmDeviceOutput: @retroactive Decodable, @retroactive Encodable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case userConfirmationNecessary = "UserConfirmationNecessary"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let userConfirmationNecessaryDecoded = try containerValues.decode(Swift.Bool.self, forKey: .userConfirmationNecessary)

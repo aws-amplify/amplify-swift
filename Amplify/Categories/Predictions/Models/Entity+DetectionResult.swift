@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Entity {
+public extension Predictions.Entity {
     /// Describes the result of interpret() API when the analyzed text
     /// contains a person/place
-    public struct DetectionResult {
+    struct DetectionResult {
         public let type: Predictions.Entity.Kind
         public let targetText: String
         public let score: Float?

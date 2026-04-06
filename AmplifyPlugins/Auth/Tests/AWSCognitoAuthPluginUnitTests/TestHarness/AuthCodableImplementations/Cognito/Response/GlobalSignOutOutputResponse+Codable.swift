@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension GlobalSignOutOutput: Codable {
+extension GlobalSignOutOutput: @retroactive Decodable, @retroactive Encodable {
 
     public init(from decoder: Swift.Decoder) throws {
         self.init()

@@ -16,8 +16,10 @@ public struct AuthUpdateUserAttributeRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthUpdateUserAttributeRequest.Options`
     public var options: Options
 
-    public init(userAttribute: AuthUserAttribute,
-                options: Options) {
+    public init(
+        userAttribute: AuthUserAttribute,
+        options: Options
+    ) {
         self.userAttribute = userAttribute
         self.options = options
     }
@@ -37,3 +39,5 @@ public extension AuthUpdateUserAttributeRequest {
         }
     }
 }
+
+extension AuthUpdateUserAttributeRequest.Options: @unchecked Sendable { }

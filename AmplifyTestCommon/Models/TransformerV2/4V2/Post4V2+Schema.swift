@@ -6,12 +6,12 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension Post4V2 {
+public extension Post4V2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case comments
@@ -19,10 +19,10 @@ extension Post4V2 {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let post4V2 = Post4V2.keys
 
     model.authRules = [

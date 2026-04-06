@@ -45,13 +45,14 @@ final class GraphQLCustomer8Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let request = GraphQLRequest<PaginatedList<Customer>>(
             document: document,
             responseType: PaginatedList<Customer>.self,
-            decodePath: operationName)
+            decodePath: operationName
+        )
 
         let queriedCustomers = try await Amplify.API.query(
             request: request).get()
 
         // Code Snippet Ends
-        XCTAssertTrue(queriedCustomers.items.count != 0 || queriedCustomers.nextToken != nil)
+        XCTAssertTrue(!queriedCustomers.items.isEmpty || queriedCustomers.nextToken != nil)
     }
 }
 
@@ -61,7 +62,7 @@ extension GraphQLCustomer8Tests {
     typealias Customer = Customer8
 
     struct Customer8Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Customer8.self)
         }

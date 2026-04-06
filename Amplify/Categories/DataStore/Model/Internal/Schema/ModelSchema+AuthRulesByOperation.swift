@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension Array where Element == AuthRule {
+public extension [AuthRule] {
 
     /// Returns all the `AuthRule` that apply to a given a `ModelOperation`
     /// - Parameter operation: `ModelOperation` operation

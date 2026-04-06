@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 import NaturalLanguage
 
 class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
@@ -30,7 +30,7 @@ class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
             options: options
         ) { tag, tokenRange in
 
-            if let tag = tag {
+            if let tag {
                 let partOfSpeech = Predictions.PartOfSpeech.DetectionResult(
                     partOfSpeech: tag.getSpeechType(),
                     score: nil
@@ -62,7 +62,7 @@ class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
             scheme: .nameType,
             options: options
         ) { tag, tokenRange in
-            if let tag = tag, tags.contains(tag) {
+            if let tag, tags.contains(tag) {
                 let entity = Predictions.Entity.DetectionResult(
                     type: tag.getEntityType(),
                     targetText: String(text[tokenRange]),
@@ -119,7 +119,6 @@ extension NLTag {
             return .symbol
         default:
             return .other
-
         }
     }
     // swiftlint:enable cyclomatic_complexity

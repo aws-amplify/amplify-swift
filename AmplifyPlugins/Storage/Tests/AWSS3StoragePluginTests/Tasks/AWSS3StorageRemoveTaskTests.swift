@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
-import AWSS3
+@testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveTaskTests: XCTestCase {
 
@@ -27,11 +27,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         let value = try await task.value
         XCTAssertEqual(value, "path")
     }
@@ -47,23 +49,27 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .service(_, _, let underlyingError) = storageError else {
+                  case .service(_, _, let underlyingError) = storageError
+            else {
                 XCTFail("Should throw a Storage service error, instead threw \(error)")
                 return
             }
-            XCTAssertTrue(underlyingError is AWSS3.NoSuchKey,
-                          "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))")
+            XCTAssertTrue(
+                underlyingError is AWSS3.NoSuchKey,
+                "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))"
+            )
         }
     }
 
@@ -74,18 +80,20 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("/path"), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .validation(let field, _, _, _) = storageError else {
+                  case .validation(let field, _, _, _) = storageError
+            else {
                 XCTFail("Should throw a storage validation error, instead threw \(error)")
                 return
             }
@@ -101,18 +109,20 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString(" "), options: .init())
+            path: StringStoragePath.fromString(" "), options: .init()
+        )
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
-            storageBehaviour: serviceMock)
+            storageBehaviour: serviceMock
+        )
         do {
             _ = try await task.value
             XCTFail("Task should throw an exception")
-        }
-        catch {
+        } catch {
             guard let storageError = error as? StorageError,
-                  case .validation(let field, _, _, _) = storageError else {
+                  case .validation(let field, _, _, _) = storageError
+            else {
                 XCTFail("Should throw a storage validation error, instead threw \(error)")
                 return
             }

@@ -5,24 +5,30 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 /// Internal representation of Credentials Auth category maintain.
 enum AmplifyCredentials {
 
     case userPoolOnly(signedInData: SignedInData)
 
-    case identityPoolOnly(identityID: String,
-                          credentials: AuthAWSCognitoCredentials)
+    case identityPoolOnly(
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
-    case identityPoolWithFederation(federatedToken: FederatedToken,
-                                    identityID: String,
-                                    credentials: AuthAWSCognitoCredentials)
+    case identityPoolWithFederation(
+        federatedToken: FederatedToken,
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
-    case userPoolAndIdentityPool(signedInData: SignedInData,
-                                 identityID: String,
-                                 credentials: AuthAWSCognitoCredentials)
+    case userPoolAndIdentityPool(
+        signedInData: SignedInData,
+        identityID: String,
+        credentials: AuthAWSCognitoCredentials
+    )
 
     case noCredentials
 }
@@ -30,6 +36,8 @@ enum AmplifyCredentials {
 extension AmplifyCredentials: Codable { }
 
 extension AmplifyCredentials: Equatable { }
+
+extension AmplifyCredentials: @unchecked Sendable { }
 
 extension AmplifyCredentials: CustomDebugStringConvertible {
     var debugDescription: String {

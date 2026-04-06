@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable line_length
 
@@ -65,22 +65,21 @@ enum StorageTransferType {
     }
 
     var rawValue: Int {
-        let result: Int
-        switch self {
+        let result: Int = switch self {
         case .getPreSignedURL:
-            result = StorageTransferType.RawValues.getPreSignedURL.rawValue
+            StorageTransferType.RawValues.getPreSignedURL.rawValue
         case .download:
-            result = StorageTransferType.RawValues.download.rawValue
+            StorageTransferType.RawValues.download.rawValue
         case .upload:
-            result = StorageTransferType.RawValues.upload.rawValue
+            StorageTransferType.RawValues.upload.rawValue
         case .multiPartUpload:
-            result = StorageTransferType.RawValues.multiPartUpload.rawValue
+            StorageTransferType.RawValues.multiPartUpload.rawValue
         case .multiPartUploadPart:
-            result = StorageTransferType.RawValues.multiPartUploadPart.rawValue
+            StorageTransferType.RawValues.multiPartUploadPart.rawValue
         case .list:
-            result = StorageTransferType.RawValues.list.rawValue
+            StorageTransferType.RawValues.list.rawValue
         case .remove:
-            result = StorageTransferType.RawValues.remove.rawValue
+            StorageTransferType.RawValues.remove.rawValue
         }
         return result
     }
@@ -119,7 +118,7 @@ enum StorageTransferType {
         }
     }
 
-    struct Defaults {
+    enum Defaults {
         static func createDefaultTransferType(persistableTransferTask: StoragePersistableTransferTask) -> StorageTransferType? {
             let result: StorageTransferType
 
@@ -138,7 +137,8 @@ enum StorageTransferType {
                 result = .multiPartUpload(onEvent: defaultMultiPartUploadEvent)
             case .multiPartUploadPart:
                 guard let uploadId = persistableTransferTask.uploadId,
-                        let partNumber = persistableTransferTask.partNumber else {
+                        let partNumber = persistableTransferTask.partNumber
+                else {
                     return nil
                 }
                 result = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)

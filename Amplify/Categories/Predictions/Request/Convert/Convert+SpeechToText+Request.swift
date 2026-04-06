@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Convert.SpeechToText {
-    public struct Request {
+public extension Predictions.Convert.SpeechToText {
+    struct Request {
         /// The text to synthesize to speech
         public let speechToText: URL
 

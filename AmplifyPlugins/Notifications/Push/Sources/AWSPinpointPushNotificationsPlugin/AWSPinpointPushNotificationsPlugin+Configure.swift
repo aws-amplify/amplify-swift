@@ -31,7 +31,8 @@ extension AWSPinpointPushNotificationsPlugin {
 
             pluginConfiguration = AWSPinpointPluginConfiguration(
                 appId: notifications.amazonPinpointAppId,
-                region: notifications.awsRegion)
+                region: notifications.awsRegion
+            )
         } else if let config = configuration as? JSONValue {
             pluginConfiguration = try AWSPinpointPluginConfiguration(config)
         } else {
@@ -46,13 +47,24 @@ extension AWSPinpointPushNotificationsPlugin {
 
     /// Configure AWSPinpointPushNotificationsPlugin programatically using AWSPinpointPushNotificationsPluginConfiguration
     private func configure(using configuration: AWSPinpointPluginConfiguration) throws {
+        log.warn(
+        """
+            AWS will end support for Amazon Pinpoint on October 30, 2026.
+            The guidance is to use AWS End User Messaging for push notifications and SMS,
+            Amazon Simple Email Service for sending emails, Amazon Connect for campaigns, journeys, endpoints, 
+            and engagement analytics. Pinpoint recommends Amazon Kinesis for event collection and mobile analytics.
+
+            See https://docs.aws.amazon.com/pinpoint/latest/userguide/migrate.html for more details.
+        """)
         let pinpoint = try AWSPinpointFactory.sharedPinpoint(
             appId: configuration.appId,
             region: configuration.region
         )
 
-        configure(pinpoint: pinpoint,
-                  remoteNotificationsHelper: .default)
+        configure(
+            pinpoint: pinpoint,
+            remoteNotificationsHelper: .default
+        )
     }
 
     private func requestNotificationsPermissions(using helper: RemoteNotificationsBehaviour) async {
@@ -70,8 +82,10 @@ extension AWSPinpointPushNotificationsPlugin {
 
     // MARK: Internal
     /// Internal configure method to set the properties of the plugin
-    func configure(pinpoint: AWSPinpointBehavior,
-                   remoteNotificationsHelper: RemoteNotificationsBehaviour) {
+    func configure(
+        pinpoint: AWSPinpointBehavior,
+        remoteNotificationsHelper: RemoteNotificationsBehaviour
+    ) {
         self.pinpoint = pinpoint
         Task {
             await remoteNotificationsHelper.registerForRemoteNotifications()

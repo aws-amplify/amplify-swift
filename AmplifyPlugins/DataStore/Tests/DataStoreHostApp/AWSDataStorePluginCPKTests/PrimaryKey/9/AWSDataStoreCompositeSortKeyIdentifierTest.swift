@@ -5,24 +5,23 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
-import Combine
 import AWSAPIPlugin
 import AWSDataStorePlugin
+import Combine
+import XCTest
 
 @testable import Amplify
 #if !os(watchOS)
 @testable import DataStoreHostApp
 #endif
 
-fileprivate struct TestModels: AmplifyModelRegistration {
+private struct TestModels: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {
         ModelRegistry.register(modelType: Post9.self)
         ModelRegistry.register(modelType: Comment9.self)
     }
 
-    public let version: String = "test"
+    let version: String = "test"
 }
 
 class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase {

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Identify.Text {
+public extension Predictions.Identify.Text {
     /// Results are mapped to IdentifyTextResult when .plain is passed for .detectText in the type: field
     /// in identify() API
-    public struct Result {
+    struct Result {
         public let fullText: String?
         public let words: [Predictions.IdentifiedWord]?
         public let rawLineText: [String]?

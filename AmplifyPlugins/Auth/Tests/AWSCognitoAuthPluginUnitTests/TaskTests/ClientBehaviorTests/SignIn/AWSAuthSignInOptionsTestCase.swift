@@ -5,12 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
-@testable import Amplify
-@testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import ClientRuntime
+import XCTest
+@testable import Amplify
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 class AWSAuthSignInOptionsTestCase: BasePluginTest {
     override var initialState: AuthState {
@@ -24,7 +26,8 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutput(
                 authenticationResult: .init(
@@ -33,10 +36,12 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""),
+                    tokenType: ""
+                ),
                 challengeName: .none,
                 challengeParameters: [:],
-                session: "session")
+                session: "session"
+            )
         })
     }
 
@@ -174,7 +179,7 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
     }
 }
 
-fileprivate extension AuthState {
+private extension AuthState {
     var authenticationState: AuthenticationState? {
         if case .configured(let authenticationState, _, _) = self {
             return authenticationState
@@ -183,7 +188,7 @@ fileprivate extension AuthState {
     }
 }
 
-fileprivate extension AuthenticationState {
+private extension AuthenticationState {
     var signInEvent: SignInEventData? {
         if case .signingIn(.signingInWithSRP(_, let eventData)) = self {
             return eventData

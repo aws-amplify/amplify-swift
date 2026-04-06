@@ -20,50 +20,89 @@ import Foundation
 /// available at initialization.
 ///
 /// - Tag: Amplify
-public class Amplify {
+public class Amplify: @unchecked Sendable {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
     ///
     /// - Tag: Amplify.isConfigured
-    static var isConfigured = false
+    private static let isConfiguredAtomic = AtomicValue<Bool>(initialValue: false)
+    static var isConfigured: Bool {
+        get { isConfiguredAtomic.get() }
+        set { isConfiguredAtomic.set(newValue) }
+    }
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
-    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
-    // ease of testing.
+    // All category properties are protected with AtomicValue for thread safety.
 
     /// - Tag: Amplify.Analytics
-    public static internal(set) var Analytics = AnalyticsCategory()
+    private static let analyticsAtomic = AtomicValue<AnalyticsCategory>(initialValue: AnalyticsCategory())
+    public internal(set) static var Analytics: AnalyticsCategory {
+        get { analyticsAtomic.get() }
+        set { analyticsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.API
-    public static internal(set) var API: APICategory = APICategory()
+    private static let apiAtomic = AtomicValue<APICategory>(initialValue: APICategory())
+    public internal(set) static var API: APICategory {
+        get { apiAtomic.get() }
+        set { apiAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Auth
-    public static internal(set) var Auth = AuthCategory()
+    private static let authAtomic = AtomicValue<AuthCategory>(initialValue: AuthCategory())
+    public internal(set) static var Auth: AuthCategory {
+        get { authAtomic.get() }
+        set { authAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.DataStore
-    public static internal(set) var DataStore = DataStoreCategory()
+    private static let dataStoreAtomic = AtomicValue<DataStoreCategory>(initialValue: DataStoreCategory())
+    public internal(set) static var DataStore: DataStoreCategory {
+        get { dataStoreAtomic.get() }
+        set { dataStoreAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Geo
-    public static internal(set) var Geo = GeoCategory()
+    private static let geoAtomic = AtomicValue<GeoCategory>(initialValue: GeoCategory())
+    public internal(set) static var Geo: GeoCategory {
+        get { geoAtomic.get() }
+        set { geoAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Hub
-    public static internal(set) var Hub = HubCategory()
+    private static let hubAtomic = AtomicValue<HubCategory>(initialValue: HubCategory())
+    public internal(set) static var Hub: HubCategory {
+        get { hubAtomic.get() }
+        set { hubAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Notifications
-    public static internal(set) var Notifications = NotificationsCategory()
+    private static let notificationsAtomic = AtomicValue<NotificationsCategory>(initialValue: NotificationsCategory())
+    public internal(set) static var Notifications: NotificationsCategory {
+        get { notificationsAtomic.get() }
+        set { notificationsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Predictions
-    public static internal(set) var Predictions = PredictionsCategory()
+    private static let predictionsAtomic = AtomicValue<PredictionsCategory>(initialValue: PredictionsCategory())
+    public internal(set) static var Predictions: PredictionsCategory {
+        get { predictionsAtomic.get() }
+        set { predictionsAtomic.set(newValue) }
+    }
 
     /// - Tag: Amplify.Storage
-    public static internal(set) var Storage = StorageCategory()
+    private static let storageAtomic = AtomicValue<StorageCategory>(initialValue: StorageCategory())
+    public internal(set) static var Storage: StorageCategory {
+        get { storageAtomic.get() }
+        set { storageAtomic.set(newValue) }
+    }
 
     /// Special case category. We protect this with an AtomicValue because it is used by reset()
     /// methods during setup & teardown of tests
     ///
     /// - Tag: Amplify.Logging
-    public static internal(set) var Logging: LoggingCategory {
+    public internal(set) static var Logging: LoggingCategory {
         get {
             loggingAtomic.get()
         }
@@ -73,13 +112,15 @@ public class Amplify {
     }
     private static let loggingAtomic = AtomicValue<LoggingCategory>(initialValue: LoggingCategory())
 
+    // swiftlint:disable cyclomatic_complexity
+
     /// Adds `plugin` to the category
     ///
     /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
     ///
     /// - Parameter plugin: The plugin to add
     /// - Tag: Amplify.add_plugin
-    public static func add<P: Plugin>(plugin: P) throws {
+    public static func add(plugin: some Plugin) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
@@ -105,8 +146,11 @@ public class Amplify {
         default:
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
-                "Verify that the library version is correct and supports the plugin's category.")
+                "Verify that the library version is correct and supports the plugin's category."
+            )
         }
+
+        // swiftlint:enable cyclomatic_complexity
     }
 }
 

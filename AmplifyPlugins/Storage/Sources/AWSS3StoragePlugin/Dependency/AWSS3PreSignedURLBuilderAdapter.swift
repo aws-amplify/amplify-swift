@@ -8,10 +8,10 @@
 import Foundation
 
 import Amplify
-import AWSS3
-import AWSPluginsCore
-import ClientRuntime
 import AWSClientRuntime
+import AWSPluginsCore
+import AWSS3
+import ClientRuntime
 
 /// The class confirming to AWSS3PreSignedURLBuilderBehavior which uses GetObjectInput to
 /// create a pre-signed URL.
@@ -31,11 +31,13 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String,
-                         signingOperation: AWSS3SigningOperation,
-                         metadata: [String: String]? = nil,
-                         accelerate: Bool? = nil,
-                         expires: Int64? = nil) async throws -> URL {
+    func getPreSignedURL(
+        key: String,
+        signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]? = nil,
+        accelerate: Bool? = nil,
+        expires: Int64? = nil
+    ) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = expiresDate.timeIntervalSinceNow
         let config = try config.withAccelerate(accelerate)
@@ -45,17 +47,20 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
             let input = GetObjectInput(bucket: bucket, key: key)
             preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key, metadata: metadata)
             preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = try await input.customPresignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         }
         guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
             throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
@@ -64,7 +69,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     }
 
     private func urlWithEscapedToken(_ url: URL?) -> URL? {
-        guard let url = url,
+        guard let url,
               var components = URLComponents(string: url.absoluteString),
               var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
                   return nil

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
 // MARK: - MockSynced

@@ -10,7 +10,7 @@ permissions:
 jobs:
   build-and-check-api-breakage:
     name: Build and Check API Breakage
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
     - name: Checkout repository

@@ -289,10 +289,12 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testInsertStatementFromModel() {
-        let post = Post(title: "title",
-                        content: "content",
-                        createdAt: .now(),
-                        status: .draft)
+        let post = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            status: .draft
+        )
         let statement = InsertStatement(model: post, modelSchema: post.schema)
 
         let expectedStatement = """
@@ -317,9 +319,11 @@ class SQLStatementTests: XCTestCase {
 
         let modelId = "the-id"
         let dob = Temporal.DateTime.now()
-        let model = ModelCompositePk(id: modelId,
-                                     dob: dob,
-                                     name: "the-name")
+        let model = ModelCompositePk(
+            id: modelId,
+            dob: dob,
+            name: "the-name"
+        )
         let statement = InsertStatement(model: model, modelSchema: model.schema)
 
         let expectedStatement = """
@@ -368,13 +372,17 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the variables match the expected values
     ///   - check if the foreign key matches `ModelCompositePkWithAssociation` PK
     func testInsertStatementModelWithCompositeKeyAndHasManyBidirectional() {
-        let parentModel = ModelCompositePkWithAssociation(id: "parent-id",
-                                                          dob: .now(),
-                                                          name: "parent-name")
-        let childModel = ModelCompositePkBelongsTo(id: "child-id",
-                                               dob: .now(),
-                                               name: "child-name",
-                                               owner: parentModel)
+        let parentModel = ModelCompositePkWithAssociation(
+            id: "parent-id",
+            dob: .now(),
+            name: "parent-name"
+        )
+        let childModel = ModelCompositePkBelongsTo(
+            id: "child-id",
+            dob: .now(),
+            name: "child-name",
+            owner: parentModel
+        )
 
         let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
 
@@ -402,9 +410,11 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the foreign key matches `PostWithCompositeKey` PK
     func testInsertStatementModelWithCompositeKeyAndHasManyBidirectional2() {
         let parentModel = PostWithCompositeKey(id: "post-id", title: "post-title")
-        let childModel = CommentWithCompositeKey(id: "comment-id",
-                                                 content: "content",
-                                                 post: parentModel)
+        let childModel = CommentWithCompositeKey(
+            id: "comment-id",
+            content: "content",
+            post: parentModel
+        )
 
         let statement = InsertStatement(model: childModel, modelSchema: childModel.schema)
 
@@ -494,9 +504,11 @@ class SQLStatementTests: XCTestCase {
     func testUpdateStatementFromModelWithDefinedCustomPK() {
         let modelId = "the-id"
         let dob = Temporal.DateTime.now()
-        let model = ModelCustomPkDefined(id: modelId,
-                                         dob: dob,
-                                         name: "the-name")
+        let model = ModelCustomPkDefined(
+            id: modelId,
+            dob: dob,
+            name: "the-name"
+        )
         let statement = UpdateStatement(model: model, modelSchema: model.schema)
         let expectedStatement = """
         update "ModelCustomPkDefined"
@@ -526,9 +538,11 @@ class SQLStatementTests: XCTestCase {
     func testUpdateStatementFromModelWithCustomPKBasedOnIndexes() {
         let modelId = "the-id"
         let dob = Temporal.DateTime.now()
-        let model = ModelCompositePk(id: modelId,
-                                     dob: dob,
-                                     name: "the-name")
+        let model = ModelCompositePk(
+            id: modelId,
+            dob: dob,
+            name: "the-name"
+        )
         let statement = UpdateStatement(model: model, modelSchema: model.schema)
         let expectedStatement = """
         update "ModelCompositePk"
@@ -559,9 +573,11 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModel() {
         let id = UUID().uuidString
-        let statement = DeleteStatement(Post.self,
-                                        modelSchema: Post.schema,
-                                        withId: id)
+        let statement = DeleteStatement(
+            Post.self,
+            modelSchema: Post.schema,
+            withId: id
+        )
 
         let expectedStatement = """
         delete from "Post" as root
@@ -582,10 +598,12 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModelWithCondition() {
         let id = UUID().uuidString
-        let statement = DeleteStatement(Post.self,
-                                        modelSchema: Post.schema,
-                                        withId: id,
-                                        predicate: Post.keys.content == "content")
+        let statement = DeleteStatement(
+            Post.self,
+            modelSchema: Post.schema,
+            withId: id,
+            predicate: Post.keys.content == "content"
+        )
 
         let expectedStatement = """
         delete from "Post" as root
@@ -610,8 +628,10 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModelWithCustomPK() {
         let identifier = ModelExplicitCustomPk.IdentifierProtocol.identifier(userId: "userId")
-        let statement = DeleteStatement(modelSchema: ModelExplicitCustomPk.schema,
-                                        withIdentifier: identifier)
+        let statement = DeleteStatement(
+            modelSchema: ModelExplicitCustomPk.schema,
+            withIdentifier: identifier
+        )
 
         let expectedStatement = """
         delete from "ModelExplicitCustomPk" as root
@@ -631,10 +651,14 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModelWithCompositePK() {
-        let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: "id",
-                                                                        dob: Temporal.DateTime.now())
-        let statement = DeleteStatement(modelSchema: ModelCompositePk.schema,
-                                        withIdentifier: identifier)
+        let identifier = ModelCompositePk.IdentifierProtocol.identifier(
+            id: "id",
+            dob: Temporal.DateTime.now()
+        )
+        let statement = DeleteStatement(
+            modelSchema: ModelCompositePk.schema,
+            withIdentifier: identifier
+        )
 
         let expectedStatement = """
         delete from "ModelCompositePk" as root
@@ -721,8 +745,10 @@ class SQLStatementTests: XCTestCase {
         let keys = ModelCompositePk.keys
         let modelId = "an-id"
         let dob = "2022-02-22"
-        let statement = SelectStatement(from: ModelCompositePk.schema,
-                                        predicate: keys.id == modelId && keys.dob == dob)
+        let statement = SelectStatement(
+            from: ModelCompositePk.schema,
+            predicate: keys.id == modelId && keys.dob == dob
+        )
         let expectedStatement = """
         select
           "root"."@@primaryKey" as "@@primaryKey", "root"."id" as "id", "root"."dob" as "dob",
@@ -857,8 +883,10 @@ class SQLStatementTests: XCTestCase {
     func testSelectStatementWithTwoFieldsSort() {
         let ascSort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .ascending)
         let dscSort = QuerySortDescriptor(fieldName: Post.keys.createdAt.stringValue, order: .descending)
-        let statement = SelectStatement(from: Post.schema,
-                                        sort: [ascSort, dscSort])
+        let statement = SelectStatement(
+            from: Post.schema,
+            sort: [ascSort, dscSort]
+        )
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -879,9 +907,11 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSort() {
         let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
-        let statement = SelectStatement(from: Post.schema,
-                                        predicate: Post.keys.rating > 4,
-                                        sort: [sort])
+        let statement = SelectStatement(
+            from: Post.schema,
+            predicate: Post.keys.rating > 4,
+            sort: [sort]
+        )
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -905,9 +935,11 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithSortAndPaginationInfo() {
         let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
-        let statement = SelectStatement(from: Post.schema,
-                                        sort: [sort],
-                                        paginationInput: .page(0, limit: 5))
+        let statement = SelectStatement(
+            from: Post.schema,
+            sort: [sort],
+            paginationInput: .page(0, limit: 5)
+        )
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -931,10 +963,12 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the statement contains the correct `where` statement, `order by` and `ascending`
     func testSelectStatementWithPredicateAndSortAndPaginationInfo() {
         let sort = QuerySortDescriptor(fieldName: Post.keys.id.stringValue, order: .descending)
-        let statement = SelectStatement(from: Post.schema,
-                                        predicate: Post.keys.rating > 4,
-                                        sort: [sort],
-                                        paginationInput: .page(0, limit: 5))
+        let statement = SelectStatement(
+            from: Post.schema,
+            predicate: Post.keys.rating > 4,
+            sort: [sort],
+            paginationInput: .page(0, limit: 5)
+        )
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -964,14 +998,6 @@ class SQLStatementTests: XCTestCase {
         from "CommentWithCompositeKey" as "root"
         left outer join "PostWithCompositeKey" as "post"
           on "post"."@@primaryKey" = "root"."@@postForeignKey"
-        where 1 = 1
-          and "root"."@@postForeignKey" = ?
-        """
-        let noJoin = """
-        select
-          "root"."@@primaryKey" as "@@primaryKey", "root"."id" as "id", "root"."content" as "content",
-          "root"."createdAt" as "createdAt", "root"."updatedAt" as "updatedAt", "root"."@@postForeignKey" as "@@postForeignKey"
-        from "CommentWithCompositeKey" as "root"
         where 1 = 1
           and "root"."@@postForeignKey" = ?
         """
@@ -1023,15 +1049,17 @@ class SQLStatementTests: XCTestCase {
     ///   - it matches the SQL condition
     func testTranslateQueryPredicateOperations() {
 
-        func assertPredicate(_ predicate: QueryPredicate,
-                             matches sql: String,
-                             bindings: [Binding?]? = nil) {
+        func assertPredicate(
+            _ predicate: QueryPredicate,
+            matches sql: String,
+            bindings: [Binding?]? = nil
+        ) {
             let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
             XCTAssertEqual(statement.stringValue, "  and \(sql)")
-            if let bindings = bindings {
+            if let bindings {
                 XCTAssertEqual(bindings.count, statement.variables.count)
-                bindings.enumerated().forEach {
-                    if let one = $0.element, let other = statement.variables[$0.offset] {
+                for binding in bindings.enumerated() {
+                    if let one = binding.element, let other = statement.variables[binding.offset] {
                         // TODO find better way to test `Binding` equality
                         XCTAssertEqual(String(describing: one), String(describing: other))
                     }
@@ -1048,15 +1076,21 @@ class SQLStatementTests: XCTestCase {
         assertPredicate(post.rating >= 1, matches: "\"root\".\"rating\" >= ?", bindings: [1])
         assertPredicate(post.rating < 2, matches: "\"root\".\"rating\" < ?", bindings: [2])
         assertPredicate(post.rating <= 3, matches: "\"root\".\"rating\" <= ?", bindings: [3])
-        assertPredicate(post.rating.between(start: 3, end: 5),
-                        matches: "\"root\".\"rating\" between ? and ?",
-                        bindings: [3, 5])
-        assertPredicate(post.title.beginsWith("gelato"),
-                        matches: "instr(\"root\".\"title\", ?) = 1",
-                        bindings: ["gelato"])
-        assertPredicate(post.title ~= "gelato",
-                        matches: "instr(\"root\".\"title\", ?) > 0",
-                        bindings: ["gelato"])
+        assertPredicate(
+            post.rating.between(start: 3, end: 5),
+            matches: "\"root\".\"rating\" between ? and ?",
+            bindings: [3, 5]
+        )
+        assertPredicate(
+            post.title.beginsWith("gelato"),
+            matches: "instr(\"root\".\"title\", ?) = 1",
+            bindings: ["gelato"]
+        )
+        assertPredicate(
+            post.title ~= "gelato",
+            matches: "instr(\"root\".\"title\", ?) > 0",
+            bindings: ["gelato"]
+        )
     }
 
     /// - Given: a grouped predicate

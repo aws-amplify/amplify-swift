@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct OvalMatchChallenge {
+    struct OvalMatchChallenge {
         public let faceDetectionThreshold: Double
         public let face: Face
         public let oval: Oval
@@ -22,9 +22,9 @@ extension FaceLivenessSession {
     }
 }
 
-extension FaceLivenessSession.OvalMatchChallenge {
+public extension FaceLivenessSession.OvalMatchChallenge {
     @_spi(PredictionsFaceLiveness)
-    public struct Face {
+    struct Face {
         public let distanceThreshold: Double
         public let distanceThresholdMax: Double
         public let distanceThresholdMin: Double
@@ -47,9 +47,9 @@ extension FaceLivenessSession.OvalMatchChallenge {
     }
 }
 
-extension FaceLivenessSession.OvalMatchChallenge {
+public extension FaceLivenessSession.OvalMatchChallenge {
     @_spi(PredictionsFaceLiveness)
-    public struct Oval {
+    struct Oval {
         public let boundingBox: FaceLivenessSession.BoundingBox
         public let heightWidthRatio: Double
         public let iouThreshold: Double

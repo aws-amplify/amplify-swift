@@ -17,23 +17,29 @@ public struct CommentWithCompositeKeyUnidirectional: Model {
   public var postWithCompositeKeyUnidirectionalCommentsId: String?
   public var postWithCompositeKeyUnidirectionalCommentsTitle: String?
 
-  public init(id: String = UUID().uuidString,
-      content: String,
-      post21CommentsId: String? = nil,
-      post21CommentsTitle: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    content: String,
+    post21CommentsId: String? = nil,
+    post21CommentsTitle: String? = nil
+  ) {
+    self.init(
+      id: id,
       content: content,
       createdAt: nil,
       updatedAt: nil,
       postWithCompositeKeyUnidirectionalCommentsId: post21CommentsId,
-      postWithCompositeKeyUnidirectionalCommentsTitle: post21CommentsTitle)
+      postWithCompositeKeyUnidirectionalCommentsTitle: post21CommentsTitle
+    )
   }
-  internal init(id: String = UUID().uuidString,
-                content: String,
-                createdAt: Temporal.DateTime? = nil,
-                updatedAt: Temporal.DateTime? = nil,
-                postWithCompositeKeyUnidirectionalCommentsId: String? = nil,
-                postWithCompositeKeyUnidirectionalCommentsTitle: String? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    content: String,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil,
+    postWithCompositeKeyUnidirectionalCommentsId: String? = nil,
+    postWithCompositeKeyUnidirectionalCommentsTitle: String? = nil
+  ) {
       self.id = id
       self.content = content
       self.createdAt = createdAt

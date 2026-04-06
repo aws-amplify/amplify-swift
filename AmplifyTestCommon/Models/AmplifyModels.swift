@@ -11,7 +11,7 @@ import Foundation
 
 // Contains the set of classes that conforms to the `Model` protocol.
 
-final public class AmplifyModels: AmplifyModelRegistration {
+public final class AmplifyModels: AmplifyModelRegistration {
     public let version: String
 
     public init(version: String = "46369a50a95486d76713fd33833fb782") {

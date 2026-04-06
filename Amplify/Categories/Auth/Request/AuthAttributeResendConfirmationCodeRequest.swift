@@ -18,8 +18,10 @@ public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationReques
     /// Extra request options defined in `AuthAttributeResendConfirmationCodeRequest.Options`
     public var options: Options
 
-    public init(attributeKey: AuthUserAttributeKey,
-                options: Options) {
+    public init(
+        attributeKey: AuthUserAttributeKey,
+        options: Options
+    ) {
         self.attributeKey = attributeKey
         self.options = options
     }
@@ -39,3 +41,5 @@ public extension AuthAttributeResendConfirmationCodeRequest {
         }
     }
 }
+
+extension AuthAttributeResendConfirmationCodeRequest.Options: @unchecked Sendable { }

@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension Predictions.Identify {
-    public enum Entities {}
+public extension Predictions.Identify {
+    enum Entities {}
 }
 
-extension Predictions.Identify.Request where Output == Predictions.Identify.Entities.Result {
-    public static let entities = Self(
+public extension Predictions.Identify.Request where Output == Predictions.Identify.Entities.Result {
+    nonisolated(unsafe) static let entities = Self(
         kind: .detectEntities(.lift)
     )
 }

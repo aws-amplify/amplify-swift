@@ -5,13 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class GraphQLCustomer10Tests: AWSAPIPluginGen2GraphQLBaseTest {
 
@@ -49,13 +48,14 @@ final class GraphQLCustomer10Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let request = GraphQLRequest<PaginatedList<Customer>>(
             document: document,
             responseType: PaginatedList<Customer>.self,
-            decodePath: operationName)
+            decodePath: operationName
+        )
 
         let queriedCustomers = try await Amplify.API.query(
             request: request).get()
 
         // Code Snippet Ends
-        XCTAssertTrue(queriedCustomers.items.count != 0 || queriedCustomers.nextToken != nil)
+        XCTAssertTrue(!queriedCustomers.items.isEmpty || queriedCustomers.nextToken != nil)
     }
 }
 
@@ -65,7 +65,7 @@ extension GraphQLCustomer10Tests {
     typealias Customer = Customer10
 
     struct Customer10Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Customer10.self)
         }

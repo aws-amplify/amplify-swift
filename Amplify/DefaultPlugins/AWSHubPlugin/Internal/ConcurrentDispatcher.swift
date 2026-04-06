@@ -39,7 +39,7 @@ struct ConcurrentDispatcher: Dispatcher {
                 return
             }
 
-            listener.listener(self.payload)
+            listener.listener(payload)
         }
     }
 }

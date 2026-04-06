@@ -7,10 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -26,9 +26,11 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
                         .confirmSignInWithTOTPCode
                     ),
                     .totpMFA,
-                    .apiBased(.userSRP))),
+                    .apiBased(.userSRP)
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step
@@ -41,7 +43,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testSuccessfulConfirmSignIn() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.challengeName, .softwareTokenMfa)
                 XCTAssertEqual(request.challengeResponses?["SOFTWARE_TOKEN_MFA_CODE"], "code")
@@ -71,7 +73,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithEmptyResponse() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 XCTFail("Cognito service should not be called")
                 return .testData()
@@ -98,7 +100,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 return .testData()
             })
@@ -133,10 +135,11 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
 
         let confirmSignInOptions = AWSAuthConfirmSignInOptions(
             userAttributes: [.init(.email, value: "some@some.com")],
-            metadata: ["metadata": "test"])
+            metadata: ["metadata": "test"]
+        )
 
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { input in
                 XCTAssertEqual(confirmSignInOptions.metadata, input.clientMetadata)
                 XCTAssertEqual(input.challengeResponses?["userAttributes.email"], "some@some.com")
@@ -146,7 +149,8 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "code",
-                options: .init(pluginOptions: confirmSignInOptions))
+                options: .init(pluginOptions: confirmSignInOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -170,7 +174,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithAliasExistsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.AliasExistsException(
                     message: "Exception"
@@ -202,7 +206,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testConfirmSignInWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -234,7 +238,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -254,7 +258,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
                 return
             }
 
-            self.mockIdentityProvider = MockIdentityProvider(
+            mockIdentityProvider = MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
                     return .testData()
                 })
@@ -279,7 +283,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithExpiredCodeException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.ExpiredCodeException(
                     message: "Exception"
@@ -311,7 +315,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -339,7 +343,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with .lambda as underlyingError
     ///
     func testConfirmSignInWithInvalidLambdaResponseException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
                     message: "Exception"
@@ -373,7 +377,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -407,7 +411,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidPasswordException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidPasswordException(
                     message: "Exception"
@@ -439,7 +443,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
                     message: "Exception"
@@ -471,7 +475,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
                     message: "Exception"
@@ -506,7 +510,8 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -516,8 +521,10 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -525,7 +532,8 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
@@ -551,7 +559,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testCofirmSignInWithMFAMethodNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.MFAMethodNotFoundException(
                     message: "Exception"
@@ -585,7 +593,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -615,7 +623,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithPasswordResetRequiredException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "Exception"
@@ -646,7 +654,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -680,7 +688,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithTooManyRequestsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "Exception"
@@ -714,7 +722,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUnexpectedLambdaException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
                     message: "Exception"
@@ -748,7 +756,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserLambdaValidationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserLambdaValidationException(
                     message: "Exception"
@@ -782,7 +790,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotConfirmedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "Exception"
@@ -812,7 +820,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                     message: "Exception"

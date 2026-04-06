@@ -6,21 +6,21 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension M2MPostEditor {
+public extension M2MPostEditor {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case post
     case editor
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let m2MPostEditor = M2MPostEditor.keys
 
     model.listPluralName = "M2MPostEditors"

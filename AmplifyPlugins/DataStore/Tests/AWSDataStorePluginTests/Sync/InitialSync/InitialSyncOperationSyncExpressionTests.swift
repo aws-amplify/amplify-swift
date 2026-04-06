@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import SQLite
 import Combine
+import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 
 class InitialSyncOperationSyncExpressionTests: XCTestCase {
     typealias APIPluginQueryResponder = QueryRequestResponder<PaginatedList<AnyModel>>
@@ -34,16 +34,22 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
         apiWasQueried = expectation(description: "API was queried with sync expression")
     }
 
-    func initialSyncOperation(withSyncExpression syncExpression: DataStoreSyncExpression,
-                              responder: APIPluginQueryResponder) -> InitialSyncOperation {
+    func initialSyncOperation(
+        withSyncExpression syncExpression: DataStoreSyncExpression,
+        responder: APIPluginQueryResponder
+    ) -> InitialSyncOperation {
         apiPlugin.responders[.queryRequestResponse] = responder
         #if os(watchOS)
-        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10,
-                                                           syncExpressions: [syncExpression],
-                                                           disableSubscriptions: { false })
+        let configuration  = DataStoreConfiguration.custom(
+            syncPageSize: 10,
+            syncExpressions: [syncExpression],
+            disableSubscriptions: { false }
+        )
         #else
-        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10,
-                                                           syncExpressions: [syncExpression])
+        let configuration  = DataStoreConfiguration.custom(
+            syncPageSize: 10,
+            syncExpressions: [syncExpression]
+        )
         #endif
         return InitialSyncOperation(
             modelSchema: MockSynced.schema,
@@ -51,7 +57,8 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: configuration,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
     }
 
     func testBaseQueryWithBasicSyncExpression() async throws {

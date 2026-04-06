@@ -6,12 +6,12 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension Project4aV2 {
+public extension Project4aV2 {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case team
@@ -20,10 +20,10 @@ extension Project4aV2 {
     case project4aV2TeamId
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let project4aV2 = Project4aV2.keys
 
     model.pluralName = "Project4aV2s"

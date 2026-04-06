@@ -6,12 +6,12 @@
 //
 
 import AWSClientRuntime
-import ClientRuntime
 import AWSLocation
+import ClientRuntime
 import Foundation
-import XCTest
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
+import XCTest
 
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
@@ -20,9 +20,9 @@ extension LocationClient.LocationClientConfiguration {
     static func mock(region: String) throws -> LocationClient.LocationClientConfiguration {
         try .init(
             awsCredentialIdentityResolver: MockAWSAuthService().getCredentialIdentityResolver(),
-            awsRetryMode: .standard, 
+            awsRetryMode: .standard,
             region: region,
-            signingRegion: "", 
+            signingRegion: "",
             endpointResolver: MockEndPointResolver()
         )
     }
@@ -34,11 +34,11 @@ class MockEndPointResolver: EndpointResolver {
     }
 }
 
-class MockLogAgent: LogAgent {
+class MockLogAgent: LogAgent, @unchecked Sendable {
     func log(
         level: Smithy.LogAgentLevel,
         message: @autoclosure () -> String,
-        metadata: @autoclosure () -> [String : String]?,
+        metadata: @autoclosure () -> [String: String]?,
         source: @autoclosure () -> String,
         file: String,
         function: String,
@@ -46,7 +46,7 @@ class MockLogAgent: LogAgent {
     ) {
         print("MockLogAgent")
     }
-    
+
     var name: String = ""
 
     var level: LogAgentLevel = .debug

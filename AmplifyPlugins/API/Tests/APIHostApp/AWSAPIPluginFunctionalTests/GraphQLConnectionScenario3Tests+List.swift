@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -38,7 +38,8 @@ extension GraphQLConnectionScenario3Tests {
         let commentContent = "content".withUUID
         guard let post = try await createPost(title: "title".withUUID),
              try await createComment(postID: post.id, content: commentContent) != nil,
-             try await createComment(postID: post.id, content: commentContent) != nil else {
+             try await createComment(postID: post.id, content: commentContent) != nil
+        else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -78,7 +79,8 @@ extension GraphQLConnectionScenario3Tests {
 
         guard let post = try await createPost(title: "title".withUUID),
               try await createComment(postID: post.id, content: commentContent) != nil,
-              try await createComment(postID: post.id, content: commentContent) != nil else {
+              try await createComment(postID: post.id, content: commentContent) != nil
+        else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -137,13 +139,13 @@ extension GraphQLConnectionScenario3Tests {
 
         let post = Post3.keys
         let predicate = post.id == uuid && post.title == uniqueTitle
-        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate, limit: 1000))
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate, limit: 1_000))
         guard case var .success(posts) = graphQLResponse else {
             XCTFail("Missing successful response")
             return
         }
-        
-        while posts.count == 0 && posts.hasNextPage() {
+
+        while posts.isEmpty && posts.hasNextPage() {
             posts = try await posts.getNextPage()
         }
         XCTAssertEqual(posts.count, 1)
@@ -174,7 +176,7 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        while comments.count == 0 && comments.hasNextPage() {
+        while comments.isEmpty && comments.hasNextPage() {
             comments = try await comments.getNextPage()
         }
         XCTAssertEqual(comments.count, 1)

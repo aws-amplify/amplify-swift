@@ -31,7 +31,11 @@ on:
         description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
         required: false
         type: string
-        default: '-test-iterations 3 -retry-tests-on-failure'
+        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
+      retry_tests:
+        required: false
+        type: boolean
+        default: true
       os-runner:
         description: 'runs-on input'
         type: string
@@ -80,7 +84,7 @@ jobs:
 
       - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ inputs.retry_tests == true }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ inputs.scheme }}
@@ -94,7 +98,7 @@ jobs:
           other_flags: ${{ inputs.test_iterations_flags }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
-        if: steps.run-tests.outcome=='failure'
+        if: ${{ (steps.run-tests.outcome == 'failure') && (inputs.retry_tests == true) }}
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:

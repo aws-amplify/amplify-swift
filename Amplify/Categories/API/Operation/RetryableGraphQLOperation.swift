@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 
 
 // MARK: - RetryableGraphQLOperation
@@ -72,7 +72,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 
 }
 
-public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
+public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload: Decodable, Payload: Sendable {
 
     public typealias Payload = Payload
     public typealias SubscriptionEvents = GraphQLSubscriptionEvent<Payload>
@@ -91,7 +91,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
 
     public func subscribe() -> AnyPublisher<SubscriptionEvents, APIError> {
         let subject = PassthroughSubject<SubscriptionEvents, APIError>()
-        self.task = Task { await self.trySubscribe(subject) }
+        task = Task { await self.trySubscribe(subject) }
         return subject.eraseToAnyPublisher()
     }
 
@@ -99,7 +99,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
         var apiError: APIError?
         do {
             try Task.checkCancellation()
-            let sequence = try await self.nondeterminsticOperation.run()
+            let sequence = try await nondeterminsticOperation.run()
             defer { sequence.cancel() }
             for try await event in sequence {
                 try Task.checkCancellation()
@@ -122,13 +122,13 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
     }
 
     public func cancel() {
-        self.task?.cancel()
-        self.nondeterminsticOperation.cancel()
+        task?.cancel()
+        nondeterminsticOperation.cancel()
     }
 }
 
-extension AsyncSequence {
-    fileprivate var asyncStream: AsyncStream<Self.Element> {
+private extension AsyncSequence {
+    var asyncStream: AsyncStream<Self.Element> {
         AsyncStream { continuation in
             Task {
                 var it = self.makeAsyncIterator()
@@ -145,11 +145,11 @@ extension AsyncSequence {
     }
 }
 
-extension RetryableGraphQLSubscriptionOperation {
-    public static var log: Logger {
+public extension RetryableGraphQLSubscriptionOperation {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

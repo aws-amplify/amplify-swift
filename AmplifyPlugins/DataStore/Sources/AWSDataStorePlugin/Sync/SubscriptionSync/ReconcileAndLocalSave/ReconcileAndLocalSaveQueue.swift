@@ -6,9 +6,8 @@
 //
 
 import Amplify
-import Combine
+@preconcurrency import Combine
 import Foundation
-import AWSPluginsCore
 
 protocol ReconcileAndSaveOperationQueue {
     func addOperation(_ operation: ReconcileAndLocalSaveOperation, modelName: String)
@@ -43,8 +42,10 @@ enum ReconcileAndSaveQueueEvent {
 /// continue to operate.
 class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
 
-    private let serialQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
-                                            target: DispatchQueue.global())
+    private let serialQueue = DispatchQueue(
+        label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
+        target: DispatchQueue.global()
+    )
     private let reconcileAndSaveQueue: OperationQueue
     private var modelReconcileAndSaveOperations: [String: [UUID: ReconcileAndLocalSaveOperation]]
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
@@ -90,7 +91,7 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
     func cancelOperations(modelName: String) {
         serialQueue.async {
             if let operations = self.modelReconcileAndSaveOperations[modelName] {
-                operations.values.forEach { operation in
+                for operation in operations.values {
                     operation.cancel()
                 }
             }

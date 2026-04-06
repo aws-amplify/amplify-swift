@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 
 struct SignUpEventData {
@@ -12,11 +13,14 @@ struct SignUpEventData {
     let clientMetadata: [String: String]?
     let validationData: [String: String]?
     var session: String?
-    
-    init(username: String, 
+
+    init(
+        username: String,
+
          clientMetadata: [String: String]? = nil,
-         validationData: [String: String]? = nil,
-         session: String? = nil) {
+        validationData: [String: String]? = nil,
+        session: String? = nil
+    ) {
         self.username = username
         self.clientMetadata = clientMetadata
         self.validationData = validationData

@@ -9,8 +9,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class UploadSourceTests: XCTestCase {
 

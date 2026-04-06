@@ -82,8 +82,10 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
                                 guard case LoggingError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -249,8 +251,10 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Logging.configure(using: categoryConfig)
-        XCTAssertThrowsError(try Amplify.Logging.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.Logging.configure(using: categoryConfig),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

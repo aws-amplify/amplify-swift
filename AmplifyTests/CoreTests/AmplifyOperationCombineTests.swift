@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -181,7 +181,7 @@ class AmplifyOperationCombineTests: XCTestCase {
         let sink = Publishers.Zip(
             mockOp1.internalResultPublisher,
             mockOp2.internalResultPublisher
-        ).flatMap { (_, _) -> AnyPublisher<Int, APIError> in
+        ).flatMap { _, _ -> AnyPublisher<Int, APIError> in
             let mockOp = MockPublisherOperation(responder: failureResponder)
             mockOp.main()
             return mockOp.internalResultPublisher
@@ -262,10 +262,10 @@ struct MockPublisherRequest: AmplifyOperationRequest {
 }
 
 extension HubPayloadEventName {
-    static var mockPublisherOperation = "MockPublisherOperation"
+    static let mockPublisherOperation = "MockPublisherOperation"
 }
 
-class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError> {
+class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIError>, @unchecked Sendable {
     typealias Responder = (MockPublisherOperation) -> Void
     let responder: Responder
 
@@ -280,7 +280,7 @@ class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIErr
     }
 
     override func main() {
-        self.responder(self)
+        responder(self)
     }
 
 }

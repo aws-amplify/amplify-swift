@@ -70,8 +70,10 @@ class SRPClientTests: XCTestCase {
         "05b324629b160935d15cdb18d1f8dfe55f2d84afaef0f761bec33eba21" +
         "78b426a7bf2985"
 
-        let u = try srpClientType().calculateUHexValue(clientPublicKeyHexValue: clientPublicKey,
-                                                       serverPublicKeyHexValue: serverPublicKey)
+        let u = try srpClientType().calculateUHexValue(
+            clientPublicKeyHexValue: clientPublicKey,
+            serverPublicKeyHexValue: serverPublicKey
+        )
         XCTAssertEqual(u, "c3a1193f8683863acc9c1d9532105c589696e3347b860080853435906b61342a".uppercased())
     }
 
@@ -108,8 +110,10 @@ class SRPClientTests: XCTestCase {
         "36d9644b1bf9a84deb0f8c99c208d4aa4095c8f7e95ecdba0e651562d0" +
         "d80ac6272a0785"
 
-        let u = try srpClientType().calculateUHexValue(clientPublicKeyHexValue: clientPublicKey,
-                                                       serverPublicKeyHexValue: serverPublicKey)
+        let u = try srpClientType().calculateUHexValue(
+            clientPublicKeyHexValue: clientPublicKey,
+            serverPublicKeyHexValue: serverPublicKey
+        )
         XCTAssertEqual(u, "bf078ed83130247cc16c6e07d646e39dda9362f5b1c6eb4f6368723b55f728e7".uppercased())
     }
 
@@ -144,8 +148,10 @@ class SRPClientTests: XCTestCase {
         "35aaab2db72fe322cd6d1cdd2eb8e8620726a6781a2890830c1f597c50798" +
         "8525156cbc17f39621a8e1963fa7cb6ac048"
 
-        let u = try srpClientType().calculateUHexValue(clientPublicKeyHexValue: clientPublicKey,
-                                                       serverPublicKeyHexValue: serverPublicKey)
+        let u = try srpClientType().calculateUHexValue(
+            clientPublicKeyHexValue: clientPublicKey,
+            serverPublicKeyHexValue: serverPublicKey
+        )
         XCTAssertEqual(u, "4aa339a24ed483e6058e9e7afdc001409a4586af2f08ff009e4c3f8d12a0bce4".uppercased())
     }
 
@@ -205,12 +211,14 @@ class SRPClientTests: XCTestCase {
         "3edf54d1f2b24e4afcd40d69888"
 
         let srpClient = try srpClient(NHexValue: validNHexValue, gHexValue: "2")
-        let S = try srpClient.calculateSharedSecret(username: "VEUHc88gProyji7",
-                                                    password: "dummy123@",
-                                                    saltHexValue: "8bb7dcf905f418bf27b6623aa4d2f58f",
-                                                    clientPrivateKeyHexValue: clientPrivateKey,
-                                                    clientPublicKeyHexValue: clientPublicKey,
-                                                    serverPublicKeyHexValue: serverPublicKey)
+        let S = try srpClient.calculateSharedSecret(
+            username: "VEUHc88gProyji7",
+            password: "dummy123@",
+            saltHexValue: "8bb7dcf905f418bf27b6623aa4d2f58f",
+            clientPrivateKeyHexValue: clientPrivateKey,
+            clientPublicKeyHexValue: clientPublicKey,
+            serverPublicKeyHexValue: serverPublicKey
+        )
         XCTAssertEqual(S, expectedSharedSecret.uppercased())
     }
 
@@ -267,12 +275,14 @@ class SRPClientTests: XCTestCase {
         "81ec6baefe0b389ee7248a7d58fdf523c1f1ebc3"
 
         let srpClient = try srpClient(NHexValue: validNHexValue, gHexValue: "2")
-        let S = try srpClient.calculateSharedSecret(username: "baTBpG5tZroyji7",
-                                                    password: "dummy123@",
-                                                    saltHexValue: "d1c1181916afc59efe7eb71674d627c",
-                                                    clientPrivateKeyHexValue: clientPrivateKey,
-                                                    clientPublicKeyHexValue: clientPublicKey,
-                                                    serverPublicKeyHexValue: serverPublicKey)
+        let S = try srpClient.calculateSharedSecret(
+            username: "baTBpG5tZroyji7",
+            password: "dummy123@",
+            saltHexValue: "d1c1181916afc59efe7eb71674d627c",
+            clientPrivateKeyHexValue: clientPrivateKey,
+            clientPublicKeyHexValue: clientPublicKey,
+            serverPublicKeyHexValue: serverPublicKey
+        )
         XCTAssertEqual(S, expectedSharedSecret.uppercased())
     }
 
@@ -322,7 +332,8 @@ class SRPClientTests: XCTestCase {
             saltHexValue: "8bb7dcf905f418bf27b6623aa4d2f58f",
             clientPrivateKeyHexValue: clientPrivateKey,
             clientPublicKeyHexValue: clientPublicKey,
-            serverPublicKeyHexValue: illegalServerPublicKey)
+            serverPublicKeyHexValue: illegalServerPublicKey
+        )
         ) { error in
             guard let srpError = error as? SRPError else {
                 XCTFail("Should return SRPError")

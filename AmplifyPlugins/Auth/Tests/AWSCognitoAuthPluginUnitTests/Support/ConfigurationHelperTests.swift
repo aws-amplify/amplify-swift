@@ -23,7 +23,8 @@ final class ConfigurationHelperTests: XCTestCase {
             userVerificationTypes: [.email],
             unauthenticatedIdentitiesEnabled: true,
             mfaConfiguration: nil,
-            mfaMethods: nil)
+            mfaMethods: nil
+        )
 
         guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
@@ -45,19 +46,23 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            oauth: AmplifyOutputsData.Auth.OAuth(identityProviders: ["provider1", "provider2"],
-                                                 domain: "domain",
-                                                 scopes: ["scope1", "scope2"],
-                                                 redirectSignInUri: ["redirect1", "redirect2"],
-                                                 redirectSignOutUri: ["signOut1", "signOut2"],
-                                                 responseType: "responseType"))
+            oauth: AmplifyOutputsData.Auth.OAuth(
+                identityProviders: ["provider1", "provider2"],
+                domain: "domain",
+                scopes: ["scope1", "scope2"],
+                redirectSignInUri: ["redirect1", "redirect2"],
+                redirectSignOutUri: ["signOut1", "signOut2"],
+                responseType: "responseType"
+            )
+        )
 
         guard let config = ConfigurationHelper.parseUserPoolData(config),
-              let hostedUIConfig = config.hostedUIConfig else {
+              let hostedUIConfig = config.hostedUIConfig
+        else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
-        
+
         XCTAssertEqual(hostedUIConfig.clientId, "clientId")
         XCTAssertNil(hostedUIConfig.clientSecret, "Client secret should be nil as its not supported in Gen2")
         XCTAssertEqual(hostedUIConfig.oauth.scopes, ["scope1", "scope2"])
@@ -72,14 +77,18 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            passwordPolicy: .init(minLength: 5,
-                                  requireNumbers: true,
-                                  requireLowercase: true,
-                                  requireUppercase: true,
-                                  requireSymbols: true))
+            passwordPolicy: .init(
+                minLength: 5,
+                requireNumbers: true,
+                requireLowercase: true,
+                requireUppercase: true,
+                requireSymbols: true
+            )
+        )
 
         guard let config = ConfigurationHelper.parseUserPoolData(config),
-              let result = config.passwordProtectionSettings else {
+              let result = config.passwordProtectionSettings
+        else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -97,7 +106,8 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            usernameAttributes: [.email, .phoneNumber])
+            usernameAttributes: [.email, .phoneNumber]
+        )
 
         guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
@@ -126,7 +136,8 @@ final class ConfigurationHelperTests: XCTestCase {
                 .preferredUsername,
                 .profile,
                 .website
-            ])
+            ]
+        )
 
         guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
@@ -161,7 +172,8 @@ final class ConfigurationHelperTests: XCTestCase {
                 .sub,
                 .updatedAt,
                 .zoneinfo
-            ])
+            ]
+        )
 
         guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
@@ -177,7 +189,8 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            userVerificationTypes: [.phoneNumber, .email])
+            userVerificationTypes: [.phoneNumber, .email]
+        )
 
         guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
@@ -195,14 +208,15 @@ final class ConfigurationHelperTests: XCTestCase {
         let config = AuthConfiguration
             .userPools(.init(
                 poolId: "",
-                clientId: "", 
+                clientId: "",
                 region: "",
                 passwordProtectionSettings: .init(from: .init(
                     minLength: 8,
                     requireNumbers: true,
                     requireLowercase: true,
                     requireUppercase: true,
-                    requireSymbols: true)), 
+                    requireSymbols: true
+                )),
                 usernameAttributes: [
                     .init(from: .email),
                     .init(from: .phoneNumber)
@@ -214,7 +228,8 @@ final class ConfigurationHelperTests: XCTestCase {
                 verificationMechanisms: [
                     .init(from: .email),
                     .init(from: .phoneNumber)
-                ]))
+                ]
+            ))
         let json = ConfigurationHelper.createUserPoolJsonConfiguration(config)
 
         guard let authConfig = json.Auth?.Default else {

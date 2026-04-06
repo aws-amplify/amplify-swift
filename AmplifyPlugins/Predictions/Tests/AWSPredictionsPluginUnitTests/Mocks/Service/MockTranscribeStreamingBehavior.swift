@@ -5,16 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSTranscribeStreaming
+import XCTest
 @testable import AWSPredictionsPlugin
 
 class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {
-    var startStreamingResult: ((AWSTranscribeStreamingAdapter.StartStreamInput) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error>)? = nil
+    var startStreamingResult: ((AWSTranscribeStreamingAdapter.StartStreamInput) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error>)?
 
     func startStreamTranscription(input: AWSTranscribeStreamingAdapter.StartStreamInput) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error> {
-        guard let startStreamingResult = startStreamingResult else { throw MockBehaviorDefaultError() }
+        guard let startStreamingResult else { throw MockBehaviorDefaultError() }
         return try await startStreamingResult(input)
     }
 }

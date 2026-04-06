@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 import Network
 
 class LocalWebSocketServer {
-    let portNumber = UInt16.random(in: 49152..<65535)
+    let portNumber = UInt16.random(in: 49_152 ..< 65_535)
     var connections = [NWConnection]()
 
     var listener: NWListener?
@@ -78,7 +77,6 @@ class LocalWebSocketServer {
                 print("Socket in waiting state with error: \(error)")
             @unknown default:
                 print("Socket in unkown state -> \(state)")
-                break
             }
         }
 
@@ -88,14 +86,14 @@ class LocalWebSocketServer {
     }
 
     func stop() {
-        self.listener?.cancel()
+        listener?.cancel()
     }
 
     func sendTransientFailureToConnections() {
-        self.connections.forEach {
-            var metadata = NWProtocolWebSocket.Metadata(opcode: .close)
+        for connection in connections {
+            let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
             metadata.closeCode = .protocolCode(NWProtocolWebSocket.CloseCode.Defined.internalServerError)
-            $0.send(
+            connection.send(
                 content: nil,
                 contentContext: NWConnection.ContentContext(identifier: "WebSocket", metadata: [metadata]),
                 completion: .idempotent

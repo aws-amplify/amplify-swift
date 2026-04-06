@@ -17,7 +17,7 @@ import Foundation
 ///
 ///     let yesterday = Temporal.Date.now() - .days(1)
 ///     let sixMonthsAgo = Temporal.Date.now() - .months(6)
-public struct DateUnit {
+public struct DateUnit: @unchecked Sendable {
     let calendarComponent: Calendar.Component
     let value: Int
 
@@ -92,7 +92,7 @@ public protocol DateUnitOperable {
     static func - (left: Self, right: DateUnit) -> Self
 }
 
-extension TemporalSpec where Self: DateUnitOperable {
+public extension TemporalSpec where Self: DateUnitOperable {
 
     /// Add a `DateUnit` to a `Temporal.Date` or `Temporal.DateTime`
     ///
@@ -102,7 +102,7 @@ extension TemporalSpec where Self: DateUnitOperable {
     ///   - left: `Temporal.Date` or `Temporal.DateTime`
     ///   - right: `DateUnit` to add to `left`
     /// - Returns: A new `Temporal.Date` or `Temporal.DateTime` the `DateUnit` was added to.
-    public static func + (left: Self, right: DateUnit) -> Self {
+    static func + (left: Self, right: DateUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)
     }
 
@@ -114,7 +114,7 @@ extension TemporalSpec where Self: DateUnitOperable {
     ///   - left: `Temporal.Date` or `Temporal.DateTime`
     ///   - right: `DateUnit` to subtract from `left`
     /// - Returns: A new `Temporal.Date` or `Temporal.DateTime` the `DateUnit` was subtracted from.
-    public static func - (left: Self, right: DateUnit) -> Self {
+    static func - (left: Self, right: DateUnit) -> Self {
         return left.add(value: -right.value, to: right.calendarComponent)
     }
 }

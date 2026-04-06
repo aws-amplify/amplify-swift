@@ -8,12 +8,12 @@
 import AWSCognitoIdentity
 import ClientRuntime
 
-extension GetIdOutput: Codable {
+extension GetIdOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case identityId = "IdentityId"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let identityIdDecoded = try containerValues.decodeIfPresent(Swift.String.self, forKey: .identityId)

@@ -205,7 +205,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertEqual(queriedComment.post?.blog?.id, blog.id)
         XCTAssertNotNil(queriedPost.blog)
         XCTAssertEqual(queriedPost.blog?.id, blog.id)
-        
+
         queriedComment.post = nil
         // A mock GraphQL request is created to assert that the request variables contains the "postId"
         // with the value `nil` which is sent to the API to persist the removal of the association.
@@ -217,7 +217,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Failed to retrieve input object from GraphQL variables")
             return
         }
-        
+
         guard try await saveComment(queriedComment) != nil else {
             XCTFail("Failed to update comment")
             return
@@ -226,15 +226,15 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Failed to query comment without post")
             return
         }
-        
+
         XCTAssertNil(queriedCommentWithoutPost.post)
-        
+
         queriedPost.blog = nil
         guard try await  savePost(queriedPost) != nil else {
             XCTFail("Failed to update post")
             return
         }
-        
+
         guard let queriedPostWithoutBlog = try await queryPost(id: post.id) else {
             XCTFail("Failed to query post")
             return
@@ -251,7 +251,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     func saveComment(_ comment: Comment8? = nil, withPost post: Post8? = nil) async throws -> Comment8? {
         let commentToSave: Comment8
-        if let comment = comment {
+        if let comment {
             commentToSave = comment
         } else {
             commentToSave = Comment8(content: "content", post: post)
@@ -279,7 +279,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     func savePost(_ post: Post8? = nil, withBlog blog: Blog8? = nil) async throws -> Post8? {
         let postToSave: Post8
-        if let post = post {
+        if let post {
             postToSave = post
         } else {
             postToSave = Post8(name: "name", randomId: "randomId", blog: blog)
@@ -307,16 +307,20 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     func saveBlog(_ blog: Blog8? = nil) async throws -> Blog8? {
         let blogToSave: Blog8
-        if let blog = blog {
+        if let blog {
             blogToSave = blog
         } else {
-            let nestedModel = MyNestedModel8(id: UUID().uuidString,
-                                             nestedName: "nestedName",
-                                             notes: ["notes1", "notes2"])
-            let customModel = MyCustomModel8(id: UUID().uuidString,
-                                             name: "name",
-                                             desc: "desc",
-                                             children: [nestedModel])
+            let nestedModel = MyNestedModel8(
+                id: UUID().uuidString,
+                nestedName: "nestedName",
+                notes: ["notes1", "notes2"]
+            )
+            let customModel = MyCustomModel8(
+                id: UUID().uuidString,
+                name: "name",
+                desc: "desc",
+                children: [nestedModel]
+            )
             blogToSave = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
         }
 

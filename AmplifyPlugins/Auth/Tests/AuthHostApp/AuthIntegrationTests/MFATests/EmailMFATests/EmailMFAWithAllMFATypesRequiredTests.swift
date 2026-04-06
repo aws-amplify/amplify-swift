@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-import AWSCognitoAuthPlugin
 import AWSAPIPlugin
+import AWSCognitoAuthPlugin
+import XCTest
 
 // Follow MFATests/EmailMFAOnlyTests/Readme.md for test setup locally
 // Test class for MFA Required scenario with Email, TOTP, and SMS MFA enabled.
@@ -64,13 +64,15 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
 
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
-                password: password)
+                password: password
+            )
 
             // Step 2: Attempt to sign in with the newly created user
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: options)
+                options: options
+            )
 
             // Step 3: Ensure that MFA setup is required and TOTP and Email are available as options
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
@@ -103,13 +105,15 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
                 password: password,
-                email: username)
+                email: username
+            )
 
             // Step 3: Attempt to sign in, which should prompt for Email MFA
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
 
             // Step 4: Verify that the next step is to confirm the Email MFA code
             guard case .confirmSignInWithOTP(let codeDetails) = result.nextStep else {
@@ -131,7 +135,8 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
 
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: mfaCode,
-                options: .init())
+                options: .init()
+            )
 
             // Step 6: Ensure that the sign-in is complete
             guard case .done = confirmSignInResult.nextStep else {
@@ -160,13 +165,15 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
             // Step 2: Sign up a new user
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
-                password: password)
+                password: password
+            )
 
             // Step 3: Initiate sign-in, expecting MFA setup selection
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
 
             // Step 4: Verify that the next step is to select an MFA type
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
@@ -210,7 +217,8 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
             }
             confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: mfaCode,
-                options: .init())
+                options: .init()
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Expected .done step after confirming MFA")
                 return
@@ -240,13 +248,15 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
 
             _ = try await AuthSignInHelper.signUpUserReturningResult(
                 username: username,
-                password: password)
+                password: password
+            )
 
             // Step 1: initiate sign in
             let result = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithMFASetupSelection for next step")
                 return
@@ -272,7 +282,8 @@ class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
             let pluginOptions = AWSAuthConfirmSignInOptions(friendlyDeviceName: "device")
             confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: totpCode,
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Expected .done step after confirming MFA")
                 return

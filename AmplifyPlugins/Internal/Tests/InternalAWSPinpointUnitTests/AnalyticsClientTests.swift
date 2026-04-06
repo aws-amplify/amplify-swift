@@ -1,14 +1,14 @@
 //
-//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import StoreKit
 import XCTest
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class AnalyticsClientTests: XCTestCase {
     private var analyticsClient: AnalyticsClient!
@@ -35,8 +35,10 @@ class AnalyticsClientTests: XCTestCase {
     func testCreateAppleMonetizationEvent() {
         let transaction = MockTransaction(transactionId: "transactionId", quantity: 5)
         let product = MockProduct(productId: "producId", price: 2.5)
-        let event = analyticsClient.createAppleMonetizationEvent(with: transaction,
-                                                                 with: product)
+        let event = analyticsClient.createAppleMonetizationEvent(
+            with: transaction,
+            with: product
+        )
 
         XCTAssertEqual(event.eventType, "_monetization.purchase")
         XCTAssertEqual(event.attributes["_store"], "Apple")
@@ -49,14 +51,16 @@ class AnalyticsClientTests: XCTestCase {
 
     func testCreateVirtualMonetizationEvent() {
         let productId = "productIt"
-        let itemPrice: Double = 5.25
+        let itemPrice = 5.25
         let quantity = 2
         let currency = "USD"
 
-        let event = analyticsClient.createVirtualMonetizationEvent(withProductId: productId,
-                                                                   withItemPrice: itemPrice,
-                                                                   withQuantity: quantity,
-                                                                   withCurrency: currency)
+        let event = analyticsClient.createVirtualMonetizationEvent(
+            withProductId: productId,
+            withItemPrice: itemPrice,
+            withQuantity: quantity,
+            withCurrency: currency
+        )
 
         XCTAssertEqual(event.eventType, "_monetization.purchase")
         XCTAssertEqual(event.attributes["_store"], "Virtual")
@@ -152,14 +156,14 @@ class AnalyticsClientTests: XCTestCase {
     }
 }
 
-private class MockTransaction: SKPaymentTransaction {
+private class MockTransaction: SKPaymentTransaction, @unchecked Sendable {
     private let _transactionId: String
     private let _payment: SKPayment
     private class MockPayment: SKPayment {
         private let _quantity: Int
 
         init(quantity: Int) {
-            _quantity = quantity
+            self._quantity = quantity
         }
 
         override var quantity: Int {
@@ -168,10 +172,12 @@ private class MockTransaction: SKPaymentTransaction {
 
     }
 
-    init(transactionId: String,
-         quantity: Int) {
-        _transactionId = transactionId
-        _payment = MockPayment(quantity: quantity)
+    init(
+        transactionId: String,
+        quantity: Int
+    ) {
+        self._transactionId = transactionId
+        self._payment = MockPayment(quantity: quantity)
     }
 
     override var transactionIdentifier: String? {
@@ -183,14 +189,16 @@ private class MockTransaction: SKPaymentTransaction {
     }
 }
 
-private class MockProduct: SKProduct {
+private class MockProduct: SKProduct, @unchecked Sendable {
     private let _productId: String
     private let _price: Double
 
-    init(productId: String,
-         price: Double) {
-        _productId = productId
-        _price = price
+    init(
+        productId: String,
+        price: Double
+    ) {
+        self._productId = productId
+        self._price = price
     }
 
     override var productIdentifier: String {

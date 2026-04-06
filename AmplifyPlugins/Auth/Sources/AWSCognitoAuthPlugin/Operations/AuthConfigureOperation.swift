@@ -5,41 +5,47 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-import ClientRuntime
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 typealias ConfigureOperation = AmplifyOperation<
     AuthConfigureRequest,
     Void,
-    AuthError>
+    AuthError
+>
 
-class AuthConfigureOperation: ConfigureOperation {
+class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
 
     let authConfiguration: AuthConfiguration
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
 
-    init(request: AuthConfigureRequest,
-         authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine) {
+    init(
+        request: AuthConfigureRequest,
+        authStateMachine: AuthStateMachine,
+        credentialStoreStateMachine: CredentialStoreStateMachine
+    ) {
 
         self.authConfiguration = request.authConfiguration
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        super.init(categoryType: .auth,
-                   eventName: "InternalConfigureAuth",
-                   request: request)
+        super.init(
+            categoryType: .auth,
+            eventName: "InternalConfigureAuth",
+            request: request
+        )
     }
 
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             dispatch(result: .failure(AuthError.configuration(
                 "Configuration operation was cancelled",
-                "", nil)))
+                "", nil
+            )))
             return
         }
 

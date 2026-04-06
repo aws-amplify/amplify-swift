@@ -36,7 +36,8 @@ public extension AWSCognitoAuthPlugin {
     func fetchMFAPreference() async throws -> UserMFAPreference {
         let task = FetchMFAPreferenceTask(
             authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await task.value
     }
 
@@ -50,7 +51,8 @@ public extension AWSCognitoAuthPlugin {
             totpPreference: totp,
             emailPreference: email,
             authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await task.value
     }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TokenParserHelper {
+enum TokenParserHelper {
 
     static func getAuthUser(accessToken: String) throws -> AWSAuthUser {
         let tokenSplit = accessToken.split(separator: ".")
@@ -20,11 +20,14 @@ struct TokenParserHelper {
         let paddedLength = base64.count + (4 - (base64.count % 4)) % 4
 
         let base64Padding = base64.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
-        guard let encodedData = Data(base64Encoded: base64Padding,
-                                     options: .ignoreUnknownCharacters),
+        guard let encodedData = Data(
+            base64Encoded: base64Padding,
+            options: .ignoreUnknownCharacters
+        ),
               let jsonObject = try? JSONSerialization.jsonObject(
-                with: encodedData,
-                options: []) as? [String: Any]
+                  with: encodedData,
+                  options: []
+              ) as? [String: Any]
         else {
             throw SignInError.hostedUI(.tokenParsing)
         }

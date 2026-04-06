@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct ColorChallenge {
+    struct ColorChallenge {
         public let colors: [DisplayColor]
 
         public init(colors: [DisplayColor]) {
@@ -18,9 +18,9 @@ extension FaceLivenessSession {
     }
 }
 // swiftlint:disable identifier_name
-extension FaceLivenessSession {
+public extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
-    public struct DisplayColor {
+    struct DisplayColor {
         public let rgb: RGB
         public let duration: Double
         public let shouldScroll: Bool
@@ -33,7 +33,7 @@ extension FaceLivenessSession {
     }
 
     @_spi(PredictionsFaceLiveness)
-    public struct RGB {
+    struct RGB {
         public let _values: [Int]
         public let red: Double
         public let green: Double

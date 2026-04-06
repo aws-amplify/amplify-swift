@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps: Comment6
  */
 class Comment6Wrapper: NSCopying {
@@ -22,7 +22,7 @@ class Comment6Wrapper: NSCopying {
             "content": content,
             "post": post.toMap(modelSchema: Post6.schema)
         ]
-        self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+        self.model = try FlutterSerializedModel(id: UUID().uuidString, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }
 
     init(model: FlutterSerializedModel) {
@@ -30,18 +30,18 @@ class Comment6Wrapper: NSCopying {
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func content() -> JSONValue? {
-        return self.model.values["content"]
+        return model.values["content"]
     }
     func post() -> JSONValue? {
-        return self.model.values["post"]
+        return model.values["post"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {

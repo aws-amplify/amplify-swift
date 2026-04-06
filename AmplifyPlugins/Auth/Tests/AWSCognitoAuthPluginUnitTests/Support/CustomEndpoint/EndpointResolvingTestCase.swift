@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
-import Amplify
 
 class EndpointResolvingTestCase: XCTestCase {
     /// Given: A String representation of a URL.

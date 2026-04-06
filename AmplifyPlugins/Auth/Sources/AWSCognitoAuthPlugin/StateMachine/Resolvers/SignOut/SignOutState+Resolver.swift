@@ -37,16 +37,20 @@ extension SignOutState {
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
                 }
-                return resolveSigningOutLocally(byApplying: signOutEvent,
-                                                from: oldState,
-                                                signedInData: signedInData)
+                return resolveSigningOutLocally(
+                    byApplying: signOutEvent,
+                    from: oldState,
+                    signedInData: signedInData
+                )
             case .signingOutHostedUI(let signedInData):
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
                 }
-                return resolveHostedUISignOut(byApplying: signOutEvent,
-                                              signedInData: signedInData,
-                                              from: oldState)
+                return resolveHostedUISignOut(
+                    byApplying: signOutEvent,
+                    signedInData: signedInData,
+                    from: oldState
+                )
             case .buildingRevokeTokenError:
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
@@ -61,58 +65,79 @@ extension SignOutState {
 
         private func resolveNotStarted(
             byApplying signOutEvent: SignOutEvent,
-            from oldState: SignOutState) -> StateResolution<SignOutState> {
+            from oldState: SignOutState
+        ) -> StateResolution<SignOutState> {
                 switch signOutEvent.eventType {
                 case .signOutGlobally(let signedInData, hostedUIError: let hostedUIError):
-                    let action = SignOutGlobally(signedInData: signedInData,
-                                                 hostedUIError: hostedUIError)
+                    let action = SignOutGlobally(
+                        signedInData: signedInData,
+                        hostedUIError: hostedUIError
+                    )
                     return StateResolution(
                         newState: SignOutState.signingOutGlobally,
                         actions: [action]
                     )
-                case .revokeToken(let signedInData,
-                                  hostedUIError: let hostedUIError,
-                                  globalSignOutError: let globalSignOutError):
-                    let action = RevokeToken(signedInData: signedInData,
-                                             hostedUIError: hostedUIError,
-                                             globalSignOutError: globalSignOutError)
+                case .revokeToken(
+                    let signedInData,
+                    hostedUIError: let hostedUIError,
+                    globalSignOutError: let globalSignOutError
+                ):
+                    let action = RevokeToken(
+                        signedInData: signedInData,
+                        hostedUIError: hostedUIError,
+                        globalSignOutError: globalSignOutError
+                    )
                     return StateResolution(
                         newState: SignOutState.revokingToken,
                         actions: [action]
                     )
                 case .invokeHostedUISignOut(let signOutEventData, let signedInData):
-                    let action = ShowHostedUISignOut(signOutEvent: signOutEventData,
-                                                     signInData: signedInData)
+                    let action = ShowHostedUISignOut(
+                        signOutEvent: signOutEventData,
+                        signInData: signedInData
+                    )
                     return .init(newState: .signingOutHostedUI(signedInData), actions: [action])
                 case .signOutGuest:
-                    let action = SignOutLocally(hostedUIError: nil,
-                                                globalSignOutError: nil,
-                                                revokeTokenError: nil)
-                    return .init(newState: .signingOutLocally(nil),
-                                 actions: [action])
+                    let action = SignOutLocally(
+                        hostedUIError: nil,
+                        globalSignOutError: nil,
+                        revokeTokenError: nil
+                    )
+                    return .init(
+                        newState: .signingOutLocally(nil),
+                        actions: [action]
+                    )
                 default:
                     return .from(oldState)
                 }
             }
 
-        private func resolveHostedUISignOut(byApplying signOutEvent: SignOutEvent,
-                                            signedInData: SignedInData,
-                                            from oldState: SignOutState)
+        private func resolveHostedUISignOut(
+            byApplying signOutEvent: SignOutEvent,
+            signedInData: SignedInData,
+            from oldState: SignOutState
+        )
         -> StateResolution<SignOutState> {
             switch signOutEvent.eventType {
             case .signOutGlobally(let signedInData, hostedUIError: let hostedUIError):
-                let action = SignOutGlobally(signedInData: signedInData,
-                                             hostedUIError: hostedUIError)
+                let action = SignOutGlobally(
+                    signedInData: signedInData,
+                    hostedUIError: hostedUIError
+                )
                 return StateResolution(
                     newState: SignOutState.signingOutGlobally,
                     actions: [action]
                 )
-            case .revokeToken(let signedInData,
-                              hostedUIError: let hostedUIError,
-                              globalSignOutError: let globalSignOutError):
-                let action = RevokeToken(signedInData: signedInData,
-                                         hostedUIError: hostedUIError,
-                                         globalSignOutError: globalSignOutError)
+            case .revokeToken(
+                let signedInData,
+                hostedUIError: let hostedUIError,
+                globalSignOutError: let globalSignOutError
+            ):
+                let action = RevokeToken(
+                    signedInData: signedInData,
+                    hostedUIError: hostedUIError,
+                    globalSignOutError: globalSignOutError
+                )
                 return StateResolution(
                     newState: SignOutState.revokingToken,
                     actions: [action]
@@ -127,26 +152,38 @@ extension SignOutState {
 
         private func resolveSigningOutGlobally(
             byApplying signOutEvent: SignOutEvent,
-            from oldState: SignOutState) -> StateResolution<SignOutState> {
+            from oldState: SignOutState
+        ) -> StateResolution<SignOutState> {
                 switch signOutEvent.eventType {
-                case .revokeToken(let signedInData,
-                                  hostedUIError: let hostedUIError,
-                                  globalSignOutError: let globalSignOutError):
-                    let action = RevokeToken(signedInData: signedInData,
-                                             hostedUIError: hostedUIError,
-                                             globalSignOutError: globalSignOutError)
+                case .revokeToken(
+                    let signedInData,
+                    hostedUIError: let hostedUIError,
+                    globalSignOutError: let globalSignOutError
+                ):
+                    let action = RevokeToken(
+                        signedInData: signedInData,
+                        hostedUIError: hostedUIError,
+                        globalSignOutError: globalSignOutError
+                    )
                     return StateResolution(
                         newState: SignOutState.revokingToken,
                         actions: [action]
                     )
-                case .globalSignOutError(let signedInData,
-                                         globalSignOutError: let globalSignOutError,
-                                         hostedUIError: let hostedUIError):
-                    let action = BuildRevokeTokenError(signedInData: signedInData,
-                                                       hostedUIError: hostedUIError,
-                                                       globalSignOutError: globalSignOutError)
-                    return .init(newState: .buildingRevokeTokenError,
-                                 actions: [action])
+
+                case .globalSignOutError(
+                    let signedInData,
+                    globalSignOutError: let globalSignOutError,
+                    hostedUIError: let hostedUIError
+                ):
+                    let action = BuildRevokeTokenError(
+                        signedInData: signedInData,
+                        hostedUIError: hostedUIError,
+                        globalSignOutError: globalSignOutError
+                    )
+                    return .init(
+                        newState: .buildingRevokeTokenError,
+                        actions: [action]
+                    )
 
                 default:
                     return .from(oldState)
@@ -155,35 +192,49 @@ extension SignOutState {
 
         private func resolveRevokingToken(
             byApplying signOutEvent: SignOutEvent,
-            from oldState: SignOutState) -> StateResolution<SignOutState> {
+            from oldState: SignOutState
+        ) -> StateResolution<SignOutState> {
                 switch signOutEvent.eventType {
-                case .signOutLocally(let signedInData,
-                                     hostedUIError: let hostedUIError,
-                                     globalSignOutError: let globalSignOutError,
-                                     revokeTokenError: let revokeTokenError):
-                    let action = SignOutLocally(hostedUIError: hostedUIError,
-                                                globalSignOutError: globalSignOutError,
-                                                revokeTokenError: revokeTokenError)
-                    return .init(newState: .signingOutLocally(signedInData),
-                                 actions: [action])
+                case .signOutLocally(
+                    let signedInData,
+                    hostedUIError: let hostedUIError,
+                    globalSignOutError: let globalSignOutError,
+                    revokeTokenError: let revokeTokenError
+                ):
+                    let action = SignOutLocally(
+                        hostedUIError: hostedUIError,
+                        globalSignOutError: globalSignOutError,
+                        revokeTokenError: revokeTokenError
+                    )
+                    return .init(
+                        newState: .signingOutLocally(signedInData),
+                        actions: [action]
+                    )
                 default:
                     return .from(oldState)
                 }
             }
 
-        private func resolveBuildingRevokeTokenError (
+        private func resolveBuildingRevokeTokenError(
             byApplying signOutEvent: SignOutEvent,
-            from oldState: SignOutState) -> StateResolution<SignOutState> {
+            from oldState: SignOutState
+        ) -> StateResolution<SignOutState> {
                 switch signOutEvent.eventType {
-                case .signOutLocally(let signedInData,
-                                     hostedUIError: let hostedUIError,
-                                     globalSignOutError: let globalSignOutError,
-                                     revokeTokenError: let revokeTokenError):
-                    let action = SignOutLocally(hostedUIError: hostedUIError,
-                                                globalSignOutError: globalSignOutError,
-                                                revokeTokenError: revokeTokenError)
-                    return .init(newState: .signingOutLocally(signedInData),
-                                 actions: [action])
+                case .signOutLocally(
+                    let signedInData,
+                    hostedUIError: let hostedUIError,
+                    globalSignOutError: let globalSignOutError,
+                    revokeTokenError: let revokeTokenError
+                ):
+                    let action = SignOutLocally(
+                        hostedUIError: hostedUIError,
+                        globalSignOutError: globalSignOutError,
+                        revokeTokenError: revokeTokenError
+                    )
+                    return .init(
+                        newState: .signingOutLocally(signedInData),
+                        actions: [action]
+                    )
                 default:
                     return .from(oldState)
                 }
@@ -192,12 +243,15 @@ extension SignOutState {
         private func resolveSigningOutLocally(
             byApplying event: SignOutEvent,
             from oldState: SignOutState,
-            signedInData: SignedInData?)
+            signedInData: SignedInData?
+        )
         -> StateResolution<SignOutState> {
             switch event.eventType {
-            case .signedOutSuccess(hostedUIError: let hostedUIError,
-                                   globalSignOutError: let globalSignOutError,
-                                   revokeTokenError: let revokeTokenError):
+            case .signedOutSuccess(
+                hostedUIError: let hostedUIError,
+                globalSignOutError: let globalSignOutError,
+                revokeTokenError: let revokeTokenError
+            ):
                 let signedOutData = SignedOutData(
                     lastKnownUserName: signedInData?.username,
                     hostedUIError: hostedUIError,

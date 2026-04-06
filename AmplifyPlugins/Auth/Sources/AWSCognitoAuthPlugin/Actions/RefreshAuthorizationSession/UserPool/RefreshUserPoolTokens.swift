@@ -6,10 +6,10 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
-import Foundation
+import AWSPluginsCore
 import ClientRuntime
+import Foundation
 
 struct RefreshUserPoolTokens: Action {
 
@@ -28,38 +28,45 @@ struct RefreshUserPoolTokens: Action {
                 return
             }
 
-            let authEnv = try environment.authEnvironment()
             let config = environment.userPoolConfiguration
             let client = try? environment.cognitoUserPoolFactory()
             let existingTokens = existingSignedIndata.cognitoUserPoolTokens
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: existingSignedIndata.username,
-                with: environment)
+                with: environment
+            )
 
-            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-                for: existingSignedIndata.username,
-                credentialStoreClient: authEnv.credentialsClient)
+            let deviceKey: String? = {
+                if case .metadata(let data) = deviceMetadata {
+                    return data.deviceKey
+                }
+                return nil
+            }()
 
-            let input = await InitiateAuthInput.refreshAuthInput(
-                username: existingSignedIndata.username,
-                refreshToken: existingTokens.refreshToken,
+            let input = GetTokensFromRefreshTokenInput(
+                clientId: config.clientId,
                 clientMetadata: [:],
-                asfDeviceId: asfDeviceId,
-                deviceMetadata: deviceMetadata,
-                environment: environment)
+                clientSecret: config.clientSecret,
+                deviceKey: deviceKey,
+                refreshToken: existingTokens.refreshToken
+            )
 
-            logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
+            logVerbose(
+                "\(#fileID) Starting get tokens from refresh token", environment: environment
+            )
 
-            let response = try await client?.initiateAuth(input: input)
+            let response = try await client?.getTokensFromRefreshToken(input: input)
 
-            logVerbose("\(#fileID) Initiate auth response received", environment: environment)
+            logVerbose(
+                "\(#fileID) Get tokens from refresh token response received",
+                environment: environment
+            )
 
             guard let authenticationResult = response?.authenticationResult,
-                  let idToken = authenticationResult.idToken,
-                  let accessToken = authenticationResult.accessToken
+                let idToken = authenticationResult.idToken,
+                let accessToken = authenticationResult.accessToken
             else {
-
                 let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                 await dispatcher.send(event)
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
@@ -69,20 +76,22 @@ struct RefreshUserPoolTokens: Action {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
-                refreshToken: existingTokens.refreshToken,
-                expiresIn: authenticationResult.expiresIn
+                refreshToken: authenticationResult.refreshToken ?? existingTokens.refreshToken
             )
+
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
-                cognitoUserPoolTokens: userPoolTokens)
+                cognitoUserPoolTokens: userPoolTokens
+            )
             let event: RefreshSessionEvent
 
             if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                 let provider = CognitoUserPoolLoginsMap(
                     idToken: idToken,
                     region: config.region,
-                    poolId: config.poolId)
+                    poolId: config.poolId
+                )
                 event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
             } else {
                 event = .init(eventType: .refreshedCognitoUserPool(signedInData))
@@ -96,16 +105,18 @@ struct RefreshUserPoolTokens: Action {
             await dispatcher.send(event)
         }
 
-        logVerbose("\(#fileID) Initiate auth complete", environment: environment)
+        logVerbose("\(#fileID) Get tokens from refresh token complete", environment: environment)
     }
 }
 
 extension RefreshUserPoolTokens: DefaultLogger {
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    static var log: Logger {
+        Amplify.Logging.logger(
+            forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self)
+        )
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }
@@ -114,7 +125,7 @@ extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "existingSignedInData": existingSignedIndata
+            "existingSignedInData": existingSignedIndata,
         ]
     }
 }

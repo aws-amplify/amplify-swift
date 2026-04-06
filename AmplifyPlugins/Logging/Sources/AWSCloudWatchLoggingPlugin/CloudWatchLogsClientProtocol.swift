@@ -851,7 +851,6 @@ public protocol CloudWatchLogsClientProtocol {
     /// Performs the `ListTagsLogGroup` operation on the `Logs_20140328` service.
     ///
     /// The ListTagsLogGroup operation is on the path to deprecation. We recommend that you use [ListTagsForResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html) instead. Lists the tags for the specified log group.
-    @available(*, deprecated, message: "Please use the generic tagging API ListTagsForResource")
     ///
     /// - Parameter ListTagsLogGroupInput : [no documentation found]
     ///
@@ -862,6 +861,7 @@ public protocol CloudWatchLogsClientProtocol {
     /// __Possible Exceptions:__
     /// - `ResourceNotFoundException` : The specified resource does not exist.
     /// - `ServiceUnavailableException` : The service cannot complete the request.
+    @available(*, deprecated, message: "Please use the generic tagging API ListTagsForResource")
     func listTagsLogGroup(input: ListTagsLogGroupInput) async throws -> ListTagsLogGroupOutput
     /// Performs the `PutAccountPolicy` operation on the `Logs_20140328` service.
     ///
@@ -1214,7 +1214,6 @@ public protocol CloudWatchLogsClientProtocol {
     /// Performs the `TagLogGroup` operation on the `Logs_20140328` service.
     ///
     /// The TagLogGroup operation is on the path to deprecation. We recommend that you use [TagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_TagResource.html) instead. Adds or updates the specified tags for the specified log group. To list the tags for a log group, use [ListTagsForResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html). To remove tags, use [UntagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UntagResource.html). For more information about tags, see [Tag Log Groups in Amazon CloudWatch Logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/Working-with-log-groups-and-streams.html#log-group-tagging) in the Amazon CloudWatch Logs User Guide. CloudWatch Logs doesn’t support IAM policies that prevent users from assigning specified tags to log groups using the aws:Resource/key-name  or aws:TagKeys condition keys. For more information about using tags to control access, see [Controlling access to Amazon Web Services resources using tags](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html).
-    @available(*, deprecated, message: "Please use the generic tagging API TagResource")
     ///
     /// - Parameter TagLogGroupInput : [no documentation found]
     ///
@@ -1225,6 +1224,7 @@ public protocol CloudWatchLogsClientProtocol {
     /// __Possible Exceptions:__
     /// - `InvalidParameterException` : A parameter is specified incorrectly.
     /// - `ResourceNotFoundException` : The specified resource does not exist.
+    @available(*, deprecated, message: "Please use the generic tagging API TagResource")
     func tagLogGroup(input: TagLogGroupInput) async throws -> TagLogGroupOutput
     /// Performs the `TagResource` operation on the `Logs_20140328` service.
     ///
@@ -1259,7 +1259,6 @@ public protocol CloudWatchLogsClientProtocol {
     /// Performs the `UntagLogGroup` operation on the `Logs_20140328` service.
     ///
     /// The UntagLogGroup operation is on the path to deprecation. We recommend that you use [UntagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UntagResource.html) instead. Removes the specified tags from the specified log group. To list the tags for a log group, use [ListTagsForResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html). To add tags, use [TagResource](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_TagResource.html). CloudWatch Logs doesn’t support IAM policies that prevent users from assigning specified tags to log groups using the aws:Resource/key-name  or aws:TagKeys condition keys.
-    @available(*, deprecated, message: "Please use the generic tagging API UntagResource")
     ///
     /// - Parameter UntagLogGroupInput : [no documentation found]
     ///
@@ -1269,6 +1268,7 @@ public protocol CloudWatchLogsClientProtocol {
     ///
     /// __Possible Exceptions:__
     /// - `ResourceNotFoundException` : The specified resource does not exist.
+    @available(*, deprecated, message: "Please use the generic tagging API UntagResource")
     func untagLogGroup(input: UntagLogGroupInput) async throws -> UntagLogGroupOutput
     /// Performs the `UntagResource` operation on the `Logs_20140328` service.
     ///

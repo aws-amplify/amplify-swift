@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSAPIPlugin
+import AWSPluginsCore
+import Combine
 import Foundation
 import XCTest
-import Combine
 @testable import AWSDataStorePlugin
-import AWSPluginsCore
-import AWSAPIPlugin
 
 #if !os(watchOS)
 @testable import DataStoreHostApp
@@ -19,15 +19,15 @@ import AWSAPIPlugin
 
 class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     var amplifyConfig: AmplifyConfiguration!
-    
+
     var apiOnly: Bool = false
     var modelsOnly: Bool = false
     var clearOnTearDown: Bool = false
-    
+
     override func setUp() {
         continueAfterFailure = false
     }
-    
+
     override func tearDown() async throws {
         if !(apiOnly || modelsOnly) {
             try await clearDataStore()
@@ -35,19 +35,19 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }
-    
+
     func setupConfig() {
         let basePath = "testconfiguration"
         let baseFileName = "AWSDataStoreCategoryPluginLazyLoadIntegrationTests"
         let configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
-        
+
         do {
             amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     func apiEndpointName() throws -> String {
         guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
               case .object(let value) = apiPlugin else {
@@ -55,68 +55,78 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         }
         return value.keys.first!
     }
-    
+
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose,
-               clearOnTearDown: Bool = false) async {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose,
+        clearOnTearDown: Bool = false
+    ) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
-            
+
             #if os(watchOS)
             try Amplify.add(plugin: AWSDataStorePlugin(
                 modelRegistration: models,
                 configuration: .custom(
                     errorHandler: { error in Amplify.Logging.error("DataStore ErrorHandler error: \(error)")},
                     syncMaxRecords: 100,
-                    disableSubscriptions: { false })))
+                    disableSubscriptions: { false }
+                )
+            ))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(
                 modelRegistration: models,
                 configuration: .custom(
                     errorHandler: { error in Amplify.Logging.error("DataStore ErrorHandler error: \(error)")},
-                    syncMaxRecords: 100)))
+                    syncMaxRecords: 100
+                )
+            ))
             #endif
             try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
-            
+
             try await Amplify.DataStore.start()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
-    func setUpDataStoreOnly(withModels models: AmplifyModelRegistration,
-                            logLevel: LogLevel = .verbose,
-                            clearOnTearDown: Bool = false) async {
+
+    func setUpDataStoreOnly(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose,
+        clearOnTearDown: Bool = false
+    ) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
-            
+
             #if os(watchOS)
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .subscriptionsDisabled))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             #endif
-                            
+
             try Amplify.configure(amplifyConfig)
-            
+
             try await deleteMutationEvents()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
-    func setUpModelRegistrationOnly(withModels models: AmplifyModelRegistration,
-                                    logLevel: LogLevel = .verbose) {
+
+    func setUpModelRegistrationOnly(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose
+    ) {
         modelsOnly = true
         models.registerModels(registry: ModelRegistry.self)
     }
-    
+
     func setupAPIOnly(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .verbose) async {
         apiOnly = true
         do {
@@ -128,15 +138,15 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     func deleteMutationEvents() async throws {
         try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
     }
-    
+
     func clearDataStore() async throws {
         try await Amplify.DataStore.clear()
     }
-    
+
     func startAndWaitForReady() async throws {
         var requests: Set<AnyCancellable> = []
         let dataStoreReady = expectation(description: "DataStore `ready` event received")
@@ -153,16 +163,16 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         try await startDataStore()
         await fulfillment(of: [dataStoreReady], timeout: 60)
     }
-    
+
     func startDataStore() async throws {
         try await Amplify.DataStore.start()
     }
-    
+
     func printDBPath() {
         let dbPath = DataStoreDebugger.dbFilePath
         print("DBPath: \(dbPath)")
     }
-    
+
     @discardableResult
     func createAndWaitForSync<M: Model>(_ model: M) async throws -> M {
         var requests: Set<AnyCancellable> = []
@@ -182,7 +192,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         await fulfillment(of: [modelSynced], timeout: 100)
         return savedModel
     }
-    
+
     @discardableResult
     func updateAndWaitForSync<M: Model>(_ model: M, assertVersion: Int? = nil) async throws -> M {
         var requests: Set<AnyCancellable> = []
@@ -195,7 +205,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             .filter { $0.mutationType == MutationEvent.MutationType.update.rawValue }
             .compactMap(\.version)
             .filter { version in
-                assertVersion.map({ $0 == version }) ?? true
+                assertVersion.map { $0 == version } ?? true
             }
             .sink { _ in
                 modelSynced.fulfill()
@@ -207,7 +217,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         return updatedModel
     }
 
-    func deleteAndWaitForSync<M: Model>(_ model: M) async throws {
+    func deleteAndWaitForSync(_ model: some Model) async throws {
         var requests: Set<AnyCancellable> = []
         let modelSynced = expectation(description: "delete model was synced successfully")
         let dataStoreEvents = HubPayload.EventName.DataStore.self
@@ -224,13 +234,13 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         try await Amplify.DataStore.delete(model)
         await fulfillment(of: [modelSynced], timeout: 10)
     }
-    
+
     enum AssertListState {
         case isNotLoaded(associatedIds: [String], associatedFields: [String])
         case isLoaded(count: Int)
     }
-    
-    func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
+
+    func assertList(_ list: List<some Model>, state: AssertListState) {
         switch state {
         case .isNotLoaded(let expectedAssociatedIds, let expectedAssociatedFields):
             if case .notLoaded(let associatedIdentifiers, let associatedFields) = list.listProvider.getState() {
@@ -247,14 +257,16 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             }
         }
     }
-    
+
     enum AssertLazyModelState<M: Model> {
         case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(model: M?)
     }
-    
-    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
-                                   state: AssertLazyModelState<M>) {
+
+    func assertLazyReference<M: Model>(
+        _ lazyModel: LazyReference<M>,
+        state: AssertLazyModelState<M>
+    ) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
@@ -264,7 +276,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             }
         case .loaded(let expectedModel):
             if case .loaded(let model) = lazyModel.modelProvider.getState() {
-                guard let expectedModel = expectedModel, let model = model else {
+                guard let expectedModel, let model else {
                     XCTAssertNil(model)
                     return
                 }
@@ -274,40 +286,48 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             }
         }
     }
-    
-    func assertModelExists<M: Model>(_ model: M) async throws {
+
+    func assertModelExists(_ model: some Model) async throws {
         let modelExists = try await modelExists(model)
         XCTAssertTrue(modelExists)
     }
-    
-    func assertModelDoesNotExist<M: Model>(_ model: M) async throws {
+
+    func assertModelDoesNotExist(_ model: some Model) async throws {
         let modelExists = try await modelExists(model)
         XCTAssertFalse(modelExists)
     }
-    
+
     func modelExists<M: Model>(_ model: M) async throws -> Bool {
         let identifierName = model.schema.primaryKey.sqlName
         let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
-        
-        let queriedModels = try await Amplify.DataStore.query(M.self,
-                                                              where: queryPredicate)
-        let metadataId = MutationSyncMetadata.identifier(modelName: model.modelName,
-                                                         modelId: model.identifier)
-        guard let metadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
-                                                               byId: metadataId) else {
+
+        let queriedModels = try await Amplify.DataStore.query(
+            M.self,
+            where: queryPredicate
+        )
+        let metadataId = MutationSyncMetadata.identifier(
+            modelName: model.modelName,
+            modelId: model.identifier
+        )
+        guard let metadata = try await Amplify.DataStore.query(
+            MutationSyncMetadata.self,
+            byId: metadataId
+        ) else {
             XCTFail("Could not retrieve metadata for model \(model)")
             throw "Could not retrieve metadata for model \(model)"
         }
-        
+
         return !(metadata.deleted && queriedModels.isEmpty)
     }
-    
+
     func query<M: Model>(for model: M) async throws -> M {
         let identifierName = model.schema.primaryKey.sqlName
         let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
-        
-        let queriedModels = try await Amplify.DataStore.query(M.self,
-                                                              where: queryPredicate)
+
+        let queriedModels = try await Amplify.DataStore.query(
+            M.self,
+            where: queryPredicate
+        )
         if queriedModels.count > 1 {
             XCTFail("Expected to find one model, found \(queriedModels.count). \(queriedModels)")
             throw "Expected to find one model, found \(queriedModels.count). \(queriedModels)"
@@ -320,21 +340,21 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
 }
 
-struct DataStoreDebugger {
-    
+enum DataStoreDebugger {
+
     static var dbFilePath: URL? { getAdapter()?.dbFilePath }
-    
+
     static func getAdapter() -> SQLiteStorageEngineAdapter? {
         if let dataStorePlugin = tryGetPlugin(),
            let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
            let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter {
             return adapter
         }
-        
+
         print("Could not get `SQLiteStorageEngineAdapter` from DataStore")
         return nil
     }
-    
+
     static func tryGetPlugin() -> AWSDataStorePlugin? {
         do {
             return try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as? AWSDataStorePlugin

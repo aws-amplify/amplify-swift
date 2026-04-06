@@ -19,7 +19,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     var inProcess: AmplifyAsyncSequence<InProcess> {
         let channel: AmplifyAsyncSequence<InProcess>
-        if let inProcessChannel = inProcessChannel {
+        if let inProcessChannel {
             channel = inProcessChannel
         } else {
             channel = AmplifyAsyncSequence<InProcess>(bufferingPolicy: bufferingPolicy)
@@ -35,25 +35,28 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     var value: Success {
         get async throws {
-            try await withTaskCancellationHandler(handler: {
-                Task {
-                    await cancel()
-                }
-            }, operation: {
-                try await withCheckedThrowingContinuation { continuation in
-                    if isCancelled {
-                        // immediately cancel is already cancelled
-                        continuation.resume(throwing: CancellationError())
-                    } else if let result = storedResult {
-                        // immediately send result if it is available
-                        valueContinuations.append(continuation)
-                        send(result)
-                    } else {
-                        // capture contination to use later
-                        valueContinuations.append(continuation)
+            try await withTaskCancellationHandler(
+                operation: {
+                    try await withCheckedThrowingContinuation { continuation in
+                        if isCancelled {
+                            // immediately cancel is already cancelled
+                            continuation.resume(throwing: CancellationError())
+                        } else if let result = storedResult {
+                            // immediately send result if it is available
+                            valueContinuations.append(continuation)
+                            send(result)
+                        } else {
+                            // capture contination to use later
+                            valueContinuations.append(continuation)
+                        }
+                    }
+                },
+                onCancel: {
+                    Task {
+                        await cancel()
                     }
                 }
-            })
+            )
         }
     }
 
@@ -63,7 +66,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
 
     func report(_ inProcess: InProcess?) async throws {
         if let channel = inProcessChannel {
-            if let inProcess = inProcess {
+            if let inProcess {
                 channel.send(inProcess)
             } else {
                 // nil indicates the sequence is done
@@ -77,7 +80,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
             send(result)
         }
         // store result for when the value property is used
-        self.storedResult = result
+        storedResult = result
         if let channel = inProcessChannel {
             channel.finish()
         }

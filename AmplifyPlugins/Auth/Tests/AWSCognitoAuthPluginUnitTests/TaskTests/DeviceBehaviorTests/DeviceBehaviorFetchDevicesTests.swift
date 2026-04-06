@@ -7,12 +7,12 @@
 
 import Foundation
 
-import XCTest
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import ClientRuntime
+import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
 
 class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
@@ -20,7 +20,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutput: { _ in
-                try ListDevicesOutput()
+                ListDevicesOutput()
             }
         )
     }
@@ -85,7 +85,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
                             deviceLastAuthenticatedDate: dateToTest,
                             deviceLastModifiedDate: dateToTest
                         )
-                    ], paginationToken: nil)
+                    ], paginationToken: nil
+                )
             }
         )
         let listDevicesResult = try await plugin.fetchDevices()

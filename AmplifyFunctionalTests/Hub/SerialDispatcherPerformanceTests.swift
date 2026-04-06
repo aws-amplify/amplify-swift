@@ -40,9 +40,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 10
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleChannel(listenerCount: listenerCount,
-                                                 dispatcherType: dispatcherTypeUnderTest,
-                                                 testCase: self)
+                .makeTestObjectsForSingleChannel(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -55,9 +57,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 100
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleChannel(listenerCount: listenerCount,
-                                                 dispatcherType: dispatcherTypeUnderTest,
-                                                 testCase: self)
+                .makeTestObjectsForSingleChannel(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -70,9 +74,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 1_000
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleChannel(listenerCount: listenerCount,
-                                                 dispatcherType: dispatcherTypeUnderTest,
-                                                 testCase: self)
+                .makeTestObjectsForSingleChannel(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -87,9 +93,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 10
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleDispatcher(listenerCount: listenerCount,
-                                                    dispatcherType: dispatcherTypeUnderTest,
-                                                    testCase: self)
+                .makeTestObjectsForSingleDispatcher(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -102,9 +110,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 100
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleDispatcher(listenerCount: listenerCount,
-                                                    dispatcherType: dispatcherTypeUnderTest,
-                                                    testCase: self)
+                .makeTestObjectsForSingleDispatcher(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -117,9 +127,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 1_000
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleDispatcher(listenerCount: listenerCount,
-                                                    dispatcherType: dispatcherTypeUnderTest,
-                                                    testCase: self)
+                .makeTestObjectsForSingleDispatcher(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -134,9 +146,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 10
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForMultipleDispatchers(listenerCount: listenerCount,
-                                                       dispatcherType: dispatcherTypeUnderTest,
-                                                       testCase: self)
+                .makeTestObjectsForMultipleDispatchers(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -149,9 +163,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 100
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForMultipleDispatchers(listenerCount: listenerCount,
-                                                       dispatcherType: dispatcherTypeUnderTest,
-                                                       testCase: self)
+                .makeTestObjectsForMultipleDispatchers(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)
@@ -164,9 +180,11 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         let listenerCount = 1_000
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForMultipleDispatchers(listenerCount: listenerCount,
-                                                       dispatcherType: dispatcherTypeUnderTest,
-                                                       testCase: self)
+                .makeTestObjectsForMultipleDispatchers(
+                    listenerCount: listenerCount,
+                    dispatcherType: dispatcherTypeUnderTest,
+                    testCase: self
+                )
 
             for dispatcher in testObjects.dispatchers {
                 dispatcher.dispatch(to: testObjects.listeners)

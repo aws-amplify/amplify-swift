@@ -17,10 +17,12 @@ public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable
 
     public private(set) var isCancelled: Bool = false
 
-    public init(parent: Cancellable? = nil,
-                bufferingPolicy: AsyncStream<Element>.Continuation.BufferingPolicy = .unbounded) {
+    public init(
+        parent: Cancellable? = nil,
+        bufferingPolicy: AsyncStream<Element>.Continuation.BufferingPolicy = .unbounded
+    ) {
         self.parent = parent
-        (asyncStream, continuation) = AsyncStream.makeStream(of: Element.self, bufferingPolicy: bufferingPolicy)
+        (self.asyncStream, self.continuation) = AsyncStream.makeStream(of: Element.self, bufferingPolicy: bufferingPolicy)
     }
 
     public func makeAsyncIterator() -> Iterator {

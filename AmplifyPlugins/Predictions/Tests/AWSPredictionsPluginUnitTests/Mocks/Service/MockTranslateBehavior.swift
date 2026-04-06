@@ -9,7 +9,7 @@ import AWSTranslate
 @testable import AWSPredictionsPlugin
 
 class MockTranslateBehavior: TranslateClientProtocol {
-    var translateTextResult: ((TranslateTextInput) async throws -> TranslateTextOutput)? = nil
+    var translateTextResult: ((TranslateTextInput) async throws -> TranslateTextOutput)?
 
     func translateText(
         input: TranslateTextInput

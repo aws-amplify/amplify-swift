@@ -31,27 +31,27 @@ extension AuthenticationError: AuthErrorConvertible {
 }
 
 extension AuthenticationError: Codable {
-    
+
     enum CodingKeys: CodingKey {
         case configuration, service, unknown
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         switch self {
         case .configuration(let message):
             try container.encode(message, forKey: .configuration)
-        case .service(let message, let error):
+        case .service(let message, _):
             try container.encode(message, forKey: .service)
         case .unknown(let message):
             try container.encode(message, forKey: .unknown)
         }
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         guard let key = container.allKeys.first else {
             throw DecodingError.dataCorrupted(
                 DecodingError.Context(
@@ -60,7 +60,7 @@ extension AuthenticationError: Codable {
                 )
             )
         }
-        
+
         switch key {
         case .configuration:
             let message = try container.decode(String.self, forKey: key)

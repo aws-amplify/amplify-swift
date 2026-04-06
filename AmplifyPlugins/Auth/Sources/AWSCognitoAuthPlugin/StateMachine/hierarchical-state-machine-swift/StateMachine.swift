@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
+@preconcurrency import Combine
 
 /// Models, evolves, and processes effects for a system.
 ///
@@ -26,7 +26,7 @@ actor StateMachine<
     private let environment: EnvironmentType
     private let resolver: AnyResolver<StateType>
 
-    public var currentState: StateType {
+    var currentState: StateType {
         currentStateSubject.value
     }
 

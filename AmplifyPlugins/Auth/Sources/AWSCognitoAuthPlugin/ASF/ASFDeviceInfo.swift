@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-@MainActor
 struct ASFDeviceInfo: ASFDeviceBehavior {
 
     let id: String
@@ -18,46 +17,73 @@ struct ASFDeviceInfo: ASFDeviceBehavior {
     }
 
     var model: String {
-        DeviceInfo.current.model
+        get async {
+            await MainActor.run { DeviceInfo.current.model }
+        }
     }
 
     var name: String {
-        DeviceInfo.current.name
+        get async {
+            await MainActor.run { DeviceInfo.current.name }
+        }
     }
 
     var type: String {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        return String(bytes: Data(bytes: &systemInfo.machine,
-                                  count: Int(_SYS_NAMELEN)),
-                      encoding: .utf8) ?? DeviceInfo.current.hostName
+        get async {
+            await MainActor.run {
+                var systemInfo = utsname()
+                uname(&systemInfo)
+                return String(
+                    bytes: Data(
+                        bytes: &systemInfo.machine,
+                        count: Int(_SYS_NAMELEN)
+                    ),
+                    encoding: .utf8
+                ) ?? DeviceInfo.current.hostName
+            }
+        }
     }
 
     var platform: String {
-        DeviceInfo.current.operatingSystem.name
+        get async {
+            await MainActor.run { DeviceInfo.current.operatingSystem.name }
+        }
     }
 
     var version: String {
-        DeviceInfo.current.operatingSystem.version
+        get async {
+            await MainActor.run { DeviceInfo.current.operatingSystem.version }
+        }
     }
 
     var thirdPartyId: String? {
-        DeviceInfo.current.identifierForVendor?.uuidString
+        get async {
+            await MainActor.run { DeviceInfo.current.identifierForVendor?.uuidString }
+        }
     }
 
     var height: String {
-        String(format: "%.0f", DeviceInfo.current.screenBounds.height)
+        get async {
+            await MainActor.run { String(format: "%.0f", DeviceInfo.current.screenBounds.height) }
+        }
     }
 
     var width: String {
-        String(format: "%.0f", DeviceInfo.current.screenBounds.width)
+        get async {
+            await MainActor.run { String(format: "%.0f", DeviceInfo.current.screenBounds.width) }
+        }
     }
 
     var locale: String {
-        return Locale.preferredLanguages[0]
+        get async {
+            await MainActor.run { Locale.preferredLanguages[0] }
+        }
     }
 
-    func deviceInfo() -> String {
+    func deviceInfo() async -> String {
+        let model = await model
+        let type = await type
+        let version = await version
         var build = "release"
 #if DEBUG
         build = "debug"

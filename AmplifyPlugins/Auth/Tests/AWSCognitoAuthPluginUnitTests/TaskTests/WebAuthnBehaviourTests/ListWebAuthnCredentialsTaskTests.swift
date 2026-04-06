@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
 import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 class ListWebAuthnCredentialsTaskTests: XCTestCase {
     private var task: ListWebAuthnCredentialsTask!

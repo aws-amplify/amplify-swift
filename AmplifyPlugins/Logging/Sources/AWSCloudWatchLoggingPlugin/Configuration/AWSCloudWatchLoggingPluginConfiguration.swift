@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
     public init(
@@ -17,7 +17,7 @@ public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
         flushIntervalInSeconds: Int = 60,
         defaultRemoteConfiguration: DefaultRemoteConfiguration? = nil,
         loggingConstraints: LoggingConstraints = LoggingConstraints()
-     ) {
+    ) {
          self.logGroupName = logGroupName
          self.region = region
          self.enable = enable

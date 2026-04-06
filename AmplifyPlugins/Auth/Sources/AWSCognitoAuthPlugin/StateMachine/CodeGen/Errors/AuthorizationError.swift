@@ -25,7 +25,8 @@ extension AuthorizationError: AuthErrorConvertible {
             return .sessionExpired(
                 "Session expired",
                 "Invoke Auth.signIn to re-authenticate the user",
-                error)
+                error
+            )
         case .configuration(let message):
             return .configuration(message, "")
         case .service(let error):
@@ -35,7 +36,8 @@ extension AuthorizationError: AuthErrorConvertible {
                 return .service(
                     "Service error occurred",
                     AmplifyErrorMessages.reportBugToAWS(),
-                    error)
+                    error
+                )
             }
         case .invalidState(let message):
             return .invalidState(message, AuthPluginErrorConstants.invalidStateError, nil)

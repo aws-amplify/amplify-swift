@@ -20,9 +20,9 @@ public struct AnyEncodable: Encodable {
     }
 }
 
-extension Encodable {
+public extension Encodable {
 
-    public func eraseToAnyEncodable() -> AnyEncodable {
+    func eraseToAnyEncodable() -> AnyEncodable {
         return AnyEncodable(self)
     }
 

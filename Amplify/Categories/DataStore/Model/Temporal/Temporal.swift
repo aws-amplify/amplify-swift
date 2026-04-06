@@ -72,7 +72,7 @@ public protocol TemporalSpec {
     func iso8601FormattedString(format: TemporalFormat, timeZone: TimeZone) -> String
 }
 
-extension TemporalSpec {
+public extension TemporalSpec {
 
     /// Create an iso8601 `String` with the desired format option for this spec.
     /// - Parameters:
@@ -80,7 +80,7 @@ extension TemporalSpec {
     ///   - timeZone: `TimeZone` that the `DateFormatter` will use in conversion.
     ///   Default is `.utc` a.k.a. `TimeZone(abbreviation: "UTC")`
     /// - Returns: A `String` formatted according to the `format` and `timeZone` arguments.
-    public func iso8601FormattedString(
+    func iso8601FormattedString(
         format: TemporalFormat,
         timeZone: TimeZone = .utc
     ) -> String {
@@ -93,12 +93,12 @@ extension TemporalSpec {
 
     /// The ISO8601 representation of the scalar using `.full` as the format and `.utc` as `TimeZone`.
     /// - SeeAlso: `iso8601FormattedString(format:timeZone:)`
-    public var iso8601String: String {
+    var iso8601String: String {
         iso8601FormattedString(format: .full, timeZone: timeZone ?? .utc)
     }
 
     @inlinable
-    public init(iso8601String: String, format: TemporalFormat) throws {
+    init(iso8601String: String, format: TemporalFormat) throws {
         let (date, tz) = try SpecBasedDateConverting<Self>()
             .convert(iso8601String, format)
 
@@ -106,7 +106,7 @@ extension TemporalSpec {
     }
 
     @inlinable
-    public init(
+    init(
         iso8601String: String
     ) throws {
         let (date, tz) = try SpecBasedDateConverting<Self>()
@@ -116,9 +116,9 @@ extension TemporalSpec {
     }
 }
 
-extension TimeZone {
+public extension TimeZone {
     /// Utility UTC ("Coordinated Universal Time") TimeZone instance.
-    public static var utc: TimeZone {
+    static var utc: TimeZone {
         TimeZone(abbreviation: "UTC")!
     }
 }

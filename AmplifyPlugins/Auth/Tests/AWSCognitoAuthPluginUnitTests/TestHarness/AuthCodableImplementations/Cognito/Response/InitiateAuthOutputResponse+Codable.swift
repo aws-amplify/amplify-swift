@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension InitiateAuthOutput: Codable {
+extension InitiateAuthOutput: @retroactive Decodable, @retroactive Encodable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case authenticationResult = "AuthenticationResult"
@@ -17,7 +17,7 @@ extension InitiateAuthOutput: Codable {
         case session = "Session"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let challengeNameDecoded = try containerValues.decodeIfPresent(CognitoIdentityProviderClientTypes.ChallengeNameType.self, forKey: .challengeName)
@@ -25,11 +25,11 @@ extension InitiateAuthOutput: Codable {
         let sessionDecoded = try containerValues.decodeIfPresent(Swift.String.self, forKey: .session)
         session = sessionDecoded
         let challengeParametersContainer = try containerValues.decodeIfPresent([Swift.String: Swift.String?].self, forKey: .challengeParameters)
-        var challengeParametersDecoded0: [Swift.String:Swift.String]? = nil
-        if let challengeParametersContainer = challengeParametersContainer {
-            challengeParametersDecoded0 = [Swift.String:Swift.String]()
+        var challengeParametersDecoded0: [Swift.String: Swift.String]? = nil
+        if let challengeParametersContainer {
+            challengeParametersDecoded0 = [Swift.String: Swift.String]()
             for (key0, stringtype0) in challengeParametersContainer {
-                if let stringtype0 = stringtype0 {
+                if let stringtype0 {
                     challengeParametersDecoded0?[key0] = stringtype0
                 }
             }
@@ -45,7 +45,7 @@ extension InitiateAuthOutput: Codable {
 
 }
 
-extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable {
+extension CognitoIdentityProviderClientTypes.AuthenticationResultType: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case accessToken = "AccessToken"
         case expiresIn = "ExpiresIn"
@@ -71,7 +71,7 @@ extension CognitoIdentityProviderClientTypes.AuthenticationResultType: Decodable
     }
 }
 
-extension CognitoIdentityProviderClientTypes.NewDeviceMetadataType: Decodable {
+extension CognitoIdentityProviderClientTypes.NewDeviceMetadataType: @retroactive Decodable {
     private enum CodingKeys: String, CodingKey {
         case deviceGroupKey = "DeviceGroupKey"
         case deviceKey = "DeviceKey"

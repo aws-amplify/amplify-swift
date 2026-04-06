@@ -7,12 +7,12 @@
 
 import AWSPinpoint
 import AWSPluginsCore
-import InternalAmplifyCredentials
 import Foundation
+import InternalAmplifyCredentials
 
 extension PinpointEvent {
     private var clientTypeSession: PinpointClientTypes.Session? {
-        var sessionDuration: Int? = nil
+        var sessionDuration: Int?
         if let duration = session.duration {
             // If the session duration cannot be represented by Int, return a nil session instead.
             // This is extremely unlikely to happen since a session's stopTime is set when the app is closed

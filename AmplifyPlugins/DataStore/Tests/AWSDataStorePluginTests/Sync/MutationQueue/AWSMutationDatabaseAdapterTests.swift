@@ -9,10 +9,10 @@ import Foundation
 import SQLite
 import XCTest
 
+import AWSPluginsCore
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-import AWSPluginsCore
 
 class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
@@ -30,12 +30,16 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_localCreateCandidateUpdate() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -43,42 +47,54 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_saveCandidate_CanadidateUpdateWithCondition() throws {
-        let anyLocal = try MutationEvent(model: model1,
-                                         modelSchema: model1.schema,
-                                         mutationType: MutationEvent.MutationType.create)
+        let anyLocal = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
         let queryPredicate = post.title == model1.title
         let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate, modelSchema: model1.schema)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.update,
-                                                graphQLFilterJSON: graphQLFilterJSON)
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update,
+            graphQLFilterJSON: graphQLFilterJSON
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
         XCTAssertEqual(disposition, .saveCandidate)
     }
 
     func test_saveCandidate_CanadidateDeleteWithCondition() throws {
-        let anyLocal = try MutationEvent(model: model1,
-                                         modelSchema: model1.schema,
-                                         mutationType: MutationEvent.MutationType.create)
+        let anyLocal = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
         let queryPredicate = post.title == model1.title
         let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate, modelSchema: model1.schema)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.delete,
-                                                graphQLFilterJSON: graphQLFilterJSON)
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete,
+            graphQLFilterJSON: graphQLFilterJSON
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
         XCTAssertEqual(disposition, .saveCandidate)
     }
 
     func test_replaceLocal_BothUpdate() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.update)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -86,12 +102,16 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_localUpdateCandidateDelete() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.update)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -99,12 +119,16 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_replaceLocal_BothDelete() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.delete)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -112,12 +136,16 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidate_localCreateCandidateDelete() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.delete)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -125,12 +153,16 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidateWithError_localItemExistsAlreadyCandidateCreates() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.create)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.create)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.create
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
@@ -138,31 +170,39 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
 
     func test_dropCandidateWithError_updateMutationForItemMarkedDeleted() throws {
-        let localCreate = try MutationEvent(model: model1,
-                                            modelSchema: model1.schema,
-                                            mutationType: MutationEvent.MutationType.delete)
-        let candidateUpdate = try MutationEvent(model: model1,
-                                                modelSchema: model1.schema,
-                                                mutationType: MutationEvent.MutationType.update)
+        let localCreate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.delete
+        )
+        let candidateUpdate = try MutationEvent(
+            model: model1,
+            modelSchema: model1.schema,
+            mutationType: MutationEvent.MutationType.update
+        )
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
         XCTAssertEqual(disposition, .dropCandidateWithError(DataStoreError.unknown("", "", nil)))
     }
-    
+
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_AlreadyInProcess() async {
         let queryExpectation = expectation(description: "query called")
         let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
-        var mutationEvent1 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create)
+        var mutationEvent1 = MutationEvent(
+            modelId: "1111-22",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create
+        )
         mutationEvent1.inProcess = true
-        let mutationEvent2 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create)
+        let mutationEvent2 = MutationEvent(
+            modelId: "1111-22",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create
+        )
         let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
             queryExpectation.fulfill()
             return .success([mutationEvent1, mutationEvent2])
@@ -177,23 +217,27 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             }
             getMutationEventCompleted.fulfill()
         }
-        
+
         await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
-    
+
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_MarkInProcess() async {
         let queryExpectation = expectation(description: "query called")
         let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
-        let mutationEvent1 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create)
+        let mutationEvent1 = MutationEvent(
+            modelId: "1111-22",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create
+        )
         XCTAssertFalse(mutationEvent1.inProcess)
-        let mutationEvent2 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create)
+        let mutationEvent2 = MutationEvent(
+            modelId: "1111-22",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create
+        )
         let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
             queryExpectation.fulfill()
             return .success([mutationEvent1, mutationEvent2])
@@ -206,10 +250,10 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
-            
+
             getMutationEventCompleted.fulfill()
         }
-        
+
         await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
 
@@ -226,18 +270,22 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         let oldestCreatedAt = Temporal.DateTime.now().add(value: -1, to: .second)
         let newerCreatedAt = Temporal.DateTime.now().add(value: 1, to: .second)
         databaseAdapter.storageAdapter = storageAdapter
-        let m1 = MutationEvent(modelId: "m1",
-                               modelName: "Post",
-                               json: "{}",
-                               mutationType: .create,
-                               createdAt: newerCreatedAt,
-                               inProcess: false)
-        let m2 = MutationEvent(modelId: "m2",
-                               modelName: "Post",
-                               json: "{}",
-                               mutationType: .create,
-                               createdAt: oldestCreatedAt,
-                               inProcess: false)
+        let m1 = MutationEvent(
+            modelId: "m1",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create,
+            createdAt: newerCreatedAt,
+            inProcess: false
+        )
+        let m2 = MutationEvent(
+            modelId: "m2",
+            modelName: "Post",
+            json: "{}",
+            mutationType: .create,
+            createdAt: oldestCreatedAt,
+            inProcess: false
+        )
         let setUpM1 = storageAdapter.save(m1, modelSchema: MutationEvent.schema)
         guard case .success = setUpM1 else {
             XCTFail("Could not set up mutation event: \(m1)")
@@ -282,9 +330,11 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         await fulfillment(of: [secondQueryCompleted], timeout: 1)
 
         // (3)
-        storageAdapter.delete(MutationEvent.self, 
-                              modelSchema: MutationEvent.schema,
-                              withId: m2.id) { result in
+        storageAdapter.delete(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            withId: m2.id
+        ) { result in
             switch result {
             case .success:
                 break
@@ -312,8 +362,10 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 }
 
 extension AWSMutationDatabaseAdapter.MutationDisposition: Equatable {
-    public static func == (lhs: AWSMutationDatabaseAdapter.MutationDisposition,
-                           rhs: AWSMutationDatabaseAdapter.MutationDisposition) -> Bool {
+    public static func == (
+        lhs: AWSMutationDatabaseAdapter.MutationDisposition,
+        rhs: AWSMutationDatabaseAdapter.MutationDisposition
+    ) -> Bool {
         switch (lhs, rhs) {
         case (.dropCandidateWithError, .dropCandidateWithError):
             return true

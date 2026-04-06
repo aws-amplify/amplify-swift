@@ -1,11 +1,20 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 //  This file was automatically generated and should not be edited.
+// swiftlint:disable all
+// swiftformat:disable all
 #if canImport(AWSAPIPlugin)
 import Foundation
 public protocol GraphQLInputValue {
 }
 public struct GraphQLVariable {
   let name: String
-  
+
   public init(_ name: String) {
     self.name = name
   }
@@ -39,13 +48,13 @@ public extension GraphQLMapConvertible {
 }
 public typealias GraphQLID = String
 public protocol APISwiftGraphQLOperation: AnyObject {
-  
+
   static var operationString: String { get }
   static var requestString: String { get }
   static var operationIdentifier: String? { get }
-  
+
   var variables: GraphQLMap? { get }
-  
+
   associatedtype Data: GraphQLSelectionSet
 }
 public extension APISwiftGraphQLOperation {
@@ -68,7 +77,7 @@ public protocol GraphQLFragment: GraphQLSelectionSet {
 public typealias Snapshot = [String: Any?]
 public protocol GraphQLSelectionSet: Decodable {
   static var selections: [GraphQLSelection] { get }
-  
+
   var snapshot: Snapshot { get }
   init(snapshot: Snapshot)
 }
@@ -92,10 +101,10 @@ enum APISwiftJSONValue: Codable {
     case object([String: APISwiftJSONValue])
     case string(String)
     case null
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if let value = try? container.decode([String: APISwiftJSONValue].self) {
             self = .object(value)
         } else if let value = try? container.decode([APISwiftJSONValue].self) {
@@ -110,10 +119,10 @@ enum APISwiftJSONValue: Codable {
             self = .null
         }
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self {
         case .array(let value):
             try container.encode(value)
@@ -136,19 +145,19 @@ public struct GraphQLField: GraphQLSelection {
   let name: String
   let alias: String?
   let arguments: [String: GraphQLInputValue]?
-  
+
   var responseKey: String {
     return alias ?? name
   }
-  
+
   let type: GraphQLOutputType
-  
+
   public init(_ name: String, alias: String? = nil, arguments: [String: GraphQLInputValue]? = nil, type: GraphQLOutputType) {
     self.name = name
     self.alias = alias
-    
+
     self.arguments = arguments
-    
+
     self.type = type
   }
 }
@@ -157,7 +166,7 @@ public indirect enum GraphQLOutputType {
   case object([GraphQLSelection])
   case nonNull(GraphQLOutputType)
   case list(GraphQLOutputType)
-  
+
   var namedType: GraphQLOutputType {
     switch self {
     case .nonNull(let innerType), .list(let innerType):
@@ -171,7 +180,7 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
   let variableName: String
   let inverted: Bool
   let selections: [GraphQLSelection]
-  
+
   public init(variableName: String, inverted: Bool, selections: [GraphQLSelection]) {
     self.variableName = variableName
     self.inverted = inverted;
@@ -181,7 +190,7 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
 public struct GraphQLTypeCondition: GraphQLSelection {
   let possibleTypes: [String]
   let selections: [GraphQLSelection]
-  
+
   public init(possibleTypes: [String], selections: [GraphQLSelection]) {
     self.possibleTypes = possibleTypes
     self.selections = selections;
@@ -189,7 +198,7 @@ public struct GraphQLTypeCondition: GraphQLSelection {
 }
 public struct GraphQLFragmentSpread: GraphQLSelection {
   let fragment: GraphQLFragment.Type
-  
+
   public init(_ fragment: GraphQLFragment.Type) {
     self.fragment = fragment
   }
@@ -197,7 +206,7 @@ public struct GraphQLFragmentSpread: GraphQLSelection {
 public struct GraphQLTypeCase: GraphQLSelection {
   let variants: [String: [GraphQLSelection]]
   let `default`: [GraphQLSelection]
-  
+
   public init(variants: [String: [GraphQLSelection]], default: [GraphQLSelection]) {
     self.variants = variants
     self.default = `default`;
@@ -215,7 +224,7 @@ public enum JSONDecodingError: Error, LocalizedError {
   case nullValue
   case wrongType
   case couldNotConvert(value: Any, to: Any.Type)
-  
+
   public var errorDescription: String? {
     switch self {
     case .missingValue:
@@ -324,7 +333,7 @@ extension Dictionary: JSONEncodable {
   public var jsonValue: Any {
     return jsonObject
   }
-  
+
   public var jsonObject: JSONObject {
     var jsonObject = JSONObject(minimumCapacity: count)
     for (key, value) in self {
@@ -1843,7 +1852,7 @@ public final class CreateBlogMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("createBlog", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(CreateBlog.selections)),
     ]
 
@@ -1869,7 +1878,7 @@ public final class CreateBlogMutation: GraphQLMutation {
     public struct CreateBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -1985,7 +1994,7 @@ public final class CreateBlogMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -2032,7 +2041,7 @@ public final class CreateBlogMutation: GraphQLMutation {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -2133,7 +2142,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("updateBlog", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(UpdateBlog.selections)),
     ]
 
@@ -2159,7 +2168,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
     public struct UpdateBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -2275,7 +2284,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -2322,7 +2331,7 @@ public final class UpdateBlogMutation: GraphQLMutation {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -2423,7 +2432,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("deleteBlog", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(DeleteBlog.selections)),
     ]
 
@@ -2449,7 +2458,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
     public struct DeleteBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -2565,7 +2574,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -2612,7 +2621,7 @@ public final class DeleteBlogMutation: GraphQLMutation {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -2711,7 +2720,7 @@ public final class CreatePostMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("createPost", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(CreatePost.selections)),
     ]
 
@@ -2737,7 +2746,7 @@ public final class CreatePostMutation: GraphQLMutation {
     public struct CreatePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -2863,7 +2872,7 @@ public final class CreatePostMutation: GraphQLMutation {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -2960,7 +2969,7 @@ public final class CreatePostMutation: GraphQLMutation {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -3026,7 +3035,7 @@ public final class UpdatePostMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("updatePost", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(UpdatePost.selections)),
     ]
 
@@ -3052,7 +3061,7 @@ public final class UpdatePostMutation: GraphQLMutation {
     public struct UpdatePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -3178,7 +3187,7 @@ public final class UpdatePostMutation: GraphQLMutation {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -3275,7 +3284,7 @@ public final class UpdatePostMutation: GraphQLMutation {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -3341,7 +3350,7 @@ public final class DeletePostMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("deletePost", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(DeletePost.selections)),
     ]
 
@@ -3367,7 +3376,7 @@ public final class DeletePostMutation: GraphQLMutation {
     public struct DeletePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -3493,7 +3502,7 @@ public final class DeletePostMutation: GraphQLMutation {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -3590,7 +3599,7 @@ public final class DeletePostMutation: GraphQLMutation {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -3656,7 +3665,7 @@ public final class CreateCommentMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("createComment", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(CreateComment.selections)),
     ]
 
@@ -3682,7 +3691,7 @@ public final class CreateCommentMutation: GraphQLMutation {
     public struct CreateComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -3798,7 +3807,7 @@ public final class CreateCommentMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -3924,7 +3933,7 @@ public final class UpdateCommentMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("updateComment", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(UpdateComment.selections)),
     ]
 
@@ -3950,7 +3959,7 @@ public final class UpdateCommentMutation: GraphQLMutation {
     public struct UpdateComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -4066,7 +4075,7 @@ public final class UpdateCommentMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -4192,7 +4201,7 @@ public final class DeleteCommentMutation: GraphQLMutation {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Mutation"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("deleteComment", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(DeleteComment.selections)),
     ]
 
@@ -4218,7 +4227,7 @@ public final class DeleteCommentMutation: GraphQLMutation {
     public struct DeleteComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -4334,7 +4343,7 @@ public final class DeleteCommentMutation: GraphQLMutation {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -4460,7 +4469,7 @@ public final class GetBlogQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("getBlog", arguments: ["id": GraphQLVariable("id")], type: .object(GetBlog.selections)),
     ]
 
@@ -4486,7 +4495,7 @@ public final class GetBlogQuery: GraphQLQuery {
     public struct GetBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -4602,7 +4611,7 @@ public final class GetBlogQuery: GraphQLQuery {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -4649,7 +4658,7 @@ public final class GetBlogQuery: GraphQLQuery {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -4750,7 +4759,7 @@ public final class ListBlogsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("listBlogs", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken")], type: .object(ListBlog.selections)),
     ]
 
@@ -4776,7 +4785,7 @@ public final class ListBlogsQuery: GraphQLQuery {
     public struct ListBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelBlogConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -4832,7 +4841,7 @@ public final class ListBlogsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -4952,7 +4961,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("syncBlogs", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken"), "lastSync": GraphQLVariable("lastSync")], type: .object(SyncBlog.selections)),
     ]
 
@@ -4978,7 +4987,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
     public struct SyncBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelBlogConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -5034,7 +5043,7 @@ public final class SyncBlogsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -5148,7 +5157,7 @@ public final class GetPostQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("getPost", arguments: ["id": GraphQLVariable("id")], type: .object(GetPost.selections)),
     ]
 
@@ -5174,7 +5183,7 @@ public final class GetPostQuery: GraphQLQuery {
     public struct GetPost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -5300,7 +5309,7 @@ public final class GetPostQuery: GraphQLQuery {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -5397,7 +5406,7 @@ public final class GetPostQuery: GraphQLQuery {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -5465,7 +5474,7 @@ public final class ListPostsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("listPosts", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken")], type: .object(ListPost.selections)),
     ]
 
@@ -5491,7 +5500,7 @@ public final class ListPostsQuery: GraphQLQuery {
     public struct ListPost: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelPostConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -5547,7 +5556,7 @@ public final class ListPostsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -5677,7 +5686,7 @@ public final class SyncPostsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("syncPosts", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken"), "lastSync": GraphQLVariable("lastSync")], type: .object(SyncPost.selections)),
     ]
 
@@ -5703,7 +5712,7 @@ public final class SyncPostsQuery: GraphQLQuery {
     public struct SyncPost: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelPostConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -5759,7 +5768,7 @@ public final class SyncPostsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -5883,7 +5892,7 @@ public final class GetCommentQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("getComment", arguments: ["id": GraphQLVariable("id")], type: .object(GetComment.selections)),
     ]
 
@@ -5909,7 +5918,7 @@ public final class GetCommentQuery: GraphQLQuery {
     public struct GetComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -6025,7 +6034,7 @@ public final class GetCommentQuery: GraphQLQuery {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -6153,7 +6162,7 @@ public final class ListCommentsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("listComments", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken")], type: .object(ListComment.selections)),
     ]
 
@@ -6179,7 +6188,7 @@ public final class ListCommentsQuery: GraphQLQuery {
     public struct ListComment: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelCommentConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -6235,7 +6244,7 @@ public final class ListCommentsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Comment"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("content", type: .nonNull(.scalar(String.self))),
@@ -6365,7 +6374,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Query"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("syncComments", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken"), "lastSync": GraphQLVariable("lastSync")], type: .object(SyncComment.selections)),
     ]
 
@@ -6391,7 +6400,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
     public struct SyncComment: GraphQLSelectionSet {
       public static let possibleTypes = ["ModelCommentConnection"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
         GraphQLField("nextToken", type: .scalar(String.self)),
@@ -6447,7 +6456,7 @@ public final class SyncCommentsQuery: GraphQLQuery {
       public struct Item: GraphQLSelectionSet {
         public static let possibleTypes = ["Comment"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("content", type: .nonNull(.scalar(String.self))),
@@ -6573,7 +6582,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onCreateBlog", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnCreateBlog.selections)),
     ]
 
@@ -6599,7 +6608,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
     public struct OnCreateBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -6715,7 +6724,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -6762,7 +6771,7 @@ public final class OnCreateBlogSubscription: GraphQLSubscription {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -6861,7 +6870,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onUpdateBlog", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnUpdateBlog.selections)),
     ]
 
@@ -6887,7 +6896,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
     public struct OnUpdateBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -7003,7 +7012,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -7050,7 +7059,7 @@ public final class OnUpdateBlogSubscription: GraphQLSubscription {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+          nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -7149,7 +7158,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onDeleteBlog", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnDeleteBlog.selections)),
     ]
 
@@ -7175,7 +7184,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
     public struct OnDeleteBlog: GraphQLSelectionSet {
       public static let possibleTypes = ["Blog"]
 
-      public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -7291,7 +7300,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelPostConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -7338,7 +7347,7 @@ public final class OnDeleteBlogSubscription: GraphQLSubscription {
       public struct File: GraphQLSelectionSet {
         public static let possibleTypes = ["S3Object"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
@@ -7435,7 +7444,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onCreatePost", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnCreatePost.selections)),
     ]
 
@@ -7461,7 +7470,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
     public struct OnCreatePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -7587,7 +7596,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -7684,7 +7693,7 @@ public final class OnCreatePostSubscription: GraphQLSubscription {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -7748,7 +7757,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onUpdatePost", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnUpdatePost.selections)),
     ]
 
@@ -7774,7 +7783,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
     public struct OnUpdatePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -7900,7 +7909,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -7997,7 +8006,7 @@ public final class OnUpdatePostSubscription: GraphQLSubscription {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -8061,7 +8070,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onDeletePost", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnDeletePost.selections)),
     ]
 
@@ -8087,7 +8096,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
     public struct OnDeletePost: GraphQLSelectionSet {
       public static let possibleTypes = ["Post"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -8213,7 +8222,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
       public struct Blog: GraphQLSelectionSet {
         public static let possibleTypes = ["Blog"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("name", type: .nonNull(.scalar(String.self))),
@@ -8310,7 +8319,7 @@ public final class OnDeletePostSubscription: GraphQLSubscription {
       public struct Comment: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelCommentConnection"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nextToken", type: .scalar(String.self)),
           GraphQLField("startedAt", type: .scalar(Int.self)),
@@ -8374,7 +8383,7 @@ public final class OnCreateCommentSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onCreateComment", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnCreateComment.selections)),
     ]
 
@@ -8400,7 +8409,7 @@ public final class OnCreateCommentSubscription: GraphQLSubscription {
     public struct OnCreateComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -8516,7 +8525,7 @@ public final class OnCreateCommentSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -8640,7 +8649,7 @@ public final class OnUpdateCommentSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onUpdateComment", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnUpdateComment.selections)),
     ]
 
@@ -8666,7 +8675,7 @@ public final class OnUpdateCommentSubscription: GraphQLSubscription {
     public struct OnUpdateComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -8782,7 +8791,7 @@ public final class OnUpdateCommentSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -8906,7 +8915,7 @@ public final class OnDeleteCommentSubscription: GraphQLSubscription {
   public struct Data: GraphQLSelectionSet {
     public static let possibleTypes = ["Subscription"]
 
-    public static let selections: [GraphQLSelection] = [
+    nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
       GraphQLField("onDeleteComment", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnDeleteComment.selections)),
     ]
 
@@ -8932,7 +8941,7 @@ public final class OnDeleteCommentSubscription: GraphQLSubscription {
     public struct OnDeleteComment: GraphQLSelectionSet {
       public static let possibleTypes = ["Comment"]
 
-      public static let selections: [GraphQLSelection] = [
+      nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("post", type: .object(Post.selections)),
@@ -9048,7 +9057,7 @@ public final class OnDeleteCommentSubscription: GraphQLSubscription {
       public struct Post: GraphQLSelectionSet {
         public static let possibleTypes = ["Post"]
 
-        public static let selections: [GraphQLSelection] = [
+        nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("title", type: .nonNull(.scalar(String.self))),
@@ -9161,7 +9170,7 @@ public struct S3Object: GraphQLFragment {
 
   public static let possibleTypes = ["S3Object"]
 
-  public static let selections: [GraphQLSelection] = [
+  nonisolated(unsafe) public static let selections: [GraphQLSelection] = [
     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
     GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
     GraphQLField("key", type: .nonNull(.scalar(String.self))),

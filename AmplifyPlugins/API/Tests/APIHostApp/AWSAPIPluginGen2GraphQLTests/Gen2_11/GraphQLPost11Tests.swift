@@ -21,7 +21,8 @@ final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
             _ = try await AuthSignInHelper.registerAndSignInUser(
                 username: username,
                 password: password,
-                email: defaultTestEmail)
+                email: defaultTestEmail
+            )
         } catch {
             XCTFail("Could not sign up and sign in user \(error)")
         }
@@ -31,7 +32,8 @@ final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let post = Post(title: "Hello World")
             let createdTodo = try await Amplify.API.mutate(request: .create(
                 post,
-                authMode: .amazonCognitoUserPools)).get()
+                authMode: .amazonCognitoUserPools
+            )).get()
         } catch {
             print("Failed to create post", error)
             // Code Snippet Ends
@@ -46,11 +48,12 @@ final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
         do {
             let queriedPosts = try await Amplify.API.query(request: .list(
                 Post.self,
-                authMode: .awsIAM)).get()
+                authMode: .awsIAM
+            )).get()
             print("Number of posts:", queriedPosts.count)
 
             // Code Snippet Ends
-            XCTAssertTrue(queriedPosts.count > 0 || queriedPosts.hasNextPage())
+            XCTAssertTrue(!queriedPosts.isEmpty || queriedPosts.hasNextPage())
             // Code Snippet Begins
         } catch {
             print("Failed to list posts", error)
@@ -67,7 +70,7 @@ extension GraphQLPost11Tests {
     typealias Post = Post11
 
     struct Post11Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post11.self)
         }

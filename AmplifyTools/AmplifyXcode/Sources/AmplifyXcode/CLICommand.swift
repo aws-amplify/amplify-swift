@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ArgumentParser
+import Foundation
 
 protocol CLICommandInitializable {
     init()
@@ -36,6 +36,6 @@ extension CLICommand {
 // MARK: - ParsableCommand + CLICommandEncodable
 
 extension CLICommand where Self: ParsableCommand {
-    static var commandName: String { Self.configuration.commandName! }
-    static var abstract: String { Self.configuration.abstract }
+    static var commandName: String { configuration.commandName! }
+    static var abstract: String { configuration.abstract }
 }

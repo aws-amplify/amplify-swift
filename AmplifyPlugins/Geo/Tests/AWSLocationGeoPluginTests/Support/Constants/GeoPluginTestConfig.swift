@@ -6,10 +6,10 @@
 //
 
 import Foundation
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
+@testable @_spi(InternalAmplifyConfiguration) @preconcurrency import Amplify
 @testable import AWSLocationGeoPlugin
 
-struct GeoPluginTestConfig {
+enum GeoPluginTestConfig {
     static let timeout = 1.0
 
     // Plugin Test Configuration
@@ -35,31 +35,38 @@ struct GeoPluginTestConfig {
 
     static let mapItemConfigJSON = JSONValue(dictionaryLiteral: (map, mapStyleConfigJSON))
 
-    static let mapsConfigJSON = JSONValue(dictionaryLiteral:
+    static let mapsConfigJSON = JSONValue(
+        dictionaryLiteral:
         (AWSLocationGeoPluginConfiguration.Node.items.key, mapItemConfigJSON),
-        (AWSLocationGeoPluginConfiguration.Node.default.key, testMapJSON))
+        (AWSLocationGeoPluginConfiguration.Node.default.key, testMapJSON)
+    )
 
     // MARK: - Search Config JSON
     static let searchIndexJSON = JSONValue(stringLiteral: searchIndex)
     static let searchItemsArrayJSON = JSONValue(arrayLiteral: searchIndexJSON)
 
-    static let searchConfigJSON = JSONValue(dictionaryLiteral:
+    static let searchConfigJSON = JSONValue(
+        dictionaryLiteral:
         (AWSLocationGeoPluginConfiguration.Node.items.key, searchItemsArrayJSON),
-        (AWSLocationGeoPluginConfiguration.Node.default.key, searchIndexJSON))
+        (AWSLocationGeoPluginConfiguration.Node.default.key, searchIndexJSON)
+    )
 
     // MARK: - Plugin Config JSON
 
     static let regionJSON = JSONValue(stringLiteral: regionName)
 
-    static let geoPluginConfigJSON = JSONValue(dictionaryLiteral:
+    static let geoPluginConfigJSON = JSONValue(
+        dictionaryLiteral:
         (AWSLocationGeoPluginConfiguration.Node.region.key, regionJSON),
         (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
-        (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON))
+        (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON)
+    )
 
     static let geoPluginConfigAmplifyOutputs = AmplifyOutputsData(
         geo: .init(
             awsRegion: regionName,
             maps: .init(items: [map: .init(style: style)], default: map),
             searchIndices: .init(items: [searchIndex], default: searchIndex),
-            geofenceCollections: nil))
+            geofenceCollections: nil
+        ))
 }

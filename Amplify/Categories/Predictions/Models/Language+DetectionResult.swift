@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Language {
+public extension Predictions.Language {
     /// Result describing language identified in a text
     /// from interpret() API call
-    public struct DetectionResult {
+    struct DetectionResult {
         public let languageCode: Predictions.Language
         public let score: Double?
 

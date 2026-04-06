@@ -6,7 +6,7 @@
 //
 
 import Amplify
-@_spi(WebSocket) import AWSPluginsCore
+@_spi(WebSocket) @preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
 
@@ -47,12 +47,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private let taskQueue: TaskQueue<Void>
     private let modelName: ModelName
 
-    init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior,
-         modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?,
-         authModeStrategy: AuthModeStrategy,
-         awsAuthService: AWSAuthServiceBehavior? = nil) async {
+    init(
+        modelSchema: ModelSchema,
+        api: APICategoryGraphQLBehavior,
+        modelPredicate: QueryPredicate?,
+        auth: AuthCategoryBehavior?,
+        authModeStrategy: AuthModeStrategy,
+        awsAuthService: AWSAuthServiceBehavior? = nil
+    ) async {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
@@ -126,20 +128,20 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         return RetryableGraphQLSubscriptionOperation(
             requestStream: AsyncStream { continuation in
                 for authType in authTypeProvider {
-                    continuation.yield({ [weak self] in
+                    continuation.yield { [weak self] in
                         guard let self else {
                             throw APIError.operationError("GraphQL subscription cancelled", "")
                         }
 
-                        return api.subscribe(request: await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(
+                        return await api.subscribe(request: IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(
                             for: modelSchema,
                             subscriptionType: subscriptionType.subscriptionType,
                             api: api,
                             auth: auth,
                             authType: authType.awsAuthType,
-                            awsAuthService: self.awsAuthService
+                            awsAuthService: awsAuthService
                         ))
-                    })
+                    }
                 }
                 continuation.finish()
             }
@@ -206,33 +208,41 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         }
     }
 
-    static func makeAPIRequest(for modelSchema: ModelSchema,
-                               subscriptionType: GraphQLSubscriptionType,
-                               api: APICategoryGraphQLBehavior,
-                               auth: AuthCategoryBehavior?,
-                               authType: AWSAuthorizationType?,
-                               awsAuthService: AWSAuthServiceBehavior) async -> GraphQLRequest<Payload> {
+    static func makeAPIRequest(
+        for modelSchema: ModelSchema,
+        subscriptionType: GraphQLSubscriptionType,
+        api: APICategoryGraphQLBehavior,
+        auth: AuthCategoryBehavior?,
+        authType: AWSAuthorizationType?,
+        awsAuthService: AWSAuthServiceBehavior
+    ) async -> GraphQLRequest<Payload> {
         let request: GraphQLRequest<Payload>
         if modelSchema.hasAuthenticationRules,
             let _ = auth,
             let tokenString = try? await awsAuthService.getUserPoolAccessToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
+            request = GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                claims: claims,
+                authType: authType
+            )
         } else if modelSchema.hasAuthenticationRules,
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             let tokenString = try? await oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
+            request = GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                claims: claims,
+                authType: authType
+            )
         } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           authType: authType)
+            request = GraphQLRequest<Payload>.subscription(
+                to: modelSchema,
+                subscriptionType: subscriptionType,
+                authType: authType
+            )
         }
 
         return request
@@ -253,14 +263,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     func send(_ event: Event) {
         taskQueue.async { [weak self] in
             guard let self else { return }
-            self.incomingSubscriptionEvents.send(event)
+            incomingSubscriptionEvents.send(event)
         }
     }
 
     func send(completion: Subscribers.Completion<DataStoreError>) {
         taskQueue.async { [weak self] in
             guard let self else { return }
-            self.incomingSubscriptionEvents.send(completion: completion)
+            incomingSubscriptionEvents.send(completion: completion)
         }
     }
 
@@ -329,10 +339,10 @@ enum IncomingAsyncSubscriptionType {
 }
 
 extension IncomingAsyncSubscriptionEventPublisher: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AwsCommonRuntimeKit
+import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
 extension CommonRunTimeError: PushNotificationsErrorConvertible {

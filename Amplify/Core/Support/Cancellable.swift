@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import _Concurrency
+import Foundation
 
 /// The conforming type supports cancelling an in-process operation. The exact semantics of "canceling" are not defined
 /// in the protocol. Specifically, there is no guarantee that a `cancel` results in immediate cessation of activity.

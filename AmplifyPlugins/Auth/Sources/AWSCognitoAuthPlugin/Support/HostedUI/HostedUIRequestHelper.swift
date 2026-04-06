@@ -5,16 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CryptoKit
+import Foundation
 
-struct HostedUIRequestHelper {
+enum HostedUIRequestHelper {
 
-    static func createSignInURL(state: String,
-                                proofKey: String,
-                                userContextData: String?,
-                                configuration: HostedUIConfigurationData,
-                                options: HostedUIOptions) throws -> URL {
+    static func createSignInURL(
+        state: String,
+        proofKey: String,
+        userContextData: String?,
+        configuration: HostedUIConfigurationData,
+        options: HostedUIOptions
+    ) throws -> URL {
 
         guard let proofData = proofKey.data(using: .ascii) else {
             throw HostedUIError.proofCalculation
@@ -45,7 +47,7 @@ struct HostedUIRequestHelper {
             .init(name: "code_challenge", value: codeChallenge)
         ]
 
-        if let userContextData = userContextData {
+        if let userContextData {
             components.queryItems?.append(
                 .init(name: "userContextData", value: userContextData))
         }
@@ -55,6 +57,21 @@ struct HostedUIRequestHelper {
         } else if let authProvider = options.providerInfo.authProvider {
             components.queryItems?.append(
                 .init(name: "identity_provider", value: authProvider.userPoolProviderName))
+        }
+        if let nonce = options.nonce {
+            components.queryItems?.append(.init(name: "nonce", value: nonce))
+        }
+        if let language = options.language {
+            components.queryItems?.append(.init(name: "lang", value: language))
+        }
+        if let loginHint = options.loginHint {
+            components.queryItems?.append(.init(name: "login_hint", value: loginHint))
+        }
+        if let prompt = options.prompt {
+            components.queryItems?.append(.init(name: "prompt", value: prompt))
+        }
+        if let resource = options.resource {
+            components.queryItems?.append(.init(name: "resource", value: resource))
         }
 
         guard let url = components.url else {
@@ -83,12 +100,15 @@ struct HostedUIRequestHelper {
         return logoutURL
     }
 
-    static func createTokenRequest(configuration: HostedUIConfigurationData,
-                                   result: HostedUIResult) throws -> URLRequest {
+    static func createTokenRequest(
+        configuration: HostedUIConfigurationData,
+        result: HostedUIResult
+    ) throws -> URLRequest {
 
         guard let signInRedirectURI = configuration.oauth
             .signInRedirectURI
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else {
             throw HostedUIError.tokenURI
         }
 
@@ -107,7 +127,8 @@ struct HostedUIRequestHelper {
             .init(name: "client_id", value: configuration.clientId),
             .init(name: "code", value: result.code),
             .init(name: "redirect_uri", value: signInRedirectURI),
-            .init(name: "code_verifier", value: result.codeVerifier)]
+            .init(name: "code_verifier", value: result.codeVerifier)
+        ]
 
         guard let body = queryComponents.query else {
             throw HostedUIError.tokenURI

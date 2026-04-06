@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps: Post
  */
 class PostWrapper: NSCopying {
@@ -24,7 +24,7 @@ class PostWrapper: NSCopying {
             "createdAt": createdAt,
             "rating": rating
         ]
-        self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+        self.model = try FlutterSerializedModel(id: id, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }
 
     init(model: FlutterSerializedModel) {
@@ -34,7 +34,7 @@ class PostWrapper: NSCopying {
     init(json: String) throws {
         let data = Data(json.utf8)
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-        self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
+        self.model = try FlutterSerializedModel(id: map!["id"] as! String, map: FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
 
     init(post: Post) throws {
@@ -44,43 +44,43 @@ class PostWrapper: NSCopying {
             "createdAt": post.createdAt.iso8601String,
             "rating": post.rating
         ]
-        self.model = FlutterSerializedModel(id: post.id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+        self.model = try FlutterSerializedModel(id: post.id, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }
 
     func updateRating(rating: Double) throws {
-        var map = self.model.values
+        var map = model.values
         map["rating"] = JSONValue.init(floatLiteral: rating)
-        self.model = FlutterSerializedModel(id: self.model.id, map: map)
+        model = FlutterSerializedModel(id: model.id, map: map)
     }
 
     func updateStringProp(key: String, value: String) throws {
-        var map = self.model.values
+        var map = model.values
         map[key] = JSONValue.string(value)
-        self.model = FlutterSerializedModel(id: self.model.id, map: map)
+        model = FlutterSerializedModel(id: model.id, map: map)
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func title() -> JSONValue? {
-        return self.model.values["title"]
+        return model.values["title"]
     }
 
     func rating() -> JSONValue? {
-        return self.model.values["rating"]
+        return model.values["rating"]
     }
 
     func content() -> JSONValue? {
-        return self.model.values["content"]
+        return model.values["content"]
     }
 
     func createdAt() -> JSONValue? {
-        return self.model.values["createdAt"]
+        return model.values["createdAt"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
@@ -90,7 +90,7 @@ class PostWrapper: NSCopying {
 }
 
 extension PostWrapper: Equatable {
-    public static func == (lhs: PostWrapper, rhs: PostWrapper) -> Bool {
+    static func == (lhs: PostWrapper, rhs: PostWrapper) -> Bool {
         return lhs.idString() == rhs.idString()
             && lhs.title() == rhs.title()
             && lhs.rating() == rhs.rating()

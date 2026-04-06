@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Amplify
 import Combine
+import Foundation
 
 /**
  WebSocketClient wraps URLSessionWebSocketTask and offers
@@ -28,7 +27,7 @@ public final actor WebSocketClient: NSObject {
     /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
     /// Internal wriable WebSocketEvent data stream
-    private let subject = PassthroughSubject<WebSocketEvent, Never>()
+    private nonisolated let subject = PassthroughSubject<WebSocketEvent, Never>()
 
     private let retryWithJitter = RetryWithJitter()
 
@@ -40,7 +39,7 @@ public final actor WebSocketClient: NSObject {
     /// The underlying URLSessionWebSocketTask
     private var connection: URLSessionWebSocketTask? {
         willSet {
-            self.connection?.cancel(with: .goingAway, reason: nil)
+            connection?.cancel(with: .goingAway, reason: nil)
         }
     }
 
@@ -50,11 +49,11 @@ public final actor WebSocketClient: NSObject {
     private var autoRetryOnConnectionFailure: Bool
     /// Data stream for downstream subscribers to engage with
     public var publisher: AnyPublisher<WebSocketEvent, Never> {
-        self.subject.eraseToAnyPublisher()
+        subject.eraseToAnyPublisher()
     }
 
     public var isConnected: Bool {
-        self.connection?.state == .running
+        connection?.state == .running
     }
 
     /**
@@ -107,7 +106,7 @@ public final actor WebSocketClient: NSObject {
         autoConnectOnNetworkStatusChange: Bool = false,
         autoRetryOnConnectionFailure: Bool = false
     ) async {
-        guard self.connection?.state != .running else {
+        guard connection?.state != .running else {
             log.debug("[WebSocketClient] WebSocket is already in connecting state")
             return
         }
@@ -116,7 +115,7 @@ public final actor WebSocketClient: NSObject {
         self.autoConnectOnNetworkStatusChange = autoConnectOnNetworkStatusChange
         self.autoRetryOnConnectionFailure = autoRetryOnConnectionFailure
 
-        await self.createConnectionAndRead()
+        await createConnectionAndRead()
     }
 
     /**
@@ -125,14 +124,14 @@ public final actor WebSocketClient: NSObject {
      This will halt all automatic processes and attempt to gracefully close the connection.
      */
     public func disconnect() {
-        guard self.connection?.state == .running else {
+        guard connection?.state == .running else {
             log.debug("[WebSocketClient] client should be in connected state to trigger disconnect")
             return
         }
 
-        self.autoConnectOnNetworkStatusChange = false
-        self.autoRetryOnConnectionFailure = false
-        self.connection?.cancel(with: .goingAway, reason: nil)
+        autoConnectOnNetworkStatusChange = false
+        autoRetryOnConnectionFailure = false
+        connection?.cancel(with: .goingAway, reason: nil)
     }
 
     /**
@@ -142,7 +141,7 @@ public final actor WebSocketClient: NSObject {
      */
     public func write(message: String) async throws {
         log.debug("[WebSocketClient] WebSocket write message string: \(message)")
-        try await self.connection?.send(.string(message))
+        try await connection?.send(.string(message))
     }
 
     /**
@@ -152,15 +151,15 @@ public final actor WebSocketClient: NSObject {
      */
     public func write(message: Data) async throws {
         log.debug("[WebSocketClient] WebSocket write message data: \(message)")
-        try await self.connection?.send(.data(message))
+        try await connection?.send(.data(message))
     }
 
     private func createWebSocketConnection() async -> URLSessionWebSocketTask {
-        let decoratedURL = (await self.interceptor?.interceptConnection(url: self.url)) ?? self.url
+        let decoratedURL = await (interceptor?.interceptConnection(url: url)) ?? url
         var urlRequest = URLRequest(url: decoratedURL)
-        self.handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+        handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
 
-        urlRequest = await self.interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
+        urlRequest = await interceptor?.interceptConnection(request: urlRequest) ?? urlRequest
 
         let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         return urlSession.webSocketTask(with: urlRequest)
@@ -168,19 +167,19 @@ public final actor WebSocketClient: NSObject {
 
     private func createConnectionAndRead() async {
         log.debug("[WebSocketClient] Creating new connection and starting read")
-        self.connection = await createWebSocketConnection()
+        connection = await createWebSocketConnection()
 
         // Perform reading from a WebSocket in a separate task recursively to avoid blocking the execution.
         Task { await self.startReadMessage() }
 
-        self.connection?.resume()
+        connection?.resume()
     }
 
     /**
      Recusively read WebSocket data frames and publish to data stream.
      */
     private func startReadMessage() async {
-        guard let connection = self.connection else {
+        guard let connection else {
             log.debug("[WebSocketClient] WebSocket connection doesn't exist")
             return
         }
@@ -209,32 +208,32 @@ public final actor WebSocketClient: NSObject {
             }
         }
 
-        await self.startReadMessage()
+        await startReadMessage()
     }
 }
 
 // MARK: - URLSession delegate
 extension WebSocketClient: URLSessionWebSocketDelegate {
-    nonisolated public func urlSession(
+    public nonisolated func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,
         didOpenWithProtocol protocol: String?
     ) {
         log.debug("[WebSocketClient] Websocket connected")
-        self.subject.send(.connected)
+        subject.send(.connected)
     }
 
-    nonisolated public func urlSession(
+    public nonisolated func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,
         didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
         reason: Data?
     ) {
         log.debug("[WebSocketClient] Websocket disconnected")
-        self.subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
+        subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
     }
 
-    nonisolated public func urlSession(
+    public nonisolated func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
         didCompleteWithError error: Swift.Error?
@@ -248,17 +247,20 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
         let nsError = error as NSError
         switch (nsError.domain, nsError.code) {
-        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
-             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground
-            self.subject.send(.error(WebSocketClient.Error.connectionLost))
+        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost),
+             (NSURLErrorDomain.self, NSURLErrorCannotConnectToHost),
+             (NSURLErrorDomain.self, NSURLErrorNotConnectedToInternet),
+             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)),
+             (NSPOSIXErrorDomain.self, 57):
+            subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
                 await self?.networkMonitor.updateState(.offline)
             }
         case (NSURLErrorDomain.self, NSURLErrorCancelled):
             log.debug("Skipping NSURLErrorCancelled error")
-            self.subject.send(.error(WebSocketClient.Error.connectionCancelled))
+            subject.send(.error(WebSocketClient.Error.connectionCancelled))
         default:
-            self.subject.send(.error(error))
+            subject.send(.error(error))
         }
     }
 }
@@ -278,18 +280,18 @@ extension WebSocketClient {
     private func onNetworkStateChange(
         _ stateChange: (AmplifyNetworkMonitor.State, AmplifyNetworkMonitor.State)
     ) async {
-        guard self.autoConnectOnNetworkStatusChange == true else {
+        guard autoConnectOnNetworkStatusChange == true else {
             return
         }
 
         switch stateChange {
         case (.online, .offline):
-            log.debug("[WebSocketClient] NetworkMonitor - Device went offline")
-            self.connection?.cancel(with: .invalid, reason: nil)
-            self.subject.send(.disconnected(.invalid, nil))
+            log.debug("[WebSocketClient] NetworkMonitor - Device went offline or network status became unknown")
+            connection?.cancel(with: .invalid, reason: nil)
+            subject.send(.disconnected(.invalid, nil))
         case (.offline, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
-            await self.createConnectionAndRead()
+            await createConnectionAndRead()
         default:
             break
         }
@@ -311,7 +313,7 @@ extension WebSocketClient {
         }
         .store(in: &cancelables)
 
-        self.resetRetryCountOnConnected()
+        resetRetryCountOnConnected()
     }
 
     private func resetRetryCountOnConnected() {
@@ -330,18 +332,23 @@ extension WebSocketClient {
     }
 
     private func retryOnCloseCode(_ closeCode: URLSessionWebSocketTask.CloseCode) async {
-        guard self.autoRetryOnConnectionFailure == true else {
+        guard autoRetryOnConnectionFailure == true else {
             return
         }
 
         switch closeCode {
-        case .internalServerError:
+        case .internalServerError,
+             .abnormalClosure,
+             .invalid,
+             .policyViolation:
+            log.debug("[WebSocketClient] Retrying on closeCode: \(closeCode)")
             let delayInMs = await retryWithJitter.next()
             Task { [weak self] in
                 try await Task.sleep(nanoseconds: UInt64(delayInMs) * 1_000_000)
                 await self?.createConnectionAndRead()
             }
-        default: break
+        default:
+            log.debug("[WebSocketClient] Not retrying for closeCode: \(closeCode)")
         }
 
     }
@@ -357,9 +364,9 @@ extension WebSocketClient: DefaultLogger {
 
 extension WebSocketClient: Resettable {
     public func reset() async {
-        self.subject.send(completion: .finished)
-        self.autoConnectOnNetworkStatusChange = false
-        self.autoRetryOnConnectionFailure = false
+        subject.send(completion: .finished)
+        autoConnectOnNetworkStatusChange = false
+        autoRetryOnConnectionFailure = false
         cancelables = Set()
     }
 }

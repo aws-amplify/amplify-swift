@@ -81,7 +81,7 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             "associatedField": ["invalidField"]
         ]
         let data = try encoder.encode(json)
-        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        let result = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         XCTAssertNil(result.listProvider)
     }
 
@@ -90,14 +90,14 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             "associatedId": "123"
         ]
         let data = try encoder.encode(json)
-        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        let result = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         XCTAssertNil(result.listProvider)
     }
 
     func testDataStoreListDecoderShouldNotDecodeJSONString() throws {
         let json: JSONValue = "JSONString"
         let data = try encoder.encode(json)
-        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        let result = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
         XCTAssertNil(result.listProvider)
     }
 }

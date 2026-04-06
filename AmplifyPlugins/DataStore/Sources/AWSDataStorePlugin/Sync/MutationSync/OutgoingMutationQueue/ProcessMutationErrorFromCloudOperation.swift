@@ -6,16 +6,17 @@
 //
 
 import Amplify
+import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 // swiftlint:disable type_body_length file_length
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
 /// 1. When there is an APIError which is for an unauthenticated user, call the error handler.
 /// 2. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
 /// 3. When there is a "conflict unahandled" error, trigger the conflict handler and reconcile the state of the system.
-class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
+class ProcessMutationErrorFromCloudOperation: AsynchronousOperation, @unchecked Sendable {
 
     typealias MutationSyncAPIRequest = GraphQLRequest<MutationSyncResult>
     typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult
@@ -30,14 +31,16 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
 
-    init(dataStoreConfiguration: DataStoreConfiguration,
-         mutationEvent: MutationEvent,
-         api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter,
-         graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
-         apiError: APIError? = nil,
-         reconciliationQueue: IncomingEventReconciliationQueue? = nil,
-         completion: @escaping (Result<MutationEvent?, Error>) -> Void) {
+    init(
+        dataStoreConfiguration: DataStoreConfiguration,
+        mutationEvent: MutationEvent,
+        api: APICategoryGraphQLBehavior,
+        storageAdapter: StorageEngineAdapter,
+        graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
+        apiError: APIError? = nil,
+        reconciliationQueue: IncomingEventReconciliationQueue? = nil,
+        completion: @escaping (Result<MutationEvent?, Error>) -> Void
+    ) {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEvent = mutationEvent
         self.api = api
@@ -58,7 +61,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiError = apiError {
+        if let apiError {
             if isAuthSignedOutError(apiError: apiError) {
                 log.verbose("User is signed out, passing error back to the error handler, and removing mutation event.")
             } else if let underlyingError = apiError.underlyingError {
@@ -71,10 +74,12 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard let graphQLResponseError = graphQLResponseError else {
+        guard let graphQLResponseError else {
             dataStoreConfiguration.errorHandler(
-                DataStoreError.api(APIError.unknown("This is unexpected. Missing APIError and GraphQLError.", ""),
-                                   mutationEvent))
+                DataStoreError.api(
+                    APIError.unknown("This is unexpected. Missing APIError and GraphQLError.", ""),
+                    mutationEvent
+                ))
             finish(result: .success(nil))
             return
         }
@@ -102,8 +107,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             let errorType = AppSyncErrorType(errorTypeValue)
             switch errorType {
             case .conditionalCheck:
-                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
-                                         data: mutationEvent)
+                let payload = HubPayload(
+                    eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
+                    data: mutationEvent
+                )
                 Amplify.Hub.dispatch(to: .dataStore, payload: payload)
                 dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
                 finish(result: .success(nil))
@@ -175,8 +182,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
         switch mutationType {
         case .create:
-            let error = DataStoreError.unknown("Should never get conflict unhandled for create mutation",
-                                               "This indicates something unexpected was returned from the service")
+            let error = DataStoreError.unknown(
+                "Should never get conflict unhandled for create mutation",
+                "This indicates something unexpected was returned from the service"
+            )
             finish(result: .failure(error))
             return
         case .delete:
@@ -188,15 +197,17 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     private func getRemoteModel(_ extensions: [String: JSONValue]) -> Result<MutationSync<AnyModel>, Error> {
         guard case let .object(data) = extensions["data"] else {
-            let error = DataStoreError.unknown("Missing remote model from the response from AppSync.",
-                                               "This indicates something unexpected was returned from the service")
+            let error = DataStoreError.unknown(
+                "Missing remote model from the response from AppSync.",
+                "This indicates something unexpected was returned from the service"
+            )
             return .failure(error)
         }
         do {
             let serializedJSON = try JSONEncoder().encode(data)
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-            return .success(try decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON))
+            return try .success(decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON))
         } catch {
             return .failure(error)
         }
@@ -219,9 +230,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             case .applyRemote:
                 self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
             case .retryLocal:
-                let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: localModel,
-                                                                                modelSchema: localModel.schema,
-                                                                                version: latestVersion)
+                let request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+                    of: localModel,
+                    modelSchema: localModel.schema,
+                    version: latestVersion
+                )
                 self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
@@ -230,9 +243,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                     initialized.
                     """)
                 }
-                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                                modelSchema: modelSchema,
-                                                                                version: latestVersion)
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(
+                    of: model,
+                    modelSchema: modelSchema,
+                    version: latestVersion
+                )
                 self.sendMutation(describedBy: request)
             }
         }
@@ -262,9 +277,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                     initialized.
                     """)
                 }
-                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: localModel,
-                                                                                modelSchema: modelSchema,
-                                                                                version: latestVersion)
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(
+                    of: localModel,
+                    modelSchema: modelSchema,
+                    version: latestVersion
+                )
                 self.sendMutation(describedBy: request)
             case .retry(let model):
                 guard let modelSchema = ModelRegistry.modelSchema(from: self.mutationEvent.modelName) else {
@@ -273,9 +290,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                     initialized.
                     """)
                 }
-                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                                modelSchema: modelSchema,
-                                                                                version: latestVersion)
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(
+                    of: model,
+                    modelSchema: modelSchema,
+                    version: latestVersion
+                )
                 self.sendMutation(describedBy: request)
             }
         }
@@ -288,7 +307,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard let api = self.api else {
+        guard let api else {
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
             finish(result: .failure(apiError))
@@ -299,13 +318,13 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         Task { [weak self] in
             do {
                 let result = try await api.mutate(request: apiRequest)
-                guard let self = self, !self.isCancelled else {
+                guard let self, !self.isCancelled else {
                     self?.finish(result: .failure(APIError.operationError("Mutation operation cancelled", "")))
                     return
                 }
 
-                self.log.verbose("sendMutationToCloud received asyncEvent: \(result)")
-                self.validate(cloudResult: result, request: apiRequest)
+                log.verbose("sendMutationToCloud received asyncEvent: \(result)")
+                validate(cloudResult: result, request: apiRequest)
             } catch {
                 self?.finish(result: .failure(APIError.operationError("Failed to do mutation", "", error)))
             }
@@ -319,7 +338,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
         switch cloudResult {
         case .success(let mutationSyncResult):
-            guard let reconciliationQueue = reconciliationQueue else {
+            guard let reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
                     "reconciliationQueue is unexpectedly nil",
                     """
@@ -359,10 +378,12 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
         let identifier = remoteModel.model.identifier(schema: modelSchema)
 
-        storageAdapter.delete(untypedModelType: modelType,
-                              modelSchema: modelSchema,
-                              withIdentifier: identifier,
-                              condition: nil) { response in
+        storageAdapter.delete(
+            untypedModelType: modelType,
+            modelSchema: modelSchema,
+            withIdentifier: identifier,
+            condition: nil
+        ) { response in
             switch response {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")
@@ -397,8 +418,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
     }
 
-    private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              inProcessModel: MutationSync<AnyModel>) {
+    private func saveMetadata(
+        storageAdapter: StorageEngineAdapter,
+        inProcessModel: MutationSync<AnyModel>
+    ) {
         log.verbose(#function)
         storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
             switch result {
@@ -430,17 +453,21 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             mutationType = .update
         }
 
-        guard let mutationEvent = try? MutationEvent(untypedModel: savedModel.model.instance,
-                                                     mutationType: mutationType,
-                                                     version: version)
+        guard let mutationEvent = try? MutationEvent(
+            untypedModel: savedModel.model.instance,
+            mutationType: mutationType,
+            version: version
+        )
             else {
                 let error = DataStoreError.unknown("Could not create MutationEvent", "")
                 finish(result: .failure(error))
                 return
         }
 
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
-                                 data: mutationEvent)
+        let payload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.syncReceived,
+            data: mutationEvent
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
         finish(result: .success(mutationEvent))
@@ -465,10 +492,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 }
 
 extension ProcessMutationErrorFromCloudOperation: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -6,22 +6,22 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension ModelExplicitDefaultPk {
+public extension ModelExplicitDefaultPk {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case createdAt
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let modelExplicitDefaultPk = ModelExplicitDefaultPk.keys
 
     model.pluralName = "ModelExplicitDefaultPks"
@@ -44,8 +44,8 @@ extension ModelExplicitDefaultPk: ModelIdentifiable {
     public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ModelExplicitDefaultPk.IdentifierProtocol {
-    public static func identifier(id: String) -> Self {
+public extension ModelExplicitDefaultPk.IdentifierProtocol {
+    static func identifier(id: String) -> Self {
         .make(fields: [(name: "id", value: id)])
     }
 }

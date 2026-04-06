@@ -14,9 +14,11 @@ public struct PostEditor5: Model {
   public var post: Post5
   public var editor: User5
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       post: Post5,
-      editor: User5) {
+      editor: User5
+  ) {
       self.id = id
       self.post = post
       self.editor = editor

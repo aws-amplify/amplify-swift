@@ -6,12 +6,12 @@
 //
 
 #if os(iOS) || os(macOS) || os(visionOS)
-@testable import AWSCognitoAuthPlugin
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
-import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
 import struct AWSCognitoIdentityProvider.StartWebAuthnRegistrationOutput
+import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
 import XCTest
+@testable import AWSCognitoAuthPlugin
 
 @available(iOS 17.4, macOS 13.5, *)
 class AssociateWebAuthnCredentialTaskTests: XCTestCase {

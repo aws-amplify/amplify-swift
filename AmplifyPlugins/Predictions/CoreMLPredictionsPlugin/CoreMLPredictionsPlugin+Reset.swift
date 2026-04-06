@@ -6,12 +6,12 @@
 //
 
 #if canImport(Speech) && canImport(Vision)
-import Foundation
 import Amplify
+import Foundation
 
-extension CoreMLPredictionsPlugin {
+public extension CoreMLPredictionsPlugin {
 
-    public func reset() async {
+    func reset() async {
         queue = nil
         coreMLNaturalLanguage = nil
         coreMLSpeech = nil

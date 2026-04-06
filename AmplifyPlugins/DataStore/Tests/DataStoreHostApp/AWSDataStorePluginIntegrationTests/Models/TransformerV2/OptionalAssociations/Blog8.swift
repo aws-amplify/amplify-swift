@@ -18,26 +18,32 @@ public struct Blog8: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String,
-      customs: [MyCustomModel8?]? = nil,
-      notes: [String?]? = nil,
-      posts: List<Post8>? = []) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String,
+    customs: [MyCustomModel8?]? = nil,
+    notes: [String?]? = nil,
+    posts: List<Post8>? = []
+  ) {
+    self.init(
+      id: id,
       name: name,
       customs: customs,
       notes: notes,
       posts: posts,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String,
-      customs: [MyCustomModel8?]? = nil,
-      notes: [String?]? = nil,
-      posts: List<Post8>? = [],
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    customs: [MyCustomModel8?]? = nil,
+    notes: [String?]? = nil,
+    posts: List<Post8>? = [],
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.customs = customs

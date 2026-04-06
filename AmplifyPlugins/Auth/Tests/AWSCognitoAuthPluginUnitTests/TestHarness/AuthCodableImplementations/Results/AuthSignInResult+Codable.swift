@@ -30,8 +30,8 @@ extension AuthSignInResult: Codable {
     }
 }
 
-extension AuthSignInStep: Equatable {
-    public static func == (lhs: AuthSignInStep, rhs: AuthSignInStep) -> Bool {
+public extension AuthSignInStep {
+    static func == (lhs: AuthSignInStep, rhs: AuthSignInStep) -> Bool {
         switch (lhs, rhs) {
         case (.confirmSignInWithSMSMFACode, .confirmSignInWithSMSMFACode),
             (.confirmSignUp, .confirmSignUp),
@@ -62,7 +62,8 @@ extension AuthSignInStep: Codable {
             let additionalInfo = try values.decodeIfPresent([String: String].self, forKey: .additionalInfo)
             self = .confirmSignInWithSMSMFACode(
                 codeDeliveryDetails,
-                additionalInfo)
+                additionalInfo
+            )
         } else {
             fatalError("next step type not supported")
         }

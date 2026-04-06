@@ -5,24 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 class AWSAuthAutoSignInTests: BasePluginTest {
-    
+
     override var initialState: AuthState {
         AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
             .signedUp(
                 .init(username: "jeffb", session: "session"),
-                .init(.completeAutoSignIn("session"))))
+                .init(.completeAutoSignIn("session"))
+            )
+        )
     }
-    
+
     /// Test successful auto sign in
     ///
     /// - Given: Given an auth plugin with mocked service and in signed up state
@@ -33,7 +35,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///    - I should get a successful result with tokens
     ///
     func testSuccessfulAutoSignIn() async {
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .init(
                     accessToken: Defaults.validAccessToken,
@@ -41,9 +43,10 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                     idToken: "idToken",
                     newDeviceMetadata: nil,
                     refreshToken: "refreshToken",
-                    tokenType: ""))
+                    tokenType: ""
+                ))
         })
-        
+
         do {
             let result = try await plugin.autoSignIn()
             guard case .done = result.nextStep else {
@@ -55,7 +58,42 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
+    /// Test auto sign in success
+    ///
+    /// - Given: Given an auth plugin with mocked service set up to return `.selectChallenge` with `.password` and `.passwordSrp`
+    ///          for `InitiateAuth` and in signed up state
+    /// - When:
+    ///    - I invoke autoSignIn
+    /// - Then:
+    ///    - I should get a result with `.continueSignInWithFirstFactorSelection`
+    ///
+    func testAutoSignInSuccessWithContinueFirstFactorSelection() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockInitiateAuthResponse: { input in
+                return InitiateAuthOutput(
+                    availableChallenges: [.password, .passwordSrp],
+                    challengeName: .selectChallenge,
+                    session: "session"
+                )
+            }
+        )
+
+        do {
+            let result = try await plugin.autoSignIn()
+            guard case .continueSignInWithFirstFactorSelection(let authFactorTypes) = result.nextStep else {
+                XCTFail("Result should be .continueSignInWithFirstFactorSelection for next step")
+                return
+            }
+
+            XCTAssertTrue(authFactorTypes.count == 2)
+            XCTAssertTrue(authFactorTypes.contains(.password))
+            XCTAssertTrue(authFactorTypes.contains(.passwordSRP))
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
     /// Test auto sign in success
     ///
     /// - Given: Given an auth plugin with mocked service and in `.signingIn` authentication state and
@@ -87,7 +125,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -95,7 +134,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateSigningIn = AuthState.configured(
             .signingIn(.resolvingChallenge(
                 .waitingForAnswer(
@@ -104,19 +143,26 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         availableChallenges: [.emailOtp],
                         username: "jeffb",
                         session: nil,
-                        parameters: nil),
+                        parameters: nil
+                    ),
                     .apiBased(.userAuth),
-                    .confirmSignInWithOTP(.init(destination: .email("jeffb@amazon.com")))),
+                    .confirmSignInWithOTP(.init(destination: .email("jeffb@amazon.com")))
+                ),
                 .emailOTP,
-                .apiBased(.userAuth))),
+                .apiBased(.userAuth)
+            )),
             .configured,
             .signedUp(
                 .init(username: "jeffb", session: "session"),
-                .init(.completeAutoSignIn("session"))))
-        
-        let authPluginSigningIn = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                        initialState: initialStateSigningIn)
-        
+                .init(.completeAutoSignIn("session"))
+            )
+        )
+
+        let authPluginSigningIn = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateSigningIn
+        )
+
         do {
             let result = try await authPluginSigningIn.autoSignIn()
             guard case .done = result.nextStep else {
@@ -128,7 +174,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
     /// Test auto sign in failure
     ///
     /// - Given: Given an auth plugin with mocked service and in `.notStarted` sign up state
@@ -159,7 +205,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -171,19 +218,22 @@ class AWSAuthAutoSignInTests: BasePluginTest {
         let initialStateNotStarted = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .notStarted)
-        
-        
-        let authPluginNotStarted = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                             initialState: initialStateNotStarted)
+            .notStarted
+        )
+
+
+        let authPluginNotStarted = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateNotStarted
+        )
         do {
-            let _ = try await authPluginNotStarted.autoSignIn()
+            _ = try await authPluginNotStarted.autoSignIn()
             XCTFail("Auto sign in should not be successful from .notStarted state")
         } catch {
             XCTAssertNotNil(error)
         }
     }
-    
+
     /// Test auto sign in failure
     ///
     /// - Given: Given an auth plugin with mocked service and in `.initiatingSignUp` sign up state
@@ -214,7 +264,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -222,23 +273,26 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateInitiatingSignUp = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .initiatingSignUp(.init(username: "user")))
-        
-        let authPluginInitiatingSignUp = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                                   initialState: initialStateInitiatingSignUp)
-        
+            .initiatingSignUp(.init(username: "user"))
+        )
+
+        let authPluginInitiatingSignUp = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateInitiatingSignUp
+        )
+
         do {
-            let _ = try await authPluginInitiatingSignUp.autoSignIn()
+            _ = try await authPluginInitiatingSignUp.autoSignIn()
             XCTFail("Auto sign in should not be successful from .initiatingSignUp state")
         } catch {
             XCTAssertNotNil(error)
         }
     }
-    
+
     /// Test auto sign in failure
     ///
     /// - Given: Given an auth plugin with mocked service and in `.awaitingUserConfirmation` sign up state
@@ -269,7 +323,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -277,23 +332,26 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateAwaitingUserConfirmation = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .awaitingUserConfirmation(.init(username: "user"), .init(.completeAutoSignIn("session"))))
-        
-        let authPluginAwaitingUserConfirmation = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                                           initialState: initialStateAwaitingUserConfirmation)
-        
+            .awaitingUserConfirmation(.init(username: "user"), .init(.completeAutoSignIn("session")))
+        )
+
+        let authPluginAwaitingUserConfirmation = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateAwaitingUserConfirmation
+        )
+
         do {
-            let _ = try await authPluginAwaitingUserConfirmation.autoSignIn()
+            _ = try await authPluginAwaitingUserConfirmation.autoSignIn()
             XCTFail("Auto sign in should not be successful from .awaitingUserConfirmation state")
         } catch {
             XCTAssertNotNil(error)
         }
     }
-    
+
     /// Test auto sign in failure
     ///
     /// - Given: Given an auth plugin with mocked service and in `.confirmingSignUp` sign up state
@@ -324,7 +382,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -332,23 +391,26 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateConfirmingSignUp = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .confirmingSignUp(.init(username: "user")))
-        
-        let authPluginConfirmingSignUp = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                                   initialState: initialStateConfirmingSignUp)
-        
+            .confirmingSignUp(.init(username: "user"))
+        )
+
+        let authPluginConfirmingSignUp = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateConfirmingSignUp
+        )
+
         do {
-            let _ = try await authPluginConfirmingSignUp.autoSignIn()
+            _ = try await authPluginConfirmingSignUp.autoSignIn()
             XCTFail("Auto sign in should not be successful from .confirmingSignUp state")
         } catch {
             XCTAssertNotNil(error)
         }
     }
-    
+
     /// Test auto sign in failure
     ///
     /// - Given: Given an auth plugin with mocked service and in `.error` sign up state
@@ -379,7 +441,8 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                         idToken: "idToken",
                         newDeviceMetadata: nil,
                         refreshToken: "refreshToken",
-                        tokenType: ""))
+                        tokenType: ""
+                    ))
             },
             mockConfirmSignUpResponse: { request in
                 XCTAssertNil(request.clientMetadata)
@@ -387,25 +450,28 @@ class AWSAuthAutoSignInTests: BasePluginTest {
                 return .init(session: "session")
             }
         )
-        
+
         let initialStateError = AuthState.configured(
             .signedOut(.init(lastKnownUserName: nil)),
             .configured,
-            .error(.service(error: AuthError.service("Unknown error", "Unknown error"))))
-        
-        let authPluginError = configureCustomPluginWith(userPool: { mockIdentityProvider },
-                                                        initialState: initialStateError)
-        
+            .error(.service(error: AuthError.service("Unknown error", "Unknown error")), .init(username: "username", session: "sessio"))
+        )
+
+        let authPluginError = configureCustomPluginWith(
+            userPool: { mockIdentityProvider },
+            initialState: initialStateError
+        )
+
         do {
-            let _ = try await authPluginError.autoSignIn()
+            _ = try await authPluginError.autoSignIn()
             XCTFail("Auto sign in should not be successful from .error state")
         } catch {
             XCTAssertNotNil(error)
         }
     }
-    
+
     // MARK: - Service error for initiateAuth
-    
+
     /// Test a autoSignIn with an `InternalErrorException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock an
@@ -418,7 +484,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testAutoSignInWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.InternalErrorException()
         })
 
@@ -445,7 +511,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithInvalidLambdaResponseException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.InvalidLambdaResponseException()
         })
 
@@ -473,7 +539,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
 
@@ -488,7 +554,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a autoSignIn with `InvalidUserPoolConfigurationException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -501,7 +567,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithInvalidUserPoolConfigurationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException()
         })
 
@@ -515,7 +581,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a autoSignIn with `NotAuthorizedException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -528,7 +594,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
 
@@ -542,7 +608,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a autoSignIn with `ResourceNotFoundException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -555,7 +621,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithResourceNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
 
@@ -583,7 +649,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithTooManyRequestsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
 
@@ -598,7 +664,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a autoSignIn with `UnexpectedLambdaException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -611,7 +677,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithUnexpectedLambdaException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.UnexpectedLambdaException()
         })
 
@@ -639,7 +705,7 @@ class AWSAuthAutoSignInTests: BasePluginTest {
     ///
     func testSignInWithUserLambdaValidationException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw AWSCognitoIdentityProvider.UserLambdaValidationException()
         })
 

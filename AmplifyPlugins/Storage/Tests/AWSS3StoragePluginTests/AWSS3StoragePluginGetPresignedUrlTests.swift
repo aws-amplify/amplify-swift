@@ -1,13 +1,13 @@
-////
+//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSS3StoragePlugin
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import Amplify
 import XCTest
@@ -32,12 +32,14 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         testData = Data(UUID().uuidString.utf8)
         queue = OperationQueue()
         systemUnderTest = AWSS3StoragePlugin()
-        systemUnderTest.configure(storageService: storageService,
-                                  authService: authService,
-                                  defaultAccessLevel: defaultAccessLevel,
-                                  queue: queue)
+        systemUnderTest.configure(
+            storageService: storageService,
+            authService: authService,
+            defaultAccessLevel: defaultAccessLevel,
+            queue: queue
+        )
         let url = try XCTUnwrap(testURL)
-        storageService.getPreSignedURLHandler = { (_, _, _) in
+        storageService.getPreSignedURLHandler = { _, _, _ in
             return url
         }
     }
@@ -68,7 +70,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
             "getPreSignedURL(serviceKey:signingOperation:metadata:accelerate:expires:) \(expectedServiceKey) getObject nil 18000"
         ])
     }
-    
+
     /// - Given: An empty string as an object key
     /// - When: An attempt to generate a pre-signed URL for it is performed
     /// - Then: A StorageError.validation is thrown
@@ -77,7 +79,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         do {
             _ = try await systemUnderTest.getURL(key: "", options: options)
             XCTFail("Expecting error")
-        } catch StorageError.validation(let field, let description, let recovery, _){
+        } catch StorageError.validation(let field, let description, let recovery, _) {
             XCTAssertEqual(field, "key")
             XCTAssertEqual(recovery, "Specify a non-empty key.")
             XCTAssertEqual(description, "The `key` is specified but is empty.")
@@ -108,7 +110,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
     func testGetOperationGetPresignedURL() async throws {
         let testIdentityId = UUID().uuidString
         authService.identityId = testIdentityId
-        let expectedExpires = Int.random(in: 100..<200)
+        let expectedExpires = Int.random(in: 100 ..< 200)
 
         let options = StorageGetURLRequest.Options(accessLevel: .protected, expires: expectedExpires)
         let output = try await systemUnderTest.getURL(key: testKey, options: options)
@@ -132,7 +134,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         authService.identityId = testIdentityId
 
         let error = StorageError.service(UUID().uuidString, UUID().uuidString)
-        storageService.getPreSignedURLHandler = { (_,_,_) in
+        storageService.getPreSignedURLHandler = { _, _, _ in
             throw error
         }
 
@@ -170,7 +172,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
             "getIdentityID()"
         ])
 
-        let expectedExpires = 18000
+        let expectedExpires = 18_000
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
             "getPreSignedURL(serviceKey:signingOperation:metadata:accelerate:expires:) \(expectedServiceKey) getObject nil \(expectedExpires)"

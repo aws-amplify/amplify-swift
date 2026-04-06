@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
+public extension AWSPredictionsPlugin {
+    func reset() async {
         if predictionsService != nil {
             let resettable = predictionsService as Resettable
             await resettable.reset()

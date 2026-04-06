@@ -18,11 +18,15 @@ public struct AuthCodeDeliveryDetails {
     /// Attribute that is confirmed or verified.
     public let attributeKey: AuthUserAttributeKey?
 
-    public init(destination: DeliveryDestination,
-                attributeKey: AuthUserAttributeKey? = nil) {
+    public init(
+        destination: DeliveryDestination,
+        attributeKey: AuthUserAttributeKey? = nil
+    ) {
         self.destination = destination
         self.attributeKey = attributeKey
     }
 }
 
 extension AuthCodeDeliveryDetails: Equatable {}
+
+extension AuthCodeDeliveryDetails: Sendable {}

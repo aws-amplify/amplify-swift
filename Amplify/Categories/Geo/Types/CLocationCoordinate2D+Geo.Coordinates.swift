@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
 public extension CLLocationCoordinate2D {
     /// Initialize a Location from a CLLocationCoordinate2D

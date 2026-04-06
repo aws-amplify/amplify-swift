@@ -56,7 +56,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryWebAuthnBehaviour {
         let request = AuthListWebAuthnCredentialsRequest(
             options: options ?? .init()
         )
-        let task = ListWebAuthnCredentialsTask (
+        let task = ListWebAuthnCredentialsTask(
             request: request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory

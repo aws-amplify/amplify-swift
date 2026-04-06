@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import XCTest
 @testable import AWSAPIPlugin
 
@@ -18,7 +17,7 @@ class ResultAsyncTests: XCTestCase {
 
         let result = Result<Int, Error>.success(0)
         let plus1Result = await result.flatMapAsync {
-            .success(await plus1($0))
+            await .success(plus1($0))
         }
 
         switch plus1Result {
@@ -38,7 +37,7 @@ class ResultAsyncTests: XCTestCase {
         let expectedError = TestError()
         let result = Result<[Int], Error>.failure(expectedError)
         let count = await result.flatMapAsync {
-            .success(await arrayCount($0))
+            await .success(arrayCount($0))
         }
 
         switch count {
@@ -51,4 +50,4 @@ class ResultAsyncTests: XCTestCase {
     }
 }
 
-fileprivate class TestError: Error { }
+private class TestError: Error, @unchecked Sendable { }

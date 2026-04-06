@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Identify.Request.Kind {
-    public struct Lift<
+public extension Predictions.Identify.Request.Kind {
+    struct Lift<
         SpecificOutput,
         GenericOutput
     > {

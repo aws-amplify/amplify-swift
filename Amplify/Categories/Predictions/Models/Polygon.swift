@@ -7,8 +7,8 @@
 
 import CoreGraphics
 
-extension Predictions {
-    public struct Polygon {
+public extension Predictions {
+    struct Polygon {
         public let points: [CGPoint]
 
         public init(points: [CGPoint]) {

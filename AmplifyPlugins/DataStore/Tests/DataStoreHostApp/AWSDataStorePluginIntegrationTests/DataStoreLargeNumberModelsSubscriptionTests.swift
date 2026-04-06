@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
-import Combine
 import Amplify
+import Combine
+import XCTest
 @testable import AWSAPIPlugin
 
 class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase {
@@ -56,8 +55,8 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
         let repeatCount = 5
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
-        
-        for _ in 0..<repeatCount {
+
+        for _ in 0 ..< repeatCount {
             try await startDataStoreAndWaitForSubscriptionsEstablished(timeout: 2)
             try await stopDataStoreAndVerifyAppSyncClientDisconnected()
         }
@@ -75,7 +74,7 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
             try await Amplify.DataStore.start()
         }
         await fulfillment(of: [expectation], timeout: timeout)
-        withExtendedLifetime(cancellables, { })
+        withExtendedLifetime(cancellables) { }
     }
 
     private func stopDataStoreAndVerifyAppSyncClientDisconnected() async throws {
@@ -93,7 +92,7 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
             return
         }
 
-        let appSyncRealTimeClients = (await appSyncRealTimeClientFactory.apiToClientCache.values)
+        let appSyncRealTimeClients = await (appSyncRealTimeClientFactory.apiToClientCache.values)
             .map { $0 as! AppSyncRealTimeClient }
 
         try await Task.sleep(seconds: 1)

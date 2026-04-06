@@ -6,10 +6,10 @@
 //
 
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
-import SmithyHTTPAPI
 import Smithy
+import SmithyHTTPAPI
+import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class PinpointRequestsRegistryTests: XCTestCase {
     private var mockedHttpSdkClient: MockHttpClientEngine!
@@ -25,8 +25,10 @@ class PinpointRequestsRegistryTests: XCTestCase {
         let oldHttpClientEngine = pinpointConfiguration.httpClientEngine
         PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
 
-        XCTAssertNotEqual(oldHttpClientEngine.typeString,
-                          pinpointConfiguration.httpClientEngine.typeString)
+        XCTAssertNotEqual(
+            oldHttpClientEngine.typeString,
+            pinpointConfiguration.httpClientEngine.typeString
+        )
     }
 
     func testExecute_withSourcesRegistered_shouldAppendSuffixToUserAgent() async throws {
@@ -103,14 +105,14 @@ private class MockHttpClientEngine: HTTPClient {
     func close() async {}
 }
 
-private class MockLogAgent: LogAgent {
+private class MockLogAgent: LogAgent, @unchecked Sendable {
     let name = "MockLogAgent"
     var level: LogAgentLevel = .info
 
     func log(
         level: Smithy.LogAgentLevel,
         message: @autoclosure () -> String,
-        metadata: @autoclosure () -> [String : String]?,
+        metadata: @autoclosure () -> [String: String]?,
         source: @autoclosure () -> String,
         file: String,
         function: String,

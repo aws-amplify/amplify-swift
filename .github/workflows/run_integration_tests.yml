@@ -105,7 +105,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          other_flags: -test-iterations 3 -retry-tests-on-failure
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure'
@@ -123,4 +123,4 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES

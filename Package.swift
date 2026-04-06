@@ -4,12 +4,12 @@ import PackageDescription
 
 let platforms: [SupportedPlatform] = [
     .iOS(.v13),
-    .macOS(.v10_15),
+    .macOS(.v12),
     .tvOS(.v13),
     .watchOS(.v9)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.2.59"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.6.71"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.3"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
@@ -162,12 +162,13 @@ let apiTargets: [Target] = [
 ]
 
 let authTargets: [Target] = [
-    .target(name: "AmplifyBigInteger",
-            dependencies: [
-                "libtommathAmplify"
-            ],
-            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
-           ),
+    .target(
+        name: "AmplifyBigInteger",
+        dependencies: [
+            "libtommathAmplify"
+        ],
+        path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+    ),
     .target(
         name: "AmplifySRP",
         dependencies: [
@@ -179,6 +180,7 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
+            .target(name: "AmplifyAvailability"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
@@ -190,6 +192,11 @@ let authTargets: [Target] = [
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
+    ),
+    .target(
+        name: "AmplifyAvailability",
+        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
+        publicHeadersPath: "include"
     ),
     .target(
         name: "libtommathAmplify",
@@ -225,7 +232,8 @@ let dataStoreTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "SQLite", package: "SQLite.swift")],
+            .product(name: "SQLite", package: "SQLite.swift")
+        ],
         path: "AmplifyPlugins/DataStore/Sources/AWSDataStorePlugin",
         exclude: [
             "Info.plist",
@@ -256,7 +264,8 @@ let storageTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
-            .product(name: "AWSS3", package: "aws-sdk-swift")],
+            .product(name: "AWSS3", package: "aws-sdk-swift")
+        ],
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
@@ -287,7 +296,8 @@ let geoTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
-            .product(name: "AWSLocation", package: "aws-sdk-swift")],
+            .product(name: "AWSLocation", package: "aws-sdk-swift")
+        ],
         path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
@@ -302,7 +312,7 @@ let geoTargets: [Target] = [
             "AWSLocationGeoPlugin",
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
-            ],
+        ],
         path: "AmplifyPlugins/Geo/Tests/AWSLocationGeoPluginTests",
         exclude: [
             "Resources/Info.plist"
@@ -357,6 +367,32 @@ let analyticsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    ),
+]
+
+let kinesisTargets: [Target] = [
+    .target(
+        name: "AmplifyKinesisClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSKinesis", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyKinesisClientTests",
+        dependencies: [
+            "AmplifyKinesisClient"
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )
 ]
 
@@ -406,7 +442,7 @@ let predictionsTargets: [Target] = [
         name: "AWSPredictionsPluginUnitTests",
         dependencies: ["AWSPredictionsPlugin"],
         path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
-        resources: [.copy("TestResources/TestImages") ]
+        resources: [.copy("TestResources/TestImages")]
     ),
     .target(
         name: "CoreMLPredictionsPlugin",
@@ -460,17 +496,52 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets
-    + apiTargets
-    + authTargets
-    + dataStoreTargets
-    + storageTargets
-    + geoTargets
-    + analyticsTargets
-    + pushNotificationsTargets
-    + internalPinpointTargets
-    + predictionsTargets
-    + loggingTargets
+let foundationTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundation",
+        dependencies: [],
+        path: "AmplifyFoundation/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationTests",
+        dependencies: ["AmplifyFoundation"],
+        path: "AmplifyFoundation/Tests"
+    ),
+]
+
+let foundationBridgeTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundationBridge",
+        dependencies: [
+            "AmplifyFoundation",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyFoundationBridge/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationBridgeTests",
+        dependencies: [
+            "AmplifyFoundationBridge"
+        ],
+        path: "AmplifyFoundationBridge/Tests"
+    ),
+]
+
+var targets: [Target] = []
+targets.append(contentsOf: amplifyTargets)
+targets.append(contentsOf: apiTargets)
+targets.append(contentsOf: authTargets)
+targets.append(contentsOf: dataStoreTargets)
+targets.append(contentsOf: storageTargets)
+targets.append(contentsOf: geoTargets)
+targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: kinesisTargets)
+targets.append(contentsOf: pushNotificationsTargets)
+targets.append(contentsOf: internalPinpointTargets)
+targets.append(contentsOf: predictionsTargets)
+targets.append(contentsOf: loggingTargets)
+targets.append(contentsOf: foundationTargets)
+targets.append(contentsOf: foundationBridgeTargets)
 
 let package = Package(
     name: "Amplify",
@@ -523,6 +594,18 @@ let package = Package(
         .library(
             name: "AWSCloudWatchLoggingPlugin",
             targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
+        .library(
+            name: "AmplifyKinesisClient",
+            targets: ["AmplifyKinesisClient"]
+        ),
+        .library(
+            name: "AmplifyFoundation",
+            targets: ["AmplifyFoundation"]
+        ),
+        .library(
+            name: "AmplifyFoundationBridge",
+            targets: ["AmplifyFoundationBridge"]
         ),
     ],
     dependencies: dependencies,

@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateCustomAuth: Action {
     let identifier = "InitiateCustomAuth"
@@ -16,32 +16,40 @@ struct InitiateCustomAuth: Action {
     let clientMetadata: [String: String]
     let deviceMetadata: DeviceMetadata
 
-    init(username: String,
-         clientMetadata: [String: String],
-         deviceMetadata: DeviceMetadata) {
+    init(
+        username: String,
+        clientMetadata: [String: String],
+        deviceMetadata: DeviceMetadata
+    ) {
         self.username = username
         self.clientMetadata = clientMetadata
         self.deviceMetadata = deviceMetadata
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
             let authEnv = try environment.authEnvironment()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
             let request = await InitiateAuthInput.customAuth(
                 username: username,
                 clientMetadata: clientMetadata,
                 asfDeviceId: asfDeviceId,
                 deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
+                environment: userPoolEnv
+            )
 
-            let responseEvent = try await sendRequest(request: request,
-                                                      environment: userPoolEnv)
+            let responseEvent = try await sendRequest(
+                request: request,
+                environment: userPoolEnv
+            )
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 
@@ -60,26 +68,30 @@ struct InitiateCustomAuth: Action {
 
     }
 
-    private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+    private func sendRequest(
+        request: InitiateAuthInput,
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.initiateAuth(input: request)
-        return try UserPoolSignInHelper.parseResponse(response,
-                                                      for: username,
-                                                      signInMethod: .apiBased(.customWithoutSRP))
+        return UserPoolSignInHelper.parseResponse(
+            response,
+            for: username,
+            signInMethod: .apiBased(.customWithoutSRP)
+        )
     }
 
 }
 
 extension InitiateCustomAuth: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

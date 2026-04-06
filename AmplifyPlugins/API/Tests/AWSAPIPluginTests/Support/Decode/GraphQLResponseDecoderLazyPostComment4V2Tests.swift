@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import Amplify
 import AWSPluginsCore
-@testable import AmplifyTestCommon
+import AWSPluginsCore
+import XCTest
+@testable @preconcurrency import Amplify
+@testable @preconcurrency import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
 // Decoder tests for ParentPost4V2 and ChildComment4V2
@@ -16,7 +17,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
 
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
-    
+
     override func setUp() async throws {
         await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
@@ -28,7 +29,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
     }
-    
+
     func testSaveCommentThenQueryComment() async throws {
         let comment = LazyChildComment4V2(content: "content")
         // Create request
@@ -53,13 +54,14 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(request.document, documentString)
         guard let variables = request.variables,
-              let input = variables["input"] as? [String: Any] else {
+              let input = variables["input"] as? [String: Any]
+        else {
             XCTFail("Missing request.variables input")
             return
         }
         XCTAssertEqual(input["id"] as? String, comment.id)
         XCTAssertEqual(input["content"] as? String, comment.content)
-        
+
         // Get request
         let getRequest = GraphQLRequest<LazyChildComment4V2>.get(LazyChildComment4V2.self, byId: comment.id)
         documentString = """
@@ -82,12 +84,13 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(getRequest.document, documentString)
         guard let variables = getRequest.variables,
-              let id = variables["id"] as? String else {
+              let id = variables["id"] as? String
+        else {
             XCTFail("Missing request.variables id")
             return
         }
         XCTAssertEqual(id, comment.id)
-        
+
         // Decode data
         let decoder = GraphQLResponseDecoder(request: getRequest.toOperationRequest(operationType: .mutation))
         let graphQLData: [String: JSONValue] = [
@@ -114,10 +117,10 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             XCTFail("should be not loaded, with `nil` identifiers")
         }
     }
-    
+
     func testSavePostThenQueryPost() async throws {
         let post = LazyParentPost4V2(title: "title")
-        
+
         // Create request
         let request = GraphQLRequest<LazyParentPost4V2>.create(post)
         var documentString = """
@@ -133,13 +136,14 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(request.document, documentString)
         guard let variables = request.variables,
-              let input = variables["input"] as? [String: Any] else {
+              let input = variables["input"] as? [String: Any]
+        else {
             XCTFail("Missing request.variables input")
             return
         }
         XCTAssertEqual(input["id"] as? String, post.id)
         XCTAssertEqual(input["title"] as? String, post.title)
-        
+
         // Get request
         let getRequest = GraphQLRequest<LazyParentPost4V2>.get(LazyParentPost4V2.self, byId: post.id)
         documentString = """
@@ -155,12 +159,13 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(getRequest.document, documentString)
         guard let variables = getRequest.variables,
-              let id = variables["id"] as? String else {
+              let id = variables["id"] as? String
+        else {
             XCTFail("Missing request.variables id")
             return
         }
         XCTAssertEqual(id, post.id)
-        
+
         // Decode data
         let decoder = GraphQLResponseDecoder(request: getRequest.toOperationRequest(operationType: .mutation))
         let graphQLData: [String: JSONValue] = [
@@ -191,7 +196,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             XCTFail("Should be not loaded with post data")
         }
     }
-    
+
     func testSaveMultipleThenQueryComments() async throws {
         let request = GraphQLRequest<LazyChildComment4V2>.list(LazyChildComment4V2.self)
         let documentString = """
@@ -217,14 +222,15 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(request.document, documentString)
         guard let variables = request.variables,
-              let limit = variables["limit"] as? Int else {
+              let limit = variables["limit"] as? Int
+        else {
             XCTFail("Missing request.variables input")
             return
         }
-        XCTAssertEqual(limit, 1000)
+        XCTAssertEqual(limit, 1_000)
         let decoder = GraphQLResponseDecoder<List<LazyChildComment4V2>>(
             request: request.toOperationRequest(operationType: .query))
-        
+
         let date = Temporal.DateTime.now().iso8601String
         let graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
@@ -264,7 +270,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         XCTAssertNotNil(comment2)
         XCTAssertTrue(queriedList.hasNextPage())
     }
-    
+
     func testSaveMultipleThenQueryPosts() async throws {
         let request = GraphQLRequest<LazyParentPost4V2>.list(LazyParentPost4V2.self)
         let documentString = """
@@ -283,13 +289,14 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         """
         XCTAssertEqual(request.document, documentString)
         guard let variables = request.variables,
-              let limit = variables["limit"] as? Int else {
+              let limit = variables["limit"] as? Int
+        else {
             XCTFail("Missing request.variables input")
             return
         }
-        XCTAssertEqual(limit, 1000)
+        XCTAssertEqual(limit, 1_000)
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
-        
+
         let graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
                 "items": [
@@ -315,21 +322,22 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         XCTAssertNotNil(post1)
         XCTAssertNotNil(post2)
     }
-    
+
     func testSaveCommentWithPostThenQueryCommentAndAccessPost() async throws {
         let post = LazyParentPost4V2(title: "title")
         let comment = LazyChildComment4V2(content: "content", post: post)
-        
+
         let request = GraphQLRequest<LazyChildComment4V2>.create(comment)
         guard let variables = request.variables,
-              let input = variables["input"] as? [String: Any] else {
+              let input = variables["input"] as? [String: Any]
+        else {
             XCTFail("Missing request.variables input")
             return
         }
         XCTAssertEqual(input["id"] as? String, comment.id)
         XCTAssertEqual(input["content"] as? String, comment.content)
         XCTAssertEqual(input["postID"] as? String, post.id)
-        
+
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         var graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
@@ -361,7 +369,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             }
             XCTAssertEqual(loadedPost.id, post.id)
         }
-        
+
         graphQLData = [
             "\(request.decodePath!)": [
                 "id": "id",
@@ -386,7 +394,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         XCTAssertEqual(commentWithLazyLoadPost.content, "content")
         switch commentWithLazyLoadPost._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
-            guard let identifiers = identifiers else {
+            guard let identifiers else {
                 XCTFail("Missing identifiers")
                 return
             }
@@ -395,10 +403,10 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             XCTFail("should be in not loaded state when post data is partial")
         }
     }
-    
+
     func testSaveCommentWithPostThenQueryPostAndAccessComments() async throws {
         let post = LazyParentPost4V2(title: "title")
-        
+
         let request = GraphQLRequest<LazyParentPost4V2>.create(post)
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
@@ -426,7 +434,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             XCTFail("Should be not loaded with post data")
         }
     }
-    
+
     func testSaveMultipleCommentWithPostThenQueryCommentsAndAccessPost() async throws {
         let post = LazyParentPost4V2(title: "title")
         let request = GraphQLRequest<LazyChildComment4V2>.list(LazyChildComment4V2.self)
@@ -465,7 +473,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         }
         switch comment._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
-            guard let identifiers = identifiers else {
+            guard let identifiers else {
                 XCTFail("Missing identifiers")
                 return
             }
@@ -473,7 +481,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         case .loaded:
             XCTFail("Should be in not loaded state")
         }
-        
+
         graphQLData = [
             "\(request.decodePath!)": [
                 "items": [
@@ -511,7 +519,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             XCTAssertEqual(loadedPost.id, post.id)
         }
     }
-    
+
     func testSaveMultipleCommentWithPostThenQueryPostAndAccessComments() async throws {
         let request = GraphQLRequest<LazyParentPost4V2>.list(LazyParentPost4V2.self)
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
@@ -531,7 +539,8 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         let result = try decoder.decodeToResponseType(graphQLData)
         XCTAssertEqual(result.count, 1)
         guard let post = result.first,
-              let comments = post.comments else {
+              let comments = post.comments
+        else {
             XCTFail("Failed to decode to one post, with containing comments")
             return
         }

@@ -52,7 +52,7 @@ public final class AtomicDictionary<Key: Hashable, Value> {
             getValue(forKey: key)
         }
         set {
-            if let newValue = newValue {
+            if let newValue {
                 set(value: newValue, forKey: key)
             } else {
                 removeValue(forKey: key)

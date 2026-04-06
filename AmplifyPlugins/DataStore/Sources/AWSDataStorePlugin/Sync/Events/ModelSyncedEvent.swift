@@ -22,12 +22,14 @@ public struct ModelSyncedEvent {
     /// Number of existing model instances deleted from the local store
     public let deleted: Int
 
-    public init(modelName: String,
-                isFullSync: Bool,
-                isDeltaSync: Bool,
-                added: Int,
-                updated: Int,
-                deleted: Int) {
+    public init(
+        modelName: String,
+        isFullSync: Bool,
+        isDeltaSync: Bool,
+        added: Int,
+        updated: Int,
+        deleted: Int
+    ) {
         self.modelName = modelName
         self.isFullSync = isFullSync
         self.isDeltaSync = isDeltaSync

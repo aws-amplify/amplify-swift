@@ -5,54 +5,60 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import Security
 import Amplify
+@preconcurrency import Foundation
+import Security
 
 // swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {
 
-    @_spi(KeychainStore)
     /// Get a string value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A string value
+    @_spi(KeychainStore)
     func _getString(_ key: String) throws -> String
 
-    @_spi(KeychainStore)
     /// Get a data value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A data value
+    @_spi(KeychainStore)
     func _getData(_ key: String) throws -> Data
 
-    @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameters:
     ///   - value: A string value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
+    @_spi(KeychainStore)
     func _set(_ value: String, key: String) throws
 
-    @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This iSystem Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameters:
     ///   - value: A data value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
+    @_spi(KeychainStore)
     func _set(_ value: Data, key: String) throws
 
-    @_spi(KeychainStore)
     /// Remove key-value pair from Keychain based on the provided key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key to delete the key-value pair
+    @_spi(KeychainStore)
     func _remove(_ key: String) throws
 
-    @_spi(KeychainStore)
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    @_spi(KeychainStore)
     func _removeAll() throws
-    
+
+    /// Checks if the Keychain contains any items for this service and access group.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Returns: `true` if at least one item exists, `false` otherwise
+    @_spi(KeychainStore)
+    func _hasItems() throws -> Bool
+
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -75,7 +81,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     public init(service: String, accessGroup: String? = nil) {
-        attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
+        self.attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
         log.verbose(
             "[KeychainStore] Initialized keychain with service=\(service), " +
             "attributes=\(attributes), " +
@@ -83,11 +89,11 @@ public struct KeychainStore: KeychainStoreBehavior {
         )
     }
 
-    @_spi(KeychainStore)
     /// Get a string value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A string value
+    @_spi(KeychainStore)
     public func _getString(_ key: String) throws -> String {
         log.verbose("[KeychainStore] Started retrieving `String` from the store with key=\(key)")
         let data = try _getData(key)
@@ -100,11 +106,11 @@ public struct KeychainStore: KeychainStoreBehavior {
 
     }
 
-    @_spi(KeychainStore)
     /// Get a data value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A data value
+    @_spi(KeychainStore)
     public func _getData(_ key: String) throws -> Data {
         log.verbose("[KeychainStore] Started retrieving `Data` from the store with key=\(key)")
         var query = attributes.defaultGetQuery()
@@ -134,12 +140,12 @@ public struct KeychainStore: KeychainStoreBehavior {
         }
     }
 
-    @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameters:
     ///   - value: A string value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
+    @_spi(KeychainStore)
     public func _set(_ value: String, key: String) throws {
         log.verbose("[KeychainStore] Started setting `String` for key=\(key)")
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
@@ -150,12 +156,12 @@ public struct KeychainStore: KeychainStoreBehavior {
         log.verbose("[KeychainStore] Successfully added `String` for key=\(key)")
     }
 
-    @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This iSystem Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameters:
     ///   - value: A data value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
+    @_spi(KeychainStore)
     public func _set(_ value: Data, key: String) throws {
         log.verbose("[KeychainStore] Started setting `Data` for key=\(key)")
         var getQuery = attributes.defaultGetQuery()
@@ -198,10 +204,10 @@ public struct KeychainStore: KeychainStoreBehavior {
         }
     }
 
-    @_spi(KeychainStore)
     /// Remove key-value pair from Keychain based on the provided key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key to delete the key-value pair
+    @_spi(KeychainStore)
     public func _remove(_ key: String) throws {
         log.verbose("[KeychainStore] Starting to remove item from keychain with key=\(key)")
         var query = attributes.defaultGetQuery()
@@ -215,9 +221,9 @@ public struct KeychainStore: KeychainStoreBehavior {
         log.verbose("[KeychainStore] Successfully removed item from keychain")
     }
 
-    @_spi(KeychainStore)
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    @_spi(KeychainStore)
     public func _removeAll() throws {
         log.verbose("[KeychainStore] Starting to remove all items from keychain")
         var query = attributes.defaultGetQuery()
@@ -233,10 +239,33 @@ public struct KeychainStore: KeychainStoreBehavior {
         log.verbose("[KeychainStore] Successfully removed all items from keychain")
     }
 
+    /// Checks if the Keychain contains any items for this service and access group.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Returns: `true` if at least one item exists, `false` otherwise
+    @_spi(KeychainStore)
+    public func _hasItems() throws -> Bool {
+        log.verbose("[KeychainStore] Checking if keychain has any items")
+        var query = attributes.defaultGetQuery()
+        query[Constants.MatchLimit] = Constants.MatchLimitOne
+
+        let status = SecItemCopyMatching(query as CFDictionary, nil)
+        switch status {
+        case errSecSuccess:
+            log.verbose("[KeychainStore] Keychain has items")
+            return true
+        case errSecItemNotFound:
+            log.verbose("[KeychainStore] Keychain has no items")
+            return false
+        default:
+            log.error("[KeychainStore] Error checking keychain items with status=\(status)")
+            throw KeychainStoreError.securityError(status)
+        }
+    }
+
 }
 
 extension KeychainStore {
-    struct Constants {
+    enum Constants {
         /** Class Key Constant */
         static let Class = String(kSecClass)
         static let ClassGenericPassword = String(kSecClassGenericPassword)

@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import Combine
+import Foundation
 
 enum StorageEngineEvent {
     case started

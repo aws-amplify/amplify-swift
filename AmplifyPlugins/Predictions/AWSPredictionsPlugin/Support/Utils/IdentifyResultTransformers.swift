@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSRekognition
 import AWSTextract
 import CoreGraphics
+import Foundation
 
 enum IdentifyResultTransformers {
     static func processBoundingBox(_ rekognitionBoundingBox: RekognitionClientTypes.BoundingBox?) -> CGRect? {
@@ -31,13 +31,14 @@ enum IdentifyResultTransformers {
     }
 
     static func processPolygon(_ rekognitionPolygonPoints: [RekognitionClientTypes.Point]?) -> Predictions.Polygon? {
-        guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
+        guard let rekognitionPolygonPoints else {
             return nil
         }
         var points = [CGPoint]()
         for rekognitionPoint in rekognitionPolygonPoints {
             guard let xPosition = rekognitionPoint.x,
-                  let yPosition = rekognitionPoint.y else {
+                  let yPosition = rekognitionPoint.y
+            else {
                 continue
             }
             let point = CGPoint(x: Double(xPosition), y: Double(yPosition)) // TODO: What about Truncating???
@@ -47,7 +48,7 @@ enum IdentifyResultTransformers {
     }
 
     static func processPolygon(_ textractPolygonPoints: [TextractClientTypes.Point]?) -> Predictions.Polygon? {
-        guard let textractPolygonPoints = textractPolygonPoints else {
+        guard let textractPolygonPoints else {
             return nil
         }
 
@@ -65,7 +66,7 @@ enum IdentifyResultTransformers {
     // swiftlint:disable cyclomatic_complexity
     static func processLandmarks(_ rekognitionLandmarks: [RekognitionClientTypes.Landmark]?) -> [Predictions.Landmark] {
         var landmarks = [Predictions.Landmark]()
-        guard let rekognitionLandmarks = rekognitionLandmarks else {
+        guard let rekognitionLandmarks else {
             return landmarks
         }
 
@@ -82,7 +83,8 @@ enum IdentifyResultTransformers {
         var faceContourPoints: [CGPoint] = []
         for rekognitionLandmark in rekognitionLandmarks {
             guard let xPosition = rekognitionLandmark.x.map(Double.init),
-                  let yPosition = rekognitionLandmark.y.map(Double.init) else {
+                  let yPosition = rekognitionLandmark.y.map(Double.init)
+            else {
                 continue
             }
             let point = CGPoint(x: xPosition, y: yPosition)

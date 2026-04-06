@@ -6,16 +6,16 @@
 //
 
 import Amplify
-import Foundation
 import AWSAPIPlugin
+import Foundation
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
 #if os(watchOS)
-    public static func make() -> NetworkReachabilityProviding? {
+    static func make() -> NetworkReachabilityProviding? {
         return MockReachability()
     }
 #else
-    public static func make(for hostname: String) -> NetworkReachabilityProviding? {
+    static func make(for hostname: String) -> NetworkReachabilityProviding? {
         return MockReachability()
     }
 #endif
@@ -23,7 +23,7 @@ class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFacto
 
 class MockReachability: NetworkReachabilityProviding {
     var allowsCellularConnection = true
-    static var iConnection = AmplifyReachability.Connection.wifi
+    nonisolated(unsafe) static var iConnection = AmplifyReachability.Connection.wifi
     var connection: AmplifyReachability.Connection {
         get {
             return MockReachability.iConnection

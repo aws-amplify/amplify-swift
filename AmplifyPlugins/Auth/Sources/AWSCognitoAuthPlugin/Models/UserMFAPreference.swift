@@ -17,3 +17,5 @@ public struct UserMFAPreference {
     public let preferred: MFAType?
 
 }
+
+extension UserMFAPreference: Sendable { }

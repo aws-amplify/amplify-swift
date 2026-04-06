@@ -14,9 +14,11 @@ public struct Comment4: Model {
   public var content: String
   public var post: Post4?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       content: String,
-      post: Post4? = nil) {
+      post: Post4? = nil
+  ) {
       self.id = id
       self.content = content
       self.post = post

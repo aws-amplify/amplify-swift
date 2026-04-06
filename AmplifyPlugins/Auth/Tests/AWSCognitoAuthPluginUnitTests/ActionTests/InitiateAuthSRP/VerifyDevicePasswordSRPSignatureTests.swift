@@ -5,19 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-@testable import AWSPluginsTestCommon
 import XCTest
+@testable import AWSCognitoAuthPlugin
+@testable import AWSPluginsTestCommon
 
 class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
     private var srpClient: MockSRPClientBehavior!
-    
+
     override func setUp() async throws {
         MockSRPClientBehavior.reset()
         srpClient = MockSRPClientBehavior()
     }
-    
+
     override func tearDown() {
         MockSRPClientBehavior.reset()
         srpClient = nil
@@ -34,7 +34,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             XCTFail("Should not throw error: \(error)")
         }
     }
-    
+
     /// Given: A VerifyDevicePasswordSRP
     /// When: signature is invoked and the srpClient throws an SRPError error when generating a shared secret
     /// Then: a .calculation error is thrown
@@ -52,7 +52,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             XCTAssertEqual(srpError, .numberConversion)
         }
     }
-    
+
     /// Given: A VerifyDevicePasswordSRP
     /// When: signature is invoked and the srpClient throws a non-SRPError error when generating a shared secret
     /// Then: a .configuration error is thrown
@@ -70,7 +70,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             XCTAssertEqual(message, "Could not calculate shared secret")
         }
     }
-    
+
     /// Given: A VerifyDevicePasswordSRP
     /// When: signature is invoked and the srpClient throws a SRPError error when generating an authentication key
     /// Then: a .calculation error is thrown
@@ -88,7 +88,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             XCTAssertEqual(srpError, .numberConversion)
         }
     }
-    
+
     /// Given: A VerifyDevicePasswordSRP
     /// When: signature is invoked and the srpClient throws a non-SRPError error when generating an authentication key
     /// Then: a .configuration error is thrown
@@ -106,7 +106,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             XCTAssertEqual(message, "Could not calculate signature")
         }
     }
-    
+
     @discardableResult
     private func signature() throws -> String {
         let action = VerifyDevicePasswordSRP(
@@ -128,7 +128,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
 
 private class MockSRPClientBehavior: SRPClientBehavior {
     var kHexValue: String = "kHexValue"
-    
+
     static func calculateUHexValue(
         clientPublicKeyHexValue: String,
         serverPublicKeyHexValue: String
@@ -136,25 +136,25 @@ private class MockSRPClientBehavior: SRPClientBehavior {
         return "UHexValue"
     }
 
-    static var authenticationKey: Result<Data, Error> = .success(Data("AuthenticationKey".utf8))
+    nonisolated(unsafe) static var authenticationKey: Result<Data, Error> = .success(Data("AuthenticationKey".utf8))
     static func generateAuthenticationKey(
         sharedSecretHexValue: String,
         uHexValue: String
     ) throws -> Data {
         return try authenticationKey.get()
     }
-    
+
     static func reset() {
         authenticationKey = .success(Data("AuthenticationKey".utf8))
     }
-    
+
     func generateClientKeyPair() -> SRPKeys {
         return .init(
             publicKeyHexValue: "publicKeyHexValue",
             privateKeyHexValue: "privateKeyHexValue"
         )
     }
-    
+
     var sharedSecret: Result<String, Error> = .success("SharedSecret")
     func calculateSharedSecret(
         username: String,
@@ -166,7 +166,7 @@ private class MockSRPClientBehavior: SRPClientBehavior {
     ) throws -> String {
         return try sharedSecret.get()
     }
-    
+
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,

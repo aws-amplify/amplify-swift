@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 class StateMachineListenerTests: XCTestCase {
 
@@ -91,13 +91,13 @@ class StateMachineListenerTests: XCTestCase {
 
     func testOrderOfSubsription() async throws {
         let loop = 1_000
-        for _ in 1...loop {
+        for _ in 1 ... loop {
 
             let notified = expectation(description: "notified")
             notified.expectedFulfillmentCount = 3
             await stateMachine.send(Counter.Event(id: "set1", eventType: .set(10)))
             let seq = await stateMachine.listen()
-            await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
+            await stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
             Task {
                 var count = 0
                 for await state in seq {
@@ -143,12 +143,12 @@ class StateMachineListenerTests: XCTestCase {
 
         let task2 = Task {
 
-            for index in 1...100 {
+            for index in 1 ... 100 {
 
                 let event = Counter.Event(id: "test", eventType: .adjustBy(index))
                 await stateMachine.send(event)
 
-                if (index == 30) {
+                if index == 30 {
                     task.cancel()
                     await Task.yield()
                 }

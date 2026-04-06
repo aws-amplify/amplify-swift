@@ -10,13 +10,15 @@ import Amplify
 extension GraphQLRequest {
     func toOperationRequest(operationType: GraphQLOperationType) -> GraphQLOperationRequest<R> {
         let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: options?.pluginOptions)
-        return GraphQLOperationRequest<R>(apiName: apiName,
-                                          operationType: operationType,
-                                          document: document,
-                                          variables: variables,
-                                          responseType: responseType,
-                                          decodePath: decodePath,
-                                          authMode: authMode,
-                                          options: requestOptions)
+        return GraphQLOperationRequest<R>(
+            apiName: apiName,
+            operationType: operationType,
+            document: document,
+            variables: variables,
+            responseType: responseType,
+            decodePath: decodePath,
+            authMode: authMode,
+            options: requestOptions
+        )
     }
 }

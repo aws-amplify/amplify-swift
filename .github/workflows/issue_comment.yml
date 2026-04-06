@@ -21,7 +21,7 @@ jobs:
 
   adjust-labels:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.state == 'open' }}
+    if: ${{ github.event.issue.state == 'open' && !github.event.issue.pull_request }}
     permissions:
       issues: write
     env:
@@ -30,7 +30,7 @@ jobs:
       REPOSITORY_NAME: ${{ github.event.repository.full_name }}
     steps:
       - name: remove pending-community-response when new comment received
-        if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) && !github.event.issue.pull_request }}
+        if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
         shell: bash
         run: |
           gh issue edit $ISSUE_NUMBER --repo $REPOSITORY_NAME --remove-label "pending-community-response"

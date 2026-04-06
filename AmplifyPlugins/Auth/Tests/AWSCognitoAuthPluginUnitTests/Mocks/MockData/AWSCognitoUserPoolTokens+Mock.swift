@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import AWSCognitoAuthPlugin
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 extension AWSCognitoUserPoolTokens {
 
@@ -21,11 +21,13 @@ extension AWSCognitoUserPoolTokens {
             idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
-            expiresIn: Int(Date(timeIntervalSinceNow: 121).timeIntervalSince1970))
+            expiresIn: Int(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
+        )
     }
 
     static let expiredTestData = AWSCognitoUserPoolTokens(
-        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10000)
+        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10_000
+    )
 
     static func testData(username: String, sub: String) -> AWSCognitoUserPoolTokens {
         let tokenData = [
@@ -38,7 +40,8 @@ extension AWSCognitoUserPoolTokens {
             idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
-            expiresIn: 121)
+            expiresIn: 121
+        )
     }
 
     static var testDataWithoutExp: AWSCognitoUserPoolTokens {
@@ -51,6 +54,7 @@ extension AWSCognitoUserPoolTokens {
             idToken: CognitoAuthTestHelper.buildToken(for: tokenDataWithoutExp),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenDataWithoutExp),
             refreshToken: "refreshToken",
-            expiresIn: nil)
+            expiresIn: nil
+        )
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 /// - seealso: [DataStoreCallback](#DataStoreCallback)
 public typealias DataStoreResult<Success> = Result<Success, DataStoreError>
 
-extension DataStoreResult {
+public extension DataStoreResult {
 
     /// Creates a `DataStoreResult` based on a error raised during `DataStore` operations.
     /// In case the error is not already a `DataStoreError`, it gets wrapped
@@ -19,12 +19,12 @@ extension DataStoreResult {
     ///
     /// - Parameter error: the root cause of the failure
     /// - Returns: a `DataStoreResult.error`
-    public static func failure(causedBy error: Error) -> DataStoreResult<Success> {
+    static func failure(causedBy error: Error) -> DataStoreResult<Success> {
         let dataStoreError = error as? DataStoreError ?? .invalidOperation(causedBy: error)
         return .failure(dataStoreError)
     }
 
-    public static var emptyResult: DataStoreResult<Void> {
+    static var emptyResult: DataStoreResult<Void> {
         .successfulVoid
     }
 

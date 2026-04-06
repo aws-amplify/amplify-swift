@@ -57,7 +57,7 @@ extension StateMachineEvent {
         }
         return event
     }
-    
+
     var isSignUpEvent: SignUpEvent.EventType? {
         guard let event = (self as? SignUpEvent)?.eventType else {
             return nil

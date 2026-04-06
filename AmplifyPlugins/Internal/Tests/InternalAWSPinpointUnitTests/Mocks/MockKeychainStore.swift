@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 class MockKeychainStore: KeychainStoreBehavior {
     var stringValues: [String: String] = [:]
@@ -56,10 +56,14 @@ class MockKeychainStore: KeychainStoreBehavior {
             dataValues.removeValue(forKey: key)
         }
     }
-    
+
     func _removeAll() throws {
         stringValues.removeAll()
         dataValues.removeAll()
+    }
+
+    func _hasItems() throws -> Bool {
+        return !stringValues.isEmpty || !dataValues.isEmpty
     }
 
     func resetCounters() {

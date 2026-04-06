@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension String {
+public extension String {
 
     /// Converts a "camelCase" value to "PascalCase". This is a very simple
     /// and naive implementation that assumes the input as a "camelCase" value
@@ -15,7 +15,7 @@ extension String {
     /// - Note: this method simply transforms the first character to uppercase.
     ///
     /// - Returns: a string in "PascalCase" converted from "camelCase"
-    public func pascalCased() -> String {
+    func pascalCased() -> String {
         return prefix(1).uppercased() + dropFirst()
     }
 
@@ -27,12 +27,12 @@ extension String {
     /// - Note: this method simply transforms the first character to lowercase.
     ///
     /// - Returns: a string in "pascalCase" converted from "CamelCase"
-    public func camelCased() -> String {
+    func camelCased() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
 
     /// Appends "s" to the end of the string to represent the pluralized form.
-    public func pluralize() -> String {
+    func pluralize() -> String {
         return self + "s"
     }
 }

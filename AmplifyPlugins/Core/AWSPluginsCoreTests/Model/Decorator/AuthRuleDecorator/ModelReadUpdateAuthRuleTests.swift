@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
@@ -23,8 +23,10 @@ import XCTest
 public struct ModelReadUpdateField: Model {
     public let id: String
     public var content: String
-    public init(id: String = UUID().uuidString,
-                content: String) {
+    public init(
+        id: String = UUID().uuidString,
+        content: String
+    ) {
         self.id = id
         self.content = content
     }
@@ -41,7 +43,8 @@ public struct ModelReadUpdateField: Model {
         ]
         model.fields(
             .id(),
-            .field(modelReadUpdateField.content, is: .required, ofType: .string))
+            .field(modelReadUpdateField.content, is: .required, ofType: .string)
+        )
     }
 }
 
@@ -57,8 +60,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -79,8 +84,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_DeleteMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -101,8 +108,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_UpdateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .mutation
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
@@ -123,8 +132,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Ensure that the `owner` field is added to the model fields
     func testModelReadUpdateField_GetQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
@@ -145,8 +156,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // A List query is a paginated selection set, make sure the `owner` field is added to the model fields
     func testModelReadUpdateField_ListQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
@@ -169,8 +182,10 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
     }
 
     func testModelReadUpdateField_SyncQuery() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
@@ -199,10 +214,14 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.create` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnCreateSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -223,10 +242,14 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // Others can `.update` this model, which means the update subscription does not require owner input
     func testModelReadUpdateField_OnUpdateSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
@@ -246,10 +269,14 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
 
     // The owner auth rule contains `.delete` operation, requiring the subscription operation to contain the input
     func testModelReadUpdateField_OnDeleteSubscription() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelReadUpdateField.schema,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: ModelReadUpdateField.schema,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()

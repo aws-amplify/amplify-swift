@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
-import AWSCognitoAuthPlugin
 
 final class StorageStressTests: XCTestCase {
 
@@ -17,7 +17,7 @@ final class StorageStressTests: XCTestCase {
     let smallDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024) // 1MB
     let largeDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024 * 100) // 100MB
     let concurrencyLimit = 10
-    
+
     static var user1: String = "integTest\(UUID().uuidString)"
     static var user2: String = "integTest\(UUID().uuidString)"
     static var password: String = "P123@\(UUID().uuidString)"
@@ -34,7 +34,7 @@ final class StorageStressTests: XCTestCase {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
             try Amplify.configure()
-            if (try? await Amplify.Auth.getCurrentUser()) != nil {
+            if await (try? Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
             }
             await signUp()
@@ -54,7 +54,7 @@ final class StorageStressTests: XCTestCase {
         try await Task.sleep(seconds: 1)
     }
     // MARK: - Stress tests
-    
+
     /// Given: A small data object
     /// When: Upload the data simultaneously from 10 tasks
     /// Then: The operation completes successfully
@@ -65,7 +65,7 @@ final class StorageStressTests: XCTestCase {
         let removeExpectation = expectation(description: "Data object removed successfully")
         removeExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 do {
                     let key = UUID().uuidString
@@ -77,7 +77,7 @@ final class StorageStressTests: XCTestCase {
 
                     XCTAssertEqual(uploadKey, key)
                     uploadExpectation.fulfill()
-                    
+
                     try await Amplify.Storage.remove(key: key)
                     removeExpectation.fulfill()
                 } catch {
@@ -85,10 +85,10 @@ final class StorageStressTests: XCTestCase {
                 }
             }
         }
-        
+
         await fulfillment(of: [uploadExpectation, removeExpectation], timeout: 60)
     }
-    
+
     /// Given: A very large data object(100MB)
     /// When: Upload the data
     /// Then: The operation completes successfully
@@ -105,7 +105,7 @@ final class StorageStressTests: XCTestCase {
 
             XCTAssertEqual(uploadKey, key)
             uploadExpectation.fulfill()
-            
+
             try await Amplify.Storage.remove(key: key)
             removeExpectation.fulfill()
         } catch {
@@ -113,7 +113,7 @@ final class StorageStressTests: XCTestCase {
         }
         await fulfillment(of: [uploadExpectation, removeExpectation], timeout: 180)
     }
-    
+
     /// Given: An object in storage
     /// When: Object is downloaded simultaneously from 10 tasks
     /// Then: The operation completes successfully with the data retrieved
@@ -127,26 +127,28 @@ final class StorageStressTests: XCTestCase {
         let removeExpectation = expectation(description: "Data object removed successfully")
         removeExpectation.expectedFulfillmentCount = concurrencyLimit
 
-        for _ in 1...concurrencyLimit {
+        for _ in 1 ... concurrencyLimit {
             Task {
                 let key = UUID().uuidString
-                let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                                     data: smallDataObjectForStressTest,
-                                                                     options: nil).value
+                let uploadKey = try await Amplify.Storage.uploadData(
+                    key: key,
+                    data: smallDataObjectForStressTest,
+                    options: nil
+                ).value
                 XCTAssertEqual(uploadKey, key)
                 uploadExpectation.fulfill()
-                
+
                 _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
                 downloadExpectation.fulfill()
-                
+
                 try await Amplify.Storage.remove(key: key)
                 removeExpectation.fulfill()
             }
         }
-        
+
         await fulfillment(of: [downloadExpectation, uploadExpectation, removeExpectation], timeout: 60)
     }
-    
+
     /// Given: A very large data object(100MB) in storage
     /// When: Download the data
     /// Then: The operation completes successfully
@@ -164,10 +166,10 @@ final class StorageStressTests: XCTestCase {
 
             XCTAssertEqual(uploadKey, key)
             uploadExpectation.fulfill()
-            
-            let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
+
+            _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
             downloadExpectation.fulfill()
-            
+
             try await Amplify.Storage.remove(key: key)
             removeExpectation.fulfill()
         } catch {
@@ -176,9 +178,9 @@ final class StorageStressTests: XCTestCase {
         await fulfillment(of: [downloadExpectation, uploadExpectation, removeExpectation], timeout: 180)
     }
 
-    
+
     // MARK: - Helper Functions
-    
+
     func signUp() async {
         guard !Self.isFirstUserSignedUp, !Self.isSecondUserSignedUp else {
             return
@@ -187,9 +189,11 @@ final class StorageStressTests: XCTestCase {
         let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email1)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user1,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email1
+                )
                 Self.isFirstUserSignedUp = true
                 registerFirstUserComplete.fulfill()
             } catch {
@@ -201,9 +205,11 @@ final class StorageStressTests: XCTestCase {
         let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
-                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                                                      password: AWSS3StoragePluginTestBase.password,
-                                                      email: AWSS3StoragePluginTestBase.email2)
+                try await AuthSignInHelper.signUpUser(
+                    username: AWSS3StoragePluginTestBase.user2,
+                    password: AWSS3StoragePluginTestBase.password,
+                    email: AWSS3StoragePluginTestBase.email2
+                )
                 Self.isSecondUserSignedUp = true
                 registerSecondUserComplete.fulfill()
             } catch {
@@ -212,8 +218,10 @@ final class StorageStressTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
-                                  timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+            of: [registerFirstUserComplete, registerSecondUserComplete],
+            timeout: TestCommonConstants.networkTimeout
+        )
     }
 
     func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {

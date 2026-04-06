@@ -8,7 +8,7 @@
 import Foundation
 
 import Amplify
-import Combine
+@preconcurrency import Combine
 @testable import AWSAPIPlugin
 @_spi(WebSocket) import AWSPluginsCore
 import InternalAmplifyCredentials
@@ -57,12 +57,12 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
         }
         return subject.eraseToAnyPublisher()
     }
-    
+
     func unsubscribe(id: String) async throws {
         try await Task.sleep(seconds: 0.45)
         subject.send(.unsubscribed)
     }
-    
+
     func connect() async throws { }
 
     func disconnectWhenIdel() async { }
@@ -138,6 +138,6 @@ actor MockWebSocketClient: AppSyncWebSocketClientProtocol {
     }
 
     func setStateToConnected() {
-        self.state = .connected
+        state = .connected
     }
 }

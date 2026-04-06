@@ -6,31 +6,34 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct ConfirmSignUp: Action {
-    
+
     var identifier: String = "ConfirmSignUp"
     let data: SignUpEventData
     let confirmationCode: String
     let forceAliasCreation: Bool?
-    
+
     func execute(withDispatcher dispatcher: any EventDispatcher, environment: any Environment) async {
         do {
             let authEnvironment = try environment.authEnvironment()
             let userPoolEnvironment = authEnvironment.userPoolEnvironment
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: data.username,
-                credentialStoreClient: authEnvironment.credentialsClient)
+                credentialStoreClient: authEnvironment.credentialsClient
+            )
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
-            let input = await ConfirmSignUpInput(username: data.username,
-                                                 confirmationCode: confirmationCode,
-                                                 clientMetadata: data.clientMetadata,
-                                                 asfDeviceId: asfDeviceId,
-                                                 forceAliasCreation: forceAliasCreation,
-                                                 session: data.session,
-                                                 environment: userPoolEnvironment)
+            let input = await ConfirmSignUpInput(
+                username: data.username,
+                confirmationCode: confirmationCode,
+                clientMetadata: data.clientMetadata,
+                asfDeviceId: asfDeviceId,
+                forceAliasCreation: forceAliasCreation,
+                session: data.session,
+                environment: userPoolEnvironment
+            )
             let response = try await client.confirmSignUp(input: input)
             let dataToSend = SignUpEventData(
                 username: data.username,
@@ -39,22 +42,26 @@ struct ConfirmSignUp: Action {
                 session: response.session
             )
             logVerbose("\(#fileID) ConfirmSignUp response succcess", environment: environment)
-            
+
             if let session = response.session {
                 await dispatcher.send(SignUpEvent(eventType: .signedUp(dataToSend, .init(.completeAutoSignIn(session)))))
             } else {
                 await dispatcher.send(SignUpEvent(eventType: .signedUp(dataToSend, .init(.done))))
             }
         } catch let error as SignUpError {
-            let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignUpError.service(error: error)
-            let errorEvent = SignUpEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }
@@ -66,7 +73,7 @@ extension ConfirmSignUp: CustomDebugDictionaryConvertible {
             "identifier": identifier,
             "signUpEventData": data.debugDictionary,
             "confirmationCode": confirmationCode.masked(),
-            "forceAliasCreation": forceAliasCreation
+            "forceAliasCreation": forceAliasCreation as Any
         ]
     }
 }

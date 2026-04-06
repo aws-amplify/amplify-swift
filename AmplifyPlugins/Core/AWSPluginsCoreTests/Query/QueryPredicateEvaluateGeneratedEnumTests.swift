@@ -18,11 +18,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
     func testEnumNotEqual_False() throws {
         let predicate = Post.keys.status.ne(PostStatus.published)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .published)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .published
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -31,11 +33,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
     func testEnumNotEqual_True() throws {
         let predicate = Post.keys.status.ne(PostStatus.published)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .draft)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .draft
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -44,11 +48,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
     func testEnumEquals_True() throws {
         let predicate = Post.keys.status.eq(PostStatus.published)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .published)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .published
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -57,11 +63,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
 
     func testEnumEquals_False() throws {
         let predicate = Post.keys.status.eq(PostStatus.published)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .draft)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .draft
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -71,11 +79,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
     /// Draft is not greater than published, evaluates to false
     func testEnumToStringGreaterThan_False() throws {
         let predicate = Post.keys.status.gt(PostStatus.published.rawValue)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .draft)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .draft
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -85,11 +95,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
     /// Published is greater than draft, evaluates to true
     func testEnumToStringGreaterThan_True() throws {
         let predicate = Post.keys.status.gt(PostStatus.draft.rawValue)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .published)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .published
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -99,11 +111,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
     /// Published is not less than draft, evalutates to false
     func testEnumToStringLessThan_False() throws {
         let predicate = Post.keys.status.lt(PostStatus.draft.rawValue)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .published)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .published
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
@@ -113,11 +127,13 @@ class QueryPredicateEvaluateGeneratedEnumTests: XCTestCase {
     /// Draft is less than publshed, evaluates to true
     func testEnumToStringLessThan_True() throws {
         let predicate = Post.keys.status.lt(PostStatus.published.rawValue)
-        let instance = Post(title: "title",
-                            content: "content",
-                            createdAt: .now(),
-                            updatedAt: .now(),
-                            status: .draft)
+        let instance = Post(
+            title: "title",
+            content: "content",
+            createdAt: .now(),
+            updatedAt: .now(),
+            status: .draft
+        )
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 

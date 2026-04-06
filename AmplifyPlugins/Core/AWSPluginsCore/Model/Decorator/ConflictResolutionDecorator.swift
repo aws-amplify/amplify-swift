@@ -19,30 +19,36 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     private let graphQLType: GraphQLOperationType
     private var primaryKeysOnly: Bool
 
-    public init(version: Int? = nil,
-                lastSync: Int64? = nil,
-                graphQLType: GraphQLOperationType,
-                primaryKeysOnly: Bool = true) {
+    public init(
+        version: Int? = nil,
+        lastSync: Int64? = nil,
+        graphQLType: GraphQLOperationType,
+        primaryKeysOnly: Bool = true
+    ) {
         self.version = version
         self.lastSync = lastSync
         self.graphQLType = graphQLType
         self.primaryKeysOnly = primaryKeysOnly
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         var primaryKeysOnly = primaryKeysOnly
         if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
             primaryKeysOnly = false
         }
         var inputs = document.inputs
 
-        if let version = version,
+        if let version,
             case .mutation = document.operationType,
             var input = inputs["input"],
             case var .object(value) = input.value {
@@ -52,7 +58,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
             inputs["input"] = input
         }
 
-        if let lastSync = lastSync, case .query = document.operationType {
+        if let lastSync, case .query = document.operationType {
             inputs["lastSync"] = GraphQLDocumentInput(type: "AWSTimestamp", value: .scalar(lastSync))
         }
 
@@ -69,9 +75,11 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         case deletedFieldOnly
     }
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
-    private func addConflictResolution(selectionSet: SelectionSet,
-                                       primaryKeysOnly: Bool,
-                                       includeSyncMetadataFields: SyncMetadataFields = .full) {
+    private func addConflictResolution(
+        selectionSet: SelectionSet,
+        primaryKeysOnly: Bool,
+        includeSyncMetadataFields: SyncMetadataFields = .full
+    ) {
         var includeSyncMetadataFields = includeSyncMetadataFields
         switch selectionSet.value.fieldType {
         case .value, .embedded:
@@ -93,23 +101,27 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         if !primaryKeysOnly || graphQLType == .mutation {
             // Continue to add version fields for all levels, for backwards compatibility
             // Reduce the selection set only when the type is "subscription" and "query"
-            // (specifically for syncQuery). Selection set for mutation should not be reduced 
+            // (specifically for syncQuery). Selection set for mutation should not be reduced
             // because it needs to be the full selection set to send mutation events to older iOS clients,
             // which do not have the reduced subscription selection set.
             // subscriptions and sync query is to receive data, so it can be reduced to allow decoding to the
             // LazyReference type.
-            selectionSet.children.forEach { child in
-                addConflictResolution(selectionSet: child,
-                                      primaryKeysOnly: primaryKeysOnly,
-                                      includeSyncMetadataFields: .full)
+            for child in selectionSet.children {
+                addConflictResolution(
+                    selectionSet: child,
+                    primaryKeysOnly: primaryKeysOnly,
+                    includeSyncMetadataFields: .full
+                )
             }
         } else {
             // Only add all the sync metadata fields once. Once this was done once, `includeSyncMetadataFields`
             // should be set to `.deletedFieldOnly` and passed down to the recursive call stack.
-            selectionSet.children.forEach { child in
-                addConflictResolution(selectionSet: child,
-                                      primaryKeysOnly: primaryKeysOnly,
-                                      includeSyncMetadataFields: includeSyncMetadataFields)
+            for child in selectionSet.children {
+                addConflictResolution(
+                    selectionSet: child,
+                    primaryKeysOnly: primaryKeysOnly,
+                    includeSyncMetadataFields: includeSyncMetadataFields
+                )
             }
         }
     }

@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension ListIntContainer {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension ListIntContainer {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case test
     case nullableInt
@@ -15,19 +22,19 @@ extension ListIntContainer {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let listIntContainer = ListIntContainer.keys
-    
+
     model.pluralName = "ListIntContainers"
-    
+
     model.attributes(
       .primaryKey(fields: [listIntContainer.id])
     )
-    
+
     model.fields(
       .field(listIntContainer.id, is: .required, ofType: .string),
       .field(listIntContainer.test, is: .required, ofType: .int),
@@ -40,41 +47,41 @@ extension ListIntContainer {
       .field(listIntContainer.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    public class Path: ModelPath<ListIntContainer> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+    class Path: ModelPath<ListIntContainer> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ListIntContainer: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-extension ModelPath where ModelType == ListIntContainer {
-  public var id: FieldPath<String>   {
-      string("id") 
+public extension ModelPath where ModelType == ListIntContainer {
+  var id: FieldPath<String>   {
+      string("id")
     }
-  public var test: FieldPath<Int>   {
-      int("test") 
+  var test: FieldPath<Int>   {
+      int("test")
     }
-  public var nullableInt: FieldPath<Int>   {
-      int("nullableInt") 
+  var nullableInt: FieldPath<Int>   {
+      int("nullableInt")
     }
-  public var intList: FieldPath<Int>   {
-      int("intList") 
+  var intList: FieldPath<Int>   {
+      int("intList")
     }
-  public var intNullableList: FieldPath<Int>   {
-      int("intNullableList") 
+  var intNullableList: FieldPath<Int>   {
+      int("intNullableList")
     }
-  public var nullableIntList: FieldPath<Int>   {
-      int("nullableIntList") 
+  var nullableIntList: FieldPath<Int>   {
+      int("nullableIntList")
     }
-  public var nullableIntNullableList: FieldPath<Int>   {
-      int("nullableIntNullableList") 
+  var nullableIntNullableList: FieldPath<Int>   {
+      int("nullableIntNullableList")
     }
-  public var createdAt: FieldPath<Temporal.DateTime>   {
-      datetime("createdAt") 
+  var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
     }
-  public var updatedAt: FieldPath<Temporal.DateTime>   {
-      datetime("updatedAt") 
+  var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
     }
 }

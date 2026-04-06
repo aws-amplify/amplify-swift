@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AmplifyAuthCognitoPluginTests: XCTestCase {
 
@@ -42,32 +42,44 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
 
     func beginTest(
         for plugin: AWSCognitoAuthPlugin,
-        with testHarness: AuthTestHarness) async {
+        with testHarness: AuthTestHarness
+    ) async {
 
             switch testHarness.apiUnderTest {
-            case .resetPassword(let resetPasswordRequest,
-                                let expectedOutput):
+            case .resetPassword(
+                let resetPasswordRequest,
+                let expectedOutput
+            ):
                 await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.resetPassword(
                         for: resetPasswordRequest.username,
-                        options: resetPasswordRequest.options)
+                        options: resetPasswordRequest.options
+                    )
                 }
-            case .signUp(let signUpRequest,
-                         let expectedOutput):
+            case .signUp(
+                let signUpRequest,
+                let expectedOutput
+            ):
                 await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.signUp(
                         username: signUpRequest.username,
-                        password: signUpRequest.password, options: signUpRequest.options)
+                        password: signUpRequest.password, options: signUpRequest.options
+                    )
                 }
-            case .signIn(let request,
-                         let expectedOutput):
+            case .signIn(
+                let request,
+                let expectedOutput
+            ):
                 await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.signIn(
                         username: request.username,
-                        password: request.password, options: request.options)
+                        password: request.password, options: request.options
+                    )
                 }
-            case .fetchAuthSession(let request,
-                                   let expectedOutput):
+            case .fetchAuthSession(
+                let request,
+                let expectedOutput
+            ):
                 await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.fetchAuthSession(options: request.options) as! AWSAuthCognitoSession
                 }
@@ -75,7 +87,6 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                 await validateAPI(expectedOutput: expectedOutput) {
                     return await plugin.signOut(options: request.options) as! AWSCognitoSignOutResult
                 }
-
             case .deleteUser(_, let expectedOutput):
                 let expectation = expectation(description: "expectation")
                 do {
@@ -96,17 +107,19 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
             case .confirmSignIn(let request, expectedOutput: let expectedOutput):
                 await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.confirmSignIn(
-                        challengeResponse: request.challengeResponse, options: request.options)
+                        challengeResponse: request.challengeResponse, options: request.options
+                    )
                 }
             }
 
         }
 
-    
+
     // Helper to validate API Result
     func validateAPI<T: Equatable>(
         expectedOutput: Result<T, AuthError>?,
-        apiCall: @escaping () async throws -> T) async {
+        apiCall: @escaping () async throws -> T
+    ) async {
 
             let expectation = expectation(description: "expectation")
             do {

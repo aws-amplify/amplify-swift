@@ -7,7 +7,7 @@
 
 import Foundation
 
-import Amplify
+@preconcurrency import Amplify
 import AWSPluginsCore
 
 // MARK: - StorageServiceSessionDelegate -
@@ -32,7 +32,7 @@ class StorageServiceSessionDelegate: NSObject {
     }
 
     private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        guard let storageService = storageService,
+        guard let storageService,
               let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else {
                   logger.debug("Did not find transfer task: \(taskIdentifier)")
                   return nil
@@ -64,7 +64,7 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
     }
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        if let error = error {
+        if let error {
             logURLSessionActivity("Session did become invalid: \(identifier) [\(error)]", warning: true)
         } else {
             logURLSessionActivity("Session did become invalid: \(identifier)")
@@ -83,7 +83,7 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
 extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
+        if let error {
             let nsError = error as NSError
             if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
                 logURLSessionActivity("Session task cancelled: \(task.taskIdentifier)")
@@ -106,7 +106,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             logURLSessionActivity("Session task did complete: \(task.taskIdentifier)")
         }
 
-        guard let storageService = storageService,
+        guard let storageService,
               let transferTask = findTransferTask(for: task.taskIdentifier) else {
                   logURLSessionActivity("Session task not handled: \(task.taskIdentifier)")
                   return
@@ -123,7 +123,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
             // For multipart uploads, we need to handle the upload part failure when the session is not aborted
             if case .multiPartUploadPart(let uploadId, let partNumber) = transferTask.transferType,
-               let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId), 
+               let multipartUploadSession = storageService.findMultipartUploadSession(uploadId: uploadId),
                !multipartUploadSession.isAborted {
                 multipartUploadSession.handle(
                     uploadPartEvent: .failed(
@@ -176,7 +176,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             """
         )
 
-        guard let storageService = storageService,
+        guard let storageService,
               let transferTask = findTransferTask(for: task.taskIdentifier) else { return }
 
         switch transferTask.transferType {
@@ -227,7 +227,7 @@ extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did finish downloading to \(location.path)")
 
-        guard let storageService = storageService,
+        guard let storageService,
               let transferTask = findTransferTask(for: downloadTask.taskIdentifier) else { return }
 
         let response = StorageTransferResponse(task: downloadTask, error: nil, transferTask: transferTask)

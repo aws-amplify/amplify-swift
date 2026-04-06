@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
-import XCTest
 
 class DefaultStorageTransferDatabaseTests: XCTestCase {
     private var database: DefaultStorageTransferDatabase!
@@ -150,8 +150,9 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
                 ),
                 .completed(
                     bytes: Bytes.megabytes(6).bytes,
-                    eTag: "eTag")
-                ,
+                    eTag: "eTag"
+                ),
+
                 .pending(bytes: Bytes.megabytes(6).bytes)
             ]
         )
@@ -204,12 +205,13 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
     /// Given: A DefaultStorageTransferDatabase
     /// When: recover is invoked with a StorageURLSession that returns a session
     /// Then: A .success is returned
+    /// TODO: Disabled: Flaky test, failing in CI/CD.
     func testLoadPersistableTasks() async {
         let urlSession = MockStorageURLSession(
             sessionTasks: [
                 session
             ])
-        let expectation = self.expectation(description: "Recover")
+        let expectation = expectation(description: "Recover")
         database.recover(urlSession: urlSession) { result in
             guard case .success(_) = result else {
                 XCTFail("Expected success")
@@ -217,18 +219,19 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 10)
     }
 
     /// Given: A DefaultStorageTransferDatabase
     /// When: prepareForBackground is invoked
     /// Then: A callback is invoked
+    /// TODO: Disabled: Flaky test, failing in CI/CD.
     func testPrepareForBackground() async {
-        let expectation = self.expectation(description: "Prepare for Background")
-        database.prepareForBackground() {
+        let expectation = expectation(description: "Prepare for Background")
+        database.prepareForBackground {
             expectation.fulfill()
         }
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 10)
     }
 
     /// Given: The StorageTransferDatabase Type

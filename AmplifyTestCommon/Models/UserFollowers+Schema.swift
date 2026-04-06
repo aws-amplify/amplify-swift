@@ -6,21 +6,21 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension UserFollowers {
+public extension UserFollowers {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case user
     case followersUser
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let userFollowers = UserFollowers.keys
 
     model.listPluralName = "UserFollowers"
@@ -32,10 +32,10 @@ extension UserFollowers {
       .belongsTo(userFollowers.followersUser, is: .optional, ofType: User.self, targetName: "userFollowersFollowersUserId")
     )
     }
-    
-    public class Path: ModelPath<UserFollowers> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+
+    class Path: ModelPath<UserFollowers> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ModelPath where ModelType == UserFollowers {

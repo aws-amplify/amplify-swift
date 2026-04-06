@@ -18,7 +18,8 @@ public struct VerifyTOTPSetupRequest: AmplifyOperationRequest {
 
     public init(
         code: String,
-        options: Options) {
+        options: Options
+    ) {
             self.code = code
             self.options = options
     }
@@ -38,3 +39,5 @@ public extension VerifyTOTPSetupRequest {
         }
     }
 }
+
+extension VerifyTOTPSetupRequest.Options: @unchecked Sendable { }

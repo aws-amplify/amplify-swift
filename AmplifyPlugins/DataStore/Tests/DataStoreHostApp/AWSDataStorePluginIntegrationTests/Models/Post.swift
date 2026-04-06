@@ -20,7 +20,8 @@ public struct Post: Model {
   public var status: PostStatus?
   public var comments: List<Comment>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       title: String,
       content: String,
       createdAt: Temporal.DateTime,
@@ -28,7 +29,8 @@ public struct Post: Model {
       draft: Bool? = nil,
       rating: Double? = nil,
       status: PostStatus? = nil,
-      comments: List<Comment>? = []) {
+      comments: List<Comment>? = []
+  ) {
       self.id = id
       self.title = title
       self.content = content

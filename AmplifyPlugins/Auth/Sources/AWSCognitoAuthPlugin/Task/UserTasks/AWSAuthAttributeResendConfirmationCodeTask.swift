@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmationCodeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -48,12 +48,13 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
 
     func initiateGettingVerificationCode(with accessToken: String) async throws -> AuthCodeDeliveryDetails {
         let userPoolService = try userPoolFactory()
-        let clientMetaData = (request.options.pluginOptions as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
+        let clientMetaData = (request.options.pluginOptions as? AWSSendUserAttributeVerificationCodeOptions)?.metadata ?? [:]
 
         let input = GetUserAttributeVerificationCodeInput(
             accessToken: accessToken,
             attributeName: request.attributeKey.rawValue,
-            clientMetadata: clientMetaData)
+            clientMetadata: clientMetaData
+        )
 
         let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
         guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {

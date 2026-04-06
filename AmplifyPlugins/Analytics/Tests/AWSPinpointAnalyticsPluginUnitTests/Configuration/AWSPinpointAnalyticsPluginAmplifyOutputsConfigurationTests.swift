@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
 import XCTest
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
+@testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
@@ -34,20 +34,29 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
         XCTAssertNotNil(result)
         XCTAssertEqual(result.appId, testAppId)
         XCTAssertEqual(result.region, testRegion)
-        XCTAssertEqual(result.options.autoFlushEventsInterval,
-                       AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval)
-        XCTAssertEqual(result.options.trackAppSessions,
-                       AWSPinpointAnalyticsPlugin.Options.defaultTrackAppSession)
-        XCTAssertEqual(result.autoSessionTrackingInterval,
-                       AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+        XCTAssertEqual(
+            result.options.autoFlushEventsInterval,
+            AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval
+        )
+        XCTAssertEqual(
+            result.options.trackAppSessions,
+            AWSPinpointAnalyticsPlugin.Options.defaultTrackAppSession
+        )
+        XCTAssertEqual(
+            result.autoSessionTrackingInterval,
+            AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval
+        )
     }
 
     func testConfiguration_OptionsOverride() throws {
         let config = AmplifyOutputsData(analytics: .init(amazonPinpoint: .init(awsRegion: testRegion, appId: appId)))
         let result = try AWSPinpointAnalyticsPluginConfiguration(
             config,
-            options: .init(autoFlushEventsInterval: 100,
-                           trackAppSessions: false))
+            options: .init(
+                autoFlushEventsInterval: 100,
+                trackAppSessions: false
+            )
+        )
         XCTAssertNotNil(result)
         XCTAssertEqual(result.appId, testAppId)
         XCTAssertEqual(result.region, testRegion)
@@ -65,8 +74,10 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 XCTFail("Expected to catch PluginError.pluginConfigurationError.")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           AnalyticsPluginErrorConstant.missingAnalyticsCategoryConfiguration.errorDescription)
+            XCTAssertEqual(
+                errorDescription,
+                AnalyticsPluginErrorConstant.missingAnalyticsCategoryConfiguration.errorDescription
+            )
         }
     }
 
@@ -79,8 +90,10 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
                 XCTFail("Expected to catch PluginError.pluginConfigurationError.")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           AnalyticsPluginErrorConstant.missingAmazonPinpointConfiguration.errorDescription)
+            XCTAssertEqual(
+                errorDescription,
+                AnalyticsPluginErrorConstant.missingAmazonPinpointConfiguration.errorDescription
+            )
         }
     }
 }

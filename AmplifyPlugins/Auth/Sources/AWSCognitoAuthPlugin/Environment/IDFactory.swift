@@ -10,5 +10,5 @@ import Foundation
 typealias EventIDFactory = () -> String
 
 enum UUIDFactory {
-    static let factory: EventIDFactory = { UUID().uuidString }
+    nonisolated(unsafe) static let factory: EventIDFactory = { UUID().uuidString }
 }

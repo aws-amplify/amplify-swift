@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension MutationEvent {
+public extension MutationEvent {
     // MARK: - CodingKeys
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case modelId
         case modelName
@@ -20,11 +20,11 @@ extension MutationEvent {
         case graphQLFilterJSON
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { definition in
+    nonisolated(unsafe) static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 
         definition.listPluralName = "MutationEvents"

@@ -15,17 +15,23 @@ public struct ModelExplicitDefaultPk: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-  public init(id: String = UUID().uuidString,
-      name: String? = nil) {
-    self.init(id: id,
+  public init(
+    id: String = UUID().uuidString,
+    name: String? = nil
+  ) {
+    self.init(
+      id: id,
       name: name,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.createdAt = createdAt

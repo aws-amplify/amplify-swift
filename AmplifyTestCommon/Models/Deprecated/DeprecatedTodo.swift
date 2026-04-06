@@ -6,8 +6,9 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
+
 /*
 The schema used to codegen this model:
  type DeprecatedTodo @model {
@@ -30,27 +31,29 @@ public struct DeprecatedTodo: Model {
   public var description: String?
   public var note: Note?
 
-  public init(id: String = UUID().uuidString,
-      description: String? = nil,
-      note: Note? = nil) {
+  public init(
+    id: String = UUID().uuidString,
+    description: String? = nil,
+    note: Note? = nil
+  ) {
       self.id = id
       self.description = description
       self.note = note
   }
 }
 
-extension DeprecatedTodo {
+public extension DeprecatedTodo {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case description
     case note
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let deprecatedTodo = DeprecatedTodo.keys
 
     model.pluralName = "DeprecatedTodos"

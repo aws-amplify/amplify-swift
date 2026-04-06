@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions {
-    public struct LabelType: Equatable {
+public extension Predictions {
+    struct LabelType: Equatable, @unchecked Sendable {
         let id: UInt8
 
         public static let all = Self(id: 0)

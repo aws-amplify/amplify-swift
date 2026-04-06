@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 
 enum IncomingAsyncSubscriptionEvent {
@@ -104,10 +104,10 @@ extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
 }
 
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

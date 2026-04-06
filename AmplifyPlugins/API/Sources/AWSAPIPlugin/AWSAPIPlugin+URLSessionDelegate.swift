@@ -10,28 +10,36 @@ import Foundation
 public typealias AuthChallengeDispositionHandler = (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 
 extension AWSAPIPlugin: URLSessionDelegate {
-    @objc public func urlSession(_ session: URLSession,
-                                 didReceive challenge: URLAuthenticationChallenge,
-                                 completionHandler: @escaping AuthChallengeDispositionHandler) {
+    @objc public func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping AuthChallengeDispositionHandler
+    ) {
         completionHandler(.performDefaultHandling, nil)
     }
 }
 
 extension AWSAPIPlugin: URLSessionTaskDelegate {
 
-    @objc public func urlSession(_ session: URLSession,
-                                 task: URLSessionTask,
-                                 didReceive challenge: URLAuthenticationChallenge,
-                                 completionHandler: @escaping AuthChallengeDispositionHandler) {
+    @objc public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping AuthChallengeDispositionHandler
+    ) {
         completionHandler(.performDefaultHandling, nil)
     }
 
-    @objc public func urlSession(_ session: URLSession,
-                                 task: URLSessionTask,
-                                 didCompleteWithError error: Error?) {
-        urlSessionBehavior(session,
-                           dataTaskBehavior: task,
-                           didCompleteWithError: error)
+    @objc public func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didCompleteWithError error: Error?
+    ) {
+        urlSessionBehavior(
+            session,
+            dataTaskBehavior: task,
+            didCompleteWithError: error
+        )
 
     }
 
@@ -45,11 +53,15 @@ extension AWSAPIPlugin: URLSessionDataDelegate {
     //        completionHandler(.allow)
     //    }
 
-    @objc public func urlSession(_ session: URLSession,
-                                 dataTask: URLSessionDataTask,
-                                 didReceive data: Data) {
-        urlSessionBehavior(session,
-                           dataTaskBehavior: dataTask,
-                           didReceive: data)
+    @objc public func urlSession(
+        _ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive data: Data
+    ) {
+        urlSessionBehavior(
+            session,
+            dataTaskBehavior: dataTask,
+            didReceive: data
+        )
     }
 }

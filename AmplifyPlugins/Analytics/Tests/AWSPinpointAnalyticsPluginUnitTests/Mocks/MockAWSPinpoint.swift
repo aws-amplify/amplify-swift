@@ -10,8 +10,8 @@ import Foundation
 import StoreKit
 import XCTest
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class MockAWSPinpoint: AWSPinpointBehavior {
     let applicationId = "applicationId"
@@ -81,28 +81,28 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     var createAppleMonetizationEventResult: PinpointEvent?
     var createVirtualMonetizationEventResult: PinpointEvent?
     var submitEventsResult: Result<[PinpointEvent], Error>?
-    
+
     var addGlobalPropertyExpectation: XCTestExpectation?
     var removeGlobalPropertyExpectation: XCTestExpectation?
 
-    public init() {}
+    init() {}
 
-    public var pinpointClient: PinpointClientProtocol {
+    var pinpointClient: PinpointClientProtocol {
         escapeHatchCalled += 1
         return try! PinpointClient(region: "us-east-1")
     }
 }
 
 extension MockAWSPinpoint {
-    public func verifyCurrentEndpointProfile() {
+    func verifyCurrentEndpointProfile() {
         XCTAssertEqual(currentEndpointProfileCalled, 1)
     }
 
-    public func verifyUpdateEndpointProfile() {
+    func verifyUpdateEndpointProfile() {
         XCTAssertEqual(updateEndpointProfileCalled, 1)
     }
 
-    public func verifyUpdate(_ endpointProfile: PinpointEndpointProfile) {
+    func verifyUpdate(_ endpointProfile: PinpointEndpointProfile) {
         XCTAssertEqual(updateEndpointProfileCalled, 1)
         XCTAssertNotNil(updateEndpointProfileValue)
         guard let actualEndpointProfile = updateEndpointProfileValue else {
@@ -128,39 +128,39 @@ extension MockAWSPinpoint {
         XCTAssertEqual(actualUser.userAttributes?.count, expectedUser.userAttributes?.count)
     }
 
-    public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {
+    func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {
         XCTAssertEqual(addAttributeCalled, 1)
         XCTAssertNotNil(addAttributeValue)
         XCTAssertEqual(addAttributeValue?.count, theValue.count)
         XCTAssertEqual(addAttributeKey, theKey)
     }
 
-    public func verifyRemoveAttribute(forKey theKey: String) {
+    func verifyRemoveAttribute(forKey theKey: String) {
         XCTAssertEqual(removeAttributeCalled, 1)
         XCTAssertEqual(removeAttributeKey, theKey)
     }
 
-    public func verifyAddMetric(_ theValue: Double, forKey theKey: String) {
+    func verifyAddMetric(_ theValue: Double, forKey theKey: String) {
         XCTAssertEqual(addMetricCalled, 1)
         XCTAssertEqual(addMetricValue, theValue)
         XCTAssertEqual(addMetricKey, theKey)
     }
 
-    public func verifyRemoveMetric(forKey theKey: String) {
+    func verifyRemoveMetric(forKey theKey: String) {
         XCTAssertEqual(removeMetricCalled, 1)
         XCTAssertEqual(removeMetricKey, theKey)
     }
 }
 
 extension MockAWSPinpoint {
-    public func verifyAddGlobalAttribute(_ theValue: String, forKey theKey: String) {
+    func verifyAddGlobalAttribute(_ theValue: String, forKey theKey: String) {
         XCTAssertEqual(addGlobalAttributeCalled, 1)
 
         XCTAssertEqual(addGlobalAttributeValue, theValue)
         XCTAssertEqual(addGlobalAttributeKey, theKey)
     }
 
-    public func verifyAddGlobalAttribute(_ theValue: String, forKey theKey: String, forEventType theEventType: String) {
+    func verifyAddGlobalAttribute(_ theValue: String, forKey theKey: String, forEventType theEventType: String) {
         XCTAssertEqual(addGlobalAttributeCalled, 1)
 
         XCTAssertEqual(addGlobalAttributeValue, theValue)
@@ -168,14 +168,14 @@ extension MockAWSPinpoint {
         XCTAssertEqual(addGlobalAttributeEventType, theEventType)
     }
 
-    public func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String) {
+    func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String) {
         XCTAssertEqual(addGlobalMetricCalled, 1)
 
         XCTAssertEqual(addGlobalMetricValue, theValue)
         XCTAssertEqual(addGlobalMetricKey, theKey)
     }
 
-    public func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
+    func verifyAddGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
         XCTAssertEqual(addGlobalMetricCalled, 1)
 
         XCTAssertEqual(addGlobalMetricValue, theValue)
@@ -183,50 +183,54 @@ extension MockAWSPinpoint {
         XCTAssertEqual(addGlobalMetricEventType, theEventType)
     }
 
-    public func verifyRemoveGlobalAttribute(forKey theKey: String) {
+    func verifyRemoveGlobalAttribute(forKey theKey: String) {
         XCTAssertEqual(removeGlobalAttributeCalled, 1)
 
         XCTAssertEqual(removeGlobalAttributeKey, theKey)
     }
 
-    public func verifyRemoveGlobalAttribute(forKey theKey: String, forEventType theEventType: String) {
+    func verifyRemoveGlobalAttribute(forKey theKey: String, forEventType theEventType: String) {
         XCTAssertEqual(removeGlobalAttributeCalled, 1)
         XCTAssertEqual(removeGlobalAttributeKey, theKey)
         XCTAssertEqual(removeGlobalAttributeEventType, theEventType)
     }
 
-    public func verifyRemoveGlobalMetric(forKey theKey: String) {
+    func verifyRemoveGlobalMetric(forKey theKey: String) {
         XCTAssertEqual(removeGlobalMetricCalled, 1)
         XCTAssertEqual(removeGlobalMetricKey, theKey)
     }
 
-    public func verifyRemoveGlobalMetric(forKey theKey: String, forEventType theEventType: String) {
+    func verifyRemoveGlobalMetric(forKey theKey: String, forEventType theEventType: String) {
         XCTAssertEqual(removeGlobalMetricCalled, 1)
         XCTAssertEqual(removeGlobalMetricKey, theKey)
         XCTAssertEqual(removeglobalMetricEventType, theEventType)
     }
 
-    public func verifyRecord(_ theEvent: PinpointEvent) {
+    func verifyRecord(_ theEvent: PinpointEvent) {
         XCTAssertEqual(recordCalled, 1)
         XCTAssertEqual(recordEvent, theEvent)
     }
 
-    public func verifyCreateEvent(withEventType theEventType: String) {
+    func verifyCreateEvent(withEventType theEventType: String) {
         XCTAssertEqual(createEventCalled, 1)
         XCTAssertEqual(createEventEventType, theEventType)
     }
 
-    public func verifyCreateAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                                   with product: SKProduct) {
+    func verifyCreateAppleMonetizationEvent(
+        with transaction: SKPaymentTransaction,
+        with product: SKProduct
+    ) {
         XCTAssertEqual(createAppleMonetizationEventCalled, 1)
         XCTAssertEqual(createAppleMonetizationEventTransaction, transaction)
         XCTAssertEqual(createAppleMonetizationEventProduct, product)
     }
 
-    public func verifyCreateVirtualMonetizationEvent(withProductId theProductId: String,
-                                                     withItemPrice theItemPrice: Double,
-                                                     withQuantity theQuantity: Int,
-                                                     withCurrency theCurrency: String) {
+    func verifyCreateVirtualMonetizationEvent(
+        withProductId theProductId: String,
+        withItemPrice theItemPrice: Double,
+        withQuantity theQuantity: Int,
+        withCurrency theCurrency: String
+    ) {
         XCTAssertEqual(createVirtualMonetizationEventCalled, 1)
         XCTAssertEqual(createVirtualMonetizationEventProductId, theProductId)
         XCTAssertEqual(createVirtualMonetizationEventItemPrice, theItemPrice)
@@ -234,7 +238,7 @@ extension MockAWSPinpoint {
         XCTAssertEqual(createVirtualMonetizationEventCurrency, theCurrency)
     }
 
-    public func verifySubmitEvents() {
+    func verifySubmitEvents() {
         XCTAssertEqual(submitEventsCalled, 1)
     }
 }

@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
+@testable import AWSAPIPlugin
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -15,7 +15,7 @@ import XCTest
 #endif
 
 extension GraphQLScalarTests {
-    
+
     func testScalarContainerAPISwift() async throws {
         let id = UUID().uuidString
         let date = Temporal.Date.now().iso8601String
@@ -35,14 +35,16 @@ extension GraphQLScalarTests {
             myJson: "{}",
             myPhone: "2342355678",
             myUrl: "https://www.amazon.com/dp/B000NZW3KC/",
-            myIpAddress: "123.12.34.56")
+            myIpAddress: "123.12.34.56"
+        )
         let mutation = APISwift.CreateScalarContainerMutation(input: input)
-        
+
         let request = GraphQLRequest(
             document: APISwift.CreateScalarContainerMutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreateScalarContainerMutation.Data.self)
-        
+            responseType: APISwift.CreateScalarContainerMutation.Data.self
+        )
+
         let data = try await mutateModel(request: request)
         guard let container = data.createScalarContainer else {
             XCTFail("Missing created container")
@@ -62,21 +64,23 @@ extension GraphQLScalarTests {
         XCTAssertEqual(container.myPhone, "2342355678")
         XCTAssertEqual(container.myUrl, "https://www.amazon.com/dp/B000NZW3KC/")
         XCTAssertEqual(container.myIpAddress, "123.12.34.56")
-        
+
     }
-    
+
     func testListIntContainerAPISwift() async throws {
         let id = UUID().uuidString
         let input = APISwift.CreateListIntContainerInput(
             id: id,
             test: 2,
             intList: [1, 2, 3],
-            nullableIntList: [1, 2, 3])
+            nullableIntList: [1, 2, 3]
+        )
         let mutation = APISwift.CreateListIntContainerMutation(input: input)
         let request = GraphQLRequest(
             document: APISwift.CreateListIntContainerMutation.operationString,
             variables: mutation.variables?.jsonObject,
-            responseType: APISwift.CreateListIntContainerMutation.Data.self)
+            responseType: APISwift.CreateListIntContainerMutation.Data.self
+        )
         let data = try await mutateModel(request: request)
         guard let container = data.createListIntContainer else {
             XCTFail("Missing created container")

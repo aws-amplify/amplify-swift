@@ -19,23 +19,33 @@ public enum AWSCognitoSignOutResult: AuthSignOutResult {
 
     case complete
 
-    case partial(revokeTokenError: AWSCognitoRevokeTokenError?,
-                 globalSignOutError: AWSCognitoGlobalSignOutError?,
-                 hostedUIError: AWSCognitoHostedUIError?)
+    case partial(
+        revokeTokenError: AWSCognitoRevokeTokenError?,
+        globalSignOutError: AWSCognitoGlobalSignOutError?,
+        hostedUIError: AWSCognitoHostedUIError?
+    )
 
     case failed(AuthError)
 }
+
+extension AWSCognitoSignOutResult: Sendable { }
 
 public struct AWSCognitoRevokeTokenError {
     public let refreshToken: String
     public let error: AuthError
 }
 
+extension AWSCognitoRevokeTokenError: Sendable { }
+
 public struct AWSCognitoGlobalSignOutError {
     public let accessToken: String
     public let error: AuthError
 }
 
+extension AWSCognitoGlobalSignOutError: Sendable { }
+
 public struct AWSCognitoHostedUIError {
     public let error: AuthError
 }
+
+extension AWSCognitoHostedUIError: Sendable { }

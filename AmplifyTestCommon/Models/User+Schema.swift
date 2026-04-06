@@ -6,22 +6,22 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension User {
+public extension User {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case following
     case followers
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let user = User.keys
 
     model.listPluralName = "Users"
@@ -34,10 +34,10 @@ extension User {
       .hasMany(user.followers, is: .optional, ofType: UserFollowers.self, associatedWith: UserFollowers.keys.user)
     )
     }
-    
-    public class Path: ModelPath<User> {}
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+
+    class Path: ModelPath<User> {}
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ModelPath where ModelType == User {
@@ -45,6 +45,6 @@ extension ModelPath where ModelType == User {
     var name: FieldPath<String> { string("name") }
     var following: ModelPath<UserFollowing> { UserFollowing.Path(name: "following", isCollection: true, parent: self) }
     var followers: ModelPath<UserFollowers> { UserFollowers.Path(name: "followers", isCollection: true, parent: self) }
-    
+
 }
 

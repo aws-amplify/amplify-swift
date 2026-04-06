@@ -34,7 +34,7 @@ public protocol PropertyPath {
 /// - SeeAlso: `ModelPath`
 public protocol PropertyContainerPath: PropertyPath {
 
-    /// 
+    ///
     func getKeyPath() -> String
 
     /// Must return a reference to the type containing the properties
@@ -42,9 +42,9 @@ public protocol PropertyContainerPath: PropertyPath {
 
 }
 
-extension PropertyContainerPath {
+public extension PropertyContainerPath {
 
-    public func getKeyPath() -> String {
+    func getKeyPath() -> String {
         var metadata = getMetadata()
         var path = [String]()
         while let parent = metadata.parent {

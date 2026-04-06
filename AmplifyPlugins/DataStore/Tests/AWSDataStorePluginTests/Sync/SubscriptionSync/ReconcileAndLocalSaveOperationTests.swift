@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -36,36 +36,46 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
-        anyPostMetadata = MutationSyncMetadata(modelId: "1",
-                                               modelName: testPost.modelName,
-                                               deleted: false,
-                                               lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                               version: 1)
+        anyPostMetadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: testPost.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
         let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: .now())
         let anyPostDelete = AnyModel(testDelete)
-        let anyPostDeleteMetadata = MutationSyncMetadata(modelId: "2",
-                                                         modelName: testPost.modelName,
-                                                         deleted: true,
-                                                         lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                         version: 2)
+        let anyPostDeleteMetadata = MutationSyncMetadata(
+            modelId: "2",
+            modelName: testPost.modelName,
+            deleted: true,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 2
+        )
         anyPostDeletedMutationSync = MutationSync<AnyModel>(model: anyPostDelete, syncMetadata: anyPostDeleteMetadata)
-        anyPostMutationEvent = MutationEvent(id: "1",
-                                             modelId: "3",
-                                             modelName: testPost.modelName,
-                                             json: "",
-                                             mutationType: .create)
+        anyPostMutationEvent = MutationEvent(
+            id: "1",
+            modelId: "3",
+            modelName: testPost.modelName,
+            json: "",
+            mutationType: .create
+        )
         storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQuery(dataStoreResult: .none)
         storageAdapter.returnOnSave(dataStoreResult: .none)
-        stateMachine = MockStateMachine(initialState: .waiting,
-                                        resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:))
+        stateMachine = MockStateMachine(
+            initialState: .waiting,
+            resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:)
+        )
 
-        operation = ReconcileAndLocalSaveOperation(modelSchema: anyPostMutationSync.model.schema,
-                                                   remoteModels: [anyPostMutationSync],
-                                                   storageAdapter: storageAdapter,
-                                                   stateMachine: stateMachine)
+        operation = ReconcileAndLocalSaveOperation(
+            modelSchema: anyPostMutationSync.model.schema,
+            remoteModels: [anyPostMutationSync],
+            storageAdapter: storageAdapter,
+            stateMachine: stateMachine
+        )
         cancellables = Set<AnyCancellable>()
     }
 
@@ -103,8 +113,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }.store(in: &cancellables)
 
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action,
-                           ReconcileAndLocalSaveOperation.Action.errored(DataStoreError.nilStorageAdapter()))
+            XCTAssertEqual(
+                action,
+                ReconcileAndLocalSaveOperation.Action.errored(DataStoreError.nilStorageAdapter())
+            )
             expect.fulfill()
         }
 
@@ -332,34 +344,42 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(remoteModelToApply.remoteModel.model.id, anyPostMutationSync.model.id)
     }
 
-    func testSeparateDispositions_notifyDropped () async {
+    func testSeparateDispositions_notifyDropped() async {
         let expect = expectation(description: "notify dropped twice")
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))
         let model2 = AnyModel(Post(title: "post2", content: "content", createdAt: .now()))
-        let metadata1 = MutationSyncMetadata(modelId: model1.id,
-                                             modelName: model1.modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
-        let metadata2 = MutationSyncMetadata(modelId: model2.id,
-                                             modelName: model2.modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
+        let metadata1 = MutationSyncMetadata(
+            modelId: model1.id,
+            modelName: model1.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
+        let metadata2 = MutationSyncMetadata(
+            modelId: model2.id,
+            modelName: model2.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
 
-        let mutationEvent1 = MutationEvent(id: "1",
-                                           modelId: remoteModel1.model.id,
-                                           modelName: remoteModel1.model.modelName,
-                                           json: "",
-                                           mutationType: .create)
-        let mutationEvent2 = MutationEvent(id: "2",
-                                           modelId: remoteModel2.model.id,
-                                           modelName: remoteModel2.model.modelName,
-                                           json: "",
-                                           mutationType: .create)
+        let mutationEvent1 = MutationEvent(
+            id: "1",
+            modelId: remoteModel1.model.id,
+            modelName: remoteModel1.model.modelName,
+            json: "",
+            mutationType: .create
+        )
+        let mutationEvent2 = MutationEvent(
+            id: "2",
+            modelId: remoteModel2.model.id,
+            modelName: remoteModel2.model.modelName,
+            json: "",
+            mutationType: .create
+        )
         operation.publisher
             .sink { completion in
                 switch completion {
@@ -494,29 +514,37 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))
         let model2 = AnyModel(Post(title: "post2", content: "content", createdAt: .now()))
-        let metadata1 = MutationSyncMetadata(modelId: model1.id,
-                                             modelName: model1.modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
-        let metadata2 = MutationSyncMetadata(modelId: model2.id,
-                                             modelName: model2.modelName,
-                                             deleted: false,
-                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                             version: 1)
+        let metadata1 = MutationSyncMetadata(
+            modelId: model1.id,
+            modelName: model1.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
+        let metadata2 = MutationSyncMetadata(
+            modelId: model2.id,
+            modelName: model2.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
 
-        let localMetadata1 = MutationSyncMetadata(modelId: model1.id,
-                                                  modelName: model1.modelName,
-                                                  deleted: false,
-                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                  version: 3)
-        let localMetadata2 = MutationSyncMetadata(modelId: model2.id,
-                                                  modelName: model2.modelName,
-                                                  deleted: false,
-                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                  version: 4)
+        let localMetadata1 = MutationSyncMetadata(
+            modelId: model1.id,
+            modelName: model1.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 3
+        )
+        let localMetadata2 = MutationSyncMetadata(
+            modelId: model2.id,
+            modelName: model2.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 4
+        )
         operation.publisher
             .sink { completion in
                 switch completion {
@@ -536,8 +564,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        let result = operation.getDispositions(for: [remoteModel1, remoteModel2],
-                                                  localMetadatas: [localMetadata1, localMetadata2])
+        let result = operation.getDispositions(
+            for: [remoteModel1, remoteModel2],
+            localMetadatas: [localMetadata1, localMetadata2]
+        )
 
         XCTAssertTrue(result.isEmpty)
         await fulfillment(of: [expect], timeout: 1)
@@ -854,15 +884,17 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_skipFailedOperations() async throws {
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
         let expect = expectation(description: "should complete")
         let expectedDeleteSuccess = expectation(description: "delete should be successful")
         expectedDeleteSuccess.expectedFulfillmentCount = 3 // 3 delete depositions
@@ -916,15 +948,17 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() async {
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
         let expectDropped = expectation(description: "should notify dropped")
         expectDropped.expectedFulfillmentCount = dispositions.count
         let dataStoreError = DataStoreError.internalOperation("Failed to save", "")
@@ -1087,11 +1121,13 @@ extension ReconcileAndLocalSaveOperationTests {
         await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin",
-                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

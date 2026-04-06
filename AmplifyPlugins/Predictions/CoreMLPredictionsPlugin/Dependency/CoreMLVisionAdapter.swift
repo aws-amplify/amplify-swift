@@ -30,7 +30,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         return Predictions.Identify.Labels.Result(labels: labelsResult)
     }
 
-    public func detectText(_ imageURL: URL) throws -> Predictions.Identify.Text.Result? {
+    func detectText(_ imageURL: URL) throws -> Predictions.Identify.Text.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
 #if targetEnvironment(simulator)
@@ -80,11 +80,15 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
         var entities: [Predictions.Entity] = []
         for observation in observations {
-            let pose = Predictions.Pose(pitch: 0.0, // CoreML doesnot return pitch
-                            roll: observation.roll?.doubleValue ?? 0.0,
-                            yaw: observation.yaw?.doubleValue ?? 0.0)
-            let entityMetaData = Predictions.Entity.Metadata(confidence: Double(observation.confidence),
-                                                pose: pose)
+            let pose = Predictions.Pose(
+                pitch: 0.0, // CoreML doesnot return pitch
+                roll: observation.roll?.doubleValue ?? 0.0,
+                yaw: observation.yaw?.doubleValue ?? 0.0
+            )
+            let entityMetaData = Predictions.Entity.Metadata(
+                confidence: Double(observation.confidence),
+                pose: pose
+            )
             let entity = Predictions.Entity(
                 boundingBox: observation.boundingBox,
                 landmarks: mapLandmarks(observation.landmarks),

@@ -7,16 +7,16 @@
 
 import Foundation
 
-extension Predictions.Convert {
-    public enum SpeechToText {}
+public extension Predictions.Convert {
+    enum SpeechToText {}
 }
 
-extension Predictions.Convert.Request where
+public extension Predictions.Convert.Request where
 Input == URL,
 Options == Predictions.Convert.SpeechToText.Options,
 Output == AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error> {
 
-    public static func speechToText(url: URL) -> Self {
+    static func speechToText(url: URL) -> Self {
         .init(input: url, kind: .speechToText(.lift))
     }
 }

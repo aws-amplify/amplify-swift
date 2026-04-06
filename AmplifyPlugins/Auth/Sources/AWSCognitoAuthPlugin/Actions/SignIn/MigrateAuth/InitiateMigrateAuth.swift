@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 struct InitiateMigrateAuth: Action {
     let identifier = "InitiateMigrateAuth"
@@ -18,11 +18,13 @@ struct InitiateMigrateAuth: Action {
     let deviceMetadata: DeviceMetadata
     let respondToAuthChallenge: RespondToAuthChallenge?
 
-    init(username: String,
-         password: String,
-         clientMetadata: [String: String],
-         deviceMetadata: DeviceMetadata,
-         respondToAuthChallenge: RespondToAuthChallenge?) {
+    init(
+        username: String,
+        password: String,
+        clientMetadata: [String: String],
+        deviceMetadata: DeviceMetadata,
+        respondToAuthChallenge: RespondToAuthChallenge?
+    ) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
@@ -30,15 +32,18 @@ struct InitiateMigrateAuth: Action {
         self.respondToAuthChallenge = respondToAuthChallenge
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) async {
+    func execute(
+        withDispatcher dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
             let authEnv = try environment.authEnvironment()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
 
             let responseEvent: StateMachineEvent
             if let session = respondToAuthChallenge?.session {
@@ -49,10 +54,12 @@ struct InitiateMigrateAuth: Action {
                     clientMetadata: clientMetadata,
                     asfDeviceId: asfDeviceId,
                     deviceMetadata: deviceMetadata,
-                    environment: userPoolEnv)
+                    environment: userPoolEnv
+                )
                 responseEvent = try await sendRequest(
                     request: request,
-                    environment: userPoolEnv)
+                    environment: userPoolEnv
+                )
 
             } else {
                 let request = await InitiateAuthInput.migrateAuth(
@@ -61,10 +68,12 @@ struct InitiateMigrateAuth: Action {
                     clientMetadata: clientMetadata,
                     asfDeviceId: asfDeviceId,
                     deviceMetadata: deviceMetadata,
-                    environment: userPoolEnv)
+                    environment: userPoolEnv
+                )
                 responseEvent = try await sendRequest(
                     request: request,
-                    environment: userPoolEnv)
+                    environment: userPoolEnv
+                )
             }
 
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
@@ -85,28 +94,36 @@ struct InitiateMigrateAuth: Action {
 
     }
 
-    private func sendRequest(request: RespondToAuthChallengeInput,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+    private func sendRequest(
+        request: RespondToAuthChallengeInput,
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.respondToAuthChallenge(input: request)
-        return UserPoolSignInHelper.parseResponse(response,
-                                                  for: username,
-                                                  signInMethod: .apiBased(.userPassword))
+        return UserPoolSignInHelper.parseResponse(
+            response,
+            for: username,
+            signInMethod: .apiBased(.userPassword)
+        )
     }
 
-    private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+    private func sendRequest(
+        request: InitiateAuthInput,
+        environment: UserPoolEnvironment
+    ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.initiateAuth(input: request)
-        return UserPoolSignInHelper.parseResponse(response,
-                                                  for: username,
-                                                  signInMethod: .apiBased(.userPassword))
+        return UserPoolSignInHelper.parseResponse(
+            response,
+            for: username,
+            signInMethod: .apiBased(.userPassword)
+        )
     }
 
 }

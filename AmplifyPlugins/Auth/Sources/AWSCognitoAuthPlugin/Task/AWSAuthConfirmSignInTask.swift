@@ -4,9 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
+
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
 
@@ -19,15 +20,17 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         HubPayload.EventName.Auth.confirmSignInAPI
     }
 
-    init(_ request: AuthConfirmSignInRequest,
-         stateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+    init(
+        _ request: AuthConfirmSignInRequest,
+        stateMachine: AuthStateMachine,
+        configuration: AuthConfiguration
+    ) {
         self.request = request
         self.authStateMachine = stateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.authConfiguration = configuration
     }
-    
+
     func execute() async throws -> AuthSignInResult {
         await taskHelper.didStateMachineConfigured()
 
@@ -36,7 +39,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
                 "Could not find user pool configuration",
-                message)
+                message
+            )
             throw authError
         }
 
@@ -45,7 +49,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         }
         let invalidStateError = AuthError.invalidState(
             "User is not attempting signIn operation",
-            AuthPluginErrorConstants.invalidStateError, nil)
+            AuthPluginErrorConstants.invalidStateError, nil
+        )
 
         guard case .configured(let authNState, _, _) = await authStateMachine.currentState,
               case .signingIn(let signInState) = authNState else {
@@ -69,7 +74,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                    }
                case .error(let error):
                    throw AuthError.unknown("Sign in reached an error state", error)
-
                case .signingIn(let signInState):
                    guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
                        continue
@@ -77,8 +81,9 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                    return result
                case .notConfigured:
                    throw AuthError.configuration(
-                    "UserPool configuration is missing",
-                    AuthPluginErrorConstants.configurationError)
+                       "UserPool configuration is missing",
+                       AuthPluginErrorConstants.configurationError
+                   )
                default:
                    throw invalidStateError
                }
@@ -86,7 +91,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         throw invalidStateError
     }
 
-    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: (SignInState), _ invalidStateError: AuthError) async throws {
+    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: SignInState, _ invalidStateError: AuthError) async throws {
         switch signInState {
         case .resolvingChallenge(let challengeState, let challengeType, _):
             // Validate if request valid MFA selection
@@ -127,7 +132,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             case .error:
                 throw AuthError.invalidState(
                     "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
             default:
                 throw invalidStateError
             }
@@ -136,7 +142,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             case .error:
                 throw AuthError.invalidState(
                     "Cannot use Auth.confirmSignIn in the current state. Please use Auth.signIn to reinitiate the sign-in process.",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
             default:
                 throw invalidStateError
             }
@@ -152,7 +159,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw AuthError.validation(
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion
+            )
         }
     }
 
@@ -163,7 +171,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw AuthError.validation(
                 AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.field,
                 AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.errorDescription,
-                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmSignInFactorSelectionResponseError.recoverySuggestion
+            )
         }
     }
 
@@ -196,7 +205,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
     #endif
 
         return ConfirmSignInEventData(
-            answer: self.request.challengeResponse,
+            answer: request.challengeResponse,
             attributes: attributes,
             metadata: pluginOptions?.metadata,
             friendlyDeviceName: pluginOptions?.friendlyDeviceName,

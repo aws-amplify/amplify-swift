@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AmplifyBigInteger
+import XCTest
 
 final class AmplifyBigIntegerHelperTests: XCTestCase {
 

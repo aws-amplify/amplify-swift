@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-@testable import AWSPluginsCore
+@testable @preconcurrency import AWSPluginsCore
 
 class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
@@ -27,14 +27,16 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             eventsNotSaved.fulfill()
         }
 
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
 
         // We know this won't be nil, but we need to keep a reference to the queue in memory for the duration of the
         // test, and since we don't act on it otherwise, Swift warns about queue never being used.
@@ -42,11 +44,13 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                    modelName: model.modelName,
-                                                    deleted: false,
-                                                    lastChangedAt: Date().unixSeconds,
-                                                    version: 1)
+            let syncMetadata = MutationSyncMetadata(
+                modelId: model.id,
+                modelName: model.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
@@ -78,22 +82,26 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             completion(.success(model))
         }
 
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                    modelName: model.modelName,
-                                                    deleted: false,
-                                                    lastChangedAt: Date().unixSeconds,
-                                                    version: 1)
+            let syncMetadata = MutationSyncMetadata(
+                modelId: model.id,
+                modelName: model.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
@@ -159,22 +167,26 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-1" || MockSynced.keys.id == "id-3"
         })
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: syncExpression.modelPredicate(),
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: syncExpression.modelPredicate(),
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
 
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                    modelName: model.modelName,
-                                                    deleted: false,
-                                                    lastChangedAt: Date().unixSeconds,
-                                                    version: 1)
+            let syncMetadata = MutationSyncMetadata(
+                modelId: model.id,
+                modelName: model.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
@@ -259,21 +271,25 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(mutationSyncMetadata))
         }
 
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                    modelName: model.modelName,
-                                                    deleted: false,
-                                                    lastChangedAt: Date().unixSeconds,
-                                                    version: 1)
+            let syncMetadata = MutationSyncMetadata(
+                modelId: model.id,
+                modelName: model.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
@@ -339,21 +355,25 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(mutationSyncMetadata))
         }
 
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
         for iteration in 1 ... 2 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
-            let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                    modelName: model.modelName,
-                                                    deleted: false,
-                                                    lastChangedAt: Date().unixSeconds,
-                                                    version: 1)
+            let syncMetadata = MutationSyncMetadata(
+                modelId: model.id,
+                modelName: model.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 1
+            )
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
@@ -419,11 +439,13 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         })
 
         let model = try MockSynced(id: "id-3").eraseToAnyModel()
-        let syncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                modelName: model.modelName,
-                                                deleted: false,
-                                                lastChangedAt: Date().unixSeconds,
-                                                version: 1)
+        let syncMetadata = MutationSyncMetadata(
+            modelId: model.id,
+            modelName: model.modelName,
+            deleted: false,
+            lastChangedAt: Date().unixSeconds,
+            version: 1
+        )
         let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
         subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
@@ -444,11 +466,14 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 extension ModelReconciliationQueueBehaviorTests {
     private func completionSignalWithAppSyncError(_ error: AppSyncErrorType) -> Subscribers.Completion<DataStoreError> {
         let appSyncJSONValue: JSONValue = .string(error.rawValue)
-        let graphqlError = GraphQLError.init(message: "",
-                                             locations: nil,
-                                             path: nil,
-                                             extensions: [
-                                                "errorType": appSyncJSONValue])
+        let graphqlError = GraphQLError.init(
+            message: "",
+            locations: nil,
+            path: nil,
+            extensions: [
+                "errorType": appSyncJSONValue
+            ]
+        )
         let graphqlResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphqlError])
         let apiError = APIError.operationError("error message", "recovery message", graphqlResponseError)
         let dataStoreError = DataStoreError.api(apiError, nil)
@@ -457,14 +482,16 @@ extension ModelReconciliationQueueBehaviorTests {
 
     func testProcessingUnauthorizedError() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.unauthorized)
 
         let queueSink = queue.publisher.sink(receiveCompletion: { value in
@@ -485,14 +512,16 @@ extension ModelReconciliationQueueBehaviorTests {
 
     func testProcessingOperationDisabledError() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.operationDisabled)
 
         let queueSink = queue.publisher.sink(receiveCompletion: { value in
@@ -513,14 +542,16 @@ extension ModelReconciliationQueueBehaviorTests {
 
     func testProcessingUnhandledErrors() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
-                                                storageAdapter: storageAdapter,
-                                                api: apiPlugin,
-                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
-                                                modelPredicate: modelPredicate,
-                                                auth: authPlugin,
-                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let queue = await AWSModelReconciliationQueue(
+            modelSchema: MockSynced.schema,
+            storageAdapter: storageAdapter,
+            api: apiPlugin,
+            reconcileAndSaveQueue: reconcileAndSaveQueue,
+            modelPredicate: modelPredicate,
+            auth: authPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            incomingSubscriptionEvents: subscriptionEventsPublisher
+        )
         let completion = completionSignalWithAppSyncError(AppSyncErrorType.conflictUnhandled)
 
         let queueSink = queue.publisher.sink(receiveCompletion: { _ in

@@ -33,3 +33,5 @@ public struct AuthSignUpResult {
         self.userID = userID
     }
 }
+
+extension AuthSignUpResult: Sendable { }

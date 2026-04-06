@@ -6,10 +6,11 @@
 //
 
 import XCTest
-@testable import AWSPluginsCore
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable import AWSPluginsCore
+@testable import AWSPluginsCore
 
 extension AppSyncListProviderTests {
 
@@ -34,10 +35,12 @@ extension AppSyncListProviderTests {
     }
 
     func testNotLoadedStateHasNextPageFalse() {
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -50,9 +53,11 @@ extension AppSyncListProviderTests {
         Amplify.Logging.logLevel = .verbose
         mockAPIPlugin.responders[.queryRequestResponse] =
             QueryRequestResponder<List<Comment4>> { _ in
-                let nextPage = List(elements: [Comment4(content: "content"),
-                                               Comment4(content: "content"),
-                                               Comment4(content: "content")])
+                let nextPage = List(elements: [
+                    Comment4(content: "content"),
+                    Comment4(content: "content"),
+                    Comment4(content: "content")
+                ])
                 return .success(nextPage)
         }
         let elements = [Comment4(content: "content")]
@@ -136,10 +141,12 @@ extension AppSyncListProviderTests {
     }
 
     func testNotLoadedStateGetNextPageFailure() async {
-        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName",
-                                                        authMode: nil)
+        let modelMetadata = AppSyncListDecoder.Metadata(
+            appSyncAssociatedIdentifiers: ["postId"],
+            appSyncAssociatedFields: ["post"],
+            apiName: "apiName",
+            authMode: nil
+        )
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")

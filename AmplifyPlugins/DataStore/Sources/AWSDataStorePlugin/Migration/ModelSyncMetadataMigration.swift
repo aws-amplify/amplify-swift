@@ -6,9 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
-import AWSPluginsCore
 
 class ModelSyncMetadataMigration: ModelMigration {
 
@@ -37,19 +37,22 @@ class ModelSyncMetadataMigration: ModelMigration {
     func performModelMetadataSyncPredicateUpgrade() throws -> Bool {
         do {
             guard let field = ModelSyncMetadata.schema.field(
-                withName: ModelSyncMetadata.keys.syncPredicate.stringValue) else {
+                withName: ModelSyncMetadata.keys.syncPredicate.stringValue)
+            else {
                 log.error("Could not find corresponding ModelField from ModelSyncMetadata for syncPredicate")
                 return false
             }
-            let exists = try columnExists(modelSchema: ModelSyncMetadata.schema,
-                                          field: field)
+            let exists = try columnExists(
+                modelSchema: ModelSyncMetadata.schema,
+                field: field
+            )
             guard !exists else {
                 log.debug("Detected ModelSyncMetadata table has syncPredicate column. No migration needed")
                 return false
             }
 
             log.debug("Detected ModelSyncMetadata table exists without syncPredicate column.")
-            guard let storageAdapter = storageAdapter else {
+            guard let storageAdapter else {
                 log.debug("Missing SQLiteStorageEngineAdapter for model migration")
                 throw DataStoreError.nilStorageAdapter()
             }
@@ -58,7 +61,8 @@ class ModelSyncMetadataMigration: ModelMigration {
             }
             let addColumnStatement = AlterTableAddColumnStatement(
                 modelSchema: ModelSyncMetadata.schema,
-                field: field).stringValue
+                field: field
+            ).stringValue
             try connection.execute(addColumnStatement)
             log.debug("ModelSyncMetadata table altered to add syncPredicate column.")
             return true
@@ -68,7 +72,7 @@ class ModelSyncMetadataMigration: ModelMigration {
     }
 
     func columnExists(modelSchema: ModelSchema, field: ModelField) throws -> Bool {
-        guard let storageAdapter = storageAdapter else {
+        guard let storageAdapter else {
             log.debug("Missing SQLiteStorageEngineAdapter for model migration")
             throw DataStoreError.nilStorageAdapter()
         }
@@ -99,10 +103,10 @@ class ModelSyncMetadataMigration: ModelMigration {
 }
 
 extension ModelSyncMetadataMigration: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

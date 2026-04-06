@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
-import Amplify
 
 class StorageRequestUtilsValidatorTests: XCTestCase {
 

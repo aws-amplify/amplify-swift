@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSTranslate
 import Amplify
+import AWSTranslate
+import XCTest
 @testable import AWSPredictionsPlugin
 
 class PredictionsServiceTranslateTests: XCTestCase {

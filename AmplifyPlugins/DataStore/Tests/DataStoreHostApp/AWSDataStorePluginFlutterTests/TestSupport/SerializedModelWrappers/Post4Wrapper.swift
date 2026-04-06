@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AmplifyTestCommon
+import Foundation
 
 /**
  Creates a convenience wrapper for non-model type instantiations so that tests do not need to directly access json.
- 
+
  Wraps:  Post4
  */
 class Post4Wrapper: NSCopying {
@@ -28,10 +28,10 @@ class Post4Wrapper: NSCopying {
             "title": title
         ]
 
-        if serializedComments.count > 0 {
+        if !serializedComments.isEmpty {
             map["comments"] = serializedComments
         }
-        self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
+        self.model = try FlutterSerializedModel(id: id, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }
 
     init(model: FlutterSerializedModel) {
@@ -41,19 +41,19 @@ class Post4Wrapper: NSCopying {
     init(json: String) throws {
         let data = Data(json.utf8)
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-        self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
+        self.model = try FlutterSerializedModel(id: map!["id"] as! String, map: FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
 
     func idString() -> String {
-        return self.model.id
+        return model.id
     }
 
     func id() -> JSONValue? {
-        return self.model.values["id"]
+        return model.values["id"]
     }
 
     func title() -> JSONValue? {
-        return self.model.values["title"]
+        return model.values["title"]
     }
 
     func copy(with zone: NSZone? = nil) -> Any {
@@ -63,7 +63,7 @@ class Post4Wrapper: NSCopying {
 }
 
 extension Post4Wrapper: Equatable {
-    public static func == (lhs: Post4Wrapper, rhs: Post4Wrapper) -> Bool {
+    static func == (lhs: Post4Wrapper, rhs: Post4Wrapper) -> Bool {
         return lhs.idString() == rhs.idString()
             && lhs.title() == rhs.title()
     }

@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Amplify
 import AWSAPIPlugin
+import Foundation
 
 enum AmplifyURLSessionState {
     case active
@@ -26,7 +25,7 @@ class AmplifyURLSessionNoOperationDataTask: URLSessionDataTaskBehavior {
     }
 
     static let shared: AmplifyURLSessionNoOperationDataTask =
-        AmplifyURLSessionNoOperationDataTask(taskBehaviorIdentifier: -1)
+        .init(taskBehaviorIdentifier: -1)
 
     func cancel() { }
 

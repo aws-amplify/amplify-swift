@@ -5,30 +5,34 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
-@testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
 
-class ModelSyncedEventEmitterTests: XCTestCase {
+class ModelSyncedEventEmitterTests: XCTestCase, @unchecked Sendable {
 
     var initialSyncOrchestrator: MockAWSInitialSyncOrchestrator?
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
 
     override func setUp() {
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
-                                                                 api: nil,
-                                                                 reconciliationQueue: nil,
-                                                                 storageAdapter: nil)
-        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(modelSchemas: [Post.schema],
-                                                                      api: nil,
-                                                                      storageAdapter: nil,
-                                                                      syncExpressions: [],
-                                                                      auth: nil)
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(
+            dataStoreConfiguration: .testDefault(),
+            api: nil,
+            reconciliationQueue: nil,
+            storageAdapter: nil
+        )
+        reconciliationQueue = MockAWSIncomingEventReconciliationQueue(
+            modelSchemas: [Post.schema],
+            api: nil,
+            storageAdapter: nil,
+            syncExpressions: [],
+            auth: nil
+        )
         ModelRegistry.register(modelType: Post.self)
     }
 
@@ -46,11 +50,13 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         mutationEventAppliedReceived.expectedFulfillmentCount = 3
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
         mutationEventDroppedReceived.expectedFulfillmentCount = 2
-        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
-                                                   modelName: Post.modelName,
-                                                   deleted: false,
-                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                   version: 1)
+        let anyPostMetadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: Post.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
@@ -58,9 +64,11 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         var receivedMutationEventsCount = 0
         var modelSyncedEventReceivedLast = false
 
-        let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
-                                              initialSyncOrchestrator: initialSyncOrchestrator,
-                                              reconciliationQueue: reconciliationQueue)
+        let emitter = ModelSyncedEventEmitter(
+            modelSchema: Post.schema,
+            initialSyncOrchestrator: initialSyncOrchestrator,
+            reconciliationQueue: reconciliationQueue
+        )
 
         var emitterSink: AnyCancellable?
         emitterSink = emitter.publisher.sink { _ in
@@ -68,12 +76,14 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         } receiveValue: { value in
             switch value {
             case .modelSyncedEvent(let modelSyncedEvent):
-                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
-                                                                       isFullSync: true,
-                                                                       isDeltaSync: false,
-                                                                       added: 3,
-                                                                       updated: 0,
-                                                                       deleted: 0)
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(
+                    modelName: "Post",
+                    isFullSync: true,
+                    isDeltaSync: false,
+                    added: 3,
+                    updated: 0,
+                    deleted: 0
+                )
                 XCTAssertEqual(modelSyncedEvent, expectedModelSyncedEventPayload)
                 if receivedMutationEventsCount == 5 {
                     modelSyncedEventReceivedLast = true
@@ -88,18 +98,30 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             }
         }
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
-                                                                            syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(
+            modelName: Post.modelName,
+            syncType: .fullSync
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
@@ -126,18 +148,22 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         mutationEventAppliedReceived.expectedFulfillmentCount = 5
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
         mutationEventDroppedReceived.expectedFulfillmentCount = 3
-        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
-                                                   modelName: "",
-                                                   deleted: false,
-                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                   version: 1)
+        let anyPostMetadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: "",
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
-        let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
-                                              initialSyncOrchestrator: initialSyncOrchestrator,
-                                              reconciliationQueue: reconciliationQueue)
+        let emitter = ModelSyncedEventEmitter(
+            modelSchema: Post.schema,
+            initialSyncOrchestrator: initialSyncOrchestrator,
+            reconciliationQueue: reconciliationQueue
+        )
 
         var emitterSink: AnyCancellable?
         emitterSink = emitter.publisher.sink { _ in
@@ -145,12 +171,14 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         } receiveValue: { value in
             switch value {
             case .modelSyncedEvent(let modelSyncedEvent):
-                let expectedModelSyncedEventPayload = ModelSyncedEvent(modelName: "Post",
-                                                                       isFullSync: true,
-                                                                       isDeltaSync: false,
-                                                                       added: 2,
-                                                                       updated: 0,
-                                                                       deleted: 0)
+                let expectedModelSyncedEventPayload = ModelSyncedEvent(
+                    modelName: "Post",
+                    isFullSync: true,
+                    isDeltaSync: false,
+                    added: 2,
+                    updated: 0,
+                    deleted: 0
+                )
                 XCTAssertEqual(modelSyncedEvent, expectedModelSyncedEventPayload)
                 modelSyncedReceived.fulfill()
             case .mutationEventApplied:
@@ -160,12 +188,18 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             }
         }
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
-                                                                            syncType: .fullSync))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                             modelName: Post.modelName))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(
+            modelName: Post.modelName,
+            syncType: .fullSync
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+            anyPostMutationSync,
+            modelName: Post.modelName
+        ))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
@@ -199,22 +233,28 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         mutationEventAppliedReceived.assertForOverFulfill = false
         let mutationEventDroppedReceived = expectation(description: "mutationEventDropped received")
         mutationEventDroppedReceived.assertForOverFulfill = false
-        let anyPostMetadata = MutationSyncMetadata(modelId: "1",
-                                                   modelName: Post.modelName,
-                                                   deleted: false,
-                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                                   version: 1)
+        let anyPostMetadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: Post.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
 
-        let emitter = ModelSyncedEventEmitter(modelSchema: Post.schema,
-                                              initialSyncOrchestrator: initialSyncOrchestrator,
-                                              reconciliationQueue: reconciliationQueue)
+        let emitter = ModelSyncedEventEmitter(
+            modelSchema: Post.schema,
+            initialSyncOrchestrator: initialSyncOrchestrator,
+            reconciliationQueue: reconciliationQueue
+        )
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName,
-                                                                            syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(
+            modelName: Post.modelName,
+            syncType: .fullSync
+        ))
         DispatchQueue.concurrentPerform(iterations: 1_000) { _ in
             let index = Int.random(in: 1 ... 10)
             if index == 1 {
@@ -222,8 +262,10 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             } else if index == 2 {
                 reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
             } else {
-                initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(anyPostMutationSync,
-                                                                                     modelName: Post.modelName))
+                initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.enqueued(
+                    anyPostMutationSync,
+                    modelName: Post.modelName
+                ))
             }
 
         }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSTextract
+import Foundation
 
 extension IdentifyTextResultTransformers {
 
@@ -30,7 +30,8 @@ extension IdentifyTextResultTransformers {
     ) -> Predictions.BoundedKeyValue? {
         guard keyBlock.blockType == .keyValueSet,
               keyBlock.entityTypes?.contains(.key) ?? false,
-            let relationships = keyBlock.relationships else {
+            let relationships = keyBlock.relationships
+        else {
             return nil
         }
 
@@ -80,7 +81,8 @@ extension IdentifyTextResultTransformers {
         for keyId in ids {
             guard let keyBlock = blockMap[keyId],
                 let text = keyBlock.text,
-                case .word = keyBlock.blockType else {
+                case .word = keyBlock.blockType
+            else {
                 continue
             }
             keyText += text + " "
@@ -99,7 +101,8 @@ extension IdentifyTextResultTransformers {
 
         for valueId in ids {
             guard let valueBlock = blockMap[valueId],
-                let valueBlockRelations = valueBlock.relationships else {
+                let valueBlockRelations = valueBlock.relationships
+            else {
                 continue
             }
 

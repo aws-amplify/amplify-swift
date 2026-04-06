@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
 import Combine
+@preconcurrency import Combine
+import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncWebSocketClientProtocol: AnyObject {

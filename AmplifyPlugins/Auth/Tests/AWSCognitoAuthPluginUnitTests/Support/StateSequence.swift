@@ -7,8 +7,8 @@
 
 import XCTest
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+@testable import AWSCognitoAuthPlugin
 
 struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: State, MyEvent: StateMachineEvent {
     let resolver: AnyResolver<MyState>
@@ -16,10 +16,11 @@ struct StateSequence<MyState, MyEvent>: CustomStringConvertible where MyState: S
     let event: MyEvent
     let expected: MyState
 
-    init(resolver: AnyResolver<MyState>,
-         oldState: MyState,
-         event: MyEvent,
-         expected: MyState
+    init(
+        resolver: AnyResolver<MyState>,
+        oldState: MyState,
+        event: MyEvent,
+        expected: MyState
     ) {
         self.resolver = resolver
         self.oldState = oldState

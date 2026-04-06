@@ -8,9 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 import AWSS3
 
@@ -21,11 +21,13 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageUploadFileRequest(key: "", local: testURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -53,11 +55,13 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -82,11 +86,13 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageUploadFileRequest(key: testKey, local: url, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { event in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { event in
             switch event {
             case .failure(let error):
                 guard case .localFileNotFound = error else {
@@ -111,7 +117,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -119,9 +126,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
@@ -141,18 +150,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             default:
                 XCTFail("Should have received completed event")
             }
-        })
+        }
+        )
 
         operation.start()
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
-                                        key: testKey,
-                                        uploadSource: expectedUploadSource,
-                                        contentType: testContentType,
-                                        metadata: metadata)
+        mockStorageService.verifyUpload(
+            serviceKey: expectedServiceKey,
+            key: testKey,
+            uploadSource: expectedUploadSource,
+            contentType: testContentType,
+            metadata: metadata
+        )
     }
 
     func testUploadFileOperationUploadFail() async {
@@ -161,7 +173,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.failed(StorageError.service("", ""))]
+            StorageEvent.failed(StorageError.service("", ""))
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -188,18 +201,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             default:
                 XCTFail("Should have received completed event")
             }
-        })
+        }
+        )
 
         operation.start()
 
         await fulfillment(of: [failInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
-                                        key: testKey,
-                                        uploadSource: expectedUploadSource,
-                                        contentType: nil,
-                                        metadata: nil)
+        mockStorageService.verifyUpload(
+            serviceKey: expectedServiceKey,
+            key: testKey,
+            uploadSource: expectedUploadSource,
+            contentType: nil,
+            metadata: nil
+        )
     }
 
     func testUploadFileOperationMultiPartUploadSuccess() async {
@@ -208,20 +224,25 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: largeDataObject, attributes: nil)
-        XCTAssertTrue(largeDataObject.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold,
-                      "Could not create data object greater than MultiPartUploadSizeThreshold")
+        XCTAssertTrue(
+            largeDataObject.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold,
+            "Could not create data object greater than MultiPartUploadSizeThreshold"
+        )
         let expectedUploadSource = UploadSource.local(testURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
@@ -241,18 +262,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             default:
                 XCTFail("Should have received completed event")
             }
-        })
+        }
+        )
 
         operation.start()
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.multiPartUploadCalled, 1)
-        mockStorageService.verifyMultiPartUpload(serviceKey: expectedServiceKey,
-                                                 key: testKey,
-                                                 uploadSource: expectedUploadSource,
-                                                 contentType: testContentType,
-                                                 metadata: metadata)
+        mockStorageService.verifyMultiPartUpload(
+            serviceKey: expectedServiceKey,
+            key: testKey,
+            uploadSource: expectedUploadSource,
+            contentType: testContentType,
+            metadata: metadata
+        )
     }
 
     /// Given: Storage Upload File Operation
@@ -265,25 +289,29 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -311,25 +339,29 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -357,7 +389,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -365,17 +398,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -403,25 +440,29 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
-        let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadFileOperation(request,
-                                                        storageConfiguration: testStorageConfiguration,
-                                                        storageService: mockStorageService,
-                                                        authService: mockAuthService,
-                                                        progressListener: nil) { result in
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -449,7 +490,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -457,9 +499,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
 
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
@@ -478,18 +522,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             default:
                 XCTFail("Should have received completed event")
             }
-        })
+        }
+        )
 
         operation.start()
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "public/\(testKey)",
-                                        key: testKey,
-                                        uploadSource: expectedUploadSource,
-                                        contentType: testContentType,
-                                        metadata: metadata)
+        mockStorageService.verifyUpload(
+            serviceKey: "public/\(testKey)",
+            key: testKey,
+            uploadSource: expectedUploadSource,
+            contentType: testContentType,
+            metadata: metadata
+        )
     }
 
     /// Given: Storage Upload File Operation
@@ -502,7 +549,8 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completedVoid]
+            StorageEvent.completedVoid
+        ]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -510,9 +558,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
 
-        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
-                                                       metadata: metadata,
-                                                       contentType: testContentType)
+        let options = StorageUploadFileRequest.Options(
+            accessLevel: .protected,
+            metadata: metadata,
+            contentType: testContentType
+        )
         let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -530,18 +580,21 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             default:
                 XCTFail("Should have received completed event")
             }
-        })
+        }
+        )
 
         operation.start()
 
         await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "public/\(testIdentityId)/\(testKey)",
-                                        key: testKey,
-                                        uploadSource: expectedUploadSource,
-                                        contentType: testContentType,
-                                        metadata: metadata)
+        mockStorageService.verifyUpload(
+            serviceKey: "public/\(testIdentityId)/\(testKey)",
+            key: testKey,
+            uploadSource: expectedUploadSource,
+            contentType: testContentType,
+            metadata: metadata
+        )
     }
 
     // TODO: test pause, resume, canel, etc.

@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
 
@@ -76,14 +76,16 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(modelSchema: ModelSchema,
-         storageAdapter: StorageEngineAdapter?,
-         api: APICategoryGraphQLBehavior,
-         reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
-         modelPredicate: QueryPredicate?,
-         auth: AuthCategoryBehavior?,
-         authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) async {
+    init(
+        modelSchema: ModelSchema,
+        storageAdapter: StorageEngineAdapter?,
+        api: APICategoryGraphQLBehavior,
+        reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
+        modelPredicate: QueryPredicate?,
+        auth: AuthCategoryBehavior?,
+        authModeStrategy: AuthModeStrategy,
+        incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil
+    ) async {
 
         self.modelSchema = modelSchema
         self.storageAdapter = storageAdapter
@@ -100,7 +102,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.isSuspended = true
 
         let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher
-        if let incomingSubscriptionEvents = incomingSubscriptionEvents {
+        if let incomingSubscriptionEvents {
             resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents
         } else {
             resolvedIncomingSubscriptionEvents = await AWSIncomingSubscriptionEventPublisher(
@@ -150,29 +152,31 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             return
         }
 
-        let reconcileOp = ReconcileAndLocalSaveOperation(modelSchema: modelSchema,
-                                                         remoteModels: remoteModels,
-                                                         storageAdapter: storageAdapter)
+        let reconcileOp = ReconcileAndLocalSaveOperation(
+            modelSchema: modelSchema,
+            remoteModels: remoteModels,
+            storageAdapter: storageAdapter
+        )
         var reconcileAndLocalSaveOperationSink: AnyCancellable?
         reconcileAndLocalSaveOperationSink = reconcileOp
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
-                self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
+                reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
                 if case .failure = completion {
-                    self.modelReconciliationQueueSubject.send(completion: completion)
+                    modelReconciliationQueueSubject.send(completion: completion)
                 }
             }, receiveValue: { [weak self] value in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 switch value {
                 case .mutationEventDropped(let modelName, let error):
-                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
+                    modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
                 case .mutationEvent(let event):
-                    self.modelReconciliationQueueSubject.send(.mutationEvent(event))
+                    modelReconciliationQueueSubject.send(.mutationEvent(event))
                 }
             })
         reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
@@ -222,10 +226,10 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 }
 
 extension AWSModelReconciliationQueue: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }
@@ -241,7 +245,7 @@ extension AWSModelReconciliationQueue: Resettable {
         if let resettable = incomingSubscriptionEvents as? Resettable {
             log.verbose("Resetting incomingSubscriptionEvents")
             await resettable.reset()
-            self.log.verbose("Resetting incomingSubscriptionEvents: finished")
+            log.verbose("Resetting incomingSubscriptionEvents: finished")
         }
 
         log.verbose("Resetting incomingSubscriptionEventQueue")
@@ -285,7 +289,7 @@ extension AWSModelReconciliationQueue {
     }
 
     private func isOperationDisabledError(_ errorMessage: String?, _ error: Error?) -> Bool {
-        if let errorMessage = errorMessage,
+        if let errorMessage,
             case .operationDisabled = AppSyncErrorType(errorMessage) {
             return true
         }

@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Project5 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Project5 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case projectId
     case name
     case team
@@ -13,20 +20,20 @@ extension Project5 {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let project5 = Project5.keys
-    
+
     model.pluralName = "Project5s"
-    
+
     model.attributes(
       .index(fields: ["projectId", "name"], name: nil),
       .primaryKey(fields: [project5.projectId, project5.name])
     )
-    
+
     model.fields(
       .field(project5.projectId, is: .required, ofType: .string),
       .field(project5.name, is: .required, ofType: .string),
@@ -37,10 +44,10 @@ extension Project5 {
       .field(project5.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
-    public class Path: ModelPath<Project5> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+
+    class Path: ModelPath<Project5> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Project5: ModelIdentifiable {
@@ -48,10 +55,12 @@ extension Project5: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension Project5.IdentifierProtocol {
-  public static func identifier(projectId: String,
-      name: String) -> Self {
-    .make(fields:[(name: "projectId", value: projectId), (name: "name", value: name)])
+public extension Project5.IdentifierProtocol {
+  static func identifier(
+    projectId: String,
+    name: String
+  ) -> Self {
+    .make(fields: [(name: "projectId", value: projectId), (name: "name", value: name)])
   }
 }
 

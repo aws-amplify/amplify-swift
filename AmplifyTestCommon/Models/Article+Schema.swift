@@ -6,12 +6,12 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension Article {
+public extension Article {
     // MARK: - CodingKeys
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case content
         case createdAt
@@ -19,10 +19,10 @@ extension Article {
         case authorNotes
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
     //  MARK: - ModelSchema
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         let article = Article.keys
 
         model.listPluralName = "Articles"
@@ -38,10 +38,11 @@ extension Article {
             .field(article.content, is: .required, ofType: .string),
             .field(article.createdAt, is: .required, ofType: .dateTime),
             .field(article.owner, is: .optional, ofType: .string),
-            .field(article.authorNotes,
-                   is: .optional,
-                   ofType: .string,
-                   authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
+            .field(
+                article.authorNotes,
+                is: .optional,
+                ofType: .string,
+                authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
             )
         )
     }

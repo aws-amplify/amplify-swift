@@ -21,8 +21,10 @@ struct InitiateSignOut: Action {
         let event: SignOutEvent
         if case .hostedUI(let options) = signedInData.signInMethod,
            options.preferPrivateSession == false {
-            event = SignOutEvent(eventType: .invokeHostedUISignOut(signOutEventData,
-                                                                   updatedSignedInData))
+            event = SignOutEvent(eventType: .invokeHostedUISignOut(
+                signOutEventData,
+                updatedSignedInData
+            ))
         } else if signOutEventData.globalSignOut {
             event = SignOutEvent(eventType: .signOutGlobally(updatedSignedInData))
         } else {

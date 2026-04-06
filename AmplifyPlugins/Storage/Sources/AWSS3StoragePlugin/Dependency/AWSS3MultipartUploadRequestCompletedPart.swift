@@ -19,7 +19,7 @@ typealias AWSS3MultipartUploadRequestCompletedParts = [AWSS3MultipartUploadReque
 extension AWSS3MultipartUploadRequestCompletedParts {
 
     init(completedParts: StorageUploadParts) {
-        let eTags = completedParts.map { $0.eTag }
+        let eTags = completedParts.map(\.eTag)
         let parts = eTags.indices.map { index in
             AWSS3MultipartUploadRequestCompletedPart(partNumber: index + 1, eTag: eTags[index] ?? "")
         }
@@ -29,7 +29,8 @@ extension AWSS3MultipartUploadRequestCompletedParts {
     init(parts: [S3ClientTypes.Part]) {
         self = parts.compactMap {
             guard let eTag = $0.eTag,
-                  let partNumber = $0.partNumber else {
+                  let partNumber = $0.partNumber
+            else {
                 return nil
             }
             return AWSS3MultipartUploadRequestCompletedPart(partNumber: partNumber, eTag: eTag)

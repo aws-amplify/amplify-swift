@@ -5,16 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSPluginsCore
+import Foundation
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 
-class AWSAPICategoryPluginReachabilityTests: XCTestCase {
+class AWSAPICategoryPluginReachabilityTests: XCTestCase, @unchecked Sendable {
 
     var apiPlugin: AWSAPIPlugin!
 
@@ -31,7 +31,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
     func testReachabilityReturnsGraphQLAPI() throws {
         let graphQLAPI = "graphQLAPI"
         do {
-            let endpointConfig = [graphQLAPI: try getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL)]
+            let endpointConfig = try [graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL)]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
@@ -58,8 +58,10 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         let graphQLAPI = "graphQLAPI"
         let restAPI = "restAPI"
         do {
-            let endpointConfig = [graphQLAPI: try getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                                  restAPI: try getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+            let endpointConfig = try [
+                graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+                restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+            ]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
@@ -86,8 +88,10 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         let graphQLAPI = "graphQLAPI"
         let restAPI = "restAPI"
         do {
-            let endpointConfig = [graphQLAPI: try getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
-                                  restAPI: try getEndpointConfig(apiName: restAPI, endpointType: .rest)]
+            let endpointConfig = try [
+                graphQLAPI: getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL),
+                restAPI: getEndpointConfig(apiName: restAPI, endpointType: .rest)
+            ]
             let pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
@@ -128,6 +132,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             region: nil,
             authorizationType: AWSAuthorizationType.none,
             endpointType: endpointType,
-            apiAuthProviderFactory: APIAuthProviderFactory())
+            apiAuthProviderFactory: APIAuthProviderFactory()
+        )
     }
 }

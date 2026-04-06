@@ -8,7 +8,7 @@
 import Amplify
 
 /// Reconciles incoming sync mutations with the state of the local store, and mutation queue.
-struct RemoteSyncReconciler {
+enum RemoteSyncReconciler {
     typealias LocalMetadata = ReconcileAndLocalSaveOperation.LocalMetadata
     typealias RemoteModel = ReconcileAndLocalSaveOperation.RemoteModel
 
@@ -50,24 +50,24 @@ struct RemoteSyncReconciler {
                 $1.model.identifier: ($0[$1.model.identifier] ?? []) + [$1]
             ], uniquingKeysWith: { $1 })
         }
-        
+
         let optimizedRemoteModels = remoteModelsGroupByIdentifier.values.compactMap {
             $0.sorted(by: { $0.syncMetadata.version > $1.syncMetadata.version }).first
         }
-        
+
         guard !optimizedRemoteModels.isEmpty else {
             return []
         }
-        
+
         guard !localMetadatas.isEmpty else {
             return optimizedRemoteModels.compactMap { getDisposition($0, localMetadata: nil) }
         }
-        
+
         let metadataByModelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
         let dispositions = optimizedRemoteModels.compactMap {
             getDisposition($0, localMetadata: metadataByModelId[$0.model.identifier])
         }
-        
+
         return dispositions
     }
 
@@ -85,7 +85,7 @@ struct RemoteSyncReconciler {
     ///   - localMetadata: metadata corresponding to the remote model
     /// - Returns: disposition of the model, `nil` if to be dropped
     static func getDisposition(_ remoteModel: RemoteModel, localMetadata: LocalMetadata?) -> Disposition? {
-        guard let localMetadata = localMetadata else {
+        guard let localMetadata else {
             return remoteModel.syncMetadata.deleted ? nil : .create(remoteModel)
         }
 

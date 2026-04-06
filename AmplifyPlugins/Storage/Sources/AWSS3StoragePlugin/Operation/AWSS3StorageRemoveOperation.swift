@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPluginsCore
+import Foundation
 
 /// Storage Remove Operation.
 ///
@@ -18,29 +18,33 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
     StorageRemoveRequest,
     String,
     StorageError
->, StorageRemoveOperation {
+>, StorageRemoveOperation, @unchecked Sendable {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageService: AWSS3StorageServiceBehavior
     let authService: AWSAuthServiceBehavior
 
-    init(_ request: StorageRemoveRequest,
-         storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
-         authService: AWSAuthServiceBehavior,
-         resultListener: ResultListener? = nil) {
+    init(
+        _ request: StorageRemoveRequest,
+        storageConfiguration: AWSS3StoragePluginConfiguration,
+        storageService: AWSS3StorageServiceBehavior,
+        authService: AWSAuthServiceBehavior,
+        resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.remove,
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: HubPayload.EventName.Storage.remove,
+            request: request,
+            resultListener: resultListener
+        )
     }
 
     /// Perform the task to remove item.
-    override public func main() {
+    override func main() {
         if isCancelled {
             finish()
             return

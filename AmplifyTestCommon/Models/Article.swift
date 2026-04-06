@@ -16,11 +16,13 @@ public struct Article: Model {
     public var owner: String?
     public var authorNotes: String?
 
-    public init(id: String = UUID().uuidString,
-                content: String,
-                createdAt: Temporal.DateTime,
-                owner: String?,
-                authorNotes: String?) {
+    public init(
+        id: String = UUID().uuidString,
+        content: String,
+        createdAt: Temporal.DateTime,
+        owner: String?,
+        authorNotes: String?
+    ) {
         self.id = id
         self.content = content
         self.createdAt = createdAt

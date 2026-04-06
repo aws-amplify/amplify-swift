@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AWSPluginsCore
 
 class AuthModeStrategyTests: XCTestCase {
@@ -89,9 +89,11 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
-        
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
-                                                            operation: .create)
+
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithOwnerAndPublicAuth.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
@@ -101,8 +103,10 @@ class AuthModeStrategyTests: XCTestCase {
     // Then: applicable auth types returned respect the priority rules
     func testMultiAuthPriorityWithCustomStrategy() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
-                                                            operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithCustomStrategy.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 3)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
@@ -117,8 +121,10 @@ class AuthModeStrategyTests: XCTestCase {
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
 
-        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
-                                                            operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(
+            schema: ModelWithCustomStrategy.schema,
+            operation: .create
+        )
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
         XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
@@ -153,14 +159,14 @@ class AuthModeStrategyTests: XCTestCase {
 
 /// Model with two auth rules
 private struct ModelWithOwnerAndPublicAuth: Model {
-    public let id: String
+    let id: String
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
     }
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete])
@@ -170,14 +176,14 @@ private struct ModelWithOwnerAndPublicAuth: Model {
 
 /// Model with multiple auth rules with equal strategy
 private struct ModelWithMultiplePublicRules: Model {
-    public let id: String
+    let id: String
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
     }
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .apiKey, operations: [.create, .read, .update, .delete]),
@@ -189,14 +195,14 @@ private struct ModelWithMultiplePublicRules: Model {
 
 /// Model with two auth rules but no auth provider
 private struct ModelNoProvider: Model {
-    public let id: String
+    let id: String
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
     }
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, operations: [.read])
@@ -206,14 +212,14 @@ private struct ModelNoProvider: Model {
 
 /// Model with multiple auth rules but no auth provider
 private struct ModelAllStrategies: Model {
-    public let id: String
+    let id: String
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
     }
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .owner, provider: .userPools, operations: [.create, .read, .update, .delete]),
             rule(allow: .public, provider: .iam, operations: [.read]),
@@ -225,14 +231,14 @@ private struct ModelAllStrategies: Model {
 
 /// Model with custom auth rule
 private struct ModelWithCustomStrategy: Model {
-    public let id: String
+    let id: String
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
     }
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         model.authRules = [
             rule(allow: .public, provider: .iam, operations: [.create, .read, .update, .delete]),
             rule(allow: .custom, provider: .function, operations: [.create, .read, .update, .delete]),

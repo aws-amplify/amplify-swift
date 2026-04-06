@@ -43,6 +43,12 @@ jobs:
           platform: ${{ inputs.platform }}
           xcode_version: ${{ inputs.xcode-version }}
 
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ steps.platform.outputs.xcode-version }}
+          platform: ${{ inputs.platform }}
+
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
         timeout-minutes: 4

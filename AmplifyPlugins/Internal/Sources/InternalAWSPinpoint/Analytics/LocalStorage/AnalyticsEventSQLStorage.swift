@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 import SQLite
 
 /// This is a temporary placeholder class to interface with the SQLiteLocalStorageAdapter
@@ -101,9 +101,11 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(deleteStatement, [])
     }
 
-    func updateEvents(ofType eventType: String,
-                      withSessionId sessionId: PinpointSession.SessionId,
-                      setAttributes attributes: [String: String]) throws {
+    func updateEvents(
+        ofType eventType: String,
+        withSessionId sessionId: PinpointSession.SessionId,
+        setAttributes attributes: [String: String]
+    ) throws {
         let updateStatement = """
         UPDATE Event
         SET attributes = ?
@@ -113,9 +115,10 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(updateStatement, [
             PinpointEvent.archiveEventAttributes(attributes),
             sessionId,
-            eventType])
+            eventType
+        ])
     }
-    
+
     func updateSession(_ session: PinpointSession) throws {
         let updateStatement = """
         UPDATE Event
@@ -226,24 +229,24 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     }
 
     /// Check the disk usage limit of the local database.
-    /// If database is over the limit then delete all dirty events and oldest event 
+    /// If database is over the limit then delete all dirty events and oldest event
     /// - Parameter limit: the size limit of the database in Byte unit
     func checkDiskSize(limit: Byte) throws {
         if dbAdapter.diskBytesUsed > limit {
-            try self.deleteDirtyEvents()
+            try deleteDirtyEvents()
         }
 
         if dbAdapter.diskBytesUsed > limit {
-            try self.deleteOldestEvent()
+            try deleteOldestEvent()
         }
     }
 }
 
 extension AnalyticsEventSQLStorage: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

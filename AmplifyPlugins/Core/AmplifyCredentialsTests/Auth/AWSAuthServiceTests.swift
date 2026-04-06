@@ -7,10 +7,10 @@
 
 import XCTest
 
+import AWSClientRuntime
 @testable import Amplify
 @testable import AWSPluginsCore
 @testable import InternalAmplifyCredentials
-import AWSClientRuntime
 
 class AWSAuthServiceTests: XCTestCase {
 
@@ -166,7 +166,8 @@ class AWSAuthServiceTests: XCTestCase {
             sessionToken: "somesession",
             accessKeyId: "accessKeyId",
             secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(100))
+            expiration: Date().addingTimeInterval(100)
+        )
         let sdkCredentials = try credentials.toAWSSDKCredentials()
         XCTAssertNotNil(sdkCredentials)
     }
@@ -180,7 +181,8 @@ class AWSAuthServiceTests: XCTestCase {
             sessionToken: "somesession",
             accessKeyId: "accessKeyId",
             secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(-100))
+            expiration: Date().addingTimeInterval(-100)
+        )
         let sdkCredentials = try credentials.toAWSSDKCredentials()
         XCTAssertNotNil(sdkCredentials)
     }

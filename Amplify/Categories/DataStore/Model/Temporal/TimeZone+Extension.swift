@@ -10,7 +10,7 @@ import Foundation
 extension TimeZone {
 
     @usableFromInline
-    internal init?(iso8601DateString: String) {
+    init?(iso8601DateString: String) {
         switch ISO8601TimeZonePart.from(iso8601DateString: iso8601DateString) {
         case .some(.utc):
             self.init(abbreviation: "UTC")

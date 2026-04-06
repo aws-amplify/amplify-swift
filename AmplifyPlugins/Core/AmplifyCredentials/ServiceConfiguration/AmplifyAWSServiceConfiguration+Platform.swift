@@ -7,15 +7,15 @@
 
 import Foundation
 
-extension AmplifyAWSServiceConfiguration {
+public extension AmplifyAWSServiceConfiguration {
 
-    static var platformMapping: [Platform: String] = [:]
+    internal static var platformMapping: [Platform: String] = [:]
 
-    public static func addUserAgentPlatform(_ platform: Platform, version: String) {
+    static func addUserAgentPlatform(_ platform: Platform, version: String) {
         platformMapping[platform] = version
     }
 
-    public enum Platform: String {
+    enum Platform: String {
         case flutter = "amplify-flutter"
     }
 }

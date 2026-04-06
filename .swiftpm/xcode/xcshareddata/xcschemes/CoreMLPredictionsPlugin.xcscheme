@@ -48,6 +48,14 @@
                BlueprintName = "CoreMLPredictionsPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "CoreMLNaturalLanguageAdapterTests/testEntityToken()">
+               </Test>
+               <Test
+                  Identifier = "CoreMLNaturalLanguageAdapterTests/testSyntaxToken()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

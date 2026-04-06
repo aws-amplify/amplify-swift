@@ -6,12 +6,12 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension Post {
+public extension Post {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case content
@@ -23,10 +23,10 @@ extension Post {
     case comments
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let post = Post.keys
 
     model.listPluralName = "Posts"
@@ -45,9 +45,9 @@ extension Post {
     )
   }
 
-  public class Path : ModelPath<Post> {}
+  class Path: ModelPath<Post> {}
 
-  public static var rootPath: PropertyContainerPath? { Path() }
+  static var rootPath: PropertyContainerPath? { Path() }
 
 }
 

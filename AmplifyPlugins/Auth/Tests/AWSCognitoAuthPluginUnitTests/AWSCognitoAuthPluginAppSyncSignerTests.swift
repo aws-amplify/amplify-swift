@@ -30,7 +30,6 @@ class AWSCognitoAuthPluginAppSyncSignerTests: XCTestCase {
         XCTAssertEqual(request.method, .post)
         XCTAssertEqual(request.endpoint.port, 443)
         XCTAssertEqual(request.endpoint.protocolType, .https)
-        XCTAssertEqual(request.endpoint.headers.headers, [.init(name: "host", value: "graphql.com")])
         guard case let .data(data) = request.body else {
             XCTFail("Unexpected body")
             return

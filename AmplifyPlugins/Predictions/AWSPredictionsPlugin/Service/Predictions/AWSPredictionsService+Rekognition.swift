@@ -40,7 +40,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             } catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
             }
-
         case .all:
             return try await detectAllLabels(image: imageData)
         default:

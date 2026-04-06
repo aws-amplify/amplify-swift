@@ -30,7 +30,7 @@ extension Temporal.Date: Persistable {}
 extension Temporal.DateTime: Persistable {}
 extension Temporal.Time: Persistable {}
 
-struct PersistableHelper {
+enum PersistableHelper {
 
     /// Polymorphic utility that allows two persistable references to be checked
     /// for equality regardless of their concrete type.
@@ -46,7 +46,7 @@ struct PersistableHelper {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public static func isEqual(_ lhs: Persistable?, _ rhs: Persistable?) -> Bool {
+    static func isEqual(_ lhs: Persistable?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
@@ -77,7 +77,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
-    public static func isEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
+    static func isEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
@@ -112,7 +112,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
-    public static func isLessOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
+    static func isLessOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
@@ -146,7 +146,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
-    public static func isLessThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
+    static func isLessThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
         }
@@ -180,7 +180,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
-    public static func isGreaterOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
+    static func isGreaterOrEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true
         }
@@ -214,7 +214,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
-    public static func isGreaterThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
+    static func isGreaterThan(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return false
         }
@@ -247,7 +247,7 @@ struct PersistableHelper {
         }
     }
 
-    public static func isBetween(_ start: Persistable, _ end: Persistable, _ value: Any?) -> Bool {
+    static func isBetween(_ start: Persistable, _ end: Persistable, _ value: Any?) -> Bool {
         if value == nil {
             return false
         }

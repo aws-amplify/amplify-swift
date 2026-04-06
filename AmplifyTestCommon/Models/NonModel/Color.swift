@@ -6,7 +6,7 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
 public struct Color: Embeddable {
@@ -16,21 +16,23 @@ public struct Color: Embeddable {
   var blue: Int
 }
 
-extension Color {
-    public enum CodingKeys: CodingKey {
+public extension Color {
+    enum CodingKeys: CodingKey {
         case name
         case red
         case green
         case blue
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
-    public static let schema = defineSchema { embedded in
+    static let schema = defineSchema { embedded in
         let color = Color.keys
-        embedded.fields(.field(color.name, is: .required, ofType: .string),
-                       .field(color.red, is: .required, ofType: .int),
-                       .field(color.green, is: .required, ofType: .int),
-                       .field(color.blue, is: .required, ofType: .int))
+        embedded.fields(
+            .field(color.name, is: .required, ofType: .string),
+            .field(color.red, is: .required, ofType: .int),
+            .field(color.green, is: .required, ofType: .int),
+            .field(color.blue, is: .required, ofType: .int)
+        )
     }
 }

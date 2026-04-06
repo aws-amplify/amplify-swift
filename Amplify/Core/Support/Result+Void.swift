@@ -5,6 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Result where Success == Void {
-    public static var successfulVoid: Result<Void, Failure> { .success(()) }
+public extension Result where Success == Void {
+    static var successfulVoid: Result<Void, Failure> { .success(()) }
 }

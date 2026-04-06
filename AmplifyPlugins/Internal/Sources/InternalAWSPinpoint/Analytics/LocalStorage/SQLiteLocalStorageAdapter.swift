@@ -23,15 +23,19 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     ///     - prefixPath: A prefix to be used for the database path. Defaults to none.
     ///     - databaseName: The database name
     ///     - fileManager: A FileManagerBehaviour instance to interact with the disk. Defaults to FileManager.default
-    init(prefixPath: String = "",
-         databaseName: String,
-         fileManager: FileManagerBehaviour = FileManager.default) throws {
+    init(
+        prefixPath: String = "",
+        databaseName: String,
+        fileManager: FileManagerBehaviour = FileManager.default
+    ) throws {
         let dbDirectoryPath = try Self.getTmpPath()
             .appendingPathComponent(prefixPath)
         var dbFilePath = dbDirectoryPath.appendingPathComponent(databaseName)
         if !fileManager.fileExists(atPath: dbDirectoryPath.path) {
-            try fileManager.createDirectory(atPath: dbDirectoryPath.path,
-                                            withIntermediateDirectories: true)
+            try fileManager.createDirectory(
+                atPath: dbDirectoryPath.path,
+                withIntermediateDirectories: true
+            )
         }
 
         let connection: Connection
@@ -77,7 +81,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     /// Create a SQL table
     /// - Parameter statement: SQL statement to create a table
     func createTable(_ statement: String) throws {
-        guard let connection = connection else {
+        guard let connection else {
             throw LocalStorageError.missingConnection
         }
 
@@ -94,7 +98,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     ///   - bindings: A collection of SQL bindings to prepare with the query statement
     /// - Returns: A SQL statement result from the query
     func executeQuery(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
-        guard let connection = connection else {
+        guard let connection else {
             throw LocalStorageError.missingConnection
         }
 
@@ -108,11 +112,11 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 }
 
 extension SQLiteLocalStorageAdapter: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

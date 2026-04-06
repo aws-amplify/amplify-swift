@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ForgotPasswordInput: Decodable {
+extension ForgotPasswordInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case username
         case clientId
@@ -24,7 +24,8 @@ extension ForgotPasswordInput: Decodable {
         self.init(
             clientId: clientId,
             clientMetadata: clientMetadata,
-            username: username)
+            username: username
+        )
 
     }
 }

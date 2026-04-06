@@ -26,15 +26,18 @@ public struct TOTPSetupDetails {
     /// (for example, if the parameter string contains characters that are illegal in a URL, or is an empty string).
     public func getSetupURI(
         appName: String,
-        accountName: String? = nil) throws -> URL {
+        accountName: String? = nil
+    ) throws -> URL {
             guard let URL = URL(
-                string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)") else {
+                string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)")
+            else {
 
                 throw AuthError.validation(
                     "appName or accountName",
                     "Invalid Parameters. Cannot form URL from the supplied appName or accountName",
                     "Please make sure that the supplied parameters don't contain any characters that are illegal in a URL or is an empty String",
-                    nil)
+                    nil
+                )
             }
             return URL
         }
@@ -42,3 +45,5 @@ public struct TOTPSetupDetails {
 }
 
 extension TOTPSetupDetails: Equatable { }
+
+extension TOTPSetupDetails: Sendable { }

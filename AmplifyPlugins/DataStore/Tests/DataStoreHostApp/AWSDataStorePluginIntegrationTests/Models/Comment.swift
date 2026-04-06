@@ -15,10 +15,12 @@ public struct Comment: Model {
   public var createdAt: Temporal.DateTime
   public var post: Post
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       content: String,
       createdAt: Temporal.DateTime,
-      post: Post) {
+      post: Post
+  ) {
       self.id = id
       self.content = content
       self.createdAt = createdAt

@@ -29,8 +29,10 @@ class ModelSchemaGraphQLTests: XCTestCase {
     }
 
     func testGraphQLNameForWishWithPluralName() {
-        let wish = ModelSchema(name: "Wish",
-                               pluralName: "Wishes")
+        let wish = ModelSchema(
+            name: "Wish",
+            pluralName: "Wishes"
+        )
         XCTAssertEqual(wish.graphQLName(queryType: .get), "getWish")
         XCTAssertEqual(wish.graphQLName(queryType: .list), "listWishes")
         XCTAssertEqual(wish.graphQLName(queryType: .sync), "syncWishes")
@@ -45,9 +47,11 @@ class ModelSchemaGraphQLTests: XCTestCase {
     }
 
     func testGraphQLNameForWishWithListPluralName() {
-        let wish = ModelSchema(name: "Wish",
-                               listPluralName: "Wishes",
-                               syncPluralName: "Wishes")
+        let wish = ModelSchema(
+            name: "Wish",
+            listPluralName: "Wishes",
+            syncPluralName: "Wishes"
+        )
         XCTAssertEqual(wish.graphQLName(queryType: .get), "getWish")
         XCTAssertEqual(wish.graphQLName(queryType: .list), "listWishes")
         XCTAssertEqual(wish.graphQLName(queryType: .sync), "syncWishes")

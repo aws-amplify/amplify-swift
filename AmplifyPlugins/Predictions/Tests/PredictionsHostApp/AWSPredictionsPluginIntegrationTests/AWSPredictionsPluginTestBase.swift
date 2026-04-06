@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-@testable import AWSPredictionsPlugin
 import AWSCognitoAuthPlugin
-@testable import Amplify
 import Foundation
+import XCTest
+@testable import Amplify
+@testable import AWSPredictionsPlugin
 
 class AWSPredictionsPluginTestBase: XCTestCase {
 

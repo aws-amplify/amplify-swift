@@ -6,16 +6,16 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 extension StorageEngine {
 
     func startSync() -> Result<SyncEngineInitResult, DataStoreError> {
         let (result, syncEngine) = initalizeSyncEngine()
 
-        if let syncEngine = syncEngine, !syncEngine.isSyncing() {
+        if let syncEngine, !syncEngine.isSyncing() {
             guard let api = tryGetAPIPlugin() else {
                log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
                return .failure(.configuration(
@@ -25,21 +25,12 @@ extension StorageEngine {
                ))
             }
 
-            guard let apiGraphQL = api as? APICategoryGraphQLBehavior else {
-                log.info("Unable to find GraphQL API plugin for syncEngine. syncEngine will not be started")
-                return .failure(.configuration(
-                    "Unable to find suitable GraphQL API plugin for syncEngine. syncEngine will not be started",
-                    "Ensure the API category has been setup and configured for your project",
-                    nil
-                ))
-            }
-
             let authPluginRequired = StorageEngine.requiresAuthPlugin(
                 api,
                 authModeStrategy: dataStoreConfiguration.authModeStrategyType
             )
             guard authPluginRequired else {
-                syncEngine.start(api: apiGraphQL, auth: nil)
+                syncEngine.start(api: api, auth: nil)
                 return .success(.successfullyInitialized)
             }
 
@@ -52,23 +43,23 @@ extension StorageEngine {
                 ))
             }
 
-            syncEngine.start(api: apiGraphQL, auth: auth)
+            syncEngine.start(api: api, auth: auth)
         }
 
         return .success(result)
     }
 
     private func initalizeSyncEngine() -> (SyncEngineInitResult, RemoteSyncEngineBehavior?) {
-        if let syncEngine = syncEngine {
+        if let syncEngine {
             return (.alreadyInitialized, syncEngine)
         } else {
             if isSyncEnabled, syncEngine == nil {
-                self.syncEngine = try? RemoteSyncEngine(
+                syncEngine = try? RemoteSyncEngine(
                     storageAdapter: storageAdapter,
                     dataStoreConfiguration: dataStoreConfiguration
                 )
 
-                self.syncEngineSink = syncEngine?.publisher.sink(
+                syncEngineSink = syncEngine?.publisher.sink(
                     receiveCompletion: onReceiveCompletion(receiveCompletion:),
                     receiveValue: onReceive(receiveValue:)
                 )
@@ -107,9 +98,11 @@ extension StorageEngine {
             guard schema.isSyncable  else {
                 return false
             }
-            return requiresAuthPlugin(apiPlugin, 
-                                      authRules: schema.authRules,
-                                      authModeStrategy: authModeStrategy)
+            return requiresAuthPlugin(
+                apiPlugin,
+                authRules: schema.authRules,
+                authModeStrategy: authModeStrategy
+            )
         }
 
         return modelsRequireAuthPlugin
@@ -175,7 +168,7 @@ extension StorageEngine {
     }
 }
 
-internal extension AuthRules {
+extension AuthRules {
     /// Convenience method to check whether we need Auth plugin
     /// - Returns: true  If **any** of the rules uses a provider that requires the Auth plugin, `nil` otherwise
     var requireAuthPlugin: Bool? {
@@ -191,9 +184,9 @@ internal extension AuthRules {
     }
 }
 
-internal extension AuthRule {
+extension AuthRule {
     var requiresAuthPlugin: Bool? {
-        guard let provider = self.provider else {
+        guard let provider else {
             return nil
         }
 

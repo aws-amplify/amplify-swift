@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSLocationGeoPlugin
+import XCTest
 
 // swiftlint:disable:next type_name
 class AWSLocationGeoPluginAmplifyVersionableTests: XCTestCase {

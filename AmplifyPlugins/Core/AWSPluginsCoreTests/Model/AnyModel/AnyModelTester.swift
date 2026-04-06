@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@preconcurrency import Amplify
 import AWSPluginsCore
 import Foundation
 
@@ -24,17 +24,17 @@ struct AnyModelTester: Model {
 extension AnyModelTester {
     // MARK: - CodingKeys
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case stringProperty
         case intProperty
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { definition in
+    static let schema = defineSchema { definition in
         let anyModel = AnyModelTester.keys
 
         definition.fields(

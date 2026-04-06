@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSS3
+import XCTest
 @testable import Amplify
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
 @testable import AWSS3StoragePlugin
-import AWSS3
-import XCTest
 
 class DefaultStorageMultipartUploadClientTests: XCTestCase {
     private var defaultClient: DefaultStorageMultipartUploadClient!
@@ -155,7 +155,8 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
                 uploadFile: .init(
                     fileURL: FileManager.default.temporaryDirectory.appendingPathComponent("noFile.txt"),
                     temporaryFileCreated: false,
-                    size: 1024),
+                    size: 1_024
+                ),
                 partSize: .default,
                 parts: [
                     .pending(bytes: 10),
@@ -180,7 +181,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// When: serviceProxy is set to nil and uploadPart is invoked
     /// Then: A fatal error is thrown
     func testUploadPart_withoutServiceProxy_shouldThrowFatalError() throws {
-        self.serviceProxy = nil
+        serviceProxy = nil
         try XCTAssertThrowFatalError {
             try? self.client.uploadPart(
                 partNumber: 1,
@@ -324,7 +325,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Then: The tasks are unregistered
     func testCancelUploadTasks_shouldSucceed() async throws {
         let cancelExpectation = expectation(description: "Cancel Upload Tasks")
-        client.cancelUploadTasks(taskIdentifiers: [0, 1,2], done: {
+        client.cancelUploadTasks(taskIdentifiers: [0, 1, 2], done: {
             cancelExpectation.fulfill()
         })
 
@@ -360,7 +361,7 @@ private class MockStorageServiceProxy: StorageServiceProxy {
     var awsS3: AWSS3Behavior!
     var urlSession = URLSession.shared
     var userAgent: String = ""
-    var urlRequestDelegate: URLRequestDelegate? = nil
+    var urlRequestDelegate: URLRequestDelegate?
 
     init(awsS3: AWSS3Behavior) {
         self.awsS3 = awsS3
@@ -392,8 +393,8 @@ private class MockAWSS3Behavior: AWSS3Behavior {
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {}
 
     var createMultipartUploadCount = 0
-    var createMultipartUploadResult: Result<AWSS3CreateMultipartUploadResponse, StorageError>? = nil
-    var createMultipartUploadExpectation: XCTestExpectation? = nil
+    var createMultipartUploadResult: Result<AWSS3CreateMultipartUploadResponse, StorageError>?
+    var createMultipartUploadExpectation: XCTestExpectation?
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void) {
         createMultipartUploadCount += 1
         if let result = createMultipartUploadResult {
@@ -403,8 +404,8 @@ private class MockAWSS3Behavior: AWSS3Behavior {
     }
 
     var completeMultipartUploadCount = 0
-    var completeMultipartUploadResult: Result<AWSS3CompleteMultipartUploadResponse, StorageError>? = nil
-    var completeMultipartUploadExpectation: XCTestExpectation? = nil
+    var completeMultipartUploadResult: Result<AWSS3CompleteMultipartUploadResponse, StorageError>?
+    var completeMultipartUploadExpectation: XCTestExpectation?
     func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void) {
         completeMultipartUploadCount += 1
         if let result = completeMultipartUploadResult {
@@ -414,8 +415,8 @@ private class MockAWSS3Behavior: AWSS3Behavior {
     }
 
     var abortMultipartUploadCount = 0
-    var abortMultipartUploadResult: Result<Void, StorageError>? = nil
-    var abortMultipartUploadExpectation: XCTestExpectation? = nil
+    var abortMultipartUploadResult: Result<Void, StorageError>?
+    var abortMultipartUploadExpectation: XCTestExpectation?
     func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void) {
         abortMultipartUploadCount += 1
         if let result = abortMultipartUploadResult {
@@ -431,15 +432,15 @@ private class MockAWSS3Behavior: AWSS3Behavior {
 
 class MockStorageMultipartUploadSession: StorageMultipartUploadSession {
     var handleMultipartUploadCount = 0
-    var lastMultipartUploadEvent: StorageMultipartUploadEvent? = nil
+    var lastMultipartUploadEvent: StorageMultipartUploadEvent?
     override func handle(multipartUploadEvent: StorageMultipartUploadEvent) {
         handleMultipartUploadCount += 1
         lastMultipartUploadEvent = multipartUploadEvent
     }
 
     var handleUploadPartCount = 0
-    var lastUploadEvent: StorageUploadPartEvent? = nil
-    var handleUploadPartExpectation: XCTestExpectation? = nil
+    var lastUploadEvent: StorageUploadPartEvent?
+    var handleUploadPartExpectation: XCTestExpectation?
 
     override func handle(uploadPartEvent: StorageUploadPartEvent) {
         handleUploadPartCount += 1
@@ -448,8 +449,8 @@ class MockStorageMultipartUploadSession: StorageMultipartUploadSession {
     }
 
     var failCount = 0
-    var lastError: Error? = nil
-    var failExpectation: XCTestExpectation? = nil
+    var lastError: Error?
+    var failExpectation: XCTestExpectation?
     override func fail(error: Error) {
         failCount += 1
         lastError = error

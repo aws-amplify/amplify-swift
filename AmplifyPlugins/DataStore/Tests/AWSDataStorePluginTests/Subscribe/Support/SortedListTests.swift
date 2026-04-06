@@ -5,25 +5,29 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import XCTest
-import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable import AWSPluginsCore
 
 class SortedListTests: XCTestCase {
 
     func testSortedListSetAndReset() {
-        let posts = [createPost(id: "1", rating: 5.0),
-                     createPost(id: "2", rating: 5.0),
-                     createPost(id: "3", rating: 5.0),
-                     createPost(id: "4", rating: 5.0)]
+        let posts = [
+            createPost(id: "1", rating: 5.0),
+            createPost(id: "2", rating: 5.0),
+            createPost(id: "3", rating: 5.0),
+            createPost(id: "4", rating: 5.0)
+        ]
 
-        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
-                                    modelSchema: Post.schema)
+        let list = SortedList<Post>(
+            sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
+            modelSchema: Post.schema
+        )
         list.set(sortedModels: posts)
 
         assertPosts(list.sortedModels, expectedIds: ["1", "2", "3", "4"])
@@ -35,13 +39,17 @@ class SortedListTests: XCTestCase {
     }
 
     func testSortedListSingleSort() {
-        let posts = [createPost(id: "1"),
-                     createPost(id: "2"),
-                     createPost(id: "5"),
-                     createPost(id: "6")]
+        let posts = [
+            createPost(id: "1"),
+            createPost(id: "2"),
+            createPost(id: "5"),
+            createPost(id: "6")
+        ]
         let sortInput = [QuerySortBy.ascending(Post.keys.id).sortDescriptor]
-        let list = SortedList<Post>(sortInput: sortInput,
-                                    modelSchema: Post.schema)
+        let list = SortedList<Post>(
+            sortInput: sortInput,
+            modelSchema: Post.schema
+        )
 
         list.set(sortedModels: posts)
 
@@ -81,14 +89,20 @@ class SortedListTests: XCTestCase {
     }
 
     func testSortedListMultipleSort() {
-        let posts = [createPost(id: "1", rating: 5.0),
-                     createPost(id: "2", rating: 10.0),
-                     createPost(id: "6", rating: 10.0),
-                     createPost(id: "5", rating: 20.0)]
-        let sortInput = [QuerySortBy.ascending(Post.keys.rating).sortDescriptor,
-                         QuerySortBy.ascending(Post.keys.id).sortDescriptor]
-        let list = SortedList<Post>(sortInput: sortInput,
-                                    modelSchema: Post.schema)
+        let posts = [
+            createPost(id: "1", rating: 5.0),
+            createPost(id: "2", rating: 10.0),
+            createPost(id: "6", rating: 10.0),
+            createPost(id: "5", rating: 20.0)
+        ]
+        let sortInput = [
+            QuerySortBy.ascending(Post.keys.rating).sortDescriptor,
+            QuerySortBy.ascending(Post.keys.id).sortDescriptor
+        ]
+        let list = SortedList<Post>(
+            sortInput: sortInput,
+            modelSchema: Post.schema
+        )
         list.set(sortedModels: posts)
 
         // After id: "1", rating: 5.0
@@ -120,14 +134,18 @@ class SortedListTests: XCTestCase {
     }
 
     func testSortedListAllEqual() {
-        let posts = [createPost(id: "1", rating: 5.0),
-                     createPost(id: "2", rating: 5.0),
-                     createPost(id: "3", rating: 5.0),
-                     createPost(id: "4", rating: 5.0)]
+        let posts = [
+            createPost(id: "1", rating: 5.0),
+            createPost(id: "2", rating: 5.0),
+            createPost(id: "3", rating: 5.0),
+            createPost(id: "4", rating: 5.0)
+        ]
 
         let sortInput = [QuerySortBy.ascending(Post.keys.rating).sortDescriptor]
-        let list = SortedList<Post>(sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
-                                    modelSchema: Post.schema)
+        let list = SortedList<Post>(
+            sortInput: [QuerySortBy.ascending(Post.keys.rating).sortDescriptor],
+            modelSchema: Post.schema
+        )
         list.set(sortedModels: posts)
 
         // Since this is a binary search, the first index where the predicate returns `nil` is the middle index
@@ -149,19 +167,23 @@ class SortedListTests: XCTestCase {
         XCTAssertEqual(post.rating, rating)
     }
 
-    func createPost(id: String = UUID().uuidString,
-                    draft: Bool = false,
-                    rating: Double = 1.0,
-                    createdAt: Temporal.DateTime = .now(),
-                    status: PostStatus? = .draft) -> Post {
-        Post(id: id,
-             title: "A",
-             content: "content",
-             createdAt: createdAt,
-             updatedAt: .now(),
-             draft: draft,
-             rating: rating,
-             status: status,
-             comments: nil)
+    func createPost(
+        id: String = UUID().uuidString,
+        draft: Bool = false,
+        rating: Double = 1.0,
+        createdAt: Temporal.DateTime = .now(),
+        status: PostStatus? = .draft
+    ) -> Post {
+        Post(
+            id: id,
+            title: "A",
+            content: "content",
+            createdAt: createdAt,
+            updatedAt: .now(),
+            draft: draft,
+            rating: rating,
+            status: status,
+            comments: nil
+        )
     }
 }

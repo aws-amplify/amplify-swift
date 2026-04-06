@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@preconcurrency import Amplify
 import AWSPolly
 
-extension Predictions.Voice {
+extension Predictions.Voice: @unchecked Sendable {
     public static let arabicFemaleZeina = Self(id: "Zeina")
     public static let chineseFemaleZhiyu = Self(id: "Zhiyu")
     public static let danishFemaleNaja = Self(id: "Naja")

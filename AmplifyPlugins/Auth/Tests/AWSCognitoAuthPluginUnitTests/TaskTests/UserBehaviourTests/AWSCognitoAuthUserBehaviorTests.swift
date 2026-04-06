@@ -7,10 +7,10 @@
 
 import Foundation
 
+import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
 
@@ -150,7 +150,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
-                    destination: "destination"))
+                    destination: "destination"
+                ))
         })
         let pluginOptions = AWSSendUserAttributeVerificationCodeOptions(metadata: ["key": "value"])
         let options = AuthSendUserAttributeVerificationCodeRequest.Options(pluginOptions: pluginOptions)
@@ -174,7 +175,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
-                    destination: "destination"))
+                    destination: "destination"
+                ))
         })
         let pluginOptions = AWSSendUserAttributeVerificationCodeOptions(metadata: ["key": "value"])
         let options = AuthSendUserAttributeVerificationCodeRequest.Options(pluginOptions: pluginOptions)
@@ -195,7 +197,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
-                    destination: "destination"))
+                    destination: "destination"
+                ))
         })
         _ = try await plugin.sendVerificationCode(forUserAttributeKey: .email)
     }

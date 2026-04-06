@@ -18,15 +18,19 @@ extension HubCategory: HubCategoryBehavior {
         plugin.dispatch(to: channel, payload: payload)
     }
 
-    public func listen(to channel: HubChannel,
-                       eventName: HubPayloadEventName,
-                       listener: @escaping HubListener) -> UnsubscribeToken {
+    public func listen(
+        to channel: HubChannel,
+        eventName: HubPayloadEventName,
+        listener: @escaping HubListener
+    ) -> UnsubscribeToken {
         plugin.listen(to: channel, eventName: eventName, listener: listener)
     }
 
-    public func listen(to channel: HubChannel,
-                       isIncluded filter: HubFilter? = nil,
-                       listener: @escaping HubListener) -> UnsubscribeToken {
+    public func listen(
+        to channel: HubChannel,
+        isIncluded filter: HubFilter? = nil,
+        listener: @escaping HubListener
+    ) -> UnsubscribeToken {
         plugin.listen(to: channel, isIncluded: filter, listener: listener)
     }
 

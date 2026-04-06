@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// Struct encode and decode LogEntry 
+/// Struct encode and decode LogEntry
 struct LogEntryCodec {
 
-    private static let lineDelimiter = Data([0x0A]) /* '\n' */
+    private static let lineDelimiter = Data([0x0a]) /* '\n' */
 
     enum DecodingError: Error {
         case stringNotUtf8(String)

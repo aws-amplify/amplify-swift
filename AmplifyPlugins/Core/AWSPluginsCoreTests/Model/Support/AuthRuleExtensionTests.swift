@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSPluginsCore
+import XCTest
 
 class AuthRuleExtensionTests: XCTestCase {
     func testAuthRuleProviderToAWSAuth() throws {

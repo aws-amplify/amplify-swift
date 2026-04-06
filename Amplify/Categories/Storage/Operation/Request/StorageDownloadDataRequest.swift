@@ -17,7 +17,7 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     ///
     /// - Tag: StorageDownloadFileRequest.path
     public let path: (any StoragePath)?
-    
+
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadDataRequest.key
@@ -128,3 +128,5 @@ public extension StorageDownloadDataRequest {
         }
     }
 }
+
+extension StorageDownloadDataRequest.Options: @unchecked Sendable { }

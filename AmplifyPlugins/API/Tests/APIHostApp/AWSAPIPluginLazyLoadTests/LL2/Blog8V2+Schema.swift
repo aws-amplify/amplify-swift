@@ -1,10 +1,17 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
-extension Blog8V2 {
-  // MARK: - CodingKeys 
-   public enum CodingKeys: String, ModelKey {
+public extension Blog8V2 {
+  // MARK: - CodingKeys
+   enum CodingKeys: String, ModelKey {
     case id
     case name
     case customs
@@ -13,19 +20,19 @@ extension Blog8V2 {
     case createdAt
     case updatedAt
   }
-  
-  public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
-  public static let schema = defineSchema { model in
+
+  static let keys = CodingKeys.self
+  //  MARK: - ModelSchema
+
+  static let schema = defineSchema { model in
     let blog8V2 = Blog8V2.keys
-    
+
     model.pluralName = "Blog8V2s"
-    
+
     model.attributes(
       .primaryKey(fields: [blog8V2.id])
     )
-    
+
     model.fields(
       .field(blog8V2.id, is: .required, ofType: .string),
       .field(blog8V2.name, is: .required, ofType: .string),
@@ -36,10 +43,10 @@ extension Blog8V2 {
       .field(blog8V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
-    public class Path: ModelPath<Blog8V2> { }
-    
-    public static var rootPath: PropertyContainerPath? { Path() }
+
+    class Path: ModelPath<Blog8V2> { }
+
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Blog8V2: ModelIdentifiable {

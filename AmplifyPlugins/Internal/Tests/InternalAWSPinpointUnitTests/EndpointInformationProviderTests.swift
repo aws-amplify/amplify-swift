@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class EndpointInformationProviderTests: XCTestCase {
 
@@ -21,7 +21,7 @@ class EndpointInformationProviderTests: XCTestCase {
 
     /// Given: DefaultEndpointInformationProvider
     /// When: endpointInfo() is called
-    /// Then: endpoint information returned contains platform name/version, app version, model, 
+    /// Then: endpoint information returned contains platform name/version, app version, model,
     func testGetEndpointInformationDetails() async {
         let provider = DefaultEndpointInformationProvider()
         let endpointInfo = await provider.endpointInfo()
@@ -46,6 +46,9 @@ class EndpointInformationProviderTests: XCTestCase {
         #elseif os(watchOS)
         XCTAssertEqual(platformName, "watchOS")
         XCTAssertEqual(model, "Apple Watch")
+        #elseif os(visionOS)
+        XCTAssertEqual(platformName, "visionOS")
+        XCTAssertEqual(model, "Apple Vision Pro")
         #endif
     }
 }

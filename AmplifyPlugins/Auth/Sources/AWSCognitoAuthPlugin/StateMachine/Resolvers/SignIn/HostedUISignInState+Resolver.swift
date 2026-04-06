@@ -16,7 +16,8 @@ extension HostedUISignInState {
 
         func resolve(
             oldState: HostedUISignInState,
-            byApplying event: StateMachineEvent)
+            byApplying event: StateMachineEvent
+        )
         -> StateResolution<HostedUISignInState> {
 
             switch oldState {
@@ -47,8 +48,10 @@ extension HostedUISignInState {
                     return .init(newState: .error(error), actions: [action])
                 }
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
-                    return .init(newState: .done,
-                                 actions: [SignInComplete(signedInData: signedInData)])
+                    return .init(
+                        newState: .done,
+                        actions: [SignInComplete(signedInData: signedInData)]
+                    )
                 }
 
                 return .from(oldState)
@@ -58,7 +61,6 @@ extension HostedUISignInState {
 
             case .error:
                 return .from(oldState)
-
             }
 
         }

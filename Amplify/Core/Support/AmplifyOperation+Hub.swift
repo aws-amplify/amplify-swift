@@ -33,7 +33,8 @@ public extension HubCategory {
     func listenForInProcess<Request: AmplifyOperationRequest, InProcess, Success, Failure: AmplifyError>(
         to operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>,
         inProcessListener: @escaping AmplifyInProcessReportingOperation<
-        Request, InProcess, Success, Failure>.InProcessListener
+            Request, InProcess, Success, Failure
+        >.InProcessListener
     ) -> UnsubscribeToken {
         return operation.subscribe(inProcessListener: inProcessListener)
     }

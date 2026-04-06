@@ -107,7 +107,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         let queriedComments = try await Amplify.DataStore.query(Comment4.self, where: predicate)
         XCTAssertEqual(queriedComments.count, 1)
     }
-    
+
     func savePost(id: String = UUID().uuidString, title: String) async throws -> Post4 {
         let post = Post4(id: id, title: title)
         return try await Amplify.DataStore.save(post)
@@ -120,8 +120,10 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 }
 
 extension Post4: Equatable {
-    public static func == (lhs: Post4,
-                           rhs: Post4) -> Bool {
+    public static func == (
+        lhs: Post4,
+        rhs: Post4
+    ) -> Bool {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }

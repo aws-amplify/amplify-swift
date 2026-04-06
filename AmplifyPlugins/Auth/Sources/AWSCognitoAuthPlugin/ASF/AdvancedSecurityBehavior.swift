@@ -9,35 +9,37 @@ import Foundation
 
 protocol AdvancedSecurityBehavior {
 
-    func userContextData(for username: String,
-                         deviceInfo: ASFDeviceBehavior,
-                         appInfo: ASFAppInfoBehavior,
-                         configuration: UserPoolConfigurationData) throws -> String
+    func userContextData(
+        for username: String,
+        deviceInfo: ASFDeviceBehavior,
+        appInfo: ASFAppInfoBehavior,
+        configuration: UserPoolConfigurationData
+    ) async throws -> String
 }
 
 protocol ASFDeviceBehavior: Sendable {
 
     var id: String { get }
 
-    var model: String { get }
+    var model: String { get async }
 
-    var name: String { get }
+    var name: String { get async }
 
-    var platform: String { get }
+    var platform: String { get async }
 
-    var version: String { get }
+    var version: String { get async }
 
-    var thirdPartyId: String? { get }
+    var thirdPartyId: String? { get async }
 
-    var height: String { get }
+    var height: String { get async }
 
-    var width: String { get }
+    var width: String { get async }
 
-    var locale: String { get }
+    var locale: String { get async }
 
-    var type: String { get }
+    var type: String { get async }
 
-    func deviceInfo() -> String
+    func deviceInfo() async -> String
 }
 
 protocol ASFAppInfoBehavior {

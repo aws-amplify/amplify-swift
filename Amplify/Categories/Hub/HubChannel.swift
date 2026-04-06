@@ -33,7 +33,7 @@ public enum HubChannel {
     case custom(String)
 
     /// Convenience property to return an array of all non-`custom` channels
-    static var amplifyChannels: [HubChannel] = {
+    nonisolated(unsafe) static var amplifyChannels: [HubChannel] = {
         let categoryChannels = CategoryType
             .allCases
             .sorted { $0.displayName < $1.displayName }
@@ -75,8 +75,8 @@ extension HubChannel: Equatable {
     }
 }
 
-extension HubChannel {
-    public init(from categoryType: CategoryType) {
+public extension HubChannel {
+    init(from categoryType: CategoryType) {
         switch categoryType {
         case .analytics:
             self = .analytics

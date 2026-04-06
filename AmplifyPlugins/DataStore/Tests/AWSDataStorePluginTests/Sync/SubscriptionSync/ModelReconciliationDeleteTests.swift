@@ -10,8 +10,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
+@testable import AWSPluginsCore
 
 typealias MutationSyncInProcessListener = GraphQLSubscriptionOperation<MutationSync<AnyModel>>.InProcessListener
 
@@ -31,11 +32,13 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         let model = MockSynced(id: "id-1")
-        let localSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                     modelName: MockSynced.modelName,
-                                                     deleted: true,
-                                                     lastChangedAt: Date().unixSeconds,
-                                                     version: 2)
+        let localSyncMetadata = MutationSyncMetadata(
+            modelId: model.id,
+            modelName: MockSynced.modelName,
+            deleted: true,
+            lastChangedAt: Date().unixSeconds,
+            version: 2
+        )
         let localMetadataSaved = expectation(description: "Local metadata saved")
         storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
         await fulfillment(of: [localMetadataSaved], timeout: 1)
@@ -67,11 +70,13 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: MockSynced.modelName,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 1)
+        let remoteSyncMetadata = MutationSyncMetadata(
+            modelId: model.id,
+            modelName: MockSynced.modelName,
+            deleted: false,
+            lastChangedAt: Date().unixSeconds,
+            version: 1
+        )
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         asyncSequence.send(.data(.success(remoteMutationSync)))
 
@@ -79,8 +84,10 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         // we have to brute-force this wait
         try await Task.sleep(seconds: 1.0)
 
-        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
-                                                                                 modelName: MockSynced.modelName)
+        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(
+            for: model.id,
+            modelName: MockSynced.modelName
+        )
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
@@ -97,8 +104,9 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     func mockRemoteSyncEngineFor_testUpdateAfterDelete() {
         remoteSyncEngineSink = syncEngine
             .publisher
-            .sink(receiveCompletion: {_ in },
-                  receiveValue: { (event: RemoteSyncEngineEvent) in
+            .sink(
+                receiveCompletion: {_ in },
+                receiveValue: { (event: RemoteSyncEngineEvent) in
                     switch event {
                     case .mutationsPaused:
                         // Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
@@ -120,7 +128,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                     default:
                         break
                     }
-            })
+            }
+            )
     }
 
     /// - Given:
@@ -155,7 +164,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try await startAmplifyAndWaitForSync()
         }
-        
+
         await fulfillment(of: [expectationListener], timeout: 1)
         guard let asyncSequence else {
             XCTFail("Incoming responder didn't set up listener")
@@ -163,8 +172,10 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         let syncReceivedNotification = expectation(description: "Received 'syncReceived' update from Hub")
-        let syncReceivedToken = Amplify.Hub.listen(to: .dataStore,
-                                                   eventName: HubPayload.EventName.DataStore.syncReceived) { _ in
+        let syncReceivedToken = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { _ in
             syncReceivedNotification.fulfill()
         }
         guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedToken, timeout: 5.0) else {
@@ -174,17 +185,21 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         let model = MockSynced(id: "id-1")
         let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: MockSynced.modelName,
-                                                      deleted: true,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
+        let remoteSyncMetadata = MutationSyncMetadata(
+            modelId: model.id,
+            modelName: MockSynced.modelName,
+            deleted: true,
+            lastChangedAt: Date().unixSeconds,
+            version: 2
+        )
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         asyncSequence.send(.data(.success(remoteMutationSync)))
 
         await fulfillment(of: [syncReceivedNotification], timeout: 1)
-        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
-                                                                                 modelName: MockSynced.modelName)
+        let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(
+            for: model.id,
+            modelName: MockSynced.modelName
+        )
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
@@ -203,8 +218,9 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     func mockRemoteSyncEngineFor_testDeleteWithNoLocalModel() {
         remoteSyncEngineSink = syncEngine
             .publisher
-            .sink(receiveCompletion: {_ in },
-                  receiveValue: { (event: RemoteSyncEngineEvent) in
+            .sink(
+                receiveCompletion: {_ in },
+                receiveValue: { (event: RemoteSyncEngineEvent) in
                     switch event {
                     case .mutationsPaused:
                         // Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
@@ -242,6 +258,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                     default:
                         break
                     }
-            })
+            }
+            )
     }
 }

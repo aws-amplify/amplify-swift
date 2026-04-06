@@ -7,8 +7,8 @@
 
 import XCTest
 
-@testable import AWSS3StoragePlugin
 @testable import Amplify
+@testable import AWSS3StoragePlugin
 
 class StorageMultipartUploadSessionTests: XCTestCase {
     enum Failure: Error {
@@ -142,7 +142,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         }
 
         let client = MockMultipartUploadClient() // creates an UploadFile for the mock process
-        client.didCompletePartUpload = { (_, partNumber, _, _) in
+        client.didCompletePartUpload = { _, partNumber, _, _ in
             if partNumber == 5 {
                 closureSession?.cancel()
                 XCTAssertTrue(closureSession?.isAborted ?? false)
@@ -191,7 +191,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         }
 
         let client = MockMultipartUploadClient() // creates an UploadFile for the mock process
-        client.didTransferBytesForPartUpload = { (_, partNumber, bytesTransferred) in
+        client.didTransferBytesForPartUpload = { _, partNumber, bytesTransferred in
             if pauseCount == 0, partNumber > 5, bytesTransferred > 0 {
                 print("pausing on \(partNumber)")
                 pauseCount += 1

@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
@@ -32,9 +32,11 @@ public struct OIDCGroupPost: Model {
   public var title: String
   public var owner: String?
 
-  public init(id: String = UUID().uuidString,
-              title: String,
-              owner: String? = nil) {
+  public init(
+      id: String = UUID().uuidString,
+      title: String,
+      owner: String? = nil
+  ) {
       self.id = id
       self.title = title
       self.owner = owner
@@ -52,23 +54,27 @@ public struct OIDCGroupPost: Model {
       let oIDCGroupPost = OIDCGroupPost.keys
 
       model.authRules = [
-        rule(allow: .owner,
-             ownerField: "owner",
-             identityClaim: "sub",
-             operations: [.create, .update, .delete, .read]),
-        rule(allow: .groups,
-             groupClaim: "https://myapp.com/claims/groups",
-             groups: ["Admins"],
-             operations: [.create, .update, .delete, .read])
+          rule(
+              allow: .owner,
+              ownerField: "owner",
+              identityClaim: "sub",
+              operations: [.create, .update, .delete, .read]
+          ),
+          rule(
+              allow: .groups,
+              groupClaim: "https://myapp.com/claims/groups",
+              groups: ["Admins"],
+              operations: [.create, .update, .delete, .read]
+          )
       ]
 
       model.listPluralName = "OIDCGroupPosts"
       model.syncPluralName = "OIDCGroupPosts"
 
       model.fields(
-        .id(),
-        .field(oIDCGroupPost.title, is: .required, ofType: .string),
-        .field(oIDCGroupPost.owner, is: .optional, ofType: .string)
+          .id(),
+          .field(oIDCGroupPost.title, is: .required, ofType: .string),
+          .field(oIDCGroupPost.owner, is: .optional, ofType: .string)
       )
       }
 }
@@ -83,10 +89,14 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
     }
 
     func testOnCreateSubscription_NoGroupInfoPassed() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -110,11 +120,15 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
     }
 
     func testOnCreateSubscription_InAdminsGroup() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://myapp.com/claims/groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://myapp.com/claims/groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -134,11 +148,15 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
     }
 
     func testOnCreateSubscription_InAdminsGroupAndAnother() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://myapp.com/claims/groups": ["Admins", "Users"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://myapp.com/claims/groups": ["Admins", "Users"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -158,11 +176,15 @@ class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
     }
 
     func testOnCreateSubscription_NotInAdminsGroup() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://myapp.com/claims/groups": ["Users"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://myapp.com/claims/groups": ["Users"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()

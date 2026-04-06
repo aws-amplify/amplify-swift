@@ -27,9 +27,11 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
         case .userPoolsAndIdentityPools(let userPoolData, _):
             let region = userPoolData.region
             let poolId = userPoolData.poolId
-            let loginsMapProvider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
-                                                             region: region,
-                                                             poolId: poolId)
+            let loginsMapProvider = CognitoUserPoolLoginsMap(
+                idToken: tokens.idToken,
+                region: region,
+                poolId: poolId
+            )
             event = .init(eventType: .fetchAuthenticatedIdentityID(loginsMapProvider))
         default:
             event = .init(eventType: .throwError(.noUserPool))
@@ -40,11 +42,11 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
 }
 
 extension InitializeFetchAuthSessionWithUserPool: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

@@ -98,8 +98,10 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
                                 guard case AnalyticsError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -260,8 +262,10 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Analytics.configure(using: categoryConfig)
-        XCTAssertThrowsError(try Amplify.Analytics.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.Analytics.configure(using: categoryConfig),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
@@ -337,8 +341,10 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+        XCTAssertThrowsError(
+            try Amplify.add(plugin: plugin),
+            "configure() an already configured plugin should throw"
+        ) { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

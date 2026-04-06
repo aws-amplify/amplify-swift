@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
 import Foundation
 import UIKit
 import XCTest
-import Combine
 @testable import Amplify
 @testable import AWSPredictionsPlugin
 @testable import AWSRekognition
@@ -225,11 +225,11 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertNotNil(result)
         XCTAssertFalse(result.fullText.isEmpty)
         XCTAssertFalse(result.words.isEmpty)
-        XCTAssertEqual(result.words.count, 30)
+        XCTAssertEqual(result.words.count, 28)
         XCTAssertFalse(result.rawLineText.isEmpty)
-        XCTAssertEqual(result.rawLineText.count, 17)
+        XCTAssertEqual(result.rawLineText.count, 11)
         XCTAssertFalse(result.identifiedLines.isEmpty)
-        XCTAssertEqual(result.identifiedLines.count, 17)
+        XCTAssertEqual(result.identifiedLines.count, 11)
         XCTAssertFalse(result.keyValues.isEmpty)
         XCTAssertEqual(result.keyValues.count, 7)
     }

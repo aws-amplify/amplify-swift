@@ -38,10 +38,14 @@ public extension AuthSignUpRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        public init(userAttributes: [AuthUserAttribute]? = nil,
-                    pluginOptions: Any? = nil) {
+        public init(
+            userAttributes: [AuthUserAttribute]? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.userAttributes = userAttributes
             self.pluginOptions = pluginOptions
         }
     }
 }
+
+extension AuthSignUpRequest.Options: @unchecked Sendable { }

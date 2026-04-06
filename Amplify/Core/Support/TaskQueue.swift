@@ -62,8 +62,8 @@ public class TaskQueue<Success> {
     }
 }
 
-extension TaskQueue {
-    public static var log: Logger {
+public extension TaskQueue {
+    static var log: Logger {
         Amplify.Logging.logger(forNamespace: String(describing: self))
     }
 }

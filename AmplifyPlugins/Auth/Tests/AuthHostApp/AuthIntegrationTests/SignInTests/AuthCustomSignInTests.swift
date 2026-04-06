@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
 
 class AuthCustomSignInTests: AWSAuthBaseTest {
 
@@ -58,8 +58,11 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let isSignedUp = try await AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail)
+        let isSignedUp = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(isSignedUp)
 
         var confirmationCodeForValidation = ""
@@ -120,15 +123,20 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let isSignedUp = try await AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail)
+        let isSignedUp = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
         XCTAssertTrue(isSignedUp)
 
         let option = AWSAuthSignInOptions(authFlowType: .customWithSRP)
         do {
-            let signInResult = try await Amplify.Auth.signIn(username: username,
-                                              password: password,
-                                              options: AuthSignInRequest.Options(pluginOptions: option))
+            let signInResult = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: AuthSignInRequest.Options(pluginOptions: option)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("Should successfully login")
@@ -138,9 +146,11 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
 
         let srpOption = AWSAuthSignInOptions(authFlowType: .userSRP)
         do {
-            let signInResult = try await Amplify.Auth.signIn(username: username,
-                                              password: password,
-                                              options: AuthSignInRequest.Options(pluginOptions: srpOption))
+            let signInResult = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: AuthSignInRequest.Options(pluginOptions: srpOption)
+            )
             XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
         } catch {
             XCTFail("SignIn with a valid username/password should not fail \(error)")
@@ -193,9 +203,11 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         var confirmationCodeForValidation = ""
         let option = AWSAuthSignInOptions(authFlowType: .custom)
         do {
-            let signInResult = try await Amplify.Auth.signIn(username: username,
-                                              password: password,
-                                              options: AuthSignInRequest.Options(pluginOptions: option))
+            let signInResult = try await Amplify.Auth.signIn(
+                username: username,
+                password: password,
+                options: AuthSignInRequest.Options(pluginOptions: option)
+            )
             if case .confirmSignInWithCustomChallenge(let additionalInfo) = signInResult.nextStep {
                 confirmationCodeForValidation = additionalInfo?["code"] ?? ""
             }

@@ -14,8 +14,8 @@ struct InfoRow: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(self.infoItem.displayName).bold()
-            Text(self.infoItem.information)
+            Text(infoItem.displayName).bold()
+            Text(infoItem.information)
         }
     }
 }

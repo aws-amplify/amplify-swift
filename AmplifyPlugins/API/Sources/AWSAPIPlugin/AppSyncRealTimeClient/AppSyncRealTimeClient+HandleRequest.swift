@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import Foundation
-import Combine
 import Amplify
+import Amplify
+import Combine
+@preconcurrency import Combine
+import Foundation
 
 extension AppSyncRealTimeClient {
     /**
@@ -31,7 +32,7 @@ extension AppSyncRealTimeClient {
             }
 
             // listen to response
-            self.subject
+            subject
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
                 .flatMap { Self.filterResponse(request: request, result: $0) }
                 .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
@@ -53,7 +54,7 @@ extension AppSyncRealTimeClient {
                         event: request,
                         url: self.endpoint
                     )
-                    let requestJSON = String(data: try Self.jsonEncoder.encode(decoratedRequest), encoding: .utf8)
+                    let requestJSON = try String(data: Self.jsonEncoder.encode(decoratedRequest), encoding: .utf8)
 
                     try await self.webSocketClient.write(message: requestJSON!)
                 } catch {
@@ -108,7 +109,6 @@ extension AppSyncRealTimeClient {
                     outputType: AppSyncRealTimeResponse.self,
                     failureType: AppSyncRealTimeRequest.Error.self
                 ).eraseToAnyPublisher()
-
             }
 
         case .failure:

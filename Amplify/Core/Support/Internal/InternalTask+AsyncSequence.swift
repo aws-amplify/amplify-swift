@@ -12,12 +12,12 @@ public extension InternalTaskAsyncSequence where Self: InternalTaskRunner {
     var sequence: AmplifyAsyncSequence<InProcess> {
         guard let sequence = context.sequence else {
             let task = Task { [weak self] in
-                guard let self = self else { return }
-                try await self.run()
+                guard let self else { return }
+                try await run()
             }
 
             let sequence = AmplifyAsyncSequence<InProcess>(parent: self, bufferingPolicy: context.bufferingPolicy)
-            self.context.task = task
+            context.task = task
             context.sequence = sequence
             return sequence
         }
@@ -42,10 +42,10 @@ public extension InternalTaskAsyncThrowingSequence where Self: InternalTaskRunne
             context.sequence = sequence
 
             let task = Task { [weak self] in
-                guard let self = self else { return }
-                try await self.run()
+                guard let self else { return }
+                try await run()
             }
-            self.context.task = task
+            context.task = task
 
             return sequence
         }

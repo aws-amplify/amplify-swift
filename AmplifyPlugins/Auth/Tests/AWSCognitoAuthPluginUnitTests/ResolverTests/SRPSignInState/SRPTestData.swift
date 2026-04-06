@@ -7,8 +7,8 @@
 
 import Foundation
 
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+@testable @preconcurrency import AWSCognitoAuthPlugin
 
 // MARK: - Test Data
 
@@ -28,43 +28,50 @@ extension InitiateAuthOutput {
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: nil,
-        session: nil)
+        session: nil
+    )
 
     static let validTestData = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: InitiateAuthOutput.validChalengeParams,
-        session: "session")
+        session: "session"
+    )
 
     static let invalidChallenge = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: [:],
-        session: nil)
+        session: nil
+    )
 
     static let invalidTestDataWithNoSalt = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSalt,
-        session: "session")
+        session: "session"
+    )
 
     static let invalidTestDataWithNoSecretBlock = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSecretBlock,
-        session: "session")
+        session: "session"
+    )
 
     static let invalidTestDataWithNoSRPB = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSRPB,
-        session: "session")
+        session: "session"
+    )
 
     static let invalidTestDataForException = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: InitiateAuthOutput.invalidChalengeParamsForException,
-        session: "session")
+        session: "session"
+    )
 }
 
 extension RespondToAuthChallengeOutput {
@@ -75,13 +82,15 @@ extension RespondToAuthChallengeOutput {
             idToken: "idTokenXXX",
             newDeviceMetadata: nil,
             refreshToken: "refreshTokenXXX",
-            tokenType: "Bearer")
+            tokenType: "Bearer"
+        )
 
         return RespondToAuthChallengeOutput(
             authenticationResult: result,
             challengeName: .none,
             challengeParameters: [:],
-            session: "session")
+            session: "session"
+        )
     }
 
     static func testDataWithNewDevice() -> RespondToAuthChallengeOutput {
@@ -91,13 +100,15 @@ extension RespondToAuthChallengeOutput {
             idToken: "idTokenXXX",
             newDeviceMetadata: .init(deviceGroupKey: "mockGroupKey", deviceKey: "mockKey"),
             refreshToken: "refreshTokenXXX",
-            tokenType: "Bearer")
+            tokenType: "Bearer"
+        )
 
         return RespondToAuthChallengeOutput(
             authenticationResult: result,
             challengeName: .none,
             challengeParameters: [:],
-            session: "session")
+            session: "session"
+        )
     }
 
     static func testDataWithVerifyDevice() -> RespondToAuthChallengeOutput {
@@ -105,18 +116,21 @@ extension RespondToAuthChallengeOutput {
             authenticationResult: nil,
             challengeName: .deviceSrpAuth,
             challengeParameters: [:],
-            session: "session")
+            session: "session"
+        )
     }
 
     static func testData(
         challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
         challengeParameters: [String: String] = [:],
-        session: String = "session") -> RespondToAuthChallengeOutput {
+        session: String = "session"
+    ) -> RespondToAuthChallengeOutput {
             return RespondToAuthChallengeOutput(
                 authenticationResult: nil,
                 challengeName: challenge,
                 challengeParameters: challengeParameters,
-                session: session)
+                session: session
+            )
         }
 
 }
@@ -127,13 +141,15 @@ extension RespondToAuthChallenge {
         challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
         username: String = "username",
         session: String = "session",
-        parameters: [String: String] = [:]) -> RespondToAuthChallenge {
+        parameters: [String: String] = [:]
+    ) -> RespondToAuthChallenge {
             RespondToAuthChallenge(
                 challenge: challenge,
                 availableChallenges: [],
                 username: username,
                 session: session,
-                parameters: parameters)
+                parameters: parameters
+            )
         }
 }
 
@@ -214,7 +230,8 @@ extension SRPStateData {
                 "1739014fed1802170702c5a034b2ff47d5a8d871db7e5bf51cb3ad29553101ed4cbd" +
                 "98bab9079c01ab6acd0e75518d0cda640b9a1f011c9a7cefab68b6ddce666c874659" +
                 "8a502c0e6adef0722bac",
-            privateKeyHexValue: "c142c2d2471fd53bca99c2fdec84e522adec8ee2dcda0d9fff9dbea52ac4a65f"),
+            privateKeyHexValue: "c142c2d2471fd53bca99c2fdec84e522adec8ee2dcda0d9fff9dbea52ac4a65f"
+        ),
         clientTimestamp: Date(timeIntervalSinceReferenceDate: 656_187_908.969623)
     )
 }
@@ -232,14 +249,16 @@ extension InitiateAuthOutput {
         "SALT": "a",
         "USER_ID_FOR_SRP": "royji2",
         "SRP_B": "a",
-        "USERNAME": "a"]
+        "USERNAME": "a"
+    ]
 
     static let invalidChalengeParamsForException: [String: String] = [
         "SALT": "a",
         "SECRET_BLOCK": "",
         "USER_ID_FOR_SRP": "royji2",
         "SRP_B": "za",
-        "USERNAME": "a"]
+        "USERNAME": "a"
+    ]
 
     static let invalidChalengeParamsNoSRPB: [String: String] = [
         "SALT": "a",
@@ -269,7 +288,8 @@ extension InitiateAuthOutput {
                         "bA7jMS0q3ld4sAAw8YfRNf0KggdA9Iolz9qdI/8xVLTLWsdvv1NA1JIPb8lPtlkqTlFYDp" +
                         "inYbJk4W/1BOS85TSWPBwadRpVhEIDeH42hIgnvEPA==",
         "USER_ID_FOR_SRP": "royji2",
-        "USERNAME": "a"]
+        "USERNAME": "a"
+    ]
 
     static let validChalengeParams: [String: String] = [
         "SALT": "79b00c90ebb6221ab4cad530f41441ed",
@@ -310,7 +330,8 @@ extension InitiateAuthOutput {
                  "96eec45283edfc75060a4bd0dc31544eb424cd25939626c014199ad433079b26a0ecab" +
                  "129c2eef61d22994ad70c96d286e6e8c1abc65e7060ba69cb0d8c4a31cc08cc7d76ef9" +
                  "2f757b2a34e7ae236aadbced9bb7a4a06e67da3a084833e0f3a0b903af0a74816031",
-        "USERNAME": "royji2"]
+        "USERNAME": "royji2"
+    ]
 
     static let validSMSChallengeParams: [String: String] = [
         "CODE_DELIVERY_DELIVERY_MEDIUM": "SMS",

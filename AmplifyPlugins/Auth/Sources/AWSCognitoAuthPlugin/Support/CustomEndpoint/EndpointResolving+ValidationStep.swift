@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 extension EndpointResolving {
     struct ValidationStep<Input, Output> {
@@ -43,7 +43,7 @@ extension EndpointResolving.ValidationStep {
 
     /// Validate that the input `URLComponents` don't contain a path.
     static func pathIsEmpty() -> Self where Input == (URLComponents, String), Output == Void {
-        .init { (components, endpoint) in
+        .init { components, endpoint in
             guard components.path.isEmpty else {
                 throw AuthError.invalidPath(
                     endpoint: endpoint,
@@ -55,8 +55,8 @@ extension EndpointResolving.ValidationStep {
 }
 
 // MARK: Fileprivate AuthError extensions thrown on invalid `Endpoint` input.
-extension AuthError {
-    fileprivate static func invalidURL(_ endpoint: String) -> AuthError {
+private extension AuthError {
+    static func invalidURL(_ endpoint: String) -> AuthError {
         .configuration(
             "Error configuring AWSCognitoAuthPlugin",
             """
@@ -67,7 +67,7 @@ extension AuthError {
         )
     }
 
-    fileprivate static func invalidScheme(_ endpoint: String) -> AuthError {
+    static func invalidScheme(_ endpoint: String) -> AuthError {
         .configuration(
             "Error configuring AWSCognitoAuthPlugin",
             """
@@ -80,7 +80,7 @@ extension AuthError {
         )
     }
 
-    fileprivate static func invalidPath(
+    static func invalidPath(
         endpoint: String,
         components: URLComponents
     ) -> AuthError {

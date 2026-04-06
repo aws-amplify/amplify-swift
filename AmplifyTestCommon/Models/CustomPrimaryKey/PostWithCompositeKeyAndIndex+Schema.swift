@@ -6,12 +6,12 @@
 //
 
 // swiftlint:disable all
-import Amplify
+@preconcurrency import Amplify
 import Foundation
 
-extension PostWithCompositeKeyAndIndex {
+public extension PostWithCompositeKeyAndIndex {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey {
     case id
     case title
     case comments
@@ -19,10 +19,10 @@ extension PostWithCompositeKeyAndIndex {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let postWithCompositeKeyAndIndex = PostWithCompositeKeyAndIndex.keys
 
     model.pluralName = "PostWithCompositeKeyAndIndices"
@@ -47,9 +47,11 @@ extension PostWithCompositeKeyAndIndex: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension PostWithCompositeKeyAndIndex.IdentifierProtocol {
-  public static func identifier(id: String,
-      title: String) -> Self {
+public extension PostWithCompositeKeyAndIndex.IdentifierProtocol {
+  static func identifier(
+    id: String,
+    title: String
+  ) -> Self {
     .make(fields: [(name: "id", value: id), (name: "title", value: title)])
   }
 }

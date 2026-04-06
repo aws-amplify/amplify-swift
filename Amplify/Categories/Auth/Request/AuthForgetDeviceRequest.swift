@@ -18,8 +18,10 @@ public struct AuthForgetDeviceRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthForgetDeviceRequest.Options`
     public var options: Options
 
-    public init(device: AuthDevice? = nil,
-                options: Options) {
+    public init(
+        device: AuthDevice? = nil,
+        options: Options
+    ) {
         self.device = device
         self.options = options
     }
@@ -39,3 +41,5 @@ public extension AuthForgetDeviceRequest {
         }
     }
 }
+
+extension AuthForgetDeviceRequest.Options: @unchecked Sendable { }

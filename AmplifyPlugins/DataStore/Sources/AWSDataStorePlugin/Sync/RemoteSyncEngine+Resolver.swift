@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 extension RemoteSyncEngine {
-    struct Resolver {
+    enum Resolver {
         // swiftlint:disable cyclomatic_complexity
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {
@@ -27,23 +27,29 @@ extension RemoteSyncEngine {
 
             case (.initializingSubscriptions, .initializedSubscriptions):
                 return .performingInitialSync
+
             case (.initializingSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
 
             case (.performingInitialSync, .performedInitialSync):
                 return .activatingCloudSubscriptions
+
             case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
 
-            case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api,
-                                                                              let mutationEventPublisher,
-                                                                              let reconciliationQueue)):
+            case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(
+                let api,
+                let mutationEventPublisher,
+                let reconciliationQueue
+            )):
                 return .activatingMutationQueue(api, mutationEventPublisher, reconciliationQueue)
+
             case (.activatingCloudSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
 
             case (.activatingMutationQueue, .activatedMutationQueue):
                 return .notifyingSyncStarted
+
             case (.activatingMutationQueue, .errored(let error)):
                 return .cleaningUp(error)
 
@@ -58,6 +64,7 @@ extension RemoteSyncEngine {
 
             case (.cleaningUp, .cleanedUp(let error)):
                 return .schedulingRestart(error)
+
             case (.cleaningUpForTermination, .cleanedUpForTermination):
                 return .terminate
 

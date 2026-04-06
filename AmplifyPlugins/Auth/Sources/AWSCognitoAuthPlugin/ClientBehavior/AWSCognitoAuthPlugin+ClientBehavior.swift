@@ -5,34 +5,42 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AuthenticationServices
+import Foundation
 
 // swiftlint:disable force_cast
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
-    public func signUp(username: String,
-                       password: String? = nil,
-                       options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult {
+    public func signUp(
+        username: String,
+        password: String? = nil,
+        options: AuthSignUpRequest.Options?
+    ) async throws -> AuthSignUpResult {
         let options = options ?? AuthSignUpRequest.Options()
-        let request = AuthSignUpRequest(username: username,
-                                        password: password,
-                                        options: options)
+        let request = AuthSignUpRequest(
+            username: username,
+            password: password,
+            options: options
+        )
         let task = AWSAuthSignUpTask(request, authStateMachine: authStateMachine, authEnvironment: authEnvironment)
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignUpResult
     }
 
-    public func confirmSignUp(for username: String,
-                              confirmationCode: String,
-                              options: AuthConfirmSignUpRequest.Options?)
+    public func confirmSignUp(
+        for username: String,
+        confirmationCode: String,
+        options: AuthConfirmSignUpRequest.Options?
+    )
     async throws -> AuthSignUpResult {
         let options = options ?? AuthConfirmSignUpRequest.Options()
-        let request = AuthConfirmSignUpRequest(username: username,
-                                               code: confirmationCode,
-                                               options: options)
+        let request = AuthConfirmSignUpRequest(
+            username: username,
+            code: confirmationCode,
+            options: options
+        )
         let task = AWSAuthConfirmSignUpTask(request, authStateMachine: authStateMachine, authEnvironment: authEnvironment)
         return try await taskQueue.sync {
             return try await task.value
@@ -49,11 +57,15 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
 #if os(iOS) || os(macOS) || os(visionOS)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+    public func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
-        let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
-                                             options: options)
+        let request = AuthWebUISignInRequest(
+            presentationAnchor: presentationAnchor,
+            options: options
+        )
         let task = AWSAuthWebUISignInTask(
             request,
             authConfiguration: authConfiguration,
@@ -65,13 +77,17 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthSignInResult
     }
 
-    public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+    public func signInWithWebUI(
+        for authProvider: AuthProvider,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
+        options: AuthWebUISignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
-        let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
-                                             authProvider: authProvider,
-                                             options: options)
+        let request = AuthWebUISignInRequest(
+            presentationAnchor: presentationAnchor,
+            authProvider: authProvider,
+            options: options
+        )
         let task = AWSAuthWebUISignInTask(
             request,
             authConfiguration: authConfiguration,
@@ -84,15 +100,21 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 #endif
 
-    public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    public func confirmSignIn(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
 
         let options = options ?? AuthConfirmSignInRequest.Options()
-        let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse,
-                                               options: options)
-        let task = AWSAuthConfirmSignInTask(request,
-                                            stateMachine: authStateMachine,
-                                            configuration: authConfiguration)
+        let request = AuthConfirmSignInRequest(
+            challengeResponse: challengeResponse,
+            options: options
+        )
+        let task = AWSAuthConfirmSignInTask(
+            request,
+            stateMachine: authStateMachine,
+            configuration: authConfiguration
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult
@@ -120,7 +142,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             authStateMachine: authStateMachine,
             configuration: authConfiguration,
             environment: authEnvironment,
-            forceReconfigure: forceReconfigure)
+            forceReconfigure: forceReconfigure
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSession
@@ -135,42 +158,54 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthResetPasswordResult
     }
 
-    public func confirmResetPassword(for username: String,
-                                     with newPassword: String,
-                                     confirmationCode: String,
-                                     options: AuthConfirmResetPasswordRequest.Options?) async throws {
+    public func confirmResetPassword(
+        for username: String,
+        with newPassword: String,
+        confirmationCode: String,
+        options: AuthConfirmResetPasswordRequest.Options?
+    ) async throws {
         let options = options ?? AuthConfirmResetPasswordRequest.Options()
-        let request = AuthConfirmResetPasswordRequest(username: username,
-                                                      newPassword: newPassword,
-                                                      confirmationCode: confirmationCode,
-                                                      options: options)
+        let request = AuthConfirmResetPasswordRequest(
+            username: username,
+            newPassword: newPassword,
+            confirmationCode: confirmationCode,
+            options: options
+        )
         let task = AWSAuthConfirmResetPasswordTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
         _ = try await taskQueue.sync {
             return try await task.value
         }
     }
 
-    public func signIn(username: String?,
-                       password: String?,
-                       options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+    public func signIn(
+        username: String?,
+        password: String?,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult {
         let options = options ?? AuthSignInRequest.Options()
-        let request = AuthSignInRequest(username: username,
-                                        password: password,
-                                        options: options)
-        let task = AWSAuthSignInTask(request,
-                                     authStateMachine: self.authStateMachine,
-                                     configuration: authConfiguration)
+        let request = AuthSignInRequest(
+            username: username,
+            password: password,
+            options: options
+        )
+        let task = AWSAuthSignInTask(
+            request,
+            authStateMachine: authStateMachine,
+            configuration: authConfiguration
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult
     }
-    
+
     public func autoSignIn() async throws -> AuthSignInResult {
         let options = AuthAutoSignInRequest.Options()
         let request = AuthAutoSignInRequest(options: options)
-        let task = AWSAuthAutoSignInTask(request,
-                                         authStateMachine: self.authStateMachine,
-                                         authEnvironment: authEnvironment)
+        let task = AWSAuthAutoSignInTask(
+            request,
+            authStateMachine: authStateMachine,
+            authEnvironment: authEnvironment
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult
@@ -178,8 +213,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func deleteUser() async throws {
         let task = AWSAuthDeleteUserTask(
-            authStateMachine: self.authStateMachine,
-            authConfiguraiton: authConfiguration)
+            authStateMachine: authStateMachine,
+            authConfiguraiton: authConfiguration
+        )
         _ = try await taskQueue.sync {
             return try await task.value
         }
@@ -188,7 +224,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func setUpTOTP() async throws -> TOTPSetupDetails {
         let task = SetUpTOTPTask(
             authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! TOTPSetupDetails
@@ -201,11 +238,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let options = options ?? VerifyTOTPSetupRequest.Options()
         let request = VerifyTOTPSetupRequest(
             code: code,
-            options: options)
+            options: options
+        )
         let task = VerifyTOTPSetupTask(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         _ = try await taskQueue.sync {
             return try await task.value
         }

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSCognitoIdentityProvider
 import Amplify
+import AWSCognitoIdentityProvider
+import Foundation
 
 class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
     private let request: AuthAutoSignInRequest
@@ -19,9 +19,11 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
         HubPayload.EventName.Auth.autoSignInAPI
     }
 
-    init(_ request: AuthAutoSignInRequest,
-         authStateMachine: AuthStateMachine,
-         authEnvironment: AuthEnvironment) {
+    init(
+        _ request: AuthAutoSignInRequest,
+        authStateMachine: AuthStateMachine,
+        authEnvironment: AuthEnvironment
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.authEnvironment = authEnvironment
@@ -30,14 +32,15 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
 
     func execute() async throws -> AuthSignInResult {
         await taskHelper.didStateMachineConfigured()
-        
+
         // Check if we have a user pool configuration
         let authConfiguration = authEnvironment.configuration
         guard let _ = authConfiguration.getUserPoolConfiguration() else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
                 "Could not find user pool configuration",
-                message)
+                message
+            )
             throw authError
         }
 
@@ -62,11 +65,12 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
             guard case .configured(let authenticationState, _, let signUpState) = state else {
                 continue
             }
-            
+
             guard case .signedUp = signUpState else {
                 let error = AuthError.invalidState(
                     "Not in a signed up state. Please call signUp() and confirmSignUp() before calling autoSignIn()",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
                 throw error
             }
 
@@ -74,7 +78,8 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
             case .signedIn:
                 let error = AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil)
+                    AuthPluginErrorConstants.invalidStateError, nil
+                )
                 throw error
             case .signingIn:
                 log.verbose("Cancelling existing signIn flow")
@@ -89,12 +94,12 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
     private func doAutoSignIn() async throws -> AuthSignInResult {
         log.verbose("Sending autoSignIn event")
         try await sendAutoSignInEvent()
-        
+
         log.verbose("Waiting for autoSignIn to complete")
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, let authZState, _) = state else { continue }
-            
+
             switch authNState {
             case .signedIn:
                 if case .sessionEstablished = authZState {
@@ -116,12 +121,12 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
         }
         throw AuthError.unknown("Sign in reached an error state")
     }
-    
+
     private func sendCancelSignInEvent() async {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
         await authStateMachine.send(event)
     }
-    
+
     private func waitForSignInCancel() async {
         await sendCancelSignInEvent()
         let stateSequences = await authStateMachine.listen()
@@ -137,7 +142,7 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
             }
         }
     }
-    
+
     private func sendAutoSignInEvent() async throws {
         let currentState = await authStateMachine.currentState
         guard case .configured(_, _, let signUpState) = currentState  else {
@@ -145,18 +150,19 @@ class AWSAuthAutoSignInTask: AuthAutoSignInTask, DefaultLogger {
             let error = AuthError.invalidState(message, "", nil)
             throw error
         }
-        
+
         guard case .signedUp(let data, _) = signUpState else {
             throw AuthError.invalidState("Auth state machine not in signed up state: \(currentState)", "", nil)
         }
-        
+
         let signInEventData = SignInEventData(
             username: data.username,
             password: nil,
             clientMetadata: data.clientMetadata ?? [:],
             signInMethod: .apiBased(.userAuth),
-            session: data.session)
-        
+            session: data.session
+        )
+
         let event = AuthenticationEvent(eventType: .signInRequested(signInEventData, true))
         await authStateMachine.send(event)
     }

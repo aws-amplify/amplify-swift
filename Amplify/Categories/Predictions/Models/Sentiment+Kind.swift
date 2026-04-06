@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension Predictions.Sentiment {
-    public struct Kind: Equatable, Hashable {
+public extension Predictions.Sentiment {
+    struct Kind: Equatable, Hashable, @unchecked Sendable {
         let id: UInt8
 
         public static let unknown = Self(id: 0)

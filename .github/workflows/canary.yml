@@ -1,6 +1,7 @@
 name: Canary Test
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 16 * * *' # Everyday 16:00 UTC
 
@@ -15,14 +16,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            xcode-version: 15.3.0
-            device: iPhone 15
-            version: 17.4
-          - os: macos-latest
-            xcode-version: 15.0.1
-            device: iPhone 14
-            version: 17.0.1
+          - os: macos-15
+            xcode-version: '16.4.0'
+            device: 'iPhone 16 Pro Max'
+            version: '18.5'
+          - os: macos-15
+            xcode-version: '16.0.0'
+            device: 'iPhone 16 Pro Max'
+            version: '18.0'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -39,7 +40,7 @@ jobs:
         run: amplify init --quickstart --frontend ios
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
+        uses: ruby/setup-ruby@efbf473cab83af4468e8606cc33eca9281bb213f # v1.256.0
         with:
           ruby-version: '3.2.1'
           bundler-cache: true
@@ -50,7 +51,15 @@ jobs:
           sudo xcode-select -s "/Applications/Xcode_${{ matrix.xcode-version }}.app"
           xcodebuild -version
 
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ matrix.xcode-version }}
+          platform: iOS
+
       - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
         working-directory: ${{ github.workspace }}/canaries/example
-        run: bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
+        run: |
+          export FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT=120
+          bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
 

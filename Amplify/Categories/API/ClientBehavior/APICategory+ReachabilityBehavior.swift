@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import Foundation
 import Combine
+import Foundation
 
 extension APICategory: APICategoryReachabilityBehavior {
 #if !os(watchOS)

@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AWSPluginsCore
-import AWSS3StoragePlugin
 import AWSS3
+import AWSS3StoragePlugin
+import XCTest
 
 class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
     // MARK: - Tests
@@ -179,7 +179,7 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
     /// all key-value pairs`metadata`
     func test_uploadWithMultipleMetadataPairs() async throws {
         // Include metadata in upload file request
-        let range = (1...11)
+        let range = (1 ... 11)
         let metadata = zip(range, range.dropFirst())
             .map { tuple -> (String, String) in
                 (.init(tuple.0), .init(tuple.0))
@@ -248,13 +248,12 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
             "Cast to `AWSS3StoragePlugin` failed"
         )
         let s3Client = storagePlugin.getEscapeHatch()
-        let bucket: String
-        if useGen2Configuration {
-            bucket = try getBucketFromAmplifyOutputs(
+        let bucket: String = if useGen2Configuration {
+            try getBucketFromAmplifyOutputs(
                 forResource: "amplify_outputs"
             )
         } else {
-            bucket = try getBucketFromConfig(
+            try getBucketFromConfig(
                 forResource: "amplifyconfiguration"
             )
         }

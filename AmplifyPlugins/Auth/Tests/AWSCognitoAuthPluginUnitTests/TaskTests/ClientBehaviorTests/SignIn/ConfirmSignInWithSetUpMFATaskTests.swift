@@ -7,10 +7,10 @@
 
 import Foundation
 
-import XCTest
 import Amplify
-@testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import XCTest
+@testable import AWSCognitoAuthPlugin
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -23,10 +23,13 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                     .waitingForAnswer(.init(
                         secretCode: "sharedSecret",
                         session: "session",
-                        username: "username")),
-                    .testData)),
+                        username: "username"
+                    )),
+                    .testData
+                )),
             AuthorizationState.sessionEstablished(.testData),
-            .notStarted)
+            .notStarted
+        )
     }
 
     /// Test a successful confirmSignIn call with .done as next step
@@ -39,7 +42,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testSuccessfulTOTPMFASetupStep() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.session, "verifiedSession")
                 return .testData()
@@ -56,7 +59,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             let pluginOptions = AWSAuthConfirmSignInOptions(friendlyDeviceName: "device")
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -78,7 +82,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithEmptyResponse() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 XCTFail("Cognito service should not be called")
                 return .testData()
@@ -105,7 +109,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.session, "verifiedSession")
                 return .testData()
@@ -151,7 +155,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithCodeMismatchException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -184,9 +188,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///   Then:
     ///    - RETRY SHOULD ALSO SUCCEED
-    ///    
+    ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.CodeMismatchException(
                     message: "Exception"
@@ -207,7 +211,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                 return
             }
 
-            self.mockIdentityProvider = MockIdentityProvider(
+            mockIdentityProvider = MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { request in
                     XCTAssertEqual(request.session, "verifiedSession")
                     return .testData()
@@ -238,7 +242,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInternalErrorException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InternalErrorException(
                     message: "Exception"
@@ -269,7 +273,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithInvalidParameterException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "Exception"
@@ -304,7 +308,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
         let identityPoolConfigData = Defaults.makeIdentityConfigData()
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: Defaults.makeIdentity)
+            cognitoIdentityFactory: Defaults.makeIdentity
+        )
         let environment = AuthEnvironment(
             configuration: .identityPools(identityPoolConfigData),
             userPoolConfigData: nil,
@@ -314,8 +319,10 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
-        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-                                                         initialState: .notConfigured)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: environment,
+            initialState: .notConfigured
+        )
         let plugin = AWSCognitoAuthPlugin()
         plugin.configure(
             authConfiguration: .identityPools(identityPoolConfigData),
@@ -323,7 +330,8 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
-            analyticsHandler: MockAnalyticsHandler())
+            analyticsHandler: MockAnalyticsHandler()
+        )
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
@@ -349,7 +357,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithNotAuthorizedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "Exception"
@@ -379,7 +387,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithPasswordResetRequiredException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "Exception"
@@ -410,7 +418,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
                     message: "Exception"
@@ -444,7 +452,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithTooManyRequestsException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "Exception"
@@ -478,7 +486,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotConfirmedException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "Exception"
@@ -508,7 +516,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     ///
     func testConfirmSignInWithUserNotFoundException() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(
+        mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                     message: "Exception"

@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-import XCTest
 import Combine
+import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
@@ -38,7 +37,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             let data = try TestConfigHelper.retrieve(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration
             )
-            
+
             let amplifyConfig = try JSONDecoder().decode(JSONValue.self, from: data)
             let (endpoint, apiKey) = (amplifyConfig.api?.plugins?.awsAPIPlugin?.asObject?.values
                 .map { ($0.endpoint?.stringValue, $0.apiKey?.stringValue)}
@@ -82,7 +81,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }?.store(in: &cancellables)
 
         await fulfillment(of: [subscribedExpectation], timeout: 5)
-        withExtendedLifetime(cancellables, { })
+        withExtendedLifetime(cancellables) { }
     }
 
     func testMultThreads_withConnectedClient_subscribeAndUnsubscribe() async throws {
@@ -97,11 +96,11 @@ class AppSyncRealTimeClientTests: XCTestCase {
             of: AnyCancellable?.self,
             returning: [AnyCancellable?].self
         ) { taskGroup in
-            (0..<concurrentFactor).forEach { index in
+            for index in 0 ..< concurrentFactor {
                 let id = UUID().uuidString
                 taskGroup.addTask { [weak self] () -> AnyCancellable? in
                     guard let self else { return nil }
-                    let subscription = try await self.makeOneSubscription(id: id) {
+                    let subscription = try await makeOneSubscription(id: id) {
                         if case .subscribed = $0 {
                             expectedSubscription.fulfill()
                             Task {
@@ -121,7 +120,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         await fulfillment(of: [expectedSubscription, expectedUnsubscription], timeout: 3)
-        withExtendedLifetime(cancellables, { })
+        withExtendedLifetime(cancellables) { }
     }
 
     func testMaxSubscriptionReached_throwMaxSubscriptionsReachedError() async throws {
@@ -133,11 +132,11 @@ class AppSyncRealTimeClientTests: XCTestCase {
             of: AnyCancellable?.self,
             returning: [AnyCancellable?].self
         ) { taskGroup in
-            (0..<numOfMaxSubscriptionCount).forEach { index in
+            for index in 0 ..< numOfMaxSubscriptionCount {
                 let id = UUID().uuidString
                 taskGroup.addTask { [weak self] () -> AnyCancellable? in
                     guard let self else { return nil }
-                    let subscription = try await self.makeOneSubscription(id: id) {
+                    let subscription = try await makeOneSubscription(id: id) {
                         if case .subscribed = $0 {
                             maxSubsctiptionsSuccess.fulfill()
                         }
@@ -154,7 +153,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let maxSubscriptionReachedError = expectation(description: "Should return max subscription reached error")
         maxSubscriptionReachedError.assertForOverFulfill = false
         let retryTriggerredAndSucceed = expectation(description: "Retry on max subscription reached error and succeed")
-        cancellables.append(try await makeOneSubscription { event in
+        try await cancellables.append(makeOneSubscription { event in
             if case .error(let errors) = event {
                 XCTAssertTrue(errors.count == 1)
                 XCTAssertTrue(errors[0] is AppSyncRealTimeRequest.Error)
@@ -167,7 +166,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         })
         await fulfillment(of: [maxSubscriptionReachedError, retryTriggerredAndSucceed], timeout: 5, enforceOrder: true)
-        withExtendedLifetime(cancellables, { })
+        withExtendedLifetime(cancellables) { }
     }
 
     private func makeOneSubscription(
@@ -176,7 +175,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
     ) async throws -> AnyCancellable? {
         let subscription = try await appSyncRealTimeClient?.subscribe(
             id: id,
-            query: Self.appSyncQuery(with: self.subscriptionRequest)
+            query: Self.appSyncQuery(with: subscriptionRequest)
         ).sink(receiveValue: {
             onSubscriptionEvents?($0)
         })
@@ -195,7 +194,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
     ) throws -> String {
         let payload: JSONValue = .object([
             "query": .string(query),
-            "variables": (variables.isEmpty ? .null : .object(variables))
+            "variables": variables.isEmpty ? .null : .object(variables)
         ])
         let data = try JSONEncoder().encode(payload)
         return String(data: data, encoding: .utf8)!

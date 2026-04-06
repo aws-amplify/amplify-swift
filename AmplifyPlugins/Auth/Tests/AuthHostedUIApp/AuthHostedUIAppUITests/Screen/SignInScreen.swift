@@ -51,16 +51,16 @@ struct SignInScreen: Screen {
 
 
     func signIn(username: String, password: String) -> Self {
-        let signInTextFieldName: String
+        let signInTextFieldName
         // Ideally we align the provisioning of Gen1 and Gen2 backends
         // to create a HostedUI endpoint that has the same username text field.
         // The Gen1 steps are updated in the README already, we re-provision the backend
         // in Gen1 according to those steps, this check can be removed and expect
         // "Email Email" to be the text field.
-        if useGen2Configuration {
-            signInTextFieldName = "Email Email"
+        = if useGen2Configuration {
+            "Email Email"
         } else {
-            signInTextFieldName = "Username"
+            "Username"
         }
 
         _ = app.webViews.textFields[signInTextFieldName].waitForExistence(timeout: 60)

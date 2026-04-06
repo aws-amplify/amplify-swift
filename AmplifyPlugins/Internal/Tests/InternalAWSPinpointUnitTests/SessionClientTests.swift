@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
 import AmplifyAsyncTesting
+import XCTest
+@_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
 class SessionClientTests: XCTestCase {
     private var client: SessionClient!
@@ -39,13 +39,17 @@ class SessionClientTests: XCTestCase {
     }
 
     func createNewSessionClient() {
-        client = SessionClient(activityTracker: activityTracker,
-                               analyticsClient: analyticsClient,
-                               archiver: archiver,
-                               configuration: SessionClientConfiguration(appId: "appId",
-                                                                         uniqueDeviceId: "deviceId"),
-                               endpointClient: endpointClient,
-                               userDefaults: userDefaults)
+        client = SessionClient(
+            activityTracker: activityTracker,
+            analyticsClient: analyticsClient,
+            archiver: archiver,
+            configuration: SessionClientConfiguration(
+                appId: "appId",
+                uniqueDeviceId: "deviceId"
+            ),
+            endpointClient: endpointClient,
+            userDefaults: userDefaults
+        )
     }
 
     func resetCounters() async {
@@ -92,7 +96,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(activityTracker.beginActivityTrackingCount, 0)
         XCTAssertEqual(userDefaults.saveCount, 1)
-        
+
         await fulfillment(of: [expectationStartSession], timeout: 1)
         let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
         XCTAssertEqual(updateEndpointProfileCount, 1)
@@ -228,7 +232,7 @@ class SessionClientTests: XCTestCase {
     func testApplicationMovedToForeground_withNonExpiredSession_shouldRecordResumeEvent() async {
         let expectationStartandPause = expectation(description: "Start and Pause event for new session")
         await analyticsClient.setRecordExpectation(expectationStartandPause, count: 2)
-        sessionTimeout = 1000
+        sessionTimeout = 1_000
         createNewSessionClient()
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)

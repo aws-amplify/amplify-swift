@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import AWSClientRuntime
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import AWSClientRuntime
 
 class EmailMFATests: BasePluginTest {
 
@@ -28,16 +28,18 @@ class EmailMFATests: BasePluginTest {
     ///    - I should get a .continueSignInWithMFASetupSelection response
     ///
     func testSuccessfulMFASetupSelectionStep() async {
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"]
+            )
         })
         let options = AuthSignInRequest.Options()
 
@@ -45,7 +47,8 @@ class EmailMFATests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithMFASetupSelection for next step")
                 return
@@ -69,16 +72,18 @@ class EmailMFATests: BasePluginTest {
     ///    - I should get a .continueSignInWithEmailMFASetup response
     ///
     func testSuccessfulEmailMFASetupStep() async {
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"EMAIL_OTP\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"EMAIL_OTP\"]"]
+            )
         })
         let options = AuthSignInRequest.Options()
 
@@ -86,7 +91,8 @@ class EmailMFATests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: options)
+                options: options
+            )
             guard case .continueSignInWithEmailMFASetup = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithEmailMFASetup for next step, instead got: \(result.nextStep)")
                 return
@@ -108,19 +114,22 @@ class EmailMFATests: BasePluginTest {
     ///
     func testSuccessfulEmailMFACodeStep() async {
         var signInStepIterator = 0
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             if signInStepIterator == 0 {
                 return .testData(
                     challenge: .emailOtp,
                     challengeParameters: [
                         "CODE_DELIVERY_DELIVERY_MEDIUM": "EMAIL",
-                        "CODE_DELIVERY_DESTINATION": "test@test.com"])
+                        "CODE_DELIVERY_DESTINATION": "test@test.com"
+                    ]
+                )
             } else if signInStepIterator == 1 {
                 XCTAssertEqual(input.challengeResponses?["EMAIL_OTP_CODE"], "123456")
                 XCTAssertEqual(input.session, "session")
@@ -133,7 +142,8 @@ class EmailMFATests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
             guard case .confirmSignInWithOTP(let codeDetails) = result.nextStep else {
                 XCTFail("Result should be .confirmSignInWithOTP for next step, instead got: \(result.nextStep)")
                 return
@@ -149,7 +159,8 @@ class EmailMFATests: BasePluginTest {
             signInStepIterator = 1
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
-                options: .init())
+                options: .init()
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -173,12 +184,13 @@ class EmailMFATests: BasePluginTest {
     ///
     func testConfirmSignInForEmailMFASetupSelectionStep() async {
         var signInStepIterator = 0
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "session0")
+                session: "session0"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             switch signInStepIterator {
             case 0:
@@ -186,7 +198,8 @@ class EmailMFATests: BasePluginTest {
                 return .testData(
                     challenge: .mfaSetup,
                     challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"],
-                    session: "session1")
+                    session: "session1"
+                )
             case 1:
                 XCTAssertEqual(input.challengeResponses?["EMAIL"], "test@test.com")
                 XCTAssertEqual(input.session, "session1")
@@ -194,8 +207,10 @@ class EmailMFATests: BasePluginTest {
                     challenge: .emailOtp,
                     challengeParameters: [
                         "CODE_DELIVERY_DELIVERY_MEDIUM": "EMAIL",
-                        "CODE_DELIVERY_DESTINATION": "test@test.com"],
-                    session: "session2")
+                        "CODE_DELIVERY_DESTINATION": "test@test.com"
+                    ],
+                    session: "session2"
+                )
             case 2:
                 XCTAssertEqual(input.challengeResponses?["EMAIL_OTP_CODE"], "123456")
                 XCTAssertEqual(input.session, "session2")
@@ -210,7 +225,8 @@ class EmailMFATests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithMFASetupSelection for next step")
                 return
@@ -248,7 +264,8 @@ class EmailMFATests: BasePluginTest {
             signInStepIterator = 2
             confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
-                options: .init())
+                options: .init()
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
@@ -271,12 +288,13 @@ class EmailMFATests: BasePluginTest {
     ///
     func testConfirmSignInForTOTPMFASetupSelectionStep() async {
         var completeSignIn = false
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+        mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutput.validChalengeParams,
-                session: "someSession")
+                session: "someSession"
+            )
         }, mockRespondToAuthChallengeResponse: { input in
             if completeSignIn {
                 XCTAssertEqual(input.session, "verifiedSession")
@@ -285,7 +303,8 @@ class EmailMFATests: BasePluginTest {
 
             return .testData(
                 challenge: .mfaSetup,
-                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"])
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\",\"EMAIL_OTP\"]"]
+            )
 
 
         }, mockAssociateSoftwareTokenResponse: { input in
@@ -302,7 +321,8 @@ class EmailMFATests: BasePluginTest {
             let result = try await plugin.signIn(
                 username: "username",
                 password: "password",
-                options: AuthSignInRequest.Options())
+                options: AuthSignInRequest.Options()
+            )
             guard case .continueSignInWithMFASetupSelection(let mfaTypes) = result.nextStep else {
                 XCTFail("Result should be .continueSignInWithMFASetupSelection for next step")
                 return
@@ -328,7 +348,8 @@ class EmailMFATests: BasePluginTest {
             let pluginOptions = AWSAuthConfirmSignInOptions(friendlyDeviceName: "device")
             confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
-                options: .init(pluginOptions: pluginOptions))
+                options: .init(pluginOptions: pluginOptions)
+            )
             guard case .done = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return

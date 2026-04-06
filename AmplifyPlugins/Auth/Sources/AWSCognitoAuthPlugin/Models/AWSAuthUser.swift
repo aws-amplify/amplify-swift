@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 
 public struct AWSAuthUser: AuthUser {
@@ -20,3 +21,5 @@ public struct AWSAuthUser: AuthUser {
     public var userId: String
 
 }
+
+extension AWSAuthUser: Sendable { }

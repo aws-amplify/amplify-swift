@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import InternalAWSPinpoint
 import Foundation
+@testable import InternalAWSPinpoint
 
 class MockUserDefaults: UserDefaultsBehaviour {
     var data: [String: UserDefaultsBehaviourValue] = [:]

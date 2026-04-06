@@ -22,7 +22,7 @@ open class AmplifyInProcessReportingOperation<
     InProcess,
     Success,
     Failure: AmplifyError
->: AmplifyOperation<Request, Success, Failure> {
+>: AmplifyOperation<Request, Success, Failure>, @unchecked Sendable {
     public typealias InProcess = InProcess
 
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?
@@ -34,21 +34,23 @@ open class AmplifyInProcessReportingOperation<
     var inProcessSubject: PassthroughSubject<InProcess, Never>!
 #endif
 
-    public init(categoryType: CategoryType,
-                eventName: HubPayloadEventName,
-                request: Request,
-                inProcessListener: InProcessListener? = nil,
-                resultListener: ResultListener? = nil) {
+    public init(
+        categoryType: CategoryType,
+        eventName: HubPayloadEventName,
+        request: Request,
+        inProcessListener: InProcessListener? = nil,
+        resultListener: ResultListener? = nil
+    ) {
 
         super.init(categoryType: categoryType, eventName: eventName, request: request, resultListener: resultListener)
 
 #if canImport(Combine)
-        inProcessSubject = PassthroughSubject<InProcess, Never>()
+        self.inProcessSubject = PassthroughSubject<InProcess, Never>()
 #endif
 
         // If the inProcessListener is present, we need to register a hub event listener for it, and ensure we
         // automatically unsubscribe when we receive a completion event for the operation
-        if let inProcessListener = inProcessListener {
+        if let inProcessListener {
             self.inProcessListenerUnsubscribeToken = subscribe(inProcessListener: inProcessListener)
         }
     }
@@ -74,15 +76,17 @@ open class AmplifyInProcessReportingOperation<
             }
         }
 
-        inProcessListenerToken = Amplify.Hub.listen(to: channel,
-                                                    isIncluded: filterById,
-                                                    listener: inProcessHubListener)
+        inProcessListenerToken = Amplify.Hub.listen(
+            to: channel,
+            isIncluded: filterById,
+            listener: inProcessHubListener
+        )
 
         return inProcessListenerToken
     }
 
     /// Classes that override this method must emit a completion to the `inProcessPublisher` upon cancellation
-    open override func cancel() {
+    override open func cancel() {
         super.cancel()
 #if canImport(Combine)
         publish(completion: .finished)
@@ -94,7 +98,7 @@ open class AmplifyInProcessReportingOperation<
     ///
     /// - Parameter result: The OperationResult to dispatch to the hub as part of the
     ///   HubPayload
-    public override func dispatch(result: OperationResult) {
+    override public func dispatch(result: OperationResult) {
 #if canImport(Combine)
         publish(completion: .finished)
 #endif
@@ -123,7 +127,7 @@ public extension AmplifyInProcessReportingOperation {
 
     /// Removes the listener that was registered during operation instantiation
     func removeInProcessResultListener() {
-        if let inProcessListenerUnsubscribeToken = inProcessListenerUnsubscribeToken {
+        if let inProcessListenerUnsubscribeToken {
             Amplify.Hub.removeListener(inProcessListenerUnsubscribeToken)
         }
     }

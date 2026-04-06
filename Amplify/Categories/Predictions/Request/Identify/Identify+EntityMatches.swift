@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension Predictions.Identify {
-    public enum EntityMatches {}
+public extension Predictions.Identify {
+    enum EntityMatches {}
 }
 
-extension Predictions.Identify.Request where Output == Predictions.Identify.EntityMatches.Result {
-    public static func entitiesFromCollection(withID collectionID: String) -> Self {
+public extension Predictions.Identify.Request where Output == Predictions.Identify.EntityMatches.Result {
+    static func entitiesFromCollection(withID collectionID: String) -> Self {
         .init(kind: .detectEntitiesCollection(collectionID, .lift))
     }
 }

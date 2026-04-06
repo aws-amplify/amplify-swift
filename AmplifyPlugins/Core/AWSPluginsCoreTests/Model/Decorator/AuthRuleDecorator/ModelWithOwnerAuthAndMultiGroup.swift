@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
@@ -34,9 +34,11 @@ public struct OIDCMultiGroupPost: Model {
     public var title: String
     public var owner: String?
 
-    public init(id: String = UUID().uuidString,
-                title: String,
-                owner: String? = nil) {
+    public init(
+        id: String = UUID().uuidString,
+        title: String,
+        owner: String? = nil
+    ) {
         self.id = id
         self.title = title
         self.owner = owner
@@ -54,18 +56,24 @@ public struct OIDCMultiGroupPost: Model {
         let oIDCMultiGroupPost = OIDCMultiGroupPost.keys
 
         model.authRules = [
-            rule(allow: .owner,
-                 ownerField: "owner",
-                 identityClaim: "sub",
-                 operations: [.create, .update, .delete, .read]),
-            rule(allow: .groups,
-                 groupClaim: "https://myapp.com/claims/groups",
-                 groups: ["Admins"],
-                 operations: [.create, .update, .delete, .read]),
-            rule(allow: .groups,
-                 groupClaim: "https://differentapp.com/claims/groups",
-                 groups: ["Moderators", "Editors"],
-                 operations: [.create, .update, .delete, .read])
+            rule(
+                allow: .owner,
+                ownerField: "owner",
+                identityClaim: "sub",
+                operations: [.create, .update, .delete, .read]
+            ),
+            rule(
+                allow: .groups,
+                groupClaim: "https://myapp.com/claims/groups",
+                groups: ["Admins"],
+                operations: [.create, .update, .delete, .read]
+            ),
+            rule(
+                allow: .groups,
+                groupClaim: "https://differentapp.com/claims/groups",
+                groups: ["Moderators", "Editors"],
+                operations: [.create, .update, .delete, .read]
+            )
         ]
         model.listPluralName = "OIDCMultiGroupPosts"
         model.syncPluralName = "OIDCMultiGroupPosts"
@@ -87,10 +95,14 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
     }
 
     func testOnCreateSubscription_NoGroupInfoPassed() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000"
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -110,17 +122,23 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String,
-                       "123e4567-dead-beef-a456-426614174000",
-                       "owner should exist since there were no groups present in the claims to match the schema")
+        XCTAssertEqual(
+            variables["owner"] as? String,
+            "123e4567-dead-beef-a456-426614174000",
+            "owner should exist since there were no groups present in the claims to match the schema"
+        )
     }
 
     func testOnCreateSubscription_InDifferentAppWithModerators() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://differentapp.com/claims/groups": ["Moderators"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://differentapp.com/claims/groups": ["Moderators"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -136,16 +154,22 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateOIDCMultiGroupPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertTrue(document.variables.isEmpty,
-                      "variables should be empty since claim group value matches the auth rule schema")
+        XCTAssertTrue(
+            document.variables.isEmpty,
+            "variables should be empty since claim group value matches the auth rule schema"
+        )
     }
 
     func testOnCreateSubscription_InDifferentAppWithModeratorsAndEditors() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://differentapp.com/claims/groups": ["Moderators", "Editors"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://differentapp.com/claims/groups": ["Moderators", "Editors"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -161,16 +185,22 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateOIDCMultiGroupPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertTrue(document.variables.isEmpty,
-                      "variables should be empty since claim group value matches the auth rule schema")
+        XCTAssertTrue(
+            document.variables.isEmpty,
+            "variables should be empty since claim group value matches the auth rule schema"
+        )
     }
 
     func testOnCreateSubscription_InDifferentAppWithAdminsFromMyApp() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://myapp.com/claims/groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://myapp.com/claims/groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -186,16 +216,22 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateOIDCMultiGroupPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertTrue(document.variables.isEmpty,
-                      "variables should be empty since claim group value matches the auth rule schema")
+        XCTAssertTrue(
+            document.variables.isEmpty,
+            "variables should be empty since claim group value matches the auth rule schema"
+        )
     }
 
     func testOnCreateSubscription_InAdminsGroupInDifferentClaim() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://differentapp.com/claims/groups": ["Admins"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://differentapp.com/claims/groups": ["Admins"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -215,17 +251,23 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String,
-                       "123e4567-dead-beef-a456-426614174000",
-                       "owner should exist since `Admins` is part of myapp.com, not differntapp.com")
+        XCTAssertEqual(
+            variables["owner"] as? String,
+            "123e4567-dead-beef-a456-426614174000",
+            "owner should exist since `Admins` is part of myapp.com, not differntapp.com"
+        )
     }
 
     func testOnCreateSubscription_InGroupButNotInSchema() {
-        let claims = ["username": "user1",
-                      "sub": "123e4567-dead-beef-a456-426614174000",
-                      "https://differentapp.com/claims/groups": ["Users"]] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: OIDCMultiGroupPost.self,
-                                                               operationType: .subscription)
+        let claims = [
+            "username": "user1",
+            "sub": "123e4567-dead-beef-a456-426614174000",
+            "https://differentapp.com/claims/groups": ["Users"]
+        ] as IdentityClaimsDictionary
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelType: OIDCMultiGroupPost.self,
+            operationType: .subscription
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
@@ -245,8 +287,10 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
             XCTFail("The document doesn't contain variables")
             return
         }
-        XCTAssertEqual(variables["owner"] as? String,
-                       "123e4567-dead-beef-a456-426614174000",
-                       "owner should exist since `Users` is not part of differentapp.com")
+        XCTAssertEqual(
+            variables["owner"] as? String,
+            "123e4567-dead-beef-a456-426614174000",
+            "owner should exist since `Users` is not part of differentapp.com"
+        )
     }
 }

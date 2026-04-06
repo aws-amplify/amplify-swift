@@ -5,24 +5,28 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+import AWSPluginsCore
+import XCTest
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     struct User {
         let username: String
         let password: String
     }
-    
-    let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
+
+    let amplifyConfigurationFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
     var user1: User!
     var user2: User!
-    
+
     override func setUp() async throws {
         do {
             user1 = User(username: "integTest\(UUID().uuidString)", password: "P123@\(UUID().uuidString)")
@@ -31,13 +35,17 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
-            
-            _ = try await AuthSignInHelper.signUpUser(username: user1.username,
-                                                      password: user1.password,
-                                                      email: "\(user1.username)@\(UUID().uuidString).com")
-            _ = try await AuthSignInHelper.signUpUser(username: user2.username,
-                                                      password: user2.password,
-                                                      email: "\(user2.username)@\(UUID().uuidString).com")
+
+            _ = try await AuthSignInHelper.signUpUser(
+                username: user1.username,
+                password: user1.password,
+                email: "\(user1.username)@\(UUID().uuidString).com"
+            )
+            _ = try await AuthSignInHelper.signUpUser(
+                username: user2.username,
+                password: user2.password,
+                email: "\(user2.username)@\(UUID().uuidString).com"
+            )
             ModelRegistry.register(modelType: SocialNote.self)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -46,12 +54,12 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             await signOut()
         }
     }
-    
+
     override func tearDown() async throws {
         await signOut()
         await Amplify.reset()
     }
-    
+
     /// Models created with:
     /// @auth(rules: [ { allow: owner, operations: [create, update, delete] } ])
     ///
@@ -80,14 +88,15 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                 XCTFail("Owner should be able to successfully create a note")
                 return
             }
-            
+
             let ownerReadNoteResult = try await queryNote(byId: ownerCreatedNote.model.id)
             guard case let .success(ownerReadNoteOptional) = ownerReadNoteResult,
-                  let ownerReadNote = ownerReadNoteOptional else {
+                  let ownerReadNote = ownerReadNoteOptional
+            else {
                 XCTFail("Owner should be able to query for own note")
                 return
             }
-            
+
             let ownerUpdateNote = SocialNote(id: ownerReadNote.model.id, content: "owner updated content", owner: nil)
             let ownerUpdatedNoteResult = try await updateNote(ownerUpdateNote, version: ownerReadNote.syncMetadata.version)
             guard case let .success(ownerUpdatedNote) = ownerUpdatedNoteResult else {
@@ -95,20 +104,22 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                 return
             }
             await signOut()
-            
+
             try await signIn(username: user2.username, password: user2.password)
             let otherReadNoteResult = try await queryNote(byId: id)
             guard case let .success(otherReadNoteOptional) = otherReadNoteResult,
-                  let otherReadNote = otherReadNoteOptional else {
+                  let otherReadNote = otherReadNoteOptional
+            else {
                 XCTFail("Others should be able to read the note")
                 return
             }
-            
+
             let otherUpdateNote = SocialNote(id: otherReadNote.model.id, content: "other updated content", owner: nil)
             do {
                 let otherUpdatedNoteResult = try await updateNote(otherUpdateNote, version: otherReadNote.syncMetadata.version)
                 guard case let .failure(graphQLResponseErrorOnUpdate) = otherUpdatedNoteResult,
-                      let appSyncErrorOnUpdate = getAppSyncError(graphQLResponseErrorOnUpdate) else {
+                      let appSyncErrorOnUpdate = getAppSyncError(graphQLResponseErrorOnUpdate)
+                else {
                     XCTFail("Other should not be able to update owner's note")
                     return
                 }
@@ -116,20 +127,20 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             } catch (let error) {
                 XCTFail("Failed with error: \(error)")
             }
-            
+
             await signOut()
             try await signIn(username: user1.username, password: user1.password)
             do {
                 let result = try await deleteNote(byId: id, version: ownerUpdatedNote.syncMetadata.version)
                 XCTAssertNotNil(result)
-            } catch(let error) {
+            } catch (let error) {
                 XCTFail("Owner should be able to delete own note: \(error)")
             }
         } catch (let error as APIError) {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// An unauthorized user should not be able to make a mutation
     /// - Given: An API backend as per README.md with SocialNote schema
     /// - When: An unauthorized mutation request is made
@@ -147,7 +158,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         }
         await fulfillment(of: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// - Given: An API backend as per README.md with SocialNote schema
     /// - When: An authrorized syncQuery request is made
     /// - Then: The request should succeed
@@ -162,7 +173,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// An unauthorized user should not be able to query
     /// - Given: An API backend as per README.md with SocialNote schema
     /// - When: An unauthrorized syncQuery request is made
@@ -173,14 +184,14 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         do {
             _ = try await Amplify.API.query(request: request)
             XCTFail("Should not have completed successfully")
-        } catch (let error as APIError){
+        } catch (let error as APIError) {
             self.assertNotAuthenticated(error)
             failureInvoked.fulfill()
         }
-        
+
         await fulfillment(of: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
     /// An authorized user should not subscribe to mutation events
     /// - Given: An API backend as per README.md with SocialNote schema
     /// - When: An authorized user sets up subscription to API
@@ -189,8 +200,10 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         try await signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
-        let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
-                                                                      subscriptionType: .onCreate)
+        let request = GraphQLRequest<MutationSyncResult>.subscription(
+            to: SocialNote.self,
+            subscriptionType: .onCreate
+        )
         let subscription = Amplify.API.subscribe(request: request)
         Task {
             do {
@@ -213,22 +226,22 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                 XCTFail("Unexpected subscription failure: \(error)")
             }
         }
-        
+
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        
+
         do {
             _ = try await createNote(content: "owner created content")
         } catch (let error) {
             XCTFail("Owner should be able to successfully create a note: \(error)")
         }
-        
+
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         subscription.cancel()
     }
-    
-    
+
+
     // MARK: - Helpers
-    
+
     func signIn(username: String, password: String) async throws {
         do {
             let signInResult = try await Amplify.Auth.signIn(username: username, password: password)
@@ -240,43 +253,45 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Failed with signIn error: \(error)")
         }
     }
-    
+
     func signOut() async {
         _ = await Amplify.Auth.signOut()
     }
-    
+
     func isSignedIn() async throws -> Bool {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         return authSession.isSignedIn
     }
-    
+
     func createNote(_ id: String = UUID().uuidString, content: String) async throws -> GraphQLResponse<MutationSyncResult> {
         let note = SocialNote(id: id, content: content, owner: nil)
         let request = GraphQLRequest<MutationSyncResult>.createMutation(of: note)
         let mutateResult = try await Amplify.API.mutate(request: request)
         return mutateResult
     }
-    
+
     func updateNote(_ note: SocialNote, version: Int) async throws -> GraphQLResponse<MutationSyncResult> {
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: note, version: version)
         let mutateResult = try await Amplify.API.mutate(request: request)
         return mutateResult
     }
-    
+
     func deleteNote(byId id: String, version: Int) async throws -> GraphQLResponse<MutationSyncResult> {
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: SocialNote(id: id, content: ""),
-                                                                        modelSchema: SocialNote.schema,
-                                                                        version: version)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: SocialNote(id: id, content: ""),
+            modelSchema: SocialNote.schema,
+            version: version
+        )
         let mutateResult = try await Amplify.API.mutate(request: request)
         return mutateResult
     }
-    
+
     func queryNote(byId id: String) async throws -> GraphQLResponse<MutationSyncResult?> {
         let request = GraphQLRequest<MutationSyncResult?>.query(modelName: SocialNote.modelName, byId: id)
         let queryResult = try await Amplify.API.query(request: request)
         return queryResult
     }
-    
+
     func syncQuery() async throws -> SyncQueryResult {
         let syncQueryInvoked = expectation(description: "note was sync queried")
         var resultOptional: SyncQueryResult?
@@ -295,18 +310,19 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         }
         return result
     }
-    
+
     func getAppSyncError(_ graphQLResponseError: GraphQLResponseError<MutationSyncResult>) -> AppSyncErrorType? {
         guard case let .error(errors) = graphQLResponseError,
               let error = errors.first,
               let extensions = error.extensions,
-              case let .string(errorTypeValue) = extensions["errorType"] else {
+              case let .string(errorTypeValue) = extensions["errorType"]
+        else {
             XCTFail("Missing expected `errorType` from error.extensions")
             return nil
         }
         return AppSyncErrorType(errorTypeValue)
     }
-    
+
     func assertNotAuthenticated(_ error: APIError) {
         guard case let .operationError(_, _, underlyingError) = error else {
             XCTFail("Error should be operationError")

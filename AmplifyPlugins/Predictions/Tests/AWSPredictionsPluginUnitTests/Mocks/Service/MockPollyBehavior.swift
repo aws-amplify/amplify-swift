@@ -9,7 +9,7 @@ import AWSPolly
 @testable import AWSPredictionsPlugin
 
 class MockPollyBehavior: PollyClientProtocol {
-    var synthesizeSpeechResult: ((SynthesizeSpeechInput) async throws -> SynthesizeSpeechOutput)? = nil
+    var synthesizeSpeechResult: ((SynthesizeSpeechInput) async throws -> SynthesizeSpeechOutput)?
 
     func synthesizeSpeech(
         input: SynthesizeSpeechInput

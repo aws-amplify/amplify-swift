@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Amplify
+@preconcurrency import Amplify
 import AmplifyTestCommon
+import XCTest
+import XCTest
 @testable import AWSAPIPlugin
 
 class ListTests: XCTestCase {
@@ -17,9 +18,11 @@ class ListTests: XCTestCase {
     }
 
     func testDecodeToResponseTypeList() async throws {
-        let request = GraphQLRequest<List<Comment4>>(document: "",
-                                                     responseType: List<Comment4>.self,
-                                                     decodePath: "listComments")
+        let request = GraphQLRequest<List<Comment4>>(
+            document: "",
+            responseType: List<Comment4>.self,
+            decodePath: "listComments"
+        )
         let decoder = GraphQLResponseDecoder(request: request.toOperationRequest(operationType: .query))
         let graphQLData: [String: JSONValue] = [
             "listComments": [

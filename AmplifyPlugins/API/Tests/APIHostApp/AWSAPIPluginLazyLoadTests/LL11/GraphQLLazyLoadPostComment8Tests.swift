@@ -5,35 +5,39 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
     }
-    
+
     func testQueryThenLazyLoad() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         assertComment(savedComment, contains: savedPost)
@@ -43,25 +47,29 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
-    
+
     func assertComment(_ comment: Comment, contains post: Post) {
         XCTAssertEqual(comment.postId, post.postId)
         XCTAssertEqual(comment.postTitle, post.title)
     }
-    
+
     func assertCommentDoesNotContainPost(_ comment: Comment) {
         XCTAssertNil(comment.postId)
         XCTAssertNil(comment.postTitle)
     }
-    
-    func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws {
+
+    func assertPost(
+        _ post: Post,
+        canLazyLoad comment: Comment
+    ) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedFields: ["postId", "postTitle"]))
+        assertList(comments, state: .isNotLoaded(
+            associatedIdentifiers: [post.postId, post.title],
+            associatedFields: ["postId", "postTitle"]
+        ))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
@@ -70,29 +78,33 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         }
         assertComment(comment, contains: post)
     }
-    
+
     func testListPostsListComments() async throws {
         await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         try await mutate(.create(post))
         try await mutate(.create(comment))
-        
-        
+
+
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
-        assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postId", "postTitle"]))
-        
+        assertList(
+            queriedPosts.first!.comments!,
+            state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postId", "postTitle"])
+        )
+
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))
         XCTAssertEqual(queriedComments.first!.postId, post.postId)
         XCTAssertEqual(queriedComments.first!.postTitle, post.title)
     }
-    
+
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
@@ -107,14 +119,16 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         let queriedComment2 = try await query(for: saveCommentWithPost)!
         assertComment(queriedComment2, contains: post)
     }
-    
+
     func testUpdateFromQueriedComment() async throws {
         await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         let queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
@@ -123,15 +137,17 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         let queriedComment2 = try await query(for: savedQueriedComment)!
         assertComment(queriedComment2, contains: savedPost)
     }
-    
+
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
@@ -144,39 +160,43 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         let queriedComment2 = try await query(for: saveCommentWithNewPost)!
         assertComment(queriedComment2, contains: newPost)
     }
-    
+
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
         assertComment(queriedComment, contains: post)
-        
+
         queriedComment.postId = nil
         queriedComment.postTitle = nil
-        
+
         let saveCommentRemovePost = try await mutate(.update(queriedComment))
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)!
         assertCommentDoesNotContainPost(queriedCommentNoPost)
     }
-    
+
     func testDelete() async throws {
         await setup(withModels: PostComment8Models())
-        
+
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              postId: post.postId,
-                              postTitle: post.title)
+        let comment = Comment(
+            commentId: UUID().uuidString,
+            content: "content",
+            postId: post.postId,
+            postTitle: post.title
+        )
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
-        
+
         try await mutate(.delete(savedPost))
         try await assertModelDoesNotExist(savedPost)
         try await assertModelExists(savedComment)
@@ -190,9 +210,9 @@ extension GraphQLLazyLoadPostComment8Tests: DefaultLogger { }
 extension GraphQLLazyLoadPostComment8Tests {
     typealias Post = Post8
     typealias Comment = Comment8
-    
+
     struct PostComment8Models: AmplifyModelRegistration {
-        public let version: String = "version"
+        let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post8.self)
             ModelRegistry.register(modelType: Comment8.self)

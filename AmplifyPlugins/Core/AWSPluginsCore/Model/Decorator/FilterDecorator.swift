@@ -18,13 +18,17 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
         self.filter = filter
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelType: Model.Type
+    ) -> SingleDirectiveGraphQLDocument {
         decorate(document, modelSchema: modelType.schema)
     }
 
-    public func decorate(_ document: SingleDirectiveGraphQLDocument,
-                         modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+    public func decorate(
+        _ document: SingleDirectiveGraphQLDocument,
+        modelSchema: ModelSchema
+    ) -> SingleDirectiveGraphQLDocument {
         guard !filter.isEmpty else {
             return document.copy(inputs: document.inputs)
         }
@@ -32,11 +36,15 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
         var inputs = document.inputs
         let modelName = modelSchema.name
         if case .mutation = document.operationType {
-            inputs["condition"] = GraphQLDocumentInput(type: "Model\(modelName)ConditionInput",
-                value: .object(filter))
+            inputs["condition"] = GraphQLDocumentInput(
+                type: "Model\(modelName)ConditionInput",
+                value: .object(filter)
+            )
         } else if case .query = document.operationType {
-            inputs["filter"] = GraphQLDocumentInput(type: "Model\(modelName)FilterInput",
-                value: .object(filter))
+            inputs["filter"] = GraphQLDocumentInput(
+                type: "Model\(modelName)FilterInput",
+                value: .object(filter)
+            )
         }
 
         return document.copy(inputs: inputs)

@@ -27,7 +27,7 @@ extension ProvisioningProfileReader where Self == DefaultProvisioningProfileRead
 }
 
 struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
-    private struct Keys {
+    private enum Keys {
         static let entitlements = "Entitlements"
         static var apsEnvironment: String {
         #if os(macOS)
@@ -73,14 +73,16 @@ struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
     }
 
     private var contents: Data? {
-        guard let url = url,
-              let contents =  try? String(contentsOf: url, encoding: .isoLatin1) else {
+        guard let url,
+              let contents =  try? String(contentsOf: url, encoding: .isoLatin1)
+        else {
             return nil
         }
 
         let scanner = Scanner(string: contents)
         guard scanner.scanUpToString("<plist") != nil,
-              let plist = scanner.scanUpToString("</plist>") else {
+              let plist = scanner.scanUpToString("</plist>")
+        else {
             return nil
         }
 
@@ -88,11 +90,12 @@ struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
     }
 
     func profile() -> ProvisioningProfile? {
-        guard let contents = contents,
+        guard let contents,
               let provisioning = try? PropertyListSerialization.propertyList(
                   from: contents,
                   format: nil
-              ) as? [String: Any] else {
+              ) as? [String: Any]
+        else {
             return nil
         }
 

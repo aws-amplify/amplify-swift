@@ -14,7 +14,8 @@ extension AuthSignUpRequest {
             let error = AuthError.validation(
                 AuthPluginErrorConstants.signUpUsernameError.field,
                 AuthPluginErrorConstants.signUpUsernameError.errorDescription,
-                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
+                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil
+            )
             throw error
         }
     }

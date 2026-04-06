@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 import XCTest
 
-@testable import Amplify
 import AWSPluginsCore
+@testable import Amplify
 
 extension AWSDataStoreLazyLoadDefaultPKTests {
-    
+
     func testParentSelectionSets() {
         setUpModelRegistrationOnly(withModels: DefaultPKModels())
         continueAfterFailure = true
@@ -35,7 +35,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: parent, modelSchema: Parent.schema)
         let updateDocument = """
@@ -53,7 +53,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: parent, modelSchema: Parent.schema)
         let deleteDocument = """
@@ -71,7 +71,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Parent.self, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -89,7 +89,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Parent.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -107,7 +107,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Parent.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -125,7 +125,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Parent.self)
         let syncDocument = """
@@ -148,13 +148,13 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
     func testChildSelectionSets() {
         setUpModelRegistrationOnly(withModels: DefaultPKModels())
         continueAfterFailure = true
         let parent = Parent()
         let child = Child(parent: parent)
-        
+
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: Child.schema)
         let createDocument = """
@@ -182,7 +182,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(createRequest.document, createDocument)
-        
+
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: child, modelSchema: Child.schema)
         let updateDocument = """
@@ -210,7 +210,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(updateRequest.document, updateDocument)
-        
+
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: child, modelSchema: Child.schema)
         let deleteDocument = """
@@ -238,7 +238,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(deleteRequest.document, deleteDocument)
-        
+
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Child.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
@@ -261,7 +261,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onCreateRequest.document, onCreateDocument)
-        
+
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Child.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
@@ -284,7 +284,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onUpdateRequest.document, onUpdateDocument)
-        
+
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Child.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
@@ -307,7 +307,7 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         }
         """
         XCTAssertEqual(onDeleteRequest.document, onDeleteDocument)
-        
+
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Child.self)
         let syncDocument = """
@@ -335,6 +335,6 @@ extension AWSDataStoreLazyLoadDefaultPKTests {
         """
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
-    
+
 }
 

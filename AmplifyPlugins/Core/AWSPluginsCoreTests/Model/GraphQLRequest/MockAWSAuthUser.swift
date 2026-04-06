@@ -6,6 +6,7 @@
 //
 
 import Amplify
+
 public struct MockAWSAuthUser: AuthUser {
 
     /// The username for the logged in user

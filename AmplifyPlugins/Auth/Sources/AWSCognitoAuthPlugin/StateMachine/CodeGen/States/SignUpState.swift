@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 enum SignUpState: State {
     case notStarted
@@ -14,11 +14,11 @@ enum SignUpState: State {
     case awaitingUserConfirmation(SignUpEventData, AuthSignUpResult)
     case confirmingSignUp(SignUpEventData)
     case signedUp(SignUpEventData, AuthSignUpResult)
-    case error(SignUpError)
+    case error(SignUpError, SignUpEventData)
 }
 
 extension SignUpState {
-    
+
     var type: String {
         switch self {
         case .notStarted: return "SignUpState.notStarted"
@@ -44,5 +44,5 @@ extension SignUpState {
         default: return false
         }
     }
-    
+
 }

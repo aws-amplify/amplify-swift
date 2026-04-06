@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Amplify
 
 protocol AuthFetchUserAttributeTask: AmplifyAuthTask where Request == AuthFetchUserAttributesRequest, Success == [AuthUserAttribute], Failure == AuthError {}

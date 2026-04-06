@@ -34,16 +34,18 @@ public extension Geo {
         public let country: String?
 
         /// Initializer
-        public init(coordinates: Coordinates,
-                    label: String?,
-                    addressNumber: String?,
-                    street: String?,
-                    municipality: String?,
-                    neighborhood: String?,
-                    region: String?,
-                    subRegion: String?,
-                    postalCode: String?,
-                    country: String?) {
+        public init(
+            coordinates: Coordinates,
+            label: String?,
+            addressNumber: String?,
+            street: String?,
+            municipality: String?,
+            neighborhood: String?,
+            region: String?,
+            subRegion: String?,
+            postalCode: String?,
+            country: String?
+        ) {
             self.coordinates = coordinates
             self.label = label
             self.addressNumber = addressNumber

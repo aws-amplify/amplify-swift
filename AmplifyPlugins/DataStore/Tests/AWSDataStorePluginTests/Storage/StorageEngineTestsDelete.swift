@@ -27,11 +27,13 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             syncEngine = MockRemoteSyncEngine()
-            storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .testDefault(),
-                                          syncEngine: syncEngine,
-                                          validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+            storageEngine = StorageEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .testDefault(),
+                syncEngine: syncEngine,
+                validAPIPluginKey: validAPIPluginKey,
+                validAuthPluginKey: validAuthPluginKey
+            )
             ModelRegistry.register(modelType: Team.self)
             ModelRegistry.register(modelType: Project.self)
 
@@ -60,8 +62,10 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
     func testDeleteSuccessWhenItemDoesNotExist() {
         let teamA = Team(name: "A-Team")
         let projectA = Project(name: "ProjectA", team: teamA)
-        let result = deleteModelSynchronous(modelType: Project.self,
-                                            withId: projectA.id)
+        let result = deleteModelSynchronous(
+            modelType: Project.self,
+            withId: projectA.id
+        )
         switch result {
         case .success(let model):
             guard model == nil else {
@@ -77,9 +81,11 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
         let teamA = Team(name: "A-Team")
         let projectA = Project(name: "ProjectA", team: teamA)
         let project = Project.keys
-        let result = deleteModelSynchronous(modelType: Project.self,
-                                            withId: projectA.id,
-                                            where: project.name == "ProjectA")
+        let result = deleteModelSynchronous(
+            modelType: Project.self,
+            withId: projectA.id,
+            where: project.name == "ProjectA"
+        )
         switch result {
         case .success(let model):
             guard model == nil else {
@@ -111,9 +117,11 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
                 return
         }
         let project = Project.keys
-        let result = deleteModelSynchronous(modelType: Project.self,
-                                            withId: projectA.id,
-                                            where: project.name == "NotProjectA")
+        let result = deleteModelSynchronous(
+            modelType: Project.self,
+            withId: projectA.id,
+            where: project.name == "NotProjectA"
+        )
 
         switch result {
         case .success:
@@ -163,9 +171,11 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
         }
 
         let project = Project.keys
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Project.self,
-                                                                    withId: projectA.id,
-                                                                    where: project.name == "ProjectA") else {
+        guard case .success = deleteModelSynchronousOrFailOtherwise(
+            modelType: Project.self,
+            withId: projectA.id,
+            where: project.name == "ProjectA"
+        ) else {
             XCTFail("Failed to delete projectA")
             return
         }

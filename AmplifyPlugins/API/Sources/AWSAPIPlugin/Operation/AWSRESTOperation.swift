@@ -8,11 +8,11 @@
 import Amplify
 import Foundation
 
-final public class AWSRESTOperation: AmplifyOperation<
+public final class AWSRESTOperation: AmplifyOperation<
     RESTOperationRequest,
     Data,
     APIError
->, RESTOperation {
+>, RESTOperation, @unchecked Sendable {
 
     // Data received by the operation
     var data = Data()
@@ -21,20 +21,24 @@ final public class AWSRESTOperation: AmplifyOperation<
     var mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
 
-    init(request: RESTOperationRequest,
-         session: URLSessionBehavior,
-         mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration,
-         resultListener: AWSRESTOperation.ResultListener?) {
+    init(
+        request: RESTOperationRequest,
+        session: URLSessionBehavior,
+        mapper: OperationTaskMapper,
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        resultListener: AWSRESTOperation.ResultListener?
+    ) {
 
         self.session = session
         self.mapper = mapper
         self.pluginConfig = pluginConfig
 
-        super.init(categoryType: .api,
-                   eventName: request.operationType.hubEventName,
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .api,
+            eventName: request.operationType.hubEventName,
+            request: request,
+            resultListener: resultListener
+        )
 
     }
 
@@ -123,7 +127,7 @@ final public class AWSRESTOperation: AmplifyOperation<
         from request: RESTOperationRequest
     ) -> Result<AWSAPICategoryPluginConfiguration.EndpointConfig, APIError> {
         do {
-            return .success(try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest))
+            return try .success(pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest))
         } catch let error as APIError {
             return .failure(error)
         } catch {
@@ -154,7 +158,7 @@ final public class AWSRESTOperation: AmplifyOperation<
 
     private func applyInterceptor(_ interceptor: URLRequestInterceptor, request: URLRequest) async -> Result<URLRequest, APIError> {
         do {
-            return .success(try await interceptor.intercept(request))
+            return try await .success(interceptor.intercept(request))
         } catch let error as APIError {
             return .failure(error)
         } catch {

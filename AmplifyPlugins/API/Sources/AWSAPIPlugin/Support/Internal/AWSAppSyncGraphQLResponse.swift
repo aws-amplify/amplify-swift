@@ -45,14 +45,18 @@ enum AWSAppSyncGraphQLResponse {
             decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
             json = try decoder.decode(JSONValue.self, from: graphQLResponse)
         } catch {
-            throw APIError.operationError("Could not decode to JSONValue from the GraphQL Response",
-                                          "Service issue",
-                                          error)
+            throw APIError.operationError(
+                "Could not decode to JSONValue from the GraphQL Response",
+                "Service issue",
+                error
+            )
         }
 
         guard case .object(let jsonObject) = json else {
-            throw APIError.unknown("The GraphQL response is not an object",
-                                   "The AppSync service returned a malformed GraphQL response")
+            throw APIError.unknown(
+                "The GraphQL response is not an object",
+                "The AppSync service returned a malformed GraphQL response"
+            )
         }
 
         return jsonObject
@@ -64,8 +68,10 @@ enum AWSAppSyncGraphQLResponse {
         }
 
         guard case .array(let errorArray) = errors else {
-            throw APIError.unknown("The GraphQL response containing errors should be an array",
-                                   "The AppSync service returned a malformed GraphQL response")
+            throw APIError.unknown(
+                "The GraphQL response containing errors should be an array",
+                "The AppSync service returned a malformed GraphQL response"
+            )
         }
 
         return errorArray
@@ -82,8 +88,10 @@ enum AWSAppSyncGraphQLResponse {
         case .null:
             return nil
         default:
-            throw APIError.unknown("Failed to get object or null from data.",
-                                   "The AppSync service returned a malformed GraphQL response")
+            throw APIError.unknown(
+                "Failed to get object or null from data.",
+                "The AppSync service returned a malformed GraphQL response"
+            )
         }
     }
 }

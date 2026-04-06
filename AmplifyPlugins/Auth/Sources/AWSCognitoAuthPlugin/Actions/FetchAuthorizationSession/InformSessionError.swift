@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import Foundation
-import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import AWSCognitoIdentityProvider
+import Foundation
 
 struct InformSessionError: Action {
 
@@ -19,36 +19,29 @@ struct InformSessionError: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        var event: AuthorizationEvent
-        switch error {
+        let event: AuthorizationEvent = switch error {
         case .service(let serviceError):
-            if isNotAuthorizedError(serviceError) {
-                event = .init(eventType: .throwError(
+            if serviceError is AWSCognitoIdentityProvider.NotAuthorizedException {
+                .init(eventType: .throwError(
                     .sessionExpired(error: serviceError)))
             } else {
-                event = .init(eventType: .receivedSessionError(error))
+                .init(eventType: .receivedSessionError(error))
             }
         default:
-            event = .init(eventType: .receivedSessionError(error))
-
+            .init(eventType: .receivedSessionError(error))
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }
-
-    func isNotAuthorizedError(_ error: Error) -> Bool {
-        error is AWSCognitoIdentity.NotAuthorizedException
-        || error is AWSCognitoIdentityProvider.NotAuthorizedException
-    }
 }
 
 extension InformSessionError: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
 
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

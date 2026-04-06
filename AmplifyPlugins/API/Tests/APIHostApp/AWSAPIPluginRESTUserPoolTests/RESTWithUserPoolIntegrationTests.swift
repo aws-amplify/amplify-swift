@@ -5,13 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+import XCTest
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
 
@@ -27,7 +31,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource:RESTWithUserPoolIntegrationTests.amplifyConfigurationFile)
+                forResource: RESTWithUserPoolIntegrationTests.amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -40,7 +44,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         }
         await Amplify.reset()
     }
-    
+
     func testSetUp() {
         XCTAssertTrue(true)
     }
@@ -48,7 +52,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     func testCreateUser() async throws {
         try await createAuthenticatedUser()
     }
-    
+
     func testCreateUserAndGetToken() async throws {
         try await createAuthenticatedUser()
         let session = try await Amplify.Auth.fetchAuthSession()
@@ -59,7 +63,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             print("Access token - \(tokens.accessToken) ")
         }
     }
-    
+
     func testGetAPISuccess() async throws {
         try await createAuthenticatedUser()
         let request = RESTRequest(path: "/items")
@@ -70,11 +74,13 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     func testGetAPIWithQueryParamsSuccess() async throws {
         try await createAuthenticatedUser()
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello@email.com",
-                                    "created": "2021-06-18T09:00:00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello@email.com",
+                "created": "2021-06-18T09:00:00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         print(result)
@@ -82,11 +88,13 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     func testGetAPIWithEncodedQueryParamsSuccess() async throws {
         try await createAuthenticatedUser()
-        let request = RESTRequest(path: "/items",
-                                  queryParameters: [
-                                    "user": "hello%40email.com",
-                                    "created": "2021-06-18T09%3A00%3A00Z"
-                                  ])
+        let request = RESTRequest(
+            path: "/items",
+            queryParameters: [
+                "user": "hello%40email.com",
+                "created": "2021-06-18T09%3A00%3A00Z"
+            ]
+        )
         let data = try await Amplify.API.get(request: request)
         let result = String(decoding: data, as: UTF8.self)
         print(result)
@@ -103,7 +111,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
                 XCTFail("Should be APIError")
                 return
             }
-            
+
             guard case let .operationError(_, _, underlyingError) = apiError else {
                 XCTFail("Error should be operationError")
                 return
@@ -120,9 +128,9 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Auth Helpers
-    
+
     func createAuthenticatedUser() async throws {
         if try await isSignedIn() {
             await signOut()
@@ -130,30 +138,34 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         try await signUp()
         try await signIn()
     }
-    
+
     func isSignedIn() async throws -> Bool {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         return authSession.isSignedIn
     }
-    
+
     func signUp() async throws {
-        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
+        let userAttributes = [AuthUserAttribute(.email, value: email)]
+        let options = AuthSignUpRequest.Options(userAttributes: userAttributes)
+        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password, options: options)
         guard signUpResult.isSignUpComplete else {
             XCTFail("Sign up successful but not complete")
             return
         }
     }
 
-    
+
     func signIn() async throws {
-        let signInResult = try await Amplify.Auth.signIn(username: username,
-                                               password: password)
+        let signInResult = try await Amplify.Auth.signIn(
+            username: username,
+            password: password
+        )
         guard signInResult.isSignedIn else {
             XCTFail("Sign in successful but not complete")
             return
         }
     }
-    
+
     func signOut() async {
         _ = await Amplify.Auth.signOut()
     }

@@ -19,11 +19,13 @@ struct SelectStatementMetadata {
     let columnMapping: ColumnMapping
     let bindings: [Binding?]
 
-    static func metadata(from modelSchema: ModelSchema,
-                         predicate: QueryPredicate? = nil,
-                         sort: [QuerySortDescriptor]? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true) -> SelectStatementMetadata {
+    static func metadata(
+        from modelSchema: ModelSchema,
+        predicate: QueryPredicate? = nil,
+        sort: [QuerySortDescriptor]? = nil,
+        paginationInput: QueryPaginationInput? = nil,
+        eagerLoad: Bool = true
+    ) -> SelectStatementMetadata {
         let rootNamespace = "root"
         let fields = modelSchema.columns
         let tableName = modelSchema.name
@@ -46,10 +48,12 @@ struct SelectStatementMetadata {
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
         var bindings: [Binding?] = []
-        if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelSchema: modelSchema,
-                                                        predicate: predicate,
-                                                        namespace: rootNamespace[...])
+        if let predicate {
+            let conditionStatement = ConditionStatement(
+                modelSchema: modelSchema,
+                predicate: predicate,
+                namespace: rootNamespace[...]
+            )
             bindings.append(contentsOf: conditionStatement.variables)
             sql = """
             \(sql)
@@ -58,23 +62,25 @@ struct SelectStatementMetadata {
             """
         }
 
-        if let sort = sort, !sort.isEmpty {
+        if let sort, !sort.isEmpty {
             sql = """
             \(sql)
             order by \(sort.sortStatement(namespace: rootNamespace))
             """
         }
 
-        if let paginationInput = paginationInput {
+        if let paginationInput {
             sql = """
             \(sql)
             \(paginationInput.sqlStatement)
             """
         }
 
-        return SelectStatementMetadata(statement: sql,
-                                       columnMapping: columnMapping,
-                                       bindings: bindings)
+        return SelectStatementMetadata(
+            statement: sql,
+            columnMapping: columnMapping,
+            bindings: bindings
+        )
     }
 
     struct JoinStatement {
@@ -92,9 +98,11 @@ struct SelectStatementMetadata {
         var joinStatements: [String] = []
         var columnMapping: ColumnMapping = [:]
         guard eagerLoad == true else {
-            return JoinStatement(columns: columns,
-                                 statements: joinStatements,
-                                 columnMapping: columnMapping)
+            return JoinStatement(
+                columns: columns,
+                statements: joinStatements,
+                columnMapping: columnMapping
+            )
         }
 
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
@@ -131,9 +139,11 @@ struct SelectStatementMetadata {
         }
         visitAssociations(node: schema)
 
-        return JoinStatement(columns: columns,
-                             statements: joinStatements,
-                             columnMapping: columnMapping)
+        return JoinStatement(
+            columns: columns,
+            statements: joinStatements,
+            columnMapping: columnMapping
+        )
     }
 
 }
@@ -145,17 +155,21 @@ struct SelectStatement: SQLStatement {
     let modelSchema: ModelSchema
     let metadata: SelectStatementMetadata
 
-    init(from modelSchema: ModelSchema,
-         predicate: QueryPredicate? = nil,
-         sort: [QuerySortDescriptor]? = nil,
-         paginationInput: QueryPaginationInput? = nil,
-         eagerLoad: Bool = true) {
+    init(
+        from modelSchema: ModelSchema,
+        predicate: QueryPredicate? = nil,
+        sort: [QuerySortDescriptor]? = nil,
+        paginationInput: QueryPaginationInput? = nil,
+        eagerLoad: Bool = true
+    ) {
         self.modelSchema = modelSchema
-        self.metadata = .metadata(from: modelSchema,
-                                  predicate: predicate,
-                                  sort: sort,
-                                  paginationInput: paginationInput,
-                                  eagerLoad: eagerLoad)
+        self.metadata = .metadata(
+            from: modelSchema,
+            predicate: predicate,
+            sort: sort,
+            paginationInput: paginationInput,
+            eagerLoad: eagerLoad
+        )
     }
 
     var stringValue: String {
@@ -175,7 +189,7 @@ struct SelectStatement: SQLStatement {
 /// - Parameter columns the list of column names
 /// - Parameter perLine max numbers of columns per line
 /// - Returns: a list of columns that can be used in `select` SQL statements
-internal func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
+func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
     return columns.enumerated().reduce("") { partial, entry in
         let spacer = entry.offset == 0 || entry.offset % perLine == 0 ? "\n  " : " "
         let isFirstOrLast = entry.offset == 0 || entry.offset >= columns.count

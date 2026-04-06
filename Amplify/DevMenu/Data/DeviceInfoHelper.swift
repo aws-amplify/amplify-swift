@@ -19,13 +19,13 @@ struct DeviceInfoHelper {
             isSimulator = true
         #endif
         return [
-                DeviceInfoItem(type: .deviceName(UIDevice.current.name)),
-                DeviceInfoItem(type: .systemName(UIDevice.current.systemName)),
-                DeviceInfoItem(type: .systemVersion(UIDevice.current.systemVersion)),
-                DeviceInfoItem(type: .modelName(UIDevice.current.model)),
-                DeviceInfoItem(type: .localizedModelName(UIDevice.current.localizedModel)),
-                DeviceInfoItem(type: .isSimulator(isSimulator))
-            ]
+            DeviceInfoItem(type: .deviceName(UIDevice.current.name)),
+            DeviceInfoItem(type: .systemName(UIDevice.current.systemName)),
+            DeviceInfoItem(type: .systemVersion(UIDevice.current.systemVersion)),
+            DeviceInfoItem(type: .modelName(UIDevice.current.model)),
+            DeviceInfoItem(type: .localizedModelName(UIDevice.current.localizedModel)),
+            DeviceInfoItem(type: .isSimulator(isSimulator))
+        ]
     }
 }
 #endif

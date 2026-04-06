@@ -27,19 +27,25 @@ public struct PinpointSession: Codable {
             return stopTime
         }
     }
-    
+
     private var state: State = .active
 
-    init(appId: String,
-         uniqueId: String) {
-        sessionId = Self.generateSessionId(appId: appId,
-                                           uniqueId: uniqueId)
-        startTime = Date()
+    init(
+        appId: String,
+        uniqueId: String
+    ) {
+        self.sessionId = Self.generateSessionId(
+            appId: appId,
+            uniqueId: uniqueId
+        )
+        self.startTime = Date()
     }
 
-    init(sessionId: SessionId,
-         startTime: Date,
-         stopTime: Date?) {
+    init(
+        sessionId: SessionId,
+        startTime: Date,
+        stopTime: Date?
+    ) {
         self.sessionId = sessionId
         self.startTime = startTime
         if let stopTime {
@@ -54,7 +60,7 @@ public struct PinpointSession: Codable {
 
         return false
     }
-    
+
     var isStopped: Bool {
         if case .stopped = state {
             return true
@@ -83,8 +89,10 @@ public struct PinpointSession: Codable {
         state = .active
     }
 
-    private static func generateSessionId(appId: String,
-                                          uniqueId: String) -> SessionId {
+    private static func generateSessionId(
+        appId: String,
+        uniqueId: String
+    ) -> SessionId {
         let now = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: Constants.Date.defaultTimezone)
@@ -98,12 +106,16 @@ public struct PinpointSession: Codable {
         dateFormatter.dateFormat = Constants.Date.timeFormat
         let timestampTime = dateFormatter.string(from: now)
 
-        let appIdKey = appId.padding(toLength: Constants.maxAppKeyLength,
-                                     withPad: Constants.paddingChar,
-                                     startingAt: 0)
-        let uniqueIdKey = uniqueId.padding(toLength: Constants.maxUniqueIdLength,
-                                           withPad: Constants.paddingChar,
-                                           startingAt: 0)
+        let appIdKey = appId.padding(
+            toLength: Constants.maxAppKeyLength,
+            withPad: Constants.paddingChar,
+            startingAt: 0
+        )
+        let uniqueIdKey = uniqueId.padding(
+            toLength: Constants.maxUniqueIdLength,
+            withPad: Constants.paddingChar,
+            startingAt: 0
+        )
 
         // Create Session ID formatted as <AppId> - <UniqueID> - <Day> - <Time>
         return "\(appIdKey)-\(uniqueIdKey)-\(timestampDay)-\(timestampTime)"
@@ -120,19 +132,19 @@ extension PinpointSession: Equatable {
 }
 
 extension PinpointSession {
-    struct Constants {
+    enum Constants {
         static let defaultSessionId = "00000000-00000000"
         static let maxAppKeyLength = 8
         static let maxUniqueIdLength = 8
         static let paddingChar = "_"
 
-        struct CodingKeys {
+        enum CodingKeys {
             static let sessionId = "sessionId"
             static let startTime = "startTime"
             static let stopTime = "stopTime"
         }
 
-        struct Date {
+        enum Date {
             static let defaultTimezone = "GMT"
             static let defaultLocale = "en_US"
             static let dateFormat = "yyyyMMdd"

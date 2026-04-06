@@ -16,20 +16,26 @@ public class Team4aV2: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
 
-    public convenience init(id: String = UUID().uuidString,
+    public convenience init(
+      id: String = UUID().uuidString,
       name: String,
-      project: Project4aV2? = nil) {
-    self.init(id: id,
+      project: Project4aV2? = nil
+    ) {
+    self.init(
+      id: id,
       name: name,
       project: project,
       createdAt: nil,
-      updatedAt: nil)
+      updatedAt: nil
+    )
   }
-  internal init(id: String = UUID().uuidString,
-      name: String,
-      project: Project4aV2? = nil,
-      createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+  init(
+    id: String = UUID().uuidString,
+    name: String,
+    project: Project4aV2? = nil,
+    createdAt: Temporal.DateTime? = nil,
+    updatedAt: Temporal.DateTime? = nil
+  ) {
       self.id = id
       self.name = name
       self.project = project

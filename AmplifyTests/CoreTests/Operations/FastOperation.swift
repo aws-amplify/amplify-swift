@@ -12,10 +12,10 @@ import Combine
 import Amplify
 
 public class FastOperationRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable : Any]
+    public let options: [AnyHashable: Any]
     public let numbers: [Int]
 
-    public init(options: [AnyHashable : Any] = [:], numbers: [Int]) {
+    public init(options: [AnyHashable: Any] = [:], numbers: [Int]) {
         self.options = options
         self.numbers = numbers
     }
@@ -69,20 +69,22 @@ public enum FastOperationError: AmplifyError {
 public typealias FastOperationResult = Result<FastOperationSuccess, FastOperationError>
 public typealias FastOperationResultListener = (FastOperationResult) -> Void
 
-public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError> {
+public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>
 #if canImport(Combine)
     public typealias ResultPublisher = AnyPublisher<Success, Failure>
 #endif
 
     public init(request: FastOperationRequest, resultListener: FastOperationResultListener? = nil) {
-        super.init(categoryType: .storage,
-                   eventName: "FastOperation",
-                   request: request,
-                   resultListener: resultListener)
+        super.init(
+            categoryType: .storage,
+            eventName: "FastOperation",
+            request: request,
+            resultListener: resultListener
+        )
     }
 
-    public override func main() {
+    override public func main() {
         if isCancelled {
             finish()
             return

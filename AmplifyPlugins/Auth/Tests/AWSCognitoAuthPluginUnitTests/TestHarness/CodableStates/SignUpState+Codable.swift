@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
-import Foundation
 import Amplify
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension SignUpState: Codable {
-    
+
     enum CodingKeys: String, CodingKey {
         case type
         case SignUpEventData
@@ -39,7 +39,8 @@ extension SignUpState: Codable {
             self = .signedUp(eventData, result)
         } else if type == "SignUpState.error" {
             let eventError = try values.decode(SignUpError.self, forKey: .SignUpError)
-            self = .error(eventError)
+            let eventData = try values.decode(SignUpEventData.self, forKey: .SignUpEventData)
+            self = .error(eventError, eventData)
         } else {
             fatalError("Decoding not supported")
         }
@@ -48,5 +49,5 @@ extension SignUpState: Codable {
     public func encode(to encoder: Encoder) throws {
         fatalError("Encoding not supported")
     }
-    
+
 }

@@ -19,9 +19,11 @@ public struct AuthChangePasswordRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthChangePasswordRequest.Options`
     public var options: Options
 
-    public init(oldPassword: String,
-                newPassword: String,
-                options: Options) {
+    public init(
+        oldPassword: String,
+        newPassword: String,
+        options: Options
+    ) {
         self.oldPassword = oldPassword
         self.newPassword = newPassword
         self.options = options
@@ -42,3 +44,5 @@ public extension AuthChangePasswordRequest {
         }
     }
 }
+
+extension AuthChangePasswordRequest.Options: @unchecked Sendable { }

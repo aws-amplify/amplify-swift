@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
-@testable import AWSDataStorePlugin
+@testable @preconcurrency import AWSDataStorePlugin
+@testable @preconcurrency import AWSPluginsCore
 
 final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!
@@ -41,7 +41,8 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
             modelPredicate: nil,
             auth: nil,
             authModeStrategy: AWSDefaultAuthModeStrategy(),
-            awsAuthService: nil)
+            awsAuthService: nil
+        )
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         asyncEvents.subscribe(subscriber: mapper)
         let sink = mapper
@@ -74,7 +75,8 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
             modelPredicate: nil,
             auth: nil,
             authModeStrategy: AWSDefaultAuthModeStrategy(),
-            awsAuthService: nil)
+            awsAuthService: nil
+        )
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         asyncEvents.subscribe(subscriber: mapper)
         let sink = mapper
@@ -92,15 +94,19 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
                 }
             )
 
-        for index in 0..<numberOfEvents {
+        for index in 0 ..< numberOfEvents {
             let post = Post(id: "\(prefix)-\(index)", title: "title", content: "content", createdAt: .now())
             expectedOrder.append(post.id)
-            asyncEvents.send(.data(.success(.init(model: AnyModel(post),
-                                                  syncMetadata: .init(modelId: post.id,
-                                                                      modelName: "Post",
-                                                                      deleted: false,
-                                                                      lastChangedAt: 0,
-                                                                      version: 0)))))
+            asyncEvents.send(.data(.success(.init(
+                model: AnyModel(post),
+                syncMetadata: .init(
+                    modelId: post.id,
+                    modelName: "Post",
+                    deleted: false,
+                    lastChangedAt: 0,
+                    version: 0
+                )
+            ))))
         }
 
         await fulfillment(of: [expectedEvents], timeout: 2)

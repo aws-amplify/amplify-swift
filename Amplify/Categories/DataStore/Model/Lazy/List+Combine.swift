@@ -8,9 +8,9 @@
 #if canImport(Combine)
 import Combine
 
-extension List {
+public extension List {
 
-    public typealias LazyListPublisher = AnyPublisher<[Element], DataStoreError>
+    typealias LazyListPublisher = AnyPublisher<[Element], DataStoreError>
 
 }
 #endif

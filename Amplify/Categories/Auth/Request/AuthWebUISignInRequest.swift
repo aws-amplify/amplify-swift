@@ -22,9 +22,11 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
     /// Presentation anchor on which the webUI is displayed
     public let presentationAnchor: AuthUIPresentationAnchor?
 
-    public init(presentationAnchor: AuthUIPresentationAnchor?,
-                authProvider: AuthProvider? = nil,
-                options: Options) {
+    public init(
+        presentationAnchor: AuthUIPresentationAnchor?,
+        authProvider: AuthProvider? = nil,
+        options: Options
+    ) {
         self.presentationAnchor = presentationAnchor
         self.authProvider = authProvider
         self.options = options
@@ -43,11 +45,15 @@ public extension AuthWebUISignInRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        public init(scopes: [String]? = nil,
-                    pluginOptions: Any? = nil) {
+        public init(
+            scopes: [String]? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.scopes = scopes
             self.pluginOptions = pluginOptions
         }
     }
 }
+
+extension AuthWebUISignInRequest.Options: @unchecked Sendable { }
 #endif

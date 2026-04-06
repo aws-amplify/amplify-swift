@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension RespondToAuthChallengeInput: Decodable {
+extension RespondToAuthChallengeInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
 
         case clientId

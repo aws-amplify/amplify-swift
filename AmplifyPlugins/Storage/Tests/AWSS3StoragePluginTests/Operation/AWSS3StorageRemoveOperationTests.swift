@@ -9,8 +9,8 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
+@testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
@@ -19,10 +19,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageRemoveRequest(key: "", options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: testStorageConfiguration,
-                                                    storageService: mockStorageService,
-                                                    authService: mockAuthService) { result in
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .validation = error else {
@@ -47,10 +49,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: testKey, options: options)
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: testStorageConfiguration,
-                                                    storageService: mockStorageService,
-                                                    authService: mockAuthService) { result in
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService
+        ) { result in
             switch result {
             case .failure(let error):
                 guard case .authError = error else {
@@ -75,10 +79,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: testStorageConfiguration,
-                                                    storageService: mockStorageService,
-                                                    authService: mockAuthService) { result in
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService
+        ) { result in
             switch result {
             case .success:
                 completeInvoked.fulfill()
@@ -101,10 +107,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: testStorageConfiguration,
-                                                    storageService: mockStorageService,
-                                                    authService: mockAuthService) { result in
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService
+        ) { result in
             switch result {
             case .failure:
                 failedInvoked.fulfill()
@@ -128,10 +136,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         let expectedServiceKey = StorageAccessLevel.private.rawValue + "/" + testIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: testStorageConfiguration,
-                                                    storageService: mockStorageService,
-                                                    authService: mockAuthService) { result in
+        let operation = AWSS3StorageRemoveOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService
+        ) { result in
             switch result {
             case .success:
                 completeInvoked.fulfill()

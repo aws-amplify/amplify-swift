@@ -7,8 +7,8 @@
 
 import Foundation
 
-extension PredictionsError {
-    public struct ClientError: Equatable {
+public extension PredictionsError {
+    struct ClientError: Equatable {
         public static func == (lhs: PredictionsError.ClientError, rhs: PredictionsError.ClientError) -> Bool {
             lhs.description == rhs.description
             && lhs.recoverySuggestion == rhs.recoverySuggestion
@@ -30,7 +30,7 @@ extension PredictionsError {
     }
 }
 
-extension PredictionsError.ClientError {
+extension PredictionsError.ClientError: @unchecked Sendable {
     public static let imageNotFound = Self(
         description: "Something was wrong with the image file, make sure it exists.",
         recoverySuggestion: "Try choosing an image and sending it again."

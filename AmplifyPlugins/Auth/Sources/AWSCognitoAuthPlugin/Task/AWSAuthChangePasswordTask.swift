@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSCognitoIdentityProvider
+import AWSPluginsCore
+import Foundation
 
 class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
@@ -22,9 +22,10 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
         HubPayload.EventName.Auth.changePasswordAPI
     }
 
-    init(_ request: AuthChangePasswordRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory
+    init(
+        _ request: AuthChangePasswordRequest,
+        authStateMachine: AuthStateMachine,
+        userPoolFactory: @escaping CognitoUserPoolFactory
     ) {
         self.request = request
         self.authStateMachine = authStateMachine
@@ -51,9 +52,11 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
 
     func changePassword(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
-        let input = ChangePasswordInput(accessToken: accessToken,
-                                        previousPassword: request.oldPassword,
-                                        proposedPassword: request.newPassword)
+        let input = ChangePasswordInput(
+            accessToken: accessToken,
+            previousPassword: request.oldPassword,
+            proposedPassword: request.newPassword
+        )
         _ = try await userPoolService.changePassword(input: input)
     }
 

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 enum AuthChallengeType {
 
@@ -34,7 +34,7 @@ enum AuthChallengeType {
 
 }
 
-extension CognitoIdentityProviderClientTypes.ChallengeNameType: Codable {
+extension CognitoIdentityProviderClientTypes.ChallengeNameType: @retroactive Decodable, @retroactive Encodable {
     var authChallengeType: AuthChallengeType {
         switch self {
         case .customChallenge:

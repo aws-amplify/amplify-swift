@@ -11,7 +11,7 @@ import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import Network
 
-extension AWSPinpointAnalyticsPlugin {
+public extension AWSPinpointAnalyticsPlugin {
     /// Configures AWSPinpointAnalyticsPlugin with the specified configuration.
     ///
     /// This method will be invoked as part of the Amplify configuration flow.
@@ -19,7 +19,7 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
-    public func configure(using configuration: Any?) throws {
+    func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
         if let config = configuration as? AmplifyOutputsData {
             print(config)
@@ -45,7 +45,16 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
-    public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
+    func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
+        log.warn(
+        """
+            AWS will end support for Amazon Pinpoint on October 30, 2026.
+            The guidance is to use AWS End User Messaging for push notifications and SMS,
+            Amazon Simple Email Service for sending emails, Amazon Connect for campaigns, journeys, endpoints, 
+            and engagement analytics. Pinpoint recommends Amazon Kinesis for event collection and mobile analytics.
+
+            See https://docs.aws.amazon.com/pinpoint/latest/userguide/migrate.html for more details.
+        """)
         let pinpoint = try AWSPinpointFactory.sharedPinpoint(
             appId: configuration.appId,
             region: configuration.region
@@ -82,10 +91,12 @@ extension AWSPinpointAnalyticsPlugin {
     // MARK: Internal
 
     /// Internal configure method to set the properties of the plugin
-    func configure(pinpoint: AWSPinpointBehavior,
-                   networkMonitor: NetworkMonitor,
-                   globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
-                   isEnabled: Bool = true) {
+    internal func configure(
+        pinpoint: AWSPinpointBehavior,
+        networkMonitor: NetworkMonitor,
+        globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
+        isEnabled: Bool = true
+    ) {
         self.pinpoint = pinpoint
         self.networkMonitor = networkMonitor
         self.globalProperties = globalProperties

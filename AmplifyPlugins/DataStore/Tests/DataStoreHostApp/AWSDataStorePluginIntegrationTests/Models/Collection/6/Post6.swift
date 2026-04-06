@@ -15,10 +15,12 @@ public struct Post6: Model {
   public var blog: Blog6?
   public var comments: List<Comment6>?
 
-  public init(id: String = UUID().uuidString,
+  public init(
+      id: String = UUID().uuidString,
       title: String,
       blog: Blog6? = nil,
-      comments: List<Comment6>? = []) {
+      comments: List<Comment6>? = []
+  ) {
       self.id = id
       self.title = title
       self.blog = blog

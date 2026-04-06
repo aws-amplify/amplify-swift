@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import SQLite
 import Combine
+import SQLite
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -25,7 +25,7 @@ class InitialSyncOperationTests: XCTestCase {
     // MARK: - GetLastSyncTime
 
     func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = nil
         let currentSyncPredicate: DataStoreConfiguration
         #if os(watchOS)
@@ -59,7 +59,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: nil,
             storageAdapter: nil,
             dataStoreConfiguration: currentSyncPredicate,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
         let sink = operation
             .publisher
             .sink(receiveCompletion: { _ in
@@ -74,9 +75,11 @@ class InitialSyncOperationTests: XCTestCase {
                 }
             })
 
-        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
-                                                            lastSync: lastSyncTime,
-                                                            syncPredicate: lastSyncPredicate)
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(
+            id: MockSynced.schema.name,
+            lastSync: lastSyncTime,
+            syncPredicate: lastSyncPredicate
+        )
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
         await fulfillment(of: [syncStartedReceived], timeout: 1)
@@ -84,7 +87,7 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = "non nil"
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
@@ -96,7 +99,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: nil,
             storageAdapter: nil,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
         let sink = operation
             .publisher
             .sink(receiveCompletion: { _ in
@@ -111,9 +115,11 @@ class InitialSyncOperationTests: XCTestCase {
                 }
             })
 
-        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
-                                                            lastSync: lastSyncTime,
-                                                            syncPredicate: lastSyncPredicate)
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(
+            id: MockSynced.schema.name,
+            lastSync: lastSyncTime,
+            syncPredicate: lastSyncPredicate
+        )
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
         await fulfillment(of: [syncStartedReceived], timeout: 1)
@@ -121,7 +127,7 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() async {
-        let lastSyncTime: Int64 = 123456
+        let lastSyncTime: Int64 = 123_456
         let lastSyncPredicate: String? = "non nil different from current predicate"
         let currentSyncPredicate: DataStoreConfiguration
         #if os(watchOS)
@@ -155,7 +161,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: nil,
             storageAdapter: nil,
             dataStoreConfiguration: currentSyncPredicate,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
         let sink = operation
             .publisher
             .sink(receiveCompletion: { _ in
@@ -170,9 +177,11 @@ class InitialSyncOperationTests: XCTestCase {
                 }
             })
 
-        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
-                                                            lastSync: lastSyncTime,
-                                                            syncPredicate: lastSyncPredicate)
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(
+            id: MockSynced.schema.name,
+            lastSync: lastSyncTime,
+            syncPredicate: lastSyncPredicate
+        )
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
         await fulfillment(of: [syncStartedReceived], timeout: 1)
@@ -215,7 +224,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: nil,
             storageAdapter: nil,
             dataStoreConfiguration: currentSyncPredicate,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
         let sink = operation
             .publisher
             .sink(receiveCompletion: { _ in
@@ -230,9 +240,11 @@ class InitialSyncOperationTests: XCTestCase {
                 }
             })
 
-        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
-                                                            lastSync: lastSyncTime,
-                                                            syncPredicate: lastSyncPredicate)
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(
+            id: MockSynced.schema.name,
+            lastSync: lastSyncTime,
+            syncPredicate: lastSyncPredicate
+        )
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
         await fulfillment(of: [syncStartedReceived], timeout: 1)
@@ -269,7 +281,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -326,7 +339,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -381,7 +395,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
         let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
@@ -436,7 +451,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
         let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
@@ -468,11 +484,13 @@ class InitialSyncOperationTests: XCTestCase {
         let startedAtMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let model = MockSynced(id: "1")
         let anyModel = AnyModel(model)
-        let metadata = MutationSyncMetadata(modelId: "1",
-                                            modelName: MockSynced.modelName,
-                                            deleted: false,
-                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
-                                            version: 1)
+        let metadata = MutationSyncMetadata(
+            modelId: "1",
+            modelName: MockSynced.modelName,
+            deleted: false,
+            lastChangedAt: Int64(Date().timeIntervalSince1970),
+            version: 1
+        )
         let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
         let responder = QueryRequestResponder<PaginatedList<AnyModel>> { _ in
             let list = PaginatedList<AnyModel>(items: [mutationSync], nextToken: nil, startedAt: startedAtMilliseconds)
@@ -501,7 +519,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -560,7 +579,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -620,14 +640,16 @@ class InitialSyncOperationTests: XCTestCase {
         #if os(watchOS)
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError
+            else {
                     XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .signedOut = authError else {
+                case .signedOut = authError
+            else {
                     XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }
@@ -637,14 +659,16 @@ class InitialSyncOperationTests: XCTestCase {
         #else
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
-                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError
+            else {
                     XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .signedOut = authError else {
+                case .signedOut = authError
+            else {
                     XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }
@@ -658,7 +682,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: configuration,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -744,7 +769,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: .testDefault(),
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -791,7 +817,8 @@ class InitialSyncOperationTests: XCTestCase {
                 syncMetadataSaved.fulfill()
             }
         }
-        wait(for: [syncMetadataSaved], timeout: 1.0)
+
+        await fulfillment(of: [syncMetadataSaved], timeout: 1.0)
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestResponder<PaginatedList<AnyModel>> { request in
@@ -818,7 +845,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: configuration,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -880,7 +908,8 @@ class InitialSyncOperationTests: XCTestCase {
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
             dataStoreConfiguration: configuration,
-            authModeStrategy: AWSDefaultAuthModeStrategy())
+            authModeStrategy: AWSDefaultAuthModeStrategy()
+        )
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -906,12 +935,15 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        await fulfillment(of: [
-            syncStartedReceived,
-            syncCompletionReceived,
-            finishedReceived,
-            apiWasQueried],
-                          timeout: 1)
+        await fulfillment(
+            of: [
+                syncStartedReceived,
+                syncCompletionReceived,
+                finishedReceived,
+                apiWasQueried
+            ],
+            timeout: 1
+        )
         sink.cancel()
     }
 }

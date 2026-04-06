@@ -5,15 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import SQLite
 import Combine
+import SQLite
+import XCTest
 
+@_implementationOnly import AmplifyAsyncTesting
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
-@_implementationOnly import AmplifyAsyncTesting
+@testable @preconcurrency import AWSPluginsCore
+@testable import AWSPluginsCore
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
@@ -36,13 +37,11 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         }
     }
 
-    let connectionError: APIError = {
-        APIError.networkError(
-            "TEST: Network not available",
-            nil,
-            URLError(.notConnectedToInternet)
-        )
-    }()
+    let connectionError: APIError = .networkError(
+        "TEST: Network not available",
+        nil,
+        URLError(.notConnectedToInternet)
+    )
 
     override func setUpWithError() throws {
         cancellables = []
@@ -96,8 +95,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // The first response is a success for the initial "Create" mutation
         let apiRespondedWithSuccess = expectation(description: "apiRespondedWithSuccess")
-        let acceptInitialMutation = setUpInitialMutationRequestResponder(
-            for: try post.eraseToAnyModel(),
+        let acceptInitialMutation = try setUpInitialMutationRequestResponder(
+            for: post.eraseToAnyModel(),
             fulfilling: apiRespondedWithSuccess,
             incrementing: version
         )
@@ -155,7 +154,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // the RemoteSyncEngine will stop the outgoing mutation queue. We will set the retry
         // advice interval to be very high, so it will be preempted by the "network available"
         // message we send later.
-        
+
         let networkUnavailable = expectation(description: "networkUnavailable")
         setUpNetworkUnavailableListener(
             fulfillingWhenNetworkUnavailable: networkUnavailable
@@ -208,13 +207,13 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         setUpOutboxEmptyListener(
             fulfillingWhenOutboxEmpty: outboxEmpty
         )
-        
+
         // Once we've rejected some mutations due to an unreachable network, we'll allow the final
         // mutation to succeed. This is where we will assert that we've seen the last mutation
         // to be processed
         let expectedFinalContentReceived = expectation(description: "expectedFinalContentReceived")
-        let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder(
-            for: try post.eraseToAnyModel(),
+        let acceptSubsequentMutations = try setUpSubsequentMutationRequestResponder(
+            for: post.eraseToAnyModel(),
             fulfilling: expectedFinalContentReceived,
             whenContentContains: expectedFinalContent,
             incrementing: version
@@ -228,7 +227,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         setUpNetworkAvailableListener(
             fulfillingWhenNetworkAvailableAgain: networkAvailableAgain
         )
-        
+
         apiPlugin.responders = [.mutateRequestResponse: acceptSubsequentMutations]
         reachabilitySubject.send(ReachabilityUpdate(isOnline: true))
         await fulfillment(
@@ -280,7 +279,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     ) -> MutateRequestResponder<MutationSync<AnyModel>> {
         MutateRequestResponder<MutationSync<AnyModel>> { request in
             guard let input = request.variables?["input"] as? [String: Any],
-                  let content = input["content"] as? String else {
+                  let content = input["content"] as? String
+            else {
                 XCTFail("Unexpected request structure: no `content` in variables.")
                 return .failure(.unknown("Unexpected request structure: no `content` in variables.", "", nil))
             }
@@ -295,7 +295,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                     version: version.increment()
                 )
             )
-            
+
             if content == expectedFinalContent {
                 expectation.fulfill()
             }
@@ -325,7 +325,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             }
             .store(in: &cancellables)
     }
-    
+
     private func setUpNetworkAvailableListener(
         fulfillingWhenNetworkAvailableAgain networkAvailableAgain: XCTestExpectation
     ) {
@@ -339,14 +339,14 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                     XCTFail("Failed to cast payload data as NetworkStatusEvent")
                     return
                 }
-                
+
                 if networkStatusEvent.active {
                     networkAvailableAgain.fulfill()
                 }
             }
             .store(in: &cancellables)
     }
-    
+
     private func setUpSyncStartedListener(
         fulfillingWhenSyncStarted syncStarted: XCTestExpectation
     ) {

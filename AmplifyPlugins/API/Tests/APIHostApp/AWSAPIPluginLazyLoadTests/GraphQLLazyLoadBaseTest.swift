@@ -6,59 +6,62 @@
 //
 
 import XCTest
-@testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+@testable import AWSAPIPlugin
 @testable import AWSPluginsCore
 
 class GraphQLLazyLoadBaseTest: XCTestCase {
-    
+
     var amplifyConfig: AmplifyConfiguration!
-    
+
     override func setUp() {
         continueAfterFailure = false
     }
-    
+
     override func tearDown() async throws {
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }
-    
+
     func setupConfig() {
         let basePath = "testconfiguration"
         let baseFileName = "GraphQLLazyLoadTests"
         let configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
-        
+
         do {
             amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     func apiEndpointName() throws -> String {
         guard let apiPlugin = amplifyConfig.api?.plugins["awsAPIPlugin"],
-              case .object(let value) = apiPlugin else {
+              case .object(let value) = apiPlugin
+        else {
             throw APIError.invalidConfiguration("API endpoint not found.", "Check the provided configuration")
         }
         return value.keys.first!
     }
-    
+
     /// Setup API with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose) async {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .verbose
+    ) async {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
             try Amplify.configure(amplifyConfig)
-            
+
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-    
+
     @discardableResult
     func mutate<M: Model>(_ request: GraphQLRequest<M>) async throws -> M {
         do {
@@ -72,10 +75,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         } catch {
             XCTFail("Failed with error \(error)")
         }
-        
+
         throw "See XCTFail message"
     }
-    
+
     func query<M: Model>(_ request: GraphQLRequest<M?>) async throws -> M? {
         do {
             let graphQLResponse = try await Amplify.API.query(request: request)
@@ -90,7 +93,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         }
         throw "See XCTFail message"
     }
-    
+
     func listQuery<M: Model>(_ request: GraphQLRequest<List<M>>) async throws -> List<M> {
         do {
             let graphQLResponse = try await Amplify.API.query(request: request)
@@ -105,14 +108,16 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         }
         throw "See XCTFail message"
     }
-    
+
     enum AssertLazyModelState<M: Model> {
         case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(model: M?)
     }
-    
-    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
-                                   state: AssertLazyModelState<M>) {
+
+    func assertLazyReference<M: Model>(
+        _ lazyModel: LazyReference<M>,
+        state: AssertLazyModelState<M>
+    ) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
@@ -122,7 +127,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
             }
         case .loaded(let expectedModel):
             if case .loaded(let model) = lazyModel.modelProvider.getState() {
-                guard let expectedModel = expectedModel, let model = model else {
+                guard let expectedModel, let model else {
                     XCTAssertNil(model)
                     return
                 }
@@ -132,13 +137,13 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
             }
         }
     }
-    
+
     enum AssertListState {
         case isNotLoaded(associatedIdentifiers: [String], associatedFields: [String])
         case isLoaded(count: Int)
     }
-    
-    func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
+
+    func assertList(_ list: List<some Model>, state: AssertListState) {
         switch state {
         case .isNotLoaded(let expectedAssociatedIdentifiers, let expectedAssociatedFields):
             if case .notLoaded(let associatedIdentifiers, let associatedFields) = list.listProvider.getState() {
@@ -155,35 +160,39 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
             }
         }
     }
-    
-    func assertModelExists<M: Model>(_ model: M) async throws {
+
+    func assertModelExists(_ model: some Model) async throws {
         let modelExists = try await query(for: model) != nil
         XCTAssertTrue(modelExists)
     }
-    
-    func assertModelDoesNotExist<M: Model>(_ model: M) async throws {
+
+    func assertModelDoesNotExist(_ model: some Model) async throws {
         let modelExists = try await query(for: model) != nil
         XCTAssertFalse(modelExists)
     }
-    
+
     func query<M: Model>(for model: M, includes: IncludedAssociations<M> = { _ in [] }) async throws -> M? {
         let id = M.identifier(model)(schema: model.schema)
-        
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: model.schema,
-                                                               operationType: .query)
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
+            modelSchema: model.schema,
+            operationType: .query
+        )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        
+
         if let modelPath = M.rootPath as? ModelPath<M> {
             let associations = includes(modelPath)
             documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
         }
         documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
         let document = documentBuilder.build()
-        
-        let request = GraphQLRequest<M?>(document: document.stringValue,
-                                         variables: document.variables,
-                                         responseType: M?.self,
-                                         decodePath: document.name)
+
+        let request = GraphQLRequest<M?>(
+            document: document.stringValue,
+            variables: document.variables,
+            responseType: M?.self,
+            decodePath: document.name
+        )
         return try await query(request)
     }
 
@@ -207,8 +216,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
                 }
 
                 if let data = subscriptionEvent.extractData(),
-                   try await verifyChange(data)
-                {
+                   try await verifyChange(data) {
                     eventReceived.fulfill()
                 }
             }

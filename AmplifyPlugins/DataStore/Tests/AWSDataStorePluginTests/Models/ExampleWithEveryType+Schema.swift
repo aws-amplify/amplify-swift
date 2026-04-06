@@ -8,11 +8,11 @@
 import Amplify
 import Foundation
 
-extension ExampleWithEveryType {
+public extension ExampleWithEveryType {
 
     // MARK: - CodingKeys
 
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case stringField
         case intField
@@ -24,11 +24,11 @@ extension ExampleWithEveryType {
         case arrayOfStringsField
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         let example = ExampleWithEveryType.keys
 
         model.listPluralName = "ExampleWithEveryTypes"

@@ -9,9 +9,9 @@ import Foundation
 
 import Amplify
 
+import AWSClientRuntime
 import AWSS3
 import ClientRuntime
-import AWSClientRuntime
 
 // Behavior that the implemenation class for AWSS3 will use.
 protocol AWSS3Behavior {

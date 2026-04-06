@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension SignUpInput: Decodable {
+extension SignUpInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case username
         case password

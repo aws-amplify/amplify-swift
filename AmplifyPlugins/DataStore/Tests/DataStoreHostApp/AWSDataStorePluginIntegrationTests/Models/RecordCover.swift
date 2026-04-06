@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 // swiftlint:disable all
 
@@ -17,15 +17,19 @@ public struct RecordCover: Model {
     public let updatedAt: Temporal.DateTime?
 
     public init(artist: String) {
-        self.init(artist: artist,
-              createdAt: nil,
-              updatedAt: nil)
+        self.init(
+            artist: artist,
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
 
-    internal init(id: String = UUID().uuidString,
-                  artist: String,
-                  createdAt: Temporal.DateTime? = nil,
-                  updatedAt: Temporal.DateTime? = nil) {
+    init(
+        id: String = UUID().uuidString,
+        artist: String,
+        createdAt: Temporal.DateTime? = nil,
+        updatedAt: Temporal.DateTime? = nil
+    ) {
         self.id = id
         self.artist = artist
         self.createdAt = createdAt

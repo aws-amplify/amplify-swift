@@ -7,9 +7,10 @@
 
 import XCTest
 
-@testable import Amplify
-@testable import AWSAPIPlugin
+@testable @preconcurrency import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSAPIPlugin
+@testable import AWSAPIPlugin
 
 class RESTCombineTests: OperationTestBase {
 
@@ -23,7 +24,7 @@ class RESTCombineTests: OperationTestBase {
         let receivedFinish = expectation(description: "Received finished")
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
-        
+
         let sink = Amplify.Publisher.create {
             try await self.apiPlugin.get(request: request)
         }.sink(receiveCompletion: { completion in

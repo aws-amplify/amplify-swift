@@ -52,10 +52,11 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
         do {
             try Amplify.configure(amplifyConfig)
         } catch {
@@ -76,9 +77,10 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx"
+        ))
         do {
             try Amplify.configure(amplifyConfig)
         } catch {
@@ -99,14 +101,16 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             networkPreferences: .init(
                 maxRetryCount: 2,
                 timeoutIntervalForRequest: 60,
-                timeoutIntervalForResource: 60))
+                timeoutIntervalForResource: 60
+            ))
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
 
         do {
             try Amplify.configure(amplifyConfig)
@@ -123,7 +127,7 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
     }
-    
+
     /// Test Auth configuration with valid config for user pool and identity pool, with secure storage preferences
     ///
     /// - Given: Given valid config for user pool and identity pool with secure storage preferences
@@ -141,10 +145,11 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
 
         do {
             try Amplify.configure(amplifyConfig)
@@ -161,7 +166,7 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
     }
-    
+
     /// Test Auth configuration with valid config for user pool and identity pool, with network preferences and secure storage preferences
     ///
     /// - Given: Given valid config for user pool and identity pool, network preferences, and secure storage preferences
@@ -175,7 +180,8 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             networkPreferences: .init(
                 maxRetryCount: 2,
                 timeoutIntervalForRequest: 60,
-                timeoutIntervalForResource: 60),
+                timeoutIntervalForResource: 60
+            ),
             secureStoragePreferences: .init(
                 accessGroup: AccessGroup(name: "xx")
             )
@@ -183,10 +189,11 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyOutputsData(auth: .init(
-                awsRegion: "us-east-1",
-                userPoolId: "xx",
-                userPoolClientId: "xx",
-                identityPoolId: "xx"))
+            awsRegion: "us-east-1",
+            userPoolId: "xx",
+            userPoolClientId: "xx",
+            identityPoolId: "xx"
+        ))
 
         do {
             try Amplify.configure(amplifyConfig)

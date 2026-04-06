@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
 import AmplifyTestCommon
+import XCTest
 
 class ModelCodableTests: XCTestCase {
     let postJSONWithFractionalSeconds = """
@@ -25,10 +25,12 @@ class ModelCodableTests: XCTestCase {
 
     func testToJSON() throws {
         let createdAt = Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123), timeZone: .utc)
-        let post = Post(id: "post-1",
-                        title: "title",
-                        content: "content",
-                        createdAt: createdAt)
+        let post = Post(
+            id: "post-1",
+            title: "title",
+            content: "content",
+            createdAt: createdAt
+        )
         let j = try post.toJSON()
         print(j)
         XCTAssertEqual(try post.toJSON(), postJSONWithFractionalSeconds)

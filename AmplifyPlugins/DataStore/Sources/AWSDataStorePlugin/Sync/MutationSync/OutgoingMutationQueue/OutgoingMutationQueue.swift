@@ -6,16 +6,19 @@
 //
 
 import Amplify
+import AWSPluginsCore
+@preconcurrency import AWSPluginsCore
 import Combine
 import Foundation
-import AWSPluginsCore
 
 /// Submits outgoing mutation events to the provisioned API
 protocol OutgoingMutationQueueBehavior: AnyObject {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure)
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
-                             mutationEventPublisher: MutationEventPublisher,
-                             reconciliationQueue: IncomingEventReconciliationQueue?)
+    func startSyncingToCloud(
+        api: APICategoryGraphQLBehavior,
+        mutationEventPublisher: MutationEventPublisher,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    )
     var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
@@ -38,14 +41,16 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private var authModeStrategy: AuthModeStrategy
 
     private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
-    public var publisher: AnyPublisher<MutationEvent, Never> {
+    var publisher: AnyPublisher<MutationEvent, Never> {
         return outgoingMutationQueueSubject.eraseToAnyPublisher()
     }
 
-    init(_ stateMachine: StateMachine<State, Action>? = nil,
-         storageAdapter: StorageEngineAdapter,
-         dataStoreConfiguration: DataStoreConfiguration,
-         authModeStrategy: AuthModeStrategy) {
+    init(
+        _ stateMachine: StateMachine<State, Action>? = nil,
+        storageAdapter: StorageEngineAdapter,
+        dataStoreConfiguration: DataStoreConfiguration,
+        authModeStrategy: AuthModeStrategy
+    ) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -59,8 +64,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.operationQueue = operationQueue
 
         self.stateMachine = stateMachine ??
-            StateMachine(initialState: .notInitialized,
-                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
+            StateMachine(
+                initialState: .notInitialized,
+                resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:)
+            )
 
         self.outgoingMutationQueueSubject = PassthroughSubject<MutationEvent, Never>()
 
@@ -69,8 +76,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             .sink { [weak self] newState in
                 guard let self else { return }
 
-                self.log.verbose("New state: \(newState)")
-                self.mutationDispatchQueue.async {
+                log.verbose("New state: \(newState)")
+                mutationDispatchQueue.async {
                     self.respond(to: newState)
                 }
         }
@@ -81,9 +88,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     // MARK: - Public API
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
-                             mutationEventPublisher: MutationEventPublisher,
-                             reconciliationQueue: IncomingEventReconciliationQueue?) {
+    func startSyncingToCloud(
+        api: APICategoryGraphQLBehavior,
+        mutationEventPublisher: MutationEventPublisher,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    ) {
         log.verbose(#function)
         stateMachine.notify(action: .receivedStart(api, mutationEventPublisher, reconciliationQueue))
     }
@@ -127,21 +136,23 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// Responder method for `starting`. Starts the operation queue and subscribes to
     /// the publisher. After subscribing to the publisher, return actions:
     /// - receivedSubscription
-    private func doStart(api: APICategoryGraphQLBehavior,
-                         mutationEventPublisher: MutationEventPublisher,
-                         reconciliationQueue: IncomingEventReconciliationQueue?) {
+    private func doStart(
+        api: APICategoryGraphQLBehavior,
+        mutationEventPublisher: MutationEventPublisher,
+        reconciliationQueue: IncomingEventReconciliationQueue?
+    ) {
         log.verbose(#function)
         self.api = api
         self.reconciliationQueue = reconciliationQueue
 
         queryMutationEventsFromStorage { [weak self] in
-            guard let self = self else { return }
-            guard case .starting = self.stateMachine.state else {
-                self.log.debug("Unexpected state transition while performing `doStart()` during `.starting` state. Current state: \(self.stateMachine.state).")
+            guard let self else { return }
+            guard case .starting = stateMachine.state else {
+                log.debug("Unexpected state transition while performing `doStart()` during `.starting` state. Current state: \(stateMachine.state).")
                 return
             }
 
-            self.operationQueue.isSuspended = false
+            operationQueue.isSuspended = false
             // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
             mutationEventPublisher.publisher.subscribe(self)
         }
@@ -153,7 +164,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private func doStop(completion: @escaping BasicClosure) {
         log.verbose(#function)
         doStopWithoutNotifyingStateMachine()
-        self.stateMachine.notify(action: .doneStopping)
+        stateMachine.notify(action: .doneStopping)
         completion()
     }
 
@@ -173,7 +184,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// - errored
     private func requestEvent() {
         log.verbose(#function)
-        guard let subscription = subscription else {
+        guard let subscription else {
             let dataStoreError = DataStoreError.unknown(
                 "No subscription when requesting event",
                 """
@@ -190,7 +201,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// Invoked when the subscription receives an event, not as part of the state machine transition
     private func enqueue(_ mutationEvent: MutationEvent) {
         log.verbose(#function)
-        guard let api = api else {
+        guard let api else {
             let dataStoreError = DataStoreError.configuration(
                 "API is unexpectedly nil",
                 """
@@ -221,33 +232,43 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-    private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
-                                                  mutationEvent: MutationEvent,
-                                                  api: APICategoryGraphQLBehavior) {
+    private func processSyncMutationToCloudResult(
+        _ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
+        mutationEvent: MutationEvent,
+        api: APICategoryGraphQLBehavior
+    ) {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
-                processSuccessEvent(mutationEvent,
-                                    mutationSync: graphQLResult)
+                processSuccessEvent(
+                    mutationEvent,
+                    mutationSync: graphQLResult
+                )
             } else if case let .failure(graphQLResponseError) = graphQLResponse {
-                processMutationErrorFromCloud(mutationEvent: mutationEvent,
-                                              api: api,
-                                              apiError: nil,
-                                              graphQLResponseError: graphQLResponseError)
+                processMutationErrorFromCloud(
+                    mutationEvent: mutationEvent,
+                    api: api,
+                    apiError: nil,
+                    graphQLResponseError: graphQLResponseError
+                )
             }
         } else if case let .failure(apiError) = result {
-            processMutationErrorFromCloud(mutationEvent: mutationEvent,
-                                          api: api,
-                                          apiError: apiError,
-                                          graphQLResponseError: nil)
+            processMutationErrorFromCloud(
+                mutationEvent: mutationEvent,
+                api: api,
+                apiError: apiError,
+                graphQLResponseError: nil
+            )
         }
     }
 
     /// Process the successful response from API by updating the mutation events in
     /// mutation event table having `nil` version
-    private func processSuccessEvent(_ mutationEvent: MutationEvent,
-                                     mutationSync: MutationSync<AnyModel>?) {
-        if let mutationSync = mutationSync {
-            guard let reconciliationQueue = reconciliationQueue else {
+    private func processSuccessEvent(
+        _ mutationEvent: MutationEvent,
+        mutationSync: MutationSync<AnyModel>?
+    ) {
+        if let mutationSync {
+            guard let reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
                     "reconciliationQueue is unexpectedly nil",
                     """
@@ -271,11 +292,13 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-    private func processMutationErrorFromCloud(mutationEvent: MutationEvent,
-                                               api: APICategoryGraphQLBehavior,
-                                               apiError: APIError?,
-                                               graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?) {
-        if let apiError = apiError, apiError.isOperationCancelledError {
+    private func processMutationErrorFromCloud(
+        mutationEvent: MutationEvent,
+        api: APICategoryGraphQLBehavior,
+        apiError: APIError?,
+        graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?
+    ) {
+        if let apiError, apiError.isOperationCancelledError {
             log.verbose("SyncMutationToCloudOperation was cancelled, aborting processing")
             return
         }
@@ -289,21 +312,23 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             apiError: apiError,
             reconciliationQueue: reconciliationQueue
         ) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
-            self.log.verbose("[ProcessMutationErrorFromCloudOperation] result: \(result)")
+            log.verbose("[ProcessMutationErrorFromCloudOperation] result: \(result)")
             if case let .success(mutationEventOptional) = result,
                let outgoingMutationEvent = mutationEventOptional {
-                self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
+                outgoingMutationQueueSubject.send(outgoingMutationEvent)
             }
-            self.completeProcessingEvent(mutationEvent)
+            completeProcessingEvent(mutationEvent)
         }
         operationQueue.addOperation(processMutationErrorFromCloudOperation)
     }
 
-    private func completeProcessingEvent(_ mutationEvent: MutationEvent,
-                                         mutationSync: MutationSync<AnyModel>? = nil) {
+    private func completeProcessingEvent(
+        _ mutationEvent: MutationEvent,
+        mutationSync: MutationSync<AnyModel>? = nil
+    ) {
         // TODO: We shouldn't be inspecting state, we should be using granular enough states to
         // ensure we don't encounter forbidden transitions.
         if case .stopped = stateMachine.state {
@@ -319,13 +344,15 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             } catch {
                 self.log.verbose("mutationEvent failed to delete: error: \(error)")
             }
-            if let mutationSync = mutationSync {
-                self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
-                                                          mutationSync: mutationSync)
+            if let mutationSync {
+                self.dispatchOutboxMutationProcessedEvent(
+                    mutationEvent: mutationEvent,
+                    mutationSync: mutationSync
+                )
             }
             self.queryMutationEventsFromStorage { [weak self] in
                 guard let self else { return }
-                self.stateMachine.notify(action: .processedEvent)
+                stateMachine.notify(action: .processedEvent)
             }
         }
     }
@@ -334,16 +361,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == false || fields.inProcess == nil
 
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate,
-                             sort: nil,
-                             paginationInput: nil,
-                             eagerLoad: true) { [weak self] result in
+        storageAdapter.query(
+            MutationEvent.self,
+            predicate: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        ) { [weak self] result in
             guard let self else { return }
 
             switch result {
             case .success(let events):
-                self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
+                dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
             case .failure(let error):
                 log.error("Error querying mutation events: \(error)")
             }
@@ -351,16 +380,22 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
     }
 
-    private func dispatchOutboxMutationProcessedEvent(mutationEvent: MutationEvent,
-                                                      mutationSync: MutationSync<AnyModel>) {
+    private func dispatchOutboxMutationProcessedEvent(
+        mutationEvent: MutationEvent,
+        mutationSync: MutationSync<AnyModel>
+    ) {
         do {
             let localModel = try mutationEvent.decodeModel()
             let outboxMutationProcessedEvent = OutboxMutationEvent
-                .fromModelWithMetadata(modelName: mutationEvent.modelName,
-                                       model: localModel,
-                                       mutationSync: mutationSync)
-            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
-                                     data: outboxMutationProcessedEvent)
+                .fromModelWithMetadata(
+                    modelName: mutationEvent.modelName,
+                    model: localModel,
+                    mutationSync: mutationSync
+                )
+            let payload = HubPayload(
+                eventName: HubPayload.EventName.DataStore.outboxMutationProcessed,
+                data: outboxMutationProcessedEvent
+            )
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
             log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName) \(error)")
@@ -373,10 +408,14 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         do {
             let localModel = try mutationEvent.decodeModel()
             let outboxMutationEnqueuedEvent = OutboxMutationEvent
-                .fromModelWithoutMetadata(modelName: mutationEvent.modelName,
-                                          model: localModel)
-            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
-                                     data: outboxMutationEnqueuedEvent)
+                .fromModelWithoutMetadata(
+                    modelName: mutationEvent.modelName,
+                    model: localModel
+                )
+            let payload = HubPayload(
+                eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued,
+                data: outboxMutationEnqueuedEvent
+            )
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
             log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName) \(error)")
@@ -387,8 +426,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private func dispatchOutboxStatusEvent(isEmpty: Bool) {
         let outboxStatusEvent = OutboxStatusEvent(isEmpty: isEmpty)
-        let outboxStatusEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.outboxStatus,
-                                                  data: outboxStatusEvent)
+        let outboxStatusEventPayload = HubPayload(
+            eventName: HubPayload.EventName.DataStore.outboxStatus,
+            data: outboxStatusEvent
+        )
         Amplify.Hub.dispatch(to: .dataStore, payload: outboxStatusEventPayload)
     }
 
@@ -427,10 +468,10 @@ extension OutgoingMutationQueue: Resettable {
 }
 
 extension OutgoingMutationQueue: DefaultLogger {
-    public static var log: Logger {
+    static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    var log: Logger {
         Self.log
     }
 }

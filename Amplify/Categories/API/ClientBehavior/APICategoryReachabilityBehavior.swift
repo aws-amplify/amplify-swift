@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import Foundation
 import Combine
+import Foundation
 
 /// API Reachability Behavior
 public protocol APICategoryReachabilityBehavior {

@@ -31,7 +31,7 @@ struct LogEntry: Codable, Hashable {
 
     /// The  log level associated with the receiver.
     var logLevel: LogLevel {
-        if let result = LogLevel(rawValue: self.level) {
+        if let result = LogLevel(rawValue: level) {
             return result
         }
         return .error
@@ -50,7 +50,7 @@ struct LogEntry: Codable, Hashable {
     }
 
     var millisecondsSince1970: Int {
-        Int((created.timeIntervalSince1970 * 1000.0).rounded())
+        Int((created.timeIntervalSince1970 * 1_000.0).rounded())
     }
 
     init(category: String, namespace: String?, level: LogLevel, message: String, created: Date = Date()) {

@@ -6,13 +6,13 @@
 //
 
 import Amplify
-import Foundation
 import AWSCognitoIdentityProvider
+import Foundation
 
 extension SignUpOutput {
 
     var authResponse: AuthSignUpResult {
-        if self.userConfirmed {
+        if userConfirmed {
             return .init(.done, userID: userSub)
         }
         return AuthSignUpResult(
@@ -46,7 +46,8 @@ extension CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType {
         }
         return  AuthCodeDeliveryDetails(
             destination: destination,
-            attributeKey: AuthUserAttributeKey(rawValue: attributeToVerify))
+            attributeKey: AuthUserAttributeKey(rawValue: attributeToVerify)
+        )
     }
 
 }

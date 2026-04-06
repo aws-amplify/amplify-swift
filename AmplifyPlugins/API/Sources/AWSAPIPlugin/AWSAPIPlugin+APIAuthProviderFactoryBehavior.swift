@@ -8,8 +8,8 @@
 import Amplify
 import Foundation
 
-extension AWSAPIPlugin {
-    public func apiAuthProviderFactory() -> APIAuthProviderFactory {
+public extension AWSAPIPlugin {
+    func apiAuthProviderFactory() -> APIAuthProviderFactory {
         return authProviderFactory
     }
 }

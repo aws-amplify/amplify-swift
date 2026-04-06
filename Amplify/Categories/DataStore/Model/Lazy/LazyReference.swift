@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Combine
+import Foundation
 
 /// A Codable struct to hold key value pairs representing the identifier's field name and value.
 /// Useful for maintaining order for key-value pairs when used as an Array type.
@@ -20,8 +20,8 @@ public struct LazyReferenceIdentifier: Codable {
     }
 }
 
-extension Array where Element == LazyReferenceIdentifier {
-    public var stringValue: String {
+public extension [LazyReferenceIdentifier] {
+    var stringValue: String {
         var fields = [(String, Persistable)]()
         for id in self {
             fields.append((id.name, id.value))
@@ -88,7 +88,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     // MARK: - Codable implementation
 
     /// Decodable implementation is delegated to the ModelProviders.
-    required convenience public init(from decoder: Decoder) throws {
+    public required convenience init(from decoder: Decoder) throws {
         for modelDecoder in ModelProviderRegistry.decoders.get() {
             if let modelProvider = modelDecoder.decode(modelType: ModelType.self, decoder: decoder) {
                 self.init(modelProvider: modelProvider)
@@ -129,7 +129,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
         switch loadedState {
         case .notLoaded:
             let element = try await modelProvider.load()
-            self.loadedState = .loaded(element)
+            loadedState = .loaded(element)
             return element
         case .loaded(let element):
             return element
@@ -148,10 +148,10 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             guard let element = try await modelProvider.load() else {
                 throw CoreError.clientValidation("Data is required but underlying data source successfully loaded no data. ", "")
             }
-            self.loadedState = .loaded(element)
+            loadedState = .loaded(element)
             return element
         case .loaded(let element):
-            guard let element = element else {
+            guard let element else {
                 throw CoreError.clientValidation("Data is required but containing LazyReference is loaded with no data.", "")
             }
             return element

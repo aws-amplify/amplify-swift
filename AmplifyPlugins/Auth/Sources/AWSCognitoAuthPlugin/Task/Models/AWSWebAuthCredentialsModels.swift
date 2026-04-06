@@ -73,11 +73,11 @@ struct CredentialAssertionPayload: Codable {
         signature: String,
         userHandle: String
     ) {
-        id = credentialId
-        rawId = credentialId
-        authenticatorAttachment = "platform"
-        type = "public-key"
-        response = Response(
+        self.id = credentialId
+        self.rawId = credentialId
+        self.authenticatorAttachment = "platform"
+        self.type = "public-key"
+        self.response = Response(
             authenticatorData: authenticatorData,
             clientDataJSON: clientDataJSON,
             signature: signature,
@@ -196,11 +196,11 @@ struct CredentialRegistrationPayload: Codable {
         attestationObject: String,
         clientDataJSON: String
     ) {
-        id = credentialId
-        rawId = credentialId
-        authenticatorAttachment = "platform"
-        type = "public-key"
-        response = Response(
+        self.id = credentialId
+        self.rawId = credentialId
+        self.authenticatorAttachment = "platform"
+        self.type = "public-key"
+        self.response = Response(
             attestationObject: attestationObject,
             clientDataJSON: clientDataJSON,
             transports: ["internal"]
@@ -228,7 +228,7 @@ struct CredentialRegistrationPayload: Codable {
 
 private extension Data {
     func toBase64Url() -> String {
-        return self.base64EncodedString()
+        return base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
@@ -238,8 +238,7 @@ private extension Data {
 
 private extension String {
     func decodeBase64Url() -> Data? {
-        var base64 = self
-            .replacingOccurrences(of: "-", with: "+")
+        var base64 = replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
         if base64.count % 4 != 0 {
             base64.append(String(repeating: "=", count: 4 - base64.count % 4))

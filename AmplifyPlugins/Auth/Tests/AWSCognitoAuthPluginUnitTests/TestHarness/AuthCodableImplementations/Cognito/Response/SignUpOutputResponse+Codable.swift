@@ -8,14 +8,14 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension SignUpOutput: Codable {
+extension SignUpOutput: @retroactive Decodable, @retroactive Encodable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case codeDeliveryDetails = "CodeDeliveryDetails"
         case userConfirmed = "UserConfirmed"
         case userSub = "UserSub"
     }
 
-    public init (from decoder: Swift.Decoder) throws {
+    public init(from decoder: Swift.Decoder) throws {
         self.init()
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         let userConfirmedDecoded = try containerValues.decode(Swift.Bool.self, forKey: .userConfirmed)

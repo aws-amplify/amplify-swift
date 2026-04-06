@@ -14,8 +14,8 @@ import Foundation
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public struct ModelListDecoderRegistry {
-    public static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
+public enum ModelListDecoderRegistry {
+    public nonisolated(unsafe) static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
 
     /// Register a decoder during plugin configuration time, to allow runtime retrievals of list providers.
     public static func registerDecoder(_ listDecoder: ModelListDecoder.Type) {

@@ -15,8 +15,8 @@ public protocol AnalyticsPropertiesModel {
     func addMetric(_ metric: Int, forKey key: String)
 }
 
-extension AnalyticsPropertiesModel {
-    public func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
+public extension AnalyticsPropertiesModel {
+    func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
         for (key, value) in properties {
             if let value = value as? String {
                 addAttribute(value, forKey: key)

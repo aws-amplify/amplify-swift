@@ -24,17 +24,22 @@ public struct InitialClientEvent {
     let videoStartTimestamp: UInt64
 }
 
-extension LivenessEvent where T == InitialClientEvent {
+public extension LivenessEvent where T == InitialClientEvent {
     @_spi(PredictionsFaceLiveness)
-    public static func initialFaceDetected(event: InitialClientEvent) throws -> Self {
+    static func initialFaceDetected(
+        event: InitialClientEvent,
+        challenge: Challenge
+    ) throws -> Self {
         let initialFace = InitialFace(
             boundingBox: .init(boundingBox: event.initialFaceLocation.boundingBox),
             initialFaceDetectedTimeStamp: event.initialFaceLocation.startTimestamp
         )
 
-        let clientSessionInformationEvent = ClientSessionInformationEvent(
-            challenge: .init(
-                faceMovementAndLightChallenge: .init(
+        let clientChallengeType: ClientChallenge.ChallengeType
+        switch challenge {
+        case .faceMovementAndLightChallenge:
+            clientChallengeType = .faceMovementAndLightChallenge(
+                challenge: .init(
                     challengeID: event.challengeID,
                     targetFace: nil,
                     initialFace: initialFace,
@@ -43,8 +48,21 @@ extension LivenessEvent where T == InitialClientEvent {
                     videoEndTimeStamp: nil
                 )
             )
-        )
+        case .faceMovementChallenge:
+            clientChallengeType = .faceMovementChallenge(
+                challenge: .init(
+                    challengeID: event.challengeID,
+                    targetFace: nil,
+                    initialFace: initialFace,
+                    videoStartTimestamp: event.videoStartTimestamp,
+                    videoEndTimeStamp: nil
+                )
+            )
+        }
 
+        let clientSessionInformationEvent = ClientSessionInformationEvent(
+            challenge: .init(clientChallengeType: clientChallengeType)
+        )
         let payload = try JSONEncoder().encode(clientSessionInformationEvent)
         return .init(
             payload: payload,

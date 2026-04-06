@@ -9,18 +9,20 @@ import Foundation
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public struct ModelRegistry {
-    private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.ModelRegistry.concurrency",
-                                                        target: DispatchQueue.global())
+public enum ModelRegistry {
+    private static let concurrencyQueue = DispatchQueue(
+        label: "com.amazonaws.ModelRegistry.concurrency",
+        target: DispatchQueue.global()
+    )
 
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
-    private static var modelTypes = [ModelName: Model.Type]()
+    private nonisolated(unsafe) static var modelTypes = [ModelName: Model.Type]()
 
-    private static var modelDecoders = [ModelName: ModelDecoder]()
+    private nonisolated(unsafe) static var modelDecoders = [ModelName: ModelDecoder]()
 
-    private static var modelSchemaMapping = [ModelName: ModelSchema]()
+    private nonisolated(unsafe) static var modelSchemaMapping = [ModelName: ModelSchema]()
 
     public static var models: [Model.Type] {
         concurrencyQueue.sync {
@@ -35,16 +37,20 @@ public struct ModelRegistry {
     }
 
     public static func register(modelType: Model.Type) {
-        register(modelType: modelType,
-                 modelSchema: modelType.schema) { (jsonString, jsonDecoder) -> Model in
+        register(
+            modelType: modelType,
+            modelSchema: modelType.schema
+        ) { jsonString, jsonDecoder -> Model in
             let model = try modelType.from(json: jsonString, decoder: jsonDecoder)
             return model
         }
     }
 
-    public static func register(modelType: Model.Type,
-                                modelSchema: ModelSchema,
-                                jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model) {
+    public static func register(
+        modelType: Model.Type,
+        modelSchema: ModelSchema,
+        jsonDecoder: @escaping (String, JSONDecoder?) throws -> Model
+    ) {
         concurrencyQueue.sync {
             let modelDecoder: ModelDecoder = { jsonString, decoder in
                 return try jsonDecoder(jsonString, decoder)
@@ -75,9 +81,11 @@ public struct ModelRegistry {
         }
     }
 
-    public static func decode(modelName: ModelName,
-                              from jsonString: String,
-                              jsonDecoder: JSONDecoder? = nil) throws -> Model {
+    public static func decode(
+        modelName: ModelName,
+        from jsonString: String,
+        jsonDecoder: JSONDecoder? = nil
+    ) throws -> Model {
         try concurrencyQueue.sync {
             guard let decoder = modelDecoders[modelName] else {
                 throw DataStoreError.decodingError(
@@ -85,7 +93,8 @@ public struct ModelRegistry {
                     """
                     There is no decoder registered for the model named \(modelName). \
                     Register models with `ModelRegistry.register(modelName:)` at startup.
-                    """)
+                    """
+                )
             }
 
             return try decoder(jsonString, jsonDecoder)

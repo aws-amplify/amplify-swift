@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import AWSAPIPlugin
+import XCTest
 @testable import Amplify
 #if os(watchOS)
 @testable import APIWatchApp
@@ -15,9 +15,9 @@ import AWSAPIPlugin
 #endif
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
-    
+
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
-    
+
     override func setUp() async throws{
         do {
             try Amplify.add(plugin: AWSAPIPlugin(apiAuthProviderFactory: TestAPIAuthProviderFactory()))
@@ -46,11 +46,15 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(document: CreateTodoMutation.document,
-                                     variables: CreateTodoMutation.variables(id: expectedId,
-                                                                             name: expectedName,
-                                                                             description: expectedDescription),
-                                     responseType: CreateTodoMutation.Data.self)
+        let request = GraphQLRequest(
+            document: CreateTodoMutation.document,
+            variables: CreateTodoMutation.variables(
+                id: expectedId,
+                name: expectedName,
+                description: expectedDescription
+            ),
+            responseType: CreateTodoMutation.Data.self
+        )
         let graphQLResponse = try await Amplify.API.mutate(request: request)
         guard case let .success(data) = graphQLResponse else {
             XCTFail("Missing successful response")
@@ -60,7 +64,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
             XCTFail("Missing Todo")
             return
         }
-        
+
         XCTAssertEqual(todo.id, expectedId)
         XCTAssertEqual(todo.name, expectedName)
         XCTAssertEqual(todo.description, expectedDescription)
@@ -103,12 +107,12 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     ///
     func testOnCreateTodoSubscription() async throws {
         let connectedInvoked = expectation(description: "Connection established")
-        
+
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let name = String("\(#function)".dropLast(2))
         let subscriptions = Amplify.API.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
-        
+
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
 
@@ -157,13 +161,15 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     // MARK: - Model
 
     struct Todo: Model {
-        public let id: String
-        public var name: String
-        public var description: String?
+        let id: String
+        var name: String
+        var description: String?
 
-        init(id: String = UUID().uuidString,
-             name: String,
-             description: String? = nil) {
+        init(
+            id: String = UUID().uuidString,
+            name: String,
+            description: String? = nil
+        ) {
             self.id = id
             self.name = name
             self.description = description

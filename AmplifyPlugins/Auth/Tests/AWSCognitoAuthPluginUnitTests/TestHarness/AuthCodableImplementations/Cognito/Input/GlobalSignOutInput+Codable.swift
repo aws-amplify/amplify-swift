@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension GlobalSignOutInput: Decodable {
+extension GlobalSignOutInput: @retroactive Decodable {
     enum CodingKeys: String, CodingKey {
         case accessToken
     }

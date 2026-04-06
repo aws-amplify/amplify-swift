@@ -28,7 +28,8 @@ struct CompleteTOTPSetup: Action {
 
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
-                with: environment)
+                with: environment
+            )
 
             var challengeResponses = [
                 "USERNAME": username
@@ -50,14 +51,16 @@ struct CompleteTOTPSetup: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialsClient)
+                credentialStoreClient: authEnv.credentialsClient
+            )
 
             var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
             if let encodedData = await CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: userpoolEnv.cognitoUserPoolASFFactory(),
-                userPoolConfiguration: userpoolEnv.userPoolConfiguration) {
+                userPoolConfiguration: userpoolEnv.userPoolConfiguration
+            ) {
                 userContextData = .init(encodedData: encodedData)
             }
 
@@ -71,29 +74,37 @@ struct CompleteTOTPSetup: Action {
                 challengeResponses: challengeResponses,
                 clientId: userPoolClientId,
                 session: userSession,
-                userContextData: userContextData)
+                userContextData: userContextData
+            )
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,
                 signInMethod: signInEventData.signInMethod,
-                environment: userpoolEnv)
-            logVerbose("\(#fileID) Sending event \(responseEvent)",
-                       environment: environment)
+                environment: userpoolEnv
+            )
+            logVerbose(
+                "\(#fileID) Sending event \(responseEvent)",
+                environment: environment
+            )
             await dispatcher.send(responseEvent)
 
         } catch let error as SignInError {
             logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
             logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
-            logVerbose("\(#fileID) Sending event \(errorEvent)",
-                       environment: environment)
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
             await dispatcher.send(errorEvent)
         }
     }
