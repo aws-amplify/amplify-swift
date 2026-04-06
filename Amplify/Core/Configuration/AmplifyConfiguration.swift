@@ -178,9 +178,10 @@ extension Amplify {
     static func notifyAllHubChannels() {
         let payload = HubPayload(eventName: HubPayload.EventName.Amplify.configured)
         for channel in HubChannel.amplifyChannels {
-            Task {
-                Amplify.Hub.dispatch(to: channel, payload: payload)
-            }
+#if canImport(Combine)
+            Hub.subject(for: channel).send(payload)
+#endif
+            Hub.plugins.values.forEach { $0.dispatch(to: channel, payload: payload) }
         }
     }
 
