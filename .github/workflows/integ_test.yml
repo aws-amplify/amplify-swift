@@ -18,6 +18,11 @@ jobs:
     uses: ./.github/workflows/integ_test_analytics.yml
     secrets: inherit
 
+  kinesis-test:
+    name: Kinesis Integration Tests
+    uses: ./.github/workflows/integ_test_kinesis.yml
+    secrets: inherit
+
   push-notifications-test:
     name: Push Notifications Integration Tests
     uses: ./.github/workflows/integ_test_push_notifications.yml

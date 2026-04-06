@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "667A1346-A38C-447D-9553-175E7BEA1353",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AmplifyFoundationBridgeTests",
+        "name" : "AmplifyFoundationBridgeTests"
+      }
+    }
+  ],
+  "version" : 1
+}

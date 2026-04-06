@@ -48,6 +48,9 @@ platform :ios do
     version = options[:version].to_s
     configuration_file_path = "AmplifyPlugins/Core/AmplifyCredentials/AmplifyAWSServiceConfiguration.swift"
     set_key_value(file: configuration_file_path, key: "amplifyVersion", value: version)
+
+    foundation_metadata_path = "AmplifyFoundation/Sources/AmplifyMetadata.swift"
+    set_key_value(file: foundation_metadata_path, key: "version", value: version)
   end
 
   desc "Commit and push"

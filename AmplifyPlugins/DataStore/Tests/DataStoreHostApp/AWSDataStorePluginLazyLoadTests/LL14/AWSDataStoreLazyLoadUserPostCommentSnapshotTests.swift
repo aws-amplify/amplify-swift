@@ -11,6 +11,3 @@ import XCTest
 
 @testable import Amplify
 
-extension AWSDataStoreLazyLoadUserPostCommentTests {
-
-}
