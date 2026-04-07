@@ -161,7 +161,7 @@ actor SQLiteRecordStorage: RecordStorage {
                 """
 
             // Bind per-stream after-id filters
-            var bindings: [Binding?] = afterIdByStream.flatMap { (streamName, afterId) in
+            var bindings: [Binding?] = afterIdByStream.flatMap { streamName, afterId in
                 [streamName as Binding?, afterId as Binding?]
             }
             bindings.append(maxRecords as Binding?)
