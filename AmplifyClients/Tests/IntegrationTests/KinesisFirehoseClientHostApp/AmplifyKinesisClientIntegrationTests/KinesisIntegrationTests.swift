@@ -18,7 +18,7 @@ import XCTest
 @available(iOS 16.0, macOS 13.0, *)
 class KinesisIntegrationTests: BaseStreamClientIntegrationTests {
 
-    override var streamName: String { "amplify-kinesis-test-stream" }
+    override var streamName: String { "amplify-kinesis-swift-test-stream" }
 
     // 10 MiB per-record limit + 1 byte to exceed it
     override var oversizedRecordSize: Int { 10 * 1_024 * 1_024 + 1 }

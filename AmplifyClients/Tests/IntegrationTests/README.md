@@ -1,32 +1,18 @@
-# Kinesis Streams E2E Integration Tests
+# Kinesis & Firehose E2E Integration Tests
 
-Tests for `AmplifyKinesisClient` running against a real Kinesis Data Stream with pre-provisioned Cognito credentials.
+Tests for `AmplifyKinesisClient` and `AmplifyFirehoseClient` running against real Kinesis Data Streams and Firehose Delivery Streams with pre-provisioned Cognito credentials.
 
 ## Part 1: Deploy the Backend
 
-From a new folder, run `npm create amplify@latest`. This uses the following versions of the Amplify CLI, see `package.json` file below.
+The infra folder is gitignored. Create it from scratch inside `KinesisFirehoseClientHostApp/`:
 
-```json
-{
-  "name": "kinesis-e2e-test-infra",
-  "version": "1.0.0",
-  "type": "module",
-  "devDependencies": {
-    "@aws-amplify/backend": "^1.21.0",
-    "@aws-amplify/backend-cli": "^1.8.2",
-    "aws-cdk-lib": "^2.234.1",
-    "constructs": "^10.5.1",
-    "esbuild": "^0.27.3",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "aws-amplify": "^6.16.2"
-  }
-}
+```bash
+cd KinesisFirehoseClientHostApp
+npm create amplify@latest -- --yes -p infra
+cd infra
 ```
 
-Update `amplify/auth/resource.ts`:
+Replace `amplify/auth/resource.ts`:
 
 ```ts
 import { defineAuth } from '@aws-amplify/backend';
@@ -38,19 +24,23 @@ export const auth = defineAuth({
 });
 ```
 
-Update `amplify/backend.ts` to create the Kinesis stream and grant permissions to authenticated users:
+Replace `amplify/backend.ts`:
 
 ```ts
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import * as kinesis from 'aws-cdk-lib/aws-kinesis';
-import { Duration } from 'aws-cdk-lib';
+import * as firehose from 'aws-cdk-lib/aws-kinesisfirehose';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 const backend = defineBackend({
   auth,
 });
 
+// Kinesis Data Stream
 const kinesisStack = backend.createStack('KinesisStack');
 
 const stream = new kinesis.Stream(kinesisStack, 'TestStream', {
@@ -59,7 +49,6 @@ const stream = new kinesis.Stream(kinesisStack, 'TestStream', {
   retentionPeriod: Duration.hours(24),
 });
 
-// Only authenticated users get Kinesis permissions
 backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(
   new PolicyStatement({
     actions: [
@@ -68,6 +57,49 @@ backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(
       'kinesis:DescribeStream',
     ],
     resources: [stream.streamArn],
+  })
+);
+
+// Firehose Delivery Stream
+const firehoseStack = backend.createStack('FirehoseStack');
+
+const firehoseBucket = new s3.Bucket(firehoseStack, 'FirehoseDestinationBucket', {
+  removalPolicy: RemovalPolicy.DESTROY,
+  autoDeleteObjects: true,
+});
+
+const firehoseRole = new iam.Role(firehoseStack, 'FirehoseDeliveryRole', {
+  assumedBy: new iam.ServicePrincipal('firehose.amazonaws.com'),
+});
+
+firehoseBucket.grantReadWrite(firehoseRole);
+
+const deliveryStream = new firehose.CfnDeliveryStream(
+  firehoseStack,
+  'TestDeliveryStream',
+  {
+    deliveryStreamName: 'amplify-firehose-test-stream',
+    s3DestinationConfiguration: {
+      bucketArn: firehoseBucket.bucketArn,
+      roleArn: firehoseRole.roleArn,
+      bufferingHints: {
+        intervalInSeconds: 60,
+        sizeInMBs: 1,
+      },
+    },
+  }
+);
+
+backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(
+  new PolicyStatement({
+    actions: [
+      'firehose:PutRecord',
+      'firehose:PutRecordBatch',
+      'firehose:DescribeDeliveryStream',
+    ],
+    resources: [
+      `arn:aws:firehose:*:*:deliverystream/${deliveryStream.deliveryStreamName}`,
+    ],
   })
 );
 ```
@@ -81,7 +113,8 @@ npx ampx sandbox --profile [YOUR_AWS_PROFILE]
 This creates:
 - Cognito User Pool + Identity Pool
 - Kinesis Data Stream (`amplify-kinesis-swift-test-stream`, 1 shard, 24h retention)
-- IAM policy granting `kinesis:PutRecord`, `kinesis:PutRecords`, `kinesis:DescribeStream` to the authenticated role
+- Firehose Delivery Stream (`amplify-firehose-test-stream`) with an S3 destination
+- IAM policies granting authenticated users access to both streams
 
 ## Part 2: Create a Test User
 
