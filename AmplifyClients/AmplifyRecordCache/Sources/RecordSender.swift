@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol for sending records to a remote service
-public protocol RecordSender: Sendable {
+package protocol RecordSender: Sendable {
     /// Sends a batch of records for a specific stream
     /// - Parameters:
     ///   - streamName: The name of the stream

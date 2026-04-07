@@ -10,7 +10,7 @@ import Foundation
 @preconcurrency import SQLite
 
 /// Uses actor for thread-safe access (Swift's recommended approach)
-public actor SQLiteRecordStorage: RecordStorage {
+package actor SQLiteRecordStorage: RecordStorage {
     private let database: Connection
     private let cacheMaxBytes: Int64
     private let maxRecords: Int
@@ -39,7 +39,7 @@ public actor SQLiteRecordStorage: RecordStorage {
     ///   - maxBytesPerStream: Maximum total payload size per batch in bytes
     ///   - maxPartitionKeyLength: Maximum partition key length in Unicode scalars, or nil if no partition key
     ///   - connection: Optional database connection (for testing)
-    public init(
+    package init(
         dbPrefix: String = "kinesis_records",
         identifier: String,
         maxRecords: Int,
@@ -118,7 +118,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         }
     }
 
-    public func addRecord(_ input: RecordInput) throws {
+    package func addRecord(_ input: RecordInput) throws {
         // Validate partition key if this storage requires one
         if hasPartitionKey {
             guard let pk = input.partitionKey else {
@@ -178,7 +178,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         cachedSize += Int64(input.dataSize)
     }
 
-    public func getRecordsByStream(afterIdByStream: [String: Int64] = [:]) throws -> [[Record]] {
+    package func getRecordsByStream(afterIdByStream: [String: Int64] = [:]) throws -> [[Record]] {
         try Self.wrapDatabaseError {
             // Build per-stream WHERE clauses
             let streamFilter: String
@@ -273,7 +273,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         }
     }
 
-    public func deleteRecords(ids: [Int64]) throws {
+    package func deleteRecords(ids: [Int64]) throws {
         guard !ids.isEmpty else { return }
 
         try Self.wrapDatabaseError {
@@ -287,7 +287,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         try resetCacheSizeFromDb()
     }
 
-    public func incrementRetryCount(ids: [Int64]) throws {
+    package func incrementRetryCount(ids: [Int64]) throws {
         guard !ids.isEmpty else { return }
 
         try Self.wrapDatabaseError {
@@ -299,7 +299,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         }
     }
 
-    public func clearRecords() throws -> Int {
+    package func clearRecords() throws -> Int {
         let count = try Self.wrapDatabaseError {
             let count = try database.scalar(Self.records.count)
             try database.run(Self.records.delete())
@@ -309,7 +309,7 @@ public actor SQLiteRecordStorage: RecordStorage {
         return count
     }
 
-    public func getCurrentCacheSize() throws -> Int64 {
+    package func getCurrentCacheSize() throws -> Int64 {
         return cachedSize
     }
 
