@@ -439,6 +439,14 @@ let firehoseTargets: [Target] = [
         swiftSettings: [
             .enableUpcomingFeature("StrictConcurrency")
         ]
+    ),
+    .testTarget(
+        name: "AmplifyFirehoseClientTests",
+        dependencies: [
+            "AmplifyFirehoseClient",
+            "AmplifyRecordCache"
+        ],
+        path: "AmplifyClients/AmplifyFirehoseClient/Tests/UnitTests"
     )
 ]
 

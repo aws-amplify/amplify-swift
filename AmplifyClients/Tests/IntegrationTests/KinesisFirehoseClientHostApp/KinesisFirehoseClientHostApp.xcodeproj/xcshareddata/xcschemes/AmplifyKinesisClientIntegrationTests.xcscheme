@@ -19,7 +19,7 @@
                BlueprintIdentifier = "EA6AF6962F506E3500D372FB"
                BuildableName = "AmplifyKinesisClientIntegrationTests.xctest"
                BlueprintName = "AmplifyKinesisClientIntegrationTests"
-               ReferencedContainer = "container:KinesisHostApp.xcodeproj">
+               ReferencedContainer = "container:KinesisFirehoseClientHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -34,6 +34,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "EA6AF6662F50680500D372FB"
+            BuildableName = "KinesisFirehoseClientHostApp.app"
+            BlueprintName = "KinesisFirehoseClientHostApp"
+            ReferencedContainer = "container:KinesisFirehoseClientHostApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

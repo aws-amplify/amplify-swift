@@ -1,4 +1,4 @@
-name: Integration Tests | Kinesis
+name: Integration Tests | Kinesis & Firehose
 on:
   workflow_dispatch:
     inputs:
@@ -19,8 +19,8 @@ permissions:
     contents: read
 
 jobs:
-  kinesis-integration-tests:
-    name: Kinesis Integration Tests
+  kinesis-firehose-integration-tests:
+    name: Kinesis & Firehose Integration Tests
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +32,7 @@ jobs:
     with:
       scheme: AmplifyKinesisClientIntegrationTests
       platform: ${{ matrix.platform }}
-      project_path: ./AmplifyClients/AmplifyKinesisClient/Tests/IntegrationTests/KinesisHostApp
+      project_path: ./AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp
       resource_subfolder: kinesis
       timeout-minutes: 30
     secrets: inherit

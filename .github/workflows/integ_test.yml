@@ -18,9 +18,9 @@ jobs:
     uses: ./.github/workflows/integ_test_analytics.yml
     secrets: inherit
 
-  kinesis-test:
-    name: Kinesis Integration Tests
-    uses: ./.github/workflows/integ_test_kinesis.yml
+  kinesis-firehose-test:
+    name: Kinesis & Firehose Integration Tests
+    uses: ./.github/workflows/integ_test_kinesis_firehose.yml
     secrets: inherit
 
   push-notifications-test:

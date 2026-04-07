@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class KinesisHostAppUITestsLaunchTests: XCTestCase {
+final class KinesisFirehoseClientHostAppUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
