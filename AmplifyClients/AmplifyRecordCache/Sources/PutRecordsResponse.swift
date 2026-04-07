@@ -6,12 +6,12 @@
 //
 
 /// Response from putting records to a stream
-public struct PutRecordsResponse: Sendable {
-    public let successfulIds: [Int64]
-    public let retryableIds: [Int64]
-    public let failedIds: [Int64]
+package struct PutRecordsResponse: Sendable {
+    package let successfulIds: [Int64]
+    package let retryableIds: [Int64]
+    package let failedIds: [Int64]
 
-    public init(successfulIds: [Int64], retryableIds: [Int64], failedIds: [Int64]) {
+    package init(successfulIds: [Int64], retryableIds: [Int64], failedIds: [Int64]) {
         self.successfulIds = successfulIds
         self.retryableIds = retryableIds
         self.failedIds = failedIds
