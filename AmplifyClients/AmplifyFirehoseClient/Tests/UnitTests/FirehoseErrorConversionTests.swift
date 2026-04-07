@@ -11,6 +11,14 @@ import XCTest
 
 class FirehoseErrorConversionTests: XCTestCase {
 
+    /// Test that a FirehoseError passes through unchanged.
+    ///
+    /// - Given: A FirehoseError.cache instance
+    /// - When:
+    ///    - FirehoseError.from() is called with it
+    /// - Then:
+    ///    - The same .cache error is returned with matching description and suggestion
+    ///
     func testFromShouldPassThroughFirehoseErrorUnchanged() {
         let original = FirehoseError.cache("msg", "suggestion")
         let result = FirehoseError.from(original)
@@ -23,6 +31,14 @@ class FirehoseErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "suggestion")
     }
 
+    /// Test that RecordCacheError.validation maps to FirehoseError.validation.
+    ///
+    /// - Given: A RecordCacheError.validation
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .validation error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheValidationErrorToValidation() {
         let cause = RecordCacheError.validation("bad input", "fix it")
         let result = FirehoseError.from(cause)

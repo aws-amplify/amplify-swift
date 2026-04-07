@@ -81,6 +81,14 @@ class KinesisIntegrationTests: BaseStreamClientIntegrationTests {
 
     // MARK: - Kinesis-specific: partition key validation
 
+    /// Test that a partition key with 256 emoji Unicode scalars is accepted by Kinesis.
+    ///
+    /// - Given: A partition key with exactly 256 emoji Unicode scalars (the max allowed)
+    /// - When:
+    ///    - The record is submitted and flushed
+    /// - Then:
+    ///    - Kinesis accepts the record (recordsFlushed == 1)
+    ///
     func testRecordWithMax256EmojiScalarsAndFlush() async throws {
         let emojiPartitionKey = String(repeating: "😀", count: 256)
         XCTAssertEqual(emojiPartitionKey.unicodeScalars.count, 256)
@@ -105,6 +113,14 @@ class KinesisIntegrationTests: BaseStreamClientIntegrationTests {
 
     // MARK: - Kinesis-specific: large payload batching
 
+    /// Test that large payloads with large partition keys are flushed across multiple batches.
+    ///
+    /// - Given: 210 records of ~51 KB each (total ~10.5 MB, exceeding the 5 MB PutRecords limit)
+    /// - When:
+    ///    - flush() is called
+    /// - Then:
+    ///    - All 210 records are flushed across multiple internal batches
+    ///
     func testFlushLargePayloadWithLargePartitionKeys() async throws {
         let largeKinesis = try AmplifyKinesisClient(
             region: Self.region,

@@ -113,6 +113,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Core happy path
 
+    /// Test that a single record can be recorded and flushed.
+    ///
+    /// - Given: A single record cached locally
+    /// - When:
+    ///    - flush() is called
+    /// - Then:
+    ///    - The record is sent to the stream and recordsFlushed > 0
+    ///
     func testRecordAndFlush() async throws {
         try await client.record(
             data: XCTUnwrap("test-record".data(using: .utf8)),
@@ -122,12 +130,28 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(result.recordsFlushed, 0)
     }
 
+    /// Test that flushing an empty cache returns zero.
+    ///
+    /// - Given: An empty cache with no pending records
+    /// - When:
+    ///    - flush() is called
+    /// - Then:
+    ///    - recordsFlushed is 0 and flushInProgress is false
+    ///
     func testFlushWhenEmpty() async throws {
         let result = try await client.flush()
         XCTAssertEqual(result.recordsFlushed, 0)
         XCTAssertFalse(result.flushInProgress)
     }
 
+    /// Test that records submitted while disabled are silently dropped.
+    ///
+    /// - Given: The client is disabled
+    /// - When:
+    ///    - A record is submitted and the client is re-enabled
+    /// - Then:
+    ///    - The record is dropped and flush returns 0
+    ///
     func testRecordWhileDisabledDropsRecords() async throws {
         await client.disable()
         try await client.record(
@@ -139,6 +163,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertEqual(result.recordsFlushed, 0)
     }
 
+    /// Test the enable/disable lifecycle preserves pre-disable records.
+    ///
+    /// - Given: One record cached before disable, one submitted while disabled
+    /// - When:
+    ///    - The client is re-enabled and flushed
+    /// - Then:
+    ///    - Only the pre-disable record is flushed (count == 1)
+    ///
     func testEnableDisableLifecycle() async throws {
         try await client.record(
             data: XCTUnwrap("before-disable".data(using: .utf8)),
@@ -154,6 +186,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertEqual(result.recordsFlushed, 1)
     }
 
+    /// Test that concurrent flush calls are handled gracefully.
+    ///
+    /// - Given: 10 records cached locally
+    /// - When:
+    ///    - Two flush() calls are made concurrently
+    /// - Then:
+    ///    - At least one flush succeeds or one reports flushInProgress
+    ///
     func testConcurrentFlushReturnsInProgress() async throws {
         for i in 0 ..< 10 {
             try await client.record(
@@ -171,6 +211,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Cache behavior
 
+    /// Test that exceeding the cache byte limit throws an error.
+    ///
+    /// - Given: A client with a 100-byte cache limit
+    /// - When:
+    ///    - Two 60-byte records are submitted (exceeding the limit)
+    /// - Then:
+    ///    - A cacheLimitExceeded error is thrown
+    ///
     func testCacheLimitExceeded() async throws {
         let smallClient = try createClientWithSmallCache(cacheMaxBytes: 100)
         try await smallClient.clearCache()
@@ -186,6 +234,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         try await smallClient.clearCache()
     }
 
+    /// Test that clearCache removes all pending records.
+    ///
+    /// - Given: One record cached locally
+    /// - When:
+    ///    - clearCache() is called
+    /// - Then:
+    ///    - The record is removed and a subsequent flush returns 0
+    ///
     func testClearCache() async throws {
         try await client.record(
             data: XCTUnwrap("to-be-cleared".data(using: .utf8)),
@@ -199,6 +255,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Error paths
 
+    /// Test that a nonexistent stream doesn't block valid stream records.
+    ///
+    /// - Given: One record to a nonexistent stream and one to a valid stream
+    /// - When:
+    ///    - flush() is called
+    /// - Then:
+    ///    - Only the valid-stream record is flushed (count == 1)
+    ///
     func testFlushWithNonexistentStreamName() async throws {
         try await client.record(
             data: XCTUnwrap("wrong-stream".data(using: .utf8)),
@@ -213,15 +277,20 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         try await client.clearCache()
     }
 
+    /// Test that invalid credentials don't cause a crash.
+    ///
+    /// - Given: A client configured with invalid AWS credentials
+    /// - When:
+    ///    - A record is submitted and flush() is called
+    /// - Then:
+    ///    - No records are successfully flushed (auth error handled silently)
+    ///
     func testFlushWithInvalidCredentials() async throws {
         let badClient = try createClientWithBadCredentials()
         try await badClient.record(
             data: XCTUnwrap("bad-creds".data(using: .utf8)),
             streamName: streamName
         )
-        // With invalid credentials, the SDK may return an auth error (handled silently,
-        // recordsFlushed == 0) or the TLS handshake may fail (thrown as a network error).
-        // Both are acceptable — the key assertion is that no records are successfully flushed.
         do {
             let result = try await badClient.flush()
             XCTAssertEqual(result.recordsFlushed, 0)
@@ -233,6 +302,15 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Retry exhaustion
 
+    /// Test that records to a nonexistent stream are evicted after exhausting retries.
+    ///
+    /// - Given: One record to a nonexistent stream and one to a valid stream, maxRetries = 5
+    /// - When:
+    ///    - flush() is called repeatedly (1 + maxRetries + 1 times)
+    /// - Then:
+    ///    - The valid record flushes on the first call; the invalid record is evicted
+    ///      after exhausting retries, and the cache is empty at the end
+    ///
     func testInvalidStreamRecordIsDroppedAfterMaxRetries() async throws {
         let maxRetries = 5
         let retryClient = try createClientWithMaxRetries(maxRetries: maxRetries)
@@ -265,6 +343,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Stress tests
 
+    /// Test high-volume record and flush.
+    ///
+    /// - Given: 50 records cached locally
+    /// - When:
+    ///    - flush() is called once
+    /// - Then:
+    ///    - All 50 records are flushed successfully
+    ///
     func testHighVolumeRecordAndFlush() async throws {
         let count = 50
         for i in 0 ..< count {
@@ -277,6 +363,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertEqual(result.recordsFlushed, count)
     }
 
+    /// Test repeated record-then-flush cycles.
+    ///
+    /// - Given: 5 cycles of 5 records each
+    /// - When:
+    ///    - flush() is called after each cycle
+    /// - Then:
+    ///    - The total flushed across all cycles equals 25
+    ///
     func testRepeatedFlushCycles() async throws {
         let cycles = 5
         let perCycle = 5
@@ -293,6 +387,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
         XCTAssertEqual(total, cycles * perCycle)
     }
 
+    /// Test concurrent producers with a periodic flusher.
+    ///
+    /// - Given: 5 producer tasks each recording 20 events concurrently
+    /// - When:
+    ///    - A flusher task calls flush() every 500ms during production
+    /// - Then:
+    ///    - All 100 records are eventually flushed with none lost
+    ///
     func testConcurrentRecordAndFlushStress() async throws {
         let producers = 5
         let recordsPerProducer = 20
@@ -336,8 +438,16 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Multi-batch flush
 
+    /// Test that a single flush drains records exceeding the per-batch limit.
+    ///
+    /// - Given: 1100 records cached (exceeding the per-batch limit)
+    /// - When:
+    ///    - A single flush() is called
+    /// - Then:
+    ///    - All 1100 records are drained across multiple internal batches
+    ///
     func testSingleFlushDrainsMultipleBatches() async throws {
-        let recordCount = 1100
+        let recordCount = 1_100
         for i in 0 ..< recordCount {
             try await client.record(
                 data: XCTUnwrap("batch-\(i)".data(using: .utf8)),
@@ -352,6 +462,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Auto-flush
 
+    /// Test that the auto-flush scheduler starts without an explicit enable() call.
+    ///
+    /// - Given: A client with a 3-second auto-flush interval (no explicit enable() call)
+    /// - When:
+    ///    - A record is submitted and we wait 6 seconds
+    /// - Then:
+    ///    - The auto-flush fires and a manual flush finds 0 remaining records
+    ///
     func testAutoFlushStartsWithoutExplicitEnable() async throws {
         let autoClient = try createClientWithAutoFlush(interval: 3)
         try await autoClient.record(
@@ -367,6 +485,14 @@ class BaseStreamClientIntegrationTests: XCTestCase {
 
     // MARK: - Oversized record validation
 
+    /// Test that an oversized record is rejected and the client remains usable.
+    ///
+    /// - Given: A record that exceeds the per-record size limit
+    /// - When:
+    ///    - record() is called
+    /// - Then:
+    ///    - A validation error is thrown, and a subsequent valid record still flushes
+    ///
     func testOversizedRecordIsRejectedAndFlushStillWorks() async throws {
         let oversizedData = Data(repeating: 0x42, count: oversizedRecordSize)
         do {
