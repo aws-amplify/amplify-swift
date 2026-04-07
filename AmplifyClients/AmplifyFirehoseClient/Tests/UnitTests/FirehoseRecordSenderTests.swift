@@ -15,6 +15,14 @@ class FirehoseRecordSenderTests: XCTestCase {
     private let testStreamName = "test-delivery-stream"
     private let maxRetries = 3
 
+    /// Test that putRecords constructs the correct PutRecordBatchInput.
+    ///
+    /// - Given: Two records with test data
+    /// - When:
+    ///    - putRecords is called
+    /// - Then:
+    ///    - The captured input has the correct delivery stream name and record data
+    ///
     func testCreateRequestShouldConstructCorrectPutRecordBatchInput() async throws {
         let mockClient = MockFirehoseClient()
         let recordSender = FirehoseRecordSender(firehoseClient: mockClient, maxRetries: maxRetries)
@@ -41,6 +49,14 @@ class FirehoseRecordSenderTests: XCTestCase {
         XCTAssertEqual(captured.records?[1].data, Data([4, 5, 6]))
     }
 
+    /// Test that response entries are correctly categorized into successful, retryable, and failed.
+    ///
+    /// - Given: Three records — one succeeds, one has a retryable error, one has exhausted retries
+    /// - When:
+    ///    - putRecords is called and the response contains mixed results
+    /// - Then:
+    ///    - successfulIds, retryableIds, and failedIds are populated correctly
+    ///
     func testSplitResponseShouldCorrectlyCategorizeRecords() async throws {
         let mockClient = MockFirehoseClient()
         let recordSender = FirehoseRecordSender(firehoseClient: mockClient, maxRetries: maxRetries)
@@ -73,6 +89,14 @@ class FirehoseRecordSenderTests: XCTestCase {
         XCTAssertEqual(response.failedIds, [3])
     }
 
+    /// Test that an empty records array returns an empty response without calling the API.
+    ///
+    /// - Given: An empty records array
+    /// - When:
+    ///    - putRecords is called
+    /// - Then:
+    ///    - All ID arrays are empty and the mock client was not called
+    ///
     func testEmptyRecordsShouldReturnEmptyResponse() async throws {
         let mockClient = MockFirehoseClient()
         let recordSender = FirehoseRecordSender(firehoseClient: mockClient, maxRetries: maxRetries)

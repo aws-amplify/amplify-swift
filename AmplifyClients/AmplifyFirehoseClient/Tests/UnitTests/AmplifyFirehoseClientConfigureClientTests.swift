@@ -15,8 +15,14 @@ import XCTest
 
 class AmplifyFirehoseClientConfigureClientTests: XCTestCase {
 
-    /// Verifies that the `configureClient` closure is applied to the underlying
-    /// SDK client configuration.
+    /// Test that the configureClient closure is applied to the SDK configuration.
+    ///
+    /// - Given: A configureClient closure that sets maxRetriesBase to 10
+    /// - When:
+    ///    - AmplifyFirehoseClient is initialized
+    /// - Then:
+    ///    - The underlying SDK client config reflects the custom retry setting
+    ///
     func testConfigureClientAppliesConfiguration() throws {
         let client = try AmplifyFirehoseClient(
             region: "us-east-1",

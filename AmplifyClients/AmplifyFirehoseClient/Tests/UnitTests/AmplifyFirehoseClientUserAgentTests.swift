@@ -26,6 +26,14 @@ private class UserAgentCapturingEngine: HTTPClient {
 
 class AmplifyFirehoseClientUserAgentTests: XCTestCase {
 
+    /// Test that the User-Agent header contains Firehose metadata.
+    ///
+    /// - Given: An AmplifyFirehoseClient with a capturing HTTP engine
+    /// - When:
+    ///    - A PutRecordBatch request is made
+    /// - Then:
+    ///    - The User-Agent header contains lib/amplify-swift and md/amplify-firehose
+    ///
     func testUserAgentContainsFirehoseMetadata() async throws {
         let capturingEngine = UserAgentCapturingEngine()
 

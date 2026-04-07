@@ -24,6 +24,14 @@ struct MockFirehoseCredentials: AmplifyFoundation.AWSCredentials {
 
 class AmplifyFirehoseClientResourceCleanupTests: XCTestCase {
 
+    /// Test that the client is deallocated and the scheduler stops on deinit.
+    ///
+    /// - Given: An AmplifyFirehoseClient with a short auto-flush interval
+    /// - When:
+    ///    - The client goes out of scope
+    /// - Then:
+    ///    - The weak reference becomes nil (client is deallocated)
+    ///
     func testDeinitStopsScheduler() async throws {
         weak var weakFirehose: AmplifyFirehoseClient?
 

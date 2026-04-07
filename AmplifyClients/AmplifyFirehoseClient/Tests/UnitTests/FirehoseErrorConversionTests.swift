@@ -51,6 +51,14 @@ class FirehoseErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "fix it")
     }
 
+    /// Test that RecordCacheError.database maps to FirehoseError.cache.
+    ///
+    /// - Given: A RecordCacheError.database
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .cache error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheDatabaseErrorToCache() {
         let cause = RecordCacheError.database("db error", "retry")
         let result = FirehoseError.from(cause)
@@ -63,6 +71,14 @@ class FirehoseErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "retry")
     }
 
+    /// Test that RecordCacheError.limitExceeded maps to FirehoseError.cacheLimitExceeded.
+    ///
+    /// - Given: A RecordCacheError.limitExceeded
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .cacheLimitExceeded error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheLimitExceededErrorToCacheLimitExceeded() {
         let cause = RecordCacheError.limitExceeded("cache full", "flush first")
         let result = FirehoseError.from(cause)
@@ -75,6 +91,14 @@ class FirehoseErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "flush first")
     }
 
+    /// Test that an unknown error maps to FirehoseError.unknown.
+    ///
+    /// - Given: An NSError not matching any known type
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .unknown error is returned with the original error as underlyingError
+    ///
     func testFromShouldConvertUnknownErrorToUnknown() {
         let cause = NSError(domain: "test", code: -1, userInfo: [NSLocalizedDescriptionKey: "something unexpected"])
         let result = FirehoseError.from(cause)
