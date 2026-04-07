@@ -78,7 +78,7 @@ const deliveryStream = new firehose.CfnDeliveryStream(
   firehoseStack,
   'TestDeliveryStream',
   {
-    deliveryStreamName: 'amplify-firehose-test-stream',
+    deliveryStreamName: 'amplify-firehose-swift-test-stream',
     s3DestinationConfiguration: {
       bucketArn: firehoseBucket.bucketArn,
       roleArn: firehoseRole.roleArn,
@@ -113,7 +113,7 @@ npx ampx sandbox --profile [YOUR_AWS_PROFILE]
 This creates:
 - Cognito User Pool + Identity Pool
 - Kinesis Data Stream (`amplify-kinesis-swift-test-stream`, 1 shard, 24h retention)
-- Firehose Delivery Stream (`amplify-firehose-test-stream`) with an S3 destination
+- Firehose Delivery Stream (`amplify-firehose-swift-test-stream`) with an S3 destination
 - IAM policies granting authenticated users access to both streams
 
 ## Part 2: Create a Test User

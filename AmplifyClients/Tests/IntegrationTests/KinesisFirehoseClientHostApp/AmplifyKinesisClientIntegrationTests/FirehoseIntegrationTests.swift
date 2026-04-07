@@ -18,7 +18,7 @@ import XCTest
 @available(iOS 16.0, macOS 13.0, *)
 class FirehoseIntegrationTests: BaseStreamClientIntegrationTests {
 
-    override var streamName: String { "amplify-firehose-test-stream" }
+    override var streamName: String { "amplify-firehose-swift-test-stream" }
 
     // 1,000 KiB per-record limit + 1 byte to exceed it
     override var oversizedRecordSize: Int { 1_000 * 1_024 + 1 }
