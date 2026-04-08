@@ -7,6 +7,7 @@
 
 import AmplifyFoundation
 import AmplifyFoundationBridge
+@_exported import AmplifyRecordCache
 import AWSClientRuntime
 import AWSKinesis
 import Foundation
@@ -70,9 +71,9 @@ private let maxPartitionKeyLength = 256
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 public class AmplifyKinesisClient {
     private let kinesisClient: AWSKinesis.KinesisClient
-    private let recordClient: RecordClient
+    private let recordClient: AmplifyRecordCache.RecordClient
     private let options: Options
-    private let scheduler: AutoFlushScheduler?
+    private let scheduler: AmplifyRecordCache.AutoFlushScheduler?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyKinesisClient.self)
     private let isEnabledLock = NSLock()
     private var _isEnabled = true
@@ -145,7 +146,8 @@ public class AmplifyKinesisClient {
             maxRetries: options.maxRetries
         )
 
-        let storage = try SQLiteRecordStorage(
+        let storage = try AmplifyRecordCache.SQLiteRecordStorage(
+            dbPrefix: "kinesis_records",
             identifier: region,
             maxRecords: maxRecordsPerStream,
             cacheMaxBytes: options.cacheMaxBytes,
@@ -154,7 +156,7 @@ public class AmplifyKinesisClient {
             maxPartitionKeyLength: maxPartitionKeyLength
         )
 
-        self.recordClient = RecordClient(
+        self.recordClient = AmplifyRecordCache.RecordClient(
             sender: sender,
             storage: storage,
             maxRetries: options.maxRetries
@@ -163,7 +165,7 @@ public class AmplifyKinesisClient {
         // Create and setup flush scheduler
         switch options.flushStrategy {
         case .interval(let interval):
-            let scheduler = AutoFlushScheduler(
+            let scheduler = AmplifyRecordCache.AutoFlushScheduler(
                 interval: interval,
                 recordClient: recordClient
             )
@@ -192,7 +194,7 @@ public class AmplifyKinesisClient {
 
         return try await wrapErrorAndLog(
             operation: {
-                let input = RecordInput(
+                let input = AmplifyRecordCache.RecordInput(
                     streamName: streamName,
                     partitionKey: partitionKey,
                     data: data
@@ -212,12 +214,14 @@ public class AmplifyKinesisClient {
     ///
     /// Each invocation sends at most one batch per stream, limited by the Kinesis
     /// `PutRecords` constraints (up to 500 records or 10 MB per stream). If the cache
-    /// contains more records than a single batch can hold, the remaining records are
-    /// sent on subsequent flush invocations — either manually or via the auto-flush
-    /// scheduler.
+    /// Flushes all locally stored records to their respective Kinesis streams.
     ///
-    /// Records that fail within a batch are marked for retry on the next flush. Records
-    /// that exceed ``Options/maxRetries`` are removed from the cache.
+    /// Each flush processes all pending records in batches per stream (limited by
+    /// record count and byte size). Records that fail or are retryable within a flush
+    /// cycle are not retried in the same flush — they are skipped and will be picked
+    /// up in the next flush cycle.
+    ///
+    /// Records that exceed ``Options/maxRetries`` are removed from the cache.
     ///
     /// If a flush is already in progress, the call returns immediately with
     /// `FlushData(recordsFlushed: 0, flushInProgress: true)`.
