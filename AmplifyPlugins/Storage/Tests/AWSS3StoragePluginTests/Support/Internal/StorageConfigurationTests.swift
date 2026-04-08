@@ -22,7 +22,7 @@ class StorageConfigurationTests: XCTestCase {
     /// Given: StorageConfiguration init with progressStallTimeout
     /// When: Created with custom value
     /// Then: progressStallTimeout is stored correctly
-    func testProgressStallTimeout_customValue() {
+    func testProgressStallTimeoutCustomValue() {
         let config = StorageConfiguration(progressStallTimeout: .interval(30))
         XCTAssertEqual(config.progressStallTimeout, .interval(30))
     }
