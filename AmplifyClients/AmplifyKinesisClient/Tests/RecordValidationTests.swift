@@ -8,6 +8,7 @@
 import SQLite
 import XCTest
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 /// Unit tests for PutRecords record-level validation.
 ///

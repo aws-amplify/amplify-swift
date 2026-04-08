@@ -6,14 +6,22 @@
 //
 
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyFirehoseClient
 @testable import AmplifyRecordCache
 
-class KinesisErrorConversionTests: XCTestCase {
+class FirehoseErrorConversionTests: XCTestCase {
 
-    func testFromShouldPassThroughKinesisErrorUnchanged() {
-        let original = KinesisError.cache("msg", "suggestion")
-        let result = KinesisError.from(original)
+    /// Test that a FirehoseError passes through unchanged.
+    ///
+    /// - Given: A FirehoseError.cache instance
+    /// - When:
+    ///    - FirehoseError.from() is called with it
+    /// - Then:
+    ///    - The same .cache error is returned with matching description and suggestion
+    ///
+    func testFromShouldPassThroughFirehoseErrorUnchanged() {
+        let original = FirehoseError.cache("msg", "suggestion")
+        let result = FirehoseError.from(original)
 
         guard case .cache(let desc, let suggestion, _) = result else {
             XCTFail("Expected .cache, got \(result)")
@@ -23,9 +31,17 @@ class KinesisErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "suggestion")
     }
 
+    /// Test that RecordCacheError.validation maps to FirehoseError.validation.
+    ///
+    /// - Given: A RecordCacheError.validation
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .validation error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheValidationErrorToValidation() {
         let cause = RecordCacheError.validation("bad input", "fix it")
-        let result = KinesisError.from(cause)
+        let result = FirehoseError.from(cause)
 
         guard case .validation(let desc, let suggestion, _) = result else {
             XCTFail("Expected .validation, got \(result)")
@@ -35,9 +51,17 @@ class KinesisErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "fix it")
     }
 
+    /// Test that RecordCacheError.database maps to FirehoseError.cache.
+    ///
+    /// - Given: A RecordCacheError.database
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .cache error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheDatabaseErrorToCache() {
         let cause = RecordCacheError.database("db error", "retry")
-        let result = KinesisError.from(cause)
+        let result = FirehoseError.from(cause)
 
         guard case .cache(let desc, let suggestion, _) = result else {
             XCTFail("Expected .cache, got \(result)")
@@ -47,9 +71,17 @@ class KinesisErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "retry")
     }
 
+    /// Test that RecordCacheError.limitExceeded maps to FirehoseError.cacheLimitExceeded.
+    ///
+    /// - Given: A RecordCacheError.limitExceeded
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .cacheLimitExceeded error is returned with matching description and suggestion
+    ///
     func testFromShouldConvertRecordCacheLimitExceededErrorToCacheLimitExceeded() {
         let cause = RecordCacheError.limitExceeded("cache full", "flush first")
-        let result = KinesisError.from(cause)
+        let result = FirehoseError.from(cause)
 
         guard case .cacheLimitExceeded(let desc, let suggestion, _) = result else {
             XCTFail("Expected .cacheLimitExceeded, got \(result)")
@@ -59,9 +91,17 @@ class KinesisErrorConversionTests: XCTestCase {
         XCTAssertEqual(suggestion, "flush first")
     }
 
+    /// Test that an unknown error maps to FirehoseError.unknown.
+    ///
+    /// - Given: An NSError not matching any known type
+    /// - When:
+    ///    - FirehoseError.from() is called
+    /// - Then:
+    ///    - A .unknown error is returned with the original error as underlyingError
+    ///
     func testFromShouldConvertUnknownErrorToUnknown() {
         let cause = NSError(domain: "test", code: -1, userInfo: [NSLocalizedDescriptionKey: "something unexpected"])
-        let result = KinesisError.from(cause)
+        let result = FirehoseError.from(cause)
 
         guard case .unknown(let desc, _, let underlyingError) = result else {
             XCTFail("Expected .unknown, got \(result)")

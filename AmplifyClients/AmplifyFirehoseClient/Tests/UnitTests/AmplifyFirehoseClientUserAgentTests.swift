@@ -7,10 +7,10 @@
 
 import AmplifyFoundation
 import AmplifyFoundationBridge
-import AWSKinesis
+import AWSFirehose
 import SmithyHTTPAPI
 import XCTest
-@testable import AmplifyKinesisClient
+@testable import AmplifyFirehoseClient
 @testable import AmplifyRecordCache
 
 /// Mock HTTP client engine that captures the User-Agent header from outgoing requests.
@@ -24,39 +24,39 @@ private class UserAgentCapturingEngine: HTTPClient {
     }
 }
 
-class AmplifyKinesisClientUserAgentTests: XCTestCase {
+class AmplifyFirehoseClientUserAgentTests: XCTestCase {
 
-    func testUserAgentContainsKinesisMetadata() async throws {
+    /// Test that the User-Agent header contains Firehose metadata.
+    ///
+    /// - Given: An AmplifyFirehoseClient with a capturing HTTP engine
+    /// - When:
+    ///    - A PutRecordBatch request is made
+    /// - Then:
+    ///    - The User-Agent header contains lib/amplify-swift and md/amplify-firehose
+    ///
+    func testUserAgentContainsFirehoseMetadata() async throws {
         let capturingEngine = UserAgentCapturingEngine()
 
-        let client = try AmplifyKinesisClient(
+        let client = try AmplifyFirehoseClient(
             region: "us-east-1",
-            credentialsProvider: MockCredentialsProvider(),
-            options: AmplifyKinesisClient.Options(
+            credentialsProvider: MockFirehoseCredentialsProvider(),
+            options: AmplifyFirehoseClient.Options(
                 flushStrategy: .none,
                 configureClient: { config in
-                    // Replace the HTTP engine with our capturing engine.
-                    // UserAgentClientEngine wraps whatever engine is set,
-                    // so we set our capturing engine BEFORE the client applies its wrapper.
                     config.httpClientEngine = capturingEngine
                 }
             )
         )
 
-        // Call putRecords directly on the SDK client to trigger the interceptor chain.
-        // The request will fail (capturing engine throws), but the header is captured.
-        let request = PutRecordsInput(
+        let request = PutRecordBatchInput(
+            deliveryStreamName: "test-stream",
             records: [
-                KinesisClientTypes.PutRecordsRequestEntry(
-                    data: "test".data(using: .utf8),
-                    partitionKey: "key"
-                )
-            ],
-            streamName: "test-stream"
+                FirehoseClientTypes.Record(data: "test".data(using: .utf8)!)
+            ]
         )
 
         do {
-            _ = try await client.getKinesisClient().putRecords(input: request)
+            _ = try await client.getFirehoseClient().putRecordBatch(input: request)
             XCTFail("Expected request to fail")
         } catch {
             // Expected — capturing engine throws to short-circuit
@@ -69,8 +69,8 @@ class AmplifyKinesisClientUserAgentTests: XCTestCase {
             "User-Agent should contain lib/amplify-swift#\(version), got: \(userAgent)"
         )
         XCTAssertTrue(
-            userAgent.contains("md/amplify-kinesis#\(version)"),
-            "User-Agent should contain md/amplify-kinesis#\(version), got: \(userAgent)"
+            userAgent.contains("md/amplify-firehose#\(version)"),
+            "User-Agent should contain md/amplify-firehose#\(version), got: \(userAgent)"
         )
     }
 }

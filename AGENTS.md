@@ -97,6 +97,18 @@ swift test --filter AWSCognitoAuthPluginUnitTests    # Specific target
 - **Unit tests**: XCTest, defined in Package.swift (19 test targets)
 - **Integration tests**: Xcode host app projects under `AmplifyPlugins/<Category>/Tests/<Category>HostApp/`
 - **Conventions**: Mock via behavior protocols, use `AmplifyTestCommon` for shared utilities, `AmplifyAsyncTesting` for async helpers
+- **Test documentation**: Use Given/When/Then doc comments on all test methods:
+  ```swift
+  /// Test description
+  ///
+  /// - Given: ...
+  /// - When:
+  ///    - ...
+  /// - Then:
+  ///    - ...
+  ///
+  func testSomething() async throws { ... }
+  ```
 - Every change requires new or updated tests
 
 ## Semver

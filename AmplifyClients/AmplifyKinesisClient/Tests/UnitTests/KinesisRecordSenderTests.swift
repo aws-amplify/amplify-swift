@@ -8,6 +8,7 @@
 import AWSKinesis
 import XCTest
 @testable import AmplifyKinesisClient
+@testable import AmplifyRecordCache
 
 class KinesisRecordSenderTests: XCTestCase {
 
