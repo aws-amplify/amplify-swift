@@ -206,7 +206,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                     client: client,
                     transferTask: pair.transferTask,
                     multipartUpload: multipartUpload,
-                    progressStallTimeoutSeconds: pair.transferTask.effectiveProgressStallTimeoutSeconds(
+                    progressStallTimeoutSeconds: pair.transferTask.resolvedProgressStallTimeoutSeconds(
                         storageConfiguration: storageConfiguration
                     ),
                     logger: logger
@@ -285,8 +285,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         key: String,
         location: URL? = nil,
         requestHeaders: [String: String]? = nil,
-        progressStallTimeoutSeconds: TimeInterval = 0,
-        usesExplicitProgressStallTimeout: Bool = true
+        progressStallTimeoutSeconds: TimeInterval = 0
     ) -> StorageTransferTask {
         let transferTask = StorageTransferTask(
             transferType: transferType,
@@ -295,7 +294,6 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             location: location,
             requestHeaders: requestHeaders,
             progressStallTimeoutSeconds: progressStallTimeoutSeconds,
-            usesExplicitProgressStallTimeout: usesExplicitProgressStallTimeout,
             storageTransferDatabase: storageTransferDatabase,
             logger: logger
         )

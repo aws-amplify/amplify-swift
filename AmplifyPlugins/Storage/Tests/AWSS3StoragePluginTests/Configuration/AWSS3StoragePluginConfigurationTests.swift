@@ -20,7 +20,7 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
     /// Given: AWSS3StoragePluginConfiguration with progressStallTimeout
     /// When: Configuration is created
     /// Then: progressStallTimeout is stored correctly
-    func testProgressStallTimeout_configuration() {
+    func testProgressStallTimeoutConfiguration() {
         let config = AWSS3StoragePluginConfiguration(progressStallTimeout: .interval(60))
         XCTAssertEqual(config.progressStallTimeout, .interval(60))
 
@@ -28,7 +28,7 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
         XCTAssertEqual(defaultConfig.progressStallTimeout, .disabled)
     }
 
-    func testResolvedStallTimeoutSeconds_operationOverride() {
+    func testResolvedStallTimeoutSecondsOperationOverride() {
         let plugin = AWSS3StoragePluginConfiguration(progressStallTimeout: .interval(30))
         XCTAssertEqual(plugin.resolvedStallTimeoutSeconds(operationOverride: nil), 30)
         XCTAssertEqual(plugin.resolvedStallTimeoutSeconds(operationOverride: .interval(120)), 120)

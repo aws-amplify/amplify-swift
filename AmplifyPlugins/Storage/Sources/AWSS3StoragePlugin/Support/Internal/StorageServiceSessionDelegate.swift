@@ -43,7 +43,7 @@ class StorageServiceSessionDelegate: NSObject {
     func resetProgressStallTimer(taskIdentifier: TaskIdentifier) {
         guard let storageService,
               let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else { return }
-        let interval = transferTask.effectiveProgressStallTimeoutSeconds(
+        let interval = transferTask.resolvedProgressStallTimeoutSeconds(
             storageConfiguration: storageService.storageConfiguration
         )
         guard interval > 0 else { return }
@@ -71,9 +71,11 @@ class StorageServiceSessionDelegate: NSObject {
         guard let storageService,
               let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else { return }
         guard case .upload = transferTask.transferType else { return }
-        transferTask.sessionTask?.cancel()
-        transferTask.fail(error: makeProgressStallTimeoutError())
+        removeProgressStallTimer(taskIdentifier: taskIdentifier)
+        let stallError = StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)
+        transferTask.fail(error: stallError)
         storageService.unregister(task: transferTask)
+        transferTask.sessionTask?.cancel()
         logger.debug("Upload cancelled due to progress stall timeout: \(taskIdentifier)")
     }
 
@@ -247,6 +249,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                     taskIdentifier: task.taskIdentifier
                 )
             )
+            resetProgressStallTimer(taskIdentifier: task.taskIdentifier)
         case .upload(let onEvent):
             resetProgressStallTimer(taskIdentifier: task.taskIdentifier)
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)

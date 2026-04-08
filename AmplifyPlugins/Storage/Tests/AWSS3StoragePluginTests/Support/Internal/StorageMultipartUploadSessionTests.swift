@@ -33,9 +33,11 @@ class StorageMultipartUploadSessionTests: XCTestCase {
             case .inProcess:
                 break
             case .failed(let error):
-                let underlying = (error as? StorageError)?.underlyingError ?? error
-                let nsError = underlying as NSError
-                if nsError.domain == AWSS3TransferUtilityErrorDomain, nsError.code == AWSS3TransferUtilityErrorProgressStallTimeout {
+                if case .unknown(let outer, let underlying) = error,
+                   outer == "Unable to upload",
+                   let stall = underlying as? StorageError,
+                   case .unknown(let stallMessage, _) = stall,
+                   stallMessage == "Upload cancelled due to progress stall timeout." {
                     failedExp.fulfill()
                 }
             case .completed:

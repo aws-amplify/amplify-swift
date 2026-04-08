@@ -73,8 +73,7 @@ class StorageMultipartUploadSession {
             key: key,
             contentType: contentType,
             requestHeaders: requestHeaders,
-            progressStallTimeoutSeconds: progressStallTimeoutSeconds,
-            usesExplicitProgressStallTimeout: true
+            progressStallTimeoutSeconds: progressStallTimeoutSeconds
         )
         self.transferTask = transferTask
         self.onEvent = onEvent
@@ -255,7 +254,7 @@ class StorageMultipartUploadSession {
         stallTimerQueue.async { [weak self] in
             self?.stallTimerWorkItem = nil
         }
-        handle(multipartUploadEvent: .aborting(error: makeProgressStallTimeoutError()))
+        handle(multipartUploadEvent: .aborting(error: StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)))
         logger.debug("Multipart upload cancelled due to progress stall timeout")
     }
 

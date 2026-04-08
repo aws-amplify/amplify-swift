@@ -14,7 +14,7 @@ class StorageConfigurationTests: XCTestCase {
     /// Given: StorageConfiguration with default init
     /// When: progressStallTimeout is read
     /// Then: It is none (disabled)
-    func testDefaultProgressStallTimeout_isNone() {
+    func testDefaultProgressStallTimeoutIsNone() {
         let config = StorageConfiguration()
         XCTAssertEqual(config.progressStallTimeout, .disabled)
     }

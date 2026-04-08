@@ -165,15 +165,8 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
             }
             finish()
         case .failed(let error):
-            if Thread.isMainThread {
-                dispatch(error)
-                finish()
-            } else {
-                DispatchQueue.main.async {
-                    self.dispatch(error)
-                    self.finish()
-                }
-            }
+            dispatch(error)
+            finish()
         }
     }
 

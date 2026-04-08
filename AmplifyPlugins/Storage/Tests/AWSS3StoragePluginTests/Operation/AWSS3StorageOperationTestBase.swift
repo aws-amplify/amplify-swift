@@ -44,19 +44,17 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testStorageConfiguration = AWSS3StoragePluginConfiguration()
 
     override func setUp() async throws {
-        do {
-            try await amplifyOperationTestsGlobalConfig.resetThenConfigureForUnitTests()
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
+        // Always reset + configure here. Do not call `Amplify.reset()` from `tearDown`: XCTest can run the next
+        // test's `setUp` before the previous `tearDown` finishes, so a late `reset()` can leave Hub in
+        // `pendingConfiguration` while the new test dispatches to Hub (fatal in HubCategory.plugin).
+        try await amplifyOperationTestsGlobalConfig.resetThenConfigureForUnitTests()
 
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()
     }
 
     override func tearDown() async throws {
-        await amplifyOperationTestsGlobalConfig.reset()
+        mockStorageService = nil
+        mockAuthService = nil
     }
 }

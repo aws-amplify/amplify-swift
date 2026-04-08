@@ -132,11 +132,10 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(service.resetURLSessionCount, 1)
     }
 
-    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a NSError with a NSURLErrorCancelled reason
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with NSURLErrorCancelled
     /// When: didComplete is invoked
-    /// Then: The task is not unregistered
-    func testDidComplete_withNSURLErrorCancelled_shouldNotCompleteTask() async {
-        let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
+    /// Then: The upload receives `.failed`, the task is marked error, and it is unregistered
+    func testDidComplete_withNSURLErrorCancelled_shouldFailTaskAndUnregister() async {
         let reasons = [
             NSURLErrorCancelledReasonBackgroundUpdatesDisabled,
             NSURLErrorCancelledReasonInsufficientSystemResources,
@@ -145,10 +144,15 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         ]
 
         for reason in reasons {
+            service.unregisterCount = 0
+            let urlTask = URLSession.shared.dataTask(with: URL(string: "https://example.com/\(reason)")!)
             let expectation = expectation(description: "Did Complete With Error Reason \(reason)")
-            expectation.isInverted = true
             let storageTask = StorageTransferTask(
-                transferType: .upload(onEvent: { _ in
+                transferType: .upload(onEvent: { event in
+                    guard case .failed = event else {
+                        XCTFail("Expected .failed event, got \(event)")
+                        return
+                    }
                     expectation.fulfill()
                 }),
                 bucket: "bucket",
@@ -163,12 +167,12 @@ class StorageServiceSessionDelegateTests: XCTestCase {
                 ]
             )
 
-            delegate.urlSession(.shared, task: task, didCompleteWithError: error)
+            delegate.urlSession(.shared, task: urlTask, didCompleteWithError: error)
 
             await fulfillment(of: [expectation], timeout: 5)
 
-            XCTAssertEqual(storageTask.status, .unknown)
-            XCTAssertEqual(service.unregisterCount, 0)
+            XCTAssertEqual(storageTask.status, .error)
+            XCTAssertEqual(service.unregisterCount, 1)
         }
     }
 
@@ -282,16 +286,16 @@ class StorageServiceSessionDelegateTests: XCTestCase {
                     XCTFail("Expected .failed event, got \(event)")
                     return
                 }
-                let underlying = (error as? StorageError)?.underlyingError ?? error
-                let nsError = underlying as NSError
-                XCTAssertEqual(nsError.domain, AWSS3TransferUtilityErrorDomain)
-                XCTAssertEqual(nsError.code, AWSS3TransferUtilityErrorProgressStallTimeout)
+                guard case .unknown(let message, _) = error else {
+                    XCTFail("Expected .unknown stall error, got \(error)")
+                    return
+                }
+                XCTAssertEqual(message, "Upload cancelled due to progress stall timeout.")
                 expectation.fulfill()
             }),
             bucket: "bucket",
             key: "key",
-            progressStallTimeoutSeconds: stallInterval,
-            usesExplicitProgressStallTimeout: true
+            progressStallTimeoutSeconds: stallInterval
         )
         storageTask.sessionTask = sessionTask
         serviceWithStall.mockedTask = storageTask

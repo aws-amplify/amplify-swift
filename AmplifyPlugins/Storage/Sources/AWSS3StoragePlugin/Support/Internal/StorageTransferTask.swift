@@ -9,15 +9,6 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-extension StorageTransferTask {
-    func effectiveProgressStallTimeoutSeconds(storageConfiguration: StorageConfiguration) -> TimeInterval {
-        if usesExplicitProgressStallTimeout {
-            return progressStallTimeoutSeconds
-        }
-        return storageConfiguration.progressStallTimeout.secondsForStallTimer
-    }
-}
-
 class StorageTransferTask {
     typealias Action = () -> Void
 
@@ -82,10 +73,19 @@ class StorageTransferTask {
     // proxy for StorageMultipartUploadSession
     var proxyStorageTask: StorageTask?
 
-    /// Resolved stall timeout in seconds when ``usesExplicitProgressStallTimeout`` is true (`0` = disabled).
-    /// When false, ``effectiveProgressStallTimeoutSeconds(storageConfiguration:)`` uses ``StorageConfiguration``.
+    /// Stall timeout for URLSession-level progress tracking. `0` disables the timer.
+    /// ``progressStallTimeoutFromStorageConfiguration`` means use ``StorageConfiguration`` (background-recovered tasks).
     let progressStallTimeoutSeconds: TimeInterval
-    let usesExplicitProgressStallTimeout: Bool
+
+    /// Sentinel for tasks restored from persistence: resolve via ``resolvedProgressStallTimeoutSeconds(storageConfiguration:)``.
+    static let progressStallTimeoutFromStorageConfiguration: TimeInterval = -1
+
+    func resolvedProgressStallTimeoutSeconds(storageConfiguration: StorageConfiguration) -> TimeInterval {
+        if progressStallTimeoutSeconds < 0 {
+            return storageConfiguration.progressStallTimeout.secondsForStallTimer
+        }
+        return progressStallTimeoutSeconds
+    }
 
     var partNumber: PartNumber? {
         switch transferType {
@@ -122,7 +122,6 @@ class StorageTransferTask {
         contentType: String? = nil,
         requestHeaders: [String: String]? = nil,
         progressStallTimeoutSeconds: TimeInterval = 0,
-        usesExplicitProgressStallTimeout: Bool = true,
         storageTransferDatabase: StorageTransferDatabase = .default,
         logger: Logger = storageLogger
     ) {
@@ -134,7 +133,6 @@ class StorageTransferTask {
         self.contentType = contentType
         self.requestHeaders = requestHeaders
         self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
-        self.usesExplicitProgressStallTimeout = usesExplicitProgressStallTimeout
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
 
@@ -165,8 +163,7 @@ class StorageTransferTask {
         self.location = persistableTransferTask.location
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
-        self.progressStallTimeoutSeconds = 0
-        self.usesExplicitProgressStallTimeout = false
+        self.progressStallTimeoutSeconds = Self.progressStallTimeoutFromStorageConfiguration
 
         // set multiPartUpload with default value which can resume upload process
         if rawValue == .multiPartUpload,

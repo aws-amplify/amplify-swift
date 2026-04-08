@@ -38,13 +38,10 @@ try await Amplify.Storage.uploadFile(path: path, local: url, options: options)
 
 ### Detecting stall timeout errors
 
-When an upload fails due to progress stall timeout, the error is wrapped in `StorageError` with the underlying cause preserved:
+When an upload fails due to progress stall timeout, the completion handler receives `StorageError.unknown` with this message:
 
 ```swift
-if let storageError = error as? StorageError,
-   let underlying = storageError.underlyingError as NSError?,
-   underlying.domain == "com.amazonaws.AWSS3TransferUtilityErrorDomain",
-   underlying.code == 10 {
+if case .unknown("Upload cancelled due to progress stall timeout.", _) = error as? StorageError {
     // Progress stall timeout
 }
 ```
