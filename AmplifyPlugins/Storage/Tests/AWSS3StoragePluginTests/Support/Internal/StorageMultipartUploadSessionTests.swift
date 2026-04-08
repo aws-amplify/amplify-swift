@@ -19,7 +19,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
     /// Given: A StorageMultipartUploadSession with progressStallTimeoutInterval and a client that stalls (no progress)
     /// When: startUpload is invoked
     /// Then: After the interval, .failed event is received with progress stall timeout error
-    func testProgressStallTimeout_whenNoProgress_failsWithStallError() throws {
+    func testProgressStallTimeoutWhenNoProgressFailsWithStallError() throws {
         let stallInterval: TimeInterval = 0.05
         let failedExp = expectation(description: "Failed with stall error")
 

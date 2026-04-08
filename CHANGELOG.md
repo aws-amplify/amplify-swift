@@ -1066,9 +1066,6 @@ The **Push Notifications** category allows you to integrate push notifications i
 
 ## Unreleased
 
-### Features
-- **Storage**: Add configurable progress stall timeout for S3 uploads (`ProgressStallTimeout`: `.disabled` or `.interval(seconds)`). Plugin default via `AWSS3StoragePluginConfiguration.progressStallTimeout`; optional per-upload override on `StorageUploadFileRequest.Options` and `StorageUploadDataRequest.Options`.
-
 ## 2.0.0 (2022-10-17)
 
 ### Breaking Changes
