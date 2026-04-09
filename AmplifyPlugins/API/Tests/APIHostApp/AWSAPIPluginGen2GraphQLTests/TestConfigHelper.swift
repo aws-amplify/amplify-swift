@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 
 class TestConfigHelper {
 

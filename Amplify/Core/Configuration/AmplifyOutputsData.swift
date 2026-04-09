@@ -18,7 +18,6 @@ import Foundation
 ///
 /// - Tag: AmplifyOutputs
 ///
-@_spi(InternalAmplifyConfiguration)
 public struct AmplifyOutputsData: Codable {
     public let version: String
     public let analytics: Analytics?
@@ -29,8 +28,7 @@ public struct AmplifyOutputsData: Codable {
     public let storage: Storage?
     public let custom: CustomOutput?
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct Analytics: Codable {
+public struct Analytics: Codable {
         public let amazonPinpoint: AmazonPinpoint?
 
         public struct AmazonPinpoint: Codable {
@@ -39,8 +37,7 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct Auth: Codable {
+public struct Auth: Codable {
         public let awsRegion: AWSRegion
         public let userPoolId: String
         public let userPoolClientId: String
@@ -54,7 +51,6 @@ public struct AmplifyOutputsData: Codable {
         public let mfaConfiguration: String?
         public let mfaMethods: [String]?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct PasswordPolicy: Codable {
             public let minLength: UInt
             public let requireNumbers: Bool
@@ -63,7 +59,6 @@ public struct AmplifyOutputsData: Codable {
             public let requireSymbols: Bool
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct OAuth: Codable {
             public let identityProviders: [String]
             public let domain: String
@@ -73,19 +68,17 @@ public struct AmplifyOutputsData: Codable {
             public let responseType: String
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public enum UsernameAttributes: String, Codable {
             case email
             case phoneNumber = "phone_number"
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public enum UserVerificationType: String, Codable {
             case email
             case phoneNumber = "phone_number"
         }
 
-        init(
+        public init(
             awsRegion: AWSRegion,
             userPoolId: String,
             userPoolClientId: String,
@@ -115,8 +108,7 @@ public struct AmplifyOutputsData: Codable {
 
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct DataCategory: Codable {
+public struct DataCategory: Codable {
         public let awsRegion: AWSRegion
         public let url: String
         public let modelIntrospection: JSONValue?
@@ -125,38 +117,32 @@ public struct AmplifyOutputsData: Codable {
         public let authorizationTypes: [AWSAppSyncAuthorizationType]
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct Geo: Codable {
+public struct Geo: Codable {
         public let awsRegion: AWSRegion
         public let maps: Maps?
         public let searchIndices: SearchIndices?
         public let geofenceCollections: GeofenceCollections?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct Maps: Codable {
             public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
-            @_spi(InternalAmplifyConfiguration)
-            public struct AmazonLocationServiceConfig: Codable {
+                public struct AmazonLocationServiceConfig: Codable {
                 public let style: String
             }
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct SearchIndices: Codable {
             public let items: [String]
             public let `default`: String
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct GeofenceCollections: Codable {
             public let items: [String]
             public let `default`: String
         }
 
-        // Internal init used for testing
-        init(
+        public init(
             awsRegion: AWSRegion,
             maps: Maps? = nil,
             searchIndices: SearchIndices? = nil,
@@ -169,28 +155,30 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct Notifications: Codable {
+public struct Notifications: Codable {
         public let awsRegion: String
         public let amazonPinpointAppId: String
         public let channels: [AmazonPinpointChannelType]
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct Storage: Codable {
+public struct Storage: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct Bucket: Codable {
             public let name: String
             public let bucketName: String
             public let awsRegion: AWSRegion
+
+            public init(name: String, bucketName: String, awsRegion: AWSRegion) {
+                self.name = name
+                self.bucketName = bucketName
+                self.awsRegion = awsRegion
+            }
         }
 
-        // Internal init used for testing
-        init(
+        public init(
             awsRegion: AWSRegion,
             bucketName: String,
             buckets: [Bucket]? = nil
@@ -201,14 +189,11 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct CustomOutput: Codable {}
+public struct CustomOutput: Codable {}
 
-    @_spi(InternalAmplifyConfiguration)
-    public typealias AWSRegion = String
+public typealias AWSRegion = String
 
-    @_spi(InternalAmplifyConfiguration)
-    public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
+public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
         case address
         case birthdate
         case email
@@ -229,8 +214,7 @@ public struct AmplifyOutputsData: Codable {
         case zoneinfo
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public enum AWSAppSyncAuthorizationType: String, Codable {
+public enum AWSAppSyncAuthorizationType: String, Codable {
         case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
         case apiKey = "API_KEY"
         case awsIAM = "AWS_IAM"
@@ -238,8 +222,7 @@ public struct AmplifyOutputsData: Codable {
         case openIDConnect = "OPENID_CONNECT"
     }
 
-    @_spi(InternalAmplifyConfiguration)
-    public enum AmazonPinpointChannelType: String, Codable {
+public enum AmazonPinpointChannelType: String, Codable {
         case inAppMessaging = "IN_APP_MESSAGING"
         case fcm = "FCM"
         case apns = "APNS"
@@ -247,8 +230,7 @@ public struct AmplifyOutputsData: Codable {
         case sms = "SMS"
     }
 
-    // Internal init used for testing
-    init(
+    public init(
         version: String = "",
         analytics: Analytics? = nil,
         auth: Auth? = nil,
@@ -276,8 +258,7 @@ public struct AmplifyOutputsData: Codable {
 public struct AmplifyOutputs: @unchecked Sendable {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
-    @_spi(InternalAmplifyConfiguration)
-    public let resolveConfiguration: () throws -> AmplifyOutputsData
+public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = .init {
@@ -336,8 +317,7 @@ public extension Amplify {
     /// - Parameter configuration: The AmplifyOutputsData object
     ///
     /// - Tag: Amplify.configure
-    @_spi(InternalAmplifyConfiguration)
-    static func configure(_ configuration: AmplifyOutputsData) throws {
+static func configure(_ configuration: AmplifyOutputsData) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)
 

@@ -38,7 +38,6 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// The user secure storage preferences for access group
     let secureStoragePreferences: AWSCognitoSecureStoragePreferences?
 
-    @_spi(InternalAmplifyConfiguration)
     public internal(set) var jsonConfiguration: JSONValue?
 
     /// The unique key of the plugin within the auth category.
