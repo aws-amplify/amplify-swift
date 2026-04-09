@@ -5,7 +5,7 @@ inputs:
     required: true
     type: string
   xcode_version:
-    description: "The version of Xcode. Available aliases are 'latest', 'minimum', and 'beta'"
+    description: "The version of Xcode. Available aliases are 'latest' and 'minimum'"
     default: 'latest'
     type: string
   destination:
@@ -41,9 +41,8 @@ runs:
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=16.4.0
+        LATEST_XCODE_VERSION=26.3
         MINIMUM_XCODE_VERSION=16.0.0
-        DEFAULT_BETA_XCODE_VERSION=26.0_beta
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
@@ -52,17 +51,6 @@ runs:
             XCODE_VERSION=$LATEST_XCODE_VERSION ;;
           minimum)
             XCODE_VERSION=$MINIMUM_XCODE_VERSION ;;
-          beta)
-            # Try to auto-detect installed Xcode 26 beta app name
-            DETECTED=$(ls -1 /Applications 2>/dev/null | grep -E '^Xcode_26.*\.app$' | head -n1 || true)
-            if [ -n "$DETECTED" ]; then
-              # strip prefix and suffix to get the version token used in the path template
-              # e.g., Xcode_26.0_beta.app -> 26.0_beta
-              XCODE_VERSION=$(echo "$DETECTED" | sed -E 's/^Xcode_//; s/\.app$//')
-            else
-              XCODE_VERSION=$DEFAULT_BETA_XCODE_VERSION
-            fi
-            ;;
           *)
             XCODE_VERSION=$INPUT_XCODE_VERSION ;;
         esac
@@ -77,13 +65,9 @@ runs:
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
         case $INPUT_PLATFORM/$INPUT_XCODE_VERSION in
-          iOS/latest) 
+          iOS/latest)
             DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="18.5"
-            ;;
-          iOS/beta)
-            DEVICE="iPhone 16"
-            OS_VERSION="26.0"
+            OS_VERSION="26.2"
             ;;
           iOS/minimum)
             DEVICE="iPhone 16 Pro Max"
@@ -91,15 +75,11 @@ runs:
             ;;
           iOS/*)
             DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="18.5"
+            OS_VERSION="26.2"
             ;;
           tvOS/latest)
             DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="18.5"
-            ;;
-          tvOS/beta)
-            DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="26.0"
+            OS_VERSION="26.2"
             ;;
           tvOS/minimum)
             DEVICE="Apple TV 4K (3rd generation)"
@@ -107,31 +87,23 @@ runs:
             ;;
           tvOS/*)
             DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="18.5"
+            OS_VERSION="26.2"
             ;;
           watchOS/latest)
             DEVICE="Apple Watch Series 10 (46mm)"
-            OS_VERSION="11.5"
-            ;;
-          watchOS/beta)
-            DEVICE="Apple Watch Series 10 (46mm)"
-            OS_VERSION="26.0"
+            OS_VERSION="26.2"
             ;;
           watchOS/minimum)
             DEVICE="Apple Watch SE (44mm) (2nd generation)"
             OS_VERSION="11.0"
             ;;
           watchOS/*)
-            DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="18.5"
+            DEVICE="Apple Watch Series 10 (46mm)"
+            OS_VERSION="26.2"
             ;;
           visionOS/latest)
             DEVICE="Apple Vision Pro"
-            OS_VERSION="2.5"
-            ;;
-          visionOS/beta)
-            DEVICE="Apple Vision Pro"
-            OS_VERSION="26.0"
+            OS_VERSION="26.2"
             ;;
           visionOS/minimum)
             DEVICE="Apple Vision Pro"
@@ -139,7 +111,7 @@ runs:
             ;;
           visionOS/*)
             DEVICE="Apple Vision Pro"
-            OS_VERSION="2.5"
+            OS_VERSION="26.2"
             ;;
         esac
 
