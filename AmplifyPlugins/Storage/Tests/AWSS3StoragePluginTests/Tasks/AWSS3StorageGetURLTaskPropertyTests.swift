@@ -24,12 +24,12 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
 
     /// Generates a random valid storage path string (no leading slash, non-empty, non-whitespace).
     private func randomValidPath() -> String {
-        let segments = Int.random(in: 1...5)
+        let segments = Int.random(in: 1 ... 5)
         let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
         var parts: [String] = []
-        for _ in 0..<segments {
-            let length = Int.random(in: 1...12)
-            let segment = String((0..<length).map { _ in characters.randomElement()! })
+        for _ in 0 ..< segments {
+            let length = Int.random(in: 1 ... 12)
+            let segment = String((0 ..< length).map { _ in characters.randomElement()! })
             parts.append(segment)
         }
         return parts.joined(separator: "/")
@@ -52,7 +52,7 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
     func testProperty1_MethodToSigningOperationMapping() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
             let method = randomMethod()
 
@@ -102,7 +102,7 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
     func testProperty1_DefaultMethodMapsToGetObject() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
 
             let serviceMock = MockAWSS3StorageService()
@@ -152,9 +152,9 @@ extension AWSS3StorageGetURLTaskPropertyTests {
     func testProperty2_ExpirationForwardingForPUT() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
-            let expires = Int.random(in: 1...86400)
+            let expires = Int.random(in: 1 ... 86_400)
 
             let serviceMock = MockAWSS3StorageService()
             let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
@@ -205,7 +205,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
     func testProperty3_ObjectExistenceValidationConditionalOnMethod() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
             let method = randomMethod()
 
@@ -275,7 +275,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
     func testProperty4_AccelerateForwardingForPUT() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
             let accelerateEnabled = true
 
@@ -319,7 +319,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
     func testProperty4_AccelerateDisabledForwarding() async throws {
         let iterations = 100
 
-        for i in 0..<iterations {
+        for i in 0 ..< iterations {
             let path = randomValidPath()
             let accelerateEnabled = Bool.random()
 
