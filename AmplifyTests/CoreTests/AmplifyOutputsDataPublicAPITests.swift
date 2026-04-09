@@ -23,7 +23,6 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
 
     func testConstructAmplifyOutputsData() {
         let config = AmplifyOutputsData(
-            version: "1",
             auth: .init(
                 awsRegion: "us-east-1",
                 userPoolId: "us-east-1_abc",
@@ -31,7 +30,6 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(config.version, "1")
         XCTAssertEqual(config.auth?.awsRegion, "us-east-1")
         XCTAssertEqual(config.auth?.userPoolId, "us-east-1_abc")
         XCTAssertEqual(config.auth?.userPoolClientId, "client123")
@@ -108,7 +106,6 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
 
     func testConstructFullConfig() {
         let config = AmplifyOutputsData(
-            version: "1",
             analytics: nil,
             auth: .init(
                 awsRegion: "us-east-1",
@@ -133,7 +130,7 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
     // MARK: - Configuration with AmplifyOutputsData
 
     func testConfigureAmplifyWithOutputsData() throws {
-        let config = AmplifyOutputsData(version: "1")
+        let config = AmplifyOutputsData()
         try Amplify.configure(config)
         XCTAssertTrue(Amplify.isConfigured)
     }
@@ -205,7 +202,6 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let config = try decoder.decode(AmplifyOutputsData.self, from: json)
 
-        XCTAssertEqual(config.version, "1")
         XCTAssertEqual(config.auth?.userPoolId, "us-east-1_abc")
         XCTAssertEqual(config.auth?.identityPoolId, "us-east-1:id-pool")
         XCTAssertEqual(config.auth?.usernameAttributes, [.email])
@@ -228,7 +224,6 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
         """.data(using: .utf8)!)
 
         let resolved = try outputs.resolveConfiguration()
-        XCTAssertEqual(resolved.version, "1")
         XCTAssertEqual(resolved.storage?.awsRegion, "us-west-2")
         XCTAssertEqual(resolved.storage?.bucketName, "test-bucket")
     }

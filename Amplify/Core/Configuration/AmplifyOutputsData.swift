@@ -14,12 +14,15 @@ import Foundation
 
 /// Represents Amplify's Gen2 configuration for all categories intended to be used in an application.
 ///
+/// Currently supports schema version `1` of the `amplify_outputs.json` format.
+///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
 ///
 /// - Tag: AmplifyOutputs
 ///
 public struct AmplifyOutputsData: Codable {
-    public let version: String
+    static let currentVersion = "1"
+    let version: String
     public let analytics: Analytics?
     public let auth: Auth?
     public let data: DataCategory?
@@ -231,7 +234,6 @@ public enum AmazonPinpointChannelType: String, Codable {
     }
 
     public init(
-        version: String = "",
         analytics: Analytics? = nil,
         auth: Auth? = nil,
         data: DataCategory? = nil,
@@ -240,7 +242,7 @@ public enum AmazonPinpointChannelType: String, Codable {
         storage: Storage? = nil,
         custom: CustomOutput? = nil
     ) {
-        self.version = version
+        self.version = AmplifyOutputsData.currentVersion
         self.analytics = analytics
         self.auth = auth
         self.data = data
