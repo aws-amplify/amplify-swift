@@ -79,5 +79,26 @@ class HubCombineTests: XCTestCase {
         customSink.cancel()
     }
 
+    /// Test that Combine publishers receive the `Amplify.configured` event
+    /// dispatched by `notifyAllHubChannels()` during `Amplify.configure()`.
+    /// This verifies the fix for https://github.com/aws-amplify/amplify-swift/issues/3980
+    func testPublisherReceivesConfiguredEvent() async throws {
+        await Amplify.reset()
+
+        let receivedConfigured = expectation(description: "Publisher received Amplify.configured event")
+
+        let sink = Amplify.Hub.publisher(for: .auth)
+            .filter { $0.eventName == HubPayload.EventName.Amplify.configured }
+            .sink { _ in
+                receivedConfigured.fulfill()
+            }
+
+        let config = AmplifyConfiguration()
+        try Amplify.configure(config)
+
+        await fulfillment(of: [receivedConfigured], timeout: 1.0)
+        sink.cancel()
+    }
+
 }
 #endif
