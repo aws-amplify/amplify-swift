@@ -35,8 +35,8 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
         return parts.joined(separator: "/")
     }
 
-    /// Returns a random HTTPMethod value.
-    private func randomHTTPMethod() -> AWSStorageGetURLOptions.HTTPMethod {
+    /// Returns a random StorageAccessMethod value.
+    private func randomMethod() -> StorageAccessMethod {
         return Bool.random() ? .get : .put
     }
 
@@ -44,7 +44,7 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
     //
     // **Validates: Requirements 1.2, 1.3, 1.4**
     //
-    // For any valid storage path and for any HTTPMethod value,
+    // For any valid storage path and for any StorageAccessMethod value,
     // AWSS3StorageGetURLTask shall invoke getPreSignedURL with
     // .putObject when method is .put, and .getObject when method
     // is .get (or when no method is specified).
@@ -54,7 +54,7 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
 
         for i in 0..<iterations {
             let path = randomValidPath()
-            let method = randomHTTPMethod()
+            let method = randomMethod()
 
             let serviceMock = MockAWSS3StorageService()
             let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
@@ -138,111 +138,10 @@ class AWSS3StorageGetURLTaskPropertyTests: XCTestCase {
     }
 }
 
-// MARK: - Property 2: ContentType metadata conditional inclusion
+
+// MARK: - Property 2: Expiration forwarding for PUT
 //
-// **Validates: Requirements 3.2, 3.3, 5.3**
-//
-// For any valid storage path, for any HTTPMethod value, and for any
-// optional content type string, the metadata dictionary passed to
-// getPreSignedURL shall contain the content type if and only if the
-// method is .put and the content type is non-nil. When the method
-// is .get, metadata shall be nil regardless of the content type value.
-
-extension AWSS3StorageGetURLTaskPropertyTests {
-
-    /// Generates a random optional content type string.
-    /// Returns nil roughly half the time; otherwise returns a random MIME type.
-    private func randomOptionalContentType() -> String? {
-        guard Bool.random() else { return nil }
-        let types = [
-            "text/plain",
-            "text/html",
-            "application/json",
-            "application/octet-stream",
-            "image/png",
-            "image/jpeg",
-            "audio/mpeg",
-            "video/mp4",
-            "application/pdf",
-            "multipart/form-data",
-            "application/xml",
-            "text/csv"
-        ]
-        return types.randomElement()!
-    }
-
-    func testProperty2_ContentTypeMetadataConditionalInclusion() async throws {
-        let iterations = 100
-
-        for i in 0..<iterations {
-            let path = randomValidPath()
-            let method = randomHTTPMethod()
-            let contentType = randomOptionalContentType()
-
-            let serviceMock = MockAWSS3StorageService()
-            let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
-
-            var capturedMetadata: [String: String]?
-            var metadataWasCaptured = false
-
-            serviceMock.getPreSignedURLWithMetadataHandler = { _, _, metadata, _ in
-                capturedMetadata = metadata
-                metadataWasCaptured = true
-                return tempURL
-            }
-
-            let pluginOptions = AWSStorageGetURLOptions(
-                method: method,
-                contentType: contentType
-            )
-            let request = StorageGetURLRequest(
-                path: StringStoragePath.fromString(path),
-                options: .init(pluginOptions: pluginOptions)
-            )
-            let task = AWSS3StorageGetURLTask(request, storageBehaviour: serviceMock)
-
-            _ = try await task.value
-
-            guard metadataWasCaptured else {
-                XCTFail("Iteration \(i): getPreSignedURL was not called for path=\(path), method=\(method), contentType=\(String(describing: contentType))")
-                continue
-            }
-
-            switch method {
-            case .put:
-                if let contentType = contentType {
-                    // method is .put AND contentType is non-nil → metadata must contain Content-Type
-                    XCTAssertNotNil(
-                        capturedMetadata,
-                        "Iteration \(i): Expected non-nil metadata for method=.put, contentType=\(contentType) (path=\(path))"
-                    )
-                    XCTAssertEqual(
-                        capturedMetadata?["Content-Type"],
-                        contentType,
-                        "Iteration \(i): Expected metadata Content-Type=\(contentType) for method=.put (path=\(path))"
-                    )
-                } else {
-                    // method is .put but contentType is nil → metadata must be nil
-                    XCTAssertNil(
-                        capturedMetadata,
-                        "Iteration \(i): Expected nil metadata for method=.put, contentType=nil (path=\(path))"
-                    )
-                }
-            case .get:
-                // method is .get → metadata must always be nil regardless of contentType
-                XCTAssertNil(
-                    capturedMetadata,
-                    "Iteration \(i): Expected nil metadata for method=.get, contentType=\(String(describing: contentType)) (path=\(path))"
-                )
-            }
-        }
-    }
-}
-
-
-// MARK: - Property 3: Expiration forwarding for PUT
-//
-// **Validates: Requirements 4.1**
+// **Validates: Requirements 3.1**
 //
 // For any valid storage path and for any positive expiration value,
 // when the method is .put, the AWSS3StorageGetURLTask shall pass
@@ -250,7 +149,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
 
 extension AWSS3StorageGetURLTaskPropertyTests {
 
-    func testProperty3_ExpirationForwardingForPUT() async throws {
+    func testProperty2_ExpirationForwardingForPUT() async throws {
         let iterations = 100
 
         for i in 0..<iterations {
@@ -291,11 +190,11 @@ extension AWSS3StorageGetURLTaskPropertyTests {
 }
 
 
-// MARK: - Property 4: Object existence validation conditional on method
+// MARK: - Property 3: Object existence validation conditional on method
 //
-// **Validates: Requirements 6.1, 6.2**
+// **Validates: Requirements 5.1, 5.2**
 //
-// For any valid storage path and for any HTTPMethod value, when
+// For any valid storage path and for any StorageAccessMethod value, when
 // validateObjectExistence is true, the AWSS3StorageGetURLTask shall
 // call validateObjectExistence if and only if the method is .get.
 // When the method is .put, the existence check shall be skipped
@@ -303,12 +202,12 @@ extension AWSS3StorageGetURLTaskPropertyTests {
 
 extension AWSS3StorageGetURLTaskPropertyTests {
 
-    func testProperty4_ObjectExistenceValidationConditionalOnMethod() async throws {
+    func testProperty3_ObjectExistenceValidationConditionalOnMethod() async throws {
         let iterations = 100
 
         for i in 0..<iterations {
             let path = randomValidPath()
-            let method = randomHTTPMethod()
+            let method = randomMethod()
 
             let serviceMock = MockAWSS3StorageService()
             let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
@@ -341,7 +240,6 @@ extension AWSS3StorageGetURLTaskPropertyTests {
                     validateObjectExistenceCalled,
                     "Iteration \(i): Expected validateObjectExistence to be called for method=.get (path=\(path))"
                 )
-                // Also verify via interactions array
                 let hasValidateInteraction = serviceMock.interactions.contains { $0.hasPrefix("validateObjectExistence") }
                 XCTAssertTrue(
                     hasValidateInteraction,
@@ -352,7 +250,6 @@ extension AWSS3StorageGetURLTaskPropertyTests {
                     validateObjectExistenceCalled,
                     "Iteration \(i): Expected validateObjectExistence NOT to be called for method=.put (path=\(path))"
                 )
-                // Also verify via interactions array
                 let hasValidateInteraction = serviceMock.interactions.contains { $0.hasPrefix("validateObjectExistence") }
                 XCTAssertFalse(
                     hasValidateInteraction,
@@ -365,9 +262,9 @@ extension AWSS3StorageGetURLTaskPropertyTests {
 
 
 
-// MARK: - Property 5: Accelerate forwarding for PUT
+// MARK: - Property 4: Accelerate forwarding for PUT
 //
-// **Validates: Requirements 7.3**
+// **Validates: Requirements 6.3**
 //
 // For any valid storage path with transfer acceleration enabled
 // and method set to .put, the AWSS3StorageGetURLTask shall pass
@@ -375,7 +272,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
 
 extension AWSS3StorageGetURLTaskPropertyTests {
 
-    func testProperty5_AccelerateForwardingForPUT() async throws {
+    func testProperty4_AccelerateForwardingForPUT() async throws {
         let iterations = 100
 
         for i in 0..<iterations {
@@ -394,13 +291,6 @@ extension AWSS3StorageGetURLTaskPropertyTests {
                 return tempURL
             }
 
-            // Pass accelerate via dictionary pluginOptions.
-            // Note: AWSS3PluginOptions.accelerateValue expects [String: Any],
-            // so we use a dictionary with the useAccelerateEndpoint key.
-            // The method defaults to .get when pluginOptions is a dictionary
-            // (since the AWSStorageGetURLOptions cast fails), but we verify
-            // the accelerate flag is forwarded regardless. The signing operation
-            // will be .getObject here; Property 1 separately validates method mapping.
             let pluginOptions: [String: Any] = [
                 "useAccelerateEndpoint": accelerateEnabled
             ]
@@ -426,7 +316,7 @@ extension AWSS3StorageGetURLTaskPropertyTests {
     }
 
     /// Validates that accelerate=false is also forwarded correctly.
-    func testProperty5_AccelerateDisabledForwarding() async throws {
+    func testProperty4_AccelerateDisabledForwarding() async throws {
         let iterations = 100
 
         for i in 0..<iterations {

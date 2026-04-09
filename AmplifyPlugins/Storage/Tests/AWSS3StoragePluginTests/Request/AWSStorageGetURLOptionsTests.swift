@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
 
@@ -18,12 +19,6 @@ class AWSStorageGetURLOptionsTests: XCTestCase {
         XCTAssertEqual(options.method, .get)
     }
 
-    func testDefaultInitializerSetsContentTypeToNil() {
-        let options = AWSStorageGetURLOptions()
-
-        XCTAssertNil(options.contentType)
-    }
-
     func testDefaultInitializerSetsValidateObjectExistenceToFalse() {
         let options = AWSStorageGetURLOptions()
 
@@ -35,33 +30,21 @@ class AWSStorageGetURLOptionsTests: XCTestCase {
     func testFullInitializerSetsAllProperties() {
         let options = AWSStorageGetURLOptions(
             validateObjectExistence: true,
-            method: .put,
-            contentType: "application/json"
+            method: .put
         )
 
         XCTAssertTrue(options.validateObjectExistence)
         XCTAssertEqual(options.method, .put)
-        XCTAssertEqual(options.contentType, "application/json")
     }
 
     func testFullInitializerWithGetMethod() {
         let options = AWSStorageGetURLOptions(
             validateObjectExistence: false,
-            method: .get,
-            contentType: nil
+            method: .get
         )
 
         XCTAssertFalse(options.validateObjectExistence)
         XCTAssertEqual(options.method, .get)
-        XCTAssertNil(options.contentType)
-    }
-
-    func testFullInitializerDefaultParameters() {
-        let options = AWSStorageGetURLOptions(validateObjectExistence: true, method: .put)
-
-        XCTAssertTrue(options.validateObjectExistence)
-        XCTAssertEqual(options.method, .put)
-        XCTAssertNil(options.contentType)
     }
 
     // MARK: - Backward-compatible initializer
@@ -78,19 +61,15 @@ class AWSStorageGetURLOptionsTests: XCTestCase {
         XCTAssertEqual(options.method, .get)
     }
 
-    func testBackwardCompatibleInitializerDefaultsContentTypeToNil() {
-        let options = AWSStorageGetURLOptions(validateObjectExistence: false)
+    // MARK: - StorageAccessMethod enum
 
-        XCTAssertNil(options.contentType)
+    func testStorageAccessMethodGetEquality() {
+        let method: StorageAccessMethod = .get
+        XCTAssertEqual(method, StorageAccessMethod.get)
     }
 
-    // MARK: - HTTPMethod enum
-
-    func testHTTPMethodGetRawValue() {
-        XCTAssertEqual(AWSStorageGetURLOptions.HTTPMethod.get.rawValue, "GET")
-    }
-
-    func testHTTPMethodPutRawValue() {
-        XCTAssertEqual(AWSStorageGetURLOptions.HTTPMethod.put.rawValue, "PUT")
+    func testStorageAccessMethodPutEquality() {
+        let method: StorageAccessMethod = .put
+        XCTAssertEqual(method, StorageAccessMethod.put)
     }
 }

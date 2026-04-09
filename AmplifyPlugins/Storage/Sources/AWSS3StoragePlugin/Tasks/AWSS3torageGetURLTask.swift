@@ -55,27 +55,13 @@ class AWSS3StorageGetURLTask: StorageGetURLTask, DefaultLogger {
         let accelerate = try AWSS3PluginOptions.accelerateValue(
             pluginOptions: request.options.pluginOptions)
 
-        let signingOperation: AWSS3SigningOperation
-        let metadata: [String: String]?
-
-        switch method {
-        case .put:
-            signingOperation = .putObject
-            if let contentType = pluginOptions?.contentType {
-                metadata = ["Content-Type": contentType]
-            } else {
-                metadata = nil
-            }
-        case .get:
-            signingOperation = .getObject
-            metadata = nil
-        }
+        let signingOperation: AWSS3SigningOperation = method == .put ? .putObject : .getObject
 
         do {
             return try await storageBehaviour.getPreSignedURL(
                 serviceKey: serviceKey,
                 signingOperation: signingOperation,
-                metadata: metadata,
+                metadata: nil,
                 accelerate: accelerate,
                 expires: request.options.expires
             )

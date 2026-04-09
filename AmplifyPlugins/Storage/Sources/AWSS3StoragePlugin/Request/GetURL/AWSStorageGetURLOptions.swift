@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
 /// Provides options specific to the AWS S3 plugin implementation of the Storage category.
@@ -19,7 +20,7 @@ import Foundation
 ///     key: "ExampleKey",
 ///     options: .init(
 ///         accessLevel: .private,
-///         pluginOptions: S3GetUrlPluginOptions(
+///         pluginOptions: AWSStorageGetURLOptions(
 ///             validateObjectExistence: true
 ///         )
 ///     )
@@ -31,13 +32,6 @@ import Foundation
 /// - Tag: AWSStorageGetURLOptions
 public struct AWSStorageGetURLOptions {
 
-    /// The HTTP method for the pre-signed URL.
-    /// Use `.put` to generate an upload URL, `.get` (default) for a download URL.
-    public enum HTTPMethod: String {
-        case get = "GET"
-        case put = "PUT"
-    }
-
     /// When `validateObjectExistence` is set to `true`, the AWSS3StoragePlugin will ensure
     /// the S3 object represented by the given key exists **before** returning a pre-signed URL. If no
     /// such object exits at the time of the URL creation, an error is thrown.
@@ -48,32 +42,26 @@ public struct AWSStorageGetURLOptions {
     /// - Tag: AWSStorageGetURLOptions.validateObjectExistence
     public var validateObjectExistence: Bool = false
 
-    /// The HTTP method for the pre-signed URL. Defaults to `.get`.
-    public var method: HTTPMethod = .get
-
-    /// The content type for PUT pre-signed URLs. Ignored for GET URLs.
-    public var contentType: String?
+    /// The access method for the pre-signed URL. Defaults to `.get`.
+    /// Use `.put` to generate a pre-signed URL for uploading.
+    public var method: StorageAccessMethod = .get
 
     /// Creates options with all configurable parameters.
     ///
     /// - Parameters:
     ///   - validateObjectExistence: Whether to validate the object exists before generating the URL.
-    ///   - method: The HTTP method for the pre-signed URL (`.get` or `.put`).
-    ///   - contentType: The content type for PUT pre-signed URLs. Ignored for GET URLs.
+    ///   - method: The access method for the pre-signed URL (`.get` or `.put`).
     public init(
         validateObjectExistence: Bool = false,
-        method: HTTPMethod = .get,
-        contentType: String? = nil
+        method: StorageAccessMethod = .get
     ) {
         self.validateObjectExistence = validateObjectExistence
         self.method = method
-        self.contentType = contentType
     }
 
     /// - Tag: AWSStorageGetURLOptions.init
     public init(validateObjectExistence: Bool) {
         self.validateObjectExistence = validateObjectExistence
         self.method = .get
-        self.contentType = nil
     }
 }

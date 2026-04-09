@@ -237,26 +237,6 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         ])
     }
 
-    /// - Given: A valid storage path with PUT method and a contentType in pluginOptions
-    /// - When: An attempt to generate a pre-signed URL is performed via the path-based API
-    /// - Then: The storage service is called with putObject signing and metadata containing the content type
-    func testGetURLWithPutMethodAndContentTypePassesMetadata() async throws {
-        let path = StringStoragePath.fromString("public/\(testKey!)")
-        let options = StorageGetURLRequest.Options(
-            pluginOptions: AWSStorageGetURLOptions(
-                method: .put,
-                contentType: "application/json"
-            )
-        )
-        let output = try await systemUnderTest.getURL(path: path, options: options)
-        XCTAssertEqual(testURL, output)
-
-        let expectedServiceKey = "public/" + testKey
-        XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:metadata:accelerate:expires:) \(expectedServiceKey) putObject Optional([\"Content-Type\": \"application/json\"]) 18000"
-        ])
-    }
-
     /// - Given: A valid storage path with PUT method and validateObjectExistence set to true
     /// - When: An attempt to generate a pre-signed URL is performed via the path-based API
     /// - Then: The storage service skips the existence check and generates the URL with putObject signing

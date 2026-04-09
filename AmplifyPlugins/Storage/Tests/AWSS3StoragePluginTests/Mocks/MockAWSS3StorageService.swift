@@ -81,8 +81,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         return URL(fileURLWithPath: NSTemporaryDirectory())
     }
 
-    var getPreSignedURLWithMetadataHandler: ((String, AWSS3SigningOperation, [String: String]?, Int) async throws -> URL)?
-
     var getPreSignedURLWithAccelerateHandler: ((String, AWSS3SigningOperation, [String: String]?, Bool?, Int) async throws -> URL)?
 
     public func getPreSignedURL(
@@ -95,9 +93,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
             interactions.append("\(#function) \(serviceKey) \(signingOperation) \(String(describing: metadata)) \(expires)")
             if let handler = getPreSignedURLWithAccelerateHandler {
                 return try await handler(serviceKey, signingOperation, metadata, accelerate, expires)
-            }
-            if let handler = getPreSignedURLWithMetadataHandler {
-                return try await handler(serviceKey, signingOperation, metadata, expires)
             }
             return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
         }

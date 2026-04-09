@@ -127,49 +127,6 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString(key))
     }
 
-    /// - Given: A new key that does not yet exist in S3
-    /// - When: A PUT pre-signed URL is generated with contentType="application/json", and JSON data is uploaded
-    /// - Then: The PUT upload succeeds with HTTP 200
-    func testGetPutPresignedURLWithContentType() async throws {
-        let key = "public/" + UUID().uuidString
-        let jsonContent = "{\"test\": \"value\", \"id\": \"\(UUID().uuidString)\"}"
-        let jsonData = Data(jsonContent.utf8)
-
-        // Generate a PUT pre-signed URL with content type
-        let putURL = try await Amplify.Storage.getURL(
-            path: .fromString(key),
-            options: .init(
-                pluginOptions: AWSStorageGetURLOptions(
-                    method: .put,
-                    contentType: "application/json"
-                )
-            )
-        )
-        XCTAssertNotNil(putURL)
-
-        // Upload JSON data using URLSession with the matching content type
-        var putRequest = URLRequest(url: putURL)
-        putRequest.httpMethod = "PUT"
-        putRequest.httpBody = jsonData
-        putRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let (_, putResponse) = try await URLSession.shared.data(for: putRequest)
-        let putHttpResponse = try XCTUnwrap(putResponse as? HTTPURLResponse)
-        XCTAssertEqual(putHttpResponse.statusCode, 200)
-
-        // Verify the upload by downloading
-        let getURL = try await Amplify.Storage.getURL(path: .fromString(key))
-        let (downloadedData, getResponse) = try await URLSession.shared.data(from: getURL)
-        let getHttpResponse = try XCTUnwrap(getResponse as? HTTPURLResponse)
-        XCTAssertEqual(getHttpResponse.statusCode, 200)
-
-        let downloadedString = try XCTUnwrap(String(data: downloadedData, encoding: .utf8))
-        XCTAssertEqual(downloadedString, jsonContent)
-
-        // Clean up
-        _ = try await Amplify.Storage.remove(path: .fromString(key))
-    }
-
     /// - Given: A key for a non-existent S3 object
     /// - When: A PUT pre-signed URL is requested with validateObjectExistence=true
     /// - Then: The URL is returned successfully without throwing (existence check is skipped for PUT)
