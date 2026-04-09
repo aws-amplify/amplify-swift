@@ -6,6 +6,7 @@
 //
 
 import AmplifyFoundation
+import AmplifyRecordCache
 import AWSKinesis
 import Foundation
 
@@ -18,7 +19,7 @@ protocol KinesisClientProtocol {
 extension AWSKinesis.KinesisClient: KinesisClientProtocol {}
 
 /// Kinesis-specific implementation of RecordSender
-final class KinesisRecordSender: RecordSender, @unchecked Sendable {
+final class KinesisRecordSender: AmplifyRecordCache.RecordSender, @unchecked Sendable {
     private let kinesisClient: KinesisClientProtocol
     private let maxRetries: Int
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: KinesisRecordSender.self)
@@ -28,7 +29,7 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
         self.maxRetries = maxRetries
     }
 
-    func putRecords(streamName: String, records: [Record]) async throws -> PutRecordsResponse {
+    func putRecords(streamName: String, records: [AmplifyRecordCache.Record]) async throws -> AmplifyRecordCache.PutRecordsResponse {
         guard !records.isEmpty else {
             return PutRecordsResponse(
                 successfulIds: [],
@@ -40,7 +41,7 @@ final class KinesisRecordSender: RecordSender, @unchecked Sendable {
         let kinesisRecords = records.map { record in
             KinesisClientTypes.PutRecordsRequestEntry(
                 data: record.data,
-                partitionKey: record.partitionKey
+                partitionKey: record.partitionKey ?? ""
             )
         }
 

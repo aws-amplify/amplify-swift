@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.55.0 (2026-04-08)
+
+### Features
+
+- **firehose**: Add Firehose client (#4182)
+
+### Bug Fixes
+
+- using Hub category to fire configured event (#3995)
+- **kinesis**: enable full flush for cache (#4169)
+
 ## 2.54.1 (2026-03-11)
 
 ### Bug Fixes
