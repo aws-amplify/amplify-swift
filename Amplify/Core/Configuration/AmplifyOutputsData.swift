@@ -31,7 +31,7 @@ public struct AmplifyOutputsData: Codable {
     public let storage: Storage?
     public let custom: CustomOutput?
 
-public struct Analytics: Codable {
+    public struct Analytics: Codable {
         public let amazonPinpoint: AmazonPinpoint?
 
         public struct AmazonPinpoint: Codable {
@@ -40,7 +40,7 @@ public struct Analytics: Codable {
         }
     }
 
-public struct Auth: Codable {
+    public struct Auth: Codable {
         public let awsRegion: AWSRegion
         public let userPoolId: String
         public let userPoolClientId: String
@@ -111,7 +111,7 @@ public struct Auth: Codable {
 
     }
 
-public struct DataCategory: Codable {
+    public struct DataCategory: Codable {
         public let awsRegion: AWSRegion
         public let url: String
         public let modelIntrospection: JSONValue?
@@ -120,7 +120,7 @@ public struct DataCategory: Codable {
         public let authorizationTypes: [AWSAppSyncAuthorizationType]
     }
 
-public struct Geo: Codable {
+    public struct Geo: Codable {
         public let awsRegion: AWSRegion
         public let maps: Maps?
         public let searchIndices: SearchIndices?
@@ -130,7 +130,7 @@ public struct Geo: Codable {
             public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
-                public struct AmazonLocationServiceConfig: Codable {
+            public struct AmazonLocationServiceConfig: Codable {
                 public let style: String
             }
         }
@@ -158,13 +158,13 @@ public struct Geo: Codable {
         }
     }
 
-public struct Notifications: Codable {
+    public struct Notifications: Codable {
         public let awsRegion: String
         public let amazonPinpointAppId: String
         public let channels: [AmazonPinpointChannelType]
     }
 
-public struct Storage: Codable {
+    public struct Storage: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
@@ -192,11 +192,11 @@ public struct Storage: Codable {
         }
     }
 
-public struct CustomOutput: Codable {}
+    public struct CustomOutput: Codable {}
 
-public typealias AWSRegion = String
+    public typealias AWSRegion = String
 
-public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
+    public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
         case address
         case birthdate
         case email
@@ -217,7 +217,7 @@ public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresent
         case zoneinfo
     }
 
-public enum AWSAppSyncAuthorizationType: String, Codable {
+    public enum AWSAppSyncAuthorizationType: String, Codable {
         case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
         case apiKey = "API_KEY"
         case awsIAM = "AWS_IAM"
@@ -225,7 +225,7 @@ public enum AWSAppSyncAuthorizationType: String, Codable {
         case openIDConnect = "OPENID_CONNECT"
     }
 
-public enum AmazonPinpointChannelType: String, Codable {
+    public enum AmazonPinpointChannelType: String, Codable {
         case inAppMessaging = "IN_APP_MESSAGING"
         case fcm = "FCM"
         case apns = "APNS"
@@ -260,12 +260,12 @@ public enum AmazonPinpointChannelType: String, Codable {
 public struct AmplifyOutputs: @unchecked Sendable {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
-public let resolveConfiguration: () throws -> AmplifyOutputsData
+    public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = .init {
-            try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
-        }
+        try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
+    }
 
     /// Resolves configuration with a data object, from the contents of an `amplify_outputs.json` file.
     public static func data(_ data: Data) -> AmplifyOutputs {
@@ -319,7 +319,7 @@ public extension Amplify {
     /// - Parameter configuration: The AmplifyOutputsData object
     ///
     /// - Tag: Amplify.configure
-static func configure(_ configuration: AmplifyOutputsData) throws {
+    static func configure(_ configuration: AmplifyOutputsData) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)
 
