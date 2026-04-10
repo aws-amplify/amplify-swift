@@ -19,10 +19,17 @@ runs:
       run: |
         XCODE_VERSION="${{ inputs.xcode_version }}"
         PLATFORM="${{ inputs.platform }}"
+        DEFAULT_XCODE_VERSION="16.4.0"
 
         # Skip for macOS as it doesn't need simulators
         if [[ "$PLATFORM" == "macOS" ]]; then
           echo "macOS doesn't need simulator downloads"
+          exit 0
+        fi
+
+        # Skip for the default Xcode version — simulators are pre-installed
+        if [[ "$XCODE_VERSION" == "$DEFAULT_XCODE_VERSION" ]]; then
+          echo "Using default Xcode ${DEFAULT_XCODE_VERSION}, simulators are pre-installed"
           exit 0
         fi
 
@@ -37,18 +44,10 @@ runs:
         sudo xcode-select -switch "${XCODE_PATH}/Contents/Developer"
         xcodebuild -version
 
-        # Check if the simulator runtime is already available
-        echo "Checking available simulator runtimes..."
-        RUNTIMES=$(xcrun simctl list runtimes 2>/dev/null || true)
-        echo "$RUNTIMES"
+        echo "Simulators before download:"
+        xcrun simctl list runtimes || true
 
-        PLATFORM_LOWER=$(echo "$PLATFORM" | tr '[:upper:]' '[:lower:]')
-        if echo "$RUNTIMES" | grep -qi "$PLATFORM"; then
-          echo "$PLATFORM simulator runtime is already available"
-          exit 0
-        fi
-
-        echo "$PLATFORM simulator runtime not found, downloading..."
+        echo "Downloading $PLATFORM runtime for Xcode ${XCODE_VERSION}..."
         sudo xcodebuild -downloadPlatform "$PLATFORM" || echo "Failed to download $PLATFORM platform"
 
         echo "Simulators after download:"
