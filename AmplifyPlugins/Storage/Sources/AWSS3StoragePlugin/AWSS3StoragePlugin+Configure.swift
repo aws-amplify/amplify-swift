@@ -280,7 +280,7 @@ extension AWSS3StoragePlugin {
         return .guest
     }
     
-    /// Retrieves the sharedContainerIdentifier from configuration, and returns it.
+    /// Retrieves the sessionIdentifier from configuration, and returns it.
     private static func getSessionIdentifier(_ configuration: [String: JSONValue]) -> String? {
         if let sessionIdentifier = configuration[PluginConstants.sessionIdentifier], case let .string(sessionIdentifierValue) = sessionIdentifier {
             return sessionIdentifierValue

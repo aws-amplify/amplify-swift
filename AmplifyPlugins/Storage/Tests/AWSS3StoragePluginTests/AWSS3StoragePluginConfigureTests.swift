@@ -380,4 +380,81 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             )
         }
     }
+
+    // MARK: - Session and Shared Container Identifier tests
+
+    /// Given: A valid storage configuration with a sessionIdentifier
+    /// When: The plugin is configured
+    /// Then: Configuration should succeed without errors
+    func testConfigureWithSessionIdentifier() {
+        let bucket = JSONValue.init(stringLiteral: testBucket)
+        let region = JSONValue.init(stringLiteral: testRegion)
+        let sessionId = JSONValue.init(stringLiteral: "com.example.custom.session")
+        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+            (PluginConstants.bucket, bucket),
+            (PluginConstants.region, region),
+            (PluginConstants.sessionIdentifier, sessionId))
+
+        do {
+            try storagePlugin.configure(using: storagePluginConfig)
+        } catch {
+            XCTFail("Failed to configure storage plugin with sessionIdentifier: \(error)")
+        }
+    }
+
+    /// Given: A valid storage configuration with a sharedContainerIdentifier
+    /// When: The plugin is configured
+    /// Then: Configuration should succeed without errors
+    func testConfigureWithSharedContainerIdentifier() {
+        let bucket = JSONValue.init(stringLiteral: testBucket)
+        let region = JSONValue.init(stringLiteral: testRegion)
+        let containerId = JSONValue.init(stringLiteral: "group.com.example.shared")
+        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+            (PluginConstants.bucket, bucket),
+            (PluginConstants.region, region),
+            (PluginConstants.sharedContainerIdentifier, containerId))
+
+        do {
+            try storagePlugin.configure(using: storagePluginConfig)
+        } catch {
+            XCTFail("Failed to configure storage plugin with sharedContainerIdentifier: \(error)")
+        }
+    }
+
+    /// Given: A valid storage configuration with both sessionIdentifier and sharedContainerIdentifier
+    /// When: The plugin is configured
+    /// Then: Configuration should succeed without errors
+    func testConfigureWithBothIdentifiers() {
+        let bucket = JSONValue.init(stringLiteral: testBucket)
+        let region = JSONValue.init(stringLiteral: testRegion)
+        let sessionId = JSONValue.init(stringLiteral: "com.example.custom.session")
+        let containerId = JSONValue.init(stringLiteral: "group.com.example.shared")
+        let storagePluginConfig = JSONValue.init(dictionaryLiteral:
+            (PluginConstants.bucket, bucket),
+            (PluginConstants.region, region),
+            (PluginConstants.sessionIdentifier, sessionId),
+            (PluginConstants.sharedContainerIdentifier, containerId))
+
+        do {
+            try storagePlugin.configure(using: storagePluginConfig)
+        } catch {
+            XCTFail("Failed to configure storage plugin with both identifiers: \(error)")
+        }
+    }
+
+    /// Given: A valid storage configuration without sessionIdentifier or sharedContainerIdentifier
+    /// When: The plugin is configured
+    /// Then: Configuration should succeed using default values
+    func testConfigureWithoutIdentifiers_usesDefaults() {
+        let bucket = JSONValue.init(stringLiteral: testBucket)
+        let region = JSONValue.init(stringLiteral: testRegion)
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
+
+        do {
+            try storagePlugin.configure(using: storagePluginConfig)
+        } catch {
+            XCTFail("Failed to configure storage plugin without identifiers: \(error)")
+        }
+    }
 }
