@@ -181,7 +181,11 @@ public struct AmplifyOutputsData: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
+        /// The identifier for the `URLSession` used by the storage service for background transfers.
+        /// When set, overrides the default session identifier (`com.amazon.aws.default.identifier`).
         public let sessionIdentifier: String?
+        /// The identifier for a shared app group container, allowing extensions and the main app
+        /// to share upload/download data through a common directory.
         public let sharedContainerIdentifier: String?
 
         @_spi(InternalAmplifyConfiguration)

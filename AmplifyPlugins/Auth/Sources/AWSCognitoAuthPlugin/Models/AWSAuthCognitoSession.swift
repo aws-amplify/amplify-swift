@@ -173,6 +173,10 @@ extension AWSAuthCognitoSession: Sendable { }
 
 extension AWSAuthCognitoSession {
 
+    /// Returns `true` when the session contains user pool tokens that have not yet reached
+    /// the expiry buffer window (currently 2 minutes before actual expiration).
+    ///
+    /// Returns `false` if tokens are missing, expired, or within the buffer window.
     func areTokensValid() -> Bool {
         guard case .success(let tokens) = userPoolTokensResult,
               let cognitoTokens = tokens as? AWSCognitoUserPoolTokens else {
