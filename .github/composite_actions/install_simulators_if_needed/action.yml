@@ -1,5 +1,5 @@
 name: 'Install Simulators if Needed'
-description: 'Downloads and installs simulator runtimes for Xcode 16.0'
+description: 'Downloads and installs simulator runtimes for non-default Xcode versions'
 
 inputs:
   xcode_version:
@@ -14,55 +14,42 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install Simulators for Xcode 16.0
+    - name: Install Simulators if Needed
       shell: bash
       run: |
         XCODE_VERSION="${{ inputs.xcode_version }}"
         PLATFORM="${{ inputs.platform }}"
-        
-        # Only run for Xcode 16.0.0
-        if [[ "$XCODE_VERSION" != "16.0.0" ]]; then
-          echo "Not Xcode 16.0.0 (current: $XCODE_VERSION), skipping simulator installation"
-          exit 0
-        fi
-        
+
         # Skip for macOS as it doesn't need simulators
         if [[ "$PLATFORM" == "macOS" ]]; then
           echo "macOS doesn't need simulator downloads"
           exit 0
         fi
-        
-        echo "Installing simulators for $PLATFORM with Xcode 16.0.0..."
-        
-        # Ensure we're using Xcode 16.0.0 for simulator downloads
-        echo "Switching to Xcode 16.0.0..."
-        sudo xcode-select -switch /Applications/Xcode_16.0.0.app/Contents/Developer
-        
-        # Verify the switch worked
-        echo "Current Xcode version:"
+
+        # Switch to the target Xcode version
+        XCODE_PATH="/Applications/Xcode_${XCODE_VERSION}.app"
+        if [[ ! -d "$XCODE_PATH" ]]; then
+          echo "Xcode not found at $XCODE_PATH"
+          exit 1
+        fi
+
+        echo "Switching to Xcode ${XCODE_VERSION}..."
+        sudo xcode-select -switch "${XCODE_PATH}/Contents/Developer"
         xcodebuild -version
-        
-        # Show what's available before download
-        echo "Simulators before download:"
-        xcrun simctl list runtimes || true
-        
-        # Download the platform runtime for Xcode 16.0.0
-        echo "Downloading $PLATFORM runtime for Xcode 16.0..."
-        case $PLATFORM in
-          iOS)
-            sudo xcodebuild -downloadPlatform iOS || echo "Failed to download iOS platform"
-            ;;
-          tvOS)
-            sudo xcodebuild -downloadPlatform tvOS || echo "Failed to download tvOS platform"
-            ;;
-          watchOS)
-            sudo xcodebuild -downloadPlatform watchOS || echo "Failed to download watchOS platform"
-            ;;
-          visionOS)
-            sudo xcodebuild -downloadPlatform visionOS || echo "Failed to download visionOS platform"
-            ;;
-        esac
-        
-        # Show what's available after download
+
+        # Check if the simulator runtime is already available
+        echo "Checking available simulator runtimes..."
+        RUNTIMES=$(xcrun simctl list runtimes 2>/dev/null || true)
+        echo "$RUNTIMES"
+
+        PLATFORM_LOWER=$(echo "$PLATFORM" | tr '[:upper:]' '[:lower:]')
+        if echo "$RUNTIMES" | grep -qi "$PLATFORM"; then
+          echo "$PLATFORM simulator runtime is already available"
+          exit 0
+        fi
+
+        echo "$PLATFORM simulator runtime not found, downloading..."
+        sudo xcodebuild -downloadPlatform "$PLATFORM" || echo "Failed to download $PLATFORM platform"
+
         echo "Simulators after download:"
         xcrun simctl list runtimes || true

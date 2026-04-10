@@ -49,6 +49,12 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
 
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ steps.platform.outputs.xcode-version }}
+          platform: ${{ matrix.platform }}
+
       - name: Create the test configuration directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
 
