@@ -2,6 +2,10 @@ name: Integration Tests | Auth - WebAuthn
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      xcode_version:
+        type: string
+        default: 'latest'
 
 permissions:
     id-token: write
@@ -25,6 +29,7 @@ jobs:
         uses: ./.github/composite_actions/get_platform_parameters
         with:
           platform: iOS
+          xcode_version: ${{ inputs.xcode_version || 'latest' }}
 
       - name: Install simulators if needed
         uses: ./.github/composite_actions/install_simulators_if_needed
