@@ -62,56 +62,65 @@ runs:
       run: |
         INPUT_PLATFORM=${{ inputs.platform }}
         INPUT_DESTINATION='${{ inputs.destination }}'
-        INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
+        XCODE_VERSION=${{ steps.get-xcode-version.outputs.xcode-version }}
 
-        case $INPUT_PLATFORM/$INPUT_XCODE_VERSION in
-          iOS/latest)
+        # Map resolved Xcode versions to simulator destinations.
+        # Only explicitly supported versions are allowed — unknown versions fail.
+        case $INPUT_PLATFORM/$XCODE_VERSION in
+          iOS/26.3)
             DEVICE="iPhone 16 Pro Max"
             OS_VERSION="26.2"
             ;;
-          iOS/minimum)
+          iOS/16.4.0)
+            DEVICE="iPhone 16 Pro Max"
+            OS_VERSION="18.5"
+            ;;
+          iOS/16.0.0)
             DEVICE="iPhone 16 Pro Max"
             OS_VERSION="18.0"
             ;;
-          iOS/*)
-            DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="26.2"
-            ;;
-          tvOS/latest)
+          tvOS/26.3)
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="26.2"
             ;;
-          tvOS/minimum)
+          tvOS/16.4.0)
+            DEVICE="Apple TV 4K (3rd generation)"
+            OS_VERSION="18.5"
+            ;;
+          tvOS/16.0.0)
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="18.0"
             ;;
-          tvOS/*)
-            DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="26.2"
-            ;;
-          watchOS/latest)
+          watchOS/26.3)
             DEVICE="Apple Watch Series 10 (46mm)"
             OS_VERSION="26.2"
             ;;
-          watchOS/minimum)
+          watchOS/16.4.0)
+            DEVICE="Apple Watch Series 10 (46mm)"
+            OS_VERSION="11.5"
+            ;;
+          watchOS/16.0.0)
             DEVICE="Apple Watch SE (44mm) (2nd generation)"
             OS_VERSION="11.0"
             ;;
-          watchOS/*)
-            DEVICE="Apple Watch Series 10 (46mm)"
-            OS_VERSION="26.2"
-            ;;
-          visionOS/latest)
+          visionOS/26.3)
             DEVICE="Apple Vision Pro"
             OS_VERSION="26.2"
             ;;
-          visionOS/minimum)
+          visionOS/16.4.0)
+            DEVICE="Apple Vision Pro"
+            OS_VERSION="2.5"
+            ;;
+          visionOS/16.0.0)
             DEVICE="Apple Vision Pro"
             OS_VERSION="2.0"
             ;;
-          visionOS/*)
-            DEVICE="Apple Vision Pro"
-            OS_VERSION="26.2"
+          macOS/*)
+            ;;
+          *)
+            echo "Unsupported platform/Xcode combination: $INPUT_PLATFORM/$XCODE_VERSION"
+            echo "Supported Xcode versions: 26.3, 16.4.0, 16.0.0"
+            exit 1
             ;;
         esac
 
