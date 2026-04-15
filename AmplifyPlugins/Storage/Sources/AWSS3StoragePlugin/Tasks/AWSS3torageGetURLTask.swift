@@ -42,18 +42,25 @@ class AWSS3StorageGetURLTask: StorageGetURLTask, DefaultLogger {
             )
         }
 
-        // Validate object if needed
-        if let pluginOptions = request.options.pluginOptions as? AWSStorageGetURLOptions, pluginOptions.validateObjectExistence {
+        let pluginOptions = request.options.pluginOptions as? AWSStorageGetURLOptions
+        let method = pluginOptions?.method ?? .get
+
+        // Only validate object existence for GET operations
+        if method == .get,
+           let pluginOptions,
+           pluginOptions.validateObjectExistence {
             try await storageBehaviour.validateObjectExistence(serviceKey: serviceKey)
         }
 
         let accelerate = try AWSS3PluginOptions.accelerateValue(
             pluginOptions: request.options.pluginOptions)
 
+        let signingOperation: AWSS3SigningOperation = method == .put ? .putObject : .getObject
+
         do {
             return try await storageBehaviour.getPreSignedURL(
                 serviceKey: serviceKey,
-                signingOperation: .getObject,
+                signingOperation: signingOperation,
                 metadata: nil,
                 accelerate: accelerate,
                 expires: request.options.expires

@@ -145,4 +145,72 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
             XCTAssertEqual(field, "path", "Field in error should be `path`")
         }
     }
+
+    /// - Given: A configured Storage GetURL Task with PUT method and a valid path
+    /// - When: AWSS3StorageGetURLTask value is invoked
+    /// - Then: A URL should be returned using putObject signing operation
+    func testGetURLTaskWithPutMethodSuccess() async throws {
+        let somePath = "path"
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
+
+        let serviceMock = MockAWSS3StorageService()
+        serviceMock.getPreSignedURLHandler = { path, _, _ in
+            XCTAssertEqual(somePath, path)
+            return tempURL
+        }
+
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(somePath),
+            options: .init(
+                pluginOptions: AWSStorageGetURLOptions(method: .put)
+            )
+        )
+        let task = AWSS3StorageGetURLTask(
+            request,
+            storageBehaviour: serviceMock
+        )
+        let value = try await task.value
+        XCTAssertEqual(value, tempURL)
+
+        XCTAssertEqual(serviceMock.interactions.count, 1)
+        let interaction = serviceMock.interactions[0]
+        XCTAssertTrue(interaction.contains("putObject"), "Should use putObject signing operation")
+    }
+
+    /// - Given: A configured Storage GetURL Task with PUT method and an empty path
+    /// - When: AWSS3StorageGetURLTask value is invoked
+    /// - Then: A storage validation error should be returned
+    func testGetURLTaskWithPutMethodAndEmptyPathThrowsValidationError() async throws {
+        let emptyPath = " "
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
+
+        let serviceMock = MockAWSS3StorageService()
+        serviceMock.getPreSignedURLHandler = { _, _, _ in
+            return tempURL
+        }
+
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(emptyPath),
+            options: .init(
+                pluginOptions: AWSStorageGetURLOptions(method: .put)
+            )
+        )
+        let task = AWSS3StorageGetURLTask(
+            request,
+            storageBehaviour: serviceMock
+        )
+        do {
+            _ = try await task.value
+            XCTFail("Task should throw an exception")
+        } catch {
+            guard let storageError = error as? StorageError,
+                  case .validation(let field, _, _, _) = storageError
+            else {
+                XCTFail("Should throw a storage validation error, instead threw \(error)")
+                return
+            }
+
+            XCTAssertEqual(field, "path", "Field in error should be `path`")
+        }
+    }
 }
