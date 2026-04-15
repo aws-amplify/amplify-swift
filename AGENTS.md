@@ -17,11 +17,12 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 ## Linting & Formatting (MUST pass)
 
-Run before committing. CI enforces both. See `.swiftlint.yml` and `.swiftformat` for full rules.
+**Always run `swiftformat` on changed files before every commit.** CI enforces both formatting and linting — PRs will fail if files are not formatted. See `.swiftlint.yml` and `.swiftformat` for full rules.
 
 ```bash
-swiftformat .     # Format first
-swiftlint --fix   # Then lint
+swiftformat <changed-files>   # Format changed files before committing
+swiftformat .                 # Or format everything
+swiftlint --fix               # Then lint
 ```
 
 ## License Header (Required on ALL Swift files)

@@ -17,13 +17,13 @@ jobs:
       matrix:
         include:
           - os: macos-15
+            xcode-version: '26.3'
+            device: 'iPhone 16 Pro Max'
+            version: '26.2'
+          - os: macos-15
             xcode-version: '16.4.0'
             device: 'iPhone 16 Pro Max'
             version: '18.5'
-          - os: macos-15
-            xcode-version: '16.0.0'
-            device: 'iPhone 16 Pro Max'
-            version: '18.0'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
