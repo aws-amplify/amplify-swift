@@ -41,13 +41,30 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
     }
 
     func testConstructAuthWithAllFields() {
+        let passwordPolicy = AmplifyOutputsData.Auth.PasswordPolicy(
+            minLength: 8,
+            requireNumbers: true,
+            requireLowercase: true,
+            requireUppercase: true,
+            requireSymbols: false
+        )
+
+        let oauth = AmplifyOutputsData.Auth.OAuth(
+            identityProviders: ["GOOGLE", "SIGN_IN_WITH_APPLE"],
+            domain: "myapp.auth.us-east-1.amazoncognito.com",
+            scopes: ["openid", "email", "profile"],
+            redirectSignInUri: ["myapp://callback"],
+            redirectSignOutUri: ["myapp://signout"],
+            responseType: "code"
+        )
+
         let auth = AmplifyOutputsData.Auth(
             awsRegion: "us-west-2",
             userPoolId: "us-west-2_xyz",
             userPoolClientId: "clientABC",
             identityPoolId: "us-west-2:identity-pool-id",
-            passwordPolicy: nil,
-            oauth: nil,
+            passwordPolicy: passwordPolicy,
+            oauth: oauth,
             standardRequiredAttributes: [.email, .phoneNumber],
             usernameAttributes: [.email],
             userVerificationTypes: [.email, .phoneNumber],
@@ -58,12 +75,73 @@ class AmplifyOutputsDataPublicAPITests: XCTestCase {
 
         XCTAssertEqual(auth.awsRegion, "us-west-2")
         XCTAssertEqual(auth.identityPoolId, "us-west-2:identity-pool-id")
+        XCTAssertEqual(auth.passwordPolicy?.minLength, 8)
+        XCTAssertEqual(auth.passwordPolicy?.requireNumbers, true)
+        XCTAssertEqual(auth.passwordPolicy?.requireSymbols, false)
+        XCTAssertEqual(auth.oauth?.domain, "myapp.auth.us-east-1.amazoncognito.com")
+        XCTAssertEqual(auth.oauth?.identityProviders, ["GOOGLE", "SIGN_IN_WITH_APPLE"])
+        XCTAssertEqual(auth.oauth?.scopes, ["openid", "email", "profile"])
+        XCTAssertEqual(auth.oauth?.redirectSignInUri, ["myapp://callback"])
+        XCTAssertEqual(auth.oauth?.responseType, "code")
         XCTAssertEqual(auth.standardRequiredAttributes, [.email, .phoneNumber])
         XCTAssertEqual(auth.usernameAttributes, [.email])
         XCTAssertEqual(auth.userVerificationTypes, [.email, .phoneNumber])
         XCTAssertEqual(auth.unauthenticatedIdentitiesEnabled, true)
         XCTAssertEqual(auth.mfaConfiguration, "OPTIONAL")
         XCTAssertEqual(auth.mfaMethods, ["SMS", "TOTP"])
+    }
+
+    func testConstructAnalyticsConfig() {
+        let analytics = AmplifyOutputsData.Analytics(
+            amazonPinpoint: .init(awsRegion: "us-east-1", appId: "pinpoint-app-123")
+        )
+
+        XCTAssertEqual(analytics.amazonPinpoint?.awsRegion, "us-east-1")
+        XCTAssertEqual(analytics.amazonPinpoint?.appId, "pinpoint-app-123")
+    }
+
+    func testConstructDataCategoryConfig() {
+        let data = AmplifyOutputsData.DataCategory(
+            awsRegion: "us-east-1",
+            url: "https://abc123.appsync-api.us-east-1.amazonaws.com/graphql",
+            apiKey: "da2-abcdefghijk",
+            defaultAuthorizationType: .apiKey,
+            authorizationTypes: [.apiKey, .amazonCognitoUserPools]
+        )
+
+        XCTAssertEqual(data.url, "https://abc123.appsync-api.us-east-1.amazonaws.com/graphql")
+        XCTAssertEqual(data.apiKey, "da2-abcdefghijk")
+        XCTAssertEqual(data.defaultAuthorizationType, .apiKey)
+        XCTAssertEqual(data.authorizationTypes, [.apiKey, .amazonCognitoUserPools])
+        XCTAssertNil(data.modelIntrospection)
+    }
+
+    func testConstructNotificationsConfig() {
+        let notifications = AmplifyOutputsData.Notifications(
+            awsRegion: "us-east-1",
+            amazonPinpointAppId: "pinpoint-123",
+            channels: [.apns, .fcm, .email]
+        )
+
+        XCTAssertEqual(notifications.amazonPinpointAppId, "pinpoint-123")
+        XCTAssertEqual(notifications.channels, [.apns, .fcm, .email])
+    }
+
+    func testConstructGeoWithMapsAndIndices() {
+        let geo = AmplifyOutputsData.Geo(
+            awsRegion: "us-east-1",
+            maps: .init(
+                items: ["myMap": .init(style: "VectorEsriStreets")],
+                default: "myMap"
+            ),
+            searchIndices: .init(items: ["myIndex"], default: "myIndex"),
+            geofenceCollections: .init(items: ["myCollection"], default: "myCollection")
+        )
+
+        XCTAssertEqual(geo.maps?.items["myMap"]?.style, "VectorEsriStreets")
+        XCTAssertEqual(geo.maps?.default, "myMap")
+        XCTAssertEqual(geo.searchIndices?.items, ["myIndex"])
+        XCTAssertEqual(geo.geofenceCollections?.default, "myCollection")
     }
 
     func testConstructStorageConfig() {

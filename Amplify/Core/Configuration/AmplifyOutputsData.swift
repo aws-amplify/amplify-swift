@@ -37,6 +37,15 @@ public struct AmplifyOutputsData: Codable {
         public struct AmazonPinpoint: Codable {
             public let awsRegion: AWSRegion
             public let appId: String
+
+            public init(awsRegion: AWSRegion, appId: String) {
+                self.awsRegion = awsRegion
+                self.appId = appId
+            }
+        }
+
+        public init(amazonPinpoint: AmazonPinpoint? = nil) {
+            self.amazonPinpoint = amazonPinpoint
         }
     }
 
@@ -60,6 +69,20 @@ public struct AmplifyOutputsData: Codable {
             public let requireLowercase: Bool
             public let requireUppercase: Bool
             public let requireSymbols: Bool
+
+            public init(
+                minLength: UInt,
+                requireNumbers: Bool,
+                requireLowercase: Bool,
+                requireUppercase: Bool,
+                requireSymbols: Bool
+            ) {
+                self.minLength = minLength
+                self.requireNumbers = requireNumbers
+                self.requireLowercase = requireLowercase
+                self.requireUppercase = requireUppercase
+                self.requireSymbols = requireSymbols
+            }
         }
 
         public struct OAuth: Codable {
@@ -69,6 +92,22 @@ public struct AmplifyOutputsData: Codable {
             public let redirectSignInUri: [String]
             public let redirectSignOutUri: [String]
             public let responseType: String
+
+            public init(
+                identityProviders: [String],
+                domain: String,
+                scopes: [String],
+                redirectSignInUri: [String],
+                redirectSignOutUri: [String],
+                responseType: String
+            ) {
+                self.identityProviders = identityProviders
+                self.domain = domain
+                self.scopes = scopes
+                self.redirectSignInUri = redirectSignInUri
+                self.redirectSignOutUri = redirectSignOutUri
+                self.responseType = responseType
+            }
         }
 
         public enum UsernameAttributes: String, Codable {
@@ -118,6 +157,22 @@ public struct AmplifyOutputsData: Codable {
         public let apiKey: String?
         public let defaultAuthorizationType: AWSAppSyncAuthorizationType
         public let authorizationTypes: [AWSAppSyncAuthorizationType]
+
+        public init(
+            awsRegion: AWSRegion,
+            url: String,
+            modelIntrospection: JSONValue? = nil,
+            apiKey: String? = nil,
+            defaultAuthorizationType: AWSAppSyncAuthorizationType,
+            authorizationTypes: [AWSAppSyncAuthorizationType]
+        ) {
+            self.awsRegion = awsRegion
+            self.url = url
+            self.modelIntrospection = modelIntrospection
+            self.apiKey = apiKey
+            self.defaultAuthorizationType = defaultAuthorizationType
+            self.authorizationTypes = authorizationTypes
+        }
     }
 
     public struct Geo: Codable {
@@ -132,17 +187,36 @@ public struct AmplifyOutputsData: Codable {
 
             public struct AmazonLocationServiceConfig: Codable {
                 public let style: String
+
+                public init(style: String) {
+                    self.style = style
+                }
+            }
+
+            public init(items: [String: AmazonLocationServiceConfig], default defaultMap: String) {
+                self.items = items
+                self.default = defaultMap
             }
         }
 
         public struct SearchIndices: Codable {
             public let items: [String]
             public let `default`: String
+
+            public init(items: [String], default defaultIndex: String) {
+                self.items = items
+                self.default = defaultIndex
+            }
         }
 
         public struct GeofenceCollections: Codable {
             public let items: [String]
             public let `default`: String
+
+            public init(items: [String], default defaultCollection: String) {
+                self.items = items
+                self.default = defaultCollection
+            }
         }
 
         public init(
@@ -162,6 +236,12 @@ public struct AmplifyOutputsData: Codable {
         public let awsRegion: String
         public let amazonPinpointAppId: String
         public let channels: [AmazonPinpointChannelType]
+
+        public init(awsRegion: String, amazonPinpointAppId: String, channels: [AmazonPinpointChannelType]) {
+            self.awsRegion = awsRegion
+            self.amazonPinpointAppId = amazonPinpointAppId
+            self.channels = channels
+        }
     }
 
     public struct Storage: Codable {
@@ -243,6 +323,27 @@ public struct AmplifyOutputsData: Codable {
         custom: CustomOutput? = nil
     ) {
         self.version = AmplifyOutputsData.currentVersion
+        self.analytics = analytics
+        self.auth = auth
+        self.data = data
+        self.geo = geo
+        self.notifications = notifications
+        self.storage = storage
+        self.custom = custom
+    }
+
+    // Internal init preserving version parameter for backward compatibility
+    init(
+        version: String = "",
+        analytics: Analytics? = nil,
+        auth: Auth? = nil,
+        data: DataCategory? = nil,
+        geo: Geo? = nil,
+        notifications: Notifications? = nil,
+        storage: Storage? = nil,
+        custom: CustomOutput? = nil
+    ) {
+        self.version = version
         self.analytics = analytics
         self.auth = auth
         self.data = data
