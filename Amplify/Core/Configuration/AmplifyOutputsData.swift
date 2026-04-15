@@ -322,14 +322,16 @@ public struct AmplifyOutputsData: Codable {
         storage: Storage? = nil,
         custom: CustomOutput? = nil
     ) {
-        self.version = AmplifyOutputsData.currentVersion
-        self.analytics = analytics
-        self.auth = auth
-        self.data = data
-        self.geo = geo
-        self.notifications = notifications
-        self.storage = storage
-        self.custom = custom
+        self.init(
+            version: AmplifyOutputsData.currentVersion,
+            analytics: analytics,
+            auth: auth,
+            data: data,
+            geo: geo,
+            notifications: notifications,
+            storage: storage,
+            custom: custom
+        )
     }
 
     // Internal init preserving version parameter for backward compatibility
