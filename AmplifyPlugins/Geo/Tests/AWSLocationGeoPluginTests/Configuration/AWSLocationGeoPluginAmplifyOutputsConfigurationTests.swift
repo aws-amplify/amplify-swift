@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable @_spi(InternalAmplifyConfiguration) import Amplify
+@testable import Amplify
 
 @testable import AWSLocationGeoPlugin
 

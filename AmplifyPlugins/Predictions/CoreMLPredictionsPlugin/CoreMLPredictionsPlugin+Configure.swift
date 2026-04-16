@@ -7,7 +7,7 @@
 
 #if canImport(Speech) && canImport(Vision)
 import Foundation
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 
 extension CoreMLPredictionsPlugin {
 

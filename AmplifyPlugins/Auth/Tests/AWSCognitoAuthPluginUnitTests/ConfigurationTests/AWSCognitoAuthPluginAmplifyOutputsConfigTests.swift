@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
 class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {

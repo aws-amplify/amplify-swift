@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 import AwsCommonRuntimeKit
 import AWSPluginsCore
 import InternalAmplifyCredentials

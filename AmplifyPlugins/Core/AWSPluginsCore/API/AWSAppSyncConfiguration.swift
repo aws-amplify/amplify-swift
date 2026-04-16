@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 
 
 /// Hold necessary AWS AppSync configuration values to interact with the AppSync API

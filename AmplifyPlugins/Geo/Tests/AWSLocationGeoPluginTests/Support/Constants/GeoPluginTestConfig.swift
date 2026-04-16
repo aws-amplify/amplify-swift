@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable @_spi(InternalAmplifyConfiguration) @preconcurrency import Amplify
+@testable @preconcurrency import Amplify
 @testable import AWSLocationGeoPlugin
 
 enum GeoPluginTestConfig {
