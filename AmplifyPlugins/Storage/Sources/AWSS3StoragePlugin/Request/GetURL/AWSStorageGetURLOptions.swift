@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
 /// Provides options specific to the AWS S3 plugin implementation of the Storage category.
@@ -19,7 +20,7 @@ import Foundation
 ///     key: "ExampleKey",
 ///     options: .init(
 ///         accessLevel: .private,
-///         pluginOptions: S3GetUrlPluginOptions(
+///         pluginOptions: AWSStorageGetURLOptions(
 ///             validateObjectExistence: true
 ///         )
 ///     )
@@ -41,8 +42,26 @@ public struct AWSStorageGetURLOptions {
     /// - Tag: AWSStorageGetURLOptions.validateObjectExistence
     public var validateObjectExistence: Bool = false
 
+    /// The access method for the pre-signed URL. Defaults to `.get`.
+    /// Use `.put` to generate a pre-signed URL for uploading.
+    public var method: StorageAccessMethod = .get
+
+    /// Creates options with all configurable parameters.
+    ///
+    /// - Parameters:
+    ///   - validateObjectExistence: Whether to validate the object exists before generating the URL.
+    ///   - method: The access method for the pre-signed URL (`.get` or `.put`).
+    public init(
+        validateObjectExistence: Bool = false,
+        method: StorageAccessMethod = .get
+    ) {
+        self.validateObjectExistence = validateObjectExistence
+        self.method = method
+    }
+
     /// - Tag: AWSStorageGetURLOptions.init
     public init(validateObjectExistence: Bool) {
         self.validateObjectExistence = validateObjectExistence
+        self.method = .get
     }
 }

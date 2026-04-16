@@ -226,7 +226,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
 
     // Note: the headers were previously filtered in the SDK
     func filter(requestHeaders: RequestHeaders) -> RequestHeaders {
-        let disallowedHeaders: Set<String> = ["x-amz-acl", "x-amz-tagging", "x-amz-storage-class", "x-amz-server-side-encryption"]
+        let disallowedHeaders: Set = ["x-amz-acl", "x-amz-tagging", "x-amz-storage-class", "x-amz-server-side-encryption"]
         let shouldExcludeKey: (String) -> Bool = {
             $0.hasPrefix("x-amz-meta") ||
             $0.hasPrefix("x-amz-grant") ||

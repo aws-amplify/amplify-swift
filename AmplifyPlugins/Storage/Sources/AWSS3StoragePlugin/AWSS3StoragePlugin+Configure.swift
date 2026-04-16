@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 import AWSPluginsCore
 import InternalAmplifyCredentials
 

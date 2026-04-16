@@ -50,7 +50,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// When: identifyUser api is called
     /// Then: IdentifyUser Hub event is received
     func testIdentifyUser() async throws {
-        let userId = "userId"
+        let userId = "integTest\(UUID().uuidString)"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {

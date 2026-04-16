@@ -14,13 +14,15 @@ import Foundation
 
 /// Represents Amplify's Gen2 configuration for all categories intended to be used in an application.
 ///
+/// Currently supports schema version `1` of the `amplify_outputs.json` format.
+///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
 ///
 /// - Tag: AmplifyOutputs
 ///
-@_spi(InternalAmplifyConfiguration)
 public struct AmplifyOutputsData: Codable {
-    public let version: String
+    static let currentVersion = "1"
+    let version: String
     public let analytics: Analytics?
     public let auth: Auth?
     public let data: DataCategory?
@@ -29,17 +31,24 @@ public struct AmplifyOutputsData: Codable {
     public let storage: Storage?
     public let custom: CustomOutput?
 
-    @_spi(InternalAmplifyConfiguration)
     public struct Analytics: Codable {
         public let amazonPinpoint: AmazonPinpoint?
 
         public struct AmazonPinpoint: Codable {
             public let awsRegion: AWSRegion
             public let appId: String
+
+            public init(awsRegion: AWSRegion, appId: String) {
+                self.awsRegion = awsRegion
+                self.appId = appId
+            }
+        }
+
+        public init(amazonPinpoint: AmazonPinpoint? = nil) {
+            self.amazonPinpoint = amazonPinpoint
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: AWSRegion
         public let userPoolId: String
@@ -54,16 +63,28 @@ public struct AmplifyOutputsData: Codable {
         public let mfaConfiguration: String?
         public let mfaMethods: [String]?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct PasswordPolicy: Codable {
             public let minLength: UInt
             public let requireNumbers: Bool
             public let requireLowercase: Bool
             public let requireUppercase: Bool
             public let requireSymbols: Bool
+
+            public init(
+                minLength: UInt,
+                requireNumbers: Bool,
+                requireLowercase: Bool,
+                requireUppercase: Bool,
+                requireSymbols: Bool
+            ) {
+                self.minLength = minLength
+                self.requireNumbers = requireNumbers
+                self.requireLowercase = requireLowercase
+                self.requireUppercase = requireUppercase
+                self.requireSymbols = requireSymbols
+            }
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct OAuth: Codable {
             public let identityProviders: [String]
             public let domain: String
@@ -71,21 +92,35 @@ public struct AmplifyOutputsData: Codable {
             public let redirectSignInUri: [String]
             public let redirectSignOutUri: [String]
             public let responseType: String
+
+            public init(
+                identityProviders: [String],
+                domain: String,
+                scopes: [String],
+                redirectSignInUri: [String],
+                redirectSignOutUri: [String],
+                responseType: String
+            ) {
+                self.identityProviders = identityProviders
+                self.domain = domain
+                self.scopes = scopes
+                self.redirectSignInUri = redirectSignInUri
+                self.redirectSignOutUri = redirectSignOutUri
+                self.responseType = responseType
+            }
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public enum UsernameAttributes: String, Codable {
             case email
             case phoneNumber = "phone_number"
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public enum UserVerificationType: String, Codable {
             case email
             case phoneNumber = "phone_number"
         }
 
-        init(
+        public init(
             awsRegion: AWSRegion,
             userPoolId: String,
             userPoolClientId: String,
@@ -115,7 +150,6 @@ public struct AmplifyOutputsData: Codable {
 
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct DataCategory: Codable {
         public let awsRegion: AWSRegion
         public let url: String
@@ -123,40 +157,69 @@ public struct AmplifyOutputsData: Codable {
         public let apiKey: String?
         public let defaultAuthorizationType: AWSAppSyncAuthorizationType
         public let authorizationTypes: [AWSAppSyncAuthorizationType]
+
+        public init(
+            awsRegion: AWSRegion,
+            url: String,
+            modelIntrospection: JSONValue? = nil,
+            apiKey: String? = nil,
+            defaultAuthorizationType: AWSAppSyncAuthorizationType,
+            authorizationTypes: [AWSAppSyncAuthorizationType]
+        ) {
+            self.awsRegion = awsRegion
+            self.url = url
+            self.modelIntrospection = modelIntrospection
+            self.apiKey = apiKey
+            self.defaultAuthorizationType = defaultAuthorizationType
+            self.authorizationTypes = authorizationTypes
+        }
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct Geo: Codable {
         public let awsRegion: AWSRegion
         public let maps: Maps?
         public let searchIndices: SearchIndices?
         public let geofenceCollections: GeofenceCollections?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct Maps: Codable {
             public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
-            @_spi(InternalAmplifyConfiguration)
             public struct AmazonLocationServiceConfig: Codable {
                 public let style: String
+
+                public init(style: String) {
+                    self.style = style
+                }
+            }
+
+            public init(items: [String: AmazonLocationServiceConfig], default defaultMap: String) {
+                self.items = items
+                self.default = defaultMap
             }
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct SearchIndices: Codable {
             public let items: [String]
             public let `default`: String
+
+            public init(items: [String], default defaultIndex: String) {
+                self.items = items
+                self.default = defaultIndex
+            }
         }
 
-        @_spi(InternalAmplifyConfiguration)
         public struct GeofenceCollections: Codable {
             public let items: [String]
             public let `default`: String
+
+            public init(items: [String], default defaultCollection: String) {
+                self.items = items
+                self.default = defaultCollection
+            }
         }
 
-        // Internal init used for testing
-        init(
+        public init(
             awsRegion: AWSRegion,
             maps: Maps? = nil,
             searchIndices: SearchIndices? = nil,
@@ -169,28 +232,36 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct Notifications: Codable {
         public let awsRegion: String
         public let amazonPinpointAppId: String
         public let channels: [AmazonPinpointChannelType]
+
+        public init(awsRegion: String, amazonPinpointAppId: String, channels: [AmazonPinpointChannelType]) {
+            self.awsRegion = awsRegion
+            self.amazonPinpointAppId = amazonPinpointAppId
+            self.channels = channels
+        }
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct Storage: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
 
-        @_spi(InternalAmplifyConfiguration)
         public struct Bucket: Codable {
             public let name: String
             public let bucketName: String
             public let awsRegion: AWSRegion
+
+            public init(name: String, bucketName: String, awsRegion: AWSRegion) {
+                self.name = name
+                self.bucketName = bucketName
+                self.awsRegion = awsRegion
+            }
         }
 
-        // Internal init used for testing
-        init(
+        public init(
             awsRegion: AWSRegion,
             bucketName: String,
             buckets: [Bucket]? = nil
@@ -201,13 +272,10 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public struct CustomOutput: Codable {}
 
-    @_spi(InternalAmplifyConfiguration)
     public typealias AWSRegion = String
 
-    @_spi(InternalAmplifyConfiguration)
     public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
         case address
         case birthdate
@@ -229,7 +297,6 @@ public struct AmplifyOutputsData: Codable {
         case zoneinfo
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public enum AWSAppSyncAuthorizationType: String, Codable {
         case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
         case apiKey = "API_KEY"
@@ -238,7 +305,6 @@ public struct AmplifyOutputsData: Codable {
         case openIDConnect = "OPENID_CONNECT"
     }
 
-    @_spi(InternalAmplifyConfiguration)
     public enum AmazonPinpointChannelType: String, Codable {
         case inAppMessaging = "IN_APP_MESSAGING"
         case fcm = "FCM"
@@ -247,7 +313,28 @@ public struct AmplifyOutputsData: Codable {
         case sms = "SMS"
     }
 
-    // Internal init used for testing
+    public init(
+        analytics: Analytics? = nil,
+        auth: Auth? = nil,
+        data: DataCategory? = nil,
+        geo: Geo? = nil,
+        notifications: Notifications? = nil,
+        storage: Storage? = nil,
+        custom: CustomOutput? = nil
+    ) {
+        self.init(
+            version: AmplifyOutputsData.currentVersion,
+            analytics: analytics,
+            auth: auth,
+            data: data,
+            geo: geo,
+            notifications: notifications,
+            storage: storage,
+            custom: custom
+        )
+    }
+
+    // Internal init preserving version parameter for backward compatibility
     init(
         version: String = "",
         analytics: Analytics? = nil,
@@ -276,13 +363,12 @@ public struct AmplifyOutputsData: Codable {
 public struct AmplifyOutputs: @unchecked Sendable {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
-    @_spi(InternalAmplifyConfiguration)
     public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = .init {
-            try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
-        }
+        try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
+    }
 
     /// Resolves configuration with a data object, from the contents of an `amplify_outputs.json` file.
     public static func data(_ data: Data) -> AmplifyOutputs {
@@ -336,7 +422,6 @@ public extension Amplify {
     /// - Parameter configuration: The AmplifyOutputsData object
     ///
     /// - Tag: Amplify.configure
-    @_spi(InternalAmplifyConfiguration)
     static func configure(_ configuration: AmplifyOutputsData) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)

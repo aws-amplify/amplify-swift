@@ -12,7 +12,3 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-extension AWSDataStoreLazyLoadPhoneCallTests {
-
-}
-

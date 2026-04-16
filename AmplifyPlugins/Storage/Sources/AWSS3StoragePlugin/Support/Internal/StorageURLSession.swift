@@ -20,9 +20,6 @@ extension URLSession: StorageURLSession {
     }
 }
 
-extension StorageURLSession where Self == URLSession {
-}
-
 extension StorageURLSession {
     static var shared: StorageURLSession {
         URLSession.shared

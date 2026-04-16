@@ -62,10 +62,13 @@ jobs:
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
       resource_subfolder: auth
       timeout-minutes: 30
+      xcode_version: '16.4.0'
     secrets: inherit
 
   auth-webauthn-integration-test-iOS:
     if: ${{ inputs.webauthn-ios != 'false' }}
     name: Auth WebAuthn Integration Tests (iOS)
     uses: ./.github/workflows/integ_test_auth_webauthn.yml
+    with:
+      xcode_version: '16.4.0'
     secrets: inherit

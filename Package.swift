@@ -9,8 +9,8 @@ let platforms: [SupportedPlatform] = [
     .watchOS(.v9)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.6.7"),
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.3"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.6.71"),
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
 ]
@@ -367,6 +367,86 @@ let analyticsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    ),
+]
+
+let recordCacheTargets: [Target] = [
+    .target(
+        name: "AmplifyRecordCache",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyRecordCache/Sources",
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyRecordCacheTests",
+        dependencies: [
+            "AmplifyRecordCache",
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyRecordCache/Tests"
+    )
+]
+
+let kinesisTargets: [Target] = [
+    .target(
+        name: "AmplifyKinesisClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "AmplifyRecordCache"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSKinesis", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyKinesisClientTests",
+        dependencies: [
+            "AmplifyKinesisClient",
+            "AmplifyRecordCache"
+        ],
+        path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
+    )
+]
+
+let firehoseTargets: [Target] = [
+    .target(
+        name: "AmplifyFirehoseClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "AmplifyRecordCache"),
+            .product(name: "SQLite", package: "SQLite.swift"),
+            .product(name: "AWSFirehose", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyFirehoseClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyFirehoseClientTests",
+        dependencies: [
+            "AmplifyFirehoseClient",
+            "AmplifyRecordCache"
+        ],
+        path: "AmplifyClients/AmplifyFirehoseClient/Tests/UnitTests"
     )
 ]
 
@@ -470,17 +550,54 @@ let loggingTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets
-    + apiTargets
-    + authTargets
-    + dataStoreTargets
-    + storageTargets
-    + geoTargets
-    + analyticsTargets
-    + pushNotificationsTargets
-    + internalPinpointTargets
-    + predictionsTargets
-    + loggingTargets
+let foundationTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundation",
+        dependencies: [],
+        path: "AmplifyFoundation/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationTests",
+        dependencies: ["AmplifyFoundation"],
+        path: "AmplifyFoundation/Tests"
+    ),
+]
+
+let foundationBridgeTargets: [Target] = [
+    .target(
+        name: "AmplifyFoundationBridge",
+        dependencies: [
+            "AmplifyFoundation",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyFoundationBridge/Sources"
+    ),
+    .testTarget(
+        name: "AmplifyFoundationBridgeTests",
+        dependencies: [
+            "AmplifyFoundationBridge"
+        ],
+        path: "AmplifyFoundationBridge/Tests"
+    ),
+]
+
+var targets: [Target] = []
+targets.append(contentsOf: amplifyTargets)
+targets.append(contentsOf: apiTargets)
+targets.append(contentsOf: authTargets)
+targets.append(contentsOf: dataStoreTargets)
+targets.append(contentsOf: storageTargets)
+targets.append(contentsOf: geoTargets)
+targets.append(contentsOf: analyticsTargets)
+targets.append(contentsOf: recordCacheTargets)
+targets.append(contentsOf: kinesisTargets)
+targets.append(contentsOf: firehoseTargets)
+targets.append(contentsOf: pushNotificationsTargets)
+targets.append(contentsOf: internalPinpointTargets)
+targets.append(contentsOf: predictionsTargets)
+targets.append(contentsOf: loggingTargets)
+targets.append(contentsOf: foundationTargets)
+targets.append(contentsOf: foundationBridgeTargets)
 
 let package = Package(
     name: "Amplify",
@@ -533,6 +650,22 @@ let package = Package(
         .library(
             name: "AWSCloudWatchLoggingPlugin",
             targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
+        .library(
+            name: "AmplifyKinesisClient",
+            targets: ["AmplifyKinesisClient"]
+        ),
+        .library(
+            name: "AmplifyFirehoseClient",
+            targets: ["AmplifyFirehoseClient"]
+        ),
+        .library(
+            name: "AmplifyFoundation",
+            targets: ["AmplifyFoundation"]
+        ),
+        .library(
+            name: "AmplifyFoundationBridge",
+            targets: ["AmplifyFoundationBridge"]
         ),
     ],
     dependencies: dependencies,
