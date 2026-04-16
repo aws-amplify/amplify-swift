@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.56.0 (2026-04-15)
+
+### Features
+
+- **storage**: add support for upload presigned url (#4146)
+
+### Bug Fixes
+
+- **ci**: include Xcode version in cache keys to prevent stale artifacts (#4192)
+
 ## 2.55.0 (2026-04-08)
 
 ### Features
