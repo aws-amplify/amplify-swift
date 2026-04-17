@@ -73,12 +73,18 @@ struct UserPoolSignInHelper: DefaultLogger {
         request: RespondToAuthChallengeInput,
         for username: String,
         signInMethod: SignInMethod,
+        inputUsername: String? = nil,
         environment: UserPoolEnvironment
     ) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = parseResponse(
+                response,
+                for: username,
+                signInMethod: signInMethod,
+                inputUsername: inputUsername
+            )
             return event
         }
 
@@ -87,7 +93,8 @@ struct UserPoolSignInHelper: DefaultLogger {
         for username: String,
         signInMethod: SignInMethod,
         presentationAnchor: AuthUIPresentationAnchor? = nil,
-        srpStateData: SRPStateData? = nil
+        srpStateData: SRPStateData? = nil,
+        inputUsername: String? = nil
     ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
@@ -104,7 +111,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     signedInDate: Date(),
                     signInMethod: signInMethod,
                     deviceMetadata: authenticationResult.deviceMetadata,
-                    cognitoUserPoolTokens: userPoolTokens
+                    cognitoUserPoolTokens: userPoolTokens,
+                    inputUsername: inputUsername ?? username
                 )
 
                 switch signedInData.deviceMetadata {
@@ -121,7 +129,8 @@ struct UserPoolSignInHelper: DefaultLogger {
                     availableChallenges: response.availableChallenges ?? [],
                     username: username,
                     session: response.session,
-                    parameters: parameters
+                    parameters: parameters,
+                    inputUsername: inputUsername ?? username
                 )
 
                 switch challengeName {

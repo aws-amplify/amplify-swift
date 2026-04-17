@@ -97,6 +97,7 @@ struct VerifySignInChallenge: Action {
                 request: input,
                 for: username,
                 signInMethod: signInMethod,
+                inputUsername: challenge.inputUsername,
                 environment: userpoolEnv
             )
             logVerbose(
@@ -202,7 +203,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: [:]
+            parameters: [:],
+            inputUsername: challenge.inputUsername
         )
 
         let event = SignInEvent(eventType: .receivedChallenge(newChallenge))
@@ -220,7 +222,8 @@ struct VerifySignInChallenge: Action {
             availableChallenges: [],
             username: challenge.username,
             session: challenge.session,
-            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"]
+            parameters: ["MFAS_CAN_SETUP": "[\"\(confirmSignEventData.answer)\"]"],
+            inputUsername: challenge.inputUsername
         )
 
         let event: SignInEvent

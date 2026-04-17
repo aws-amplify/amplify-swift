@@ -58,10 +58,12 @@ struct ConfirmDevice: Action {
                 environment: environment
             )
 
-            // Save the device metadata to keychain
+            // Save the device metadata to keychain using the original user input
+            // to ensure consistent keychain key across different auth flows
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
+            let deviceMetadataUsername = signedInData.inputUsername ?? signedInData.username
             _ = try await credentialStoreClient?.storeData(
-                data: .deviceMetadata(signedInData.deviceMetadata, signedInData.username))
+                data: .deviceMetadata(signedInData.deviceMetadata, deviceMetadataUsername))
             logVerbose(
                 "Successfully stored the device metadata in the keychain ",
                 environment: environment
