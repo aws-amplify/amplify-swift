@@ -79,23 +79,6 @@ class RESTRequestUtilsTests: XCTestCase {
         XCTAssertFalse(urlRequest.allHTTPHeaderFields!.isEmpty)
     }
 
-    func testConstructURLRequestFailsWithInvalidQueryParams() throws {
-        let baseURL = URL(string: "https://aws.amazon.com")!
-        let validUTF16Bytes: [UInt8] = [0xd8, 0x34, 0xdd, 0x1e] // Surrogate pair for '𝄞'
-        let paramValue = String(
-            bytes: validUTF16Bytes,
-            encoding: String.Encoding.utf16BigEndian
-        )!
-        let invalidQueryParams: [String: String] = ["param": paramValue]
-        XCTAssertThrowsError(
-            try RESTOperationRequestUtils.constructURL(
-                for: baseURL,
-                withPath: "/projects",
-                withParams: invalidQueryParams
-            )
-        )
-    }
-
     func testConstructURLWithPlusSign() throws {
         let baseURL = URL(string: "https://aws.amazon.com")!
         let queryParams = ["q": "swift+amplify"]
@@ -111,6 +94,29 @@ class RESTRequestUtilsTests: XCTestCase {
             testCase: 0,
             withURL: resultURL,
             expected: expected
+        )
+    }
+
+    /// Characters like `@`, `:`, and sub-delims are valid in RFC 3986 query components
+    /// and are accepted by AppSync and API Gateway. Aligns behavior with Amplify JS
+    /// and Amplify Android, which delegate query encoding to the platform URL API.
+    func testConstructURLWithRFC3986QueryCharacters() throws {
+        let baseURL = URL(string: "https://aws.amazon.com")!
+        let queryParams = [
+            "user": "hello@email.com",
+            "created": "2021-06-18T09:00:00Z"
+        ]
+
+        let resultURL = try RESTOperationRequestUtils.constructURL(
+            for: baseURL,
+            withPath: "/items",
+            withParams: queryParams
+        )
+
+        try assertQueryParameters(
+            testCase: 0,
+            withURL: resultURL,
+            expected: queryParams
         )
     }
 }
