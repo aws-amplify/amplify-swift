@@ -30,6 +30,7 @@
 		21F762B82BD6B1AA0048845A /* TOTPSetupWhenAuthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */; };
 		21F762B92BD6B1AA0048845A /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
 		21F762BA2BD6B1AA0048845A /* AuthRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */; };
+		E9B56799769C60EAA3B3F1B7 /* DeviceKeyPersistenceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF106AB62BCE2F9D62D3CB0 /* DeviceKeyPersistenceIntegrationTests.swift */; };
 		21F762BB2BD6B1AA0048845A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
 		21F762BC2BD6B1AA0048845A /* AuthResendSignUpCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */; };
 		21F762BD2BD6B1AA0048845A /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
@@ -109,6 +110,7 @@
 		681B76B22A3CBBAE004B59D9 /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */; };
 		681B76B32A3CBBAE004B59D9 /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
 		681B76B42A3CBBAE004B59D9 /* AuthRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */; };
+		4BF81384CA84205BCBC3A1DE /* DeviceKeyPersistenceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF106AB62BCE2F9D62D3CB0 /* DeviceKeyPersistenceIntegrationTests.swift */; };
 		681B76B52A3CBBAE004B59D9 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
 		681B76B62A3CBBAE004B59D9 /* AuthResendSignUpCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */; };
 		681B76B72A3CBBAE004B59D9 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
@@ -123,6 +125,7 @@
 		681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
 		970333F0295D793B0019981E /* AuthStressBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333EF295D793B0019981E /* AuthStressBaseTest.swift */; };
 		9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */; };
+		3ECC1FC593B6E582A1A88856 /* DeviceKeyPersistenceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF106AB62BCE2F9D62D3CB0 /* DeviceKeyPersistenceIntegrationTests.swift */; };
 		9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */; };
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
 		97829203286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */; };
@@ -231,6 +234,7 @@
 		907EA7602A4B6F56005E3AA8 /* AuthHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthHostApp.entitlements; sourceTree = "<group>"; };
 		970333EF295D793B0019981E /* AuthStressBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStressBaseTest.swift; sourceTree = "<group>"; };
 		9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRememberDeviceTests.swift; sourceTree = "<group>"; };
+		0DF106AB62BCE2F9D62D3CB0 /* DeviceKeyPersistenceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceKeyPersistenceIntegrationTests.swift; sourceTree = "<group>"; };
 		9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgetDeviceTests.swift; sourceTree = "<group>"; };
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
 		97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordTests.swift; sourceTree = "<group>"; };
@@ -534,6 +538,7 @@
 				97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */,
 				9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */,
 				9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */,
+				0DF106AB62BCE2F9D62D3CB0 /* DeviceKeyPersistenceIntegrationTests.swift */,
 			);
 			path = DeviceTests;
 			sourceTree = "<group>";
@@ -886,6 +891,7 @@
 				21F762B82BD6B1AA0048845A /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
 				21F762B92BD6B1AA0048845A /* CredentialStoreConfigurationTests.swift in Sources */,
 				21F762BA2BD6B1AA0048845A /* AuthRememberDeviceTests.swift in Sources */,
+				E9B56799769C60EAA3B3F1B7 /* DeviceKeyPersistenceIntegrationTests.swift in Sources */,
 				21F762BB2BD6B1AA0048845A /* XCTestCase+AsyncTesting.swift in Sources */,
 				21F762BC2BD6B1AA0048845A /* AuthResendSignUpCodeTests.swift in Sources */,
 				21F762BD2BD6B1AA0048845A /* AuthResetPasswordTests.swift in Sources */,
@@ -942,6 +948,7 @@
 				48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
 				9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */,
+				3ECC1FC593B6E582A1A88856 /* DeviceKeyPersistenceIntegrationTests.swift in Sources */,
 				681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */,
 				97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */,
@@ -993,6 +1000,7 @@
 				681B76B22A3CBBAE004B59D9 /* AuthEnvironmentHelper.swift in Sources */,
 				681B76B32A3CBBAE004B59D9 /* CredentialStoreConfigurationTests.swift in Sources */,
 				681B76B42A3CBBAE004B59D9 /* AuthRememberDeviceTests.swift in Sources */,
+				4BF81384CA84205BCBC3A1DE /* DeviceKeyPersistenceIntegrationTests.swift in Sources */,
 				681B76B52A3CBBAE004B59D9 /* XCTestCase+AsyncTesting.swift in Sources */,
 				681B76B62A3CBBAE004B59D9 /* AuthResendSignUpCodeTests.swift in Sources */,
 				681B76B72A3CBBAE004B59D9 /* AuthResetPasswordTests.swift in Sources */,
