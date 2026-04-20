@@ -7,7 +7,7 @@
 
 import AWSCognitoAuthPlugin
 import XCTest
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 
 private let internalTestDomain = "@amplify-swift-gamma.awsapps.com"
 

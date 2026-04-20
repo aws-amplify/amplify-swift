@@ -2,6 +2,10 @@ name: Integration Tests | Auth - WebAuthn
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      xcode_version:
+        type: string
+        default: 'latest'
 
 permissions:
     id-token: write
@@ -24,6 +28,13 @@ jobs:
         id: platform
         uses: ./.github/composite_actions/get_platform_parameters
         with:
+          platform: iOS
+          xcode_version: ${{ inputs.xcode_version || 'latest' }}
+
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ steps.platform.outputs.xcode-version }}
           platform: iOS
 
       - name: Create the test configuration directory
@@ -50,9 +61,9 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            amplify-packages-
+            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
 
       - name: Attempt to restore the build cache
         id: build-cache
@@ -62,7 +73,7 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
-          key: Amplify-iOS-build-cache
+          key: Amplify-iOS-${{ steps.platform.outputs.xcode-version }}-build-cache-${{ hashFiles('Package.resolved') }}
 
       - name: Run Local Server
         run: |

@@ -8,7 +8,7 @@
 #if canImport(Speech) && canImport(Vision)
 import CoreMLPredictionsPlugin
 import XCTest
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 
 class CoreMLPredictionsPluginConfigTests: XCTestCase {
 

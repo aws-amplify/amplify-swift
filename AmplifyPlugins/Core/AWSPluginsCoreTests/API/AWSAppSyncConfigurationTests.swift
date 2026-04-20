@@ -7,7 +7,7 @@
 
 import AWSPluginsCore
 import XCTest
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 
 final class AWSAppSyncConfigurationTests: XCTestCase {
 
