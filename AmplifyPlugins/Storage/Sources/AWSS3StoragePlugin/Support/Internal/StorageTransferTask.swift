@@ -73,18 +73,14 @@ class StorageTransferTask {
     // proxy for StorageMultipartUploadSession
     var proxyStorageTask: StorageTask?
 
-    /// Stall timeout for URLSession-level progress tracking. `0` disables the timer.
-    /// ``progressStallTimeoutFromStorageConfiguration`` means use ``StorageConfiguration`` (background-recovered tasks).
-    let progressStallTimeoutSeconds: TimeInterval
-
-    /// Sentinel for tasks restored from persistence: resolve via ``resolvedProgressStallTimeoutSeconds(storageConfiguration:)``.
-    static let progressStallTimeoutFromStorageConfiguration: TimeInterval = -1
+    /// Stall timeout for URLSession-level progress tracking.
+    /// - `nil`: resolve from ``StorageConfiguration`` (used for tasks restored from persistence).
+    /// - `0`: disables the stall timer.
+    /// - `> 0`: timer interval in seconds.
+    let progressStallTimeoutSeconds: TimeInterval?
 
     func resolvedProgressStallTimeoutSeconds(storageConfiguration: StorageConfiguration) -> TimeInterval {
-        if progressStallTimeoutSeconds < 0 {
-            return storageConfiguration.progressStallTimeout.secondsForStallTimer
-        }
-        return progressStallTimeoutSeconds
+        progressStallTimeoutSeconds ?? storageConfiguration.progressStallTimeout.secondsForStallTimer
     }
 
     var partNumber: PartNumber? {
@@ -121,7 +117,7 @@ class StorageTransferTask {
         location: URL? = nil,
         contentType: String? = nil,
         requestHeaders: [String: String]? = nil,
-        progressStallTimeoutSeconds: TimeInterval = 0,
+        progressStallTimeoutSeconds: TimeInterval? = nil,
         storageTransferDatabase: StorageTransferDatabase = .default,
         logger: Logger = storageLogger
     ) {
@@ -163,7 +159,7 @@ class StorageTransferTask {
         self.location = persistableTransferTask.location
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
-        self.progressStallTimeoutSeconds = Self.progressStallTimeoutFromStorageConfiguration
+        self.progressStallTimeoutSeconds = nil
 
         // set multiPartUpload with default value which can resume upload process
         if rawValue == .multiPartUpload,
