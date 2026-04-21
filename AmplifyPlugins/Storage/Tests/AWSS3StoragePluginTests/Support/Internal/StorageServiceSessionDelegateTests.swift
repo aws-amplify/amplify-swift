@@ -273,7 +273,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// When: startProgressStallTimerIfNeeded is called and no progress (didSendBodyData) arrives
     /// Then: After the interval, the task fails with progress stall timeout error
     func testProgressStallTimeout_whenNoProgress_failsTaskWithStallError() async throws {
-        let stallInterval: TimeInterval = 0.05
+        // Use a generous interval so the timer can fire reliably on slow CI simulators
+        // (watchOS/tvOS/iOS). GCD timing on simulators can be very loose under load.
+        let stallInterval: TimeInterval = 0.3
         let serviceWithStall: AWSS3StorageServiceMock = try AWSS3StorageServiceMock(progressStallTimeoutSeconds: stallInterval)
         let delegateWithStall = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
         XCTAssertNotNil(delegateWithStall, "Delegate should be StorageServiceSessionDelegate")
@@ -302,7 +304,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         serviceWithStall.register(task: storageTask)
         delegateWithStall?.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
 
-        await fulfillment(of: [expectation], timeout: stallInterval + 0.5)
+        await fulfillment(of: [expectation], timeout: stallInterval + 5.0)
         XCTAssertEqual(storageTask.status, .error)
     }
 
