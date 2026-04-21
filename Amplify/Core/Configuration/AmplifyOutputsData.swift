@@ -248,6 +248,12 @@ public struct AmplifyOutputsData: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
+        /// The identifier for the `URLSession` used by the storage service for background transfers.
+        /// When set, overrides the default session identifier (`com.amazon.aws.default.identifier`).
+        public let sessionIdentifier: String?
+        /// The identifier for a shared app group container, allowing extensions and the main app
+        /// to share upload/download data through a common directory.
+        public let sharedContainerIdentifier: String?
 
         public struct Bucket: Codable {
             public let name: String
@@ -264,11 +270,15 @@ public struct AmplifyOutputsData: Codable {
         public init(
             awsRegion: AWSRegion,
             bucketName: String,
-            buckets: [Bucket]? = nil
+            buckets: [Bucket]? = nil,
+            sessionIdentifier: String? = nil,
+            sharedContainerIdentifier: String? = nil
         ) {
             self.awsRegion = awsRegion
             self.bucketName = bucketName
             self.buckets = buckets
+            self.sessionIdentifier = sessionIdentifier
+            self.sharedContainerIdentifier = sharedContainerIdentifier
         }
     }
 

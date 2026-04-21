@@ -40,6 +40,35 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     public internal(set) var jsonConfiguration: JSONValue?
 
+    /// Lock guarding `_cachedSession` for thread-safe access.
+    let cachedSessionLock = NSLock()
+
+    /// Backing storage for the cached auth session. Access through `cachedSession` instead.
+    var _cachedSession: AWSAuthCognitoSession?
+
+    /// An in-memory cache of the most recently fetched auth session.
+    ///
+    /// When `fetchAuthSession` is called without `forceRefresh` and the cached tokens are still
+    /// valid (not within the 2-minute expiry buffer), the cached session is returned immediately,
+    /// bypassing the `TaskQueue`. This eliminates ~300-1000ms of serialization overhead during
+    /// concurrent token fetches at app startup. The cache is cleared on `signOut()`.
+    var cachedSession: AWSAuthCognitoSession? {
+        get {
+            cachedSessionLock.lock()
+            defer { cachedSessionLock.unlock() }
+            return _cachedSession
+        }
+        set {
+            cachedSessionLock.lock()
+            defer { cachedSessionLock.unlock() }
+            _cachedSession = newValue
+        }
+    }
+
+    func clearCachedSession() {
+        cachedSession = nil
+    }
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

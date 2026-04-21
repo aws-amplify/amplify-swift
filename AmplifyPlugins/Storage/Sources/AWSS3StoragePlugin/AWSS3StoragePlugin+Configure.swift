@@ -50,7 +50,11 @@ extension AWSS3StoragePlugin {
 
             let storageService = try createStorageService(
                 authService: authService,
-                bucketInfo: defaultBucket.bucketInfo
+                bucketInfo: defaultBucket.bucketInfo,
+                storageConfiguration: .init(
+                    sessionIdentifier: configClosures.retrieveSessionIdentifier() ?? StorageConfiguration.Defaults.sessionIdentifier,
+                    sharedContainerIdentifier: configClosures.retrieveSharedContainerIdentifier() ?? StorageConfiguration.Defaults.sharedContainerIdentifier
+                )
             )
 
             configure(
@@ -102,13 +106,15 @@ extension AWSS3StoragePlugin {
     /// Creates a new AWSS3StorageServiceBehavior for the given BucketInfo
     func createStorageService(
         authService: AWSAuthCredentialsProviderBehavior,
-        bucketInfo: BucketInfo
+        bucketInfo: BucketInfo,
+        storageConfiguration: StorageConfiguration? = nil
     ) throws -> AWSS3StorageServiceBehavior {
         let storageService = try AWSS3StorageService(
             authService: authService,
             region: bucketInfo.region,
             bucket: bucketInfo.bucketName,
-            httpClientEngineProxy: httpClientEngineProxy
+            httpClientEngineProxy: httpClientEngineProxy,
+            storageConfiguration: storageConfiguration
         )
         storageService.urlRequestDelegate = urlRequestDelegate
         return storageService
@@ -120,6 +126,8 @@ extension AWSS3StoragePlugin {
         let retrieveRegion: () throws -> String
         let retrieveBucket: () throws -> String
         let retrieveDefaultAccessLevel: () throws -> StorageAccessLevel
+        let retrieveSessionIdentifier: () -> String?
+        let retrieveSharedContainerIdentifier: () -> String?
     }
 
     private func retrieveConfiguration(_ configuration: AmplifyOutputsData) throws -> ConfigurationClosures {
@@ -143,7 +151,9 @@ extension AWSS3StoragePlugin {
         return ConfigurationClosures(
             retrieveRegion: regionClosure,
             retrieveBucket: bucketClosure,
-            retrieveDefaultAccessLevel: { .guest }
+            retrieveDefaultAccessLevel: { .guest },
+            retrieveSessionIdentifier: { storage.sessionIdentifier },
+            retrieveSharedContainerIdentifier: { storage.sharedContainerIdentifier }
         )
     }
 
@@ -158,11 +168,15 @@ extension AWSS3StoragePlugin {
         let regionClosure = { try AWSS3StoragePlugin.getRegion(configObject) }
         let bucketClosure = { try AWSS3StoragePlugin.getBucket(configObject) }
         let defaultAccessLevelClosure = { try AWSS3StoragePlugin.getDefaultAccessLevel(configObject) }
+        let sessionIdentifier = { AWSS3StoragePlugin.getSessionIdentifier(configObject) }
+        let sharedContainerIdentifierClosure = { AWSS3StoragePlugin.getSharedContainerIdentifier(configObject) }
 
         return ConfigurationClosures(
             retrieveRegion: regionClosure,
             retrieveBucket: bucketClosure,
-            retrieveDefaultAccessLevel: defaultAccessLevelClosure
+            retrieveDefaultAccessLevel: defaultAccessLevelClosure,
+            retrieveSessionIdentifier: sessionIdentifier,
+            retrieveSharedContainerIdentifier: sharedContainerIdentifierClosure
         )
     }
 
@@ -264,5 +278,21 @@ extension AWSS3StoragePlugin {
         }
 
         return .guest
+    }
+    
+    /// Retrieves the sessionIdentifier from configuration, and returns it.
+    private static func getSessionIdentifier(_ configuration: [String: JSONValue]) -> String? {
+        if let sessionIdentifier = configuration[PluginConstants.sessionIdentifier], case let .string(sessionIdentifierValue) = sessionIdentifier {
+            return sessionIdentifierValue
+        }
+        return nil
+    }
+    
+    /// Retrieves the sharedContainerIdentifier from configuration, and returns it.
+    private static func getSharedContainerIdentifier(_ configuration: [String: JSONValue]) -> String? {
+        if let sharedContainerIdentifier = configuration[PluginConstants.sharedContainerIdentifier], case let .string(sharedContainerIdentifierValue) = sharedContainerIdentifier {
+            return sharedContainerIdentifierValue
+        }
+        return nil
     }
 }

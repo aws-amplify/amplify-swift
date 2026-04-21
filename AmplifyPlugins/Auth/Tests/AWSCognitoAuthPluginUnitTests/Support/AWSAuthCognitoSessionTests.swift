@@ -225,4 +225,104 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             XCTAssertEqual(session1.debugDictionary[key] as? String, session2.debugDictionary[key] as? String)
         }
     }
+
+    // MARK: - areTokensValid tests
+
+    /// Given: An AWSAuthCognitoSession with tokens expiring well in the future
+    /// When: areTokensValid() is called
+    /// Then: It should return true
+    func testAreTokensValid_validTokens_returnsTrue() {
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 300).timeIntervalSince1970)
+        ]
+        let error = AuthError.unknown("", nil)
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
+
+        XCTAssertTrue(session.areTokensValid())
+    }
+
+    /// Given: An AWSAuthCognitoSession with tokens that have already expired
+    /// When: areTokensValid() is called
+    /// Then: It should return false
+    func testAreTokensValid_expiredTokens_returnsFalse() {
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: -10).timeIntervalSince1970)
+        ]
+        let error = AuthError.unknown("", nil)
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
+
+        XCTAssertFalse(session.areTokensValid())
+    }
+
+    /// Given: An AWSAuthCognitoSession with a failed token result
+    /// When: areTokensValid() is called
+    /// Then: It should return false
+    func testAreTokensValid_noTokens_returnsFalse() {
+        let error = AuthError.signedOut("", "", nil)
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .failure(error)
+        )
+
+        XCTAssertFalse(session.areTokensValid())
+    }
+
+    /// Given: An AWSAuthCognitoSession with tokens expiring within the buffer window (2 minutes)
+    /// When: areTokensValid() is called
+    /// Then: It should return false because tokens are about to expire
+    func testAreTokensValid_tokensWithinExpiryBuffer_returnsFalse() {
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 60).timeIntervalSince1970)
+        ]
+        let error = AuthError.unknown("", nil)
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
+
+        // Tokens expire in 60s but buffer is 120s, so should be invalid
+        XCTAssertFalse(session.areTokensValid())
+    }
 }
