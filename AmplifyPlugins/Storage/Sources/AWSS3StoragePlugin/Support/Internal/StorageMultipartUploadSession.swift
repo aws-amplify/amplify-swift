@@ -234,12 +234,12 @@ class StorageMultipartUploadSession {
         guard progressStallTimeoutSeconds > 0 else { return }
         stallTimerQueue.async { [weak self] in
             guard let self else { return }
-            self.stallTimerWorkItem?.cancel()
+            stallTimerWorkItem?.cancel()
             let workItem = DispatchWorkItem { [weak self] in
                 self?.fireProgressStallTimeout()
             }
-            self.stallTimerWorkItem = workItem
-            self.stallTimerQueue.asyncAfter(deadline: .now() + self.progressStallTimeoutSeconds, execute: workItem)
+            stallTimerWorkItem = workItem
+            stallTimerQueue.asyncAfter(deadline: .now() + progressStallTimeoutSeconds, execute: workItem)
         }
     }
 
