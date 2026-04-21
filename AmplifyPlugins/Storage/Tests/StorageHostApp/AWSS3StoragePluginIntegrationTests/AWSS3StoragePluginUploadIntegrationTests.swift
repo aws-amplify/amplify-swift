@@ -187,7 +187,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A progress stall timeout on upload options
     /// When: A small object is uploaded over the network
     /// Then: The upload completes successfully (stall timer does not break the happy path)
-    func testUploadData_withProgressStallTimeoutOption_completesSuccessfully() async throws {
+    func testUploadDataWithProgressStallTimeoutOptionCompletesSuccessfully() async throws {
         let key = UUID().uuidString
         let data = Data(key.utf8)
         let options = StorageUploadDataRequest.Options(progressStallTimeout: .interval(120))
@@ -201,7 +201,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: Multipart upload with a progress stall timeout on options
     /// When: Data larger than the multipart threshold is uploaded
     /// Then: The upload completes successfully
-    func testUploadLargeData_withProgressStallTimeoutOption_completesSuccessfully() async throws {
+    func testUploadLargeDataWithProgressStallTimeoutOptionCompletesSuccessfully() async throws {
         let key = UUID().uuidString
         let options = StorageUploadDataRequest.Options(progressStallTimeout: .interval(120))
 
@@ -222,7 +222,7 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
     /// Uses a sub-second interval so the stall timer can fire between multipart phases. This can be
     /// flaky on extremely fast CI if every phase completes within the interval; the reviewer noted
     /// uncertainty for CI and asked to try anyway.
-    func testUploadLargeData_withVeryShortProgressStallTimeout_failsWithStallError() async throws {
+    func testUploadLargeDataWithVeryShortProgressStallTimeoutFailsWithStallError() async throws {
         let key = UUID().uuidString
         uploadedKeys.append(key)
         let path = "public/\(key)"

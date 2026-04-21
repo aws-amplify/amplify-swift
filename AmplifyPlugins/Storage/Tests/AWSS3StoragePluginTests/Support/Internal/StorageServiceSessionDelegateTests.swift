@@ -135,7 +135,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with NSURLErrorCancelled
     /// When: didComplete is invoked
     /// Then: The upload receives `.failed`, the task is marked error, and it is unregistered
-    func testDidComplete_withNSURLErrorCancelled_shouldFailTaskAndUnregister() async {
+    func testDidCompleteWithNSURLErrorCancelledShouldFailTaskAndUnregister() async {
         let reasons = [
             NSURLErrorCancelledReasonBackgroundUpdatesDisabled,
             NSURLErrorCancelledReasonInsufficientSystemResources,
@@ -272,13 +272,18 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval > 0 and an upload task
     /// When: startProgressStallTimerIfNeeded is called and no progress (didSendBodyData) arrives
     /// Then: After the interval, the task fails with progress stall timeout error
-    func testProgressStallTimeout_whenNoProgress_failsTaskWithStallError() async throws {
+    func testProgressStallTimeoutWhenNoProgressFailsTaskWithStallError() async throws {
         // Use a generous interval so the timer can fire reliably on slow CI simulators
         // (watchOS/tvOS/iOS). GCD timing on simulators can be very loose under load.
         let stallInterval: TimeInterval = 0.3
-        let serviceWithStall: AWSS3StorageServiceMock = try AWSS3StorageServiceMock(progressStallTimeoutSeconds: stallInterval)
-        let delegateWithStall = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
-        XCTAssertNotNil(delegateWithStall, "Delegate should be StorageServiceSessionDelegate")
+        // Assign to the test instance properties so ARC doesn't release them while we
+        // await the expectation. `StorageServiceSessionDelegate.storageService` is a
+        // weak ref; if the local strong owner is released, the stall timer's guard
+        // returns early and the failure event is never dispatched.
+        service = try AWSS3StorageServiceMock(progressStallTimeoutSeconds: stallInterval)
+        let serviceWithStall = service!
+        delegate = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
+        XCTAssertNotNil(delegate, "Delegate should be StorageServiceSessionDelegate")
 
         let expectation = expectation(description: "Task fails with stall timeout")
         let sessionTask = URLSession.shared.dataTask(with: URL(string: "https://example.com")!)
@@ -302,7 +307,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         storageTask.sessionTask = sessionTask
         serviceWithStall.mockedTask = storageTask
         serviceWithStall.register(task: storageTask)
-        delegateWithStall?.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
+        delegate.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
 
         await fulfillment(of: [expectation], timeout: stallInterval + 5.0)
         XCTAssertEqual(storageTask.status, .error)
@@ -311,7 +316,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval = 0
     /// When: startProgressStallTimerIfNeeded is called
     /// Then: No timer is started (no-op)
-    func testProgressStallTimeout_whenDisabled_doesNotStartTimer() async {
+    func testProgressStallTimeoutWhenDisabledDoesNotStartTimer() async {
         service = try! AWSS3StorageServiceMock()
         delegate = StorageServiceSessionDelegate(identifier: "delegateTest", logger: logger)
         delegate.storageService = service
@@ -403,12 +408,18 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
 
     convenience init(progressStallTimeoutSeconds: TimeInterval) throws {
         let storageConfig = StorageConfiguration(forBucket: "bucket", progressStallTimeout: .interval(progressStallTimeoutSeconds))
+        // Use a .default URLSessionConfiguration in tests so the underlying URLSession
+        // is created cleanly across platforms. xctest binaries on iOS/watchOS/tvOS
+        // simulators lack the application-identifier entitlement required by background
+        // sessions, which leaves the production background-session path in a half-broken
+        // state and causes downstream timing/lifecycle issues for the stall-timer logic.
         try self.init(
             authService: MockAWSAuthService(),
             region: "region",
             bucket: "bucket",
             storageConfiguration: storageConfig,
-            storageTransferDatabase: MockStorageTransferDatabase()
+            storageTransferDatabase: MockStorageTransferDatabase(),
+            sessionConfiguration: URLSessionConfiguration.default
         )
     }
 
