@@ -34,7 +34,7 @@ final class RESTOperationRequestUtils {
         }
 
         if let queryParameters {
-            components.queryItems = try prepareQueryParamsForSigning(params: queryParameters)
+            components.queryItems = prepareQueryParamsForSigning(params: queryParameters)
         }
 
         guard let url = components.url else {
@@ -64,40 +64,16 @@ final class RESTOperationRequestUtils {
         return baseRequest
     }
 
-    private static let permittedQueryParamCharacters = CharacterSet.alphanumerics
-        .union(.init(charactersIn: "/_-.~"))
-
-    private static func prepareQueryParamsForSigning(params: [String: String]) throws -> [URLQueryItem] {
-        // remove percent encoding to prepare for request signing
-        // `removingPercentEncoding` is a no-op if the query isn't encoded
-        func removePercentEncoding(key: String, value: String) -> (String, String) {
-            (key.removingPercentEncoding ?? key, value.removingPercentEncoding ?? value)
+    private static func prepareQueryParamsForSigning(params: [String: String]) -> [URLQueryItem] {
+        // Remove percent encoding to prepare for request signing. `URLComponents` will
+        // re-encode canonically when the URL is assembled, and the SigV4 signer works
+        // off the decoded values. `removingPercentEncoding` is a no-op if the value
+        // isn't encoded.
+        params.map { key, value in
+            URLQueryItem(
+                name: key.removingPercentEncoding ?? key,
+                value: value.removingPercentEncoding ?? value
+            )
         }
-
-        // Disallowed characters are checked for in the Swift SDK. However it effectively silently fails
-        // there by removing any invalid parameters. We're conducting this check here to inform the call-
-        // site.
-        func confirmOnlyPermittedCharactersPresent(key: String, value: String) throws -> (String, String) {
-            guard value.rangeOfCharacter(from: permittedQueryParamCharacters) != nil,
-                key.rangeOfCharacter(from: permittedQueryParamCharacters) != nil
-            else {
-                throw APIError.invalidURL(
-                    "Invalid query parameter.",
-                    """
-                    Review your Amplify.API call to make sure you are passing \
-                    valid UTF-8 query parameters in your request.
-                    The value passed was '\(key)=\(value)'
-                    """
-                )
-            }
-            return (key, value)
-        }
-
-        let queryItems = try params
-            .map(removePercentEncoding)
-            .map(confirmOnlyPermittedCharactersPresent)
-            .map(URLQueryItem.init)
-
-        return queryItems
     }
 }

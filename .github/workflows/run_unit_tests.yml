@@ -86,7 +86,7 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
-          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-build-cache
+          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
 
       - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests
@@ -118,6 +118,13 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           other_flags: ${{ inputs.test_iterations_flags }}
+
+      - name: Save the build cache
+        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.build-cache.outputs.cache-primary-key }}
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}

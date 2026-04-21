@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyConfiguration) @preconcurrency import Amplify
+@preconcurrency import Amplify
 import AWSClientRuntime
 import AWSPinpoint
 import AWSPinpoint

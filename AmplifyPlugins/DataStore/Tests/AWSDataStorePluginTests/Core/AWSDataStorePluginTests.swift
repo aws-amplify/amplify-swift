@@ -9,7 +9,7 @@
 import AmplifyTestCommon
 import XCTest
 
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length

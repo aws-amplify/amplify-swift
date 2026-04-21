@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSAPIPlugin
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 #if os(watchOS)
 @testable import APIWatchApp
 #else

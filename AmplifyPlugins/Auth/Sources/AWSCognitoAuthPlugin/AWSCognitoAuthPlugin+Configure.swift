@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 import AWSClientRuntime
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider

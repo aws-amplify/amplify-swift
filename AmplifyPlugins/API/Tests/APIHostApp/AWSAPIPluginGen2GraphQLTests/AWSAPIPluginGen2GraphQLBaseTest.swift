@@ -8,7 +8,7 @@
 import AWSCognitoAuthPlugin
 import XCTest
 @testable import AWSAPIPlugin
-@_spi(InternalAmplifyConfiguration) @testable import Amplify
+@testable import Amplify
 @testable import APIHostApp
 @testable import AWSPluginsCore
 
