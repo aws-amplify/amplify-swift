@@ -148,7 +148,7 @@ struct AWSCognitoAuthCredentialStore {
         for username: String,
         with configuration: AuthConfiguration
     ) -> String {
-            return "\(storeKey(for: authConfiguration)).\(username).\(deviceMetadataKey)"
+            return "\(storeKey(for: authConfiguration)).\(username.lowercased()).\(deviceMetadataKey)"
     }
 
     private func generateASFDeviceKey(
