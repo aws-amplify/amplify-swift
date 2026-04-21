@@ -37,12 +37,6 @@ struct StorageConfiguration {
         self.progressStallTimeout = progressStallTimeout
     }
 
-    init(forBucket bucket: String) {
-        self.init(
-            sessionIdentifier: "\(Defaults.sessionIdentifier).\(bucket)"
-        )
-    }
-
     init(forBucket bucket: String, progressStallTimeout: ProgressStallTimeout = Defaults.progressStallTimeout) {
         self.init(
             sessionIdentifier: "\(Defaults.sessionIdentifier).\(bucket)",
