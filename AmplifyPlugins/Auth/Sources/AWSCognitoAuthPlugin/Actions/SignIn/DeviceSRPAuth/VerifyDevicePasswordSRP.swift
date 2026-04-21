@@ -79,6 +79,7 @@ struct VerifyDevicePasswordSRP: Action {
                 request: request,
                 for: username,
                 signInMethod: .apiBased(.userSRP),
+                inputUsername: inputUsername,
                 environment: userPoolEnv
             )
             logVerbose(

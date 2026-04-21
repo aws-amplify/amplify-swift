@@ -57,7 +57,8 @@ struct FetchCredentialOptions: Action {
                 availableChallenges: [],
                 username: username,
                 session: response.session,
-                parameters: response.challengeParameters
+                parameters: response.challengeParameters,
+                inputUsername: respondToAuthChallenge.inputUsername
             )
             let event = WebAuthnEvent(
                 eventType: .assertCredentials(options, .init(

@@ -21,6 +21,8 @@ struct RespondToAuthChallenge: Equatable {
 
     let parameters: [String: String]?
 
+    var inputUsername: String?
+
 }
 
 extension RespondToAuthChallenge {

@@ -145,13 +145,15 @@ struct InitiateAuthSRP: Action {
         logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
         if case .customChallenge = response.challengeName {
             let parameters = response.challengeParameters
+            let inputUsername = username
             let username = parameters?["USERNAME"] ?? username
             let respondToAuthChallenge = RespondToAuthChallenge(
                 challenge: .customChallenge,
                 availableChallenges: [],
                 username: username,
                 session: response.session,
-                parameters: parameters
+                parameters: parameters,
+                inputUsername: inputUsername
             )
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
