@@ -11,6 +11,11 @@ import XCTest
 
 class AWSS3StoragePluginBaseConfigTests: XCTestCase {
 
+    override func setUp() async throws {
+        // Operation unit tests may leave Amplify configured; this suite expects a clean framework before `add`.
+        await Amplify.reset()
+    }
+
     func testThrowsOnMissingConfig() throws {
         let plugin = AWSS3StoragePlugin()
         try Amplify.add(plugin: plugin)

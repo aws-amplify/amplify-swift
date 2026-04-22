@@ -132,11 +132,10 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(service.resetURLSessionCount, 1)
     }
 
-    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a NSError with a NSURLErrorCancelled reason
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with NSURLErrorCancelled
     /// When: didComplete is invoked
-    /// Then: The task is not unregistered
-    func testDidComplete_withNSURLErrorCancelled_shouldNotCompleteTask() async {
-        let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
+    /// Then: The upload receives `.failed`, the task is marked error, and it is unregistered
+    func testDidCompleteWithNSURLErrorCancelledShouldFailTaskAndUnregister() async {
         let reasons = [
             NSURLErrorCancelledReasonBackgroundUpdatesDisabled,
             NSURLErrorCancelledReasonInsufficientSystemResources,
@@ -145,10 +144,15 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         ]
 
         for reason in reasons {
+            service.unregisterCount = 0
+            let urlTask = URLSession.shared.dataTask(with: URL(string: "https://example.com/\(reason)")!)
             let expectation = expectation(description: "Did Complete With Error Reason \(reason)")
-            expectation.isInverted = true
             let storageTask = StorageTransferTask(
-                transferType: .upload(onEvent: { _ in
+                transferType: .upload(onEvent: { event in
+                    guard case .failed = event else {
+                        XCTFail("Expected .failed event, got \(event)")
+                        return
+                    }
                     expectation.fulfill()
                 }),
                 bucket: "bucket",
@@ -163,12 +167,12 @@ class StorageServiceSessionDelegateTests: XCTestCase {
                 ]
             )
 
-            delegate.urlSession(.shared, task: task, didCompleteWithError: error)
+            delegate.urlSession(.shared, task: urlTask, didCompleteWithError: error)
 
             await fulfillment(of: [expectation], timeout: 5)
 
-            XCTAssertEqual(storageTask.status, .unknown)
-            XCTAssertEqual(service.unregisterCount, 0)
+            XCTAssertEqual(storageTask.status, .error)
+            XCTAssertEqual(service.unregisterCount, 1)
         }
     }
 
@@ -265,6 +269,74 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(taskIdentifier, task.taskIdentifier)
     }
 
+    /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval > 0 and an upload task
+    /// When: startProgressStallTimerIfNeeded is called and no progress (didSendBodyData) arrives
+    /// Then: After the interval, the task fails with progress stall timeout error
+    func testProgressStallTimeoutWhenNoProgressFailsTaskWithStallError() async throws {
+        // Use a generous interval so the timer can fire reliably on slow CI simulators
+        // (watchOS/tvOS/iOS). GCD timing on simulators can be very loose under load.
+        let stallInterval: TimeInterval = 0.3
+        // Assign to the test instance properties so ARC doesn't release them while we
+        // await the expectation. `StorageServiceSessionDelegate.storageService` is a
+        // weak ref; if the local strong owner is released, the stall timer's guard
+        // returns early and the failure event is never dispatched.
+        service = try AWSS3StorageServiceMock(progressStallTimeoutSeconds: stallInterval)
+        let serviceWithStall = service!
+        delegate = serviceWithStall.urlSession.delegate as? StorageServiceSessionDelegate
+        XCTAssertNotNil(delegate, "Delegate should be StorageServiceSessionDelegate")
+
+        let expectation = expectation(description: "Task fails with stall timeout")
+        let sessionTask = URLSession.shared.dataTask(with: URL(string: "https://example.com")!)
+        let storageTask = StorageTransferTask(
+            transferType: .upload(onEvent: { event in
+                guard case .failed(let error) = event else {
+                    XCTFail("Expected .failed event, got \(event)")
+                    return
+                }
+                guard case .unknown(let message, _) = error else {
+                    XCTFail("Expected .unknown stall error, got \(error)")
+                    return
+                }
+                XCTAssertEqual(message, "Upload cancelled due to progress stall timeout.")
+                expectation.fulfill()
+            }),
+            bucket: "bucket",
+            key: "key",
+            progressStallTimeoutSeconds: stallInterval
+        )
+        storageTask.sessionTask = sessionTask
+        serviceWithStall.mockedTask = storageTask
+        serviceWithStall.register(task: storageTask)
+        delegate.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
+
+        await fulfillment(of: [expectation], timeout: stallInterval + 5.0)
+        XCTAssertEqual(storageTask.status, .error)
+    }
+
+    /// Given: A StorageServiceSessionDelegate with progressStallTimeoutInterval = 0
+    /// When: startProgressStallTimerIfNeeded is called
+    /// Then: No timer is started (no-op)
+    func testProgressStallTimeoutWhenDisabledDoesNotStartTimer() async {
+        service = try! AWSS3StorageServiceMock()
+        delegate = StorageServiceSessionDelegate(identifier: "delegateTest", logger: logger)
+        delegate.storageService = service
+
+        let sessionTask = URLSession.shared.dataTask(with: URL(string: "https://example.com")!)
+        let storageTask = StorageTransferTask(
+            transferType: .upload(onEvent: { _ in }),
+            bucket: "bucket",
+            key: "key"
+        )
+        storageTask.sessionTask = sessionTask
+        service.mockedTask = storageTask
+        service.register(task: storageTask)
+
+        delegate.startProgressStallTimerIfNeeded(taskIdentifier: sessionTask.taskIdentifier)
+
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        XCTAssertNotEqual(storageTask.status, .error, "Task should not fail when stall timer is disabled")
+    }
+
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .download
     /// When: didWriteData is invoked
     /// Then: An .inProcess event is reported, with the corresponding values
@@ -331,6 +403,23 @@ private class AWSS3StorageServiceMock: AWSS3StorageService {
             region: "region",
             bucket: "bucket",
             storageTransferDatabase: MockStorageTransferDatabase()
+        )
+    }
+
+    convenience init(progressStallTimeoutSeconds: TimeInterval) throws {
+        let storageConfig = StorageConfiguration(forBucket: "bucket", progressStallTimeout: .interval(progressStallTimeoutSeconds))
+        // Use a .default URLSessionConfiguration in tests so the underlying URLSession
+        // is created cleanly across platforms. xctest binaries on iOS/watchOS/tvOS
+        // simulators lack the application-identifier entitlement required by background
+        // sessions, which leaves the production background-session path in a half-broken
+        // state and causes downstream timing/lifecycle issues for the stall-timer logic.
+        try self.init(
+            authService: MockAWSAuthService(),
+            region: "region",
+            bucket: "bucket",
+            storageConfiguration: storageConfig,
+            storageTransferDatabase: MockStorageTransferDatabase(),
+            sessionConfiguration: URLSessionConfiguration.default
         )
     }
 

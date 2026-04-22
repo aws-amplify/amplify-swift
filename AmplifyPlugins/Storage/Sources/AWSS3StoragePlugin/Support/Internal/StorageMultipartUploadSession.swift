@@ -46,6 +46,11 @@ class StorageMultipartUploadSession {
     private let transferTask: StorageTransferTask
     private var cancelationError: (any Error)?
 
+    /// If progress does not advance for this many seconds, upload is aborted. 0 = disabled.
+    private let progressStallTimeoutSeconds: TimeInterval
+    private let stallTimerQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage.multipart.stall-timer")
+    private var stallTimerWorkItem: DispatchWorkItem?
+
     init(
         client: StorageMultipartUploadClient,
         bucket: String,
@@ -54,10 +59,12 @@ class StorageMultipartUploadSession {
         requestHeaders: RequestHeaders? = nil,
         onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
         behavior: StorageMultipartUploadBehavior = .progressive,
+        progressStallTimeoutSeconds: TimeInterval = 0,
         fileSystem: FileSystem = .default,
         logger: Logger = storageLogger
     ) {
         self.client = client
+        self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
 
         let transferType: StorageTransferType = .multiPartUpload(onEvent: onEvent)
         let transferTask = StorageTransferTask(
@@ -65,7 +72,8 @@ class StorageMultipartUploadSession {
             bucket: bucket,
             key: key,
             contentType: contentType,
-            requestHeaders: requestHeaders
+            requestHeaders: requestHeaders,
+            progressStallTimeoutSeconds: progressStallTimeoutSeconds
         )
         self.transferTask = transferTask
         self.onEvent = onEvent
@@ -88,6 +96,7 @@ class StorageMultipartUploadSession {
         transferTask: StorageTransferTask,
         multipartUpload: StorageMultipartUpload,
         behavior: StorageMultipartUploadBehavior = .progressive,
+        progressStallTimeoutSeconds: TimeInterval = 0,
         fileSystem: FileSystem = .default,
         logger: Logger = storageLogger
     ) {
@@ -99,6 +108,7 @@ class StorageMultipartUploadSession {
         self.transferTask = transferTask
         self.multipartUpload = multipartUpload
         self.onEvent = onEvent
+        self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
 
         self.behavior = behavior
         self.fileSystem = fileSystem
@@ -212,11 +222,40 @@ class StorageMultipartUploadSession {
         do {
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
+            resetProgressStallTimer()
             logger.debug("Creating Multipart Upload")
             try client.createMultipartUpload()
         } catch {
             fail(error: error)
         }
+    }
+
+    private func resetProgressStallTimer() {
+        guard progressStallTimeoutSeconds > 0 else { return }
+        stallTimerQueue.async { [weak self] in
+            guard let self else { return }
+            stallTimerWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.fireProgressStallTimeout()
+            }
+            stallTimerWorkItem = workItem
+            stallTimerQueue.asyncAfter(deadline: .now() + progressStallTimeoutSeconds, execute: workItem)
+        }
+    }
+
+    private func cancelProgressStallTimer() {
+        stallTimerQueue.async { [weak self] in
+            self?.stallTimerWorkItem?.cancel()
+            self?.stallTimerWorkItem = nil
+        }
+    }
+
+    private func fireProgressStallTimeout() {
+        stallTimerQueue.async { [weak self] in
+            self?.stallTimerWorkItem = nil
+        }
+        handle(multipartUploadEvent: .aborting(error: StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)))
+        logger.debug("Multipart upload cancelled due to progress stall timeout")
     }
 
     func fail(error: Error) {
@@ -245,20 +284,25 @@ class StorageMultipartUploadSession {
                     logger.debug("Resuming after being paused")
                 }
                 transferTask.uploadId = uploadId
+                resetProgressStallTimer()
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
+                cancelProgressStallTimer()
                 cancelInProgressParts(parts: parts)
                 if !wasPaused {
                     transferTask.notify(progress: parts.progress)
                 }
             case .completed:
+                cancelProgressStallTimer()
                 onEvent(.completed(()))
             case .aborting(_, let error):
                 cancelationError = error
+                cancelProgressStallTimer()
                 try abort()
             case .aborted(_, let error):
                 onEvent(.failed(StorageError.unknown("Unable to upload", cancelationError ?? error)))
             case .failed(_, _, let error):
+                cancelProgressStallTimer()
                 onEvent(.failed(StorageError(error: error)))
             default:
                 break
@@ -286,6 +330,13 @@ class StorageMultipartUploadSession {
                 try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
                 // update the transferTask with every state transition
                 transferTask.multipartUpload = multipartUpload
+            }
+
+            switch uploadPartEvent {
+            case .progressUpdated, .completed:
+                resetProgressStallTimer()
+            default:
+                break
             }
 
             if uploadPartEvent.isCompleted {

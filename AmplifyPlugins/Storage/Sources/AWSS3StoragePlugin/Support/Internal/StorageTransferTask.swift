@@ -73,6 +73,16 @@ class StorageTransferTask {
     // proxy for StorageMultipartUploadSession
     var proxyStorageTask: StorageTask?
 
+    /// Stall timeout for URLSession-level progress tracking.
+    /// - `nil`: resolve from ``StorageConfiguration`` (used for tasks restored from persistence).
+    /// - `0`: disables the stall timer.
+    /// - `> 0`: timer interval in seconds.
+    let progressStallTimeoutSeconds: TimeInterval?
+
+    func resolvedProgressStallTimeoutSeconds(storageConfiguration: StorageConfiguration) -> TimeInterval {
+        progressStallTimeoutSeconds ?? storageConfiguration.progressStallTimeout.secondsForStallTimer
+    }
+
     var partNumber: PartNumber? {
         switch transferType {
         case .multiPartUploadPart(_, let partNumber):
@@ -107,6 +117,7 @@ class StorageTransferTask {
         location: URL? = nil,
         contentType: String? = nil,
         requestHeaders: [String: String]? = nil,
+        progressStallTimeoutSeconds: TimeInterval? = nil,
         storageTransferDatabase: StorageTransferDatabase = .default,
         logger: Logger = storageLogger
     ) {
@@ -117,6 +128,7 @@ class StorageTransferTask {
         self.location = location
         self.contentType = contentType
         self.requestHeaders = requestHeaders
+        self.progressStallTimeoutSeconds = progressStallTimeoutSeconds
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
 
@@ -147,6 +159,7 @@ class StorageTransferTask {
         self.location = persistableTransferTask.location
         self.storageTransferDatabase = storageTransferDatabase
         self.logger = logger
+        self.progressStallTimeoutSeconds = nil
 
         // set multiPartUpload with default value which can resume upload process
         if rawValue == .multiPartUpload,

@@ -12,6 +12,21 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
+/// Serializes global `Amplify.reset` / `configure` across operation unit tests. Concurrent calls can leave
+/// `Hub` in `pendingConfiguration` while other code dispatches Hub events.
+private actor AmplifyOperationTestsGlobalConfig {
+    func resetThenConfigureForUnitTests() async throws {
+        await Amplify.reset()
+        try Amplify.configure(AmplifyConfiguration())
+    }
+
+    func reset() async {
+        await Amplify.reset()
+    }
+}
+
+private let amplifyOperationTestsGlobalConfig = AmplifyOperationTestsGlobalConfig()
+
 class AWSS3StorageOperationTestBase: XCTestCase {
 
     var hubPlugin: MockHubCategoryPlugin!
@@ -28,22 +43,18 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testURL = URL(fileURLWithPath: "path")
     let testStorageConfiguration = AWSS3StoragePluginConfiguration()
 
-    override func setUp() {
-        let mockAmplifyConfig = AmplifyConfiguration()
-
-        do {
-            try Amplify.configure(mockAmplifyConfig)
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
+    override func setUp() async throws {
+        // Always reset + configure here. Do not call `Amplify.reset()` from `tearDown`: XCTest can run the next
+        // test's `setUp` before the previous `tearDown` finishes, so a late `reset()` can leave Hub in
+        // `pendingConfiguration` while the new test dispatches to Hub (fatal in HubCategory.plugin).
+        try await amplifyOperationTestsGlobalConfig.resetThenConfigureForUnitTests()
 
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()
     }
 
     override func tearDown() async throws {
-        await Amplify.reset()
+        mockStorageService = nil
+        mockAuthService = nil
     }
 }

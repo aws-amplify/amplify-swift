@@ -135,13 +135,17 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
                 }
 
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
+                let stallSeconds = storageConfiguration.resolvedStallTimeoutSeconds(
+                    operationOverride: request.options.progressStallTimeout
+                )
                 if uploadSize > StorageUploadFileRequest.Options.multiPartUploadSizeThreshold {
                     try storageService.multiPartUpload(
                         serviceKey: serviceKey,
                         uploadSource: .local(request.local),
                         contentType: request.options.contentType,
                         metadata: request.options.metadata,
-                        accelerate: accelerate
+                        accelerate: accelerate,
+                        progressStallTimeoutSeconds: stallSeconds
                     ) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
@@ -151,7 +155,8 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
                         uploadSource: .local(request.local),
                         contentType: request.options.contentType,
                         metadata: request.options.metadata,
-                        accelerate: accelerate
+                        accelerate: accelerate,
+                        progressStallTimeoutSeconds: stallSeconds
                     ) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
