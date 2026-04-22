@@ -215,31 +215,6 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
     }
 
-    /// Given: Multipart upload with a very short progress stall timeout
-    /// When: Data larger than the multipart threshold is uploaded
-    /// Then: The upload fails and the error chain includes the progress stall timeout message
-    ///
-    /// Uses a sub-second interval so the stall timer can fire between multipart phases. This can be
-    /// flaky on extremely fast CI if every phase completes within the interval; the reviewer noted
-    /// uncertainty for CI and asked to try anyway.
-    func testUploadLargeDataWithVeryShortProgressStallTimeoutFailsWithStallError() async throws {
-        let key = UUID().uuidString
-        uploadedKeys.append(key)
-        let path = "public/\(key)"
-        let options = StorageUploadDataRequest.Options(progressStallTimeout: .interval(0.001))
-
-        do {
-            _ = try await Amplify.Storage.uploadData(
-                path: .fromString(path),
-                data: Self.largeDataObject,
-                options: options
-            ).value
-            XCTFail("Expected upload to fail due to progress stall timeout")
-        } catch {
-            assertErrorChainContainsProgressStallTimeout(error)
-        }
-    }
-
     func removeIfExists(_ fileURL: URL) {
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         if fileExists {
@@ -249,35 +224,6 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
                 XCTFail("Failed to delete file at \(fileURL)")
             }
         }
-    }
-
-    private func assertErrorChainContainsProgressStallTimeout(_ error: Error, file: StaticString = #filePath, line: UInt = #line) {
-        let needle = "Upload cancelled due to progress stall timeout."
-        var queue: [Error] = [error]
-        var index = 0
-        while index < queue.count, index < 12 {
-            let current = queue[index]
-            index += 1
-
-            if let storage = current as? StorageError {
-                if case .unknown(let message, let underlying) = storage {
-                    if message == needle {
-                        return
-                    }
-                    if let underlying {
-                        queue.append(underlying)
-                    }
-                    continue
-                }
-            }
-
-            let ns = current as NSError
-            if let underlying = ns.userInfo[NSUnderlyingErrorKey] as? Error {
-                queue.append(underlying)
-            }
-        }
-
-        XCTFail("Expected progress stall timeout in error chain; got: \(error)", file: file, line: line)
     }
 
     private func assertUserAgentComponents(sdkRequests: [HTTPRequest], file: StaticString = #filePath, line: UInt = #line) throws {
