@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.57.0 (2026-04-21)
+
+### Features
+
+- **core**: make AmplifyOutputsData and all nested types public
+
+### Bug Fixes
+
+- **auth**: Consistent device metadata keychain key across auth flows (#4196)
+- **api**: remove custom query parameter allowlist (#4194)
+- **API**: Support '+' in query parameters and improve validation logic (#4137)
+
 ## 2.56.0 (2026-04-15)
 
 ### Features
