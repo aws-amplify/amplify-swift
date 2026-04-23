@@ -84,6 +84,15 @@ actor AppSyncRealTimeSubscription {
         state.send(.subscribed)
     }
 
+    /// Reset local subscription state so `subscribe()` will actually resend
+    /// the `.start` request after a WebSocket reconnect. The server drops
+    /// subscription state when the connection dies, so local `.subscribed`
+    /// state is stale and must not short-circuit the resubscription path.
+    /// Fix for https://github.com/aws-amplify/amplify-swift/issues/3976
+    func prepareForResubscribe() {
+        state.send(.none)
+    }
+
     func unsubscribe() async throws {
         guard state.value == .subscribed else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription should be subscribed to be unsubscribed")
