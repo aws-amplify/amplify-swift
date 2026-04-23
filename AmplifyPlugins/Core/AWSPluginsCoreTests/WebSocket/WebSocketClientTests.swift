@@ -201,6 +201,13 @@ class WebSocketClientTests: XCTestCase {
     // This proves the bug is not an artifact of MockNetworkMonitor's scan seed:
     // even with the real AmplifyNetworkMonitor, a second .online emission
     // produces (.online, .online) and the client fails to recycle.
+    //
+    // Note: the real NWPathMonitor in AmplifyNetworkMonitor fires
+    // pathUpdateHandler spontaneously during startup (especially on watchOS).
+    // We tolerate that noise by counting `.connected` events and requiring
+    // at least TWO (initial connect + post-recycle reconnect) rather than
+    // using the shared verifyConnected helper, which XCTFails on any event
+    // other than `.connected`.
     func testWebSocketClient_withRealNetworkMonitor_whenPathChangesWhileOnline_shouldRecycle() async throws {
         var cancellables = Set<AnyCancellable>()
         guard let endpoint = try localWebSocketServer?.start() else {
@@ -211,37 +218,43 @@ class WebSocketClientTests: XCTestCase {
         let realNetworkMonitor = AmplifyNetworkMonitor()
         let webSocketClient = WebSocketClient(url: endpoint, networkMonitor: realNetworkMonitor)
 
-        // Prime the scan so (previous, next) reaches (.online, .online) on the
-        // second emission. This mirrors production: first NWPathMonitor fire
-        // yields (.none, .online), second yields (.online, .online).
-        await realNetworkMonitor.updateState(.online)
-
-        await verifyConnected(webSocketClient, autoConnectOnNetworkStatusChange: true)
-
-        let disconnectExpectation = expectation(description: "Path change should force a disconnect")
-        let reconnectExpectation = expectation(description: "Path change should trigger a reconnect")
+        let initialConnect = expectation(description: "Initial WebSocket connect")
+        let reconnectAfterPathChange = expectation(description: "Reconnect after (.online, .online)")
+        let connectedCounter = AtomicInt()
 
         await webSocketClient.publisher.sink { event in
-            switch event {
-            case .disconnected:
-                disconnectExpectation.fulfill()
-            case .connected:
-                reconnectExpectation.fulfill()
-            default:
-                break
+            if case .connected = event {
+                let count = connectedCounter.increment()
+                if count == 1 {
+                    initialConnect.fulfill()
+                } else if count == 2 {
+                    reconnectAfterPathChange.fulfill()
+                }
             }
+            // Tolerate .disconnected / .error / .string / .data events,
+            // which can arrive from NWPathMonitor-driven recycling or from
+            // LocalWebSocketServer teardown.
         }
         .store(in: &cancellables)
 
-        // Second .online emission → scan produces (.online, .online) —
-        // the exact tuple from issue #3976.
+        await webSocketClient.connect(
+            autoConnectOnNetworkStatusChange: true,
+            autoRetryOnConnectionFailure: false
+        )
+        await fulfillment(of: [initialConnect], timeout: timeout)
+
+        // WebSocketClient.init spawns its sink via Task { startNetworkMonitor() };
+        // by the time initialConnect fulfils, the sink is attached.
+        // Prime the scan so (previous, next) reaches (.online, .online) on
+        // the second updateState — first reaches (.none, .online).
         await realNetworkMonitor.updateState(.online)
 
-        await fulfillment(
-            of: [disconnectExpectation, reconnectExpectation],
-            timeout: timeout,
-            enforceOrder: true
-        )
+        // Second .online emission → scan produces (.online, .online) —
+        // the exact tuple from issue #3976. With the fix, this triggers a
+        // recycle that yields a second `.connected`.
+        await realNetworkMonitor.updateState(.online)
+
+        await fulfillment(of: [reconnectAfterPathChange], timeout: timeout)
     }
 
     // Monitor-level test: proves that the real AmplifyNetworkMonitor.publisher
@@ -335,6 +348,17 @@ class WebSocketClientTests: XCTestCase {
 
 }
 
+
+private final class AtomicInt: @unchecked Sendable {
+    private var value: Int = 0
+    private let lock = NSLock()
+    func increment() -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        value += 1
+        return value
+    }
+}
 
 private class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
     typealias State = AmplifyNetworkMonitor.State
