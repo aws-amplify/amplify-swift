@@ -98,7 +98,10 @@ swift test --filter AWSCognitoAuthPluginUnitTests    # Specific target
 - **Unit tests**: XCTest, defined in Package.swift (19 test targets)
 - **Integration tests**: Xcode host app projects under `AmplifyPlugins/<Category>/Tests/<Category>HostApp/`
 - **Conventions**: Mock via behavior protocols, use `AmplifyTestCommon` for shared utilities, `AmplifyAsyncTesting` for async helpers
-- **Test documentation**: Use Given/When/Then doc comments on all test methods:
+- **Test documentation (MANDATORY)**: Every new or modified test method
+  **must** have a Given/When/Then doc comment. No exceptions — this applies
+  to unit tests, integration tests, and regression tests alike. Reviewers
+  should reject PRs that add tests without this structure.
   ```swift
   /// Test description
   ///

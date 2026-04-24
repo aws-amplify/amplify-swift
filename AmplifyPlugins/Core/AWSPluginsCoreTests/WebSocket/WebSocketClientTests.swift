@@ -139,20 +139,23 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [reconnectExpectation], timeout: timeout)
     }
 
-    // Regression test for https://github.com/aws-amplify/amplify-swift/issues/3976
-    //
-    // When iOS recycles the underlying TCP route during a scenePhase transition,
-    // NWPathMonitor reports path.status == .satisfied both before and after the
-    // recycle. AmplifyNetworkMonitor maps .satisfied to .online, so the publisher
-    // emits (.online, .online). The existing URLSessionWebSocketTask is now dead
-    // on the stale route, but WebSocketClient.onNetworkStateChange hits
-    // `default: break` and never cancels/recreates the connection. Every cached
-    // subscriber then reuses the zombie client.
-    //
-    // This test drives the mock through an (.online, .online) transition while
-    // the client is connected with autoConnectOnNetworkStatusChange = true, and
-    // expects the client to tear down and re-establish the connection.
-    // It should FAIL against the current implementation.
+    /// Regression test for https://github.com/aws-amplify/amplify-swift/issues/3976.
+    /// When iOS recycles the TCP route during a scenePhase transition,
+    /// NWPathMonitor reports .satisfied both before and after, producing
+    /// (.online, .online) through AmplifyNetworkMonitor's scan. Before the
+    /// fix, WebSocketClient.onNetworkStateChange hit `default: break` and
+    /// left the stale URLSessionWebSocketTask in place — a zombie.
+    ///
+    /// - Given:
+    ///    - A WebSocketClient connected via a MockNetworkMonitor whose scan
+    ///      seed is (.online, .online), so one updateState(.online) produces
+    ///      the bug tuple deterministically.
+    ///    - autoConnectOnNetworkStatusChange is true.
+    /// - When:
+    ///    - The mock emits .online, producing an (.online, .online) tuple.
+    /// - Then:
+    ///    - WebSocketClient sends a `.disconnected` event (stale task torn down).
+    ///    - WebSocketClient emits a fresh `.connected` event (new connection).
     func testWebSocketClient_whenNetworkPathChangesWhileOnline_shouldRecycleConnection() async throws {
         var cancellables = Set<AnyCancellable>()
         guard let endpoint = try localWebSocketServer?.start() else {
@@ -191,23 +194,26 @@ class WebSocketClientTests: XCTestCase {
         )
     }
 
-    // Integration-level companion to the unit test above. Uses a real
-    // AmplifyNetworkMonitor (backed by NWPathMonitor) instead of a mock, so
-    // the scan seed matches production exactly: (.none, .none) → (.none, .online)
-    // → (.online, .online). Drives state through the class's public
-    // `updateState` seam — the same seam WebSocketClient itself uses at
-    // WebSocketClient.swift when it reports connectionLost.
-    //
-    // This proves the bug is not an artifact of MockNetworkMonitor's scan seed:
-    // even with the real AmplifyNetworkMonitor, a second .online emission
-    // produces (.online, .online) and the client fails to recycle.
-    //
-    // Note: the real NWPathMonitor in AmplifyNetworkMonitor fires
-    // pathUpdateHandler spontaneously during startup (especially on watchOS).
-    // We tolerate that noise by counting `.connected` events and requiring
-    // at least TWO (initial connect + post-recycle reconnect) rather than
-    // using the shared verifyConnected helper, which XCTFails on any event
-    // other than `.connected`.
+    /// Integration-level companion to the mock-based test above. Proves the
+    /// fix works with the real AmplifyNetworkMonitor's scan seed (.none, .none)
+    /// — i.e., the bug is not an artifact of MockNetworkMonitor's seeding.
+    /// Drives state through `updateState`, the same seam WebSocketClient
+    /// itself uses when reporting connectionLost. Tolerates spontaneous
+    /// NWPathMonitor firings on watchOS by counting `.connected` events
+    /// instead of using the strict verifyConnected helper.
+    ///
+    /// - Given:
+    ///    - A WebSocketClient wired to a real AmplifyNetworkMonitor with its
+    ///      natural scan seed (.none, .none).
+    ///    - A publisher sink attached before connect() so no events are lost
+    ///      while the client's internal sink is still attaching.
+    ///    - autoConnectOnNetworkStatusChange is true.
+    /// - When:
+    ///    - The monitor's updateState(.online) is called twice, producing
+    ///      (.none, .online) then (.online, .online) through the scan.
+    /// - Then:
+    ///    - A second `.connected` event is observed (initial connect + recycle
+    ///      reconnect), confirming the WebSocket was torn down and rebuilt.
     func testWebSocketClient_withRealNetworkMonitor_whenPathChangesWhileOnline_shouldRecycle() async throws {
         var cancellables = Set<AnyCancellable>()
         guard let endpoint = try localWebSocketServer?.start() else {
@@ -257,19 +263,21 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [reconnectAfterPathChange], timeout: timeout)
     }
 
-    // Monitor-level test: proves that the real AmplifyNetworkMonitor.publisher
-    // emits (.online, .online) on two consecutive .online updateState() calls.
-    // This is the signal boundary feeding WebSocketClient.onNetworkStateChange.
-    //
-    // This test documents the shape of the bug input: the monitor faithfully
-    // reports "still online" twice in a row. It's WebSocketClient's switch
-    // statement that drops it, but we need to know the monitor will actually
-    // emit this tuple when NWPathMonitor fires .satisfied again during a path
-    // recycle (which is how production AmplifyNetworkMonitor behaves — see
-    // AmplifyNetworkMonitor.swift:32-34, where any .satisfied path → .online).
-    //
-    // This should PASS today regardless of the WebSocketClient fix —
-    // it's characterizing the input signal.
+    /// Characterizes the input signal that drives issue #3976. Proves that
+    /// the real AmplifyNetworkMonitor.publisher emits the (.online, .online)
+    /// tuple when two .online states are sent consecutively — which is what
+    /// WebSocketClient.onNetworkStateChange receives during a scenePhase-
+    /// triggered NWPath recycle. Does not exercise the fix; passes both
+    /// before and after.
+    ///
+    /// - Given:
+    ///    - A fresh AmplifyNetworkMonitor instance.
+    ///    - A publisher sink that watches for (.online, .online) tuples.
+    /// - When:
+    ///    - updateState(.online) is called twice consecutively.
+    /// - Then:
+    ///    - The publisher emits an (.online, .online) tuple via its scan —
+    ///      confirming this is the exact signal WebSocketClient must handle.
     func testAmplifyNetworkMonitor_whenOnlineEmittedTwice_publishesOnlineOnlineTuple() async throws {
         var cancellables = Set<AnyCancellable>()
         let monitor = AmplifyNetworkMonitor()

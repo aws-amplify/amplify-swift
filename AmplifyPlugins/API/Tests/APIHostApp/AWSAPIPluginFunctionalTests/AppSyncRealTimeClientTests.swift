@@ -169,19 +169,28 @@ class AppSyncRealTimeClientTests: XCTestCase {
         withExtendedLifetime(cancellables) { }
     }
 
-    // End-to-end regression test for https://github.com/aws-amplify/amplify-swift/issues/3976
-    //
-    // Drives a real AppSync subscription through an AmplifyNetworkMonitor we
-    // own, then simulates the scenePhase-triggered NWPath recycle by sending
-    // a second .online state. In the buggy WebSocketClient, the scan produces
-    // (.online, .online), onNetworkStateChange hits `default: break`, the
-    // URLSessionWebSocketTask is left zombied, and no new subscription events
-    // arrive. With the fix, the client tears down and reconnects, and the
-    // subscription is re-established.
-    //
-    // Requires GraphQLModelBasedTests-amplifyconfiguration.json at
-    // ~/.aws-amplify/amplify-ios/testconfiguration/ (same as all other tests
-    // in this file). If missing, test fails in setUp rather than here.
+    /// End-to-end regression test for https://github.com/aws-amplify/amplify-swift/issues/3976
+    /// against a real AppSync backend. Simulates the scenePhase-triggered
+    /// NWPath recycle by driving two .online states through an injected
+    /// AmplifyNetworkMonitor and asserts that the subscription is actually
+    /// re-established (server issues a second start_ack).
+    ///
+    /// Requires GraphQLModelBasedTests-amplifyconfiguration.json at
+    /// ~/.aws-amplify/amplify-ios/testconfiguration/ (standard for this suite).
+    ///
+    /// - Given:
+    ///    - An AppSyncRealTimeClient wired to a real AmplifyNetworkMonitor
+    ///      and a real AppSync endpoint from the bundled config.
+    ///    - A live subscription that has already received .subscribed from
+    ///      the server (first start_ack confirmed).
+    /// - When:
+    ///    - After the WebSocketClient's internal sink has attached (200ms),
+    ///      updateState(.online) is called twice on the network monitor,
+    ///      producing the (.online, .online) tuple from issue #3976.
+    /// - Then:
+    ///    - The WebSocket is recycled, AppSyncRealTimeClient reconnects,
+    ///      resumeExistingSubscriptions() re-sends `start`, and the server
+    ///      returns a second start_ack — causing a second .subscribed event.
     func testSubscribe_afterOnlineToOnlinePathChange_shouldRecycleAndResubscribe() async throws {
         var cancellables = Set<AnyCancellable>()
 
