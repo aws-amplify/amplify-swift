@@ -175,9 +175,6 @@ class AppSyncRealTimeClientTests: XCTestCase {
     /// AmplifyNetworkMonitor and asserts that the subscription is actually
     /// re-established (server issues a second start_ack).
     ///
-    /// Requires GraphQLModelBasedTests-amplifyconfiguration.json at
-    /// ~/.aws-amplify/amplify-ios/testconfiguration/ (standard for this suite).
-    ///
     /// - Given:
     ///    - An AppSyncRealTimeClient wired to a real AmplifyNetworkMonitor
     ///      and a real AppSync endpoint from the bundled config.
@@ -235,14 +232,14 @@ class AppSyncRealTimeClientTests: XCTestCase {
         resubscribedAfterPathChange.assertForOverFulfill = false
 
         let id = UUID().uuidString
-        var subscribedCount = 0
+        let subscribedCount = AtomicInt()
         let subscription = try await client.subscribe(
             id: id,
             query: Self.appSyncQuery(with: subscriptionRequest)
         ).sink { event in
             if case .subscribed = event {
-                subscribedCount += 1
-                if subscribedCount == 1 {
+                let count = subscribedCount.increment()
+                if count == 1 {
                     firstSubscribed.fulfill()
                 } else {
                     resubscribedAfterPathChange.fulfill()
@@ -297,4 +294,15 @@ class AppSyncRealTimeClientTests: XCTestCase {
         return String(data: data, encoding: .utf8)!
     }
 
+}
+
+private final class AtomicInt: @unchecked Sendable {
+    private var value: Int = 0
+    private let lock = NSLock()
+    func increment() -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        value += 1
+        return value
+    }
 }
