@@ -164,11 +164,11 @@ class FileSystem {
     /// Returns the size in bytes of a file.
     /// - Parameter fileURL: URL of the file
     /// - Returns: size of file in bytes
-    func getFileSize(fileURL: URL) -> UInt64 {
-        guard let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path),
-              let size = attributes[.size] as? UInt64
-        else {
-            Fatal.require("File size should always be accessible")
+    /// - Throws: an error if the file is missing or its size attribute cannot be read.
+    func getFileSize(fileURL: URL) throws -> UInt64 {
+        let attributes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
+        guard let size = attributes[.size] as? UInt64 else {
+            throw Failure.fatalError(errorDescription: "File size not available for \(fileURL.lastPathComponent)")
         }
         return size
     }
