@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import InternalCloudWatchLogging
 
 /// Concrete implementaiton of LogBatch that reads log file and remove log files.
 /// LogBatch/RotatingLogBatch are emited subjects of RotatingLogger.
