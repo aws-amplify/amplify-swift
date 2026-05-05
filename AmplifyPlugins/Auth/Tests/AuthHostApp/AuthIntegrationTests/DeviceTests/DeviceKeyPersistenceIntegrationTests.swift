@@ -260,7 +260,10 @@ class DeviceKeyPersistenceIntegrationTests: AWSAuthBaseTest {
         }
     }
 
-    // MARK: - Token Refresh Tests (regression tests for issue #4207)
+    // MARK: - Token Refresh with Device Tracking Tests
+    // Note: These tests run against a non-alias pool (username == sub UUID),
+    // so they verify token refresh works with device tracking in the baseline case.
+    // For the alias-specific regression test (issue #4207), see DeviceAliasTokenRefreshIntegrationTests.
 
     /// Test that token refresh succeeds with device tracking enabled
     ///
