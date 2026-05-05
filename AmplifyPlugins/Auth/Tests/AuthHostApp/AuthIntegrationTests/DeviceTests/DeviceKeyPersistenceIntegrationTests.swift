@@ -259,6 +259,94 @@ class DeviceKeyPersistenceIntegrationTests: AWSAuthBaseTest {
                 "Cycle \(index + 1) (\(flow)): device ID should remain the same")
         }
     }
+
+    // MARK: - Token Refresh Tests (regression tests for issue #4207)
+
+    /// Test that token refresh succeeds with device tracking enabled
+    ///
+    /// - Given: A user signed in with USER_SRP_AUTH with device remembered
+    /// - When: fetchAuthSession is called with forceRefresh
+    /// - Then: The session should contain valid refreshed tokens
+    func testTokenRefreshSucceedsWithDeviceTracking() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        _ = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
+
+        let result = try await signInAndWait(
+            username: username,
+            password: password,
+            authFlowType: .userSRP
+        )
+        XCTAssertTrue(result.isSignedIn)
+        _ = try await Amplify.Auth.rememberDevice()
+
+        let session = try await Amplify.Auth.fetchAuthSession(options: .init(forceRefresh: true))
+        XCTAssertTrue(session.isSignedIn)
+
+        if let cognitoSession = session as? AWSAuthCognitoSession {
+            switch cognitoSession.userPoolTokensResult {
+            case .success(let tokens):
+                XCTAssertFalse(tokens.idToken.isEmpty)
+                XCTAssertFalse(tokens.accessToken.isEmpty)
+            case .failure(let error):
+                XCTFail("Token refresh failed with device tracking: \(error) (issue #4207)")
+            }
+        }
+    }
+
+    /// Test that multiple consecutive token refreshes succeed with device tracking
+    ///
+    /// - Given: A user signed in with USER_SRP_AUTH with device remembered
+    /// - When: fetchAuthSession is called with forceRefresh twice consecutively
+    /// - Then: Both refreshes should succeed (inputUsername must be preserved across refreshes)
+    func testConsecutiveTokenRefreshesSucceedWithDeviceTracking() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        _ = try await AuthSignInHelper.signUpUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
+
+        let result = try await signInAndWait(
+            username: username,
+            password: password,
+            authFlowType: .userSRP
+        )
+        XCTAssertTrue(result.isSignedIn)
+        _ = try await Amplify.Auth.rememberDevice()
+
+        // First refresh
+        let session1 = try await Amplify.Auth.fetchAuthSession(options: .init(forceRefresh: true))
+        XCTAssertTrue(session1.isSignedIn)
+        if let cognitoSession = session1 as? AWSAuthCognitoSession {
+            switch cognitoSession.userPoolTokensResult {
+            case .success(let tokens):
+                XCTAssertFalse(tokens.idToken.isEmpty)
+            case .failure(let error):
+                XCTFail("First token refresh failed: \(error)")
+            }
+        }
+
+        // Second refresh — fails if inputUsername is not preserved after first refresh
+        let session2 = try await Amplify.Auth.fetchAuthSession(options: .init(forceRefresh: true))
+        XCTAssertTrue(session2.isSignedIn)
+        if let cognitoSession = session2 as? AWSAuthCognitoSession {
+            switch cognitoSession.userPoolTokensResult {
+            case .success(let tokens):
+                XCTAssertFalse(tokens.idToken.isEmpty, "Second refresh should also return valid tokens")
+            case .failure(let error):
+                XCTFail("Second token refresh failed: \(error). " +
+                    "inputUsername was not preserved after first refresh (issue #4207)")
+            }
+        }
+    }
 }
 
 private extension AuthFlowType {
