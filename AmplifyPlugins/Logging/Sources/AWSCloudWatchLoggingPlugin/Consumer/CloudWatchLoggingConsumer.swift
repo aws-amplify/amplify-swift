@@ -44,13 +44,9 @@ class CloudWatchLoggingConsumer {
 }
 
 extension CloudWatchLoggingConsumer: LogBatchConsumer {
-    func consume(batch: LogBatch) async throws {
-        guard let rotatingBatch = batch as? RotatingLogBatch else {
-            try batch.complete()
-            return
-        }
-        let entries = try rotatingBatch.readEntries()
-        if entries.isEmpty {
+    func consume(batch: any LogBatch) async throws {
+        let rawEntries = try batch.readEntries()
+        guard let entries = rawEntries as? [LogEntry], !entries.isEmpty else {
             try batch.complete()
             return
         }

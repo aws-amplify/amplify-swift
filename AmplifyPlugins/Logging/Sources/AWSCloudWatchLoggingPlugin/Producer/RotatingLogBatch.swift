@@ -23,7 +23,7 @@ struct RotatingLogBatch {
 }
 
 extension RotatingLogBatch: LogBatch {
-    func readEntries() throws -> [LogEntry] {
+    func readEntries() throws -> [LogEntryRepresentable] {
         let codec = LogEntryCodec()
         let unsorted = try codec.decode(from: url)
         return unsorted.sorted(by: { lhs, rhs in
