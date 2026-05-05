@@ -16,8 +16,8 @@ import XCTest
 
 final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
     }
 

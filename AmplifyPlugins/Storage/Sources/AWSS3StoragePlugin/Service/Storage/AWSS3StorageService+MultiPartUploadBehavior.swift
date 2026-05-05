@@ -16,6 +16,7 @@ extension AWSS3StorageService {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler
     ) {
         let fail: (Error) -> Void = { error in
@@ -44,7 +45,8 @@ extension AWSS3StorageService {
             key: serviceKey,
             contentType: contentType,
             requestHeaders: requestHeaders,
-            onEvent: onEvent
+            onEvent: onEvent,
+            progressStallTimeoutSeconds: progressStallTimeoutSeconds
         )
 
         register(multipartUploadSession: multipartUploadSession)

@@ -30,6 +30,8 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     var didStartPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Void)?
     var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, UInt64) -> Void)?
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
+    /// When true, uploadPart only reports started but never progress/completed (for stall timeout testing)
+    var shouldStallPartUpload = false
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
     var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
@@ -70,6 +72,8 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         subTask.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier, state: .suspended)
         session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
         didStartPartUpload?(session, partNumber)
+
+        guard !shouldStallPartUpload else { return }
 
         let bytesTransferred = part.bytes / 2
         session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier))

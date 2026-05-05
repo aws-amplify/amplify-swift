@@ -16,6 +16,7 @@ extension AWSS3StorageService {
         contentType: String?,
         metadata: [String: String]?,
         accelerate: Bool?,
+        progressStallTimeoutSeconds: TimeInterval,
         onEvent: @escaping StorageServiceUploadEventHandler
     ) {
         let fail: (Error) -> Void = { error in
@@ -29,7 +30,8 @@ extension AWSS3StorageService {
             let transferTask = createTransferTask(
                 transferType: .upload(onEvent: onEvent),
                 bucket: bucket,
-                key: serviceKey
+                key: serviceKey,
+                progressStallTimeoutSeconds: progressStallTimeoutSeconds
             )
             let uploadFileURL: URL
             guard let uploadFile = try attempt(uploadSource.getFile(), fail: fail) else { return }
@@ -87,6 +89,8 @@ extension AWSS3StorageService {
 
         // register task so it can be accessed in URLSession delegate functions
         register(task: transferTask)
+
+        (urlSession.delegate as? StorageServiceSessionDelegate)?.startProgressStallTimerIfNeeded(taskIdentifier: uploadTask.taskIdentifier)
 
         if startTransfer {
             transferTask.resume()

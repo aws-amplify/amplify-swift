@@ -179,6 +179,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     func resetURLSession() {
         let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
+        delegate.storageService = self
         urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
@@ -205,6 +206,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                     client: client,
                     transferTask: pair.transferTask,
                     multipartUpload: multipartUpload,
+                    progressStallTimeoutSeconds: pair.transferTask.resolvedProgressStallTimeoutSeconds(
+                        storageConfiguration: storageConfiguration
+                    ),
                     logger: logger
                 ) else {
                     return
@@ -280,7 +284,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         bucket: String,
         key: String,
         location: URL? = nil,
-        requestHeaders: [String: String]? = nil
+        requestHeaders: [String: String]? = nil,
+        progressStallTimeoutSeconds: TimeInterval = 0
     ) -> StorageTransferTask {
         let transferTask = StorageTransferTask(
             transferType: transferType,
@@ -288,6 +293,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             key: key,
             location: location,
             requestHeaders: requestHeaders,
+            progressStallTimeoutSeconds: progressStallTimeoutSeconds,
             storageTransferDatabase: storageTransferDatabase,
             logger: logger
         )

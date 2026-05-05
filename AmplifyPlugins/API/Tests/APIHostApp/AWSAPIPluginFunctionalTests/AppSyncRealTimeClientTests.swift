@@ -169,6 +169,100 @@ class AppSyncRealTimeClientTests: XCTestCase {
         withExtendedLifetime(cancellables) { }
     }
 
+    /// End-to-end regression test for https://github.com/aws-amplify/amplify-swift/issues/3976
+    /// against a real AppSync backend. Simulates the scenePhase-triggered
+    /// NWPath recycle by driving two .online states through an injected
+    /// AmplifyNetworkMonitor and asserts that the subscription is actually
+    /// re-established (server issues a second start_ack).
+    ///
+    /// - Given:
+    ///    - An AppSyncRealTimeClient wired to a real AmplifyNetworkMonitor
+    ///      and a real AppSync endpoint from the bundled config.
+    ///    - A live subscription that has already received .subscribed from
+    ///      the server (first start_ack confirmed).
+    /// - When:
+    ///    - After the WebSocketClient's internal sink has attached (200ms),
+    ///      updateState(.online) is called twice on the network monitor,
+    ///      producing the (.online, .online) tuple from issue #3976.
+    /// - Then:
+    ///    - The WebSocket is recycled, AppSyncRealTimeClient reconnects,
+    ///      resumeExistingSubscriptions() re-sends `start`, and the server
+    ///      returns a second start_ack — causing a second .subscribed event.
+    func testSubscribe_afterOnlineToOnlinePathChange_shouldRecycleAndResubscribe() async throws {
+        var cancellables = Set<AnyCancellable>()
+
+        let data = try TestConfigHelper.retrieve(
+            forResource: GraphQLModelBasedTests.amplifyConfiguration
+        )
+        let amplifyConfig = try JSONDecoder().decode(JSONValue.self, from: data)
+        let (endpoint, apiKey) = (amplifyConfig.api?.plugins?.awsAPIPlugin?.asObject?.values
+            .map { ($0.endpoint?.stringValue, $0.apiKey?.stringValue) }
+            .first { $0.0 != nil && $0.1 != nil }
+            .map { ($0.0!, $0.1!) })!
+
+        // Inject a real AmplifyNetworkMonitor we can drive directly.
+        let networkMonitor = AmplifyNetworkMonitor()
+
+        let webSocketClient = WebSocketClient(
+            url: AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(URL(string: endpoint)!),
+            handshakeHttpHeaders: [
+                URLRequestConstants.Header.webSocketSubprotocols: "graphql-ws",
+                URLRequestConstants.Header.userAgent: AmplifyAWSServiceConfiguration.userAgentLib + " (intg-test-3976)"
+            ],
+            interceptor: APIKeyAuthInterceptor(apiKey: apiKey),
+            networkMonitor: networkMonitor
+        )
+        let client = AppSyncRealTimeClient(
+            endpoint: URL(string: endpoint)!,
+            requestInterceptor: APIKeyAuthInterceptor(apiKey: apiKey),
+            webSocketClient: webSocketClient
+        )
+        defer { Task { await client.reset() } }
+
+        // Wait for WebSocketClient's internal sink to attach to the monitor's
+        // publisher (it's kicked off via a Task in init). Prime with .online
+        // AFTER the subscriber is attached so the PassthroughSubject actually
+        // delivers the event. This gets the scan to (.none, .online) —
+        // WebSocketClient will ignore it because autoConnect is still false.
+        try await Task.sleep(nanoseconds: 200_000_000)
+        await networkMonitor.updateState(.online)
+
+        let firstSubscribed = expectation(description: "Initial subscription established")
+        let resubscribedAfterPathChange = expectation(description: "Subscription re-established after (.online, .online)")
+        resubscribedAfterPathChange.assertForOverFulfill = false
+
+        let id = UUID().uuidString
+        let subscribedCount = AtomicInt()
+        let subscription = try await client.subscribe(
+            id: id,
+            query: Self.appSyncQuery(with: subscriptionRequest)
+        ).sink { event in
+            if case .subscribed = event {
+                let count = subscribedCount.increment()
+                if count == 1 {
+                    firstSubscribed.fulfill()
+                } else {
+                    resubscribedAfterPathChange.fulfill()
+                }
+            }
+        }
+        cancellables.insert(subscription)
+
+        try await client.connect()
+        await fulfillment(of: [firstSubscribed], timeout: 10)
+
+        // Simulate the path-recycle: second .online emission produces
+        // (.online, .online) through the scan — the exact bug tuple.
+        // In the buggy code, nothing happens; WebSocketClient keeps the
+        // zombie connection. With the fix, it should tear down and reconnect,
+        // and AppSyncRealTimeClient.resumeExistingSubscriptions() should
+        // re-subscribe.
+        await networkMonitor.updateState(.online)
+
+        await fulfillment(of: [resubscribedAfterPathChange], timeout: 15)
+        withExtendedLifetime(cancellables) { }
+    }
+
     private func makeOneSubscription(
         id: String = UUID().uuidString,
         onSubscriptionEvents: ((AppSyncSubscriptionEvent) -> Void)?
@@ -200,4 +294,15 @@ class AppSyncRealTimeClientTests: XCTestCase {
         return String(data: data, encoding: .utf8)!
     }
 
+}
+
+private final class AtomicInt: @unchecked Sendable {
+    private var value: Int = 0
+    private let lock = NSLock()
+    func increment() -> Int {
+        lock.lock()
+        defer { lock.unlock() }
+        value += 1
+        return value
+    }
 }

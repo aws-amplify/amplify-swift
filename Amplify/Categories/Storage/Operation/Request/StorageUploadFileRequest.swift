@@ -89,6 +89,9 @@ public extension StorageUploadFileRequest {
         /// - Tag: StorageUploadFileRequestOptions.pluginOptions
         public let pluginOptions: Any?
 
+        /// Override the storage plugin's default progress stall timeout for this upload only. `nil` uses the plugin default.
+        public let progressStallTimeout: ProgressStallTimeout?
+
         /// - Tag: StorageUploadFileRequestOptions.init
         @available(*, deprecated, message: "Use init(metadata:contentType:pluginOptions)")
         public init(
@@ -96,7 +99,8 @@ public extension StorageUploadFileRequest {
             targetIdentityId: String? = nil,
             metadata: [String: String]? = nil,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
@@ -104,13 +108,15 @@ public extension StorageUploadFileRequest {
             self.bucket = nil
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
 
         /// - Tag: StorageUploadFileRequestOptions.init
         public init(
             metadata: [String: String]? = nil,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil
@@ -118,6 +124,7 @@ public extension StorageUploadFileRequest {
             self.bucket = nil
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
 
         /// - Tag: StorageUploadFileRequestOptions.init
@@ -125,7 +132,8 @@ public extension StorageUploadFileRequest {
             metadata: [String: String]? = nil,
             bucket: some StorageBucket,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil
@@ -133,6 +141,7 @@ public extension StorageUploadFileRequest {
             self.bucket = bucket
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
     }
 }

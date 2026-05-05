@@ -353,6 +353,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             contentType: "application/json",
             metadata: [:],
             accelerate: true,
+            progressStallTimeoutSeconds: 0,
             onEvent: { event in
                 guard case .failed(let error) = event,
                       case .unknown(let description, _) = error else {
@@ -380,6 +381,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             contentType: "application/json",
             metadata: [:],
             accelerate: true,
+            progressStallTimeoutSeconds: 0,
             onEvent: { event in
                 if case .initiated(_) = event {
                     expectation.fulfill()

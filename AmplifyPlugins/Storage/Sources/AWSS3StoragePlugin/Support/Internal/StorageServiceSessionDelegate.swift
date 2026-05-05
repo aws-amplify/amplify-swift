@@ -17,6 +17,9 @@ class StorageServiceSessionDelegate: NSObject {
     let logger: Logger
     weak var storageService: AWSS3StorageService?
 
+    private let stallTimerQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage.stall-timer")
+    private var stallTimerWorkItems: [Int: DispatchWorkItem] = [:]
+
     init(identifier: String, logger: Logger = storageLogger) {
         self.identifier = identifier
         self.logger = logger
@@ -29,6 +32,51 @@ class StorageServiceSessionDelegate: NSObject {
         } else {
             logger.info("[URLSession] \(message)")
         }
+    }
+
+    /// Start or reset progress stall timer for single upload. Call at upload start and from didSendBodyData.
+    func startProgressStallTimerIfNeeded(taskIdentifier: TaskIdentifier) {
+        resetProgressStallTimer(taskIdentifier: taskIdentifier)
+    }
+
+    /// Reset progress stall timer (cancel existing and schedule new). Call on every progress.
+    func resetProgressStallTimer(taskIdentifier: TaskIdentifier) {
+        guard let storageService,
+              let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else { return }
+        let interval = transferTask.resolvedProgressStallTimeoutSeconds(
+            storageConfiguration: storageService.storageConfiguration
+        )
+        guard interval > 0 else { return }
+        stallTimerQueue.async { [weak self] in
+            self?.stallTimerWorkItems[taskIdentifier]?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.fireProgressStallTimeout(taskIdentifier: taskIdentifier)
+            }
+            self?.stallTimerWorkItems[taskIdentifier] = workItem
+            self?.stallTimerQueue.asyncAfter(deadline: .now() + interval, execute: workItem)
+        }
+    }
+
+    private func removeProgressStallTimer(taskIdentifier: TaskIdentifier) {
+        stallTimerQueue.async { [weak self] in
+            self?.stallTimerWorkItems[taskIdentifier]?.cancel()
+            self?.stallTimerWorkItems[taskIdentifier] = nil
+        }
+    }
+
+    private func fireProgressStallTimeout(taskIdentifier: TaskIdentifier) {
+        stallTimerQueue.async { [weak self] in
+            self?.stallTimerWorkItems[taskIdentifier] = nil
+        }
+        guard let storageService,
+              let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else { return }
+        guard case .upload = transferTask.transferType else { return }
+        removeProgressStallTimer(taskIdentifier: taskIdentifier)
+        let stallError = StorageError.unknown("Upload cancelled due to progress stall timeout.", nil)
+        transferTask.fail(error: stallError)
+        storageService.unregister(task: transferTask)
+        transferTask.sessionTask?.cancel()
+        logger.debug("Upload cancelled due to progress stall timeout: \(taskIdentifier)")
     }
 
     private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
@@ -99,6 +147,12 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                         logURLSessionActivity("Session task cancellation reason: unknown(\(reason.intValue) :\(task.taskIdentifier)")
                     }
                 }
+                // Always invoke completion handler on cancel (fix: was returning without calling completion)
+                if let storageService, let transferTask = findTransferTask(for: task.taskIdentifier) {
+                    removeProgressStallTimer(taskIdentifier: task.taskIdentifier)
+                    transferTask.fail(error: error)
+                    storageService.unregister(task: transferTask)
+                }
                 return
             }
             logURLSessionActivity("Session task did complete with error: \(task.taskIdentifier) [\(error)]", warning: true)
@@ -111,6 +165,8 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                   logURLSessionActivity("Session task not handled: \(task.taskIdentifier)")
                   return
               }
+
+        removeProgressStallTimer(taskIdentifier: task.taskIdentifier)
 
         let response = StorageTransferResponse(task: task, error: error, transferTask: transferTask)
         if let responseError = response.responseError {
@@ -193,7 +249,9 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                     taskIdentifier: task.taskIdentifier
                 )
             )
+            resetProgressStallTimer(taskIdentifier: task.taskIdentifier)
         case .upload(let onEvent):
+            resetProgressStallTimer(taskIdentifier: task.taskIdentifier)
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
             progress.completedUnitCount = totalBytesSent
             onEvent(.inProcess(progress))

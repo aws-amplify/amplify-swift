@@ -292,6 +292,23 @@ extension WebSocketClient {
         case (.offline, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
             await createConnectionAndRead()
+        case (.online, .online):
+            // NWPathMonitor's pathUpdateHandler only fires on real path
+            // changes, so a second .satisfied emission while we were already
+            // online means the underlying path was swapped (e.g., iOS recycled
+            // the TCP route during a scenePhase transition). The existing
+            // URLSessionWebSocketTask is now bound to a stale route and any
+            // further reads/writes will silently fail, leaving the client in
+            // a zombie state that cached consumers can't recover from.
+            // Fix for https://github.com/aws-amplify/amplify-swift/issues/3976
+            guard connection?.state == .running else {
+                log.debug("[WebSocketClient] NetworkMonitor - Path changed but connection is not running, skipping recycle")
+                break
+            }
+            log.debug("[WebSocketClient] NetworkMonitor - Network path changed while online, recycling connection")
+            connection?.cancel(with: .invalid, reason: nil)
+            subject.send(.disconnected(.invalid, nil))
+            await createConnectionAndRead()
         default:
             break
         }

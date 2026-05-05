@@ -92,6 +92,9 @@ public extension StorageUploadDataRequest {
         /// - Tag: StorageUploadDataRequestOptions.pluginOptions
         public let pluginOptions: Any?
 
+        /// Override plugin default progress stall timeout for this upload only. `nil` uses the plugin default.
+        public let progressStallTimeout: ProgressStallTimeout?
+
         /// - Tag: StorageUploadDataRequestOptions.init
         @available(*, deprecated, message: "Use init(metadata:contentType:options)")
         public init(
@@ -99,7 +102,8 @@ public extension StorageUploadDataRequest {
             targetIdentityId: String? = nil,
             metadata: [String: String]? = nil,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
@@ -107,13 +111,15 @@ public extension StorageUploadDataRequest {
             self.bucket = nil
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
 
         /// - Tag: StorageUploadDataRequestOptions.init
         public init(
             metadata: [String: String]? = nil,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil
@@ -121,6 +127,7 @@ public extension StorageUploadDataRequest {
             self.bucket = nil
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
 
         /// - Tag: StorageUploadDataRequestOptions.init
@@ -128,7 +135,8 @@ public extension StorageUploadDataRequest {
             metadata: [String: String]? = nil,
             bucket: some StorageBucket,
             contentType: String? = nil,
-            pluginOptions: Any? = nil
+            pluginOptions: Any? = nil,
+            progressStallTimeout: ProgressStallTimeout? = nil
         ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil
@@ -136,6 +144,7 @@ public extension StorageUploadDataRequest {
             self.bucket = bucket
             self.contentType = contentType
             self.pluginOptions = pluginOptions
+            self.progressStallTimeout = progressStallTimeout
         }
     }
 }

@@ -184,6 +184,37 @@ class AWSS3StoragePluginUploadIntegrationTests: AWSS3StoragePluginTestBase {
         }
     }
 
+    /// Given: A progress stall timeout on upload options
+    /// When: A small object is uploaded over the network
+    /// Then: The upload completes successfully (stall timer does not break the happy path)
+    func testUploadDataWithProgressStallTimeoutOptionCompletesSuccessfully() async throws {
+        let key = UUID().uuidString
+        let data = Data(key.utf8)
+        let options = StorageUploadDataRequest.Options(progressStallTimeout: .interval(120))
+
+        await wait {
+            _ = try await Amplify.Storage.uploadData(path: .fromString("public/\(key)"), data: data, options: options).value
+        }
+        _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
+    }
+
+    /// Given: Multipart upload with a progress stall timeout on options
+    /// When: Data larger than the multipart threshold is uploaded
+    /// Then: The upload completes successfully
+    func testUploadLargeDataWithProgressStallTimeoutOptionCompletesSuccessfully() async throws {
+        let key = UUID().uuidString
+        let options = StorageUploadDataRequest.Options(progressStallTimeout: .interval(120))
+
+        await wait(timeout: 120) {
+            _ = try await Amplify.Storage.uploadData(
+                path: .fromString("public/\(key)"),
+                data: Self.largeDataObject,
+                options: options
+            ).value
+        }
+        _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
+    }
+
     func removeIfExists(_ fileURL: URL) {
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         if fileExists {
