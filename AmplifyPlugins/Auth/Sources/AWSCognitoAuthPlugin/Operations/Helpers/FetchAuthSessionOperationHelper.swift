@@ -105,7 +105,7 @@ class FetchAuthSessionOperationHelper {
             case .sessionEstablished(let credentials):
                 return credentials.cognitoSession
             case .error(let authorizationError):
-                return try await sessionResultWithError(
+                return await sessionResultWithError(
                     authorizationError,
                     authenticationState: authenticationState
                 )
@@ -121,7 +121,7 @@ class FetchAuthSessionOperationHelper {
     func sessionResultWithError(
         _ error: AuthorizationError,
         authenticationState: AuthenticationState
-    ) async throws -> AuthSession {
+    ) async -> AuthSession {
         log.verbose("Received fetch auth session error - \(error)")
 
         var isSignedIn = false
