@@ -22,6 +22,12 @@ public enum ModelOperation {
     case update
     case delete
     case read
+    // granular read access
+    case `get`
+    case list 
+    case sync 
+    case listen 
+    case search
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
