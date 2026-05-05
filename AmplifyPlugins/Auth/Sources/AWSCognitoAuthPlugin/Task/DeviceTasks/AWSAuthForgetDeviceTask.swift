@@ -53,7 +53,7 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _, _) = authState,
            case .signedIn(let signInData) = authenticationState {
-           return signInData.username
+           return signInData.inputUsername ?? signInData.username
         }
         throw AuthError.unknown("Unable to get username for the signedIn user")
     }
