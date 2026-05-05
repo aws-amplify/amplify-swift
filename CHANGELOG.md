@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.58.0 (2026-05-05)
+
+### Features
+
+- **storage**: add progress stall timeout for S3 uploads (#4162)
+
+### Bug Fixes
+
+- **auth**: Use inputUsername for device metadata lookup during token refresh (#4208)
+- **api**: recycle WebSocket and resubscribe on same-online network path change (#4202)
+
 ## 2.57.0 (2026-04-21)
 
 ### Features
