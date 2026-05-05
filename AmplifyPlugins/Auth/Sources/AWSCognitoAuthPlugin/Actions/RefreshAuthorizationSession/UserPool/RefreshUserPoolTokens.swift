@@ -82,7 +82,8 @@ struct RefreshUserPoolTokens: Action {
             let signedInData = SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
-                cognitoUserPoolTokens: userPoolTokens
+                cognitoUserPoolTokens: userPoolTokens,
+                inputUsername: existingSignedIndata.inputUsername
             )
             let event: RefreshSessionEvent
 
