@@ -16,20 +16,18 @@ import SmithyIdentity
 
 /// Responsible for setting up and tearing-down log sessions for a given namespace
 /// according to changes in user authentication sessions.
-final class CloudWatchLoggingSessionController {
+final class CloudWatchLoggingSessionController: @unchecked Sendable {
 
-    var client: CloudWatchLogsClientProtocol?
+    let client: CloudWatchLogsClientProtocol
     let namespace: String
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
-    private let credentialIdentityResolver: any AWSCredentialIdentityResolver
     private var session: CloudWatchLoggingSession?
     private var consumer: CloudWatchLoggingConsumer?
     private let logFilter: CloudWatchLoggingFilterBehavior
     private let networkMonitor: LoggingNetworkMonitor
     private let eventSubject: PassthroughSubject<LoggingEvent, Never>
-    private let configureClient: AmplifyCloudWatchLoggingClientConfigurationProvider?
     private let internalLogger = AmplifyFoundation.AmplifyLogging.logger(for: CloudWatchLoggingSessionController.self)
 
     private var batchSubscription: AnyCancellable? {
@@ -51,7 +49,7 @@ final class CloudWatchLoggingSessionController {
     }
 
     init(
-        credentialIdentityResolver: some AWSCredentialIdentityResolver,
+        client: CloudWatchLogsClientProtocol,
         logFilter: CloudWatchLoggingFilterBehavior,
         namespace: String,
         logLevel: LogLevel,
@@ -60,10 +58,9 @@ final class CloudWatchLoggingSessionController {
         localStoreMaxSizeInMB: Int,
         userIdentifier: String?,
         networkMonitor: LoggingNetworkMonitor,
-        eventSubject: PassthroughSubject<LoggingEvent, Never>,
-        configureClient: AmplifyCloudWatchLoggingClientConfigurationProvider? = nil
+        eventSubject: PassthroughSubject<LoggingEvent, Never>
     ) {
-        self.credentialIdentityResolver = credentialIdentityResolver
+        self.client = client
         self.logFilter = logFilter
         self.namespace = namespace
         self.logLevel = logLevel
@@ -73,7 +70,6 @@ final class CloudWatchLoggingSessionController {
         self.userIdentifier = userIdentifier
         self.networkMonitor = networkMonitor
         self.eventSubject = eventSubject
-        self.configureClient = configureClient
     }
 
     func enable() {
@@ -89,7 +85,7 @@ final class CloudWatchLoggingSessionController {
     }
 
     private func updateConsumer() {
-        consumer = try? createConsumer()
+        consumer = createConsumer()
     }
 
     private func connectProducerAndConsumer() {
@@ -102,10 +98,10 @@ final class CloudWatchLoggingSessionController {
             return
         }
         batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
-            guard self?.networkMonitor.isOnline == true else { return }
+            guard let self, self.networkMonitor.isOnline == true else { return }
             let strongConsumer = consumer
             let strongBatch = batch
-            Task {
+            Task { [weak self] in
                 do {
                     try await strongConsumer.consume(batch: strongBatch)
                 } catch {
@@ -117,27 +113,9 @@ final class CloudWatchLoggingSessionController {
         }
     }
 
-    private func createConsumer() throws -> CloudWatchLoggingConsumer? {
-        if client == nil {
-            var configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfig(
-                awsCredentialIdentityResolver: credentialIdentityResolver,
-                region: region,
-                signingRegion: region
-            )
-
-            configureClient?(&configuration)
-
-            configuration.httpClientEngine = UserAgentClientEngine(
-                target: configuration.httpClientEngine,
-                additionalMetadata: ["md/amplify-cloudwatch-logging"]
-            )
-
-            client = CloudWatchLogsClient(config: configuration)
-        }
-
-        guard let cloudWatchClient = client else { return nil }
+    private func createConsumer() -> CloudWatchLoggingConsumer {
         return CloudWatchLoggingConsumer(
-            client: cloudWatchClient,
+            client: client,
             logGroupName: logGroupName,
             userIdentifier: userIdentifier
         )
@@ -193,11 +171,11 @@ final class CloudWatchLoggingSessionController {
     }
 
     private func resetCurrentLogs() {
-        Task {
+        Task { [weak self] in
             do {
-                try await session?.logger.resetLogs()
+                try await self?.session?.logger.resetLogs()
             } catch {
-                internalLogger.error("Error resetting logs: \(error)")
+                self?.internalLogger.error("Error resetting logs: \(error)")
             }
         }
     }

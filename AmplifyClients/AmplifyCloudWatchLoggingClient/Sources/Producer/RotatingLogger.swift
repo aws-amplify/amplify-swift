@@ -10,7 +10,7 @@ import Combine
 import Foundation
 import InternalCloudWatchLogging
 
-final class RotatingLogger {
+final class RotatingLogger: @unchecked Sendable {
 
     var logLevel: LogLevel
 
@@ -58,7 +58,7 @@ final class RotatingLogger {
 
     private func setupSubscription() async throws {
         if rotationSubscription == nil {
-            let rotationPublisher = await logActor.rotationPublisher()
+            let rotationPublisher = logActor.rotationPublisher()
             rotationSubscription = rotationPublisher.sink { [weak self] url in
                 guard let self else { return }
                 batchSubject.send(RotatingLogBatch(url: url))
@@ -68,11 +68,11 @@ final class RotatingLogger {
 
     func _record(level: LogLevel, message: @autoclosure () -> String) {
         let payload = message()
-        Task {
+        Task { [weak self] in
             do {
-                try await self.record(level: level, message: payload)
+                try await self?.record(level: level, message: payload)
             } catch {
-                eventSubject?.send(.writeLogFailure(context: error.localizedDescription, error: error))
+                self?.eventSubject?.send(.writeLogFailure(context: error.localizedDescription, error: error))
             }
         }
     }
