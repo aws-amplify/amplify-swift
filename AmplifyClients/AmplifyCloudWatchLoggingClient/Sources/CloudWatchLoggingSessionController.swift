@@ -98,16 +98,14 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
             return
         }
         batchSubscription = producer.logBatchPublisher.sink { [weak self] batch in
-            guard let self, self.networkMonitor.isOnline == true else { return }
-            let strongConsumer = consumer
-            let strongBatch = batch
+            guard self?.networkMonitor.isOnline == true else { return }
             Task { [weak self] in
                 do {
-                    try await strongConsumer.consume(batch: strongBatch)
+                    try await consumer.consume(batch: batch)
                 } catch {
                     self?.internalLogger.error("Error flushing logs: \(error.localizedDescription)")
                     self?.eventSubject.send(.flushLogFailure(context: error.localizedDescription, error: error))
-                    try strongBatch.complete()
+                    try batch.complete()
                 }
             }
         }
