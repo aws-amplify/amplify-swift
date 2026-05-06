@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.58.1 (2026-05-06)
+
+### Bug Fixes
+
+- **auth**: Use inputUsername for device metadata lookup in rememberDevice/forgetDevice and add e2e tests (#4209)
+
 ## 2.58.0 (2026-05-05)
 
 ### Features
