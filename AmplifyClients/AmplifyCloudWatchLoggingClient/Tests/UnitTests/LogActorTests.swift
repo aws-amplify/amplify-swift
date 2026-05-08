@@ -29,7 +29,7 @@ final class LogActorTests: XCTestCase {
             directory: directory,
             fileSizeLimitInBytes: fileSizeLimitInBytes
         )
-        subscription = await systemUnderTest.rotationPublisher().sink { [weak self] url in
+        subscription = systemUnderTest.rotationPublisher().sink { [weak self] url in
             self?.rotations.append(url)
         }
     }
