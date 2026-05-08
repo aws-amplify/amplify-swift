@@ -12,7 +12,7 @@ import Foundation
 package actor LogActor {
 
     private let rotation: LogRotation
-    private let rotationSubject: PassthroughSubject<URL, Never>
+    private nonisolated(unsafe) let rotationSubject: PassthroughSubject<URL, Never>
 
     /// Initialized the actor with the given directory and fileCountLimit.
     package init(directory: URL, fileSizeLimitInBytes: Int) throws {
@@ -37,7 +37,7 @@ package actor LogActor {
         }
     }
 
-    package func rotationPublisher() -> AnyPublisher<URL, Never> {
+    package nonisolated func rotationPublisher() -> AnyPublisher<URL, Never> {
         return rotationSubject.eraseToAnyPublisher()
     }
 

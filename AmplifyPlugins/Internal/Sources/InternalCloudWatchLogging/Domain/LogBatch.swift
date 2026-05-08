@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents a batch of log entries to produce/consume.
-package protocol LogBatch {
+package protocol LogBatch: Sendable {
     /// Read the log entries for this log batch.
     func readEntries() throws -> [LogEntryRepresentable]
 

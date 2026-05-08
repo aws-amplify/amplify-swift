@@ -6,10 +6,7 @@
 //
 
 import AmplifyFoundation
-import AWSCloudWatchLogs
 import Combine
-import Smithy
-import SmithyIdentity
 import XCTest
 
 @_spi(AmplifyExperimental) @testable import AmplifyCloudWatchLoggingClient
@@ -55,7 +52,7 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
         }
 
         systemUnderTest = CloudWatchLoggingSessionController(
-            credentialIdentityResolver: MockCredentialIdentityResolver(),
+            client: mockCloudWatchLogClient,
             logFilter: MockLoggingFilter(),
             namespace: namespace,
             logLevel: .error,
@@ -66,7 +63,6 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
             networkMonitor: mockLoggingNetworkMonitor,
             eventSubject: eventSubject
         )
-        systemUnderTest.client = mockCloudWatchLogClient
         systemUnderTest.enable()
 
         // Log an entry through the controller so there's data to flush
@@ -80,7 +76,7 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
 
 // MARK: - Mocks
 
-class MockLoggingFilter: CloudWatchLoggingFilterBehavior {
+final class MockLoggingFilter: CloudWatchLoggingFilterBehavior {
     func canLog(withNamespace namespace: String?, logLevel: LogLevel, userIdentifier: String?) -> Bool {
         return true
     }
@@ -94,10 +90,4 @@ class MockLoggingNetworkMonitor: LoggingNetworkMonitor {
     var isOnline: Bool = true
     func startMonitoring(using queue: DispatchQueue) {}
     func stopMonitoring() {}
-}
-
-class MockCredentialIdentityResolver: AWSCredentialIdentityResolver {
-    func getIdentity(identityProperties: Smithy.Attributes?) async throws -> AWSCredentialIdentity {
-        return .init(accessKey: "test", secret: "test")
-    }
 }
