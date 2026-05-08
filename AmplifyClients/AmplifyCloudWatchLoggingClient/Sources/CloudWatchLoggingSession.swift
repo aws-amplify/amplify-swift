@@ -61,7 +61,7 @@ final class CloudWatchLoggingSession {
         let normalizedUserIdentifier = normalized(userIdentifier: userIdentifier)
         let normalizedTag = namespace.trimmingCharacters(in: .alphanumerics.inverted).lowercased()
         let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
-        let directory = documents.appendingPathComponent("amplify")
+        let directory = documents.appendingPathComponent("amplify-cloudwatch-client")
                                  .appendingPathComponent("logging")
                                  .appendingPathComponent(normalizedUserIdentifier)
                                  .appendingPathComponent(normalizedTag)
