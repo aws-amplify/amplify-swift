@@ -11,6 +11,7 @@ import AWSCloudWatchLogs
 import AWSPluginsCore
 import Combine
 import Foundation
+import InternalCloudWatchLogging
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Network
 import SmithyIdentity

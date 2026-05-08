@@ -11,6 +11,7 @@ import Foundation
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 final class CloudWatchLogConsumerTests: XCTestCase {
 
@@ -316,7 +317,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
 
 extension CloudWatchLogConsumerTests: LogBatch {
 
-    func readEntries() throws -> [LogEntry] {
+    func readEntries() throws -> [any LogEntryRepresentable] {
         interactions.append(#function)
         return entries
     }

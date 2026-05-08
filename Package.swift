@@ -524,11 +524,17 @@ let predictionsTargets: [Target] = [
 
 let loggingTargets: [Target] = [
     .target(
+        name: "InternalCloudWatchLogging",
+        dependencies: [],
+        path: "AmplifyPlugins/Internal/Sources/InternalCloudWatchLogging"
+    ),
+    .target(
         name: "AWSCloudWatchLoggingPlugin",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
+            .target(name: "InternalCloudWatchLogging"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
@@ -556,6 +562,7 @@ let cloudWatchLoggingClientTargets: [Target] = [
         dependencies: [
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifyFoundationBridge"),
+            .target(name: "InternalCloudWatchLogging"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Sources",
