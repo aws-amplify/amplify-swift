@@ -9,7 +9,7 @@ import AmplifyFoundation
 import Foundation
 
 /// Provides the concrete implementation for the CloudWatchLoggingFilterBehavior.
-final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior {
+final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked Sendable {
     private let lock = NSLock()
     private var _loggingConstraints: LoggingConstraints
 

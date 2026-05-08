@@ -46,23 +46,22 @@ public typealias AmplifyCloudWatchLoggingClientConfigurationProvider = (
 /// ```
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 @_spi(AmplifyExperimental)
-public class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior {
+public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior, @unchecked Sendable {
 
     private var enabled: Bool = true
 
     private let lock = NSLock()
     private let logGroupName: String
     private let region: String
-    private let credentialIdentityResolver: any AWSCredentialIdentityResolver
     private var loggersByKey: [LoggerKey: CloudWatchLoggingSessionController] = [:]
     private let localStoreMaxSizeInMB: Int
     private var automaticFlushLogMonitor: CloudWatchLoggingMonitor?
     private let logFilter: CloudWatchLoggingFilter
     private var userIdentifier: String?
     private let networkMonitor: LoggingNetworkMonitor
-    private let configureClient: AmplifyCloudWatchLoggingClientConfigurationProvider?
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: AmplifyCloudWatchLoggingClient.self)
     private let eventSubject = PassthroughSubject<LoggingEvent, Never>()
+    private let cloudWatchClient: CloudWatchLogsClientProtocol
 
     private let sinkId = "AmplifyCloudWatchLoggingSink-\(UUID().uuidString)"
 
@@ -112,18 +111,32 @@ public class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior {
         region: String,
         credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider,
         options: Options
-    ) {
+    ) throws {
         self.region = region
         self.logGroupName = options.logGroupName
         self.localStoreMaxSizeInMB = options.localStoreMaxSizeInMB
-        self.credentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
+        let credentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
         self.networkMonitor = NWPathMonitor()
         self.networkMonitor.startMonitoring(
             using: DispatchQueue(label: "com.amazonaws.amplify.cloudwatchlogging.networkmonitor")
         )
-        self.configureClient = options.configureClient
 
         self.logFilter = CloudWatchLoggingFilter(loggingConstraints: options.loggingConstraints)
+
+        var configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfig(
+            awsCredentialIdentityResolver: credentialIdentityResolver,
+            region: region,
+            signingRegion: region
+        )
+
+        options.configureClient?(&configuration)
+
+        configuration.httpClientEngine = UserAgentClientEngine(
+            target: configuration.httpClientEngine,
+            additionalMetadata: ["md/amplify-cloudwatch-logging"]
+        )
+
+        self.cloudWatchClient = CloudWatchLogsClient(config: configuration)
 
         if case .interval(let interval) = options.flushStrategy {
             self.automaticFlushLogMonitor = CloudWatchLoggingMonitor(
@@ -166,11 +179,10 @@ public class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior {
 
     /// Returns the underlying AWS CloudWatch Logs SDK client.
     public func getCloudWatchLogsClient() throws -> AWSCloudWatchLogs.CloudWatchLogsClient {
-        guard let controller = loggersByKey.first(where: { $0.value.client != nil })?.value,
-              let client = controller.client as? AWSCloudWatchLogs.CloudWatchLogsClient else {
+        guard let client = cloudWatchClient as? AWSCloudWatchLogs.CloudWatchLogsClient else {
             throw CloudWatchLoggingError.configuration(
-                "No CloudWatch Logs client found",
-                "Ensure a logger has been created and the client is configured."
+                "CloudWatch Logs client is not the expected type",
+                "This is an internal error. Please file a bug report."
             )
         }
         return client
@@ -188,7 +200,7 @@ public class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior {
                 return existing
             }
             let controller = CloudWatchLoggingSessionController(
-                credentialIdentityResolver: credentialIdentityResolver,
+                client: self.cloudWatchClient,
                 logFilter: self.logFilter,
                 namespace: namespace,
                 logLevel: logLevel,
@@ -197,8 +209,7 @@ public class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBehavior {
                 localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
                 userIdentifier: self.userIdentifier,
                 networkMonitor: self.networkMonitor,
-                eventSubject: self.eventSubject,
-                configureClient: self.configureClient
+                eventSubject: self.eventSubject
             )
             if enabled {
                 controller.enable()
@@ -253,8 +264,8 @@ private extension NSLock {
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 extension AmplifyCloudWatchLoggingClient: CloudWatchLoggingMonitorDelegate {
     package func handleAutomaticFlushIntervalEvent() {
-        Task {
-            try await flushLogs()
+        Task { [weak self] in
+            try await self?.flushLogs()
         }
     }
 }
