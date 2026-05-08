@@ -291,7 +291,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     }
 }
 
-extension CloudWatchLogConsumerTests: LogBatch {
+extension CloudWatchLogConsumerTests: LogBatch, @unchecked Sendable {
 
     func readEntries() throws -> [any LogEntryRepresentable] {
         interactions.append(#function)

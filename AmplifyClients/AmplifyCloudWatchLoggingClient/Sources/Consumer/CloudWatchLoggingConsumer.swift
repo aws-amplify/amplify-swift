@@ -10,7 +10,7 @@ import AWSCloudWatchLogs
 import Foundation
 import InternalCloudWatchLogging
 
-class CloudWatchLoggingConsumer {
+class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
     private let formatter: CloudWatchLoggingStreamNameFormatter
