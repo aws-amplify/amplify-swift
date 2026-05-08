@@ -600,6 +600,24 @@ let loggingTargets: [Target] = [
     )
 ]
 
+let cloudWatchLoggingClientTargets: [Target] = [
+    .target(
+        name: "AmplifyCloudWatchLoggingClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+]
+
 let foundationTargets: [Target] = [
     .target(
         name: "AmplifyFoundation",
@@ -648,6 +666,7 @@ targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
+targets.append(contentsOf: cloudWatchLoggingClientTargets)
 targets.append(contentsOf: foundationTargets)
 targets.append(contentsOf: foundationBridgeTargets)
 
@@ -718,6 +737,10 @@ let package = Package(
         .library(
             name: "AmplifyEventEnrichmentClient",
             targets: ["AmplifyEventEnrichmentClient"]
+        ),
+        .library(
+            name: "AmplifyCloudWatchLoggingClient",
+            targets: ["AmplifyCloudWatchLoggingClient"]
         ),
         .library(
             name: "AmplifyFoundation",
