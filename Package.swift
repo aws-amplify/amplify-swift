@@ -450,6 +450,17 @@ let firehoseTargets: [Target] = [
     )
 ]
 
+let appSyncClientTargets: [Target] = [
+    .target(
+        name: "AmplifyAppSyncClient",
+        dependencies: [
+            .target(name: "Amplify"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/AmplifyAppSyncClient/Sources"
+    ),
+]
+
 let pushNotificationsTargets: [Target] = [
     .target(
         name: "AWSPinpointPushNotificationsPlugin",
@@ -592,6 +603,7 @@ targets.append(contentsOf: analyticsTargets)
 targets.append(contentsOf: recordCacheTargets)
 targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: firehoseTargets)
+targets.append(contentsOf: appSyncClientTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
@@ -658,6 +670,10 @@ let package = Package(
         .library(
             name: "AmplifyFirehoseClient",
             targets: ["AmplifyFirehoseClient"]
+        ),
+        .library(
+            name: "AmplifyAppSyncClient",
+            targets: ["AmplifyAppSyncClient"]
         ),
         .library(
             name: "AmplifyFoundation",
