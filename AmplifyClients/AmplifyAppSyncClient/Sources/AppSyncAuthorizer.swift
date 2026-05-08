@@ -48,9 +48,9 @@ public enum AppSyncAuthorizer: @unchecked Sendable {
 }
 
 // Convenience factory for static API key
-extension AppSyncAuthorizer {
+public extension AppSyncAuthorizer {
     /// Creates an API Key authorizer with a static key value.
-    public static func apiKey(_ apiKey: String) -> AppSyncAuthorizer {
+    static func apiKey(_ apiKey: String) -> AppSyncAuthorizer {
         .apiKey { apiKey }
     }
 }

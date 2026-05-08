@@ -156,9 +156,9 @@ public final class AmplifyAppSyncClient: Sendable {
 
 // MARK: - Configuration Errors
 
-extension AmplifyAppSyncClient {
+public extension AmplifyAppSyncClient {
     /// Errors thrown during configuration validation.
-    public enum ConfigurationError: Error, Sendable {
+    enum ConfigurationError: Error, Sendable {
         /// The endpoint string is not a valid URL.
         case invalidEndpoint(String)
         /// Region could not be inferred and was not provided.
