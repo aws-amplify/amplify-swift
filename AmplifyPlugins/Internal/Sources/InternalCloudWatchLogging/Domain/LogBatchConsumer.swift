@@ -7,10 +7,7 @@
 
 import Foundation
 
-/// Represents a general consumer for contents of a
-/// [LogFile](x-source-tag://LogFile)
-///
-protocol LogBatchConsumer {
+package protocol LogBatchConsumer {
 
     /// Processes the given [LogBatch](x-source-tag://LogBatch) and ensures to call
     /// [LogBatch.complete](x-source-tag://LogBatch.complete) on the given `batch` when
