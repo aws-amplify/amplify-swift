@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// Provides a monitor to automatically flush the log at a specific TimeInterval
-class AWSCLoudWatchLoggingMonitor {
+/// Provides a monitor to automatically flush the log at a specific TimeInterval.
+package class CloudWatchLoggingMonitor {
     private let automaticFlushLogsInterval: TimeInterval
     private var automaticFlushLogsTimer: DispatchSourceTimer? {
         willSet {
@@ -16,15 +16,14 @@ class AWSCLoudWatchLoggingMonitor {
         }
     }
 
-    private weak var eventDelegate: AWSCloudWatchLoggingMonitorDelegate?
+    private weak var eventDelegate: CloudWatchLoggingMonitorDelegate?
 
-    init(flushIntervalInSeconds: TimeInterval, eventDelegate: AWSCloudWatchLoggingMonitorDelegate?) {
+    package init(flushIntervalInSeconds: TimeInterval, eventDelegate: CloudWatchLoggingMonitorDelegate?) {
         self.automaticFlushLogsInterval = flushIntervalInSeconds
         self.eventDelegate = eventDelegate
     }
 
-    /// enable the automatic flushing of logs at a specific time interval by calling the monitor delegate
-    func setAutomaticFlushIntervals() {
+    package func setAutomaticFlushIntervals() {
         guard automaticFlushLogsInterval != .zero else {
             automaticFlushLogsTimer = nil
             return
@@ -35,7 +34,7 @@ class AWSCLoudWatchLoggingMonitor {
             eventHandler: { [weak self] in
                 guard let self else { return }
                 eventDelegate?.handleAutomaticFlushIntervalEvent()
-        }
+            }
         )
         automaticFlushLogsTimer?.resume()
     }
@@ -48,6 +47,6 @@ class AWSCLoudWatchLoggingMonitor {
     }
 }
 
-public protocol AWSCloudWatchLoggingMonitorDelegate: AnyObject {
+package protocol CloudWatchLoggingMonitorDelegate: AnyObject {
     func handleAutomaticFlushIntervalEvent()
 }

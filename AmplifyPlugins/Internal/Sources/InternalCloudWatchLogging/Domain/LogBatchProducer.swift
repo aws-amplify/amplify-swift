@@ -7,6 +7,7 @@
 
 import Combine
 
-protocol LogBatchProducer {
+/// Protocol for a producer of log batches via Combine.
+package protocol LogBatchProducer {
     var logBatchPublisher: AnyPublisher<LogBatch, Never> { get }
 }

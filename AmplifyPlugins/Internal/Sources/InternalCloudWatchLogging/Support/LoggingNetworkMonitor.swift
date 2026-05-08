@@ -8,23 +8,23 @@
 import Foundation
 import Network
 
-/// Provides a network monitor for logging
-protocol LoggingNetworkMonitor: AnyObject {
+/// Provides a network monitor for logging.
+package protocol LoggingNetworkMonitor: AnyObject {
     var isOnline: Bool { get }
     func startMonitoring(using queue: DispatchQueue)
     func stopMonitoring()
 }
 
 extension NWPathMonitor: LoggingNetworkMonitor {
-    var isOnline: Bool {
+    package var isOnline: Bool {
         currentPath.status == .satisfied
     }
 
-    func startMonitoring(using queue: DispatchQueue) {
+    package func startMonitoring(using queue: DispatchQueue) {
         start(queue: queue)
     }
 
-    func stopMonitoring() {
+    package func stopMonitoring() {
         cancel()
     }
 }

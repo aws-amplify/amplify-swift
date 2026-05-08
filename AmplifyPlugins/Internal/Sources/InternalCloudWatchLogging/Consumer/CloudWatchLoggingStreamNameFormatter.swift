@@ -20,10 +20,10 @@ import AppKit
 #endif
 
 /// Responsible for creating pre-formatted CloudWatch stream names.
-struct CloudWatchLoggingStreamNameFormatter {
+package struct CloudWatchLoggingStreamNameFormatter {
 
-    let userIdentifier: String?
-    var deviceIdentifier: String? {
+    package let userIdentifier: String?
+    package var deviceIdentifier: String? {
         get async {
             #if canImport(WatchKit)
             await WKInterfaceDevice.current().identifierForVendor?.uuidString
@@ -37,11 +37,11 @@ struct CloudWatchLoggingStreamNameFormatter {
         }
     }
 
-    init(userIdentifier: String? = nil) {
+    package init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
     }
 
-    func formattedStreamName() async -> String {
+    package func formattedStreamName() async -> String {
         return await "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
 
