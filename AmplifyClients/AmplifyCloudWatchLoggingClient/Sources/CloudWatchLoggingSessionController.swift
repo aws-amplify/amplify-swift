@@ -23,6 +23,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
+    private let storagePathIdentifier: String
     private var session: CloudWatchLoggingSession?
     private var consumer: CloudWatchLoggingConsumer?
     private let logFilter: CloudWatchLoggingFilterBehavior
@@ -50,6 +51,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
 
     init(
         client: CloudWatchLogsClientProtocol,
+        storagePathIdentifier: String,
         logFilter: CloudWatchLoggingFilterBehavior,
         namespace: String,
         logLevel: LogLevel,
@@ -61,6 +63,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         eventSubject: PassthroughSubject<LoggingEvent, Never>
     ) {
         self.client = client
+        self.storagePathIdentifier = storagePathIdentifier
         self.logFilter = logFilter
         self.namespace = namespace
         self.logLevel = logLevel
@@ -115,6 +118,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         return CloudWatchLoggingConsumer(
             client: client,
             logGroupName: logGroupName,
+            storagePathIdentifier: storagePathIdentifier,
             userIdentifier: userIdentifier
         )
     }
@@ -132,6 +136,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
                 namespace: namespace,
                 logLevel: logLevel,
                 userIdentifier: userIdentifier,
+                storagePathIdentifier: storagePathIdentifier,
                 localStoreMaxSizeInMB: localStoreMaxSizeInMB,
                 eventSubject: eventSubject
             )

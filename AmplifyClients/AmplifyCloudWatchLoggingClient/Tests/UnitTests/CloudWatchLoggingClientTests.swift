@@ -54,7 +54,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
     ///
     func testInitializationSetsDefaults() {
         XCTAssertTrue(systemUnderTest.isEnabled(for: .error))
-        XCTAssertTrue(systemUnderTest.id.hasPrefix("AmplifyCloudWatchLoggingSink-"))
+        XCTAssertTrue(systemUnderTest.id.hasPrefix("AmplifyCloudWatchLoggingClient-"))
     }
 
     /// Given: valid configuration options

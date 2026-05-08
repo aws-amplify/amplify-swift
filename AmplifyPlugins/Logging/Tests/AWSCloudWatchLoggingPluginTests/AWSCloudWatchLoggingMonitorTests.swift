@@ -10,15 +10,14 @@ import Foundation
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
-@testable import InternalCloudWatchLogging
 
 final class AWSCloudWatchLoggingMonitorTests: XCTestCase {
 
-    var monitor: CloudWatchLoggingMonitor!
+    var monitor: AWSCLoudWatchLoggingMonitor!
     var invokedExpectation: XCTestExpectation!
 
     override func setUp() async throws {
-        monitor = CloudWatchLoggingMonitor(flushIntervalInSeconds: 2, eventDelegate: self)
+        monitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: 2, eventDelegate: self)
         invokedExpectation = expectation(description: "Delegate is invoked")
     }
 
@@ -37,8 +36,8 @@ final class AWSCloudWatchLoggingMonitorTests: XCTestCase {
     }
 }
 
-extension AWSCloudWatchLoggingMonitorTests: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+extension AWSCloudWatchLoggingMonitorTests: AWSCloudWatchLoggingMonitorDelegate {
+    public func handleAutomaticFlushIntervalEvent() {
         invokedExpectation.fulfill()
     }
 }

@@ -20,10 +20,11 @@ import AppKit
 #endif
 
 /// Responsible for creating pre-formatted CloudWatch stream names.
-package struct CloudWatchLoggingStreamNameFormatter {
+struct CloudWatchLoggingStreamNameFormatter {
 
-    package let userIdentifier: String?
-    package var deviceIdentifier: String? {
+    let userIdentifier: String?
+    let storagePathIdentifier: String
+    var deviceIdentifier: String? {
         get async {
             #if canImport(WatchKit)
             await WKInterfaceDevice.current().identifierForVendor?.uuidString
@@ -37,18 +38,16 @@ package struct CloudWatchLoggingStreamNameFormatter {
         }
     }
 
-    package init(userIdentifier: String? = nil) {
+    init(userIdentifier: String? = nil, storagePathIdentifier: String) {
         self.userIdentifier = userIdentifier
+        self.storagePathIdentifier = storagePathIdentifier
     }
 
-    package func formattedStreamName() async -> String {
-        return await "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
+    func formattedStreamName() async -> String {
+        return await "\(deviceIdentifier ?? "").\(storagePathIdentifier).\(userIdentifier ?? "guest")"
     }
 
-    // Add the missing deviceIdentifierFromBundle static method
     private static func deviceIdentifierFromBundle() -> String? {
-        // Use bundle identifier as a fallback device identifier
-        // This provides a consistent identifier per app installation
         return Bundle.main.bundleIdentifier
     }
 }

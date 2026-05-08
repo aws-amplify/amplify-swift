@@ -32,7 +32,7 @@ final class AWSCloudWatchLoggingCategoryClient {
     private let authentication: AuthCategoryUserBehavior
     private var loggersByKey: [LoggerKey: AWSCloudWatchLoggingSessionController] = [:]
     private let localStoreMaxSizeInMB: Int
-    private var automaticFlushLogMonitor: CloudWatchLoggingMonitor?
+    private var automaticFlushLogMonitor: AWSCLoudWatchLoggingMonitor?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
     private var userIdentifier: String?
     private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
@@ -58,7 +58,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         self.logFilter = AWSCloudWatchLoggingFilter(loggingConstraintsResolver: loggingConstraintsResolver)
         self.networkMonitor = networkMonitor
         self.networkMonitor.startMonitoring(using: DispatchQueue(label: "com.amazonaws.awscloudwatchlogging.networkmonitor"))
-        self.automaticFlushLogMonitor = CloudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
+        self.automaticFlushLogMonitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
         automaticFlushLogMonitor?.setAutomaticFlushIntervals()
         self.authSubscription = Amplify.Hub.publisher(for: .auth).sink { [weak self] payload in
             self?.handle(payload: payload)
@@ -207,8 +207,8 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 }
 
-extension AWSCloudWatchLoggingCategoryClient: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+extension AWSCloudWatchLoggingCategoryClient: AWSCloudWatchLoggingMonitorDelegate {
+    public func handleAutomaticFlushIntervalEvent() {
         Task {
             try await flushLogs()
         }

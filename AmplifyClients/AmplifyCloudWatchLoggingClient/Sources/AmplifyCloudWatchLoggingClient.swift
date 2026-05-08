@@ -63,7 +63,7 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
     private let eventSubject = PassthroughSubject<LoggingEvent, Never>()
     private let cloudWatchClient: CloudWatchLogsClientProtocol
 
-    private let sinkId = "AmplifyCloudWatchLoggingSink-\(UUID().uuidString)"
+    private let sinkId = "AmplifyCloudWatchLoggingClient-\(UUID().uuidString)"
 
     /// A Combine publisher for logging events (flush failures, write failures, etc.).
     /// Subscribe via `events.sink { event in ... }`.
@@ -201,6 +201,7 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
             }
             let controller = CloudWatchLoggingSessionController(
                 client: self.cloudWatchClient,
+                storagePathIdentifier: self.sinkId,
                 logFilter: self.logFilter,
                 namespace: namespace,
                 logLevel: logLevel,
@@ -263,7 +264,7 @@ private extension NSLock {
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 extension AmplifyCloudWatchLoggingClient: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         Task { [weak self] in
             try await self?.flushLogs()
         }

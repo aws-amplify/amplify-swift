@@ -18,13 +18,14 @@ final class CloudWatchLoggingSession {
     let userIdentifier: String?
     let logger: RotatingLogger
 
-    init(namespace: String, logLevel: LogLevel, userIdentifier: String? = nil, localStoreMaxSizeInMB: Int, eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil) throws {
+    init(namespace: String, logLevel: LogLevel, userIdentifier: String? = nil, storagePathIdentifier: String, localStoreMaxSizeInMB: Int, eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil) throws {
         self.namespace = namespace
         self.userIdentifier = userIdentifier
         self.logger = try Self.createLogger(
             namespace: namespace,
             logLevel: logLevel,
             userIdentifier: userIdentifier,
+            storagePathIdentifier: storagePathIdentifier,
             localStoreMaxSizeInMB: localStoreMaxSizeInMB,
             eventSubject: eventSubject
         )
@@ -34,11 +35,12 @@ final class CloudWatchLoggingSession {
         namespace: String,
         logLevel: LogLevel,
         userIdentifier: String?,
+        storagePathIdentifier: String,
         localStoreMaxSizeInMB: Int,
         fileManager: FileManager = .default,
         eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil
     ) throws -> RotatingLogger {
-        let directory = try directory(for: namespace, userIdentifier: userIdentifier)
+        let directory = try directory(for: namespace, userIdentifier: userIdentifier, storagePathIdentifier: storagePathIdentifier)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         try (directory as NSURL).setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
 
@@ -57,12 +59,13 @@ final class CloudWatchLoggingSession {
         )
     }
 
-    private static func directory(for namespace: String, userIdentifier: String?, fileManager: FileManager = .default) throws -> URL {
+    private static func directory(for namespace: String, userIdentifier: String?, storagePathIdentifier: String, fileManager: FileManager = .default) throws -> URL {
         let normalizedUserIdentifier = normalized(userIdentifier: userIdentifier)
         let normalizedTag = namespace.trimmingCharacters(in: .alphanumerics.inverted).lowercased()
         let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
         let directory = documents.appendingPathComponent("amplify-cloudwatch-client")
                                  .appendingPathComponent("logging")
+                                 .appendingPathComponent(storagePathIdentifier)
                                  .appendingPathComponent(normalizedUserIdentifier)
                                  .appendingPathComponent(normalizedTag)
         return URL(fileURLWithPath: directory)
