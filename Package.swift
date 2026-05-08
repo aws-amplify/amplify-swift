@@ -596,6 +596,7 @@ let loggingTargets: [Target] = [
         name: "AWSCloudWatchLoggingPluginTests",
         dependencies: [
             "AWSCloudWatchLoggingPlugin",
+            "InternalCloudWatchLogging",
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
