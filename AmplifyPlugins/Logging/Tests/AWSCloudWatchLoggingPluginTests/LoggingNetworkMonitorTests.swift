@@ -12,6 +12,7 @@ import XCTest
 
 @testable import AmplifyTestCommon
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 final class LoggingNetworkMonitorTests: XCTestCase {
     func testNetworkMonitorEvent() {

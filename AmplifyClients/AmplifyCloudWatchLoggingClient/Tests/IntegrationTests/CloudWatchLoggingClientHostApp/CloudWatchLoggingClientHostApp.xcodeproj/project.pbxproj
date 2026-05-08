@@ -1,0 +1,577 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		976D71F22FABE8DF00E69B02 /* AmplifyCloudWatchLoggingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 976D71F12FABE8DF00E69B02 /* AmplifyCloudWatchLoggingClient */; };
+		976D71F42FABE8DF00E69B02 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 976D71F32FABE8DF00E69B02 /* AmplifyFoundation */; };
+		976D71F62FABE8DF00E69B02 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 976D71F52FABE8DF00E69B02 /* AmplifyFoundationBridge */; };
+		976D721C2FABFD1300E69B02 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 976D721B2FABFD1300E69B02 /* AWSCognitoAuthPlugin */; };
+		976D721E2FABFD2B00E69B02 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 976D721D2FABFD2B00E69B02 /* Amplify */; };
+		976D72202FABFE0700E69B02 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 976D721F2FABFE0700E69B02 /* AWSPluginsCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		976D71E72FABE87100E69B02 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 976D71A62FABE7BF00E69B02 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 976D71AD2FABE7BF00E69B02;
+			remoteInfo = CloudWatchLoggingClientHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		976D71AE2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CloudWatchLoggingClientHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		976D71E32FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CloudWatchLoggingClientIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		976D71B02FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CloudWatchLoggingClientHostApp;
+			sourceTree = "<group>";
+		};
+		976D71E42FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CloudWatchLoggingClientIntegrationTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		976D71AB2FABE7BF00E69B02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				976D71F42FABE8DF00E69B02 /* AmplifyFoundation in Frameworks */,
+				976D721E2FABFD2B00E69B02 /* Amplify in Frameworks */,
+				976D72202FABFE0700E69B02 /* AWSPluginsCore in Frameworks */,
+				976D71F62FABE8DF00E69B02 /* AmplifyFoundationBridge in Frameworks */,
+				976D71F22FABE8DF00E69B02 /* AmplifyCloudWatchLoggingClient in Frameworks */,
+				976D721C2FABFD1300E69B02 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		976D71E02FABE87100E69B02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		976D71A52FABE7BF00E69B02 = {
+			isa = PBXGroup;
+			children = (
+				976D71B02FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */,
+				976D71E42FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests */,
+				976D721A2FABFD1300E69B02 /* Frameworks */,
+				976D71AF2FABE7BF00E69B02 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		976D71AF2FABE7BF00E69B02 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				976D71AE2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp.app */,
+				976D71E32FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		976D721A2FABFD1300E69B02 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		976D71AD2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 976D71CF2FABE7C200E69B02 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingClientHostApp" */;
+			buildPhases = (
+				976D71AA2FABE7BF00E69B02 /* Sources */,
+				976D71AB2FABE7BF00E69B02 /* Frameworks */,
+				976D71AC2FABE7BF00E69B02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				976D71B02FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */,
+			);
+			name = CloudWatchLoggingClientHostApp;
+			packageProductDependencies = (
+				976D71F12FABE8DF00E69B02 /* AmplifyCloudWatchLoggingClient */,
+				976D71F32FABE8DF00E69B02 /* AmplifyFoundation */,
+				976D71F52FABE8DF00E69B02 /* AmplifyFoundationBridge */,
+				976D721B2FABFD1300E69B02 /* AWSCognitoAuthPlugin */,
+				976D721D2FABFD2B00E69B02 /* Amplify */,
+				976D721F2FABFE0700E69B02 /* AWSPluginsCore */,
+			);
+			productName = CloudWatchLoggingClientHostApp;
+			productReference = 976D71AE2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		976D71E22FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 976D71E92FABE87100E69B02 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingClientIntegrationTests" */;
+			buildPhases = (
+				976D71DF2FABE87100E69B02 /* Sources */,
+				976D71E02FABE87100E69B02 /* Frameworks */,
+				976D71E12FABE87100E69B02 /* Resources */,
+				976D72612FAC026500E69B02 /* Copy Configuration Folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				976D71E82FABE87100E69B02 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				976D71E42FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests */,
+			);
+			name = CloudWatchLoggingClientIntegrationTests;
+			packageProductDependencies = (
+			);
+			productName = CloudWatchLoggingClientIntegrationTests;
+			productReference = 976D71E32FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		976D71A62FABE7BF00E69B02 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					976D71AD2FABE7BF00E69B02 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					976D71E22FABE87100E69B02 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 976D71AD2FABE7BF00E69B02;
+					};
+				};
+			};
+			buildConfigurationList = 976D71A92FABE7BF00E69B02 /* Build configuration list for PBXProject "CloudWatchLoggingClientHostApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 976D71A52FABE7BF00E69B02;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 976D71AF2FABE7BF00E69B02 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				976D71AD2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */,
+				976D71E22FABE87100E69B02 /* CloudWatchLoggingClientIntegrationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		976D71AC2FABE7BF00E69B02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		976D71E12FABE87100E69B02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		976D72612FAC026500E69B02 /* Copy Configuration Folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		976D71AA2FABE7BF00E69B02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		976D71DF2FABE87100E69B02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		976D71E82FABE87100E69B02 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 976D71AD2FABE7BF00E69B02 /* CloudWatchLoggingClientHostApp */;
+			targetProxy = 976D71E72FABE87100E69B02 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		976D71CD2FABE7C200E69B02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		976D71CE2FABE7C200E69B02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		976D71D02FABE7C200E69B02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cloudwatch.logging.client.CloudWatchLoggingClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		976D71D12FABE7C200E69B02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cloudwatch.logging.client.CloudWatchLoggingClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		976D71EA2FABE87100E69B02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cloudwatch.logging.client.CloudWatchLoggingClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudWatchLoggingClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CloudWatchLoggingClientHostApp";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		976D71EB2FABE87100E69B02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cloudwatch.logging.client.CloudWatchLoggingClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudWatchLoggingClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CloudWatchLoggingClientHostApp";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		976D71A92FABE7BF00E69B02 /* Build configuration list for PBXProject "CloudWatchLoggingClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				976D71CD2FABE7C200E69B02 /* Debug */,
+				976D71CE2FABE7C200E69B02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		976D71CF2FABE7C200E69B02 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				976D71D02FABE7C200E69B02 /* Debug */,
+				976D71D12FABE7C200E69B02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		976D71E92FABE87100E69B02 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingClientIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				976D71EA2FABE87100E69B02 /* Debug */,
+				976D71EB2FABE87100E69B02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../../../amplify-swift";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		976D71F12FABE8DF00E69B02 /* AmplifyCloudWatchLoggingClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyCloudWatchLoggingClient;
+		};
+		976D71F32FABE8DF00E69B02 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundation;
+		};
+		976D71F52FABE8DF00E69B02 /* AmplifyFoundationBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyFoundationBridge;
+		};
+		976D721B2FABFD1300E69B02 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		976D721D2FABFD2B00E69B02 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			productName = Amplify;
+		};
+		976D721F2FABFE0700E69B02 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			productName = AWSPluginsCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 976D71A62FABE7BF00E69B02 /* Project object */;
+}
