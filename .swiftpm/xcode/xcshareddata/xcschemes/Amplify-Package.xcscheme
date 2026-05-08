@@ -524,6 +524,48 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCloudWatchLoggingClient"
+               BuildableName = "AmplifyCloudWatchLoggingClient"
+               BlueprintName = "AmplifyCloudWatchLoggingClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyFirehoseClient"
+               BuildableName = "AmplifyFirehoseClient"
+               BlueprintName = "AmplifyFirehoseClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyKinesisClient"
+               BuildableName = "AmplifyKinesisClient"
+               BlueprintName = "AmplifyKinesisClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -810,6 +852,36 @@
                BlueprintIdentifier = "AmplifyFoundationTests"
                BuildableName = "AmplifyFoundationTests"
                BlueprintName = "AmplifyFoundationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyFirehoseClientTests"
+               BuildableName = "AmplifyFirehoseClientTests"
+               BlueprintName = "AmplifyFirehoseClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyKinesisClientTests"
+               BuildableName = "AmplifyKinesisClientTests"
+               BlueprintName = "AmplifyKinesisClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyRecordCacheTests"
+               BuildableName = "AmplifyRecordCacheTests"
+               BlueprintName = "AmplifyRecordCacheTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
