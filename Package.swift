@@ -574,6 +574,15 @@ let cloudWatchLoggingClientTargets: [Target] = [
             .enableUpcomingFeature("StrictConcurrency")
         ]
     ),
+    .testTarget(
+        name: "AmplifyCloudWatchLoggingClientTests",
+        dependencies: [
+            "AmplifyCloudWatchLoggingClient",
+            "InternalCloudWatchLogging",
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Tests/UnitTests"
+    ),
 ]
 
 let foundationTargets: [Target] = [
