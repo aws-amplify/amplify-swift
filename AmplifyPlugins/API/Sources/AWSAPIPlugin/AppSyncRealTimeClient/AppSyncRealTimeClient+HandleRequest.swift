@@ -23,6 +23,16 @@ extension AppSyncRealTimeClient {
         _ request: AppSyncRealTimeRequest,
         timeout: TimeInterval = 5
     ) async throws {
+        // Perform auth token decoration before starting the response timeout.
+        // Auth token retrieval can take a variable amount of time, especially
+        // under contention with multiple concurrent subscriptions. The timeout
+        // should only measure the server round-trip after the write, not local
+        // preparation work.
+        let decoratedRequest = await self.requestInterceptor.interceptRequest(
+            event: request,
+            url: self.endpoint
+        )
+
         var responseSubscriptions = Set<AnyCancellable>()
         try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Swift.Error>) in
             guard let self else {
@@ -31,7 +41,7 @@ extension AppSyncRealTimeClient {
                 return
             }
 
-            // listen to response
+            // listen to response — timeout starts now, after auth decoration
             subject
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
                 .flatMap { Self.filterResponse(request: request, result: $0) }
@@ -47,18 +57,13 @@ extension AppSyncRealTimeClient {
                 }, receiveValue: { _ in })
                 .store(in: &responseSubscriptions)
 
-            // sending request; error is discarded and will be classified as timeout
+            // send the already-decorated request
             Task {
                 do {
-                    let decoratedRequest = await self.requestInterceptor.interceptRequest(
-                        event: request,
-                        url: self.endpoint
-                    )
                     let requestJSON = try String(data: Self.jsonEncoder.encode(decoratedRequest), encoding: .utf8)
-
                     try await self.webSocketClient.write(message: requestJSON!)
                 } catch {
-                    Self.log.debug("[AppSyncRealTimeClient]Failed to send AppSync request \(request), error: \(error)")
+                    Self.log.debug("[AppSyncRealTimeClient] Failed to send AppSync request \(request), error: \(error)")
                 }
             }
         }
