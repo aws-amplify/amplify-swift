@@ -14,14 +14,13 @@ struct LogEntryCodec {
 
     enum DecodingError: Error {
         case stringNotUtf8(String)
-        case invalidScheme(log: URL)
+        case invalidFileScheme(log: URL)
         case invalidEncoding(log: URL)
     }
 
     func encode(entry: LogEntry) throws -> Data {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .millisecondsSince1970
-        encoder.outputFormatting = .sortedKeys
         var data = try encoder.encode(entry)
         data.append(Self.lineDelimiter)
         return data
@@ -41,7 +40,7 @@ struct LogEntryCodec {
 
     func decode(from fileURL: URL) throws -> [LogEntry] {
         guard fileURL.isFileURL else {
-            throw DecodingError.invalidScheme(log: fileURL)
+            throw DecodingError.invalidFileScheme(log: fileURL)
         }
         let data = try Data(contentsOf: fileURL)
         guard let contentAsString = String(data: data, encoding: .utf8) else {

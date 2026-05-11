@@ -8,7 +8,7 @@
 import Foundation
 
 /// Provides a monitor to automatically flush the log at a specific TimeInterval.
-package class CloudWatchLoggingMonitor {
+class CloudWatchLoggingMonitor {
     private let automaticFlushLogsInterval: TimeInterval
     private var automaticFlushLogsTimer: DispatchSourceTimer? {
         willSet {
@@ -18,12 +18,12 @@ package class CloudWatchLoggingMonitor {
 
     private weak var eventDelegate: CloudWatchLoggingMonitorDelegate?
 
-    package init(flushIntervalInSeconds: TimeInterval, eventDelegate: CloudWatchLoggingMonitorDelegate?) {
+    init(flushIntervalInSeconds: TimeInterval, eventDelegate: CloudWatchLoggingMonitorDelegate?) {
         self.automaticFlushLogsInterval = flushIntervalInSeconds
         self.eventDelegate = eventDelegate
     }
 
-    package func setAutomaticFlushIntervals() {
+    func setAutomaticFlushIntervals() {
         guard automaticFlushLogsInterval != .zero else {
             automaticFlushLogsTimer = nil
             return
@@ -47,6 +47,6 @@ package class CloudWatchLoggingMonitor {
     }
 }
 
-package protocol CloudWatchLoggingMonitorDelegate: AnyObject {
+protocol CloudWatchLoggingMonitorDelegate: AnyObject {
     func handleAutomaticFlushIntervalEvent()
 }

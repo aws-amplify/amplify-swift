@@ -263,7 +263,7 @@ private extension NSLock {
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 extension AmplifyCloudWatchLoggingClient: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         Task { [weak self] in
             try await self?.flushLogs()
         }

@@ -18,7 +18,6 @@ class CloudWatchLoggingConsumer: @unchecked Sendable {
     private var logStreamName: String?
     private var ensureLogStreamExistsComplete: Bool = false
     private let logger = AmplifyFoundation.AmplifyLogging.logger(for: CloudWatchLoggingConsumer.self)
-    private let encoderLock = NSLock()
     private let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .millisecondsSince1970
@@ -33,12 +32,6 @@ class CloudWatchLoggingConsumer: @unchecked Sendable {
         self.client = client
         self.formatter = CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier)
         self.logGroupName = logGroupName
-    }
-
-    private func safeEncode(_ value: some Encodable) throws -> Data {
-        encoderLock.lock()
-        defer { encoderLock.unlock() }
-        return try encoder.encode(value)
     }
 }
 
@@ -57,49 +50,57 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
 
-        let entriesCopy = entries
+        try await sendEntries(entries)
+        try batch.complete()
+    }
 
+    private func sendEntries(_ entries: [LogEntry]) async throws {
         var batchByteSize: Int
         do {
-            batchByteSize = try safeEncode(entriesCopy).count
+            batchByteSize = try encoder.encode(entries).count
         } catch {
             logger.error("Failed to encode log entries: \(error)")
-            try batch.complete()
             return
         }
 
-        if entriesCopy.count > CloudWatchConstants.maxLogEvents {
-            let smallerEntries = entriesCopy.chunked(into: CloudWatchConstants.maxLogEvents)
-            for entries in smallerEntries {
-                do {
-                    let entrySize = try safeEncode(entries).count
-                    if entrySize > CloudWatchConstants.maxBatchByteSize {
-                        let chunks = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
-                        for chunk in chunks {
-                            try await sendLogEvents(chunk)
-                        }
-                    } else {
-                        try await sendLogEvents(entries)
-                    }
-                } catch {
-                    logger.error("Error processing log batch: \(error)")
-                    continue
-                }
-            }
+        if entries.count > CloudWatchConstants.maxLogEvents {
+            try await sendEntriesExceedingMaxCount(entries)
         } else if batchByteSize > CloudWatchConstants.maxBatchByteSize {
+            try await sendEntriesExceedingMaxSize(entries)
+        } else {
+            try await sendLogEvents(entries)
+        }
+    }
+
+    private func sendEntriesExceedingMaxCount(_ entries: [LogEntry]) async throws {
+        let smallerEntries = entries.chunked(into: CloudWatchConstants.maxLogEvents)
+        for entries in smallerEntries {
             do {
-                let smallerEntries = try chunk(entriesCopy, into: CloudWatchConstants.maxBatchByteSize)
-                for entries in smallerEntries {
+                let entrySize = try encoder.encode(entries).count
+                if entrySize > CloudWatchConstants.maxBatchByteSize {
+                    let chunks = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
+                    for chunk in chunks {
+                        try await sendLogEvents(chunk)
+                    }
+                } else {
                     try await sendLogEvents(entries)
                 }
             } catch {
-                logger.error("Error chunking log entries: \(error)")
+                logger.error("Error processing log batch: \(error)")
+                continue
             }
-        } else {
-            try await sendLogEvents(entriesCopy)
         }
+    }
 
-        try batch.complete()
+    private func sendEntriesExceedingMaxSize(_ entries: [LogEntry]) async throws {
+        do {
+            let smallerEntries = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
+            for chunk in smallerEntries {
+                try await sendLogEvents(chunk)
+            }
+        } catch {
+            logger.error("Error chunking log entries: \(error)")
+        }
     }
 
     private func ensureLogStreamExists() async {

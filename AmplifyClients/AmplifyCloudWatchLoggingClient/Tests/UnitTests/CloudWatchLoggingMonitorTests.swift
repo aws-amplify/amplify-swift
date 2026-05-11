@@ -8,7 +8,6 @@
 import XCTest
 
 @testable import AmplifyCloudWatchLoggingClient
-@testable import InternalCloudWatchLogging
 
 final class CloudWatchLoggingMonitorTests: XCTestCase {
 
@@ -36,7 +35,7 @@ final class CloudWatchLoggingMonitorTests: XCTestCase {
 }
 
 extension CloudWatchLoggingMonitorTests: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         invokedExpectation.fulfill()
     }
 }
