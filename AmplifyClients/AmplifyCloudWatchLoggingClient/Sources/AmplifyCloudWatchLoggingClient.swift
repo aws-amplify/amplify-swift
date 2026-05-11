@@ -63,7 +63,7 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
     private let eventSubject = PassthroughSubject<LoggingEvent, Never>()
     private let cloudWatchClient: CloudWatchLogsClientProtocol
 
-    private let sinkId = "AmplifyCloudWatchLoggingClient-\(UUID().uuidString)"
+    private let sinkId = "AmplifyCloudWatchLoggingSink-\(UUID().uuidString)"
 
     /// A Combine publisher for logging events (flush failures, write failures, etc.).
     /// Subscribe via `events.sink { event in ... }`.
@@ -201,7 +201,6 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
             }
             let controller = CloudWatchLoggingSessionController(
                 client: self.cloudWatchClient,
-                storagePathIdentifier: self.sinkId,
                 logFilter: self.logFilter,
                 namespace: namespace,
                 logLevel: logLevel,

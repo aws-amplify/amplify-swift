@@ -27,11 +27,10 @@ class CloudWatchLoggingConsumer: @unchecked Sendable {
     init(
         client: CloudWatchLogsClientProtocol,
         logGroupName: String,
-        storagePathIdentifier: String,
         userIdentifier: String?
     ) {
         self.client = client
-        self.formatter = CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier, storagePathIdentifier: storagePathIdentifier)
+        self.formatter = CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier)
         self.logGroupName = logGroupName
     }
 }

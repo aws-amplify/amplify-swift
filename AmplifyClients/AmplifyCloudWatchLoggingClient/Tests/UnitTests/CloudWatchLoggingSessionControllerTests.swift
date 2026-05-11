@@ -53,7 +53,6 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
 
         systemUnderTest = CloudWatchLoggingSessionController(
             client: mockCloudWatchLogClient,
-            storagePathIdentifier: "test-storage-path-id",
             logFilter: MockLoggingFilter(),
             namespace: namespace,
             logLevel: .error,

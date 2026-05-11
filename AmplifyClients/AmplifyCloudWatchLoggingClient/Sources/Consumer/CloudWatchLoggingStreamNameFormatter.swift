@@ -23,7 +23,6 @@ import AppKit
 struct CloudWatchLoggingStreamNameFormatter {
 
     let userIdentifier: String?
-    let storagePathIdentifier: String
     var deviceIdentifier: String? {
         get async {
             #if canImport(WatchKit)
@@ -38,13 +37,12 @@ struct CloudWatchLoggingStreamNameFormatter {
         }
     }
 
-    init(userIdentifier: String? = nil, storagePathIdentifier: String) {
+    init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
-        self.storagePathIdentifier = storagePathIdentifier
     }
 
     func formattedStreamName() async -> String {
-        return await "\(deviceIdentifier ?? "").\(storagePathIdentifier).\(userIdentifier ?? "guest")"
+        return await "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
 
     private static func deviceIdentifierFromBundle() -> String? {

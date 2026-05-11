@@ -25,7 +25,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         interactions = []
         client = MockCloudWatchLogsClient()
         logGroupName = UUID().uuidString
-        systemUnderTest = CloudWatchLoggingConsumer(client: client, logGroupName: logGroupName, storagePathIdentifier: "test-storage-path", userIdentifier: "guest")
+        systemUnderTest = CloudWatchLoggingConsumer(client: client, logGroupName: logGroupName, userIdentifier: "guest")
     }
 
     override func tearDown() async throws {
@@ -288,23 +288,6 @@ final class CloudWatchLogConsumerTests: XCTestCase {
             "readEntries()",
             "complete()"
         ])
-    }
-
-    /// - Given: a consumer with a storagePathIdentifier
-    /// - When: a log batch is consumed
-    /// - Then: the log stream name includes the storagePathIdentifier
-    func testStreamNameIncludesStoragePathIdentifier() async throws {
-        var capturedStreamName: String?
-        client.createLogStreamHandler = { input in
-            capturedStreamName = input.logStreamName
-            return CreateLogStreamOutput()
-        }
-        
-        entries = [LogEntry(namespace: "StreamNameTest", level: .error, message: "test")]
-        try await systemUnderTest.consume(batch: self)
-        
-        let streamName = try XCTUnwrap(capturedStreamName)
-        XCTAssertTrue(streamName.contains(".test-storage-path."), "Stream name should contain storagePathIdentifier in the middle, got: \(streamName)")
     }
 }
 
