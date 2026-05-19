@@ -64,6 +64,7 @@ extension AppSyncRealTimeClient {
                     try await self.webSocketClient.write(message: requestJSON!)
                 } catch {
                     Self.log.debug("[AppSyncRealTimeClient] Failed to send AppSync request \(request), error: \(error)")
+                    subject.send(.failure(error))
                 }
             }
         }
