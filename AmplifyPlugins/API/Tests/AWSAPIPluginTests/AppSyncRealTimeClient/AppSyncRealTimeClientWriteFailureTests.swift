@@ -500,6 +500,249 @@ class AppSyncRealTimeClientWriteFailureTests: XCTestCase {
         await fulfillment(of: [allReceivedError], timeout: 5)
         withExtendedLifetime(cancellables) { }
     }
+
+    /// Regression test for https://github.com/aws-amplify/amplify-swift/issues/4220.
+    /// Verifies that unsubscribing a subscription in `.subscribing` state
+    /// (waiting for connection) properly marks it as unsubscribed, so the
+    /// in-flight Task doesn't proceed to send `.start` after the connection
+    /// establishes.
+    ///
+    /// - Given:
+    ///    - An AppSyncRealTimeClient that is NOT yet connected.
+    ///    - A subscription is created (its deferred Task is waiting for connection).
+    /// - When:
+    ///    - `unsubscribe(id)` is called before the connection establishes.
+    ///    - The connection then establishes.
+    /// - Then:
+    ///    - No `.start` message is sent for the unsubscribed subscription.
+    ///    - The subscription emits `.unsubscribed`.
+    func testUnsubscribe_whileSubscriptionWaitingForConnection_shouldNotSendStart() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
+        let id = UUID().uuidString
+
+        let unsubscribedEvent = expectation(description: "Subscription should emit unsubscribed")
+        let noStartSent = expectation(description: "No start message should be sent for this subscription")
+        noStartSent.isInverted = true
+
+        await mockWebSocketClient.setStateToConnected()
+
+        // Track writes to detect if .start is sent for our subscription
+        await mockWebSocketClient.actionSubject
+            .sink { action in
+                if case .write(let message) = action {
+                    if let response = try? JSONDecoder().decode(JSONValue.self, from: message.data(using: .utf8)!),
+                       response.type?.stringValue == "start",
+                       response.id?.stringValue == id {
+                        noStartSent.fulfill()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
+        // Subscribe — but don't connect yet, so the deferred Task waits
+        let subscription = try await appSyncClient.subscribe(
+            id: id,
+            query: "subscription { onTest { id } }"
+        ).sink { event in
+            if case .unsubscribed = event {
+                unsubscribedEvent.fulfill()
+            }
+        }
+        cancellables.insert(subscription)
+
+        // Unsubscribe immediately — before connection establishes
+        try await Task.sleep(nanoseconds: 30_000_000)
+        try await appSyncClient.unsubscribe(id: id)
+
+        // Now establish the connection — the unsubscribed subscription's Task
+        // should NOT send .start
+        try await Task.sleep(nanoseconds: 50_000_000)
+        await mockWebSocketClient.subject.send(.connected)
+        try await Task.sleep(nanoseconds: 50_000_000)
+        await mockWebSocketClient.subject.send(.string("""
+            {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+        """))
+
+        await fulfillment(of: [unsubscribedEvent], timeout: 3)
+        // Wait to confirm no .start was sent (inverted expectation)
+        await fulfillment(of: [noStartSent], timeout: 2)
+        withExtendedLifetime(cancellables) { }
+    }
+
+    /// Regression test for https://github.com/aws-amplify/amplify-swift/issues/4220.
+    /// Verifies that when a subscription is unsubscribed while in `.subscribing`
+    /// state, a subsequent subscribe with the same ID works correctly.
+    ///
+    /// - Given:
+    ///    - An AppSyncRealTimeClient in connected state.
+    ///    - A subscription that was unsubscribed while still in `.subscribing` state.
+    /// - When:
+    ///    - A new subscription with the same query is created.
+    /// - Then:
+    ///    - The new subscription successfully reaches `.subscribed` state.
+    func testSubscribe_afterUnsubscribeDuringSubscribing_shouldSucceed() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
+        await mockWebSocketClient.setStateToConnected()
+
+        // Wire up mock to respond to protocol messages
+        await mockWebSocketClient.actionSubject
+            .sink { action in
+                if case .write(let message) = action {
+                    guard let response = try? JSONDecoder().decode(
+                        JSONValue.self,
+                        from: message.data(using: .utf8)!
+                    ) else { return }
+
+                    switch response.type?.stringValue {
+                    case "connection_init":
+                        Task {
+                            try await Task.sleep(nanoseconds: 30_000_000)
+                            await mockWebSocketClient.subject.send(.string("""
+                                {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+                            """))
+                        }
+                    case "start":
+                        let startId = response.id?.stringValue ?? ""
+                        // Delayed start_ack
+                        Task {
+                            try await Task.sleep(nanoseconds: 200_000_000)
+                            await mockWebSocketClient.subject.send(.string("""
+                                {"type": "start_ack", "id": "\(startId)"}
+                            """))
+                        }
+                    default:
+                        break
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
+        // Connect first
+        Task {
+            try await Task.sleep(nanoseconds: 50_000_000)
+            await mockWebSocketClient.subject.send(.connected)
+            try await Task.sleep(nanoseconds: 50_000_000)
+            await mockWebSocketClient.subject.send(.string("""
+                {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+            """))
+        }
+        try await appSyncClient.connect()
+
+        // Create first subscription
+        let firstId = UUID().uuidString
+        let firstSub = try await appSyncClient.subscribe(
+            id: firstId,
+            query: "subscription { onTest { id } }"
+        ).sink { _ in }
+        cancellables.insert(firstSub)
+
+        // Unsubscribe before start_ack arrives (subscription is in .subscribing)
+        try await Task.sleep(nanoseconds: 50_000_000)
+        try await appSyncClient.unsubscribe(id: firstId)
+
+        // Now create a new subscription — should work fine
+        let secondId = UUID().uuidString
+        let secondSubscribed = expectation(description: "New subscription should succeed")
+        secondSubscribed.assertForOverFulfill = false
+
+        let secondSub = try await appSyncClient.subscribe(
+            id: secondId,
+            query: "subscription { onTest { id } }"
+        ).sink { event in
+            if case .subscribed = event {
+                secondSubscribed.fulfill()
+            }
+        }
+        cancellables.insert(secondSub)
+
+        await fulfillment(of: [secondSubscribed], timeout: 5)
+        withExtendedLifetime(cancellables) { }
+    }
+
+    /// Regression test for https://github.com/aws-amplify/amplify-swift/issues/4220.
+    /// Verifies that the deferred Task in subscribe() checks if the subscription
+    /// was removed from the dict before sending .start. This prevents orphaned
+    /// Tasks from sending requests for subscriptions that were already cleaned up.
+    ///
+    /// - Given:
+    ///    - An AppSyncRealTimeClient not yet connected.
+    ///    - Multiple subscriptions created (deferred Tasks waiting for connection).
+    /// - When:
+    ///    - All subscriptions are unsubscribed before connection establishes.
+    ///    - Connection then establishes.
+    /// - Then:
+    ///    - No .start messages are sent for any of the unsubscribed subscriptions.
+    func testUnsubscribeAll_beforeConnectionEstablishes_shouldNotSendAnyStarts() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
+        let ids = (0..<3).map { _ in UUID().uuidString }
+
+        let noStartsSent = expectation(description: "No start messages should be sent")
+        noStartsSent.isInverted = true
+
+        await mockWebSocketClient.setStateToConnected()
+
+        await mockWebSocketClient.actionSubject
+            .sink { action in
+                if case .write(let message) = action {
+                    if let response = try? JSONDecoder().decode(JSONValue.self, from: message.data(using: .utf8)!),
+                       response.type?.stringValue == "start" {
+                        noStartsSent.fulfill()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
+        // Create subscriptions — deferred Tasks will wait for connection
+        for id in ids {
+            let sub = try await appSyncClient.subscribe(
+                id: id,
+                query: "subscription { onTest { id } }"
+            ).sink { _ in }
+            cancellables.insert(sub)
+        }
+
+        // Unsubscribe all before connection
+        try await Task.sleep(nanoseconds: 30_000_000)
+        for id in ids {
+            try await appSyncClient.unsubscribe(id: id)
+        }
+
+        // Now establish connection
+        try await Task.sleep(nanoseconds: 50_000_000)
+        await mockWebSocketClient.subject.send(.connected)
+        try await Task.sleep(nanoseconds: 50_000_000)
+        await mockWebSocketClient.subject.send(.string("""
+            {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+        """))
+
+        // Wait to confirm no .start was sent
+        await fulfillment(of: [noStartsSent], timeout: 3)
+        withExtendedLifetime(cancellables) { }
+    }
 }
 
 // MARK: - Test Helpers
