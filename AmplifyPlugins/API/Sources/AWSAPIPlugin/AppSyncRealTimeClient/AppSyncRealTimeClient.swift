@@ -170,6 +170,14 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
                     try await connect()
                     try await waitForState(.connected)
                 }
+                // Check if the subscription was removed (unsubscribed) while
+                // we were waiting for the connection. This prevents sending
+                // .start for a subscription that was already cleaned up.
+                // Fix for https://github.com/aws-amplify/amplify-swift/issues/4220
+                guard await self.subscriptions[id] != nil else {
+                    Self.log.debug("[AppSyncRealTimeClient] Subscription \(id) was removed while waiting for connection, skipping start")
+                    return
+                }
                 try await self.storeInConnectionCancellables(self.startSubscription(id))
             }
             self.storeInConnectionCancellables(task.toAnyCancellable)
