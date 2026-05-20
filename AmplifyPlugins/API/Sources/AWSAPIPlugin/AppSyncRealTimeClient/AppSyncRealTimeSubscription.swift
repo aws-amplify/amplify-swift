@@ -62,6 +62,15 @@ actor AppSyncRealTimeSubscription {
             return
         }
 
+        // If unsubscribe() was called while we were waiting for the connection,
+        // don't proceed with subscribing. This prevents zombie subscriptions
+        // from sending .start after the app has already cleaned them up.
+        // Fix for https://github.com/aws-amplify/amplify-swift/issues/4220
+        guard state.value != .unsubscribed else {
+            log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription was already unsubscribed, skipping subscribe")
+            return
+        }
+
         log.debug("[AppSyncRealTimeSubscription-\(id)] Start subscribing")
         state.send(.subscribing)
 
@@ -94,8 +103,20 @@ actor AppSyncRealTimeSubscription {
     }
 
     func unsubscribe() async throws {
-        guard state.value == .subscribed else {
-            log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription should be subscribed to be unsubscribed")
+        switch state.value {
+        case .subscribed:
+            // Normal path: send stop request to server
+            break
+        case .subscribing, .none:
+            // Subscription is still connecting or hasn't started yet.
+            // Mark as unsubscribed so any in-flight Task that completes
+            // later won't leave this subscription in a zombie state.
+            // Fix for https://github.com/aws-amplify/amplify-swift/issues/4220
+            log.debug("[AppSyncRealTimeSubscription-\(id)] Unsubscribing from \(state.value) state, marking as unsubscribed")
+            state.send(.unsubscribed)
+            return
+        default:
+            log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription in \(state.value) state, cannot unsubscribe")
             return
         }
 
