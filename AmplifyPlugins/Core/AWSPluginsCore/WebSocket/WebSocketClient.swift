@@ -47,12 +47,6 @@ public final actor WebSocketClient: NSObject {
     private var autoConnectOnNetworkStatusChange: Bool
     /// A flag indicating whether to automatically retry on connection failure
     private var autoRetryOnConnectionFailure: Bool
-    /// Tracks whether the WebSocket handshake has completed at least once.
-    /// Used to suppress network-monitor-driven connection manipulation during
-    /// initial connection establishment, where the URLSessionWebSocketTask
-    /// is in .running state but hasn't finished the TCP/TLS/WS handshake.
-    /// Fix for https://github.com/aws-amplify/amplify-swift/issues/4220
-    private var hasSuccessfullyConnected: Bool = false
     /// Data stream for downstream subscribers to engage with
     public var publisher: AnyPublisher<WebSocketEvent, Never> {
         subject.eraseToAnyPublisher()
@@ -134,7 +128,8 @@ public final actor WebSocketClient: NSObject {
             log.debug("[WebSocketClient] client should be in connected state to trigger disconnect")
             return
         }
-
+        
+        log.debug("[WebSocketClient] WebSocket about to disconnect")
         autoConnectOnNetworkStatusChange = false
         autoRetryOnConnectionFailure = false
         connection?.cancel(with: .goingAway, reason: nil)
@@ -179,10 +174,6 @@ public final actor WebSocketClient: NSObject {
         Task { await self.startReadMessage() }
 
         connection?.resume()
-    }
-
-    private func markAsConnected() {
-        hasSuccessfullyConnected = true
     }
 
     /**
@@ -230,7 +221,6 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         didOpenWithProtocol protocol: String?
     ) {
         log.debug("[WebSocketClient] Websocket connected")
-        Task { await self.markAsConnected() }
         subject.send(.connected)
     }
 
@@ -240,7 +230,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
         reason: Data?
     ) {
-        log.debug("[WebSocketClient] Websocket disconnected")
+        log.debug("[WebSocketClient] Websocket disconnected with closeCode: \(closeCode)")
         subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
     }
 
@@ -265,7 +255,8 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
              (NSPOSIXErrorDomain.self, 57):
             subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
-                await self?.networkMonitor.updateState(.offline)
+                await connection?.cancel(with: .invalid, reason: nil)
+                subject.send(.disconnected(.invalid, nil))
             }
         case (NSURLErrorDomain.self, NSURLErrorCancelled):
             log.debug("Skipping NSURLErrorCancelled error")
@@ -298,19 +289,10 @@ extension WebSocketClient {
         switch stateChange {
         case (.online, .offline):
             log.debug("[WebSocketClient] NetworkMonitor - Device went offline or network status became unknown")
-            guard hasSuccessfullyConnected else {
-                log.debug("[WebSocketClient] NetworkMonitor - Device offline but no prior successful connection, skipping disconnect")
-                break
-            }
             connection?.cancel(with: .invalid, reason: nil)
             subject.send(.disconnected(.invalid, nil))
         case (.offline, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
-            guard hasSuccessfullyConnected else {
-                log.debug("[WebSocketClient] NetworkMonitor - Device back online but no prior successful connection, skipping reconnect")
-                break
-            }
-            hasSuccessfullyConnected = false
             await createConnectionAndRead()
         default:
             break
