@@ -47,7 +47,7 @@ extension AppSyncRealTimeClient {
                 }, receiveValue: { _ in })
                 .store(in: &responseSubscriptions)
 
-            // sending request
+            // sending request; error is discarded and will be classified as timeout
             Task {
                 do {
                     let decoratedRequest = await self.requestInterceptor.interceptRequest(
@@ -55,10 +55,10 @@ extension AppSyncRealTimeClient {
                         url: self.endpoint
                     )
                     let requestJSON = try String(data: Self.jsonEncoder.encode(decoratedRequest), encoding: .utf8)
+
                     try await self.webSocketClient.write(message: requestJSON!)
                 } catch {
-                    Self.log.debug("[AppSyncRealTimeClient] Failed to send AppSync request \(request), error: \(error)")
-                    subject.send(.failure(error))
+                    Self.log.debug("[AppSyncRealTimeClient]Failed to send AppSync request \(request), error: \(error)")
                 }
             }
         }
