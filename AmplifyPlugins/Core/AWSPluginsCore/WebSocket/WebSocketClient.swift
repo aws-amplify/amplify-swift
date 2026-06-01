@@ -128,7 +128,7 @@ public final actor WebSocketClient: NSObject {
             log.debug("[WebSocketClient] client should be in connected state to trigger disconnect")
             return
         }
-        
+
         log.debug("[WebSocketClient] WebSocket about to disconnect")
         autoConnectOnNetworkStatusChange = false
         autoRetryOnConnectionFailure = false
