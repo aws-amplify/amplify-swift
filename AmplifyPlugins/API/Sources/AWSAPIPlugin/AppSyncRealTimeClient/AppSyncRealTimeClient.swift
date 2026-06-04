@@ -251,13 +251,8 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     private func resumeExistingSubscriptions() {
         log.debug("[AppSyncRealTimeClient] Resuming existing subscriptions")
-        for (id, subscription) in subscriptions {
+        for (id, _) in subscriptions {
             Task { [weak self] in
-                // Reset local state so subscribe() re-sends .start to the
-                // server. After a reconnect, the server has no memory of
-                // prior subscriptions, so stale local .subscribed state must
-                // not short-circuit the resubscription.
-                await subscription.prepareForResubscribe()
                 do {
                     if let cancellable = try await self?.startSubscription(id) {
                         await self?.storeInConnectionCancellables(cancellable)
