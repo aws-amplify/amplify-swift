@@ -56,18 +56,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw invalidStateError
         }
 
-        switch authNState {
-        case .signingIn(let signInState):
-            try await analyzeCurrentStateAndCreateEvent(signInState, invalidStateError)
-        case .signedIn:
-            // The shared keychain reconcile adopted a sibling app's sign-in
-            // while this flow was waiting for an answer. No event needs to
-            // be dispatched; the listener loop below observes .signedIn and
-            // returns .done.
-            break
-        default:
-            throw invalidStateError
-        }
+        try await analyzeCurrentStateAndCreateEvent(authNState, invalidStateError)
 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for response")
@@ -101,7 +90,19 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         throw invalidStateError
     }
 
-    fileprivate func analyzeCurrentStateAndCreateEvent(_ signInState: SignInState, _ invalidStateError: AuthError) async throws {
+    fileprivate func analyzeCurrentStateAndCreateEvent(_ authNState: AuthenticationState, _ invalidStateError: AuthError) async throws {
+        // The shared keychain reconcile may have adopted a sibling app's
+        // sign-in while this flow was waiting for an answer. No event needs
+        // to be dispatched; the listener loop in execute() observes
+        // .signedIn and returns .done.
+        if case .signedIn = authNState {
+            return
+        }
+
+        guard case .signingIn(let signInState) = authNState else {
+            throw invalidStateError
+        }
+
         switch signInState {
         case .resolvingChallenge(let challengeState, let challengeType, _):
             // Validate if request valid MFA selection

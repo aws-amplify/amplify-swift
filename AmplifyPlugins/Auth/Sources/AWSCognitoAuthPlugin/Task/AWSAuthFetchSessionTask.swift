@@ -70,19 +70,18 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     ///   .clearingFederation: defer (in-flight side effects must run; same end
     ///   state is reached by the local flow)
     func reconcileWithSharedKeychainIfNeeded() async {
-        guard let remoteCredentials = await fetchRemoteCredentials() else {
+        guard let keychainCredentials = await fetchCredentialsFromKeychain() else {
             return
         }
-        let currentState = await authStateMachine.currentState
-        guard case .configured(let authNState, let authZState, _) = currentState else {
+        guard case .configured(let authNState, let authZState, _) = await authStateMachine.currentState else {
             return
         }
-        let localCredentials = localCredentials(from: authZState)
-        if let localCredentials, localCredentials == remoteCredentials {
+        let stateMachineCredentials = fetchCredentialsFromStateMachine(authZState)
+        if let stateMachineCredentials, stateMachineCredentials == keychainCredentials {
             return
         }
 
-        if shouldDeferReconcile(authNState: authNState, remote: remoteCredentials) {
+        if shouldDeferReconcile(authNState: authNState, remote: keychainCredentials) {
             log.verbose("Deferring keychain reconcile while auth flow is in progress")
             return
         }
@@ -93,7 +92,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         await taskHelper.didStateMachineConfigured()
     }
 
-    private func fetchRemoteCredentials() async -> AmplifyCredentials? {
+    private func fetchCredentialsFromKeychain() async -> AmplifyCredentials? {
         do {
             let data = try await credentialsClient?.fetchData(type: .amplifyCredentials)
             if case .amplifyCredentials(let credentials) = data {
@@ -112,7 +111,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     /// observed. Returns nil for transient authZ states where we can't make a
     /// reliable comparison; in those cases callers fall back to deferring (the
     /// transient state will resolve shortly and a later fetch will reconcile).
-    private func localCredentials(from authZState: AuthorizationState) -> AmplifyCredentials? {
+    private func fetchCredentialsFromStateMachine(_ authZState: AuthorizationState) -> AmplifyCredentials? {
         switch authZState {
         case .sessionEstablished(let credentials),
              .storingCredentials(let credentials):
