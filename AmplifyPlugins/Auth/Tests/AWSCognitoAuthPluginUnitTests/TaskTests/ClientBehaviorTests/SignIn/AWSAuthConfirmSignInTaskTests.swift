@@ -824,4 +824,40 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
+
+    /// Test that confirmSignIn returns `.done` when the auth state has already
+    /// transitioned to `.signedIn` (e.g., a shared keychain reconcile adopted a
+    /// sibling app's sign-in while this flow was waiting for an answer).
+    /// Without the relaxed guard the call would throw `.invalidState`.
+    ///
+    /// - Given: state machine is in `.signedIn` / `.sessionEstablished` (the
+    ///          end state after a reconcile-driven adopt)
+    /// - When:  confirmSignIn is invoked
+    /// - Then:  result is `.done`, no error is thrown, no Cognito call is made
+    func testConfirmSignInReturnsDoneWhenStateIsAlreadySignedIn() async {
+        let signedInPlugin = configureCustomPluginWith(
+            initialState: .configured(
+                .signedIn(.testData),
+                .sessionEstablished(.testData),
+                .notStarted
+            )
+        )
+
+        mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                XCTFail("Cognito service should not be called when already signed in")
+                return .testData()
+            })
+
+        do {
+            let result = try await signedInPlugin.confirmSignIn(challengeResponse: "code")
+            guard case .done = result.nextStep else {
+                XCTFail("Result should be .done; got \(result.nextStep)")
+                return
+            }
+            XCTAssertTrue(result.isSignedIn, "Result should report signed-in")
+        } catch {
+            XCTFail("Should not throw when state is already .signedIn; got \(error)")
+        }
+    }
 }

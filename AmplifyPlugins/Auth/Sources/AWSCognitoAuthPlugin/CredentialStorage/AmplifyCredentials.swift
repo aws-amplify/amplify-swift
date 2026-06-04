@@ -57,3 +57,14 @@ extension AmplifyCredentials: CustomDebugStringConvertible {
     }
 
 }
+
+extension AmplifyCredentials {
+    var hasUserPoolTokens: Bool {
+        switch self {
+        case .userPoolOnly, .userPoolAndIdentityPool:
+            return true
+        case .identityPoolOnly, .identityPoolWithFederation, .noCredentials:
+            return false
+        }
+    }
+}

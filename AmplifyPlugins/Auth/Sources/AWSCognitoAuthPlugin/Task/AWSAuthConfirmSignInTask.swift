@@ -52,8 +52,19 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             AuthPluginErrorConstants.invalidStateError, nil
         )
 
-        guard case .configured(let authNState, _, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState else {
+        guard case .configured(let authNState, let authZState, _) = await authStateMachine.currentState else {
+            throw invalidStateError
+        }
+
+        // If the shared keychain reconcile adopted a sibling app's sign-in
+        // while this flow was waiting for an answer, the auth state is now
+        // .signedIn. Surface that as a successful sign-in result so callers
+        // don't get a spurious invalidState error.
+        if case .signedIn = authNState, case .sessionEstablished = authZState {
+            return AuthSignInResult(nextStep: .done)
+        }
+
+        guard case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
 

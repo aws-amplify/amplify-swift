@@ -136,13 +136,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
         let options = options ?? AuthFetchSessionRequest.Options()
         let request = AuthFetchSessionRequest(options: options)
-        let forceReconfigure = secureStoragePreferences?.accessGroup?.name != nil
+        let isKeychainSharingEnabled = secureStoragePreferences?.accessGroup?.name != nil
         let task = AWSAuthFetchSessionTask(
             request,
             authStateMachine: authStateMachine,
             configuration: authConfiguration,
             environment: authEnvironment,
-            forceReconfigure: forceReconfigure
+            isKeychainSharingEnabled: isKeychainSharingEnabled
         )
         return try await taskQueue.sync {
             return try await task.value
