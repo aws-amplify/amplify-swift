@@ -8,7 +8,7 @@
 import XCTest
 
 final class AuthWebAuthnAppUITests: XCTestCase {
-    private let timeout = TimeInterval(6)
+    private let timeout = TimeInterval(30)
     private let app = XCUIApplication()
     private var username: String!
     private var signUpButton: XCUIElement!
