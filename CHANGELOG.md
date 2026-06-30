@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.58.4 (2026-06-30)
+
+### Bug Fixes
+
+- **auth**: disable URL caching in FoundationClientEngine (#4238)
+- occured -> occurred in AmplifyBigInt+Operations fatalError messages (#4221)
+
 ## 2.58.3 (2026-06-15)
 
 ### Bug Fixes
