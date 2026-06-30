@@ -570,7 +570,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				21F762A02BD6B1AA0048845A /* PBXTargetDependency */,
 				21F762A22BD6B1AA0048845A /* PBXTargetDependency */,
 			);
 			name = AuthGen2IntegrationTests;
@@ -614,7 +613,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				681B76982A3CBA8C004B59D9 /* PBXTargetDependency */,
 				485CB5A427B61E04006CCEC7 /* PBXTargetDependency */,
 			);
 			name = AuthIntegrationTests;

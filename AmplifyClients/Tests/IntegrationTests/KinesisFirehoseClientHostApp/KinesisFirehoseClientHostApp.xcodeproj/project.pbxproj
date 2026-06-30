@@ -7,17 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EA3C8E912F5070AC003FF786 /* AmplifyKinesisClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E902F5070AC003FF786 /* AmplifyKinesisClient */; };
-		EA3C8E932F5070AC003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E922F5070AC003FF786 /* AWSPluginsCore */; };
-		EA3C8E952F5070AC003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E942F5070AC003FF786 /* Amplify */; };
-		EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E962F5070AC003FF786 /* AmplifyFoundation */; };
-		EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */; };
-		EA3C8EA22F50809E003FF786 /* AmplifyKinesisClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA12F50809E003FF786 /* AmplifyKinesisClient */; };
-		EA3C8EA42F50809E003FF786 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA32F50809E003FF786 /* AWSPluginsCore */; };
-		EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA52F50809E003FF786 /* Amplify */; };
-		EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA72F50809E003FF786 /* AmplifyFoundation */; };
-		EA3C8EAA2F50809E003FF786 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EA92F50809E003FF786 /* AmplifyFoundationBridge */; };
-		EA3C8EAE2F5080EA003FF786 /* AmplifyFirehoseClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA3C8EAD2F5080EA003FF786 /* AmplifyFirehoseClient */; };
 		EA67FA502F7E893400D4A710 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA4F2F7E893400D4A710 /* AWSCognitoAuthPlugin */; };
 		EA67FA522F7E893400D4A710 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA512F7E893400D4A710 /* AWSPluginsCore */; };
 		EA67FA542F7E893400D4A710 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA532F7E893400D4A710 /* Amplify */; };
@@ -25,7 +14,6 @@
 		EA67FA582F7E893400D4A710 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA572F7E893400D4A710 /* AmplifyFoundation */; };
 		EA67FA5A2F7E893400D4A710 /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA592F7E893400D4A710 /* AmplifyFoundationBridge */; };
 		EA67FA5C2F7E893400D4A710 /* AmplifyKinesisClient in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA5B2F7E893400D4A710 /* AmplifyKinesisClient */; };
-		EA67FA5E2F7E897100D4A710 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = EA67FA5D2F7E897100D4A710 /* AWSCognitoAuthPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,18 +103,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA3C8EA22F50809E003FF786 /* AmplifyKinesisClient in Frameworks */,
-				EA3C8EA62F50809E003FF786 /* Amplify in Frameworks */,
-				EA3C8EA82F50809E003FF786 /* AmplifyFoundation in Frameworks */,
-				EA3C8EAA2F50809E003FF786 /* AmplifyFoundationBridge in Frameworks */,
-				EA3C8EA42F50809E003FF786 /* AWSPluginsCore in Frameworks */,
-				EA3C8E952F5070AC003FF786 /* Amplify in Frameworks */,
-				EA3C8E932F5070AC003FF786 /* AWSPluginsCore in Frameworks */,
-				EA3C8E972F5070AC003FF786 /* AmplifyFoundation in Frameworks */,
-				EA3C8E992F5070AC003FF786 /* AmplifyFoundationBridge in Frameworks */,
-				EA3C8EAE2F5080EA003FF786 /* AmplifyFirehoseClient in Frameworks */,
-				EA3C8E912F5070AC003FF786 /* AmplifyKinesisClient in Frameworks */,
-				EA67FA5E2F7E897100D4A710 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,18 +236,6 @@
 			);
 			name = AmplifyKinesisClientIntegrationTests;
 			packageProductDependencies = (
-				EA3C8E902F5070AC003FF786 /* AmplifyKinesisClient */,
-				EA3C8E922F5070AC003FF786 /* AWSPluginsCore */,
-				EA3C8E942F5070AC003FF786 /* Amplify */,
-				EA3C8E962F5070AC003FF786 /* AmplifyFoundation */,
-				EA3C8E982F5070AC003FF786 /* AmplifyFoundationBridge */,
-				EA3C8EA12F50809E003FF786 /* AmplifyKinesisClient */,
-				EA3C8EA32F50809E003FF786 /* AWSPluginsCore */,
-				EA3C8EA52F50809E003FF786 /* Amplify */,
-				EA3C8EA72F50809E003FF786 /* AmplifyFoundation */,
-				EA3C8EA92F50809E003FF786 /* AmplifyFoundationBridge */,
-				EA3C8EAD2F5080EA003FF786 /* AmplifyFirehoseClient */,
-				EA67FA5D2F7E897100D4A710 /* AWSCognitoAuthPlugin */,
 			);
 			productName = AmplifyKinesisClientIntegrationTests;
 			productReference = EA6AF6972F506E3500D372FB /* AmplifyKinesisClientIntegrationTests.xctest */;

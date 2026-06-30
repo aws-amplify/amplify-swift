@@ -15,7 +15,7 @@ public extension AmplifyBigInt {
         let sum = AmplifyBigInt()
         let result = amplify_mp_add(&lhs.value, &rhs.value, &sum.value)
         if result != AMPLIFY_MP_OKAY {
-            fatalError("Error occured during + operation: \(result)")
+            fatalError("Error occurred during + operation: \(result)")
         }
         return sum
     }
@@ -42,7 +42,7 @@ public extension AmplifyBigInt {
         let difference = AmplifyBigInt()
         let result = amplify_mp_sub(&lhs.value, &rhs.value, &difference.value)
         if result != AMPLIFY_MP_OKAY {
-            fatalError("Error occured during - operation: \(result)")
+            fatalError("Error occurred during - operation: \(result)")
         }
         return difference
     }
@@ -65,7 +65,7 @@ public extension AmplifyBigInt {
         let product = AmplifyBigInt()
         let result = amplify_mp_mul(&lhs.value, &rhs.value, &product.value)
         if result != AMPLIFY_MP_OKAY {
-            fatalError("Error occured during * operation: \(result)")
+            fatalError("Error occurred during * operation: \(result)")
         }
         return product
     }
@@ -103,7 +103,7 @@ public extension AmplifyBigInt {
         let result = amplify_mp_div(&lhs.value, &rhs.value, &quotient.value, &remainder.value)
 
         if result != AMPLIFY_MP_OKAY {
-            fatalError("Error occured during % operation: \(result)")
+            fatalError("Error occurred during % operation: \(result)")
         }
         return remainder
     }
@@ -125,7 +125,7 @@ public extension AmplifyBigInt {
         let exponentialModulus = AmplifyBigInt()
         let result = amplify_mp_exptmod(&value, &power.value, &modulus.value, &exponentialModulus.value)
         guard result == AMPLIFY_MP_OKAY else {
-            fatalError("Error occured during pow(:modulus:) operation: \(result)")
+            fatalError("Error occurred during pow(:modulus:) operation: \(result)")
         }
         return exponentialModulus
     }
