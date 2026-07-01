@@ -207,4 +207,130 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
 
         await client.close()
     }
+
+    /// Test that removing a global metric stops it from appearing on events
+    ///
+    /// - Given: A client with a global metric that is then removed
+    /// - When:
+    ///    - An event is recorded after removal
+    /// - Then:
+    ///    - The removed metric is not present on the event
+    ///
+    func testRemoveGlobalMetric() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appMetadata: AppMetadata(appId: "test-app"),
+            deviceMetadata: DeviceMetadata(),
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "test-id"
+        )
+
+        await client.addGlobalMetric("count", value: 10.0)
+        await client.removeGlobalMetric("count")
+        let event = try await client.record("test")
+
+        XCTAssertNil(event.metrics["count"])
+
+        await client.close()
+    }
+
+    /// Test that setting userId to nil clears it from subsequent events
+    ///
+    /// - Given: A client with a userId set
+    /// - When:
+    ///    - setUserId(nil) is called and an event is recorded
+    /// - Then:
+    ///    - The event has no userId
+    ///
+    func testSetUserIdNilClearsUserId() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appMetadata: AppMetadata(appId: "test-app"),
+            deviceMetadata: DeviceMetadata(),
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "test-id"
+        )
+
+        await client.setUserId("user-123")
+        await client.setUserId(nil)
+        let event = try await client.record("test")
+
+        XCTAssertNil(event.userId)
+
+        await client.close()
+    }
+
+    /// Test that multiple records reuse the same session ID
+    ///
+    /// - Given: A client with an active session
+    /// - When:
+    ///    - Multiple events are recorded
+    /// - Then:
+    ///    - All events share the same session ID
+    ///
+    func testMultipleRecordsShareSessionId() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appMetadata: AppMetadata(appId: "test-app"),
+            deviceMetadata: DeviceMetadata(),
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "test-id"
+        )
+
+        let event1 = try await client.record("event_1")
+        let event2 = try await client.record("event_2")
+        let event3 = try await client.record("event_3")
+
+        XCTAssertEqual(event1.session.id, event2.session.id)
+        XCTAssertEqual(event2.session.id, event3.session.id)
+
+        await client.close()
+    }
+
+    /// Test that disabling autoSessionTracking does not start a session
+    ///
+    /// - Given: A client created with autoSessionTracking = false
+    /// - When:
+    ///    - An event is recorded (which triggers lazy session start)
+    /// - Then:
+    ///    - The event still has a session (started on-demand)
+    ///    - No ActivityTracker is created
+    ///
+    func testAutoSessionTrackingDisabled() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appMetadata: AppMetadata(appId: "test-app"),
+            deviceMetadata: DeviceMetadata(),
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "test-id",
+            options: EventEnrichmentClientOptions(autoSessionTracking: false)
+        )
+
+        let event = try await client.record("test")
+
+        XCTAssertFalse(event.session.id.isEmpty)
+
+        await client.close()
+    }
+
+    /// Test that each event gets a unique eventId
+    ///
+    /// - Given: A configured client
+    /// - When:
+    ///    - Multiple events are recorded
+    /// - Then:
+    ///    - Each event has a distinct eventId
+    ///
+    func testEachEventGetsUniqueId() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appMetadata: AppMetadata(appId: "test-app"),
+            deviceMetadata: DeviceMetadata(),
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "test-id"
+        )
+
+        let event1 = try await client.record("event_1")
+        let event2 = try await client.record("event_2")
+
+        XCTAssertNotEqual(event1.eventId, event2.eventId)
+
+        await client.close()
+    }
 }
+

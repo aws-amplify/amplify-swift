@@ -42,9 +42,6 @@ public actor AmplifyEventEnrichmentClient {
     private var userId: String?
     private var closed = false
 
-    /// Whether the client has been closed.
-    public var isClosed: Bool { closed }
-
     /// Initializes a new event enrichment client.
     /// - Parameters:
     ///   - appMetadata: Application-level metadata for events.

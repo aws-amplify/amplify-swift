@@ -95,6 +95,54 @@ final class EnrichedEventTests: XCTestCase {
     /// - Then:
     ///    - Nil fields are omitted from the JSON output
     ///
+    /// Test that toJson includes stop_timestamp and duration for stopped sessions
+    ///
+    /// - Given: An enriched event with a stopped session (has stopTimestamp and duration)
+    /// - When:
+    ///    - toJson() is called
+    /// - Then:
+    ///    - The session includes stop_timestamp and duration in the JSON output
+    ///
+    func testToJsonWithStoppedSession() throws {
+        let start = Date(timeIntervalSince1970: 1_700_000_000)
+        let stop = Date(timeIntervalSince1970: 1_700_000_100)
+        let event = EnrichedEvent(
+            eventId: "event-123",
+            eventType: "test_event",
+            eventTimestamp: 1_700_000_100_000,
+            session: Session(
+                id: "session-123",
+                startTimestamp: start,
+                stopTimestamp: stop,
+                duration: 100_000
+            ),
+            attributes: [:],
+            metrics: [:],
+            device: DeviceMetadata(),
+            app: AppMetadata(appId: "app-123"),
+            sdk: SDKMetadata(name: "test", version: "1.0"),
+            clientId: "client-123",
+            userId: nil
+        )
+
+        let json = event.toJson()
+        let data = json.data(using: .utf8)!
+        let parsed = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        let session = parsed["session"] as! [String: Any]
+        XCTAssertNotNil(session["stop_timestamp"])
+        XCTAssertEqual(session["duration"] as? Int, 100_000)
+        XCTAssertTrue((session["stop_timestamp"] as? String)?.contains("2023-11-14") == true)
+    }
+
+    /// Test that toJson omits nil fields
+    ///
+    /// - Given: An enriched event with minimal fields
+    /// - When:
+    ///    - toJson() is called
+    /// - Then:
+    ///    - Nil fields are omitted from the JSON output
+    ///
     func testToJsonOmitsNilFields() throws {
         let event = EnrichedEvent(
             eventId: "event-123",
