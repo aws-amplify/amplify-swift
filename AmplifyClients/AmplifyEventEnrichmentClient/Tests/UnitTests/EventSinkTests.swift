@@ -22,10 +22,9 @@ final class EventSinkTests: XCTestCase {
     func testSinkReceivesEvents() async throws {
         let mockSink = MockEventSink()
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(platform: "iOS"),
+            appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id",
+            deviceMetadata: DeviceMetadata(platform: "iOS"),
             sink: mockSink
         )
 

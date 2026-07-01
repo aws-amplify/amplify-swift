@@ -90,10 +90,8 @@ final class ActivityTrackerTests: XCTestCase {
     ///
     func testClientSessionPausesOnBackgroundNotification() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
+            appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id",
             options: EventEnrichmentClientOptions(autoSessionTracking: true)
         )
 

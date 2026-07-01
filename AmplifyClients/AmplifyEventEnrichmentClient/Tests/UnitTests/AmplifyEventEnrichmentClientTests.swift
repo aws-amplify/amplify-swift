@@ -21,10 +21,9 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testRecordReturnsEnrichedEvent() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(platform: "iOS", platformVersion: "17.0"),
+            appId: "test-app",
             sdkMetadata: SDKMetadata(name: "amplify-swift", version: "2.58.0"),
-            clientId: "test-client-id"
+            deviceMetadata: DeviceMetadata(platform: "iOS", platformVersion: "17.0")
         )
 
         let event = try await client.record(
@@ -39,7 +38,7 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
         XCTAssertEqual(event.app.appId, "test-app")
         XCTAssertEqual(event.device.platform, "iOS")
         XCTAssertEqual(event.sdk.name, "amplify-swift")
-        XCTAssertEqual(event.clientId, "test-client-id")
+        XCTAssertFalse(event.clientId.isEmpty)
         XCTAssertNil(event.userId)
         XCTAssertFalse(event.eventId.isEmpty)
         XCTAssertFalse(event.session.id.isEmpty)
@@ -57,10 +56,9 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testRecordAfterCloseThrows() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(platform: "iOS"),
+            appId: "test-app",
             sdkMetadata: SDKMetadata(name: "amplify-swift", version: "1.0.0"),
-            clientId: "test-id"
+            deviceMetadata: DeviceMetadata(platform: "iOS")
         )
 
         await client.close()
@@ -86,10 +84,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testGlobalAttributesMerged() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.addGlobalAttribute("app_version", value: "2.0")
@@ -114,10 +110,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testPerEventAttributesOverrideGlobals() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.addGlobalAttribute("key", value: "global_value")
@@ -141,10 +135,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testSetUserId() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.setUserId("user-123")
@@ -165,10 +157,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testGlobalMetricsMerged() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.addGlobalMetric("session_count", value: 5.0)
@@ -193,10 +183,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testRemoveGlobalAttribute() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.addGlobalAttribute("key", value: "value")
@@ -218,10 +206,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testRemoveGlobalMetric() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.addGlobalMetric("count", value: 10.0)
@@ -243,10 +229,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testSetUserIdNilClearsUserId() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         await client.setUserId("user-123")
@@ -268,10 +252,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testMultipleRecordsShareSessionId() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         let event1 = try await client.record("event_1")
@@ -295,10 +277,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testAutoSessionTrackingDisabled() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
+            appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id",
             options: EventEnrichmentClientOptions(autoSessionTracking: false)
         )
 
@@ -319,10 +299,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     func testEachEventGetsUniqueId() async throws {
         let client = AmplifyEventEnrichmentClient(
-            appMetadata: AppMetadata(appId: "test-app"),
-            deviceMetadata: DeviceMetadata(),
-            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
-            clientId: "test-id"
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0")
         )
 
         let event1 = try await client.record("event_1")

@@ -17,10 +17,8 @@ import Foundation
 ///
 /// ```swift
 /// let client = AmplifyEventEnrichmentClient(
-///     appMetadata: AppMetadata(appId: "my-app"),
-///     deviceMetadata: DeviceMetadata(platform: "iOS"),
-///     sdkMetadata: SDKMetadata(name: "amplify-swift", version: "2.58.0"),
-///     clientId: "device-uuid"
+///     appId: "my-app",
+///     sdkMetadata: SDKMetadata(name: "amplify-swift", version: "2.58.0")
 /// )
 ///
 /// let event = try await client.record("button_clicked")
@@ -43,30 +41,39 @@ public actor AmplifyEventEnrichmentClient {
     private var closed = false
 
     /// Initializes a new event enrichment client.
+    ///
+    /// The `clientId` is resolved automatically from `UserDefaults` using a
+    /// read-or-create pattern with the key `com.amplifyframework.device_id`.
+    /// This is a cross-package contract shared with other Amplify clients.
+    ///
     /// - Parameters:
-    ///   - appMetadata: Application-level metadata for events.
-    ///   - deviceMetadata: Device-level metadata for events.
+    ///   - appId: Application identifier used in the event envelope and session ID.
     ///   - sdkMetadata: SDK-level metadata for events.
-    ///   - clientId: Persistent client/device identifier (typically a UUID stored in UserDefaults).
+    ///   - appMetadata: Application-level metadata. If nil, created from `appId`.
+    ///   - deviceMetadata: Device-level metadata. If nil, resolved via ``PlatformDeviceMetadataProvider``.
     ///   - options: Configuration options.
     ///   - sink: Optional transport sink for enriched events.
     public init(
-        appMetadata: AppMetadata,
-        deviceMetadata: DeviceMetadata,
+        appId: String,
         sdkMetadata: SDKMetadata,
-        clientId: String,
+        appMetadata: AppMetadata? = nil,
+        deviceMetadata: DeviceMetadata? = nil,
         options: EventEnrichmentClientOptions = EventEnrichmentClientOptions(),
         sink: (any EventSink)? = nil
     ) {
-        self.appMetadata = appMetadata
-        self.deviceMetadata = deviceMetadata
+        let resolvedAppMetadata = appMetadata ?? AppMetadata(appId: appId)
+        let resolvedDeviceMetadata = deviceMetadata ?? DeviceMetadata()
+        let resolvedClientId = ClientIDProvider.resolve()
+
+        self.appMetadata = resolvedAppMetadata
+        self.deviceMetadata = resolvedDeviceMetadata
         self.sdkMetadata = sdkMetadata
-        self.clientId = clientId
+        self.clientId = resolvedClientId
         self.sink = sink
         self.logger = AmplifyLogging.logger(for: AmplifyEventEnrichmentClient.self)
         self.globalFields = GlobalFieldsManager()
         let sessionManager = SessionManager(
-            appId: appMetadata.appId,
+            appId: resolvedAppMetadata.appId,
             sessionTimeout: options.sessionTimeout,
             generateId: { UUID().uuidString }
         )
