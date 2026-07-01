@@ -450,6 +450,29 @@ let firehoseTargets: [Target] = [
     )
 ]
 
+let eventEnrichmentTargets: [Target] = [
+    .target(
+        name: "AmplifyEventEnrichmentClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+        ],
+        path: "AmplifyClients/AmplifyEventEnrichmentClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyEventEnrichmentClientTests",
+        dependencies: [
+            "AmplifyEventEnrichmentClient"
+        ],
+        path: "AmplifyClients/AmplifyEventEnrichmentClient/Tests/UnitTests"
+    )
+]
+
 let pushNotificationsTargets: [Target] = [
     .target(
         name: "AWSPinpointPushNotificationsPlugin",
@@ -618,6 +641,7 @@ targets.append(contentsOf: recordCacheTargets)
 targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: firehoseTargets)
 targets.append(contentsOf: connectTargets)
+targets.append(contentsOf: eventEnrichmentTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
@@ -688,6 +712,10 @@ let package = Package(
         .library(
             name: "AmplifyConnectClient",
             targets: ["AmplifyConnectClient"]
+        ),
+        .library(
+            name: "AmplifyEventEnrichmentClient",
+            targets: ["AmplifyEventEnrichmentClient"]
         ),
         .library(
             name: "AmplifyFoundation",
