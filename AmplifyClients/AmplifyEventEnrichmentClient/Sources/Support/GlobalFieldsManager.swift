@@ -8,35 +8,35 @@
 /// Manages global attributes and metrics that are stamped on every event.
 ///
 /// Values are in-memory only and not persisted between sessions.
-internal actor GlobalFieldsManager {
+actor GlobalFieldsManager {
     private var _attributes: [String: String] = [:]
     private var _metrics: [String: Double] = [:]
 
-    internal init() {}
+    init() {}
 
     /// Current global attributes.
-    internal var attributes: [String: String] { _attributes }
+    var attributes: [String: String] { _attributes }
 
     /// Current global metrics.
-    internal var metrics: [String: Double] { _metrics }
+    var metrics: [String: Double] { _metrics }
 
     /// Adds a global attribute.
-    internal func addAttribute(_ key: String, value: String) {
+    func addAttribute(_ key: String, value: String) {
         _attributes[key] = value
     }
 
     /// Removes a global attribute by key.
-    internal func removeAttribute(_ key: String) {
+    func removeAttribute(_ key: String) {
         _attributes.removeValue(forKey: key)
     }
 
     /// Adds a global metric.
-    internal func addMetric(_ key: String, value: Double) {
+    func addMetric(_ key: String, value: Double) {
         _metrics[key] = value
     }
 
     /// Removes a global metric by key.
-    internal func removeMetric(_ key: String) {
+    func removeMetric(_ key: String) {
         _metrics.removeValue(forKey: key)
     }
 }
