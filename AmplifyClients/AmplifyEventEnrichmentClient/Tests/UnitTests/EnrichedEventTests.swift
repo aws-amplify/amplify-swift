@@ -49,7 +49,7 @@ final class EnrichedEventTests: XCTestCase {
             userId: "user-456"
         )
 
-        let json = event.toJson()
+        let json = try event.toJson()
         let data = json.data(using: .utf8)!
         let parsed = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 
@@ -114,7 +114,7 @@ final class EnrichedEventTests: XCTestCase {
                 id: "session-123",
                 startTimestamp: start,
                 stopTimestamp: stop,
-                duration: 100_000
+                duration: 100_000 as Int64
             ),
             attributes: [:],
             metrics: [:],
@@ -125,7 +125,7 @@ final class EnrichedEventTests: XCTestCase {
             userId: nil
         )
 
-        let json = event.toJson()
+        let json = try event.toJson()
         let data = json.data(using: .utf8)!
         let parsed = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 
@@ -158,7 +158,7 @@ final class EnrichedEventTests: XCTestCase {
             userId: nil
         )
 
-        let json = event.toJson()
+        let json = try event.toJson()
         let data = json.data(using: .utf8)!
         let parsed = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 

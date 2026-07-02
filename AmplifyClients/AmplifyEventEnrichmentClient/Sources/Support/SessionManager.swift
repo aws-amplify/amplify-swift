@@ -54,10 +54,10 @@ actor SessionManager {
         self.generateId = generateId
     }
 
-    /// Starts a new session. If one is active, stops it first.
+    /// Starts a new session. No-op if a session is already active or paused.
     func startSession() {
         if _state != .stopped {
-            stopSession()
+            return
         }
         sessionStart = Date()
         _session = Session(
@@ -76,7 +76,7 @@ actor SessionManager {
             id: currentSession.id,
             startTimestamp: currentSession.startTimestamp,
             stopTimestamp: now,
-            duration: Int(now.timeIntervalSince(start) * 1_000)
+            duration: Int64(now.timeIntervalSince(start) * 1_000)
         )
         _state = .stopped
     }

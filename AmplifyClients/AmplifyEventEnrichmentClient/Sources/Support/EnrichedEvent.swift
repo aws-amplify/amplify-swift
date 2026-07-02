@@ -18,7 +18,7 @@ public struct EnrichedEvent: Sendable {
     public let eventType: String
 
     /// Milliseconds since epoch when the event was recorded.
-    public let eventTimestamp: Int
+    public let eventTimestamp: Int64
 
     /// Session active at the time of recording.
     public let session: Session
@@ -52,7 +52,7 @@ public struct EnrichedEvent: Sendable {
     }()
 
     /// Serializes to a Pinpoint-compatible JSON string.
-    public func toJson() -> String {
+    public func toJson() throws -> String {
         var deviceMap: [String: Any] = [:]
         var platformMap: [String: Any] = [:]
         if let platform = device.platform { platformMap["name"] = platform }
@@ -99,9 +99,22 @@ public struct EnrichedEvent: Sendable {
         if !attributes.isEmpty { map["attributes"] = attributes }
         if !metrics.isEmpty { map["metrics"] = metrics }
 
-        guard let data = try? JSONSerialization.data(withJSONObject: map, options: [.sortedKeys]) else {
-            return "{}"
+        let data: Data
+        do {
+            data = try JSONSerialization.data(withJSONObject: map, options: [.sortedKeys])
+        } catch {
+            throw EventEnrichmentError.serialization(
+                "Failed to serialize event to JSON",
+                "Verify that event attributes and metrics contain only JSON-compatible values.",
+                error
+            )
         }
-        return String(data: data, encoding: .utf8) ?? "{}"
+        guard let json = String(data: data, encoding: .utf8) else {
+            throw EventEnrichmentError.serialization(
+                "Failed to encode JSON data as UTF-8 string",
+                "Verify that event attributes and metrics contain only JSON-compatible values."
+            )
+        }
+        return json
     }
 }

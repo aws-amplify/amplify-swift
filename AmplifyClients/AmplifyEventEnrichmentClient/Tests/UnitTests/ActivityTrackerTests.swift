@@ -39,7 +39,7 @@ final class ActivityTrackerTests: XCTestCase {
         )
         #elseif canImport(AppKit)
         NotificationCenter.default.post(
-            name: NSApplication.didResignActiveNotification,
+            name: NSApplication.didHideNotification,
             object: nil
         )
         #endif
@@ -71,7 +71,7 @@ final class ActivityTrackerTests: XCTestCase {
         )
         #elseif canImport(AppKit)
         NotificationCenter.default.post(
-            name: NSApplication.willBecomeActiveNotification,
+            name: NSApplication.willUnhideNotification,
             object: nil
         )
         #endif
@@ -105,7 +105,7 @@ final class ActivityTrackerTests: XCTestCase {
         )
         #elseif canImport(AppKit)
         NotificationCenter.default.post(
-            name: NSApplication.didResignActiveNotification,
+            name: NSApplication.didHideNotification,
             object: nil
         )
         #endif
@@ -121,7 +121,7 @@ final class ActivityTrackerTests: XCTestCase {
         )
         #elseif canImport(AppKit)
         NotificationCenter.default.post(
-            name: NSApplication.willBecomeActiveNotification,
+            name: NSApplication.willUnhideNotification,
             object: nil
         )
         #endif

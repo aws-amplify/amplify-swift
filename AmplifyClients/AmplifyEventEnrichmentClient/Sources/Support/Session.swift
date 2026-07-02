@@ -19,13 +19,13 @@ public struct Session: Sendable {
     public let stopTimestamp: Date?
 
     /// Duration of the session in milliseconds.
-    public let duration: Int?
+    public let duration: Int64?
 
     public init(
         id: String,
         startTimestamp: Date,
         stopTimestamp: Date? = nil,
-        duration: Int? = nil
+        duration: Int64? = nil
     ) {
         self.id = id
         self.startTimestamp = startTimestamp

@@ -43,14 +43,14 @@ public actor AmplifyEventEnrichmentClient {
     /// Initializes a new event enrichment client.
     ///
     /// The `clientId` is resolved automatically from `UserDefaults` using a
-    /// read-or-create pattern with the key `com.amplifyframework.device_id`.
-    /// This is a cross-package contract shared with other Amplify clients.
+    /// read-or-create pattern with the key
+    /// `com.amazonaws.amplify.event_enrichment.client_id`.
     ///
     /// - Parameters:
     ///   - appId: Application identifier used in the event envelope and session ID.
     ///   - sdkMetadata: SDK-level metadata for events.
     ///   - appMetadata: Application-level metadata. If nil, created from `appId`.
-    ///   - deviceMetadata: Device-level metadata. If nil, resolved via ``PlatformDeviceMetadataProvider``.
+    ///   - deviceMetadata: Device-level metadata. If nil, uses platform defaults.
     ///   - options: Configuration options.
     ///   - sink: Optional transport sink for enriched events.
     public init(
@@ -83,7 +83,6 @@ public actor AmplifyEventEnrichmentClient {
                 onPause: { Task { await sessionManager.handleAppPaused() } },
                 onResume: { Task { await sessionManager.handleAppResumed() } }
             )
-            Task { await sessionManager.startSession() }
         } else {
             self.activityTracker = nil
         }
@@ -110,9 +109,7 @@ public actor AmplifyEventEnrichmentClient {
             )
         }
 
-        if await sessionManager.session == nil {
-            await sessionManager.startSession()
-        }
+        await sessionManager.startSession()
 
         let globalAttributes = await globalFields.attributes
         let globalMetrics = await globalFields.metrics
@@ -127,12 +124,17 @@ public actor AmplifyEventEnrichmentClient {
             mergedMetrics[key] = value
         }
 
-        let session = await sessionManager.session!
+        guard let session = await sessionManager.session else {
+            throw EventEnrichmentError.unknown(
+                "No active session",
+                "Call startSession() before recording events."
+            )
+        }
 
         let event = EnrichedEvent(
             eventId: UUID().uuidString,
             eventType: eventType,
-            eventTimestamp: Int(Date().timeIntervalSince1970 * 1_000),
+            eventTimestamp: Int64(Date().timeIntervalSince1970 * 1_000),
             session: session,
             attributes: mergedAttributes,
             metrics: mergedMetrics,
@@ -156,14 +158,6 @@ public actor AmplifyEventEnrichmentClient {
     /// Stops the current session.
     public func stopSession() async {
         await sessionManager.stopSession()
-    }
-
-    func handleAppPaused() async {
-        await sessionManager.handleAppPaused()
-    }
-
-    func handleAppResumed() async {
-        await sessionManager.handleAppResumed()
     }
 
     /// Sets the user identifier stamped on subsequent events.

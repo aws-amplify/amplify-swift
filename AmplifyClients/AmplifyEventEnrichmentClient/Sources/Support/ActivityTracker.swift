@@ -24,7 +24,7 @@ final class ActivityTracker: @unchecked Sendable {
         #elseif canImport(UIKit)
         UIApplication.didEnterBackgroundNotification
         #elseif canImport(AppKit)
-        NSApplication.didResignActiveNotification
+        NSApplication.didHideNotification
         #endif
     }()
 
@@ -34,7 +34,7 @@ final class ActivityTracker: @unchecked Sendable {
         #elseif canImport(UIKit)
         UIApplication.willEnterForegroundNotification
         #elseif canImport(AppKit)
-        NSApplication.willBecomeActiveNotification
+        NSApplication.willUnhideNotification
         #endif
     }()
 
