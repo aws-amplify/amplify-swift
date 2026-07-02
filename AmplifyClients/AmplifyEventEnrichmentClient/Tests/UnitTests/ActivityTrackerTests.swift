@@ -9,8 +9,12 @@
 import Foundation
 import XCTest
 
-#if canImport(UIKit)
+#if canImport(WatchKit)
+import WatchKit
+#elseif canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
 #endif
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
@@ -32,7 +36,12 @@ final class ActivityTrackerTests: XCTestCase {
             onResume: {}
         )
 
-        #if canImport(UIKit) && !os(watchOS)
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationDidEnterBackgroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
         NotificationCenter.default.post(
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
@@ -64,7 +73,12 @@ final class ActivityTrackerTests: XCTestCase {
             onResume: { resumeExpectation.fulfill() }
         )
 
-        #if canImport(UIKit) && !os(watchOS)
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationWillEnterForegroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
         NotificationCenter.default.post(
             name: UIApplication.willEnterForegroundNotification,
             object: nil
@@ -95,10 +109,14 @@ final class ActivityTrackerTests: XCTestCase {
             options: EventEnrichmentClientOptions(autoSessionTracking: true)
         )
 
-        // Ensure session has started
         _ = try await client.record("warmup")
 
-        #if canImport(UIKit) && !os(watchOS)
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationDidEnterBackgroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
         NotificationCenter.default.post(
             name: UIApplication.didEnterBackgroundNotification,
             object: nil
@@ -110,11 +128,14 @@ final class ActivityTrackerTests: XCTestCase {
         )
         #endif
 
-        // Give the Task in ActivityTracker time to execute
         try await Task.sleep(nanoseconds: 50_000_000)
 
-        // Verify session is paused by resuming and checking session ID is preserved
-        #if canImport(UIKit) && !os(watchOS)
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationWillEnterForegroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
         NotificationCenter.default.post(
             name: UIApplication.willEnterForegroundNotification,
             object: nil
