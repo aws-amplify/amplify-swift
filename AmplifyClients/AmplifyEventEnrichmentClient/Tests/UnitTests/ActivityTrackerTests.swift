@@ -18,6 +18,7 @@ import AppKit
 #endif
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
+@MainActor
 final class ActivityTrackerTests: XCTestCase {
 
     /// Test that ActivityTracker calls onPause when background notification is posted
@@ -28,7 +29,6 @@ final class ActivityTrackerTests: XCTestCase {
     /// - Then:
     ///    - The onPause callback is invoked
     ///
-    @MainActor
     func testBackgroundNotificationCallsOnPause() async throws {
         let pauseExpectation = expectation(description: "onPause called")
         let tracker = ActivityTracker(
@@ -65,7 +65,6 @@ final class ActivityTrackerTests: XCTestCase {
     /// - Then:
     ///    - The onResume callback is invoked
     ///
-    @MainActor
     func testForegroundNotificationCallsOnResume() async throws {
         let resumeExpectation = expectation(description: "onResume called")
         let tracker = ActivityTracker(

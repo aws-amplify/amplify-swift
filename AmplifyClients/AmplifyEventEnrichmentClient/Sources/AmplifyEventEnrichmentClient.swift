@@ -37,6 +37,7 @@ public actor AmplifyEventEnrichmentClient {
     private let globalFields: GlobalFieldsManager
     private let sessionManager: SessionManager
     private let activityTracker: ActivityTracker?
+    private let autoSessionTracking: Bool
     private var userId: String?
     private var closed = false
 
@@ -46,13 +47,17 @@ public actor AmplifyEventEnrichmentClient {
     /// read-or-create pattern with the key
     /// `com.amazonaws.amplify.event_enrichment.client_id`.
     ///
+    /// When `deviceMetadata` is nil, the client resolves platform, OS version,
+    /// manufacturer, model, and locale via ``PlatformDeviceMetadataProvider``.
+    ///
     /// - Parameters:
     ///   - appId: Application identifier used in the event envelope and session ID.
     ///   - sdkMetadata: SDK-level metadata for events.
     ///   - appMetadata: Application-level metadata. If nil, created from `appId`.
-    ///   - deviceMetadata: Device-level metadata. If nil, uses platform defaults.
+    ///   - deviceMetadata: Device-level metadata. If nil, resolved via platform APIs.
     ///   - options: Configuration options.
     ///   - sink: Optional transport sink for enriched events.
+    @MainActor
     public init(
         appId: String,
         sdkMetadata: SDKMetadata,
@@ -62,7 +67,7 @@ public actor AmplifyEventEnrichmentClient {
         sink: (any EventSink)? = nil
     ) {
         let resolvedAppMetadata = appMetadata ?? AppMetadata(appId: appId)
-        let resolvedDeviceMetadata = deviceMetadata ?? DeviceMetadata()
+        let resolvedDeviceMetadata = deviceMetadata ?? PlatformDeviceMetadataProvider().getDeviceMetadata()
         let resolvedClientId = ClientIDProvider.resolve()
 
         self.appMetadata = resolvedAppMetadata
@@ -70,6 +75,7 @@ public actor AmplifyEventEnrichmentClient {
         self.sdkMetadata = sdkMetadata
         self.clientId = resolvedClientId
         self.sink = sink
+        self.autoSessionTracking = options.autoSessionTracking
         self.logger = AmplifyLogging.logger(for: AmplifyEventEnrichmentClient.self)
         self.globalFields = GlobalFieldsManager()
         let sessionManager = SessionManager(
@@ -109,7 +115,9 @@ public actor AmplifyEventEnrichmentClient {
             )
         }
 
-        await sessionManager.startSession()
+        if autoSessionTracking {
+            await sessionManager.startSession()
+        }
 
         let globalAttributes = await globalFields.attributes
         let globalMetrics = await globalFields.metrics
@@ -127,7 +135,7 @@ public actor AmplifyEventEnrichmentClient {
         guard let session = await sessionManager.session else {
             throw EventEnrichmentError.unknown(
                 "No active session",
-                "Call startSession() before recording events."
+                "Call startSession() before recording events when autoSessionTracking is disabled."
             )
         }
 

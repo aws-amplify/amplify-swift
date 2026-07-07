@@ -9,6 +9,7 @@
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
+@MainActor
 final class AmplifyEventEnrichmentClientTests: XCTestCase {
 
     /// Test that recording an event returns an enriched event with expected fields
@@ -270,20 +271,30 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     ///
     /// - Given: A client created with autoSessionTracking = false
     /// - When:
-    ///    - An event is recorded (which triggers lazy session start)
+    ///    - An event is recorded without calling startSession()
     /// - Then:
-    ///    - The event still has a session (started on-demand)
-    ///    - No ActivityTracker is created
+    ///    - An error is thrown because no session exists
+    ///    - After calling startSession(), recording succeeds
     ///
-    func testAutoSessionTrackingDisabled() async throws {
+    func testAutoSessionTrackingDisabledRequiresManualStart() async throws {
         let client = AmplifyEventEnrichmentClient(
             appId: "test-app",
             sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
             options: EventEnrichmentClientOptions(autoSessionTracking: false)
         )
 
-        let event = try await client.record("test")
+        do {
+            _ = try await client.record("test")
+            XCTFail("Expected error when no session started")
+        } catch let error as EventEnrichmentError {
+            guard case .unknown = error else {
+                XCTFail("Expected unknown error for missing session, got \(error)")
+                return
+            }
+        }
 
+        await client.startSession()
+        let event = try await client.record("test")
         XCTAssertFalse(event.session.id.isEmpty)
 
         await client.close()

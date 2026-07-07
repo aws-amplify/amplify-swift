@@ -16,17 +16,11 @@ import IOKit
 #endif
 
 /// Provides device metadata for event enrichment.
-///
-/// Implement this to supply custom device information. The default
-/// ``PlatformDeviceMetadataProvider`` uses the same system APIs as the
-/// Pinpoint analytics plugin.
 protocol DeviceMetadataProvider: Sendable {
-    /// Returns device metadata for the current platform.
     @MainActor func getDeviceMetadata() -> DeviceMetadata
 }
 
-/// Default ``DeviceMetadataProvider`` aligned with the Pinpoint plugin's
-/// device information gathering (uses UIDevice/WKInterfaceDevice/IOKit).
+/// Default ``DeviceMetadataProvider`` using UIDevice/WKInterfaceDevice/IOKit.
 struct PlatformDeviceMetadataProvider: DeviceMetadataProvider {
     init() {}
 
@@ -45,11 +39,15 @@ struct PlatformDeviceMetadataProvider: DeviceMetadataProvider {
     @MainActor
     private func operatingSystem() -> (name: String, version: String) {
         #if canImport(WatchKit)
-        let device = WKInterfaceDevice.current()
-        return (name: device.systemName, version: device.systemVersion)
+        return (
+            name: WKInterfaceDevice.current().systemName,
+            version: WKInterfaceDevice.current().systemVersion
+        )
         #elseif canImport(UIKit)
-        let device = UIDevice.current
-        return (name: device.systemName, version: device.systemVersion)
+        return (
+            name: UIDevice.current.systemName,
+            version: UIDevice.current.systemVersion
+        )
         #else
         return (
             name: "macOS",

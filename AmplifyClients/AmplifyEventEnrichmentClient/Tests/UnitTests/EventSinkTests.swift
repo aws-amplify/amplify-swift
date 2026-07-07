@@ -9,6 +9,7 @@
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
+@MainActor
 final class EventSinkTests: XCTestCase {
 
     /// Test that the event sink receives events when recording
