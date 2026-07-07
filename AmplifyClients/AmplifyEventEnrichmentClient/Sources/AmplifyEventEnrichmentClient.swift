@@ -22,7 +22,7 @@ import Foundation
 /// )
 ///
 /// let event = try await client.record("button_clicked")
-/// print(event.toJson())
+/// print(try event.toJson())
 ///
 /// await client.close()
 /// ```
