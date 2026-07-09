@@ -25,11 +25,30 @@ func credential(from credentialsProvider: AWSCredentialsProvider?) async throws 
         }
     }
 
+    let sessionToken = temporarySessionToken(from: credentials)
+
     let signerCredential = SigV4Signer.Credential(
         accessKey: credentials.accessKeyId,
         secretKey: credentials.secretAccessKey,
-        sessionToken: (credentials as? AWSTemporaryCredentials)?.sessionToken
+        sessionToken: sessionToken
     )
 
     return signerCredential
+}
+
+private func temporarySessionToken(from credentials: AWSCredentials) -> String? {
+    if let temporaryCredentials = credentials as? AWSTemporaryCredentials {
+        return temporaryCredentials.sessionToken
+    }
+
+    let mirror = Mirror(reflecting: credentials)
+    for child in mirror.children {
+        if child.label == "sessionToken",
+           let value = child.value as? String,
+           !value.isEmpty {
+            return value
+        }
+    }
+
+    return nil
 }
