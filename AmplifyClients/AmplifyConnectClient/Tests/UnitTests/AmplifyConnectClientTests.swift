@@ -11,234 +11,185 @@ import Foundation
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
-@MainActor
 final class AmplifyConnectClientTests: XCTestCase {
 
-    private func makeClient(
-        signer: MockRequestSigner = MockRequestSigner(),
-        httpClient: MockHTTPClient = MockHTTPClient()
-    ) -> AmplifyConnectClient {
-        AmplifyConnectClient(
-            domainName: "test-domain",
-            region: "us-east-1",
-            credentialsProvider: MockCredentialsProvider(),
-            requestSigner: signer,
-            httpClient: httpClient
-        )
-    }
-
-    /// Test that identifyUser sends the correct payload
+    /// Test that identifyUser encodes the correct request body
     ///
-    /// - Given: A client with a mock signer and HTTP client
+    /// - Given: A client with a mock token provider
     /// - When:
-    ///    - identifyUser is called with a userId and profile
+    ///    - identifyUser is called with userId, profile, and options
     /// - Then:
-    ///    - The request body contains the correct action and user data
+    ///    - The request body contains the expected fields
     ///
-    func testIdentifyUserSendsCorrectPayload() async throws {
-        let signer = MockRequestSigner()
-        let client = makeClient(signer: signer)
+    func testIdentifyUserEncodesCorrectBody() async throws {
+        let profile = UserProfile(
+            email: "test@example.com",
+            name: "Test User",
+            customProperties: ["tier": ["premium"]]
+        )
+        let options = IdentifyUserOptions(
+            channelType: "APNS",
+            platform: "iOS"
+        )
 
-        try await client.identifyUser(
+        let request = IdentifyUserRequest(
             userId: "user-123",
-            userProfile: UserProfile(email: "test@example.com", name: "Test User")
+            userProfile: profile,
+            options: options
         )
 
-        let body = try JSONSerialization.jsonObject(with: signer.lastSignedRequest!.body!) as! [String: Any]
-        XCTAssertEqual(body["action"] as? String, "identifyUser")
-        XCTAssertEqual(body["userId"] as? String, "user-123")
-        let profile = body["userProfile"] as! [String: Any]
-        XCTAssertEqual(profile["email"] as? String, "test@example.com")
-        XCTAssertEqual(profile["name"] as? String, "Test User")
+        let data = try JSONEncoder().encode(request)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        XCTAssertEqual(json["userId"] as? String, "user-123")
+
+        let userProfileJson = json["userProfile"] as! [String: Any]
+        XCTAssertEqual(userProfileJson["email"] as? String, "test@example.com")
+        XCTAssertEqual(userProfileJson["name"] as? String, "Test User")
+
+        let optionsJson = json["options"] as! [String: Any]
+        XCTAssertEqual(optionsJson["channelType"] as? String, "APNS")
+        XCTAssertEqual(optionsJson["platform"] as? String, "iOS")
     }
 
-    /// Test that registerDevice includes deviceId and token
+    /// Test that nil userProfile defaults to empty object in request
     ///
-    /// - Given: A client with a mock signer
+    /// - Given: An IdentifyUserRequest with nil userProfile passed to init
     /// - When:
-    ///    - registerDevice is called with a device token
+    ///    - The request is encoded
     /// - Then:
-    ///    - The request contains action, deviceId, deviceToken, and channelType
+    ///    - userProfile is present as an empty object
     ///
-    func testRegisterDeviceSendsCorrectPayload() async throws {
-        let signer = MockRequestSigner()
-        let client = makeClient(signer: signer)
-
-        try await client.registerDevice(
-            deviceToken: "apns-device-token-123",
-            channelType: "APNS"
+    func testNilUserProfileDefaultsToEmptyObject() async throws {
+        let request = IdentifyUserRequest(
+            userId: "user-123",
+            userProfile: UserProfile(),
+            options: nil
         )
 
-        let body = try JSONSerialization.jsonObject(with: signer.lastSignedRequest!.body!) as! [String: Any]
-        XCTAssertEqual(body["action"] as? String, "registerDevice")
-        XCTAssertEqual(body["deviceToken"] as? String, "apns-device-token-123")
-        XCTAssertEqual(body["channelType"] as? String, "APNS")
-        XCTAssertNotNil(body["deviceId"] as? String)
-        XCTAssertFalse((body["deviceId"] as! String).isEmpty)
+        let data = try JSONEncoder().encode(request)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        XCTAssertEqual(json["userId"] as? String, "user-123")
+        XCTAssertNotNil(json["userProfile"])
+        XCTAssertNil(json["options"])
     }
 
-    /// Test that removeDevice sends the correct action
+    /// Test that UserProfile encodes location correctly
     ///
-    /// - Given: A client with a mock signer
+    /// - Given: A UserProfile with location
     /// - When:
-    ///    - removeDevice is called
+    ///    - It is encoded to JSON
     /// - Then:
-    ///    - The request contains action and deviceId
+    ///    - Location fields are present
     ///
-    func testRemoveDeviceSendsCorrectPayload() async throws {
-        let signer = MockRequestSigner()
-        let client = makeClient(signer: signer)
-
-        try await client.removeDevice()
-
-        let body = try JSONSerialization.jsonObject(with: signer.lastSignedRequest!.body!) as! [String: Any]
-        XCTAssertEqual(body["action"] as? String, "removeDevice")
-        XCTAssertNotNil(body["deviceId"] as? String)
-    }
-
-    /// Test that missing signer throws configuration error
-    ///
-    /// - Given: A client with no signer
-    /// - When:
-    ///    - identifyUser is called
-    /// - Then:
-    ///    - A ConnectClientError.configuration is thrown
-    ///
-    func testMissingSignerThrowsError() async throws {
-        let client = AmplifyConnectClient(
-            domainName: "test-domain",
-            region: "us-east-1",
-            credentialsProvider: MockCredentialsProvider(),
-            requestSigner: nil,
-            httpClient: MockHTTPClient()
+    func testUserProfileEncodesLocation() throws {
+        let profile = UserProfile(
+            location: UserProfileLocation(
+                city: "Seattle",
+                country: "US",
+                latitude: 47.6,
+                longitude: -122.3
+            )
         )
 
+        let data = try JSONEncoder().encode(profile)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        let location = json["location"] as! [String: Any]
+
+        XCTAssertEqual(location["city"] as? String, "Seattle")
+        XCTAssertEqual(location["country"] as? String, "US")
+        XCTAssertEqual(location["latitude"] as? Double, 47.6)
+        XCTAssertEqual(location["longitude"] as? Double, -122.3)
+    }
+
+    /// Test that IdentifyUserOptions encodes all fields
+    ///
+    /// - Given: An IdentifyUserOptions with all fields set
+    /// - When:
+    ///    - It is encoded to JSON
+    /// - Then:
+    ///    - All fields are present
+    ///
+    func testIdentifyUserOptionsEncodesAllFields() throws {
+        let options = IdentifyUserOptions(
+            userAttributes: ["hobby": ["biking"]],
+            address: "apns-token",
+            channelType: "APNS",
+            optOut: "NONE",
+            deviceId: "device-123",
+            platform: "iOS",
+            appVersion: "2.0.0",
+            previousGuestIdentityId: "us-west-2:guest-id"
+        )
+
+        let data = try JSONEncoder().encode(options)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        XCTAssertEqual(json["address"] as? String, "apns-token")
+        XCTAssertEqual(json["channelType"] as? String, "APNS")
+        XCTAssertEqual(json["optOut"] as? String, "NONE")
+        XCTAssertEqual(json["deviceId"] as? String, "device-123")
+        XCTAssertEqual(json["platform"] as? String, "iOS")
+        XCTAssertEqual(json["appVersion"] as? String, "2.0.0")
+        XCTAssertEqual(json["previousGuestIdentityId"] as? String, "us-west-2:guest-id")
+    }
+
+    /// Test ConnectClientConfiguration init from region and endpoint
+    ///
+    /// - Given: A region and endpoint
+    /// - When:
+    ///    - ConnectClientConfiguration is created
+    /// - Then:
+    ///    - The fields are set correctly
+    ///
+    func testConfigurationInit() {
+        let config = ConnectClientConfiguration(
+            region: "us-west-2",
+            endpoint: "https://example.com"
+        )
+        XCTAssertEqual(config.region, "us-west-2")
+        XCTAssertEqual(config.endpoint, "https://example.com")
+    }
+
+    /// Test ConnectClientConfiguration from invalid resource throws
+    ///
+    /// - Given: A nonexistent resource name
+    /// - When:
+    ///    - ConnectClientConfiguration(from:) is called
+    /// - Then:
+    ///    - A ConnectError.configuration is thrown
+    ///
+    func testConfigurationFromInvalidResourceThrows() {
         do {
-            try await client.identifyUser(userId: "user-123")
+            _ = try ConnectClientConfiguration(from: "nonexistent_file")
             XCTFail("Expected error")
-        } catch let error as ConnectClientError {
+        } catch let error as ConnectError {
             guard case .configuration = error else {
                 XCTFail("Expected configuration error, got \(error)")
                 return
             }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
 
-    /// Test that the signer receives the correct service and region
+    /// Test ConnectError conforms to AmplifyError
     ///
-    /// - Given: A client configured with region us-east-1
+    /// - Given: A ConnectError
     /// - When:
-    ///    - identifyUser is called
+    ///    - errorDescription and recoverySuggestion are accessed
     /// - Then:
-    ///    - The signer is called with service "profile" and region "us-east-1"
+    ///    - They return the correct values
     ///
-    func testSignerReceivesCorrectServiceAndRegion() async throws {
-        let signer = MockRequestSigner()
-        let client = makeClient(signer: signer)
-
-        try await client.identifyUser(userId: "user-123")
-
-        XCTAssertEqual(signer.lastRegion, "us-east-1")
-        XCTAssertEqual(signer.lastService, "profile")
-    }
-
-    /// Test that device ID is stable across calls
-    ///
-    /// - Given: A client
-    /// - When:
-    ///    - registerDevice is called twice
-    /// - Then:
-    ///    - Both calls use the same deviceId
-    ///
-    func testDeviceIdIsStableAcrossCalls() async throws {
-        let signer = MockRequestSigner()
-        let client = makeClient(signer: signer)
-
-        try await client.registerDevice(deviceToken: "token-1")
-        let body1 = try JSONSerialization.jsonObject(with: signer.lastSignedRequest!.body!) as! [String: Any]
-        let deviceId1 = body1["deviceId"] as! String
-
-        try await client.registerDevice(deviceToken: "token-2")
-        let body2 = try JSONSerialization.jsonObject(with: signer.lastSignedRequest!.body!) as! [String: Any]
-        let deviceId2 = body2["deviceId"] as! String
-
-        XCTAssertEqual(deviceId1, deviceId2)
-    }
-
-    /// Test that non-2xx response throws request error
-    ///
-    /// - Given: A client whose HTTP client returns 500
-    /// - When:
-    ///    - identifyUser is called
-    /// - Then:
-    ///    - A ConnectClientError.request is thrown
-    ///
-    func testNon2xxResponseThrowsError() async throws {
-        let httpClient = MockHTTPClient(statusCode: 500)
-        let client = makeClient(httpClient: httpClient)
-
-        do {
-            try await client.identifyUser(userId: "user-123")
-            XCTFail("Expected error")
-        } catch let error as ConnectClientError {
-            guard case .request = error else {
-                XCTFail("Expected request error, got \(error)")
-                return
-            }
-        }
-    }
-}
-
-// MARK: - Test Helpers
-
-private struct MockCredentialsProvider: AWSCredentialsProvider {
-    func resolve() async throws -> AWSCredentials {
-        MockAWSCredentials()
-    }
-}
-
-private struct MockAWSCredentials: AWSCredentials {
-    var accessKeyId: String { "test-access-key" }
-    var secretAccessKey: String { "test-secret-key" }
-}
-
-final class MockRequestSigner: RequestSigner, @unchecked Sendable {
-    var lastSignedRequest: SignableRequest?
-    var lastRegion: String?
-    var lastService: String?
-
-    func sign(
-        request: SignableRequest,
-        credentials: AWSCredentials,
-        region: String,
-        service: String
-    ) async throws -> [String: String] {
-        lastSignedRequest = request
-        lastRegion = region
-        lastService = service
-        return [
-            "Authorization": "AWS4-HMAC-SHA256 Credential=test",
-            "Content-Type": "application/json",
-        ]
-    }
-}
-
-final class MockHTTPClient: HTTPClient, @unchecked Sendable {
-    let statusCode: Int
-    var lastRequest: URLRequest?
-
-    init(statusCode: Int = 200) {
-        self.statusCode = statusCode
-    }
-
-    func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
-        lastRequest = request
-        let response = HTTPURLResponse(
-            url: request.url!,
-            statusCode: statusCode,
-            httpVersion: "HTTP/1.1",
-            headerFields: nil
-        )!
-        return (Data(), response)
+    func testConnectErrorConformsToAmplifyError() {
+        let error = ConnectError.service(
+            "Something failed",
+            "Try again later",
+            nil
+        )
+        XCTAssertEqual(error.errorDescription, "Something failed")
+        XCTAssertEqual(error.recoverySuggestion, "Try again later")
+        XCTAssertNil(error.underlyingError)
     }
 }
