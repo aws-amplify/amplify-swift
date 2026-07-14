@@ -120,7 +120,7 @@ final class AmplifyConnectClientTests: XCTestCase {
             deviceId: "device-123",
             platform: "iOS",
             appVersion: "2.0.0",
-            previousGuestIdentityId: "us-west-2:guest-id"
+            guestIdentityId: "us-west-2:guest-id"
         )
 
         let data = try JSONEncoder().encode(options)
@@ -132,7 +132,7 @@ final class AmplifyConnectClientTests: XCTestCase {
         XCTAssertEqual(json["deviceId"] as? String, "device-123")
         XCTAssertEqual(json["platform"] as? String, "iOS")
         XCTAssertEqual(json["appVersion"] as? String, "2.0.0")
-        XCTAssertEqual(json["previousGuestIdentityId"] as? String, "us-west-2:guest-id")
+        XCTAssertEqual(json["guestIdentityId"] as? String, "us-west-2:guest-id")
     }
 
     /// Test ConnectClientConfiguration init from region and endpoint

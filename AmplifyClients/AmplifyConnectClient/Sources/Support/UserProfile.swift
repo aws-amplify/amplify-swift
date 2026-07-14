@@ -65,7 +65,7 @@ public struct IdentifyUserOptions: Sendable, Codable {
     /// Passing this on an authenticated call triggers merge-on-sign-in,
     /// folding the prior guest profile (and its devices) into the
     /// authenticated profile.
-    public let previousGuestIdentityId: String?
+    public let guestIdentityId: String?
 
     public init(
         userAttributes: [String: [String]]? = nil,
@@ -75,7 +75,7 @@ public struct IdentifyUserOptions: Sendable, Codable {
         deviceId: String? = nil,
         platform: String? = nil,
         appVersion: String? = nil,
-        previousGuestIdentityId: String? = nil
+        guestIdentityId: String? = nil
     ) {
         self.userAttributes = userAttributes
         self.address = address
@@ -84,7 +84,7 @@ public struct IdentifyUserOptions: Sendable, Codable {
         self.deviceId = deviceId
         self.platform = platform
         self.appVersion = appVersion
-        self.previousGuestIdentityId = previousGuestIdentityId
+        self.guestIdentityId = guestIdentityId
     }
 }
 

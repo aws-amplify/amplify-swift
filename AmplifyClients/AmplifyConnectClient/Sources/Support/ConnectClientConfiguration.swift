@@ -25,7 +25,7 @@ public struct ConnectClientConfiguration: Sendable {
 
     /// Loads configuration from a JSON resource file in the given bundle.
     ///
-    /// Reads the `custom.CustomerProfiles` key.
+    /// Reads the `notifications.amazon_connect_customer_profiles` key.
     ///
     /// - Parameters:
     ///   - resource: The resource file name (without extension). Defaults to `"amplify_outputs"`.
@@ -51,13 +51,13 @@ public struct ConnectClientConfiguration: Sendable {
         }
 
         guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let custom = json["custom"] as? [String: Any],
-              let customerProfiles = custom["CustomerProfiles"] as? [String: Any],
-              let region = customerProfiles["region"] as? String,
+              let notifications = json["notifications"] as? [String: Any],
+              let customerProfiles = notifications["amazon_connect_customer_profiles"] as? [String: Any],
+              let region = customerProfiles["aws_region"] as? String,
               let endpoint = customerProfiles["endpoint"] as? String
         else {
             throw ConnectError.configuration(
-                "Missing custom.CustomerProfiles in \(resource).json",
+                "Missing notifications.amazon_connect_customer_profiles in \(resource).json",
                 "Ensure your backend has notifications configured and \(resource).json is up to date."
             )
         }

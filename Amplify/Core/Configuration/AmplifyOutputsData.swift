@@ -233,14 +233,31 @@ public struct AmplifyOutputsData: Codable {
     }
 
     public struct Notifications: Codable {
-        public let awsRegion: String
-        public let amazonPinpointAppId: String
-        public let channels: [AmazonPinpointChannelType]
+        public let awsRegion: String?
+        public let amazonPinpointAppId: String?
+        public let channels: [AmazonPinpointChannelType]?
 
-        public init(awsRegion: String, amazonPinpointAppId: String, channels: [AmazonPinpointChannelType]) {
+        public init(
+            awsRegion: String? = nil,
+            amazonPinpointAppId: String? = nil,
+            channels: [AmazonPinpointChannelType]? = nil
+        ) {
             self.awsRegion = awsRegion
             self.amazonPinpointAppId = amazonPinpointAppId
             self.channels = channels
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.awsRegion = try container.decodeIfPresent(String.self, forKey: .awsRegion)
+            self.amazonPinpointAppId = try container.decodeIfPresent(String.self, forKey: .amazonPinpointAppId)
+            self.channels = try container.decodeIfPresent([AmazonPinpointChannelType].self, forKey: .channels)
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case awsRegion
+            case amazonPinpointAppId
+            case channels
         }
     }
 

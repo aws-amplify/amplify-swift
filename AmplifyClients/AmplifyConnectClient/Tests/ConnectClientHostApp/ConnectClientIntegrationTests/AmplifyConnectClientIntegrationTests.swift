@@ -219,10 +219,10 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
 
         let configData = try TestConfigHelper.retrieve(forResource: Self.amplifyOutputs)
         let json = try JSONSerialization.jsonObject(with: configData) as! [String: Any]
-        let custom = json["custom"] as! [String: Any]
-        let customerProfiles = custom["CustomerProfiles"] as! [String: Any]
+        let notifications = json["notifications"] as! [String: Any]
+        let customerProfiles = notifications["amazon_connect_customer_profiles"] as! [String: Any]
         let config = ConnectClientConfiguration(
-            region: customerProfiles["region"] as! String,
+            region: customerProfiles["aws_region"] as! String,
             endpoint: customerProfiles["endpoint"] as! String
         )
         return AmplifyConnectClient(
