@@ -113,9 +113,12 @@ extension PlatformWebAuthnCredentials: CredentialRegistrantProtocol {
             name: options.user.name,
             userID: options.user.id
         )
+#if !os(visionOS)
+        // `excludedCredentials` is not available on visionOS
         platformKeyRequest.excludedCredentials = options.excludeCredentials.compactMap { credential in
             return .init(credentialID: credential.id)
         }
+#endif
 
         return try await withCheckedThrowingContinuation { continuation in
             registrationContinuation = continuation
