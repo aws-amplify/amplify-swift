@@ -28,7 +28,7 @@ final class AmplifyConnectClientTests: XCTestCase {
             customProperties: ["tier": ["premium"]]
         )
         let options = IdentifyUserOptions(
-            channelType: "APNS",
+            channelType: .apns,
             platform: "iOS"
         )
 
@@ -115,8 +115,8 @@ final class AmplifyConnectClientTests: XCTestCase {
         let options = IdentifyUserOptions(
             userAttributes: ["hobby": ["biking"]],
             address: "apns-token",
-            channelType: "APNS",
-            optOut: "NONE",
+            channelType: .apns,
+            optOut: .optOutNone,
             deviceId: "device-123",
             platform: "iOS",
             appVersion: "2.0.0",
@@ -133,6 +133,54 @@ final class AmplifyConnectClientTests: XCTestCase {
         XCTAssertEqual(json["platform"] as? String, "iOS")
         XCTAssertEqual(json["appVersion"] as? String, "2.0.0")
         XCTAssertEqual(json["guestIdentityId"] as? String, "us-west-2:guest-id")
+    }
+
+    /// Test that deviceId is auto-filled when not provided
+    ///
+    /// - Given: An IdentifyUserOptions without deviceId
+    /// - When:
+    ///    - DeviceIdProvider.resolve() is called
+    /// - Then:
+    ///    - A non-empty UUID string is returned and persisted
+    ///
+    func testDeviceIdProviderReturnsStableId() {
+        let defaults = UserDefaults(suiteName: "test-device-id")!
+        defaults.removeObject(forKey: "com.amplifyframework.device_id")
+
+        let id1 = DeviceIdProvider.resolve(userDefaults: defaults)
+        let id2 = DeviceIdProvider.resolve(userDefaults: defaults)
+
+        XCTAssertFalse(id1.isEmpty)
+        XCTAssertEqual(id1, id2)
+
+        defaults.removeSuite(named: "test-device-id")
+    }
+
+    /// Test that ChannelType encodes to correct raw values
+    ///
+    /// - Given: ChannelType enum values
+    /// - When:
+    ///    - They are encoded
+    /// - Then:
+    ///    - The raw string values match the backend contract
+    ///
+    func testChannelTypeRawValues() {
+        XCTAssertEqual(ChannelType.apns.rawValue, "APNS")
+        XCTAssertEqual(ChannelType.apnsSandbox.rawValue, "APNS_SANDBOX")
+        XCTAssertEqual(ChannelType.gcm.rawValue, "GCM")
+    }
+
+    /// Test that OptOut encodes to correct raw values
+    ///
+    /// - Given: OptOut enum values
+    /// - When:
+    ///    - They are encoded
+    /// - Then:
+    ///    - The raw string values match the backend contract
+    ///
+    func testOptOutRawValues() {
+        XCTAssertEqual(OptOut.optOutAll.rawValue, "ALL")
+        XCTAssertEqual(OptOut.optOutNone.rawValue, "NONE")
     }
 
     /// Test ConnectClientConfiguration init from region and endpoint

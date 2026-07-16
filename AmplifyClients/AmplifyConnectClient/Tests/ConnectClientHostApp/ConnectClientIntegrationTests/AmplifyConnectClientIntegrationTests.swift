@@ -64,8 +64,7 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
                 name: "Integration Test User"
             ),
             options: IdentifyUserOptions(
-                channelType: "APNS",
-                platform: "iOS",
+                channelType: .apns,
                 appVersion: "1.0.0"
             )
         )

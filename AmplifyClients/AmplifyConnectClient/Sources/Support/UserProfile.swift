@@ -38,6 +38,19 @@ public struct UserProfile: Sendable, Codable {
     }
 }
 
+/// Push notification channel type.
+public enum ChannelType: String, Sendable, Codable {
+    case apns = "APNS"
+    case apnsSandbox = "APNS_SANDBOX"
+    case gcm = "GCM"
+}
+
+/// Opt-out preference for push notifications.
+public enum OptOut: String, Sendable, Codable {
+    case optOutAll = "ALL"
+    case optOutNone = "NONE"
+}
+
 /// Additional options for the `identifyUser` call.
 public struct IdentifyUserOptions: Sendable, Codable {
     /// Custom user attributes to attach to the profile.
@@ -46,16 +59,16 @@ public struct IdentifyUserOptions: Sendable, Codable {
     /// Device push token address.
     public let address: String?
 
-    /// Push notification channel type (e.g., "APNS", "APNS_SANDBOX", "GCM").
-    public let channelType: String?
+    /// Push notification channel type.
+    public let channelType: ChannelType?
 
-    /// Opt-out preference (e.g., "ALL", "NONE").
-    public let optOut: String?
+    /// Opt-out preference for push notifications.
+    public let optOut: OptOut?
 
-    /// Device identifier.
+    /// Device identifier. Auto-filled from persistent storage if not provided.
     public let deviceId: String?
 
-    /// Platform name (e.g., "iOS", "Android").
+    /// Platform name (e.g., "iOS"). Auto-filled if not provided.
     public let platform: String?
 
     /// Application version string.
@@ -70,8 +83,8 @@ public struct IdentifyUserOptions: Sendable, Codable {
     public init(
         userAttributes: [String: [String]]? = nil,
         address: String? = nil,
-        channelType: String? = nil,
-        optOut: String? = nil,
+        channelType: ChannelType? = nil,
+        optOut: OptOut? = nil,
         deviceId: String? = nil,
         platform: String? = nil,
         appVersion: String? = nil,

@@ -101,13 +101,28 @@ public struct AmplifyConnectClient: Sendable {
         userProfile: UserProfile = UserProfile(),
         options: IdentifyUserOptions? = nil
     ) async throws {
+        let enrichedOptions = withDeviceContext(options)
         let request = IdentifyUserRequest(
             userId: userId,
             userProfile: userProfile,
-            options: options
+            options: enrichedOptions
         )
         try await sendRequest(request)
         logger.verbose("identifyUser succeeded for userId: \(userId)")
+    }
+
+    private func withDeviceContext(_ options: IdentifyUserOptions?) -> IdentifyUserOptions {
+        let base = options ?? IdentifyUserOptions()
+        return IdentifyUserOptions(
+            userAttributes: base.userAttributes,
+            address: base.address,
+            channelType: base.channelType,
+            optOut: base.optOut,
+            deviceId: base.deviceId ?? DeviceIdProvider.resolve(),
+            platform: base.platform ?? "iOS",
+            appVersion: base.appVersion,
+            guestIdentityId: base.guestIdentityId
+        )
     }
 
     // MARK: - Private
