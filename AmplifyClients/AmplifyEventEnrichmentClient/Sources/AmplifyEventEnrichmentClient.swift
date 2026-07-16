@@ -45,7 +45,7 @@ public actor AmplifyEventEnrichmentClient {
     ///
     /// The `clientId` is resolved automatically from `UserDefaults` using a
     /// read-or-create pattern with the key
-    /// `com.amazonaws.amplify.event_enrichment.client_id`.
+    /// `com.amplifyframework.device_id` (shared with the Connect client).
     ///
     /// When `deviceMetadata` is nil, the client resolves platform, OS version,
     /// manufacturer, model, and locale via ``PlatformDeviceMetadataProvider``.
