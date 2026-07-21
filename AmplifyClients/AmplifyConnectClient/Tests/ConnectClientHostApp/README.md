@@ -52,7 +52,7 @@ This creates:
 - Cognito User Pool + Identity Pool (with guest access enabled)
 - Amazon Connect instance
 - Customer Profiles domain with `AmplifyProfile`, `AmplifyGuestProfile`, `AmplifyDevice` object types
-- HTTP API with `POST /identify-user` (JWT auth) and `POST /identify-user-guest` (IAM/SigV4)
+- HTTP API with `POST /identify-user`, `POST /register-device`, and `POST /remove-device` (all IAM/SigV4)
 - Push handler Lambda + End User Messaging application
 
 ---
@@ -131,10 +131,10 @@ The file should have this structure:
     "unauthenticated_identities_enabled": true
   },
   "version": "1.4",
-  "custom": {
-    "CustomerProfiles": {
+  "notifications": {
+    "amazon_connect_customer_profiles": {
       "endpoint": "https://<api-id>.execute-api.<region>.amazonaws.com",
-      "region": "<region>"
+      "aws_region": "<region>"
     }
   }
 }
@@ -222,7 +222,7 @@ To test end-to-end push delivery via Connect Journeys:
 After running `identifyUser`, verify the profile was created:
 
 1. AWS Console → **Amazon Connect** → your instance → **Customer Profiles**
-2. Search by userId or email
+2. Search by email
 3. Confirm the profile has the expected attributes and device objects
 
 ---

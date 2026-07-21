@@ -17,48 +17,45 @@ import SmithyIdentity
 /// A client for managing user profiles and device registrations
 /// with Amazon Connect Customer Profiles.
 ///
-/// Communicates with a Lambda-backed HTTP API endpoint.
+/// Communicates with a Lambda-backed HTTP API endpoint. All requests are
+/// SigV4-signed with the caller's AWS credentials (authenticated or guest);
+/// the backend derives the caller identity from the signature.
 ///
 /// ## Usage
 ///
 /// ```swift
-/// let config = try ConnectClientConfiguration.from()
+/// let config = try ConnectClientConfiguration()
 /// let client = AmplifyConnectClient(
 ///     configuration: config,
 ///     credentialsProvider: myCredentialsProvider
 /// )
 ///
 /// try await client.identifyUser(
-///     userId: "user-123",
 ///     userProfile: UserProfile(email: "user@example.com")
 /// )
 ///
-/// try await client.registerDevice(deviceToken: "apns-token")
+/// try await client.registerDevice(token: "apns-device-token")
+///
+/// try await client.removeDevice()
 /// ```
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 public struct AmplifyConnectClient: Sendable {
     private let configuration: ConnectClientConfiguration
     private nonisolated(unsafe) let credentialsProvider: any AWSCredentialsProvider
-    private nonisolated(unsafe) let authTokenProvider: (any AuthTokenProvider)?
     private let urlSession: URLSession
     private let logger: Logger
 
     /// Initializes a new Connect client.
     /// - Parameters:
-    ///   - configuration: Region and endpoint configuration. Use ``ConnectClientConfiguration/from(bundle:)``
+    ///   - configuration: Region and endpoint configuration. Use ``ConnectClientConfiguration/init(from:bundle:)``
     ///     to load from `amplify_outputs.json`.
     ///   - credentialsProvider: Credentials provider from the shared v3 foundation packages.
-    ///   - authTokenProvider: Optional token provider for authenticated (signed-in) users.
-    ///     If it returns a token, the authenticated path (Bearer) is used. If nil or returns nil,
-    ///     falls back to the guest (SigV4) path using credentials.
     public init(
         configuration: ConnectClientConfiguration,
-        credentialsProvider: any AWSCredentialsProvider,
-        authTokenProvider: (any AuthTokenProvider)? = nil
+        credentialsProvider: any AWSCredentialsProvider
     ) {
         self.configuration = configuration
         self.credentialsProvider = credentialsProvider
-        self.authTokenProvider = authTokenProvider
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.urlCache = nil
         sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -71,63 +68,99 @@ public struct AmplifyConnectClient: Sendable {
     ///   - region: The AWS region.
     ///   - endpoint: The HTTP API endpoint URL (Lambda-backed).
     ///   - credentialsProvider: Credentials provider from the shared v3 foundation packages.
-    ///   - authTokenProvider: Optional token provider for authenticated (signed-in) users.
     public init(
         region: String,
         endpoint: String,
-        credentialsProvider: any AWSCredentialsProvider,
-        authTokenProvider: (any AuthTokenProvider)? = nil
+        credentialsProvider: any AWSCredentialsProvider
     ) {
         self.init(
             configuration: ConnectClientConfiguration(region: region, endpoint: endpoint),
-            credentialsProvider: credentialsProvider,
-            authTokenProvider: authTokenProvider
+            credentialsProvider: credentialsProvider
         )
     }
 
     // MARK: - Public API
 
-    /// Creates or updates the user's Connect Customer Profile with targeting attributes.
+    /// Creates or updates the caller's Connect Customer Profile with targeting attributes.
     ///
-    /// First call for a new user creates the profile and establishes the
-    /// Cognito identity link. Subsequent calls update attributes.
+    /// The first call for a new identity creates the profile; subsequent calls
+    /// update attributes. The profile identity is derived server-side from the
+    /// request signature.
     ///
-    /// - Parameters:
-    ///   - userId: The user identifier (typically the Cognito sub).
-    ///   - userProfile: Optional user profile attributes to set.
-    ///   - options: Additional options (device info, channel type, merge-on-sign-in).
-    public func identifyUser(
-        userId: String,
-        userProfile: UserProfile = UserProfile(),
-        options: IdentifyUserOptions? = nil
-    ) async throws {
-        let enrichedOptions = withDeviceContext(options)
-        let request = IdentifyUserRequest(
-            userId: userId,
-            userProfile: userProfile,
-            options: enrichedOptions
-        )
-        try await sendRequest(request)
-        logger.verbose("identifyUser succeeded for userId: \(userId)")
+    /// - Parameter userProfile: User profile attributes to set.
+    public func identifyUser(userProfile: UserProfile) async throws {
+        try await send(IdentifyUserRequest(userProfile: userProfile), to: "identify-user")
+        logger.verbose("identifyUser succeeded")
     }
 
-    private func withDeviceContext(_ options: IdentifyUserOptions?) -> IdentifyUserOptions {
-        let base = options ?? IdentifyUserOptions()
-        return IdentifyUserOptions(
-            userAttributes: base.userAttributes,
-            address: base.address,
-            channelType: base.channelType,
-            optOut: base.optOut,
-            deviceId: base.deviceId ?? DeviceIdProvider.resolve(),
-            platform: base.platform ?? "iOS",
-            appVersion: base.appVersion,
-            guestIdentityId: base.guestIdentityId
+    /// Registers this device for push notifications on the caller's profile.
+    ///
+    /// The device identifier, platform, app version, and channel type are
+    /// resolved automatically:
+    /// - `deviceId`: stable per-install identifier shared across Amplify packages.
+    /// - `platform`: the current operating system.
+    /// - `appVersion`: the host app's `CFBundleShortVersionString`, if present.
+    /// - `channelType`: `APNS_SANDBOX` for debug builds, `APNS` otherwise.
+    ///
+    /// - Parameter token: The APNs device token.
+    public func registerDevice(token: String) async throws {
+        let device = Device(
+            token: token,
+            deviceId: DeviceIdProvider.resolve(),
+            platform: Self.platformName,
+            appVersion: Self.appVersion,
+            channelType: Self.channelType
         )
+        try await send(RegisterDeviceRequest(device: device), to: "register-device")
+        logger.verbose("registerDevice succeeded for deviceId: \(device.deviceId)")
+    }
+
+    /// Removes this device's push registration from the caller's profile.
+    ///
+    /// Uses the same stable per-install device identifier that
+    /// ``registerDevice(token:)`` registers.
+    public func removeDevice() async throws {
+        let deviceId = DeviceIdProvider.resolve()
+        try await send(RemoveDeviceRequest(deviceId: deviceId), to: "remove-device")
+        logger.verbose("removeDevice succeeded for deviceId: \(deviceId)")
+    }
+
+    // MARK: - Device context
+
+    /// The current operating system name, sent as the `platform` field.
+    static var platformName: String {
+        #if os(visionOS)
+        return "visionOS"
+        #elseif os(iOS)
+        return "iOS"
+        #elseif os(macOS)
+        return "macOS"
+        #elseif os(tvOS)
+        return "tvOS"
+        #elseif os(watchOS)
+        return "watchOS"
+        #else
+        return "unknown"
+        #endif
+    }
+
+    /// The host app's marketing version, if available.
+    static var appVersion: String? {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+
+    /// The push channel type. Debug builds use the APNs sandbox environment.
+    static var channelType: ChannelType {
+        #if DEBUG
+        return .apnsSandbox
+        #else
+        return .apns
+        #endif
     }
 
     // MARK: - Private
 
-    private func sendRequest<T: Encodable>(_ body: T) async throws {
+    private func send(_ body: some Encodable, to route: String) async throws {
         let encoder = JSONEncoder()
         let data: Data
         do {
@@ -140,49 +173,18 @@ public struct AmplifyConnectClient: Sendable {
             )
         }
 
-        if let tokenProvider = authTokenProvider,
-           let token = try await tokenProvider.getToken() {
-            try await sendAuthenticated(data: data, accessToken: token.accessToken)
-        } else {
-            let credentials: AWSCredentials
-            do {
-                credentials = try await credentialsProvider.resolve()
-            } catch {
-                throw ConnectError.credentials(
-                    "Failed to resolve credentials",
-                    "Ensure credentials provider is properly configured.",
-                    error
-                )
-            }
-            try await sendGuest(data: data, credentials: credentials)
-        }
-    }
-
-    private var userAgent: String {
-        "lib/\(AmplifyMetadata.platformName)#\(AmplifyMetadata.version) md/amplify-connect"
-    }
-
-    private func sendAuthenticated(data: Data, accessToken: String) async throws {
-        guard let url = URL(string: "\(configuration.endpoint)/identify-user") else {
-            throw ConnectError.configuration(
-                "Invalid endpoint URL: \(configuration.endpoint)",
-                "Provide a valid URL in ConnectClientConfiguration."
+        let credentials: AWSCredentials
+        do {
+            credentials = try await credentialsProvider.resolve()
+        } catch {
+            throw ConnectError.credentials(
+                "Failed to resolve credentials",
+                "Ensure credentials provider is properly configured.",
+                error
             )
         }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-        request.httpBody = data
-
-        logger.debug("Sending authenticated request to /identify-user")
-        try await execute(request)
-    }
-
-    private func sendGuest(data: Data, credentials: AWSCredentials) async throws {
-        guard let url = URL(string: "\(configuration.endpoint)/identify-user-guest"),
+        guard let url = URL(string: "\(configuration.endpoint)/\(route)"),
               let host = url.host
         else {
             throw ConnectError.configuration(
@@ -241,8 +243,12 @@ public struct AmplifyConnectClient: Sendable {
             request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
         }
 
-        logger.debug("Sending guest request to /identify-user-guest (SigV4)")
+        logger.debug("Sending SigV4-signed request to /\(route)")
         try await execute(request)
+    }
+
+    private var userAgent: String {
+        "lib/\(AmplifyMetadata.platformName)#\(AmplifyMetadata.version) md/amplify-connect"
     }
 
     private func execute(_ request: URLRequest) async throws {

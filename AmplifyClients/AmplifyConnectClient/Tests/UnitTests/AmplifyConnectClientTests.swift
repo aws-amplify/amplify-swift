@@ -13,66 +13,51 @@ import XCTest
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 final class AmplifyConnectClientTests: XCTestCase {
 
-    /// Test that identifyUser encodes the correct request body
+    /// Test that the identify-user request body contains only the user profile
     ///
-    /// - Given: A client with a mock token provider
+    /// - Given: An IdentifyUserRequest with a populated profile
     /// - When:
-    ///    - identifyUser is called with userId, profile, and options
+    ///    - The request is encoded
     /// - Then:
-    ///    - The request body contains the expected fields
+    ///    - The body is { userProfile } with the expected fields and no other top-level keys
     ///
-    func testIdentifyUserEncodesCorrectBody() async throws {
+    func testIdentifyUserRequestEncodesCorrectBody() throws {
         let profile = UserProfile(
             email: "test@example.com",
             name: "Test User",
-            customProperties: ["tier": ["premium"]]
+            phone: "+15555550100",
+            customAttributes: ["tier": "premium"]
         )
-        let options = IdentifyUserOptions(
-            channelType: .apns,
-            platform: "iOS"
-        )
-
-        let request = IdentifyUserRequest(
-            userId: "user-123",
-            userProfile: profile,
-            options: options
-        )
+        let request = IdentifyUserRequest(userProfile: profile)
 
         let data = try JSONEncoder().encode(request)
         let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 
-        XCTAssertEqual(json["userId"] as? String, "user-123")
+        XCTAssertEqual(json.keys.sorted(), ["userProfile"])
 
         let userProfileJson = json["userProfile"] as! [String: Any]
         XCTAssertEqual(userProfileJson["email"] as? String, "test@example.com")
         XCTAssertEqual(userProfileJson["name"] as? String, "Test User")
-
-        let optionsJson = json["options"] as! [String: Any]
-        XCTAssertEqual(optionsJson["channelType"] as? String, "APNS")
-        XCTAssertEqual(optionsJson["platform"] as? String, "iOS")
+        XCTAssertEqual(userProfileJson["phone"] as? String, "+15555550100")
+        XCTAssertEqual(userProfileJson["customAttributes"] as? [String: String], ["tier": "premium"])
     }
 
-    /// Test that nil userProfile defaults to empty object in request
+    /// Test that an empty user profile encodes as an empty object
     ///
-    /// - Given: An IdentifyUserRequest with nil userProfile passed to init
+    /// - Given: An IdentifyUserRequest with a default UserProfile
     /// - When:
     ///    - The request is encoded
     /// - Then:
-    ///    - userProfile is present as an empty object
+    ///    - userProfile is present and empty
     ///
-    func testNilUserProfileDefaultsToEmptyObject() async throws {
-        let request = IdentifyUserRequest(
-            userId: "user-123",
-            userProfile: UserProfile(),
-            options: nil
-        )
+    func testEmptyUserProfileEncodesAsEmptyObject() throws {
+        let request = IdentifyUserRequest(userProfile: UserProfile())
 
         let data = try JSONEncoder().encode(request)
         let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 
-        XCTAssertEqual(json["userId"] as? String, "user-123")
-        XCTAssertNotNil(json["userProfile"])
-        XCTAssertNil(json["options"])
+        let userProfileJson = json["userProfile"] as! [String: Any]
+        XCTAssertTrue(userProfileJson.isEmpty)
     }
 
     /// Test that UserProfile encodes location correctly
@@ -81,15 +66,15 @@ final class AmplifyConnectClientTests: XCTestCase {
     /// - When:
     ///    - It is encoded to JSON
     /// - Then:
-    ///    - Location fields are present
+    ///    - Only the contract location fields (city, country, postalCode, region) are present
     ///
     func testUserProfileEncodesLocation() throws {
         let profile = UserProfile(
             location: UserProfileLocation(
                 city: "Seattle",
                 country: "US",
-                latitude: 47.6,
-                longitude: -122.3
+                postalCode: "98101",
+                region: "WA"
             )
         )
 
@@ -97,51 +82,70 @@ final class AmplifyConnectClientTests: XCTestCase {
         let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
         let location = json["location"] as! [String: Any]
 
+        XCTAssertEqual(location.keys.sorted(), ["city", "country", "postalCode", "region"])
         XCTAssertEqual(location["city"] as? String, "Seattle")
         XCTAssertEqual(location["country"] as? String, "US")
-        XCTAssertEqual(location["latitude"] as? Double, 47.6)
-        XCTAssertEqual(location["longitude"] as? Double, -122.3)
+        XCTAssertEqual(location["postalCode"] as? String, "98101")
+        XCTAssertEqual(location["region"] as? String, "WA")
     }
 
-    /// Test that IdentifyUserOptions encodes all fields
+    /// Test that the register-device request body matches the wire contract
     ///
-    /// - Given: An IdentifyUserOptions with all fields set
+    /// - Given: A Device with all fields set
     /// - When:
-    ///    - It is encoded to JSON
+    ///    - A RegisterDeviceRequest is encoded
     /// - Then:
-    ///    - All fields are present
+    ///    - The body is { device: { token, deviceId, platform, appVersion, channelType } }
     ///
-    func testIdentifyUserOptionsEncodesAllFields() throws {
-        let options = IdentifyUserOptions(
-            userAttributes: ["hobby": ["biking"]],
-            address: "apns-token",
-            channelType: .apns,
-            optOut: .optOutNone,
-            deviceId: "device-123",
-            platform: "iOS",
-            appVersion: "2.0.0",
-            guestIdentityId: "us-west-2:guest-id"
+    func testRegisterDeviceRequestEncodesCorrectBody() throws {
+        let request = RegisterDeviceRequest(
+            device: Device(
+                token: "apns-token",
+                deviceId: "device-123",
+                platform: "iOS",
+                appVersion: "2.0.0",
+                channelType: .apns
+            )
         )
 
-        let data = try JSONEncoder().encode(options)
+        let data = try JSONEncoder().encode(request)
         let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
 
-        XCTAssertEqual(json["address"] as? String, "apns-token")
-        XCTAssertEqual(json["channelType"] as? String, "APNS")
-        XCTAssertEqual(json["optOut"] as? String, "NONE")
-        XCTAssertEqual(json["deviceId"] as? String, "device-123")
-        XCTAssertEqual(json["platform"] as? String, "iOS")
-        XCTAssertEqual(json["appVersion"] as? String, "2.0.0")
-        XCTAssertEqual(json["guestIdentityId"] as? String, "us-west-2:guest-id")
+        XCTAssertEqual(json.keys.sorted(), ["device"])
+
+        let device = json["device"] as! [String: Any]
+        XCTAssertEqual(device["token"] as? String, "apns-token")
+        XCTAssertEqual(device["deviceId"] as? String, "device-123")
+        XCTAssertEqual(device["platform"] as? String, "iOS")
+        XCTAssertEqual(device["appVersion"] as? String, "2.0.0")
+        XCTAssertEqual(device["channelType"] as? String, "APNS")
     }
 
-    /// Test that deviceId is auto-filled when not provided
+    /// Test that the remove-device request body matches the wire contract
     ///
-    /// - Given: An IdentifyUserOptions without deviceId
+    /// - Given: A RemoveDeviceRequest with a deviceId
     /// - When:
-    ///    - DeviceIdProvider.resolve() is called
+    ///    - The request is encoded
     /// - Then:
-    ///    - A non-empty UUID string is returned and persisted
+    ///    - The body is { deviceId } with no other keys
+    ///
+    func testRemoveDeviceRequestEncodesCorrectBody() throws {
+        let request = RemoveDeviceRequest(deviceId: "device-123")
+
+        let data = try JSONEncoder().encode(request)
+        let json = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+
+        XCTAssertEqual(json.keys.sorted(), ["deviceId"])
+        XCTAssertEqual(json["deviceId"] as? String, "device-123")
+    }
+
+    /// Test that DeviceIdProvider returns a stable, persisted identifier
+    ///
+    /// - Given: A clean UserDefaults suite
+    /// - When:
+    ///    - DeviceIdProvider.resolve() is called twice
+    /// - Then:
+    ///    - A non-empty UUID string is returned and persisted under the shared key
     ///
     func testDeviceIdProviderReturnsStableId() {
         let defaults = UserDefaults(suiteName: "test-device-id")!
@@ -156,6 +160,28 @@ final class AmplifyConnectClientTests: XCTestCase {
         defaults.removeSuite(named: "test-device-id")
     }
 
+    /// Test that the platform name reflects the current operating system
+    ///
+    /// - Given: The client's internal platform resolution
+    /// - When:
+    ///    - platformName is read
+    /// - Then:
+    ///    - It matches the OS the test is compiled for
+    ///
+    func testPlatformNameMatchesCurrentOS() {
+        #if os(visionOS)
+        XCTAssertEqual(AmplifyConnectClient.platformName, "visionOS")
+        #elseif os(iOS)
+        XCTAssertEqual(AmplifyConnectClient.platformName, "iOS")
+        #elseif os(macOS)
+        XCTAssertEqual(AmplifyConnectClient.platformName, "macOS")
+        #elseif os(tvOS)
+        XCTAssertEqual(AmplifyConnectClient.platformName, "tvOS")
+        #elseif os(watchOS)
+        XCTAssertEqual(AmplifyConnectClient.platformName, "watchOS")
+        #endif
+    }
+
     /// Test that ChannelType encodes to correct raw values
     ///
     /// - Given: ChannelType enum values
@@ -168,19 +194,6 @@ final class AmplifyConnectClientTests: XCTestCase {
         XCTAssertEqual(ChannelType.apns.rawValue, "APNS")
         XCTAssertEqual(ChannelType.apnsSandbox.rawValue, "APNS_SANDBOX")
         XCTAssertEqual(ChannelType.gcm.rawValue, "GCM")
-    }
-
-    /// Test that OptOut encodes to correct raw values
-    ///
-    /// - Given: OptOut enum values
-    /// - When:
-    ///    - They are encoded
-    /// - Then:
-    ///    - The raw string values match the backend contract
-    ///
-    func testOptOutRawValues() {
-        XCTAssertEqual(OptOut.optOutAll.rawValue, "ALL")
-        XCTAssertEqual(OptOut.optOutNone.rawValue, "NONE")
     }
 
     /// Test ConnectClientConfiguration init from region and endpoint

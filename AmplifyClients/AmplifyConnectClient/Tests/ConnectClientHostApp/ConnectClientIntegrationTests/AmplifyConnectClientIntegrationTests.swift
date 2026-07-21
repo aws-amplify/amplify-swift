@@ -34,8 +34,6 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
             try Amplify.configure(with: .data(data))
             Self.isAmplifyConfigured = true
         }
-
-        try await signIn()
     }
 
     override func tearDown() async throws {
@@ -45,96 +43,86 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
 
     // MARK: - Tests
 
-    /// Test that identifyUser succeeds with a valid authenticated request
+    /// Test that identifyUser succeeds for a signed-in user
     ///
     /// - Given: A deployed backend and a signed-in user
     /// - When:
-    ///    - identifyUser is called with userId and profile
+    ///    - identifyUser is called with a profile
     /// - Then:
     ///    - The call succeeds without throwing
     ///
     func testIdentifyUserAuthenticated() async throws {
-        let client = try await makeClient()
-        let userId = try await Amplify.Auth.getCurrentUser().userId
+        try await signIn()
+        let client = try makeClient()
 
         try await client.identifyUser(
-            userId: userId,
             userProfile: UserProfile(
                 email: "integ-test@example.com",
                 name: "Integration Test User"
-            ),
-            options: IdentifyUserOptions(
-                channelType: .apns,
-                appVersion: "1.0.0"
             )
         )
     }
 
-    /// Test that identifyUser succeeds with minimal parameters
+    /// Test that identifyUser succeeds for a guest (unauthenticated) caller
+    ///
+    /// - Given: A deployed backend with guest access enabled and no signed-in user
+    /// - When:
+    ///    - identifyUser is called with a profile
+    /// - Then:
+    ///    - The call succeeds without throwing
+    ///
+    func testIdentifyUserGuest() async throws {
+        _ = await Amplify.Auth.signOut()
+        let client = try makeClient()
+
+        try await client.identifyUser(
+            userProfile: UserProfile(email: "guest-integ-test@example.com")
+        )
+    }
+
+    /// Test that identifyUser succeeds with an empty profile
     ///
     /// - Given: A deployed backend and a signed-in user
     /// - When:
-    ///    - identifyUser is called with only userId
+    ///    - identifyUser is called with a default profile
     /// - Then:
     ///    - The call succeeds without throwing
     ///
     func testIdentifyUserMinimal() async throws {
-        let client = try await makeClient()
-        let userId = try await Amplify.Auth.getCurrentUser().userId
+        try await signIn()
+        let client = try makeClient()
 
-        try await client.identifyUser(userId: userId)
+        try await client.identifyUser(userProfile: UserProfile())
     }
 
-    /// Test that identifyUser succeeds with custom properties
+    /// Test that identifyUser succeeds with custom attributes and location
     ///
     /// - Given: A deployed backend and a signed-in user
     /// - When:
-    ///    - identifyUser is called with custom properties
+    ///    - identifyUser is called with custom attributes and a location
     /// - Then:
     ///    - The call succeeds without throwing
     ///
-    func testIdentifyUserWithCustomProperties() async throws {
-        let client = try await makeClient()
-        let userId = try await Amplify.Auth.getCurrentUser().userId
+    func testIdentifyUserWithAttributesAndLocation() async throws {
+        try await signIn()
+        let client = try makeClient()
 
         try await client.identifyUser(
-            userId: userId,
             userProfile: UserProfile(
                 email: "custom@example.com",
-                customProperties: ["tier": ["premium"], "interests": ["sports", "tech"]]
-            )
-        )
-    }
-
-    /// Test that identifyUser succeeds with location data
-    ///
-    /// - Given: A deployed backend and a signed-in user
-    /// - When:
-    ///    - identifyUser is called with location in the profile
-    /// - Then:
-    ///    - The call succeeds without throwing
-    ///
-    func testIdentifyUserWithLocation() async throws {
-        let client = try await makeClient()
-        let userId = try await Amplify.Auth.getCurrentUser().userId
-
-        try await client.identifyUser(
-            userId: userId,
-            userProfile: UserProfile(
-                email: "location@example.com",
+                phone: "+15555550100",
+                customAttributes: ["tier": "premium", "interests": "sports"],
                 location: UserProfileLocation(
                     city: "Seattle",
-                    region: "WA",
                     country: "US",
                     postalCode: "98101",
-                    latitude: 47.6062,
-                    longitude: -122.3321
+                    region: "WA"
                 )
             )
         )
     }
 
-    /// Test that calling identifyUser twice for the same userId updates the profile
+    /// Test that calling identifyUser twice updates the profile
     ///
     /// - Given: A deployed backend and a signed-in user
     /// - When:
@@ -143,18 +131,35 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
     ///    - Both calls succeed without throwing
     ///
     func testIdentifyUserUpdateProfile() async throws {
-        let client = try await makeClient()
-        let userId = try await Amplify.Auth.getCurrentUser().userId
+        try await signIn()
+        let client = try makeClient()
 
         try await client.identifyUser(
-            userId: userId,
             userProfile: UserProfile(email: "first@example.com", name: "First")
         )
 
         try await client.identifyUser(
-            userId: userId,
             userProfile: UserProfile(email: "updated@example.com", name: "Updated")
         )
+    }
+
+    /// Test that registerDevice and removeDevice succeed for a signed-in user
+    ///
+    /// - Given: A deployed backend and a signed-in user with an identified profile
+    /// - When:
+    ///    - registerDevice is called with a token, then removeDevice is called
+    /// - Then:
+    ///    - Both calls succeed without throwing
+    ///
+    func testRegisterAndRemoveDevice() async throws {
+        try await signIn()
+        let client = try makeClient()
+
+        try await client.identifyUser(
+            userProfile: UserProfile(email: "device-test@example.com")
+        )
+        try await client.registerDevice(token: "integ-test-device-token")
+        try await client.removeDevice()
     }
 
     /// Test that an invalid endpoint returns a service error
@@ -166,25 +171,16 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
     ///    - A ConnectError is thrown
     ///
     func testInvalidEndpointThrowsError() async throws {
-        let session = try await Amplify.Auth.fetchAuthSession()
-        let tokensProvider = session as! AuthCognitoTokensProvider
-        let tokens = try tokensProvider.getCognitoTokens().get()
-
         let badClient = AmplifyConnectClient(
             configuration: ConnectClientConfiguration(
                 region: "us-west-2",
                 endpoint: "https://invalid-endpoint.example.com"
             ),
-            credentialsProvider: AmplifyIntegCredentialsProvider(),
-            authTokenProvider: AmplifyIntegTokenProvider(
-                idToken: tokens.idToken,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
-            )
+            credentialsProvider: AmplifyIntegCredentialsProvider()
         )
 
         do {
-            try await badClient.identifyUser(userId: "should-fail")
+            try await badClient.identifyUser(userProfile: UserProfile())
             XCTFail("Expected error for invalid endpoint")
         } catch is ConnectError {
             // Expected
@@ -211,11 +207,7 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
         }
     }
 
-    private func makeClient() async throws -> AmplifyConnectClient {
-        let session = try await Amplify.Auth.fetchAuthSession()
-        let tokensProvider = session as! AuthCognitoTokensProvider
-        let tokens = try tokensProvider.getCognitoTokens().get()
-
+    private func makeClient() throws -> AmplifyConnectClient {
         let configData = try TestConfigHelper.retrieve(forResource: Self.amplifyOutputs)
         let json = try JSONSerialization.jsonObject(with: configData) as! [String: Any]
         let notifications = json["notifications"] as! [String: Any]
@@ -226,17 +218,12 @@ final class AmplifyConnectClientIntegrationTests: XCTestCase {
         )
         return AmplifyConnectClient(
             configuration: config,
-            credentialsProvider: AmplifyIntegCredentialsProvider(),
-            authTokenProvider: AmplifyIntegTokenProvider(
-                idToken: tokens.idToken,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
-            )
+            credentialsProvider: AmplifyIntegCredentialsProvider()
         )
     }
 }
 
-// MARK: - Auth Bridges
+// MARK: - Credentials Bridge
 
 private struct AmplifyIntegCredentialsProvider: AmplifyFoundation.AWSCredentialsProvider {
     func resolve() async throws -> AmplifyFoundation.AWSCredentials {
@@ -269,24 +256,4 @@ private struct BridgedTemporaryCredentials: AmplifyFoundation.AWSTemporaryCreden
     let secretAccessKey: String
     let sessionToken: String
     let expiration: Date
-}
-
-private struct AmplifyIntegTokenProvider: AuthTokenProvider {
-    let idToken: String
-    let accessToken: String
-    let refreshToken: String
-
-    func getToken() async throws -> AuthToken? {
-        IntegAuthToken(
-            idToken: idToken,
-            accessToken: accessToken,
-            refreshToken: refreshToken
-        )
-    }
-}
-
-private struct IntegAuthToken: AuthToken {
-    let idToken: String
-    let accessToken: String
-    let refreshToken: String
 }
