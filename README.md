@@ -176,6 +176,7 @@ The following Amplify targets have been identified to be using the [User default
 * `AWSDataStorePlugin`
 * `AWSCloudWatchLoggingPlugin`
 * `InternalAWSPinpoint`
+* `AmplifyConnectClient`
 
 ## Reporting Bugs/Feature Requests
 
