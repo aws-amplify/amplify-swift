@@ -53,8 +53,13 @@ struct VerifyPasswordSRP: Action {
                 credentialStoreClient: environment.authEnvironment().credentialsClient
             )
 
+            // Device metadata is stored under the username the caller signed in with
+            // (`ConfirmDevice` uses `signedInData.inputUsername`), so it must be read back with
+            // the same value. `username` here is `parameters["USERNAME"]`, which for pools with
+            // alias sign-in is the sub — looking metadata up with it never matches what was
+            // written, so DEVICE_KEY would be omitted and every sign-in would register a new device.
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: username,
+                for: inputUsername,
                 with: environment
             )
             let signature = try signature(
