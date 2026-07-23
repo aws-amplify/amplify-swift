@@ -41,7 +41,10 @@ enum ConnectClientValidator {
     }
 
     private static func validate(_ value: String?, field: String) throws {
-        guard let value, value.count > maxAttributeLength else { return }
+        // Counts UTF-16 code units to match the backend's JavaScript
+        // `String.length` semantics; `String.count` (grapheme clusters)
+        // would under-count multi-code-unit characters such as emoji.
+        guard let value, value.utf16.count > maxAttributeLength else { return }
         throw ConnectError.validation(
             "\(field) exceeds the maximum length of \(maxAttributeLength) characters",
             "Shorten the value to at most \(maxAttributeLength) characters."

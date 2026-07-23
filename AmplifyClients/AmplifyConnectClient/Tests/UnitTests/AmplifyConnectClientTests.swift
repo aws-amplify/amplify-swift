@@ -396,6 +396,34 @@ final class AmplifyConnectClientTests: XCTestCase {
         }
     }
 
+    /// Test that length is measured in UTF-16 code units, matching the backend
+    ///
+    /// - Given: A value of 128 emoji (128 grapheme clusters, 256 UTF-16 code units)
+    /// - When:
+    ///    - The validator is invoked
+    /// - Then:
+    ///    - A ConnectError.validation is thrown, because the backend's JavaScript
+    ///      `String.length` counts UTF-16 code units and would reject this value
+    ///
+    func testValidationCountsUTF16CodeUnits() {
+        // 😀 is a surrogate pair: 1 grapheme cluster, 2 UTF-16 code units.
+        let emoji = String(repeating: "😀", count: 128)
+        XCTAssertEqual(emoji.count, 128)
+        XCTAssertEqual(emoji.utf16.count, 256)
+
+        XCTAssertThrowsError(
+            try ConnectClientValidator.validate(UserProfile(email: emoji))
+        ) { error in
+            guard case .validation = error as? ConnectError else {
+                return XCTFail("Expected validation error, got \(error)")
+            }
+        }
+
+        // 127 emoji (254 code units) stays within the limit.
+        let within = String(repeating: "😀", count: 127)
+        XCTAssertNoThrow(try ConnectClientValidator.validate(UserProfile(email: within)))
+    }
+
     /// Test that an over-length device token throws a validation error
     ///
     /// - Given: A token of 256 characters
