@@ -178,6 +178,9 @@ The following Amplify targets have been identified to be using the [User default
 * `InternalAWSPinpoint`
 * `AmplifyConnectClient`
 
+> [!NOTE]
+> The `AmplifyConnectClient` privacy manifest declares every data type the client is capable of transmitting (email address, name, phone number, coarse location, device ID). All `UserProfile` fields are optional, so when preparing your app's privacy report you should narrow your app-level declarations to the fields your app actually sends.
+
 ## Reporting Bugs/Feature Requests
 
 [![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-swift/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
