@@ -11,9 +11,11 @@ import AmplifyFoundation
 public enum ConnectError {
     /// Configuration is invalid or missing required fields.
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
-    /// Neither a token nor credentials could be resolved.
+    /// Credentials could not be resolved.
     case credentials(ErrorDescription, RecoverySuggestion, Error? = nil)
-    /// The identify-user request failed.
+    /// Input validation failed (e.g. an over-length attribute value).
+    case validation(ErrorDescription, RecoverySuggestion, Error? = nil)
+    /// The request failed.
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// An error that doesn't fall into the known categories above.
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
@@ -24,6 +26,7 @@ extension ConnectError: AmplifyError {
         switch self {
         case .configuration(let description, _, _),
              .credentials(let description, _, _),
+             .validation(let description, _, _),
              .service(let description, _, _),
              .unknown(let description, _, _):
             return description
@@ -34,6 +37,7 @@ extension ConnectError: AmplifyError {
         switch self {
         case .configuration(_, let suggestion, _),
              .credentials(_, let suggestion, _),
+             .validation(_, let suggestion, _),
              .service(_, let suggestion, _),
              .unknown(_, let suggestion, _):
             return suggestion
@@ -44,6 +48,7 @@ extension ConnectError: AmplifyError {
         switch self {
         case .configuration(_, _, let error),
              .credentials(_, _, let error),
+             .validation(_, _, let error),
              .service(_, _, let error),
              .unknown(_, _, let error):
             return error

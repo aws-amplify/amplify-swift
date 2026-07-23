@@ -62,7 +62,35 @@ public struct ConnectClientConfiguration: Sendable {
             )
         }
 
+        try Self.validateEndpoint(endpoint)
+
         self.region = region
         self.endpoint = endpoint
+    }
+
+    /// Validates that the endpoint is a well-formed URL using the `https` scheme.
+    ///
+    /// Called when loading configuration from `amplify_outputs.json`, and again
+    /// by the client before every request, so manually constructed
+    /// configurations are enforced too.
+    ///
+    /// - Throws: ``ConnectError/configuration(_:_:_:)`` for malformed or non-https endpoints.
+    static func validateEndpoint(_ endpoint: String) throws {
+        guard let url = URL(string: endpoint),
+              let scheme = url.scheme,
+              url.host != nil
+        else {
+            throw ConnectError.configuration(
+                "Invalid endpoint URL: \(endpoint)",
+                "Provide a valid https endpoint URL."
+            )
+        }
+
+        guard scheme.lowercased() == "https" else {
+            throw ConnectError.configuration(
+                "Endpoint must use the https scheme, got \"\(scheme)\"",
+                "Use an https endpoint URL."
+            )
+        }
     }
 }

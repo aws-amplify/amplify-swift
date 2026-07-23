@@ -253,4 +253,215 @@ final class AmplifyConnectClientTests: XCTestCase {
         XCTAssertEqual(error.recoverySuggestion, "Try again later")
         XCTAssertNil(error.underlyingError)
     }
+
+    // MARK: - Endpoint validation
+
+    /// Test that a well-formed https endpoint passes validation
+    ///
+    /// - Given: An https endpoint URL
+    /// - When:
+    ///    - validateEndpoint is called
+    /// - Then:
+    ///    - No error is thrown, including for non-default ports
+    ///
+    func testEndpointValidationAcceptsHttps() throws {
+        try ConnectClientConfiguration.validateEndpoint("https://abc123.execute-api.us-west-2.amazonaws.com")
+        try ConnectClientConfiguration.validateEndpoint("https://example.com:8443")
+    }
+
+    /// Test that non-https and malformed endpoints are rejected
+    ///
+    /// - Given: Endpoints using http, ftp, or no valid host
+    /// - When:
+    ///    - validateEndpoint is called
+    /// - Then:
+    ///    - A ConnectError.configuration is thrown for each
+    ///
+    func testEndpointValidationRejectsNonHttps() {
+        let invalidEndpoints = [
+            "http://example.com",
+            "ftp://example.com",
+            "example.com",
+            "",
+        ]
+        for endpoint in invalidEndpoints {
+            do {
+                try ConnectClientConfiguration.validateEndpoint(endpoint)
+                XCTFail("Expected error for endpoint: \(endpoint)")
+            } catch let error as ConnectError {
+                guard case .configuration = error else {
+                    XCTFail("Expected configuration error for \(endpoint), got \(error)")
+                    return
+                }
+            } catch {
+                XCTFail("Unexpected error type: \(error)")
+            }
+        }
+    }
+
+    /// Test that identifyUser rejects a non-https endpoint before any network call
+    ///
+    /// - Given: A client manually configured with an http endpoint
+    /// - When:
+    ///    - identifyUser is called
+    /// - Then:
+    ///    - A ConnectError.configuration is thrown
+    ///
+    func testClientRejectsHttpEndpoint() async {
+        let client = AmplifyConnectClient(
+            region: "us-west-2",
+            endpoint: "http://example.com",
+            credentialsProvider: UnusedCredentialsProvider()
+        )
+        do {
+            try await client.identifyUser(userProfile: UserProfile())
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .configuration = error else {
+                XCTFail("Expected configuration error, got \(error)")
+                return
+            }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+
+    // MARK: - Input length validation
+
+    /// Test that values at the maximum length pass validation
+    ///
+    /// - Given: Profile fields, custom attributes, and a token of exactly 255 characters
+    /// - When:
+    ///    - The validator is invoked
+    /// - Then:
+    ///    - No error is thrown
+    ///
+    func testValidationAcceptsValuesAtMaxLength() throws {
+        let max = String(repeating: "a", count: 255)
+        try ConnectClientValidator.validate(
+            UserProfile(
+                email: max,
+                name: max,
+                phone: max,
+                customAttributes: [max: max],
+                location: UserProfileLocation(
+                    city: max,
+                    country: max,
+                    postalCode: max,
+                    region: max
+                )
+            )
+        )
+        try ConnectClientValidator.validateToken(max)
+    }
+
+    /// Test that each over-length field throws a validation error naming the field
+    ///
+    /// - Given: Individual fields of 256 characters
+    /// - When:
+    ///    - The validator is invoked
+    /// - Then:
+    ///    - A ConnectError.validation is thrown whose description names the field
+    ///
+    func testValidationRejectsOverLengthValues() {
+        let over = String(repeating: "a", count: 256)
+        let cases: [(UserProfile, String)] = [
+            (UserProfile(email: over), "userProfile.email"),
+            (UserProfile(name: over), "userProfile.name"),
+            (UserProfile(phone: over), "userProfile.phone"),
+            (UserProfile(location: UserProfileLocation(city: over)), "userProfile.location.city"),
+            (UserProfile(location: UserProfileLocation(country: over)), "userProfile.location.country"),
+            (UserProfile(location: UserProfileLocation(postalCode: over)), "userProfile.location.postalCode"),
+            (UserProfile(location: UserProfileLocation(region: over)), "userProfile.location.region"),
+            (UserProfile(customAttributes: [over: "v"]), "userProfile.customAttributes key"),
+            (UserProfile(customAttributes: ["k": over]), "userProfile.customAttributes[\"k\"]"),
+        ]
+
+        for (profile, expectedField) in cases {
+            do {
+                try ConnectClientValidator.validate(profile)
+                XCTFail("Expected error for field: \(expectedField)")
+            } catch let error as ConnectError {
+                guard case .validation(let description, _, _) = error else {
+                    XCTFail("Expected validation error for \(expectedField), got \(error)")
+                    continue
+                }
+                XCTAssertTrue(
+                    description.contains(expectedField),
+                    "Expected description to name \(expectedField), got: \(description)"
+                )
+            } catch {
+                XCTFail("Unexpected error type: \(error)")
+            }
+        }
+    }
+
+    /// Test that an over-length device token throws a validation error
+    ///
+    /// - Given: A token of 256 characters
+    /// - When:
+    ///    - registerDevice is called
+    /// - Then:
+    ///    - A ConnectError.validation is thrown before any network call
+    ///
+    func testRegisterDeviceRejectsOverLengthToken() async {
+        let client = AmplifyConnectClient(
+            region: "us-west-2",
+            endpoint: "https://example.com",
+            credentialsProvider: UnusedCredentialsProvider()
+        )
+        do {
+            try await client.registerDevice(token: String(repeating: "a", count: 256))
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .validation(let description, _, _) = error else {
+                XCTFail("Expected validation error, got \(error)")
+                return
+            }
+            XCTAssertTrue(description.contains("token"))
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+
+    /// Test that identifyUser rejects an over-length profile field before any network call
+    ///
+    /// - Given: A profile with a 256-character email
+    /// - When:
+    ///    - identifyUser is called
+    /// - Then:
+    ///    - A ConnectError.validation is thrown
+    ///
+    func testIdentifyUserRejectsOverLengthField() async {
+        let client = AmplifyConnectClient(
+            region: "us-west-2",
+            endpoint: "https://example.com",
+            credentialsProvider: UnusedCredentialsProvider()
+        )
+        do {
+            try await client.identifyUser(
+                userProfile: UserProfile(email: String(repeating: "a", count: 256))
+            )
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .validation = error else {
+                XCTFail("Expected validation error, got \(error)")
+                return
+            }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+}
+
+// MARK: - Test doubles
+
+/// Credentials provider that fails the test if it is ever resolved.
+/// Used to prove validation rejects input before any credentials or
+/// network work happens.
+private struct UnusedCredentialsProvider: AWSCredentialsProvider {
+    func resolve() async throws -> AWSCredentials {
+        XCTFail("Credentials should not be resolved for invalid input")
+        throw ConnectError.credentials("unexpected", "unexpected")
+    }
 }

@@ -9,6 +9,7 @@
 import AmplifyFoundationBridge
 import AWSSDKHTTPAuth
 import Foundation
+import Smithy
 import SmithyHTTPAPI
 import SmithyHTTPAuth
 import SmithyHTTPAuthAPI
@@ -89,6 +90,7 @@ public struct AmplifyConnectClient: Sendable {
     ///
     /// - Parameter userProfile: User profile attributes to set.
     public func identifyUser(userProfile: UserProfile) async throws {
+        try ConnectClientValidator.validate(userProfile)
         try await send(IdentifyUserRequest(userProfile: userProfile), to: "identify-user")
         logger.verbose("identifyUser succeeded")
     }
@@ -104,6 +106,7 @@ public struct AmplifyConnectClient: Sendable {
     ///
     /// - Parameter token: The APNs device token.
     public func registerDevice(token: String) async throws {
+        try ConnectClientValidator.validateToken(token)
         let device = Device(
             token: token,
             deviceId: DeviceIdProvider.resolve(),
@@ -112,7 +115,7 @@ public struct AmplifyConnectClient: Sendable {
             channelType: Self.channelType
         )
         try await send(RegisterDeviceRequest(device: device), to: "register-device")
-        logger.verbose("registerDevice succeeded for deviceId: \(device.deviceId)")
+        logger.verbose("registerDevice succeeded")
     }
 
     /// Removes this device's push registration from the caller's profile.
@@ -122,7 +125,7 @@ public struct AmplifyConnectClient: Sendable {
     public func removeDevice() async throws {
         let deviceId = DeviceIdProvider.resolve()
         try await send(RemoveDeviceRequest(deviceId: deviceId), to: "remove-device")
-        logger.verbose("removeDevice succeeded for deviceId: \(deviceId)")
+        logger.verbose("removeDevice succeeded")
     }
 
     // MARK: - Device context
@@ -161,6 +164,8 @@ public struct AmplifyConnectClient: Sendable {
     // MARK: - Private
 
     private func send(_ body: some Encodable, to route: String) async throws {
+        try ConnectClientConfiguration.validateEndpoint(configuration.endpoint)
+
         let encoder = JSONEncoder()
         let data: Data
         do {
@@ -185,7 +190,8 @@ public struct AmplifyConnectClient: Sendable {
         }
 
         guard let url = URL(string: "\(configuration.endpoint)/\(route)"),
-              let host = url.host
+              let host = url.host,
+              let scheme = url.scheme.flatMap({ URIScheme(rawValue: $0.lowercased()) })
         else {
             throw ConnectError.configuration(
                 "Invalid endpoint URL: \(configuration.endpoint)",
@@ -193,12 +199,17 @@ public struct AmplifyConnectClient: Sendable {
             )
         }
 
+        // Derive host, port, and protocol from the endpoint URL so the
+        // signature is always computed over the same authority the request
+        // is sent to.
+        let port = url.port.flatMap { UInt16(exactly: $0) } ?? UInt16(scheme.port)
+
         let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withMethod(.post)
-            .withPort(443)
-            .withProtocol(.https)
+            .withPort(port)
+            .withProtocol(scheme)
             .withHeaders(.init(["Content-Type": "application/json", "User-Agent": userAgent]))
             .withBody(.data(data))
 
