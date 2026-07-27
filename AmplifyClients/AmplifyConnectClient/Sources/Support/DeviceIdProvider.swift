@@ -9,9 +9,8 @@ import Foundation
 
 /// The shared, deliberately un-namespaced storage key for the device identifier.
 ///
-/// This exact string is also used by the Flutter and Android implementations and by
-/// ``AmplifyEventEnrichmentClient``, so it is intentionally **not** scoped by app ID,
-/// region, or client instance — see ``DeviceIdProvider`` for the reasoning.
+/// This exact string is also used by ``AmplifyEventEnrichmentClient``, so it is 
+/// intentionally **not** scoped by app ID, region, or client instance — see ``DeviceIdProvider`` for the reasoning.
 private let deviceIdKey = "com.amplifyframework.device_id"
 
 /// Resolves a persistent device identifier shared across Amplify packages.
@@ -37,8 +36,7 @@ private let deviceIdKey = "com.amplifyframework.device_id"
 ///
 /// Creating several ``AmplifyConnectClient`` instances — including ones pointed at
 /// different regions or endpoints — is supported, and all of them resolve to the
-/// *same* device identifier. The identifier answers "which device is this?", not
-/// "which backend is this?", so it does not vary per client. Consequences:
+/// *same* device identifier. Consequences:
 ///
 /// - Registering the same device against two backends produces one device object per
 ///   backend, each keyed by the same identifier. This is the intended behavior; the
