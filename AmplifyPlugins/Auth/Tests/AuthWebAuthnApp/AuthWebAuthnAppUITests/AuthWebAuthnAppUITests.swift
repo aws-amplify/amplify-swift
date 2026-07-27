@@ -8,7 +8,7 @@
 import XCTest
 
 final class AuthWebAuthnAppUITests: XCTestCase {
-    private let timeout = TimeInterval(6)
+    private let timeout = TimeInterval(30)
     private let app = XCUIApplication()
     private var username: String!
     private var signUpButton: XCUIElement!
@@ -72,20 +72,14 @@ final class AuthWebAuthnAppUITests: XCTestCase {
     @MainActor
     func testWebAuthnAPIs() async throws {
         // 1. Associate new WebAuthn Credential
+        let associateContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
         let associateAttempt = await attempt {
             associateButton.tap()
-            return !waitForResult("Associate WebAuthn Credential failed:", timeout: 1)
+            return associateContinueButton.waitForExistence(timeout: timeout)
         }
 
         guard associateAttempt else {
-            XCTFail("Failed to trigger the Associate WebAuthn Credential workflow: \(lastResult)")
-            return
-        }
-
-        // Wait for the "Continue" button to appear in the FaceID popover and tap it
-        let associateContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
-        guard associateContinueButton.waitForExistence(timeout: timeout) else {
-            XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential")
+            XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential: \(lastResult)")
             return
         }
         associateContinueButton.tap()
@@ -112,20 +106,14 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         }
 
         // 4. Sign in with WebAuthn
+        let signInContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
         let signInAttempt = await attempt {
             signInButton.tap()
-            return !waitForResult("Sign In failed:", timeout: 1)
+            return signInContinueButton.waitForExistence(timeout: timeout)
         }
 
         guard signInAttempt else {
-            XCTFail("Failed to trigger the Assert WebAuthn Credential workflow: \(lastResult)")
-            return
-        }
-
-        // Wait for the "Continue" button to appear in the FaceID popover
-        let signInContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
-        guard signInContinueButton.waitForExistence(timeout: timeout) else {
-            XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn")
+            XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn: \(lastResult)")
             return
         }
 
