@@ -132,7 +132,7 @@ The file should have this structure:
   },
   "version": "1.4",
   "notifications": {
-    "amazon_connect_customer_profiles": {
+    "amazon_connect": {
       "endpoint": "https://<api-id>.execute-api.<region>.amazonaws.com",
       "aws_region": "<region>"
     }

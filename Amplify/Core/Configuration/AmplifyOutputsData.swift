@@ -232,6 +232,15 @@ public struct AmplifyOutputsData: Codable {
         }
     }
 
+    /// Outputs for the notifications category.
+    ///
+    /// The fields below describe an Amazon Pinpoint backend and are optional because
+    /// `notifications` may be present without Pinpoint being configured — for example
+    /// when only Amazon Connect is provisioned, the backend emits `notifications`
+    /// containing just an `amazon_connect` block. Declaring these as non-optional
+    /// made `Amplify.configure()` fail to decode such a configuration outright,
+    /// preventing an app from using any category. Consumers must therefore check
+    /// for the values they need; see `AWSPinpointPushNotificationsPlugin+Configure`.
     public struct Notifications: Codable {
         public let awsRegion: String?
         public let amazonPinpointAppId: String?
@@ -245,19 +254,6 @@ public struct AmplifyOutputsData: Codable {
             self.awsRegion = awsRegion
             self.amazonPinpointAppId = amazonPinpointAppId
             self.channels = channels
-        }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.awsRegion = try container.decodeIfPresent(String.self, forKey: .awsRegion)
-            self.amazonPinpointAppId = try container.decodeIfPresent(String.self, forKey: .amazonPinpointAppId)
-            self.channels = try container.decodeIfPresent([AmazonPinpointChannelType].self, forKey: .channels)
-        }
-
-        enum CodingKeys: String, CodingKey {
-            case awsRegion
-            case amazonPinpointAppId
-            case channels
         }
     }
 

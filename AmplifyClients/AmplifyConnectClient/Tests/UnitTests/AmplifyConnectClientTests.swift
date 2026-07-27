@@ -235,6 +235,63 @@ final class AmplifyConnectClientTests: XCTestCase {
         }
     }
 
+    /// Test ConnectClientConfiguration rejects a resource name carrying an extension
+    ///
+    /// - Given: A resource name that includes the `.json` extension
+    /// - When:
+    ///    - ConnectClientConfiguration(from:) is called
+    /// - Then:
+    ///    - A ConnectError.configuration is thrown naming the extension as the problem,
+    ///      rather than a confusing file-not-found error
+    ///
+    func testConfigurationRejectsResourceNameWithExtension() {
+        do {
+            _ = try ConnectClientConfiguration(from: "amplify_outputs.json")
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .configuration(let description, let suggestion, _) = error else {
+                XCTFail("Expected configuration error, got \(error)")
+                return
+            }
+            XCTAssertTrue(
+                description.contains("must not include a file extension"),
+                "Expected the error to call out the extension, got: \(description)"
+            )
+            XCTAssertTrue(
+                suggestion.contains("amplify_outputs"),
+                "Expected the suggestion to show the corrected name, got: \(suggestion)"
+            )
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+
+    /// Test ConnectClientConfiguration rejects any resource extension, not just `.json`
+    ///
+    /// - Given: A resource name with a non-json extension
+    /// - When:
+    ///    - ConnectClientConfiguration(from:) is called
+    /// - Then:
+    ///    - A ConnectError.configuration is thrown for the extension
+    ///
+    func testConfigurationRejectsResourceNameWithNonJsonExtension() {
+        do {
+            _ = try ConnectClientConfiguration(from: "outputs.txt")
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .configuration(let description, _, _) = error else {
+                XCTFail("Expected configuration error, got \(error)")
+                return
+            }
+            XCTAssertTrue(
+                description.contains("must not include a file extension"),
+                "Expected the error to call out the extension, got: \(description)"
+            )
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+
     /// Test ConnectError conforms to AmplifyError
     ///
     /// - Given: A ConnectError

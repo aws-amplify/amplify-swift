@@ -25,13 +25,27 @@ public struct ConnectClientConfiguration: Sendable {
 
     /// Loads configuration from a JSON resource file in the given bundle.
     ///
-    /// Reads the `notifications.amazon_connect_customer_profiles` key.
+    /// Reads the `notifications.amazon_connect` key.
     ///
     /// - Parameters:
-    ///   - resource: The resource file name (without extension). Defaults to `"amplify_outputs"`.
+    ///   - resource: The resource file name **without** an extension — the `.json`
+    ///     extension is implied. Defaults to `"amplify_outputs"`.
     ///   - bundle: The bundle containing the resource. Defaults to `.main`.
-    /// - Throws: ``ConnectError/configuration(_:_:_:)`` if the file or keys are missing.
+    /// - Throws: ``ConnectError/configuration(_:_:_:)`` if `resource` includes a file
+    ///   extension, or if the file cannot be read, parsed, or is missing required keys.
     public init(from resource: String = "amplify_outputs", bundle: Bundle = .main) throws {
+        // A resource name carrying an extension would silently fail to resolve
+        // (Bundle would look for "amplify_outputs.json.json"), so reject it with
+        // an actionable message rather than a confusing not-found error.
+        let resourceURL = URL(fileURLWithPath: resource)
+        guard resourceURL.pathExtension.isEmpty else {
+            throw ConnectError.configuration(
+                "Resource name \"\(resource)\" must not include a file extension",
+                "Pass the file name without an extension, e.g. "
+                    + "\"\(resourceURL.deletingPathExtension().lastPathComponent)\"."
+            )
+        }
+
         guard let url = bundle.url(forResource: resource, withExtension: "json") else {
             throw ConnectError.configuration(
                 "\(resource).json not found in bundle",
@@ -50,15 +64,40 @@ public struct ConnectClientConfiguration: Sendable {
             )
         }
 
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let notifications = json["notifications"] as? [String: Any],
-              let customerProfiles = notifications["amazon_connect_customer_profiles"] as? [String: Any],
-              let region = customerProfiles["aws_region"] as? String,
-              let endpoint = customerProfiles["endpoint"] as? String
-        else {
+        // Each level is unwrapped separately so the error names the value that is
+        // actually missing, rather than attributing every failure to one key.
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             throw ConnectError.configuration(
-                "Missing notifications.amazon_connect_customer_profiles in \(resource).json",
-                "Ensure your backend has notifications configured and \(resource).json is up to date."
+                "\(resource).json is not a valid JSON object",
+                "Regenerate \(resource).json from your Amplify backend."
+            )
+        }
+
+        guard let notifications = json["notifications"] as? [String: Any] else {
+            throw ConnectError.configuration(
+                "Missing \"notifications\" in \(resource).json",
+                "Ensure your backend defines notifications and \(resource).json is up to date."
+            )
+        }
+
+        guard let amazonConnect = notifications["amazon_connect"] as? [String: Any] else {
+            throw ConnectError.configuration(
+                "Missing \"notifications.amazon_connect\" in \(resource).json",
+                "Ensure your backend configures Amazon Connect and \(resource).json is up to date."
+            )
+        }
+
+        guard let region = amazonConnect["aws_region"] as? String else {
+            throw ConnectError.configuration(
+                "Missing \"notifications.amazon_connect.aws_region\" in \(resource).json",
+                "Regenerate \(resource).json from your Amplify backend."
+            )
+        }
+
+        guard let endpoint = amazonConnect["endpoint"] as? String else {
+            throw ConnectError.configuration(
+                "Missing \"notifications.amazon_connect.endpoint\" in \(resource).json",
+                "Regenerate \(resource).json from your Amplify backend."
             )
         }
 

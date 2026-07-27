@@ -163,6 +163,15 @@ public struct AmplifyConnectClient: Sendable {
 
     // MARK: - Private
 
+    /// Encodes, signs, and sends a request to the given route.
+    ///
+    /// The target is the customer's own Lambda-backed HTTP API, not an AWS service, so
+    /// there is no generated SDK client to call: `AWSCustomerProfiles` talks to Customer
+    /// Profiles directly with the app's credentials, which is what this design avoids —
+    /// the Lambda holds the Connect permissions and the app only needs
+    /// `execute-api:Invoke`. What the SDK does provide is reused here rather than
+    /// reimplemented: `HTTPRequestBuilder` builds the request, `AWSSigV4Signer` signs it,
+    /// and ``SmithyHTTPAPI/HTTPRequest/makeURLRequest(from:)`` converts it for transport.
     private func send(_ body: some Encodable, to route: String) async throws {
         try ConnectClientConfiguration.validateEndpoint(configuration.endpoint)
 
@@ -204,13 +213,21 @@ public struct AmplifyConnectClient: Sendable {
         // is sent to.
         let port = url.port.flatMap { UInt16(exactly: $0) } ?? UInt16(scheme.port)
 
+        // SigV4 requires `host` to be part of the signed header set, and the
+        // signer does not add it implicitly — it must be present in the headers
+        // passed to the builder. Only headers URLSession sends verbatim are
+        // signed; `User-Agent` is set by URLSession and would invalidate the
+        // signature, so it is added to the URLRequest after signing.
         let requestBuilder = HTTPRequestBuilder()
             .withHost(host)
             .withPath(url.path)
             .withMethod(.post)
             .withPort(port)
             .withProtocol(scheme)
-            .withHeaders(.init(["Content-Type": "application/json", "User-Agent": userAgent]))
+            .withHeaders(.init([
+                "host": host,
+                "Content-Type": "application/json"
+            ]))
             .withBody(.data(data))
 
         let identity = AWSCredentialIdentity(
@@ -224,6 +241,8 @@ public struct AmplifyConnectClient: Sendable {
             shouldNormalizeURIPath: true,
             omitSessionToken: false
         )
+        // `.empty` instructs the signer to compute the payload hash from the
+        // request body during signing.
         let signingConfig = AWSSigningConfig(
             credentials: identity,
             signedBodyHeader: .none,
@@ -247,12 +266,20 @@ public struct AmplifyConnectClient: Sendable {
             )
         }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = data
-        for header in signedRequest.headers.headers {
-            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
+        // Convert with the SDK's own helper rather than copying URL, method, body,
+        // and headers by hand, so the request sent matches what was signed.
+        var request: URLRequest
+        do {
+            request = try await HTTPRequest.makeURLRequest(from: signedRequest)
+        } catch {
+            throw ConnectError.service(
+                "Failed to build the signed request",
+                "Provide a valid endpoint URL in ConnectClientConfiguration.",
+                error
+            )
         }
+        // Added after signing so it is not part of the signed header set.
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
 
         logger.debug("Sending SigV4-signed request to /\(route)")
         try await execute(request)
@@ -263,7 +290,7 @@ public struct AmplifyConnectClient: Sendable {
     }
 
     private func execute(_ request: URLRequest) async throws {
-        let (_, response): (Data, URLResponse)
+        let response: URLResponse
         do {
             (_, response) = try await urlSession.data(for: request)
         } catch {
@@ -282,6 +309,7 @@ public struct AmplifyConnectClient: Sendable {
         }
 
         guard (200 ... 299).contains(httpResponse.statusCode) else {
+            logger.error("Request failed with status \(httpResponse.statusCode)")
             throw ConnectError.service(
                 "Request failed with status \(httpResponse.statusCode)",
                 "Check the endpoint configuration and request payload."
