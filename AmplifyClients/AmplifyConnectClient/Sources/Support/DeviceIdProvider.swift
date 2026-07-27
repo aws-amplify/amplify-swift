@@ -9,7 +9,7 @@ import Foundation
 
 /// The shared, deliberately un-namespaced storage key for the device identifier.
 ///
-/// This exact string is also used by ``AmplifyEventEnrichmentClient``, so it is 
+/// This exact string is also used by ``AmplifyEventEnrichmentClient``, so it is
 /// intentionally **not** scoped by app ID, region, or client instance — see ``DeviceIdProvider`` for the reasoning.
 private let deviceIdKey = "com.amplifyframework.device_id"
 
