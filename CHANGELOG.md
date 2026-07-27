@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.58.5 (2026-07-27)
+
+### Bug Fixes
+
+- **predictions**: fix Face Liveness with temporary credentials on iOS 26 (URL signing + Sendable credentials) (#4248)
+- **auth,push**: prevent command injection in WebAuthn/Push test LocalServers (#4252)
+- **auth**: fix visionOS build failure in WebAuthn credential registration (#4250)
+
 ## 2.58.4 (2026-06-30)
 
 ### Bug Fixes
