@@ -202,8 +202,13 @@ struct SigV4Signer {
             serviceName: serviceName
         )
 
+        let existingQuery = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?
+            .map { "\($0.name)=\($0.value ?? "")" }
+            .joined(separator: "&")
+
         let canonicalQueryString = _canonicalQueryString(
-            query: url.query,
+            query: existingQuery,
             signedHeaders: signedHeaders,
             timestamp: timestamp,
             credentialScope: credentialScope,
@@ -325,7 +330,7 @@ struct SigV4Signer {
 
         let sorted = canonicalQueryString.split(separator: "&")
             .map {
-                String($0).split(separator: "=")
+                String($0).split(separator: "=", maxSplits: 1)
                     .map(String.init)
                     .map(PercentEncoding.uri.encode)
                     .joined(separator: "=")

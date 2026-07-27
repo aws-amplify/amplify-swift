@@ -157,4 +157,132 @@ class SigV4URLSigningTestCase: XCTestCase {
         XCTAssertEqual(try queryValue(for: "X-Amz-Expires", from: queryItems), String(expiration))
         XCTAssertEqual(try queryValue(for: "X-Amz-Signature", from: queryItems), "eb2d084e14a165e42c47d1ad0369b1ea91d31561e6a57d939b071a8f1c3fc18f")
     }
+
+    // MARK: - Session token with base64 padding (contains '=' characters)
+
+    func testSignWithSessionTokenContainingEquals() throws {
+        let url = try url()
+
+        let credential = SigV4Signer.Credential(
+            accessKey: "AKIAIOSFODNN7EXAMPLE",
+            secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            sessionToken: "FwoGZXIvYXdzEBYaDHQa7IU/xL+SomeBase64Token+With/Slashes==")
+
+        let signer = SigV4Signer(
+            credential: credential,
+            serviceName: "rekognition",
+            region: "us-east-1"
+        )
+
+        let signedURL = signer.sign(
+            url: url,
+            method: .get,
+            date: { date }
+        )
+
+        let components = URLComponents(url: signedURL, resolvingAgainstBaseURL: false)
+        let queryItems = try XCTUnwrap(components?.queryItems)
+
+        let token = queryItems.first(where: { $0.name == "X-Amz-Security-Token" })?.value
+        XCTAssertEqual(token, "FwoGZXIvYXdzEBYaDHQa7IU/xL+SomeBase64Token+With/Slashes==",
+                       "Session token with '=' padding must be preserved intact")
+
+        // Verify signature is present (not nil/empty) — proves the signing completed without error
+        let signature = queryItems.first(where: { $0.name == "X-Amz-Signature" })?.value
+        XCTAssertNotNil(signature)
+        XCTAssertFalse(signature!.isEmpty)
+    }
+
+    func testSignWithSessionTokenContainingEqualsProducesDeterministicSignature() throws {
+        let url = try url()
+
+        let credential = SigV4Signer.Credential(
+            accessKey: "AKIAIOSFODNN7EXAMPLE",
+            secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            sessionToken: "IQoJb3JpZ2luX2VjEKz//////////wEaCXVzLWVhc3QtMSJHMEUCIQC+base64padding==")
+
+        let signer = SigV4Signer(
+            credential: credential,
+            serviceName: "rekognition",
+            region: "us-east-1"
+        )
+
+        let signedURL1 = signer.sign(url: url, method: .get, date: { date })
+        let signer2 = SigV4Signer(credential: credential, serviceName: "rekognition", region: "us-east-1")
+        let signedURL2 = signer2.sign(url: url, method: .get, date: { date })
+
+        let sig1 = URLComponents(url: signedURL1, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "X-Amz-Signature" })?.value
+        let sig2 = URLComponents(url: signedURL2, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "X-Amz-Signature" })?.value
+
+        XCTAssertEqual(sig1, sig2, "Signing must be deterministic for session tokens with '=' characters")
+    }
+
+    // MARK: - URL with query parameters containing special characters
+
+    func testSignURLWithSpecialCharactersInQueryParams() throws {
+        let baseURL = try XCTUnwrap(
+            URL(string: "wss://streaming-rekognition.us-east-1.amazon.com/start-face-liveness-session-websocket")
+        )
+
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "session-id", value: "abc-123"),
+            URLQueryItem(name: "x-amz-user-agent", value: "amplify-swift/2.53.2 api/rekognition os/iOS/26.0")
+        ]
+        let url = try XCTUnwrap(components.url)
+
+        let signer = SigV4Signer(
+            credential: temporaryCredential,
+            serviceName: "rekognition",
+            region: "us-east-1"
+        )
+
+        let signedURL = signer.sign(url: url, method: .get, date: { date })
+
+        let signedComponents = URLComponents(url: signedURL, resolvingAgainstBaseURL: false)
+        let queryItems = try XCTUnwrap(signedComponents?.queryItems)
+
+        // Verify the user-agent value survived encoding round-trip intact
+        let userAgent = queryItems.first(where: { $0.name == "x-amz-user-agent" })?.value
+        XCTAssertEqual(userAgent, "amplify-swift/2.53.2 api/rekognition os/iOS/26.0")
+
+        // Verify signature exists
+        let signature = queryItems.first(where: { $0.name == "X-Amz-Signature" })?.value
+        XCTAssertNotNil(signature)
+        XCTAssertFalse(signature!.isEmpty)
+    }
+
+    func testSignURLWithQueryParamsProducesDeterministicSignature() throws {
+        let baseURL = try XCTUnwrap(
+            URL(string: "wss://streaming-rekognition.us-east-1.amazon.com/start-face-liveness-session-websocket")
+        )
+
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "session-id", value: "test-session-id"),
+            URLQueryItem(name: "x-amz-user-agent", value: "amplify-swift/2.53.2 os/iOS/26.0 lang/swift/6.x")
+        ]
+        let url = try XCTUnwrap(components.url)
+
+        let credential = SigV4Signer.Credential(
+            accessKey: "AKIAIOSFODNN7EXAMPLE",
+            secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            sessionToken: "TokenWith+Plus/Slash==")
+
+        let signer1 = SigV4Signer(credential: credential, serviceName: "rekognition", region: "us-east-1")
+        let signer2 = SigV4Signer(credential: credential, serviceName: "rekognition", region: "us-east-1")
+
+        let signedURL1 = signer1.sign(url: url, method: .get, date: { date })
+        let signedURL2 = signer2.sign(url: url, method: .get, date: { date })
+
+        let sig1 = URLComponents(url: signedURL1, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "X-Amz-Signature" })?.value
+        let sig2 = URLComponents(url: signedURL2, resolvingAgainstBaseURL: false)?
+            .queryItems?.first(where: { $0.name == "X-Amz-Signature" })?.value
+
+        XCTAssertEqual(sig1, sig2,
+                       "Signing must produce identical signatures regardless of how Foundation encodes the URL internally")
+    }
 }
