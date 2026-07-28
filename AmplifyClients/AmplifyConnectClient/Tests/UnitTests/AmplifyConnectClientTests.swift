@@ -160,6 +160,117 @@ final class AmplifyConnectClientTests: XCTestCase {
         defaults.removeSuite(named: "test-device-id")
     }
 
+    /// Test that reading the device identifier never creates one
+    ///
+    /// - Given: A clean UserDefaults suite with no persisted identifier
+    /// - When:
+    ///    - DeviceIdProvider.existing() is called
+    /// - Then:
+    ///    - nil is returned and nothing is written, so a later call still sees no
+    ///      identifier — removeDevice() must not mint an ID the backend never saw
+    ///
+    func testDeviceIdProviderExistingDoesNotCreateId() {
+        let suite = "test-device-id-existing"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removeObject(forKey: "com.amplifyframework.device_id")
+
+        XCTAssertNil(DeviceIdProvider.existing(userDefaults: defaults))
+        XCTAssertNil(
+            defaults.string(forKey: "com.amplifyframework.device_id"),
+            "existing() must not persist an identifier"
+        )
+        XCTAssertNil(DeviceIdProvider.existing(userDefaults: defaults))
+
+        defaults.removeSuite(named: suite)
+    }
+
+    /// Test that reading the device identifier returns the one resolve() persisted
+    ///
+    /// - Given: A suite where resolve() has created an identifier
+    /// - When:
+    ///    - DeviceIdProvider.existing() is called
+    /// - Then:
+    ///    - It returns that same identifier, so removeDevice() targets the device
+    ///      registerDevice(token:) registered
+    ///
+    func testDeviceIdProviderExistingReturnsResolvedId() {
+        let suite = "test-device-id-existing-match"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removeObject(forKey: "com.amplifyframework.device_id")
+
+        let resolved = DeviceIdProvider.resolve(userDefaults: defaults)
+        XCTAssertEqual(DeviceIdProvider.existing(userDefaults: defaults), resolved)
+
+        defaults.removeSuite(named: suite)
+    }
+
+    /// Test that an empty persisted identifier is treated as absent
+    ///
+    /// - Given: A suite where the shared key holds an empty string
+    /// - When:
+    ///    - DeviceIdProvider.existing() is called
+    /// - Then:
+    ///    - nil is returned rather than an empty device ID being sent on the wire
+    ///
+    func testDeviceIdProviderExistingTreatsEmptyStringAsAbsent() {
+        let suite = "test-device-id-empty"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.set("", forKey: "com.amplifyframework.device_id")
+
+        XCTAssertNil(DeviceIdProvider.existing(userDefaults: defaults))
+
+        defaults.removeSuite(named: suite)
+    }
+
+    /// Test that removeDevice throws when this device was never registered
+    ///
+    /// - Given: A client and no persisted device identifier
+    /// - When:
+    ///    - removeDevice is called
+    /// - Then:
+    ///    - A ConnectError.validation is thrown before any credentials or network
+    ///      work, and no identifier is created as a side effect
+    ///
+    func testRemoveDeviceThrowsWhenNoDeviceRegistered() async {
+        let key = "com.amplifyframework.device_id"
+        let defaults = UserDefaults.standard
+        let saved = defaults.string(forKey: key)
+        defaults.removeObject(forKey: key)
+        defer {
+            if let saved {
+                defaults.set(saved, forKey: key)
+            } else {
+                defaults.removeObject(forKey: key)
+            }
+        }
+
+        let client = AmplifyConnectClient(
+            region: "us-west-2",
+            endpoint: "https://example.com",
+            credentialsProvider: UnusedCredentialsProvider()
+        )
+        do {
+            try await client.removeDevice()
+            XCTFail("Expected error")
+        } catch let error as ConnectError {
+            guard case .validation(let description, _, _) = error else {
+                XCTFail("Expected validation error, got \(error)")
+                return
+            }
+            XCTAssertTrue(
+                description.contains("no push registration"),
+                "Expected the error to explain nothing is registered, got: \(description)"
+            )
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+
+        XCTAssertNil(
+            defaults.string(forKey: key),
+            "removeDevice must not create a device identifier"
+        )
+    }
+
     /// Test that the platform name reflects the current operating system
     ///
     /// - Given: The client's internal platform resolution

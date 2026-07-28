@@ -53,11 +53,28 @@ enum DeviceIdProvider {
     /// - Parameter userDefaults: The store to read from and write to. Defaults to
     ///   `.standard`; injectable for testing.
     static func resolve(userDefaults: UserDefaults = .standard) -> String {
-        if let existing = userDefaults.string(forKey: deviceIdKey), !existing.isEmpty {
+        if let existing = existing(userDefaults: userDefaults) {
             return existing
         }
         let newId = UUID().uuidString
         userDefaults.set(newId, forKey: deviceIdKey)
         return newId
+    }
+
+    /// Returns the persisted device identifier, or `nil` if none has been created yet.
+    ///
+    /// Unlike ``resolve(userDefaults:)`` this never writes. Operations that act on an
+    /// *already registered* device — ``AmplifyConnectClient/removeDevice()`` — must use
+    /// this: minting an identifier there would send the backend an ID it has never seen
+    /// and persist it, so a later ``AmplifyConnectClient/registerDevice(token:)`` would
+    /// reuse an ID the caller believes was already removed.
+    ///
+    /// - Parameter userDefaults: The store to read from. Defaults to `.standard`;
+    ///   injectable for testing.
+    static func existing(userDefaults: UserDefaults = .standard) -> String? {
+        guard let existing = userDefaults.string(forKey: deviceIdKey), !existing.isEmpty else {
+            return nil
+        }
+        return existing
     }
 }

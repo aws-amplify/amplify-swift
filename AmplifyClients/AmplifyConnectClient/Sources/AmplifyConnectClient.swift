@@ -122,8 +122,22 @@ public struct AmplifyConnectClient: Sendable {
     ///
     /// Uses the same stable per-install device identifier that
     /// ``registerDevice(token:)`` registers.
+    ///
+    /// Reads the identifier without creating one: if no device identifier has been
+    /// persisted yet, this device was never registered, so there is nothing for the
+    /// backend to remove. Minting an identifier here would send an ID the backend has
+    /// never seen *and* persist it for a later ``registerDevice(token:)`` to reuse.
+    ///
+    /// - Throws: ``ConnectError/validation(_:_:_:)`` if this device has no registration
+    ///   to remove.
     public func removeDevice() async throws {
-        let deviceId = DeviceIdProvider.resolve()
+        guard let deviceId = DeviceIdProvider.existing() else {
+            logger.verbose("removeDevice skipped: no device identifier has been registered")
+            throw ConnectError.validation(
+                "This device has no push registration to remove",
+                "Call registerDevice(token:) before removeDevice()."
+            )
+        }
         try await send(RemoveDeviceRequest(deviceId: deviceId), to: "remove-device")
         logger.verbose("removeDevice succeeded")
     }
