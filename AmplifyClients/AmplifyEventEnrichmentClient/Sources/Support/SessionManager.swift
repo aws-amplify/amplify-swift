@@ -31,13 +31,27 @@ actor SessionManager {
     private var _state: SessionState = .stopped
     private var _session: Session?
     private var sessionStart: Date?
+    private var pausedAt: Date?
     private var pauseTask: Task<Void, Never>?
 
     /// Current session state.
     var state: SessionState { _state }
 
-    /// Current session, or `nil` if stopped.
+    /// The most recent session, or `nil` if none has ever been started.
+    ///
+    /// This remains non-`nil` after ``stopSession()`` so callers can read the
+    /// stop timestamp and duration of the session that just ended. Use
+    /// ``activeSession`` to stamp events, which excludes stopped sessions.
     var session: Session? { _session }
+
+    /// The session events may be attributed to, or `nil` if there is none.
+    ///
+    /// Unlike ``session`` this is `nil` once the session has stopped, so an
+    /// event recorded after ``stopSession()`` is rejected rather than silently
+    /// attributed to a session that has already ended.
+    var activeSession: Session? {
+        _state == .stopped ? nil : _session
+    }
 
     /// Creates a session manager.
     /// - Parameters:
@@ -59,24 +73,29 @@ actor SessionManager {
         if _state != .stopped {
             return
         }
-        sessionStart = Date()
+        let start = Date()
+        sessionStart = start
         _session = Session(
             id: generateSessionId(),
-            startTimestamp: sessionStart!
+            startTimestamp: start
         )
         _state = .active
     }
 
     /// Stops the current session, recording stop time and duration.
-    func stopSession() {
+    ///
+    /// - Parameter stopTime: When the session ended. Defaults to now; pass an
+    ///   earlier date when the session ended before this call was made, such as
+    ///   a paused session whose timeout later expired.
+    func stopSession(at stopTime: Date = Date()) {
         cancelPauseTimer()
+        pausedAt = nil
         guard let currentSession = _session, let start = sessionStart else { return }
-        let now = Date()
         _session = Session(
             id: currentSession.id,
             startTimestamp: currentSession.startTimestamp,
-            stopTimestamp: now,
-            duration: Int64(now.timeIntervalSince(start) * 1_000)
+            stopTimestamp: stopTime,
+            duration: Int64(stopTime.timeIntervalSince(start) * 1_000)
         )
         _state = .stopped
     }
@@ -85,6 +104,7 @@ actor SessionManager {
     func handleAppPaused() {
         guard _state == .active else { return }
         _state = .paused
+        pausedAt = Date()
         let timeout = sessionTimeout
         pauseTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
@@ -98,6 +118,7 @@ actor SessionManager {
         switch _state {
         case .paused:
             cancelPauseTimer()
+            pausedAt = nil
             _state = .active
         case .stopped:
             startSession()
@@ -107,7 +128,9 @@ actor SessionManager {
     }
 
     private func onTimeoutExpired() {
-        stopSession()
+        // The session became inactive when the app was backgrounded, not when
+        // the timeout elapsed, so attribute the stop to the pause time.
+        stopSession(at: pausedAt ?? Date())
     }
 
     private func cancelPauseTimer() {
@@ -115,26 +138,50 @@ actor SessionManager {
         pauseTask = nil
     }
 
+    /// Builds a session ID formatted as `<appId>-<uniqueId>-<day>-<time>`.
+    ///
+    /// The layout matches Pinpoint's `PinpointSession.generateSessionId`: both the
+    /// app ID and the unique ID are right-padded with `_` (and truncated when
+    /// longer) to a fixed 8 characters so consumers can parse the ID positionally.
     private func generateSessionId() -> String {
-        var prefix = appId
-        if prefix.count > 8 {
-            prefix = String(prefix.prefix(8))
-        } else {
-            prefix = String(repeating: "_", count: 8 - prefix.count) + prefix
-        }
-        let uniqueId = String(generateId().prefix(8))
+        let appIdKey = appId.padding(
+            toLength: Constants.maxAppKeyLength,
+            withPad: Constants.paddingCharacter,
+            startingAt: 0
+        )
+        let uniqueIdKey = generateId().padding(
+            toLength: Constants.maxUniqueIdLength,
+            withPad: Constants.paddingCharacter,
+            startingAt: 0
+        )
         let now = Date()
-        let calendar = Calendar(identifier: .gregorian)
-        let components = calendar.dateComponents(
-            in: TimeZone(identifier: "UTC")!,
-            from: now
-        )
-        let date = String(
-            format: "%04d%02d%02d-%02d%02d%02d%03d",
-            components.year!, components.month!, components.day!,
-            components.hour!, components.minute!, components.second!,
-            components.nanosecond! / 1_000_000
-        )
-        return "\(prefix)-\(uniqueId)-\(date)"
+        let day = Self.dayFormatter.string(from: now)
+        let time = Self.timeFormatter.string(from: now)
+        return "\(appIdKey)-\(uniqueIdKey)-\(day)-\(time)"
+    }
+
+    private static let dayFormatter = makeFormatter(format: Constants.dayFormat)
+    private static let timeFormatter = makeFormatter(format: Constants.timeFormat)
+
+    /// A fixed-locale, fixed-timezone formatter so session IDs are stable
+    /// regardless of the device's calendar, locale, or time zone.
+    private static func makeFormatter(format: String) -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.locale = Locale(identifier: Constants.formatterLocale)
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = format
+        return formatter
+    }
+}
+
+private extension SessionManager {
+    enum Constants {
+        static let maxAppKeyLength = 8
+        static let maxUniqueIdLength = 8
+        static let paddingCharacter = "_"
+        static let formatterLocale = "en_US_POSIX"
+        static let dayFormat = "yyyyMMdd"
+        static let timeFormat = "HHmmssSSS"
     }
 }

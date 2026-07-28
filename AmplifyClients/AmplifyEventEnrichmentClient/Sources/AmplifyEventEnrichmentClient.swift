@@ -36,7 +36,7 @@ public actor AmplifyEventEnrichmentClient {
     private let logger: Logger
     private let globalFields: GlobalFieldsManager
     private let sessionManager: SessionManager
-    private let activityTracker: ActivityTracker?
+    private var activityTracker: ActivityTracker?
     private let autoSessionTracking: Bool
     private var userId: String?
     private var closed = false
@@ -44,8 +44,9 @@ public actor AmplifyEventEnrichmentClient {
     /// Initializes a new event enrichment client.
     ///
     /// The `clientId` is resolved automatically from `UserDefaults` using a
-    /// read-or-create pattern with the key
-    /// `com.amplifyframework.device_id` (shared with the Connect client).
+    /// read-or-create pattern with the key `com.amplifyframework.device_id`,
+    /// which is shared with `AmplifyConnectClient`'s `DeviceIdProvider` so both
+    /// clients report the same identifier for a device.
     ///
     /// When `deviceMetadata` is nil, the client resolves platform, OS version,
     /// manufacturer, model, and locale via ``PlatformDeviceMetadataProvider``.
@@ -101,7 +102,8 @@ public actor AmplifyEventEnrichmentClient {
     ///   - attributes: Per-event string attributes (merged with globals).
     ///   - metrics: Per-event numeric metrics (merged with globals).
     /// - Returns: The enriched event.
-    /// - Throws: ``EventEnrichmentError/clientClosed(_:_:_:)`` if the client has been closed.
+    /// - Throws: ``EventEnrichmentError/clientClosed(_:_:_:)`` if the client has been closed,
+    ///   or ``EventEnrichmentError/noActiveSession(_:_:_:)`` if no session is active.
     @discardableResult
     public func record(
         _ eventType: String,
@@ -132,8 +134,8 @@ public actor AmplifyEventEnrichmentClient {
             mergedMetrics[key] = value
         }
 
-        guard let session = await sessionManager.session else {
-            throw EventEnrichmentError.unknown(
+        guard let session = await sessionManager.activeSession else {
+            throw EventEnrichmentError.noActiveSession(
                 "No active session",
                 "Call startSession() before recording events when autoSessionTracking is disabled."
             )
@@ -193,11 +195,25 @@ public actor AmplifyEventEnrichmentClient {
         await globalFields.removeMetric(key)
     }
 
+    /// The current session state. Internal, for tests to observe lifecycle handling.
+    var sessionState: SessionState {
+        get async { await sessionManager.state }
+    }
+
+    /// Whether lifecycle notifications are still being observed. Internal, for tests.
+    var isTrackingLifecycle: Bool {
+        activityTracker != nil
+    }
+
     /// Releases resources and stops session tracking.
     ///
     /// The client cannot be reused after closing.
     public func close() async {
         closed = true
+        // Tear the tracker down before stopping the session: otherwise a lifecycle
+        // notification arriving in between would start a new session on a closed client.
+        await activityTracker?.stopTracking()
+        activityTracker = nil
         await sessionManager.stopSession()
         logger.info("Client closed")
     }

@@ -181,13 +181,43 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertTrue(session!.id.contains("abcdefgh"))
     }
 
+    /// Test that the session ID uses the expected four-segment layout
+    ///
+    /// - Given: A session manager with an appId and unique ID longer than 8 chars
+    /// - When:
+    ///    - A session is started
+    /// - Then:
+    ///    - The ID is `<appId>-<uniqueId>-<yyyyMMdd>-<HHmmssSSS>` with both keys
+    ///      truncated to 8 characters
+    ///
+    func testSessionIdLayout() async {
+        let manager = SessionManager(
+            appId: "myAppIdIsLong",
+            sessionTimeout: 5.0,
+            generateId: { "abcdefghijkl" }
+        )
+
+        await manager.startSession()
+        let session = await manager.session
+
+        let sessionId = try? XCTUnwrap(session?.id)
+        let components = sessionId?.split(separator: "-")
+        XCTAssertEqual(components?.count, 4)
+        XCTAssertEqual(components?[0], "myAppIdI")
+        XCTAssertEqual(components?[1], "abcdefgh")
+        XCTAssertEqual(components?[2].count, 8)
+        XCTAssertEqual(components?[3].count, 9)
+        XCTAssertTrue(components?[2].allSatisfy(\.isNumber) ?? false)
+        XCTAssertTrue(components?[3].allSatisfy(\.isNumber) ?? false)
+    }
+
     /// Test that short appId is padded in session ID
     ///
     /// - Given: A session manager with a short appId (< 8 chars)
     /// - When:
     ///    - A session is started
     /// - Then:
-    ///    - The session ID prefix is padded to 8 chars
+    ///    - The session ID prefix is right-padded to 8 chars
     ///
     func testShortAppIdPaddedInSessionId() async {
         let manager = SessionManager(
@@ -200,6 +230,111 @@ final class SessionManagerTests: XCTestCase {
         let session = await manager.session
 
         XCTAssertNotNil(session)
-        XCTAssertTrue(session!.id.hasPrefix("_____app-"))
+        XCTAssertTrue(session!.id.hasPrefix("app_____-"))
+    }
+
+    /// Test that a short unique ID is padded in the session ID
+    ///
+    /// - Given: A session manager whose generateId returns fewer than 8 characters
+    /// - When:
+    ///    - A session is started
+    /// - Then:
+    ///    - The unique ID segment is right-padded to 8 chars
+    ///
+    func testShortUniqueIdPaddedInSessionId() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { "abc" }
+        )
+
+        await manager.startSession()
+        let session = await manager.session
+
+        XCTAssertNotNil(session)
+        XCTAssertTrue(session!.id.contains("-abc_____-"))
+    }
+
+    /// Test that a stopped session is not exposed as active
+    ///
+    /// - Given: A session manager whose session has been stopped
+    /// - When:
+    ///    - activeSession and session are read
+    /// - Then:
+    ///    - activeSession is nil while session still reports the stopped session
+    ///
+    func testActiveSessionIsNilAfterStop() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { "fixed-uuid" }
+        )
+
+        await manager.startSession()
+        let activeWhileRunning = await manager.activeSession
+        XCTAssertNotNil(activeWhileRunning)
+
+        await manager.stopSession()
+
+        let activeAfterStop = await manager.activeSession
+        let lastSession = await manager.session
+        XCTAssertNil(activeAfterStop)
+        XCTAssertNotNil(lastSession)
+    }
+
+    /// Test that a paused session is still considered active for attribution
+    ///
+    /// - Given: A session manager whose session is paused within the timeout
+    /// - When:
+    ///    - activeSession is read
+    /// - Then:
+    ///    - The paused session is returned, since it may still resume
+    ///
+    func testActiveSessionAvailableWhilePaused() async {
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: 5.0,
+            generateId: { "fixed-uuid" }
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+
+        let pausedSession = await manager.activeSession
+        XCTAssertNotNil(pausedSession)
+    }
+
+    /// Test that a timed-out session stops at the pause time, not the expiry time
+    ///
+    /// - Given: A session manager with a short timeout that is paused
+    /// - When:
+    ///    - The timeout expires
+    /// - Then:
+    ///    - The stop timestamp is the pause time, so the duration excludes the
+    ///      time spent backgrounded
+    ///
+    func testTimeoutExpiryUsesPauseTimeAsStopTime() async throws {
+        let timeout: TimeInterval = 0.2
+        let manager = SessionManager(
+            appId: "test-app",
+            sessionTimeout: timeout,
+            generateId: { "fixed-uuid" }
+        )
+
+        await manager.startSession()
+        await manager.handleAppPaused()
+        let pauseTime = Date()
+
+        try await Task.sleep(nanoseconds: 500_000_000) // 500ms, well past the timeout
+
+        let currentSession = await manager.session
+        let state = await manager.state
+        let session = try XCTUnwrap(currentSession)
+        let stopTimestamp = try XCTUnwrap(session.stopTimestamp)
+        let duration = try XCTUnwrap(session.duration)
+        XCTAssertEqual(state, .stopped)
+        // The stop time is the pause time, not pause + timeout.
+        XCTAssertEqual(stopTimestamp.timeIntervalSince1970, pauseTime.timeIntervalSince1970, accuracy: 0.15)
+        XCTAssertLessThan(duration, Int64(timeout * 1_000))
     }
 }

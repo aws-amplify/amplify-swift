@@ -16,7 +16,11 @@ public struct DeviceMetadata: Sendable {
     /// Device manufacturer (e.g., "Apple").
     public let manufacturer: String?
 
-    /// Device model (e.g., "iPhone15,2").
+    /// Device model.
+    ///
+    /// UIKit and WatchKit report a generic name such as `"iPhone"`, `"iPad"`, or
+    /// `"Apple Watch"`. On macOS this is the hardware identifier from the IO
+    /// registry, such as `"Mac14,9"`.
     public let model: String?
 
     /// Device locale code (e.g., "en_US").

@@ -14,9 +14,16 @@ import UIKit
 import AppKit
 #endif
 
-final class ActivityTracker: @unchecked Sendable {
+/// Observes app lifecycle notifications and reports background/foreground transitions.
+///
+/// Isolated to the main actor because the platform frameworks post these
+/// notifications on the main thread, which also makes the type implicitly
+/// `Sendable` and removes the need to synchronize `isObserving` by hand.
+@MainActor
+final class ActivityTracker {
     private let onPause: @Sendable () -> Void
     private let onResume: @Sendable () -> Void
+    private var isObserving = false
 
     private static let backgroundNotification: Notification.Name = {
         #if canImport(WatchKit)
@@ -44,6 +51,7 @@ final class ActivityTracker: @unchecked Sendable {
     ) {
         self.onPause = onPause
         self.onResume = onResume
+        self.isObserving = true
 
         NotificationCenter.default.addObserver(
             self,
@@ -63,11 +71,24 @@ final class ActivityTracker: @unchecked Sendable {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// Stops observing lifecycle notifications.
+    ///
+    /// Callbacks are guaranteed not to fire after this returns, so an owner being
+    /// torn down cannot be resurrected by a notification that arrives later.
+    /// Calling this more than once is a no-op.
+    func stopTracking() {
+        guard isObserving else { return }
+        isObserving = false
+        NotificationCenter.default.removeObserver(self)
+    }
+
     @objc private func handleBackground() {
+        guard isObserving else { return }
         onPause()
     }
 
     @objc private func handleForeground() {
+        guard isObserving else { return }
         onResume()
     }
 }

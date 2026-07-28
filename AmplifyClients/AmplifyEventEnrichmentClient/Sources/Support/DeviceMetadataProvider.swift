@@ -36,6 +36,10 @@ struct PlatformDeviceMetadataProvider: DeviceMetadataProvider {
         )
     }
 
+    /// Value reported when a platform API cannot supply real device metadata,
+    /// rather than guessing a concrete platform or model name.
+    private static let unknownValue = "unknown"
+
     @MainActor
     private func operatingSystem() -> (name: String, version: String) {
         #if canImport(WatchKit)
@@ -49,11 +53,40 @@ struct PlatformDeviceMetadataProvider: DeviceMetadataProvider {
             version: UIDevice.current.systemVersion
         )
         #else
-        return (
-            name: "macOS",
-            version: ProcessInfo.processInfo.operatingSystemVersionString
-        )
+        return (name: Self.platformName, version: Self.operatingSystemVersion)
         #endif
+    }
+
+    /// The platform name for targets that expose neither WatchKit nor UIKit.
+    ///
+    /// Resolved from the compile-time target rather than assumed to be macOS. Mac
+    /// Catalyst also reaches this branch, as would any future Apple platform without
+    /// UIKit, and reporting a hardcoded name there would mislabel the event.
+    private static var platformName: String {
+        #if os(macOS)
+        return "macOS"
+        #elseif os(visionOS)
+        return "visionOS"
+        #elseif os(iOS)
+        return "iOS"
+        #elseif os(tvOS)
+        return "tvOS"
+        #elseif os(watchOS)
+        return "watchOS"
+        #else
+        return unknownValue
+        #endif
+    }
+
+    /// A dotted version string (for example `14.1` or `14.1.2`).
+    ///
+    /// Built from `operatingSystemVersion` rather than `operatingSystemVersionString`,
+    /// which returns a display string like `Version 14.1 (Build 23B74)` and would not
+    /// match the bare `17.0` shape that UIKit and WatchKit report.
+    private static var operatingSystemVersion: String {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        let base = "\(version.majorVersion).\(version.minorVersion)"
+        return version.patchVersion == 0 ? base : "\(base).\(version.patchVersion)"
     }
 
     @MainActor
@@ -63,16 +96,18 @@ struct PlatformDeviceMetadataProvider: DeviceMetadataProvider {
         #elseif canImport(UIKit)
         return UIDevice.current.model
         #elseif canImport(IOKit)
-        return ioKitValue(forKey: "model") ?? "Mac"
+        // Reachable on macOS and Mac Catalyst; the registry value is the real
+        // identifier (for example `Mac14,9`), so fall back only when it is absent.
+        return ioKitValue(forKey: "model") ?? Self.unknownValue
         #else
-        return "Mac"
+        return Self.unknownValue
         #endif
     }
 
     #if canImport(IOKit)
     private func ioKitValue(forKey key: String) -> String? {
         let service = IOServiceGetMatchingService(
-            kIOMasterPortDefault,
+            kIOMainPortDefault,
             IOServiceMatching("IOPlatformExpertDevice")
         )
         defer { IOObjectRelease(service) }

@@ -273,7 +273,7 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
     /// - When:
     ///    - An event is recorded without calling startSession()
     /// - Then:
-    ///    - An error is thrown because no session exists
+    ///    - A noActiveSession error is thrown because no session exists
     ///    - After calling startSession(), recording succeeds
     ///
     func testAutoSessionTrackingDisabledRequiresManualStart() async throws {
@@ -287,8 +287,8 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
             _ = try await client.record("test")
             XCTFail("Expected error when no session started")
         } catch let error as EventEnrichmentError {
-            guard case .unknown = error else {
-                XCTFail("Expected unknown error for missing session, got \(error)")
+            guard case .noActiveSession = error else {
+                XCTFail("Expected noActiveSession error for missing session, got \(error)")
                 return
             }
         }
@@ -296,6 +296,39 @@ final class AmplifyEventEnrichmentClientTests: XCTestCase {
         await client.startSession()
         let event = try await client.record("test")
         XCTAssertFalse(event.session.id.isEmpty)
+
+        await client.close()
+    }
+
+    /// Test that recording after stopSession() is rejected
+    ///
+    /// - Given: A client with autoSessionTracking disabled and a stopped session
+    /// - When:
+    ///    - An event is recorded
+    /// - Then:
+    ///    - A noActiveSession error is thrown rather than the event being
+    ///      attributed to the session that already ended
+    ///
+    func testRecordAfterStopSessionThrows() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            options: EventEnrichmentClientOptions(autoSessionTracking: false)
+        )
+
+        await client.startSession()
+        _ = try await client.record("before_stop")
+        await client.stopSession()
+
+        do {
+            _ = try await client.record("after_stop")
+            XCTFail("Expected error when recording against a stopped session")
+        } catch let error as EventEnrichmentError {
+            guard case .noActiveSession = error else {
+                XCTFail("Expected noActiveSession error, got \(error)")
+                return
+            }
+        }
 
         await client.close()
     }

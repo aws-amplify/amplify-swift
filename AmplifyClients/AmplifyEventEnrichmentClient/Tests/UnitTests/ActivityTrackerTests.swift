@@ -153,4 +153,107 @@ final class ActivityTrackerTests: XCTestCase {
 
         await client.close()
     }
+
+    /// Test that stopTracking() prevents further callbacks
+    ///
+    /// - Given: An ActivityTracker that has been stopped
+    /// - When:
+    ///    - Background and foreground notifications are posted
+    /// - Then:
+    ///    - Neither callback is invoked
+    ///
+    func testStopTrackingPreventsCallbacks() async throws {
+        let pauseExpectation = expectation(description: "onPause not called")
+        pauseExpectation.isInverted = true
+        let resumeExpectation = expectation(description: "onResume not called")
+        resumeExpectation.isInverted = true
+
+        let tracker = ActivityTracker(
+            onPause: { pauseExpectation.fulfill() },
+            onResume: { resumeExpectation.fulfill() }
+        )
+        tracker.stopTracking()
+
+        postBackgroundNotification()
+        postForegroundNotification()
+
+        await fulfillment(of: [pauseExpectation, resumeExpectation], timeout: 0.5)
+        withExtendedLifetime(tracker) {}
+    }
+
+    /// Test that closing a client tears down lifecycle tracking
+    ///
+    /// - Given: A closed client that had autoSessionTracking enabled
+    /// - When:
+    ///    - A foreground notification is posted afterwards
+    /// - Then:
+    ///    - No new session is started, so recording still reports the client
+    ///      as closed rather than succeeding
+    ///
+    func testCloseStopsLifecycleTracking() async throws {
+        let client = AmplifyEventEnrichmentClient(
+            appId: "test-app",
+            sdkMetadata: SDKMetadata(name: "test", version: "1.0"),
+            options: EventEnrichmentClientOptions(autoSessionTracking: true)
+        )
+
+        _ = try await client.record("warmup")
+        await client.close()
+
+        postForegroundNotification()
+        try await Task.sleep(nanoseconds: 100_000_000)
+
+        do {
+            _ = try await client.record("after_close")
+            XCTFail("Expected clientClosed error after close()")
+        } catch let error as EventEnrichmentError {
+            guard case .clientClosed = error else {
+                XCTFail("Expected clientClosed error, got \(error)")
+                return
+            }
+        }
+
+        let state = await client.sessionState
+        let isTracking = await client.isTrackingLifecycle
+        XCTAssertEqual(state, .stopped)
+        XCTAssertFalse(isTracking)
+    }
+
+    private func postBackgroundNotification() {
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationDidEnterBackgroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
+        NotificationCenter.default.post(
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        #elseif canImport(AppKit)
+        NotificationCenter.default.post(
+            name: NSApplication.didHideNotification,
+            object: nil
+        )
+        #endif
+    }
+
+    private func postForegroundNotification() {
+        #if canImport(WatchKit)
+        NotificationCenter.default.post(
+            name: WKExtension.applicationWillEnterForegroundNotification,
+            object: nil
+        )
+        #elseif canImport(UIKit)
+        NotificationCenter.default.post(
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        #elseif canImport(AppKit)
+        NotificationCenter.default.post(
+            name: NSApplication.willUnhideNotification,
+            object: nil
+        )
+        #endif
+    }
 }

@@ -45,6 +45,11 @@ public struct EnrichedEvent: Sendable {
     public let userId: String?
 
     private static let eventVersion = "3.1"
+
+    // Unlike `DateFormatter`, `ISO8601DateFormatter` is not `Sendable`, so this
+    // annotation is required — without it the shared static is a concurrency error
+    // in Swift 6 mode. Formatting is documented as thread-safe and the instance is
+    // never mutated after creation, so sharing it is safe.
     private nonisolated(unsafe) static let isoFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -89,6 +94,10 @@ public struct EnrichedEvent: Sendable {
         var map: [String: Any] = [
             "event_type": eventType,
             "event_timestamp": eventTimestamp,
+            // This client enriches events on-device and hands them to a sink rather
+            // than ingesting them, so there is no separate arrival time to report.
+            // Mirroring the event timestamp keeps the envelope Pinpoint-compatible
+            // and matches the Flutter implementation.
             "arrival_timestamp": eventTimestamp,
             "event_version": Self.eventVersion,
             "application": applicationMap,
