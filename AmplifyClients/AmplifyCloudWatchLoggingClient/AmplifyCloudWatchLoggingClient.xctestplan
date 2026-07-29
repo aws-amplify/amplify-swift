@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "9BB10F47-6FDB-40B9-A720-DA47D2F96087",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AmplifyCloudWatchLoggingClientTests",
+        "name" : "AmplifyCloudWatchLoggingClientTests"
+      }
+    }
+  ],
+  "version" : 1
+}

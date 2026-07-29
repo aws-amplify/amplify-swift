@@ -524,11 +524,17 @@ let predictionsTargets: [Target] = [
 
 let loggingTargets: [Target] = [
     .target(
+        name: "InternalCloudWatchLogging",
+        dependencies: [],
+        path: "AmplifyPlugins/Internal/Sources/InternalCloudWatchLogging"
+    ),
+    .target(
         name: "AWSCloudWatchLoggingPlugin",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
+            .target(name: "InternalCloudWatchLogging"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
@@ -540,6 +546,7 @@ let loggingTargets: [Target] = [
         name: "AWSCloudWatchLoggingPluginTests",
         dependencies: [
             "AWSCloudWatchLoggingPlugin",
+            "InternalCloudWatchLogging",
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
@@ -548,6 +555,34 @@ let loggingTargets: [Target] = [
             .copy("TestResources")
         ]
     )
+]
+
+let cloudWatchLoggingClientTargets: [Target] = [
+    .target(
+        name: "AmplifyCloudWatchLoggingClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "InternalCloudWatchLogging"),
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyCloudWatchLoggingClientTests",
+        dependencies: [
+            "AmplifyCloudWatchLoggingClient",
+            "InternalCloudWatchLogging",
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Tests/UnitTests"
+    ),
 ]
 
 let foundationTargets: [Target] = [
@@ -596,6 +631,7 @@ targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
+targets.append(contentsOf: cloudWatchLoggingClientTargets)
 targets.append(contentsOf: foundationTargets)
 targets.append(contentsOf: foundationBridgeTargets)
 
@@ -658,6 +694,10 @@ let package = Package(
         .library(
             name: "AmplifyFirehoseClient",
             targets: ["AmplifyFirehoseClient"]
+        ),
+        .library(
+            name: "AmplifyCloudWatchLoggingClient",
+            targets: ["AmplifyCloudWatchLoggingClient"]
         ),
         .library(
             name: "AmplifyFoundation",
