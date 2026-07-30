@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.59.0 (2026-07-30)
+
+### Features
+
+- add connect client (#4245)
+
 ## 2.58.5 (2026-07-27)
 
 ### Bug Fixes
