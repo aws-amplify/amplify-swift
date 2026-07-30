@@ -176,6 +176,10 @@ The following Amplify targets have been identified to be using the [User default
 * `AWSDataStorePlugin`
 * `AWSCloudWatchLoggingPlugin`
 * `InternalAWSPinpoint`
+* `AmplifyConnectClient`
+
+> [!NOTE]
+> The `AmplifyConnectClient` privacy manifest declares every data type the client is capable of transmitting (email address, name, phone number, coarse location, device ID). All `UserProfile` fields are optional, so when preparing your app's privacy report you should narrow your app-level declarations to the fields your app actually sends.
 
 ## Reporting Bugs/Feature Requests
 
