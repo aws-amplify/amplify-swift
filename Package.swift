@@ -471,6 +471,31 @@ let pushNotificationsTargets: [Target] = [
     )
 ]
 
+let connectTargets: [Target] = [
+    .target(
+        name: "AmplifyConnectClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyClients/AmplifyConnectClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyConnectClientTests",
+        dependencies: [
+            "AmplifyConnectClient"
+        ],
+        path: "AmplifyClients/AmplifyConnectClient/Tests/UnitTests"
+    ),
+]
+
 let predictionsTargets: [Target] = [
     .target(
         name: "AWSPredictionsPlugin",
@@ -592,6 +617,7 @@ targets.append(contentsOf: analyticsTargets)
 targets.append(contentsOf: recordCacheTargets)
 targets.append(contentsOf: kinesisTargets)
 targets.append(contentsOf: firehoseTargets)
+targets.append(contentsOf: connectTargets)
 targets.append(contentsOf: pushNotificationsTargets)
 targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
@@ -658,6 +684,10 @@ let package = Package(
         .library(
             name: "AmplifyFirehoseClient",
             targets: ["AmplifyFirehoseClient"]
+        ),
+        .library(
+            name: "AmplifyConnectClient",
+            targets: ["AmplifyConnectClient"]
         ),
         .library(
             name: "AmplifyFoundation",

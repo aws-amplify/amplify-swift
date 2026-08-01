@@ -44,7 +44,7 @@ public protocol AWSCredentialsProvider {
  - accessKeyId: A unique identifier.
  - secretAccessKey: A secret key used to sign requests cryptographically.
  */
-public protocol AWSCredentials {
+public protocol AWSCredentials: Sendable {
 
     /// A unique identifier.
     var accessKeyId: String { get }

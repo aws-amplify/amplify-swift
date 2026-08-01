@@ -1,0 +1,462 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000001 /* ConnectClientHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001 /* ConnectClientHostAppApp.swift */; };
+		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* ContentView.swift */; };
+		A1000003 /* AmplifyConnectClientIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* AmplifyConnectClientIntegrationTests.swift */; };
+		A1000005 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000005 /* TestConfigHelper.swift */; };
+		A1000010 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = A3000010 /* Amplify */; };
+		A1000011 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = A3000011 /* AWSCognitoAuthPlugin */; };
+		A1000012 /* AmplifyConnectClient in Frameworks */ = {isa = PBXBuildFile; productRef = A3000012 /* AmplifyConnectClient */; };
+		A1000013 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = A3000013 /* AWSPluginsCore */; };
+		A1000014 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A3000014 /* AmplifyFoundation */; };
+		A1000020 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = A3000020 /* Amplify */; };
+		A1000021 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = A3000021 /* AWSCognitoAuthPlugin */; };
+		A1000022 /* AmplifyConnectClient in Frameworks */ = {isa = PBXBuildFile; productRef = A3000022 /* AmplifyConnectClient */; };
+		A1000023 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = A3000023 /* AWSPluginsCore */; };
+		A1000024 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A3000024 /* AmplifyFoundation */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A4000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A5000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6000001;
+			remoteInfo = ConnectClientHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A2000001 /* ConnectClientHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectClientHostAppApp.swift; sourceTree = "<group>"; };
+		A2000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A2000003 /* AmplifyConnectClientIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConnectClientIntegrationTests.swift; sourceTree = "<group>"; };
+		A2000005 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		A2000010 /* ConnectClientHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConnectClientHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000011 /* ConnectClientIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectClientIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A7000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000010 /* Amplify in Frameworks */,
+				A1000011 /* AWSCognitoAuthPlugin in Frameworks */,
+				A1000012 /* AmplifyConnectClient in Frameworks */,
+				A1000013 /* AWSPluginsCore in Frameworks */,
+				A1000014 /* AmplifyFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A7000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000020 /* Amplify in Frameworks */,
+				A1000021 /* AWSCognitoAuthPlugin in Frameworks */,
+				A1000022 /* AmplifyConnectClient in Frameworks */,
+				A1000023 /* AWSPluginsCore in Frameworks */,
+				A1000024 /* AmplifyFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A8000001 = {
+			isa = PBXGroup;
+			children = (
+				A8000002 /* ConnectClientHostApp */,
+				A8000003 /* ConnectClientIntegrationTests */,
+				A8000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A8000002 /* ConnectClientHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001 /* ConnectClientHostAppApp.swift */,
+				A2000002 /* ContentView.swift */,
+			);
+			path = ConnectClientHostApp;
+			sourceTree = "<group>";
+		};
+		A8000003 /* ConnectClientIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				A2000003 /* AmplifyConnectClientIntegrationTests.swift */,
+				A2000005 /* TestConfigHelper.swift */,
+			);
+			path = ConnectClientIntegrationTests;
+			sourceTree = "<group>";
+		};
+		A8000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2000010 /* ConnectClientHostApp.app */,
+				A2000011 /* ConnectClientIntegrationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6000001 /* ConnectClientHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9000001 /* Build configuration list for PBXNativeTarget "ConnectClientHostApp" */;
+			buildPhases = (
+				A7000001 /* Frameworks */,
+				AB000001 /* Sources */,
+				AC000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConnectClientHostApp;
+			packageProductDependencies = (
+				A3000010 /* Amplify */,
+				A3000011 /* AWSCognitoAuthPlugin */,
+				A3000012 /* AmplifyConnectClient */,
+				A3000013 /* AWSPluginsCore */,
+				A3000014 /* AmplifyFoundation */,
+			);
+			productName = ConnectClientHostApp;
+			productReference = A2000010 /* ConnectClientHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A6000002 /* ConnectClientIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9000002 /* Build configuration list for PBXNativeTarget "ConnectClientIntegrationTests" */;
+			buildPhases = (
+				AE000001 /* Copy Configuration folder */,
+				A7000002 /* Frameworks */,
+				AB000002 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A4000002 /* PBXTargetDependency */,
+			);
+			name = ConnectClientIntegrationTests;
+			packageProductDependencies = (
+				A3000020 /* Amplify */,
+				A3000021 /* AWSCognitoAuthPlugin */,
+				A3000022 /* AmplifyConnectClient */,
+				A3000023 /* AWSPluginsCore */,
+				A3000024 /* AmplifyFoundation */,
+			);
+			productName = ConnectClientIntegrationTests;
+			productReference = A2000011 /* ConnectClientIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A5000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = A9000003 /* Build configuration list for PBXProject "ConnectClientHostApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A8000001;
+			packageReferences = (
+				AA000001 /* XCLocalSwiftPackageReference "../../../.." */,
+			);
+			productRefGroup = A8000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A6000001 /* ConnectClientHostApp */,
+				A6000002 /* ConnectClientIntegrationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AC000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AE000001 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AB000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001 /* ConnectClientHostAppApp.swift in Sources */,
+				A1000002 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000003 /* AmplifyConnectClientIntegrationTests.swift in Sources */,
+				A1000005 /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A4000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6000001 /* ConnectClientHostApp */;
+			targetProxy = A4000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AD000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.amplify.ConnectClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AD000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.amplify.ConnectClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AD000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.amplify.ConnectClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ConnectClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ConnectClientHostApp";
+			};
+			name = Debug;
+		};
+		AD000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.amplify.ConnectClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ConnectClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ConnectClientHostApp";
+			};
+			name = Release;
+		};
+		AD000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AD000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A9000001 /* Build configuration list for PBXNativeTarget "ConnectClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD000001 /* Debug */,
+				AD000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9000002 /* Build configuration list for PBXNativeTarget "ConnectClientIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD000003 /* Debug */,
+				AD000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9000003 /* Build configuration list for PBXProject "ConnectClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD000005 /* Debug */,
+				AD000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AA000001 /* XCLocalSwiftPackageReference "../../../.." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../..";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A3000010 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = Amplify;
+		};
+		A3000011 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		A3000012 /* AmplifyConnectClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AmplifyConnectClient;
+		};
+		A3000013 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AWSPluginsCore;
+		};
+		A3000014 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AmplifyFoundation;
+		};
+		A3000020 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = Amplify;
+		};
+		A3000021 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		A3000022 /* AmplifyConnectClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AmplifyConnectClient;
+		};
+		A3000023 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AWSPluginsCore;
+		};
+		A3000024 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
+			productName = AmplifyFoundation;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A5000001 /* Project object */;
+}
