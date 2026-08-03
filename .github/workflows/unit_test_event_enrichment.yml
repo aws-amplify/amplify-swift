@@ -1,0 +1,38 @@
+name: Unit Tests | Event Enrichment
+on:
+  workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      macos:
+        description: '💻 macOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
+      visionos:
+        description: 'ᯅ visionOS'
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+    contents: read
+
+jobs:
+  event-enrichment-unit-tests:
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
+    with:
+      scheme: AmplifyEventEnrichmentClient
