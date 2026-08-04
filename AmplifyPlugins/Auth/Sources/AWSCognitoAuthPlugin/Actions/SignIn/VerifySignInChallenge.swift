@@ -75,8 +75,11 @@ struct VerifySignInChallenge: Action {
                 credentialStoreClient: environment.authEnvironment().credentialsClient
             )
 
+            // Read with the username the caller signed in with — `ConfirmDevice` writes the
+            // metadata under `inputUsername`, and `challenge.username` is the value Cognito
+            // returned (the sub, for pools using alias sign-in).
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: username,
+                for: challenge.inputUsername ?? username,
                 with: environment
             )
 
@@ -107,8 +110,13 @@ struct VerifySignInChallenge: Action {
             await dispatcher.send(responseEvent)
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
-            // Remove the saved device details and retry verify challenge
-            await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
+            // Remove the saved device details and retry verify challenge. Must match the value the
+            // metadata was read with above — deleting under `username` (the echoed sub) leaves the
+            // real entry in place and the retry loops on the same stale device key.
+            await DeviceMetadataHelper.removeDeviceMetaData(
+                for: challenge.inputUsername ?? username,
+                with: environment
+            )
             let event = SignInChallengeEvent(
                 eventType: .retryVerifyChallengeAnswer(confirmSignEventData, currentSignInStep)
             )
@@ -139,7 +147,7 @@ struct VerifySignInChallenge: Action {
     ) async throws {
 
         let newDeviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-            for: username,
+            for: challenge.inputUsername ?? username,
             with: environment
         )
         if challenge.challenge == .password {

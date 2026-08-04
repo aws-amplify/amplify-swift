@@ -53,8 +53,13 @@ struct VerifyPasswordSRP: Action {
                 credentialStoreClient: environment.authEnvironment().credentialsClient
             )
 
+            // Device metadata is stored under the username the caller signed in with
+            // (`ConfirmDevice` uses `signedInData.inputUsername`), so it must be read back with
+            // the same value. `username` here is `parameters["USERNAME"]`, which for pools with
+            // alias sign-in is the sub — looking metadata up with it never matches what was
+            // written, so DEVICE_KEY would be omitted and every sign-in would register a new device.
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: username,
+                for: inputUsername,
                 with: environment
             )
             let signature = try signature(
@@ -100,8 +105,11 @@ struct VerifyPasswordSRP: Action {
             await dispatcher.send(event)
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
-            // Remove the saved device details and retry password verify
-            await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
+            // Remove the saved device details and retry password verify. This must use the same
+            // value the metadata was read with above — deleting under `username` (the echoed sub)
+            // leaves the real entry in place, so the retry re-reads the same stale device key,
+            // Cognito rejects it again, and sign-in loops here indefinitely.
+            await DeviceMetadataHelper.removeDeviceMetaData(for: inputUsername, with: environment)
             let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse, clientMetadata))
             logVerbose(
                 "\(#fileID) Sending event \(event)",
