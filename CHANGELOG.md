@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.60.1 (2026-08-04)
+
+### Bug Fixes
+
+- **auth**: key device metadata by inputUsername so alias sign-in pools remember devices (#4254)
+
 ## 2.60.0 (2026-08-03)
 
 ### Features
