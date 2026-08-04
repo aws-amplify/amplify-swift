@@ -146,7 +146,13 @@ struct UserPoolSignInHelper: DefaultLogger {
                         eventType: .respondPasswordVerifier(srpStateData, response, [:])
                     )
                 case .deviceSrpAuth:
-                    return SignInEvent(eventType: .initiateDeviceSRP(username, response))
+                    // Carry the caller's `inputUsername` into the device SRP flow. It has to look
+                    // the stored device metadata back up, and that's keyed on the username the
+                    // caller signed in with (see `ConfirmDevice`). `username` here is the value
+                    // Cognito echoed — the sub, on pools with alias sign-in — so using it makes the
+                    // lookup miss and the request omits DEVICE_KEY, which Cognito rejects with
+                    // "Missing required parameter DEVICE_KEY".
+                    return SignInEvent(eventType: .initiateDeviceSRP(inputUsername ?? username, response))
                 case .webAuthn:
                     let signInData = WebAuthnSignInData(
                         username: username,

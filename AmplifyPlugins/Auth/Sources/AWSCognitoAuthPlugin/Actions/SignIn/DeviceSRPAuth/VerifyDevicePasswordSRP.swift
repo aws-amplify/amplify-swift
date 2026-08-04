@@ -40,8 +40,12 @@ struct VerifyDevicePasswordSRP: Action {
                 credentialStoreClient: environment.authEnvironment().credentialsClient
             )
 
+            // Read with the username the caller signed in with — `ConfirmDevice` writes the
+            // metadata under `inputUsername` (here `stateData.username`). `username` is
+            // `parameters["USERNAME"]`, the sub echoed by Cognito on alias pools, and is still the
+            // correct value to send back in the request below.
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: username,
+                for: inputUsername,
                 with: environment
             )
             guard
