@@ -20,7 +20,7 @@ To collect details about the stack frames while debugging, also copy lines from 
 4. Add `bt 5` to print the last 5 lines of the backtrace to the console
 5. Optionally also add action to log a message which can include an expression
 
-Like the watch window displayed while debugging, a log message from a breakpoint can evalulate an expression to print out those details in the Xcode console. For a variable named `info`, simply add `@info@` to the log message text field. You may want to add debugging features to your code which can provide a string or dictionary which provides useful information which can be used when logging from a breakpoint.
+Like the watch window displayed while debugging, a log message from a breakpoint can evaluate an expression to print out those details in the Xcode console. For a variable named `info`, simply add `@info@` to the log message text field. You may want to add debugging features to your code which can provide a string or dictionary which provides useful information which can be used when logging from a breakpoint.
 
 ## Sensitive Information
 
@@ -30,7 +30,7 @@ Logs should be trimmed of details which should not be shared publicly, such as u
 
 Including a lot of log messages in a GitHub issue is helpful but also requires a lot of scrolling. It can be difficult to also copy that log to an editor to filter to the most useful details. GitHub markdown supports collapsing details with the syntax below. It is just the `<details>` tags which must include a `<summary>` tag at the start.
 
-Beyond just making it possible to collapse the details, n button appears at the top right when it is expanded to let you copy to your clipboard making it easy to bring it to an editor.
+Beyond just making it possible to collapse the details, a button appears at the top right when it is expanded to let you copy to your clipboard making it easy to bring it to an editor.
 
 ````markdown
 <details>

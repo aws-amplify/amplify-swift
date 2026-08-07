@@ -9,7 +9,11 @@ Amplify Clients are **standalone AWS service clients** independent of the core `
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Amplify Clients  (e.g., AmplifyKinesisClient)          │
-│  High-level APIs, actor-based, local caching, retry     │
+│  High-level APIs, actor-based, retry                    │
+├─────────────────────────────────────────────────────────┤
+│  AmplifyRecordCache  (Shared Caching Layer)             │
+│  SQLite-backed record buffering, used by Kinesis and    │
+│  Firehose                                               │
 ├─────────────────────────────────────────────────────────┤
 │  AmplifyFoundation  (Protocol Layer)                    │
 │  Pure Swift protocols — zero external deps              │
@@ -60,8 +64,8 @@ Deps: `AmplifyFoundation`, `AmplifyFoundationBridge`, `SQLite.swift`, `AWSKinesi
 
 ```swift
 public class AmplifyKinesisClient {
-    init(region: String, credentialsProvider: AWSCredentialsProvider, options: Options)
-    func record(data: Data, partitionKey: String, streamName: String) async throws -> RecordData
+    init(region: String, credentialsProvider: any AmplifyFoundation.AWSCredentialsProvider, options: Options = Options()) throws
+    @discardableResult func record(data: Data, partitionKey: String, streamName: String) async throws -> RecordData
     func flush() async throws -> FlushData
     func enable() async / func disable() async
     func clearCache() async throws -> ClearCacheData
@@ -76,7 +80,7 @@ public enum KinesisError: AmplifyError {
     case cache(ErrorDescription, RecoverySuggestion, Error?)
     case cacheLimitExceeded(ErrorDescription, RecoverySuggestion, Error?)
     case validation(ErrorDescription, RecoverySuggestion, Error?)
-    case unknown(ErrorDescription, Error?)
+    case unknown(ErrorDescription, RecoverySuggestion, Error?)
 }
 ```
 
@@ -90,9 +94,10 @@ AmplifyClients/Amplify<Service>Client/
 │   ├── Amplify<Service>Client.swift      # Public facade
 │   └── Support/                           # Error type, actors, protocols, impls
 ├── Tests/
-│   ├── UnitTests/
-│   └── IntegrationTests/
+│   └── UnitTests/
 ```
+
+Integration tests are not co-located per client. `AmplifyConnectClient` has its own host app under `Tests/ConnectClientHostApp/`, Kinesis and Firehose share `AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/`, and `AmplifyEventEnrichmentClient` has unit tests only.
 
 ### Package.swift target
 
@@ -100,8 +105,11 @@ AmplifyClients/Amplify<Service>Client/
 .target(
     name: "Amplify<Service>Client",
     dependencies: ["AmplifyFoundation", "AmplifyFoundationBridge",
+                    // Add "AmplifyRecordCache" (+ the SQLite product) only if the
+                    // client buffers records locally, as Kinesis and Firehose do.
                     .product(name: "AWS<Service>", package: "aws-sdk-swift")],
     path: "AmplifyClients/Amplify<Service>Client/Sources",
+    resources: [.copy("Resources/PrivacyInfo.xcprivacy")],
     swiftSettings: [.enableUpcomingFeature("StrictConcurrency")]
 )
 ```
@@ -130,6 +138,8 @@ var config = try AWS<Service>.<Service>Client.<Service>ClientConfiguration(
 )
 config.httpClientEngine = UserAgentClientEngine(
     target: config.httpClientEngine,
-    additionalMetadata: ["md/amplify-<service>#\(AmplifyMetadata.version)"]
+    additionalMetadata: ["md/amplify-<service>"]
 )
 ```
+
+Do not append the version here — `UserAgentClientEngine` already injects `lib/amplify-swift#<version>`, so adding `AmplifyMetadata.version` to the `md/` segment stamps it twice.
