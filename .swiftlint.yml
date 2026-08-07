@@ -9,8 +9,6 @@ excluded:
   - Pods
   - .build
   - AmplifyAsyncTesting
-  - AmplifyFunctionalTests
-  - AmplifyTestApp
   - AmplifyTestCommon
   - AmplifyTests
   - AmplifyPlugins/Core/AWSPluginsCoreTests
