@@ -2,8 +2,8 @@
 
 ## Project Info
 
-- **Language**: Swift 5.9+ | **Build**: SPM (Xcode 16.0+) | **No CocoaPods**
-- **Platforms**: iOS 13+, macOS 12+, tvOS 13+, watchOS 9+, visionOS 1+
+- **Language**: Swift 6.0+ | **Build**: SPM (Xcode 26.0+) | **No CocoaPods**
+- **Platforms**: iOS 15+, macOS 12+, tvOS 15+, watchOS 9+, visionOS 1+
 - **Architecture**: Monorepo — core framework (`Amplify/`), category plugins (`AmplifyPlugins/`), standalone clients (`AmplifyClients/`)
 - **Setup**: `open Package.swift` or `swift package resolve`
 

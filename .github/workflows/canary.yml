@@ -16,14 +16,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15
-            xcode-version: '26.3'
-            device: 'iPhone 16 Pro Max'
+          - os: macos-26
+            xcode-version: '26.5'
+            device: 'iPhone 17 Pro Max'
+            version: '26.5'
+          # Minimum supported Xcode. Uses the 26.2 runtime because the macos-26
+          # image does not install a 26.0 simulator runtime.
+          - os: macos-26
+            xcode-version: '26.0.1'
+            device: 'iPhone 17 Pro Max'
             version: '26.2'
-          - os: macos-15
-            xcode-version: '16.4.0'
-            device: 'iPhone 16 Pro Max'
-            version: '18.5'
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
