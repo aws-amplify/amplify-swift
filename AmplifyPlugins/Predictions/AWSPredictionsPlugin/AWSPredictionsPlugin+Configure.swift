@@ -41,7 +41,7 @@ extension AWSPredictionsPlugin {
         let authService = AWSAuthService()
         let credentialIdentityResolver = authService.getCredentialIdentityResolver()
         let coremlService: CoreMLPredictionBehavior?
-    #if canImport(Speech) && canImport(Vision)
+    #if canImport(Speech) && canImport(Vision) && !os(tvOS)
         coremlService = try CoreMLPredictionService(configuration: configuration)
     #else
         coremlService = nil

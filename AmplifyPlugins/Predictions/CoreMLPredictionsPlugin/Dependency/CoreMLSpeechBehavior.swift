@@ -5,7 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(Speech)
+// SFSpeechRecognitionResult is marked API_UNAVAILABLE(tvos). As of the Xcode 26
+// SDKs the Speech module is importable on tvOS, so canImport(Speech) alone no
+// longer excludes the platform.
+#if canImport(Speech) && !os(tvOS)
 import Amplify
 import Foundation
 import Speech
