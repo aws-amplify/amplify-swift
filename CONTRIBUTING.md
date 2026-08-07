@@ -10,16 +10,16 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 - [Testing](#testing)
 - [Tools](#tools)
 - [Debugging](#debugging)
-  - [Running Cocoapods Locally](#running-cocoapods-locally)
+  - [Running Amplify Locally](#running-amplify-locally)
 - [Pull Requests](#pull-requests)
   - [Pull Request Checklist](#pull-request-checklist)
   - [Step 1: Open Issue](#step-1-open-issue)
-  - [Step 2: Design (optional)](#step-2-design-optional)
+  - [Step 2: Design](#step-2-design)
   - [Step 3: Fork The Repo](#step-3-fork-the-repo)
-  - [Step 4: Work your Magic](#step-3-work-your-magic)
-  - [Step 5: Commit](#step-4-commit)
-  - [Step 6: Pull Request](#step-5-pull-request)
-  - [Step 7: Merge](#step-6-merge)
+  - [Step 4: Work your Magic](#step-4-work-your-magic)
+  - [Step 5: Commit](#step-5-commit)
+  - [Step 6: Pull Request](#step-6-pull-request)
+  - [Step 7: Merge](#step-7-merge)
 - [Troubleshooting](#troubleshooting)
 - [Related Repositories](#related-repositories)
 - [Finding Contributions](#finding-contributions-to-work-on)
@@ -42,7 +42,7 @@ Applications that evaluate all members of an enumeration using a `switch` statem
 
 ## Getting Started
 
-To get started with the Amplify Library for Swift, first make sure you have Xcode 13.4 or later installed.
+To get started with the Amplify Library for Swift, first make sure you have Xcode 16.0 or later installed.
 
 Then make sure you fork the project first and then clone it by running:
 
@@ -51,17 +51,26 @@ git clone git@github.com:YOURGITHUBUSERNAME/amplify-swift.git
 ```
 GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/).
 
-The Amplify Library for Swift has been divided into multiple categories and plugins. You can find the Categories under `Amplify/Categories`, and the corresponding plugins under `AmplifyPlugins`. For example, if you wanted to add another API to the Storage category, you might start by modifying the category under `Amplify/Categories/Storage`. After you add the new API to the Storage category, you'll need to support the API in a plugin, either by extended the existing `AWSS3StoragePlugin` or creating a new plugin under `AmplifyPlugins\Storage\Sources`.
+The Amplify Library for Swift has been divided into multiple categories and plugins. You can find the Categories under `Amplify/Categories`, and the corresponding plugins under `AmplifyPlugins`. For example, if you wanted to add another API to the Storage category, you might start by modifying the category under `Amplify/Categories/Storage`. After you add the new API to the Storage category, you'll need to support the API in a plugin, either by extended the existing `AWSS3StoragePlugin` or creating a new plugin under `AmplifyPlugins/Storage/Sources`.
 
 ## Testing
 
-Each plugin has its own set of unit and integration tests. Because Amplify requires keychain support, integration tests are in separate Xcode projects, located under `AmplifyPlugins/<Plugin>/Tests/<Plugin>HostApp`. Make sure to run the unit tests for the plugin and relevant integration tests from the host app projects to ensure there is no regression. Add new tests where needed to cover the changes you are making. 
+Each plugin has its own set of unit and integration tests. Because Amplify requires keychain support, integration tests are in separate Xcode projects, located under `AmplifyPlugins/<Category>/Tests/<Category>HostApp` (Logging is the exception, at `AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp`). Make sure to run the unit tests for the plugin and relevant integration tests from the host app projects to ensure there is no regression. Add new tests where needed to cover the changes you are making. 
 
 In order to run integration tests, first install [Amplify CLI](https://github.com/aws-amplify/amplify-cli), and then follow the instructions in the `README.md` under the relevant host app test directory to provision and set up the backend. For example, to provision the backend resources to run Storage integration tests, follow the instructions in `AmplifyPlugins/Storage/Tests/StorageHostApp/AWSS3StoragePluginIntegrationTests/README.md`
 
 ## Tools
 
 [Xcode](https://developer.apple.com/xcode/) is used for all build and dependency management.
+
+CI additionally enforces formatting and linting, so run both against your changed files before committing:
+
+```
+swiftformat <changed-files>
+swiftlint --fix
+```
+
+The pinned versions are SwiftFormat `0.60.1` and SwiftLint `0.54.0` (see `.github/workflows/swiftformat.yml` and `.github/workflows/swiftlint.yml`). Releases and the canary app use Fastlane via the root `Gemfile` (`bundle exec fastlane ...`).
 
 ## Debugging
 
@@ -103,7 +112,7 @@ Work your magic. Here are some guidelines:
 - Coding style (abbreviated):
     - In general, follow the style of the code around you
     - 4 space indentation
-    - 100 characters wide
+    - 160 characters wide (enforced by SwiftLint's `line_length` rule)
     - Every change requires a new or updated unit test/integ test
     - If you change customer facing APIs, make sure to update the documentation above the interface and include a reason for the breaking change in your PR comments
     - Try to maintain a single feature/bugfix per pull request. It's okay to introduce a little bit of housekeeping changes along the way, but don't conflate multiple features. Eventually all these are going to go into a single commit, so you can use that to frame your scope.
@@ -123,7 +132,7 @@ Create a commit with the proposed change changes:
 - Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
 - PR messaged should include shout out to collaborators.
 - If not obvious (i.e. from unit tests), describe how you verified that your change works.
-- If this PR includes breaking changes, they must be listed at the top of the changelog as described above in the Pull Request Checklist.
+- If this PR includes breaking changes, call them out explicitly in the PR description. The changelog itself is generated from Conventional Commit PR titles, as described in the [Pull Request Checklist](#pull-request-checklist).
 - Discuss review comments and iterate until you get at least one “Approve”. When iterating, push new commits to the same branch. 
 - Usually all these are going to be squashed when you merge to main.
 - Make sure to update the PR title/description if things change. 
@@ -149,7 +158,7 @@ Amplify plugins are built on top of the AWS SDKs. AWS SDKs are a
 toolkit for interacting with AWS backend resources.
 
 1. [AWS SDK for Android](https://github.com/aws-amplify/aws-sdk-android)
-2. [AWS SDK for Swift](https://github.com/aws-amplify/aws-sdk-swift)
+2. [AWS SDK for Swift](https://github.com/awslabs/aws-sdk-swift)
 3. [AWS SDK for JavaScript](https://github.com/aws/aws-sdk-js)
 
 ## Finding contributions to work on

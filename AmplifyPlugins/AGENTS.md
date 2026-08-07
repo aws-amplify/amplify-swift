@@ -19,7 +19,9 @@
 | `Predictions/` | `AWSPredictionsPlugin` | Comprehend, Polly, Rekognition, Textract, Translate, Transcribe | Predictions |
 | `Predictions/` | `CoreMLPredictionsPlugin` | On-device CoreML | Predictions |
 | `Storage/` | `AWSS3StoragePlugin` | Amazon S3 | Storage |
-| `Core/` | `AWSPluginsCore`, `InternalAmplifyCredentials` | Shared plugin infra | Core |
+| `Core/` | `AWSPluginsCore`, `InternalAmplifyCredentials`, `AWSPluginsTestCommon` | Shared plugin infra (and shared test utilities) | Core |
+
+> **Amazon Pinpoint retirement** — Pinpoint is scheduled to be retired on October 30, 2026. This affects `AWSPinpointAnalyticsPlugin`, `AWSPinpointPushNotificationsPlugin`, and `InternalAWSPinpoint`.
 
 ## Plugin File Organization
 
@@ -46,7 +48,7 @@ Every plugin follows an extension-based pattern:
 - Constructor-based with optional parameters and defaults
 - Services injected during `configure(using:)` phase
 - Behavior protocols abstract AWS service calls (e.g., `AWSAuthCredentialsProviderBehavior`)
-- `@visibleForTesting` for test-only injection points
+- Test-only injection points are exposed via `internal` access plus `@testable import` — there is no `@visibleForTesting` attribute in Swift
 
 ## Logging
 
@@ -63,7 +65,7 @@ extension AWSAPIPlugin {
 
 ## Testing
 
-**Unit tests**: `AmplifyPlugins/<Category>/Tests/<PluginName>UnitTests/` (SPM test targets)
+**Unit tests**: SPM test targets under `AmplifyPlugins/<Category>/Tests/`. Naming varies — most are `<PluginName>Tests` (e.g. `AWSAPIPluginTests`, `AWSS3StoragePluginTests`), Auth/Analytics/Predictions/Push use a `UnitTests` suffix (e.g. `AWSCognitoAuthPluginUnitTests`), and DataStore is `AWSDataStoreCategoryPluginTests`. Core's live at `AmplifyPlugins/Core/AWSPluginsCoreTests` and `AmplifyPlugins/Core/AmplifyCredentialsTests`. Check `Package.swift` for the exact target name.
 
 **Integration tests**: `AmplifyPlugins/<Category>/Tests/<Category>HostApp/` (Xcode projects) — require AWS credentials and provisioned backends. Multiple test plan variants per category (Gen1, Gen2, auth modes, etc.).
 
