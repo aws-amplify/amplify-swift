@@ -22,12 +22,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS]
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
 
     uses: ./.github/workflows/build_scheme.yml
     with:
       scheme: Amplify-Build
-      os-runner: 'macos-15'
+      os-runner: 'macos-26'
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
       save_build_cache: false

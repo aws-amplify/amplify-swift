@@ -456,16 +456,14 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(
             postsContainingRandomTitleNumber
                 .lazy
-                .filter { $0.status == .draft }
-                .count,
+                .count(where: { $0.status == .draft }),
             1
         )
 
         XCTAssertEqual(
             postsContainingRandomTitleNumber
                 .lazy
-                .filter { $0.status == .published }
-                .count,
+                .count(where: { $0.status == .published }),
             1
         )
 

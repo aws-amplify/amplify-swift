@@ -41,7 +41,7 @@ jobs:
       - name: SwiftFormat
         run: |
           ./swiftformat.artifactbundle/swiftformat-$SWIFTFORMAT_VERSION-macos/bin/swiftformat --version
-          ./swiftformat.artifactbundle/swiftformat-$SWIFTFORMAT_VERSION-macos/bin/swiftformat --lint . --reporter github-actions-log --swiftversion 5.9
+          ./swiftformat.artifactbundle/swiftformat-$SWIFTFORMAT_VERSION-macos/bin/swiftformat --lint . --reporter github-actions-log --swiftversion 6.0
 
   confirm-pass:
     runs-on: macos-latest

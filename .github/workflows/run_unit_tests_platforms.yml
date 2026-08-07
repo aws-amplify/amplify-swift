@@ -28,7 +28,7 @@ on:
       os-runner:
         description: 'runs-on input'
         type: string
-        default: 'macos-15'
+        default: 'macos-26'
 
 permissions:
     contents: read

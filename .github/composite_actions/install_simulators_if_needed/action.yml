@@ -19,7 +19,7 @@ runs:
       run: |
         XCODE_VERSION="${{ inputs.xcode_version }}"
         PLATFORM="${{ inputs.platform }}"
-        DEFAULT_XCODE_VERSION="16.4.0"
+        DEFAULT_XCODE_VERSION="26.5"
 
         # Skip for macOS as it doesn't need simulators
         if [[ "$PLATFORM" == "macOS" ]]; then
