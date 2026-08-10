@@ -117,7 +117,7 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
         self.localStoreMaxSizeInMB = options.localStoreMaxSizeInMB
         let credentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
         self.networkMonitor = NWPathMonitor()
-        self.networkMonitor.startMonitoring(
+        networkMonitor.startMonitoring(
             using: DispatchQueue(label: "com.amazonaws.amplify.cloudwatchlogging.networkmonitor")
         )
 

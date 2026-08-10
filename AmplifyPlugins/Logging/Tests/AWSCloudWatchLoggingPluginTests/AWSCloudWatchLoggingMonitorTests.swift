@@ -37,7 +37,7 @@ final class AWSCloudWatchLoggingMonitorTests: XCTestCase {
 }
 
 extension AWSCloudWatchLoggingMonitorTests: AWSCloudWatchLoggingMonitorDelegate {
-    public func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         invokedExpectation.fulfill()
     }
 }

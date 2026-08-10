@@ -208,7 +208,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
 }
 
 extension AWSCloudWatchLoggingCategoryClient: AWSCloudWatchLoggingMonitorDelegate {
-    public func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         Task {
             try await flushLogs()
         }
