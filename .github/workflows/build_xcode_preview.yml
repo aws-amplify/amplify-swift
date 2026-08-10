@@ -1,0 +1,106 @@
+name: Build | Xcode Preview (Beta)
+
+# Early-warning signal for the next Xcode release.
+#
+# This runs against the `xcode-27` preview runner image, which ships a single
+# beta Xcode as the image default. It intentionally does NOT use the
+# get_platform_parameters composite action: that action allowlists only the
+# Xcode versions Amplify Swift officially supports, and the preview image is
+# deliberately outside that set.
+#
+# This workflow is advisory and non-blocking: every job sets continue-on-error,
+# so a failure here surfaces the next Xcode's breakages on the PR that
+# introduces them without ever blocking a merge. Preview images run a beta
+# toolchain and can have constrained capacity, so they are not a merge gate.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.platform }} on Xcode preview
+    # Preview images can have constrained capacity, so keep the matrix small.
+    runs-on: xcode-27
+    continue-on-error: true
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS
+            destination: 'platform=macOS,arch=arm64'
+            sdk: macosx
+            run_tests: true
+          - platform: iOS
+            # Generic destination rather than a named device: the preview image's
+            # simulator device lineup changes between beta rollouts. A generic
+            # destination cannot boot a simulator, so this leg is build-only.
+            destination: 'generic/platform=iOS Simulator'
+            sdk: iphonesimulator
+            run_tests: false
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Report toolchain under test
+        run: |
+          # Use the image default Xcode rather than a hardcoded path — the
+          # preview image's beta version string changes between rollouts.
+          xcodebuild -version
+          swift --version
+
+      - name: Install xcbeautify
+        run: brew list xcbeautify >/dev/null 2>&1 || brew install xcbeautify
+
+      - name: Build Amplify Swift for ${{ matrix.platform }}
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme Amplify-Package \
+            -sdk '${{ matrix.sdk }}' \
+            -destination '${{ matrix.destination }}' \
+            -skipPackagePluginValidation \
+            | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
+
+      - name: Run unit tests for ${{ matrix.platform }}
+        if: ${{ matrix.run_tests }}
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme Amplify-Package \
+            -sdk '${{ matrix.sdk }}' \
+            -destination '${{ matrix.destination }}' \
+            -skipPackagePluginValidation \
+            | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
+
+  report:
+    name: Report Preview Status
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs: [ build-and-test ]
+    steps:
+      - name: Summarize
+        run: |
+          RESULT="${{ needs.build-and-test.result }}"
+          if [ "$RESULT" = "success" ]; then
+            echo "Amplify Swift builds and tests cleanly on the Xcode preview toolchain." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Amplify Swift hit failures on the Xcode preview toolchain (result: $RESULT)." >> $GITHUB_STEP_SUMMARY
+            echo "This is advisory only and does not block this PR. Investigate before the next Xcode reaches GA." >> $GITHUB_STEP_SUMMARY
+          fi
