@@ -1,1 +1,1 @@
-The Upgrade Guide has moved to [Project Setup > Upgrade Guide](https://docs.amplify.aws/lib/project-setup/upgrade-guide/q/platform/ios/).
+The Upgrade Guide has moved to [Project Setup > Upgrade Guide](https://docs.amplify.aws/gen1/swift/start/project-setup/upgrade-guide/).

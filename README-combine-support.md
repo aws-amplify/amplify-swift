@@ -5,7 +5,7 @@
 Amplify supports iOS 13+ and macOS 12+, and ships with APIs that leverage Swift Concurrency (async/await) to return values. For example, the following returns an array of type `Geo.Place` with search results for coffee shops.
 
 ```swift
-let places = try await Amplify.Geo.search(for "coffee")
+let places = try await Amplify.Geo.search(for: "coffee")
 ```
 
 Some APIs do not return a simple result, such as those that return subscriptions or provide progress updates. In cases where multiple values are expected over time, Amplify typically provides an `AmplifyAsyncSequence` or `AmplifyAsyncThrowingSequence`. These types conform to the `AsyncSequence` protocol and can be iterated over asynchronously. For example, the following subscribes to the creation of new Todos.
@@ -24,7 +24,7 @@ The following examples show how to create Combine Publishers for the above API c
 
 ```swift
 let sink = Amplify.Publisher.create {
-    try await Amplify.Geo.search(for "coffee")
+    try await Amplify.Geo.search(for: "coffee")
 }
     .sink { completion in
         // handle completion

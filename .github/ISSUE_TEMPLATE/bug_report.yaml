@@ -87,8 +87,8 @@ body:
     attributes:
       label: Relevant log output
       description: >-
-        Include any relevant log output under
-        `~/.amplify/logs/amplify-cli-<issue-date>.log` (See: [Logs Guidance](https://github.com/aws-amplify/amplify-ios/blob/main/LogsGuidance.md))
+        Include any relevant log output from the Xcode console
+        (See: [Logs Guidance](https://github.com/aws-amplify/amplify-swift/blob/main/LogsGuidance.md))
       value: |
         <details>
         <summary>Log Messages</summary>
