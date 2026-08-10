@@ -28,7 +28,7 @@ jobs:
       SWIFTFORMAT_VERSION: '0.60.1'
       SWIFTFORMAT_SHA256: 'cb4738085cf39c08da00b79b4a3683e77458ca12909934d04e5087d8e73f5e43'
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 

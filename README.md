@@ -25,20 +25,25 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | **[Data (API GraphQL)](https://docs.amplify.aws/swift/build-a-backend/data/set-up-data/)**                          | AppSync, DynamoDB | Real-time API and data storage                                                           | ✅   | ✅   |
 | **[DataStore](https://docs.amplify.aws/gen1/swift/build-a-backend/more-features/datastore/)**                       | AppSync      | Programming model for shared and distributed data, with simple online/offline synchronization |      | ✅   |
 | **[API (REST)](https://docs.amplify.aws/gen1/swift/build-a-backend/restapi/set-up-rest-api/)**                      | API Gateway  | Sigv4 signing and AWS auth for API Gateway and other REST endpoints                           |      | ✅   |
-| **[Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/)**                         | Various*     | Connect your app with machine learning services like NLP, computer vision, TTS, and more.     |      | ✅   |
-| **[Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/)**           | Pinpoint     | Segment users, trigger push notifications, and record metrics                                 |      | ✅   |
+| **[Predictions](https://docs.amplify.aws/gen1/swift/prev/build-a-backend/more-features/predictions/set-up-predictions/)** | Various*     | Connect your app with machine learning services like NLP, computer vision, TTS, and more.     |      | ✅   |
+| **[Push Notifications](https://docs.amplify.aws/gen1/swift/build-a-backend/push-notifications/set-up-push-notifications/)** | Pinpoint     | Segment users, trigger push notifications, and record metrics                                 |      | ✅   |
 
 \* Predictions utilizes a range of Amazon's Machine Learning services, including: Amazon Comprehend, Amazon Polly, Amazon Rekognition, Amazon Textract, and Amazon Translate.
+
+> [!IMPORTANT]
+> **Amazon Pinpoint retirement** — Pinpoint is scheduled to be retired on October 30, 2026. This affects the Analytics and Push Notifications categories, which are backed by Pinpoint. Plan migrations accordingly; see the [migration guidance](MobileSDK_To_AmplifySwift_Guidance.md) for details.
 
 ## Platform Support
 
 | Platform  | Versions  | Support Level |
 | ---------: | -------:  | :-----------: |
 | iOS       | 15+       | GA            |
-| macOS     | 12+    | GA            |
+| macOS     | 12+       | GA            |
 | tvOS      | 15+       | GA            |
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | GA            |
+
+\* visionOS support is in preview and is built and tested in CI, but is not declared as a platform in `Package.swift` — it is inherited from the iOS deployment target.
 
 ### Swift Version Support
 
@@ -70,7 +75,7 @@ This library is licensed under the Apache 2.0 License.
 
 Amplify requires Xcode 26.0 or later for all the supported platforms.
 
-| For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
+| For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/gen1/swift/tools/libraries/)   |
 |-------------------------------------------------|
 
 ### Swift Package Manager
