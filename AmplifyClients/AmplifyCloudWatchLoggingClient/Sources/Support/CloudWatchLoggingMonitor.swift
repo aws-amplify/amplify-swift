@@ -17,10 +17,16 @@ class CloudWatchLoggingMonitor {
     }
 
     private weak var eventDelegate: CloudWatchLoggingMonitorDelegate?
+    private let queue: DispatchQueue
 
-    init(flushIntervalInSeconds: TimeInterval, eventDelegate: CloudWatchLoggingMonitorDelegate?) {
+    init(
+        flushIntervalInSeconds: TimeInterval,
+        eventDelegate: CloudWatchLoggingMonitorDelegate?,
+        queue: DispatchQueue = DispatchQueue.global(qos: .background)
+    ) {
         self.automaticFlushLogsInterval = flushIntervalInSeconds
         self.eventDelegate = eventDelegate
+        self.queue = queue
     }
 
     func setAutomaticFlushIntervals() {
@@ -40,7 +46,7 @@ class CloudWatchLoggingMonitor {
     }
 
     func createRepeatingTimer(timeInterval: TimeInterval, eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
-        let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
+        let timer = DispatchSource.makeTimerSource(queue: queue)
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)
         return timer

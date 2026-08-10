@@ -109,12 +109,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
 
         if logStreamName == nil {
-            let streamName = await formatter.formattedStreamName()
-            if !streamName.isEmpty {
-                self.logStreamName = streamName
-            } else {
-                self.logStreamName = "default.\(UUID().uuidString)"
-            }
+            self.logStreamName = await formatter.formattedStreamName()
         }
 
         guard let logStreamName, !logStreamName.isEmpty else {
