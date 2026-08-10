@@ -1,4 +1,4 @@
-name: Nightly | Xcode Preview (Beta)
+name: Build | Xcode Preview (Beta)
 
 # Early-warning signal for the next Xcode release.
 #
@@ -8,22 +8,26 @@ name: Nightly | Xcode Preview (Beta)
 # Xcode versions Amplify Swift officially supports, and the preview image is
 # deliberately outside that set.
 #
-# This workflow is advisory and non-blocking. Failures here mean "look into it
-# before the next Xcode goes GA", not "this change is broken". Nothing gates a
-# PR on the result.
+# This workflow is advisory and non-blocking: every job sets continue-on-error,
+# so a failure here surfaces the next Xcode's breakages on the PR that
+# introduces them without ever blocking a merge. Preview images run a beta
+# toolchain and can have constrained capacity, so they are not a merge gate.
 
 on:
-  schedule:
-    # 07:00 UTC daily
-    - cron: '0 7 * * *'
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
   build-and-test:
@@ -98,5 +102,5 @@ jobs:
             echo "Amplify Swift builds and tests cleanly on the Xcode preview toolchain." >> $GITHUB_STEP_SUMMARY
           else
             echo "Amplify Swift hit failures on the Xcode preview toolchain (result: $RESULT)." >> $GITHUB_STEP_SUMMARY
-            echo "This is advisory only and does not block releases. Investigate before the next Xcode reaches GA." >> $GITHUB_STEP_SUMMARY
+            echo "This is advisory only and does not block this PR. Investigate before the next Xcode reaches GA." >> $GITHUB_STEP_SUMMARY
           fi
