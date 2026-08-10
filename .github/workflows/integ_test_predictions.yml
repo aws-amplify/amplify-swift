@@ -40,5 +40,5 @@ jobs:
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
       resource_subfolder: predictions
-      timeout-minutes: 30
+      timeout-minutes: 45
     secrets: inherit

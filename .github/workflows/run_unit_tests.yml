@@ -18,10 +18,13 @@ on:
         default: 'latest'
         type: string
       timeout-minutes:
+        # 30 minutes is not enough headroom for a cold run: when the dependencies
+        # cache misses, xcodebuild clones the full dependency graph (~34 packages)
+        # before compiling anything, and many jobs do that concurrently.
         description: 'The timeout for each execution'
         required: false
         type: number
-        default: 30
+        default: 45
       generate_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
@@ -67,6 +70,12 @@ jobs:
           xcode_version: ${{ steps.platform.outputs.xcode-version }}
           platform: ${{ inputs.platform }}
 
+      # The cache key is deliberately NOT keyed on the Xcode version. This holds
+      # cloned SwiftPM checkouts, which are just source and are not specific to a
+      # toolchain — Package.resolved already pins them exactly. Keying on Xcode
+      # meant every Xcode bump invalidated the whole cache at once, and with no
+      # entry to restore, every job cold-cloned the full dependency graph
+      # (~34 packages) and timed out.
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
         timeout-minutes: 4
@@ -74,9 +83,9 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
+            amplify-packages-
 
       - name: Attempt to restore the build cache
         id: build-cache
