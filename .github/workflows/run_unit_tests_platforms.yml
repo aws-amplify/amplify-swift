@@ -7,10 +7,11 @@ on:
         required: true
         type: string
       timeout-minutes:
+        # Kept in sync with run_unit_tests.yml — see the note there on cold runs.
         description: 'The timeout for each execution'
         required: false
         type: number
-        default: 30
+        default: 45
       generate_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
