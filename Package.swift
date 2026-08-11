@@ -607,14 +607,14 @@ let loggingTargets: [Target] = [
 
 let cloudWatchLoggingClientTargets: [Target] = [
     .target(
-        name: "AmplifyCloudWatchLoggingClient",
+        name: "AmplifyCloudWatchClient",
         dependencies: [
             .target(name: "AmplifyFoundation"),
             .target(name: "AmplifyFoundationBridge"),
             .target(name: "InternalCloudWatchLogging"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
-        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Sources",
+        path: "AmplifyClients/AmplifyCloudWatchClient/Sources",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ],
@@ -623,13 +623,13 @@ let cloudWatchLoggingClientTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AmplifyCloudWatchLoggingClientTests",
+        name: "AmplifyCloudWatchClientTests",
         dependencies: [
-            "AmplifyCloudWatchLoggingClient",
+            "AmplifyCloudWatchClient",
             "InternalCloudWatchLogging",
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
-        path: "AmplifyClients/AmplifyCloudWatchLoggingClient/Tests/UnitTests"
+        path: "AmplifyClients/AmplifyCloudWatchClient/Tests/UnitTests"
     ),
 ]
 
@@ -754,8 +754,8 @@ let package = Package(
             targets: ["AmplifyEventEnrichmentClient"]
         ),
         .library(
-            name: "AmplifyCloudWatchLoggingClient",
-            targets: ["AmplifyCloudWatchLoggingClient"]
+            name: "AmplifyCloudWatchClient",
+            targets: ["AmplifyCloudWatchClient"]
         ),
         .library(
             name: "AmplifyFoundation",
