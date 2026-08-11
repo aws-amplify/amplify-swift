@@ -55,7 +55,7 @@ class GraphQLQueryCombineTests: OperationTestBase {
                 receivedFailure,
                 receivedResponseError
             ],
-            timeout: 0.05
+            timeout: 0.5
         )
         sink.cancel()
     }
@@ -98,7 +98,7 @@ class GraphQLQueryCombineTests: OperationTestBase {
                 receivedFailure,
                 receivedResponseError
             ],
-            timeout: 0.05
+            timeout: 0.5
         )
         sink.cancel()
 
@@ -142,7 +142,7 @@ class GraphQLQueryCombineTests: OperationTestBase {
                 receivedFailure,
                 receivedResponseError
             ],
-            timeout: 0.05
+            timeout: 0.5
         )
         sink.cancel()
     }

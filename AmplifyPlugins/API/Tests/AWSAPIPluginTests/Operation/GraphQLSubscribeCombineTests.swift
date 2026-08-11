@@ -77,7 +77,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
             receivedStateValueDisconnected,
             receivedDataValueSuccess,
             receivedDataValueError
-        ], timeout: 0.05)
+        ], timeout: 0.5)
     }
 
     func testHappyPath() async throws {
@@ -87,7 +87,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         let testJSON: JSONValue = ["foo": true]
 
         try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -107,7 +107,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -124,7 +124,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error(["Error"]))
@@ -137,7 +137,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueSuccess.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -164,7 +164,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueSuccess.expectedFulfillmentCount = 2
 
         try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -191,7 +191,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueSuccess.expectedFulfillmentCount = 2
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()

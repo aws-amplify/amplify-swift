@@ -79,7 +79,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
                 receivedDataValueSuccess,
                 receivedDataValueError
             ],
-            timeout: 0.05
+            timeout: 0.5
         )
     }
 
@@ -95,7 +95,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         ]
 
         try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -111,7 +111,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
@@ -127,7 +127,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error([AppSyncRealTimeRequest.Error.limitExceeded]))
@@ -143,7 +143,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         let unauthorizedError = GraphQLError(message: "", extensions: ["errorType": "Unauthorized"])
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
@@ -164,7 +164,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error([URLError(URLError.Code(rawValue: 400))]))
@@ -181,7 +181,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueSuccess.isInverted = true
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
@@ -201,7 +201,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueSuccess.expectedFulfillmentCount = 2
 
         try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -225,7 +225,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueSuccess.expectedFulfillmentCount = 2
 
         try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.5)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()

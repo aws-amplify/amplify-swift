@@ -40,7 +40,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     /// Then: a flushLogFailure Hub Event is sent to the Logging channel
     func testConsumeFailureSendsHubEvent() async throws {
         let hubEventExpectation = expectation(description: "Should receive the hub event")
-        unsubscribeToken = Amplify.Hub.listen(to: .logging) { payload in
+        let token = Amplify.Hub.listen(to: .logging) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Logging.flushLogFailure:
                 hubEventExpectation.fulfill()
@@ -48,6 +48,16 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
                 break
             }
         }
+        unsubscribeToken = token
+
+        // Hub listener registration is asynchronous. Without waiting for it, the
+        // flushLogFailure event below can be published before the listener is
+        // attached, and the expectation never fulfills.
+        let listenerAttached = try await HubListenerTestUtilities.waitForListener(
+            with: token,
+            timeout: 5
+        )
+        XCTAssertTrue(listenerAttached, "Hub listener was not registered before flushing logs")
 
         let bytes = (0 ..< 1_024).map { _ in UInt8.random(in: 0 ..< 255) }
         let fileURL = getLogFile()

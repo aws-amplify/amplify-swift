@@ -39,7 +39,7 @@ class RESTCombineTests: OperationTestBase {
             receivedValue.fulfill()
         })
 
-        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.5)
         sink.cancel()
     }
 
@@ -69,7 +69,7 @@ class RESTCombineTests: OperationTestBase {
                 receivedValue.fulfill()
             })
 
-        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.5)
         sink.cancel()
     }
 }

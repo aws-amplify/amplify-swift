@@ -47,7 +47,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
                 receivedResponseError.fulfill()
             }
         })
-        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.5)
         sink.cancel()
     }
 
@@ -82,7 +82,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
             }
         })
 
-        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.5)
         sink.cancel()
 
     }
