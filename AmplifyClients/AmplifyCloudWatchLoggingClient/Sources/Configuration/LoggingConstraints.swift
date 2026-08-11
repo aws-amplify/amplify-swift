@@ -9,7 +9,7 @@ import AmplifyFoundation
 import Foundation
 
 @_spi(AmplifyExperimental)
-public struct LoggingConstraints: Codable, Sendable {
+public struct LoggingConstraints: Sendable {
     public init(
         defaultLogLevel: LogLevel = .error,
         namespaceLogLevel: [String: LogLevel] = [:],
@@ -26,10 +26,10 @@ public struct LoggingConstraints: Codable, Sendable {
 }
 
 @_spi(AmplifyExperimental)
-public struct UserLogLevel: Codable, Sendable {
+public struct UserLogLevel: Sendable {
     public init(
-        defaultLogLevel: LogLevel,
-        namespaceLogLevel: [String: LogLevel]
+        defaultLogLevel: LogLevel = .error,
+        namespaceLogLevel: [String: LogLevel] = [:]
     ) {
         self.defaultLogLevel = defaultLogLevel
         self.namespaceLogLevel = namespaceLogLevel

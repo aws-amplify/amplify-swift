@@ -28,6 +28,11 @@ public typealias AmplifyCloudWatchLoggingClientConfigurationProvider = (
 /// Conforms to `LogSinkBehavior` so it can be registered with `AmplifyLogging.addSink()`
 /// to capture all framework log messages and forward them to CloudWatch.
 ///
+/// - Important: Use a single client instance per (region, log group). CloudWatch log
+///   streams are keyed by device and user identifier, not by client instance, so two
+///   clients targeting the same region and log group would write to the same streams
+///   and share the same local storage directory, resulting in interleaved writes.
+///
 /// Example usage:
 /// ```swift
 /// let loggingClient = AmplifyCloudWatchLoggingClient(
@@ -117,7 +122,7 @@ public final class AmplifyCloudWatchLoggingClient: AmplifyFoundation.LogSinkBeha
         self.localStoreMaxSizeInMB = options.localStoreMaxSizeInMB
         let credentialIdentityResolver = FoundationToSDKCredentialsAdapter(provider: credentialsProvider)
         self.networkMonitor = NWPathMonitor()
-        self.networkMonitor.startMonitoring(
+        networkMonitor.startMonitoring(
             using: DispatchQueue(label: "com.amazonaws.amplify.cloudwatchlogging.networkmonitor")
         )
 
@@ -263,7 +268,7 @@ private extension NSLock {
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 extension AmplifyCloudWatchLoggingClient: CloudWatchLoggingMonitorDelegate {
-    package func handleAutomaticFlushIntervalEvent() {
+    func handleAutomaticFlushIntervalEvent() {
         Task { [weak self] in
             try await self?.flushLogs()
         }
