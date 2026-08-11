@@ -51,7 +51,7 @@ jobs:
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
-        timeout-minutes: 4
+        timeout-minutes: 10
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
@@ -62,8 +62,8 @@ jobs:
 
       - name: Attempt to restore the build cache from main
         id: build-cache
-        if: steps.dependencies-cache.outputs.cache-hit
-        timeout-minutes: 4
+        if: steps.dependencies-cache.outputs.cache-matched-key != ''
+        timeout-minutes: 10
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
@@ -80,7 +80,7 @@ jobs:
           xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-matched-key != '' }}
 
       - name: Save the dependencies cache in main
         if: inputs.save_build_cache && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'

@@ -76,9 +76,13 @@ jobs:
       # meant every Xcode bump invalidated the whole cache at once, and with no
       # entry to restore, every job cold-cloned the full dependency graph
       # (~34 packages) and timed out.
+      # 10 rather than 4 minutes: this entry is ~830MB and many jobs download it at
+      # once. Because the step is continue-on-error, a timeout here is silent — the
+      # job proceeds with no cache and cold-clones the whole graph, which is the
+      # failure this is meant to prevent.
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
-        timeout-minutes: 4
+        timeout-minutes: 10
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
@@ -89,8 +93,8 @@ jobs:
 
       - name: Attempt to restore the build cache
         id: build-cache
-        if: steps.dependencies-cache.outputs.cache-hit
-        timeout-minutes: 4
+        if: steps.dependencies-cache.outputs.cache-matched-key != ''
+        timeout-minutes: 10
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
@@ -109,7 +113,11 @@ jobs:
           generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          # cache-matched-key rather than cache-hit: cache-hit is only 'true' on an
+          # exact key match, so a restore-keys prefix match would leave resolution
+          # enabled and re-clone the dependency graph despite having usable
+          # checkouts on disk. Any restored entry is enough to skip resolution.
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-matched-key != '' }}
           other_flags: ${{ inputs.test_iterations_flags }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
