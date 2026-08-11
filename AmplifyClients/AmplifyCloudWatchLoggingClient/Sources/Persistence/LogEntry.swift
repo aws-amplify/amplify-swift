@@ -34,7 +34,14 @@ struct LogEntry: Codable, Hashable, Sendable, LogEntryRepresentable {
 
     /// - Returns: String representation of log level
     var logLevelName: String {
-        return logLevel.name
+        switch logLevel {
+        case .error: return "ERROR"
+        case .warn: return "WARN"
+        case .info: return "INFO"
+        case .debug: return "DEBUG"
+        case .verbose: return "VERBOSE"
+        case .none: return "NONE"
+        }
     }
 
     var millisecondsSince1970: Int {

@@ -67,7 +67,8 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
 private extension NSLock {
     @discardableResult
     func execute<T>(_ block: () -> T) -> T {
-        lock(); defer { unlock() }
+        lock()
+        defer { unlock() }
         return block()
     }
 }
