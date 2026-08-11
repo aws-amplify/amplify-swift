@@ -580,6 +580,34 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyEventEnrichmentClient"
+               BuildableName = "AmplifyEventEnrichmentClient"
+               BlueprintName = "AmplifyEventEnrichmentClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCloudWatchClient"
+               BuildableName = "AmplifyCloudWatchClient"
+               BlueprintName = "AmplifyCloudWatchClient"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -916,6 +944,26 @@
                BlueprintIdentifier = "AmplifyCloudWatchLoggingClientTests"
                BuildableName = "AmplifyCloudWatchLoggingClientTests"
                BlueprintName = "AmplifyCloudWatchLoggingClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyEventEnrichmentClientTests"
+               BuildableName = "AmplifyEventEnrichmentClientTests"
+               BlueprintName = "AmplifyEventEnrichmentClientTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyCloudWatchClientTests"
+               BuildableName = "AmplifyCloudWatchClientTests"
+               BlueprintName = "AmplifyCloudWatchClientTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
