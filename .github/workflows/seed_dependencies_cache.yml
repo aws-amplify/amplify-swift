@@ -1,0 +1,90 @@
+name: Seed Dependencies Cache | main
+
+# Populates the shared SwiftPM dependencies cache that every unit test,
+# integration test and build job restores from.
+#
+# Why this exists: those jobs only ever *restore* the `amplify-packages-*`
+# cache. The one step that writes it lives in build_scheme.yml and is gated on
+# `github.ref_name == 'main'`, but the only workflow that reaches that step with
+# save_build_cache enabled (build_amplify_swift_platforms.yml) declares
+# `branches-ignore: [main]`. The write was therefore unreachable and the cache
+# never populated, so all ~190 jobs on every run independently cloned the full
+# dependency graph (~34 packages) from github.com and starved each other until
+# they hit the job timeout.
+#
+# `swift package resolve` is enough to fill the clone directory — the cache holds
+# SwiftPM checkouts, which are plain source and not toolchain specific.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Only reseed when the resolved dependency set actually changes.
+      - 'Package.resolved'
+      - 'Package.swift'
+      - '.github/workflows/seed_dependencies_cache.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Never run two seeding jobs at once; they would race on the same cache key.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    name: Seed SwiftPM dependencies cache
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Check for an existing cache entry
+        id: dependencies-cache
+        continue-on-error: true
+        uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          # Key must stay identical to the consumers in run_unit_tests.yml,
+          # run_integration_tests.yml, build_scheme.yml,
+          # integ_test_auth_webauthn.yml and integ_test_push_notifications.yml.
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          lookup-only: true
+
+      - name: Resolve dependencies
+        if: steps.dependencies-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          # Resolve into the same directory the test jobs pass as
+          # -clonedSourcePackagesDirPath so the cached layout matches.
+          xcodebuild -resolvePackageDependencies \
+            -scheme Amplify-Package \
+            -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify
+
+      # Drop the bare git mirrors under repositories/. Only checkouts/ is needed
+      # once the working copies exist, and consumers restore this cache and then
+      # build with -disableAutomaticPackageResolution, so nothing re-reads them.
+      # This takes the cache from ~4.3GB to ~830MB, which matters against the
+      # repository-wide 10GB cache budget.
+      - name: Prune git mirrors before caching
+        if: steps.dependencies-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          CACHE_DIR=~/Library/Developer/Xcode/DerivedData/Amplify
+          du -sh "$CACHE_DIR" || true
+          rm -rf "$CACHE_DIR/repositories"
+          du -sh "$CACHE_DIR" || true
+
+      - name: Save the dependencies cache
+        if: steps.dependencies-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
