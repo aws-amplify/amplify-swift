@@ -41,7 +41,12 @@ jobs:
     # checkouts come from the same Xcode/SwiftPM that will read them. Update this
     # alongside the consumers when the runner image changes.
     runs-on: macos-15
-    timeout-minutes: 45
+    # Generous on purpose. This job has to resolve cold, since it exists precisely
+    # because no cache is available yet, and it is the one job everything else
+    # depends on. It runs alone rather than alongside ~190 siblings, so it should
+    # finish in minutes; the headroom is here so a slow clone cannot leave the
+    # cache unseeded.
+    timeout-minutes: 90
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
