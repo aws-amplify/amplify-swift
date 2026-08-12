@@ -19,6 +19,10 @@ on:
   push:
     branches:
       - main
+      # TEMPORARY — remove before merge. Present so the cache can be seeded from
+      # this branch to verify the fix, since a workflow is not dispatchable until
+      # it exists on the default branch.
+      - ci/dependency-cache-and-timeouts
     paths:
       # Only reseed when the resolved dependency set actually changes.
       - 'Package.resolved'
