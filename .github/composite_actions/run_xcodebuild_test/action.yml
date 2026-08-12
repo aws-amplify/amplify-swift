@@ -46,6 +46,56 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Resolve dependencies as an explicit, separately bounded step.
+    #
+    # Left to xcodebuild, resolution happens silently inside the test invocation:
+    # SwiftPM checks out ~34 repositories one at a time via blocking git
+    # subprocesses and prints nothing until the first compile. When that is slow
+    # the job looks hung and is eventually killed at the job timeout with no
+    # output, taking the whole test run with it.
+    #
+    # Doing it here bounds resolution on its own clock, logs progress, and retries
+    # once for transient git or TLS failures. If it still cannot resolve, the step
+    # fails immediately with a clear reason instead of consuming the job's entire
+    # timeout budget.
+    - name: Resolve package dependencies for ${{ inputs.scheme }}
+      if: ${{ inputs.disable_package_resolution != 'true' }}
+      timeout-minutes: 20
+      shell: bash
+      env:
+        PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+      run: |
+        set -o pipefail
+        if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+
+        clonedPath=""
+        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          clonedPath="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+        fi
+
+        for attempt in 1 2; do
+          echo "::group::Resolving package dependencies (attempt $attempt)"
+          if xcodebuild -resolvePackageDependencies \
+               -scheme '${{ inputs.scheme }}' \
+               $clonedPath; then
+            echo "::endgroup::"
+            echo "Dependencies resolved on attempt $attempt."
+            exit 0
+          fi
+          echo "::endgroup::"
+          echo "Resolution attempt $attempt failed."
+          # Drop partial mirror state so the retry starts from a clean slate.
+          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ] && [ "$attempt" -eq 1 ]; then
+            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          fi
+        done
+
+        echo "::error::Could not resolve package dependencies after 2 attempts."
+        exit 1
+
     - name: Test ${{ inputs.scheme }}
       env:
         SCHEME: ${{ inputs.scheme }}
@@ -87,10 +137,11 @@ runs:
           fi
         fi
 
-        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
-          echo "Disabling Automatic Package Resolution"
-          clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
-        fi
+        # Always disable resolution here. Either the cache supplied the checkouts
+        # or the resolve step above produced them, so xcodebuild must never fall
+        # back to resolving mid-test — that is the silent hang this avoids.
+        echo "Disabling Automatic Package Resolution"
+        clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
 
         action="test"
         if [ "${{ inputs.test_without_building }}" == "true" ]; then

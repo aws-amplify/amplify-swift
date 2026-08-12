@@ -70,16 +70,24 @@ jobs:
           xcode_version: ${{ steps.platform.outputs.xcode-version }}
           platform: ${{ inputs.platform }}
 
-      # The cache key is deliberately NOT keyed on the Xcode version. This holds
-      # cloned SwiftPM checkouts, which are just source and are not specific to a
-      # toolchain — Package.resolved already pins them exactly. Keying on Xcode
-      # meant every Xcode bump invalidated the whole cache at once, and with no
-      # entry to restore, every job cold-cloned the full dependency graph
-      # (~34 packages) and timed out.
-      # 10 rather than 4 minutes: this entry is ~830MB and many jobs download it at
+      # Key notes, both learned the hard way:
+      #
+      # Not keyed on the Xcode version. This holds cloned SwiftPM checkouts, which
+      # are plain source and not toolchain specific. Keying on Xcode meant every
+      # Xcode bump invalidated the whole cache at once, leaving every job to
+      # cold-clone the full dependency graph (~34 packages) and time out.
+      #
+      # Keyed on Package.swift, NOT Package.resolved. `xcodebuild
+      # -resolvePackageDependencies` rewrites Package.resolved when the resolving
+      # toolchain writes a different format version (Xcode 16 writes version 2,
+      # Xcode 26/Swift 6 writes version 3 with an originHash). That changed the
+      # hash *within a single job*, so the save step wrote a key the restore step
+      # could never ask for and the cache could never hit.
+      #
+      # 10 rather than 4 minutes: the entry is large and many jobs download it at
       # once. Because the step is continue-on-error, a timeout here is silent — the
-      # job proceeds with no cache and cold-clones the whole graph, which is the
-      # failure this is meant to prevent.
+      # job proceeds with no cache and cold-clones the graph, the exact failure
+      # this is meant to prevent.
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
         timeout-minutes: 10
@@ -87,7 +95,7 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.swift') }}
           restore-keys: |
             amplify-packages-
 
@@ -99,7 +107,7 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
-          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
+          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.swift') }}
 
       - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests

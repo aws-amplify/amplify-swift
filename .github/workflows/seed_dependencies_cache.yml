@@ -66,7 +66,7 @@ jobs:
           # Key must stay identical to the consumers in run_unit_tests.yml,
           # run_integration_tests.yml, build_scheme.yml,
           # integ_test_auth_webauthn.yml and integ_test_push_notifications.yml.
-          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.swift') }}
           lookup-only: true
 
       - name: Resolve dependencies
@@ -99,4 +99,4 @@ jobs:
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.swift') }}

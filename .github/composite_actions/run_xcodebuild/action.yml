@@ -39,6 +39,46 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # See run_xcodebuild_test/action.yml for the rationale: resolution runs as an
+    # explicitly bounded, retried step so it cannot hang silently inside the build
+    # and consume the job's entire timeout with no output.
+    - name: Resolve package dependencies for ${{ inputs.scheme }}
+      timeout-minutes: 20
+      shell: bash
+      env:
+        PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+      run: |
+        set -o pipefail
+        if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+
+        clonedPath=""
+        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          clonedPath="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+        fi
+
+        for attempt in 1 2; do
+          echo "::group::Resolving package dependencies (attempt $attempt)"
+          if xcodebuild -resolvePackageDependencies \
+               -scheme '${{ inputs.scheme }}' \
+               $clonedPath; then
+            echo "::endgroup::"
+            echo "Dependencies resolved on attempt $attempt."
+            exit 0
+          fi
+          echo "::endgroup::"
+          echo "Resolution attempt $attempt failed."
+          # Drop partial mirror state so the retry starts clean.
+          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ] && [ "$attempt" -eq 1 ]; then
+            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          fi
+        done
+
+        echo "::error::Could not resolve package dependencies after 2 attempts."
+        exit 1
+
     - name: Test ${{ inputs.scheme }}
       env:
         SCHEME: ${{ inputs.scheme }}
@@ -55,10 +95,10 @@ runs:
         fi
 
         otherFlags="${{ inputs.other_flags }}"
-        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
-          echo "Disabling Automatic Package Resolution"
-          otherFlags+=" -disableAutomaticPackageResolution"
-        fi
+        # Always disabled: either the cache supplied the checkouts or the resolve
+        # step above produced them, so xcodebuild must never resolve mid-build.
+        echo "Disabling Automatic Package Resolution"
+        otherFlags+=" -disableAutomaticPackageResolution"
 
         if [ ! -z "$DERIVED_DATA_PATH" ]; then
           echo "Using custom DerivedData path"
