@@ -46,6 +46,79 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Resolve dependencies as an explicit, separately bounded step.
+    #
+    # Left to xcodebuild, resolution happens silently inside the test invocation.
+    # SwiftPM checks out ~31 repositories one at a time through blocking git
+    # subprocesses and prints nothing until the first compile, so a slow clone is
+    # indistinguishable from a hang: the job produces no output and is eventually
+    # killed at the job timeout, taking the test run with it. Observed failures had
+    # zero build output and orphaned git / git-remote-http processes.
+    #
+    # Doing it here means resolution has its own clock and its own log group, is
+    # retried for transient git/TLS failures, and — if it genuinely cannot finish —
+    # fails fast with a clear reason instead of consuming the whole job budget.
+    #
+    # The bound uses a background watchdog rather than `timeout-minutes:`, which
+    # GitHub rejects on steps inside a composite action, and rather than
+    # `timeout(1)`, which is not installed on macOS runners.
+    - name: Resolve package dependencies for ${{ inputs.scheme }}
+      shell: bash
+      env:
+        PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+        # A cold resolve is ~2 minutes locally but far slower on a loaded runner,
+        # where many jobs clone the same graph at once. 25 minutes per attempt is
+        # sized to absorb that while still being well short of the job timeout, so
+        # a genuine stall surfaces as a fast, explicit failure.
+        RESOLVE_TIMEOUT_SECONDS: '1500'
+      run: |
+        set -o pipefail
+        if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+
+        clonedPath=()
+        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          clonedPath=(-clonedSourcePackagesDirPath "$CLONED_SOURCE_PACKAGES_PATH")
+        fi
+
+        resolve_bounded() {
+          xcodebuild -resolvePackageDependencies \
+            -scheme '${{ inputs.scheme }}' \
+            "${clonedPath[@]}" &
+          local pid=$!
+          ( sleep "$RESOLVE_TIMEOUT_SECONDS"; kill -9 "$pid" 2>/dev/null ) &
+          local watchdog=$!
+          wait "$pid"
+          local status=$?
+          kill "$watchdog" 2>/dev/null || true
+          wait "$watchdog" 2>/dev/null || true
+          return $status
+        }
+
+        for attempt in 1 2 3; do
+          echo "::group::Resolving package dependencies (attempt $attempt of 3)"
+          start=$(date +%s)
+          if resolve_bounded; then
+            echo "::endgroup::"
+            echo "Dependencies resolved in $(( $(date +%s) - start ))s on attempt $attempt."
+            exit 0
+          fi
+          echo "::endgroup::"
+          echo "Attempt $attempt failed or exceeded ${RESOLVE_TIMEOUT_SECONDS}s after $(( $(date +%s) - start ))s."
+
+          # Clear partial mirror state so the next attempt is not resuming a
+          # half-written clone, which is a common way for this to wedge.
+          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          fi
+        done
+
+        echo "::error::Could not resolve package dependencies after 3 attempts. \
+        This is a dependency fetch problem, not a test failure."
+        exit 1
+
     - name: Test ${{ inputs.scheme }}
       env:
         SCHEME: ${{ inputs.scheme }}
@@ -87,10 +160,11 @@ runs:
           fi
         fi
 
-        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
-          echo "Disabling Automatic Package Resolution"
-          clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
-        fi
+        # Unconditionally disabled. The resolve step above already produced the
+        # checkouts (or failed loudly trying), so xcodebuild must never fall back
+        # to resolving here — that fallback is the silent hang this avoids.
+        echo "Disabling Automatic Package Resolution"
+        clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
 
         action="test"
         if [ "${{ inputs.test_without_building }}" == "true" ]; then

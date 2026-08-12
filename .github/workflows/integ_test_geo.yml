@@ -40,5 +40,5 @@ jobs:
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
       resource_subfolder: geo
-      timeout-minutes: 30
+      timeout-minutes: 60
     secrets: inherit

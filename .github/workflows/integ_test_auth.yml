@@ -50,7 +50,7 @@ jobs:
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
       resource_subfolder: auth
-      timeout-minutes: 30
+      timeout-minutes: 60
     secrets: inherit
 
   auth-ui-integration-test-iOS:
@@ -61,7 +61,7 @@ jobs:
       platform: iOS
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
       resource_subfolder: auth
-      timeout-minutes: 30
+      timeout-minutes: 60
       xcode_version: '16.4.0'
     secrets: inherit
 

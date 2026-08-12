@@ -10,7 +10,7 @@ on:
         description: 'The timeout for each execution'
         required: false
         type: number
-        default: 30
+        default: 60
       generate_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
