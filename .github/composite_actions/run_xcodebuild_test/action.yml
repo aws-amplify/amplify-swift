@@ -58,9 +58,12 @@ runs:
     # once for transient git or TLS failures. If it still cannot resolve, the step
     # fails immediately with a clear reason instead of consuming the job's entire
     # timeout budget.
+    #
+    # The bound is applied with a background watchdog rather than
+    # `timeout-minutes:`, which GitHub does not allow on steps inside a composite
+    # action, and rather than `timeout(1)`, which is not present on macOS runners.
     - name: Resolve package dependencies for ${{ inputs.scheme }}
       if: ${{ inputs.disable_package_resolution != 'true' }}
-      timeout-minutes: 20
       shell: bash
       env:
         PROJECT_PATH: ${{ inputs.project_path }}
@@ -76,17 +79,33 @@ runs:
           clonedPath="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
         fi
 
+        # Run resolution with a watchdog that kills it after RESOLVE_TIMEOUT so a
+        # stalled git clone cannot sit there until the job timeout.
+        RESOLVE_TIMEOUT=1200
+
+        run_resolve_bounded() {
+          xcodebuild -resolvePackageDependencies \
+            -scheme '${{ inputs.scheme }}' \
+            $clonedPath &
+          local pid=$!
+          ( sleep "$RESOLVE_TIMEOUT"; kill -9 "$pid" 2>/dev/null ) &
+          local watchdog=$!
+          wait "$pid"
+          local status=$?
+          kill "$watchdog" 2>/dev/null || true
+          wait "$watchdog" 2>/dev/null || true
+          return $status
+        }
+
         for attempt in 1 2; do
           echo "::group::Resolving package dependencies (attempt $attempt)"
-          if xcodebuild -resolvePackageDependencies \
-               -scheme '${{ inputs.scheme }}' \
-               $clonedPath; then
+          if run_resolve_bounded; then
             echo "::endgroup::"
             echo "Dependencies resolved on attempt $attempt."
             exit 0
           fi
           echo "::endgroup::"
-          echo "Resolution attempt $attempt failed."
+          echo "Resolution attempt $attempt failed or exceeded ${RESOLVE_TIMEOUT}s."
           # Drop partial mirror state so the retry starts from a clean slate.
           if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ] && [ "$attempt" -eq 1 ]; then
             rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
