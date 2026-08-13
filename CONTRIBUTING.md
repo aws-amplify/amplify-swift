@@ -42,7 +42,7 @@ Applications that evaluate all members of an enumeration using a `switch` statem
 
 ## Getting Started
 
-To get started with the Amplify Library for Swift, first make sure you have Xcode 16.0 or later installed.
+To get started with the Amplify Library for Swift, first make sure you have Xcode 26.0 or later installed.
 
 Then make sure you fork the project first and then clone it by running:
 

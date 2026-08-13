@@ -41,8 +41,8 @@ runs:
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=26.3
-        MINIMUM_XCODE_VERSION=16.0.0
+        LATEST_XCODE_VERSION=26.5
+        MINIMUM_XCODE_VERSION=26.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
@@ -66,60 +66,49 @@ runs:
 
         # Map resolved Xcode versions to simulator destinations.
         # Only explicitly supported versions are allowed — unknown versions fail.
+        #
+        # The minimum-Xcode legs (26.0.1) run against the 26.2 simulator runtime:
+        # the macos-26 runner image ships SDKs for 26.0 but only installs runtimes
+        # for 26.2 and later. The Xcode version is what we are validating here, and
+        # the runtime only needs to be at or above our deployment target floors.
         case $INPUT_PLATFORM/$XCODE_VERSION in
-          iOS/26.3)
-            DEVICE="iPhone 16 Pro Max"
+          iOS/26.5)
+            DEVICE="iPhone 17 Pro Max"
+            OS_VERSION="26.5"
+            ;;
+          iOS/26.0.1)
+            DEVICE="iPhone 17 Pro Max"
             OS_VERSION="26.2"
             ;;
-          iOS/16.4.0)
-            DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="18.5"
+          tvOS/26.5)
+            DEVICE="Apple TV 4K (3rd generation)"
+            OS_VERSION="26.5"
             ;;
-          iOS/16.0.0)
-            DEVICE="iPhone 16 Pro Max"
-            OS_VERSION="18.0"
-            ;;
-          tvOS/26.3)
+          tvOS/26.0.1)
             DEVICE="Apple TV 4K (3rd generation)"
             OS_VERSION="26.2"
             ;;
-          tvOS/16.4.0)
-            DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="18.5"
+          watchOS/26.5)
+            DEVICE="Apple Watch Series 11 (46mm)"
+            OS_VERSION="26.5"
             ;;
-          tvOS/16.0.0)
-            DEVICE="Apple TV 4K (3rd generation)"
-            OS_VERSION="18.0"
-            ;;
-          watchOS/26.3)
-            DEVICE="Apple Watch Series 10 (46mm)"
+          watchOS/26.0.1)
+            DEVICE="Apple Watch Series 11 (46mm)"
             OS_VERSION="26.2"
             ;;
-          watchOS/16.4.0)
-            DEVICE="Apple Watch Series 10 (46mm)"
-            OS_VERSION="11.5"
+          visionOS/26.5)
+            DEVICE="Apple Vision Pro"
+            OS_VERSION="26.5"
             ;;
-          watchOS/16.0.0)
-            DEVICE="Apple Watch SE (44mm) (2nd generation)"
-            OS_VERSION="11.0"
-            ;;
-          visionOS/26.3)
+          visionOS/26.0.1)
             DEVICE="Apple Vision Pro"
             OS_VERSION="26.2"
-            ;;
-          visionOS/16.4.0)
-            DEVICE="Apple Vision Pro"
-            OS_VERSION="2.5"
-            ;;
-          visionOS/16.0.0)
-            DEVICE="Apple Vision Pro"
-            OS_VERSION="2.0"
             ;;
           macOS/*)
             ;;
           *)
             echo "Unsupported platform/Xcode combination: $INPUT_PLATFORM/$XCODE_VERSION"
-            echo "Supported Xcode versions: 26.3, 16.4.0, 16.0.0"
+            echo "Supported Xcode versions: 26.5, 26.0.1"
             exit 1
             ;;
         esac
