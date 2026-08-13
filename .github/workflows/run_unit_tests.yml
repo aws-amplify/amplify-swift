@@ -18,10 +18,19 @@ on:
         default: 'latest'
         type: string
       timeout-minutes:
+        # 30 minutes was not enough headroom. A job that has to fetch the whole
+        # dependency graph before compiling anything spends most of its budget
+        # there, and simulator startup on visionOS/iOS has been observed taking
+        # tens of minutes on a loaded runner. The old ceiling turned that slowness
+        # into a wall of cancelled jobs that looked like test failures.
+        #
+        # This is headroom, not the fix: resolution is separately bounded and
+        # retried in the run_xcodebuild* actions, so a genuine stall still fails
+        # fast and explicitly rather than sitting here until the job is killed.
         description: 'The timeout for each execution'
         required: false
         type: number
-        default: 30
+        default: 60
       generate_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
