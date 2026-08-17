@@ -12,4 +12,6 @@ import Foundation
 public enum FlushStrategy: Sendable {
     /// Automatically flush at a regular interval. Default is 60 seconds.
     case interval(TimeInterval = 60)
+    /// Disable automatic flushing. Log events are only sent when flushLogs() is called manually.
+    case none
 }
