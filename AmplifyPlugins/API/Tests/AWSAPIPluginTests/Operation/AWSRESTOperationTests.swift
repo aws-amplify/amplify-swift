@@ -120,6 +120,23 @@ class AWSRESTOperationTests: OperationTestBase {
         await fulfillment(of: [callbackInvoked, validated], timeout: 1.0)
     }
 
+    /// Asserts a `;` query value is percent-encoded on the outgoing request.
+    func testRESTGetPercentEncodesSemicolonInQueryValue() async throws {
+        let sentData = Data([0x00, 0x01, 0x02, 0x03])
+        try setUpPluginForSingleResponse(sending: sentData, for: .rest)
+
+        let validated = expectation(description: "Outgoing request query is validated")
+        try apiPlugin.add(interceptor: TestURLRequestInterceptor(validate: { request in
+            defer { validated.fulfill() }
+            return request.url?.query == "filter=X%3BY"
+        }), for: "Valid")
+
+        let callbackInvoked = expectation(description: "Callback was invoked")
+        let request = RESTRequest(apiName: "Valid", path: "/path", queryParameters: ["filter": "X;Y"])
+        _ = apiPlugin.get(request: request) { _ in callbackInvoked.fulfill() }
+        await fulfillment(of: [callbackInvoked, validated], timeout: 1.0)
+    }
+
 }
 
 private struct TestURLRequestInterceptor: URLRequestInterceptor {

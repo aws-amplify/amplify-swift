@@ -35,6 +35,11 @@ final class RESTOperationRequestUtils {
 
         if let queryParameters {
             components.queryItems = prepareQueryParamsForSigning(params: queryParameters)
+            // `URLComponents` leaves `;` unencoded, so servers may treat it as a separator.
+            // Encode it — https://github.com/aws-amplify/amplify-swift/issues/3955
+            if let percentEncodedQuery = components.percentEncodedQuery {
+                components.percentEncodedQuery = percentEncodedQuery.replacingOccurrences(of: ";", with: "%3B")
+            }
         }
 
         guard let url = components.url else {
