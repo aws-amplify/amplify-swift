@@ -35,6 +35,12 @@ final class RESTOperationRequestUtils {
 
         if let queryParameters {
             components.queryItems = prepareQueryParamsForSigning(params: queryParameters)
+            // `URLComponents` leaves `;` unencoded, but API Gateway treats it as a query
+            // parameter delimiter and drops everything after it, so encode it explicitly.
+            // https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-known-issues.html#api-gateway-known-issues-rest-apis
+            if let percentEncodedQuery = components.percentEncodedQuery {
+                components.percentEncodedQuery = percentEncodedQuery.replacingOccurrences(of: ";", with: "%3B")
+            }
         }
 
         guard let url = components.url else {
