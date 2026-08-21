@@ -1,0 +1,21 @@
+{
+  "InternalAWSPinpointUnitTests": { "targets": ["InternalAWSPinpointUnitTests"] },
+  "Amplify": { "targets": ["Amplify"] },
+  "AWSPluginsCore": { "targets": ["AWSPluginsCore"] },
+  "AWSAPIPlugin": { "targets": ["AWSAPIPlugin"] },
+  "AWSCloudWatchLoggingPlugin": { "targets": ["AWSCloudWatchLoggingPlugin"] },
+  "AWSCognitoAuthPlugin": { "targets": ["AWSCognitoAuthPlugin"] },
+  "AWSDataStorePlugin": { "targets": ["AWSDataStorePlugin"] },
+  "AmplifyRecordCache": { "targets": ["AmplifyRecordCache"] },
+  "AmplifyKinesisClient": { "targets": ["AmplifyKinesisClient"] },
+  "AmplifyFirehoseClient": { "targets": ["AmplifyFirehoseClient"] },
+  "AmplifyConnectClient": { "targets": ["AmplifyConnectClient"] },
+  "AmplifyEventEnrichmentClient": { "targets": ["AmplifyEventEnrichmentClient"] },
+  "AWSLocationGeoPlugin": { "targets": ["AWSLocationGeoPlugin"] },
+  "AWSPredictionsPlugin": { "targets": ["AWSPredictionsPlugin"] },
+  "AWSPinpointAnalyticsPlugin": { "targets": ["AWSPinpointAnalyticsPlugin"] },
+  "AWSPinpointPushNotificationsPlugin": { "targets": ["AWSPinpointPushNotificationsPlugin"] },
+  "AWSS3StoragePlugin": { "targets": ["AWSS3StoragePlugin"] },
+  "AmplifyFoundation": { "targets": ["AmplifyFoundation"] },
+  "AmplifyFoundationBridge": { "targets": ["AmplifyFoundationBridge"] }
+}

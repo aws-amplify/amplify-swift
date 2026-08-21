@@ -15,42 +15,113 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
+  detect:
+    name: Detect affected targets
+    runs-on: macos-15
+    permissions:
+      contents: read
+    outputs:
+      analytics: ${{ steps.sel.outputs.analytics }}
+      kinesis_firehose: ${{ steps.sel.outputs.kinesis_firehose }}
+      push_notifications: ${{ steps.sel.outputs.push_notifications }}
+      predictions: ${{ steps.sel.outputs.predictions }}
+      auth: ${{ steps.sel.outputs.auth }}
+      geo: ${{ steps.sel.outputs.geo }}
+      storage: ${{ steps.sel.outputs.storage }}
+      logging: ${{ steps.sel.outputs.logging }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Only gate on pull requests. Pushes to main (post-merge) and manual dispatch run all.
+          categories=($(jq -r 'keys[]' scripts/python/integ_test_groups.json))
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            for c in "${categories[@]}"; do
+              echo "$c=true" >> "$GITHUB_OUTPUT"
+            done
+            exit 0
+          fi
+          base='${{ github.event.pull_request.base.ref || 'main' }}'
+          git fetch --no-tags origin "$base" || true
+          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          swift package dump-package > /tmp/package.json
+          python3 scripts/python/affected_targets.py \
+            --package /tmp/package.json --changed /tmp/changed.txt \
+            --groups scripts/python/integ_test_groups.json | tee -a "$GITHUB_OUTPUT"
+
   analytics-test:
     name: Analytics Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.analytics == 'true' }}
     uses: ./.github/workflows/integ_test_analytics.yml
     secrets: inherit
 
   kinesis-firehose-test:
     name: Kinesis & Firehose Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.kinesis_firehose == 'true' }}
     uses: ./.github/workflows/integ_test_kinesis_firehose.yml
     secrets: inherit
 
   push-notifications-test:
     name: Push Notifications Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.push_notifications == 'true' }}
     uses: ./.github/workflows/integ_test_push_notifications.yml
     secrets: inherit
 
   predictions-test:
     name: Predictions Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.predictions == 'true' }}
     uses: ./.github/workflows/integ_test_predictions.yml
     secrets: inherit
 
   auth-test:
     name: Auth Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.auth == 'true' }}
     uses: ./.github/workflows/integ_test_auth.yml
     secrets: inherit
 
   geo-test:
     name: Geo Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.geo == 'true' }}
     uses: ./.github/workflows/integ_test_geo.yml
     secrets: inherit
 
   storage-test:
     name: Storage Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.storage == 'true' }}
     uses: ./.github/workflows/integ_test_storage.yml
     secrets: inherit
 
   logging-test:
     name: Logging Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.logging == 'true' }}
     uses: ./.github/workflows/integ_test_logging.yml
     secrets: inherit
+
+  integ-pass-confirmation:
+    name: Confirm Passing Integration Tests
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs:
+      - detect
+      - analytics-test
+      - kinesis-firehose-test
+      - push-notifications-test
+      - predictions-test
+      - auth-test
+      - geo-test
+      - storage-test
+      - logging-test
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE

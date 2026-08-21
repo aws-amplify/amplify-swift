@@ -47,14 +47,46 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
+  detect:
+    name: Detect affected targets
+    runs-on: macos-15
+    outputs:
+      cov: ${{ steps.sel.outputs.cov }}
+      nocov: ${{ steps.sel.outputs.nocov }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Gate only on a genuine feature-branch push. Deploy pipelines invoke this workflow via
+          # workflow_call (which passes `identifier`), and manual runs use workflow_dispatch — both
+          # must exercise the full matrix, so only an unqualified `push` event is change-gated.
+          if [ -n "${{ inputs.identifier }}" ] || [ "${{ github.event_name }}" != "push" ]; then
+            sel=$(jq -c 'keys' scripts/python/unit_test_groups.json)
+          else
+            base='${{ github.event.pull_request.base.ref || 'main' }}'
+            git fetch --no-tags origin "$base" || true
+            git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+            swift package dump-package > /tmp/package.json
+            sel=$(python3 scripts/python/affected_targets.py \
+              --package /tmp/package.json --changed /tmp/changed.txt \
+              --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
+          fi
+          echo "selected: $sel"
+          {
+            echo "nocov=$(jq -c '[.[]|select(.=="InternalAWSPinpointUnitTests")]' <<<"$sel")"
+            echo "cov=$(jq -c '[.[]|select(.!="InternalAWSPinpointUnitTests")]' <<<"$sel")"
+          } >> "$GITHUB_OUTPUT"
+
   targets-without-coverage:
     name: ${{ matrix.scheme }} Unit Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.nocov != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        scheme: [
-          InternalAWSPinpointUnitTests
-        ]
+        scheme: ${{ fromJSON(needs.detect.outputs.nocov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
@@ -62,38 +94,21 @@ jobs:
 
   targets-with-coverage:
     name: ${{ matrix.scheme }} Unit Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.cov != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        scheme: [
-          Amplify,
-          AWSPluginsCore,
-          AWSAPIPlugin,
-          AWSCloudWatchLoggingPlugin,
-          AWSCognitoAuthPlugin,
-          AWSDataStorePlugin,
-          AmplifyRecordCache,
-          AmplifyKinesisClient,
-          AmplifyFirehoseClient,
-          AmplifyConnectClient,
-          AmplifyEventEnrichmentClient,
-          AWSLocationGeoPlugin,
-          AWSPredictionsPlugin,
-          AWSPinpointAnalyticsPlugin,
-          AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          AmplifyFoundation,
-          AmplifyFoundationBridge
-        ]
+        scheme: ${{ fromJSON(needs.detect.outputs.cov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
 
   report-coverage:
-    if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
+    needs: [detect, targets-with-coverage]
+    if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' && contains(fromJSON(needs.detect.outputs.cov), matrix.file.scheme) }}
     name: ${{ matrix.file.scheme }} Unit Tests
-    needs: [targets-with-coverage]
     strategy:
       fail-fast: false
       matrix:
@@ -128,6 +143,7 @@ jobs:
     name: Confirm Passing Unit Tests
     if: ${{ !cancelled() }}
     needs: [
+      detect,
       targets-with-coverage,
       targets-without-coverage
     ]
