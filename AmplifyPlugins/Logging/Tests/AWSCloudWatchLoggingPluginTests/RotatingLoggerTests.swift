@@ -10,6 +10,7 @@ import Combine
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 final class RotatingLoggerTests: XCTestCase {
 
