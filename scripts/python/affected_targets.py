@@ -38,8 +38,25 @@ import sys
 
 # Paths that can never affect tests. Kept deliberately small — anything not listed here and not
 # owned by a target falls through to the fail-closed "run everything" branch.
-IGNORE_SUFFIXES = (".md",)
-IGNORE_PREFIXES = ("readme-images/", "docs/", ".github/ISSUE_TEMPLATE/")
+# Repo/editor metadata that is inert wherever it lives — never affects a build or test, so it is
+# ignored even inside a target directory (checked before target ownership).
+ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig")
+ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE")
+
+# Files safe to ignore only when they aren't owned by an SPM target — none of which affect unit or
+# integration test outcomes: docs and CI/lint/tooling config (.md, .yml/.yaml — an in-target YAML
+# fixture is still owned and runs), images, repo metadata under .github/, the separately-tested
+# canary apps, API-dump baselines/fixtures, fastlane config, and the standalone AmplifyTools CLI.
+IGNORE_SUFFIXES = (".md", ".yml", ".yaml")
+IGNORE_PREFIXES = (
+    "readme-images/",
+    ".github/",
+    "canaries/",
+    "api-dump/",
+    "api-dump-test/",
+    "fastlane/",
+    "AmplifyTools/",
+)
 
 
 def build_graph(pkg):
@@ -112,6 +129,8 @@ def main():
     # target, matching no group path, and not ignorable is unknown -> fail closed to all groups.
     changed_targets = set()
     for f in changed:
+        if f.endswith(ALWAYS_IGNORE_SUFFIXES) or f.rsplit("/", 1)[-1] in ALWAYS_IGNORE_NAMES:
+            continue
         owner = max((n for n, p in path_of.items() if f.startswith(p)),
                     key=lambda n: len(path_of[n]), default=None)
         if owner:

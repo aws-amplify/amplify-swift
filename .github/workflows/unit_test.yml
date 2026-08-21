@@ -53,6 +53,7 @@ jobs:
     outputs:
       cov: ${{ steps.sel.outputs.cov }}
       nocov: ${{ steps.sel.outputs.nocov }}
+      covfiles: ${{ steps.sel.outputs.covfiles }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,9 +75,15 @@ jobs:
               --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
           fi
           echo "selected: $sel"
+          # Coverage matrix: the selected schemes that carry codecov flags (excludes the
+          # no-coverage InternalAWSPinpointUnitTests, which has no `flags`).
+          covfiles=$(jq -c --argjson sel "$sel" \
+            '[to_entries[] | select(.value.flags != null and (.key as $k | $sel | index($k))) | {scheme: .key, flags: .value.flags}]' \
+            scripts/python/unit_test_groups.json)
           {
             echo "nocov=$(jq -c '[.[]|select(.=="InternalAWSPinpointUnitTests")]' <<<"$sel")"
             echo "cov=$(jq -c '[.[]|select(.!="InternalAWSPinpointUnitTests")]' <<<"$sel")"
+            echo "covfiles=$covfiles"
           } >> "$GITHUB_OUTPUT"
 
   targets-without-coverage:
@@ -107,31 +114,12 @@ jobs:
 
   report-coverage:
     needs: [detect, targets-with-coverage]
-    if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' && contains(fromJSON(needs.detect.outputs.cov), matrix.file.scheme) }}
+    if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' && needs.detect.outputs.covfiles != '[]' }}
     name: ${{ matrix.file.scheme }} Unit Tests
     strategy:
       fail-fast: false
       matrix:
-        file: [
-          { scheme: Amplify, flags: 'Amplify,unit_tests' },
-          { scheme: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
-          { scheme: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
-          { scheme: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
-          { scheme: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
-          { scheme: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
-          { scheme: AmplifyRecordCache, flags: 'RecordCache_unit_test,unit_tests' },
-          { scheme: AmplifyKinesisClient, flags: 'Kinesis_plugin_unit_test,unit_tests' },
-          { scheme: AmplifyFirehoseClient, flags: 'Firehose_plugin_unit_test,unit_tests' },
-          { scheme: AmplifyConnectClient, flags: 'Connect_unit_test,unit_tests' },
-          { scheme: AmplifyEventEnrichmentClient, flags: 'EventEnrichment_unit_test,unit_tests' },
-          { scheme: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
-          { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
-          { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
-          { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
-          { scheme: AmplifyFoundation, flags: 'Amplify_Foundation_unit_test,unit_tests' },
-          { scheme: AmplifyFoundationBridge, flags: 'Amplify_Foundation_Bridge_unit_test,unit_tests' }
-        ]
+        file: ${{ fromJSON(needs.detect.outputs.covfiles) }}
     uses: ./.github/workflows/upload_coverage_report.yml
     with:
       scheme: ${{ matrix.file.scheme }}
