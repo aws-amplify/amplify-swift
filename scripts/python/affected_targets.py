@@ -46,7 +46,9 @@ ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE")
 # Files safe to ignore only when they aren't owned by an SPM target — none of which affect unit or
 # integration test outcomes: docs and CI/lint/tooling config (.md, .yml/.yaml — an in-target YAML
 # fixture is still owned and runs), images, repo metadata under .github/, the separately-tested
-# canary apps, API-dump baselines/fixtures, fastlane config, and the standalone AmplifyTools CLI.
+# canary apps, API-dump baselines/fixtures, fastlane config, the standalone AmplifyTools CLI, and
+# repo scripts under scripts/ (the detect job runs the selector regardless, so a broken selector or
+# group config still fails detect rather than being silently skipped).
 IGNORE_SUFFIXES = (".md", ".yml", ".yaml")
 IGNORE_PREFIXES = (
     "readme-images/",
@@ -56,6 +58,7 @@ IGNORE_PREFIXES = (
     "api-dump-test/",
     "fastlane/",
     "AmplifyTools/",
+    "scripts/",
 )
 
 
