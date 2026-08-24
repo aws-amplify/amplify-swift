@@ -31,7 +31,12 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     }
 
     public init(modelSchema: ModelSchema, primaryKeysOnly: Bool) {
-        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields, primaryKeysOnly: primaryKeysOnly)
+        // Omit nested `hasOne` objects on mutations (AppSync returns them null on the response).
+        self.selectionSet = SelectionSet(
+            fields: modelSchema.graphQLFields,
+            primaryKeysOnly: primaryKeysOnly,
+            includeHasOneAssociations: false
+        )
     }
 
     public var name: String = ""
