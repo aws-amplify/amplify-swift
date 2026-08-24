@@ -129,6 +129,7 @@ public final actor WebSocketClient: NSObject {
             return
         }
 
+        log.debug("[WebSocketClient] WebSocket about to disconnect")
         autoConnectOnNetworkStatusChange = false
         autoRetryOnConnectionFailure = false
         connection?.cancel(with: .goingAway, reason: nil)
@@ -229,7 +230,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
         reason: Data?
     ) {
-        log.debug("[WebSocketClient] Websocket disconnected")
+        log.debug("[WebSocketClient] Websocket disconnected with closeCode: \(closeCode)")
         subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
     }
 
@@ -254,7 +255,8 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
              (NSPOSIXErrorDomain.self, 57):
             subject.send(.error(WebSocketClient.Error.connectionLost))
             Task { [weak self] in
-                await self?.networkMonitor.updateState(.offline)
+                await connection?.cancel(with: .invalid, reason: nil)
+                subject.send(.disconnected(.invalid, nil))
             }
         case (NSURLErrorDomain.self, NSURLErrorCancelled):
             log.debug("Skipping NSURLErrorCancelled error")
