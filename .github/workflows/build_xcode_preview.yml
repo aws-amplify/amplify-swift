@@ -30,8 +30,37 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main' }}
 
 jobs:
+  detect:
+    name: Detect affected targets
+    runs-on: macos-15
+    outputs:
+      build: ${{ steps.sel.outputs.build }}
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Build unless the change is confined to non-source paths. Pushes to main (post-merge)
+          # and manual dispatch always build.
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base='${{ github.event.pull_request.base.ref }}'
+          git fetch --no-tags origin "$base" || true
+          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          swift package dump-package > /tmp/package.json
+          sel=$(python3 scripts/python/affected_targets.py \
+            --package /tmp/package.json --changed /tmp/changed.txt \
+            --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
+          [ "$sel" = "[]" ] && echo "build=false" >> "$GITHUB_OUTPUT" || echo "build=true" >> "$GITHUB_OUTPUT"
+
   build:
     name: ${{ matrix.platform }} on Xcode preview
+    needs: detect
+    if: ${{ needs.detect.outputs.build == 'true' }}
     runs-on: xcode-27
     continue-on-error: true
     timeout-minutes: 60
@@ -117,7 +146,7 @@ jobs:
     name: Report Preview Status
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
-    needs: [ build ]
+    needs: [ detect, build ]
     steps:
       - name: Summarize
         run: |

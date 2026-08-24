@@ -15,28 +15,64 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
+  detect:
+    name: Detect whether API is affected
+    runs-on: macos-15
+    permissions:
+      contents: read
+    outputs:
+      api: ${{ steps.sel.outputs.api }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Only gate on pull requests. Pushes to main (post-merge) and manual dispatch run all.
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "api=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base='${{ github.event.pull_request.base.ref || 'main' }}'
+          git fetch --no-tags origin "$base" || true
+          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          swift package dump-package > /tmp/package.json
+          python3 scripts/python/affected_targets.py \
+            --package /tmp/package.json --changed /tmp/changed.txt \
+            --groups scripts/python/integ_test_groups.json | tee -a "$GITHUB_OUTPUT"
+
   functional-test:
     name: Functional Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_functional.yml
     secrets: inherit
 
   graphql-user-pool-test:
     name: GraphQL | User Pool Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_graphql_user_pool.yml
     secrets: inherit
 
   graphql-auth-directive-test:
     name: GraphQL | Auth Directive Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_graphql_auth_directive.yml
     secrets: inherit
 
   graphql-iam-test:
     name: GraphQL | IAM Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_graphql_iam.yml
     secrets: inherit
 
   graphql-lambda-auth-test:
     name: GraphQL | Lambda Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_graphql_lambda_auth.yml
     secrets: inherit
 
@@ -47,11 +83,33 @@ jobs:
     secrets: inherit
 
   rest-user-pool-test:
-    name: REST | User Pool Tests
+    name: REST | User Pool Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_rest_user_pool.yml
     secrets: inherit
 
   rest-iam-test:
     name: REST | IAM Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_rest_iam.yml
     secrets: inherit
+
+  integ-pass-confirmation:
+    name: Confirm Passing API Integration Tests
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs:
+      - detect
+      - functional-test
+      - graphql-user-pool-test
+      - graphql-auth-directive-test
+      - graphql-iam-test
+      - graphql-lambda-auth-test
+      - rest-user-pool-test
+      - rest-iam-test
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE
