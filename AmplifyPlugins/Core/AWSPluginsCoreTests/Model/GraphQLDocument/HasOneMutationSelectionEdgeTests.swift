@@ -1,0 +1,118 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import XCTest
+
+@testable import Amplify
+@testable import AWSPluginsCore
+
+// MARK: - Multi-field foreign-key `hasOne`
+
+private struct MFKTeam: Model {
+    let id: String
+    init(id: String = UUID().uuidString) { self.id = id }
+    enum CodingKeys: String, ModelKey { case id }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in model.fields(.id()) }
+}
+
+private struct MFKProject: Model {
+    let id: String
+    var teamId: String
+    var teamName: String
+    var team: MFKTeam?
+    init(id: String = UUID().uuidString, teamId: String, teamName: String, team: MFKTeam? = nil) {
+        self.id = id
+        self.teamId = teamId
+        self.teamName = teamName
+        self.team = team
+    }
+    enum CodingKeys: String, ModelKey { case id, teamId, teamName, team }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in
+        let project = MFKProject.keys
+        model.fields(
+            .id(),
+            .field(project.teamId, is: .required, ofType: .string),
+            .field(project.teamName, is: .required, ofType: .string),
+            .hasOne(project.team, is: .optional, ofType: MFKTeam.self, associatedWith: MFKTeam.keys.id, targetNames: ["teamId", "teamName"])
+        )
+    }
+}
+
+// MARK: - `hasOne` whose foreign key is part of a composite primary key (the issue's `Like.user` shape)
+
+private struct CPKUser: Model {
+    let id: String
+    init(id: String = UUID().uuidString) { self.id = id }
+    enum CodingKeys: String, ModelKey { case id }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in model.fields(.id()) }
+}
+
+private struct CPKLike: Model {
+    let id: String
+    var userId: String
+    var user: CPKUser?
+    init(id: String = UUID().uuidString, userId: String, user: CPKUser? = nil) {
+        self.id = id
+        self.userId = userId
+        self.user = user
+    }
+    enum CodingKeys: String, ModelKey { case id, userId, user }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in
+        let like = CPKLike.keys
+        model.fields(
+            .id(),
+            .field(like.userId, is: .required, ofType: .string),
+            .hasOne(like.user, is: .optional, ofType: CPKUser.self, associatedWith: CPKUser.keys.id, targetName: "userId")
+        )
+        model.attributes(.primaryKey(fields: [like.id, like.userId]))
+    }
+}
+
+class HasOneMutationSelectionEdgeTests: XCTestCase {
+
+    override func setUp() {
+        ModelRegistry.register(modelType: MFKProject.self)
+        ModelRegistry.register(modelType: MFKTeam.self)
+        ModelRegistry.register(modelType: CPKUser.self)
+        ModelRegistry.register(modelType: CPKLike.self)
+    }
+
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
+    /// - Given: a `hasOne` backed by a multi-field foreign key (`targetNames: ["teamId","teamName"]`).
+    /// - When: an API `.create` mutation is generated.
+    /// - Then: the nested object is omitted and BOTH scalar foreign-key fields are selected.
+    func testMultiFieldForeignKeyHasOne_apiMutationOmitsNestedAndKeepsAllForeignKeys() {
+        let project = MFKProject(teamId: "t-id", teamName: "t-name")
+        let doc = GraphQLRequest<MFKProject>.create(project).document
+
+        XCTAssertFalse(doc.contains("team {"), doc)
+        XCTAssertTrue(doc.contains("teamId"), doc)
+        XCTAssertTrue(doc.contains("teamName"), doc)
+    }
+
+    /// - Given: a `hasOne` whose foreign key (`userId`) is also a sort field of the composite
+    ///   primary key — the same shape as the issue's `Like.user`.
+    /// - When: an API `.create` mutation is generated.
+    /// - Then: the nested object is omitted, and the foreign key is still selected exactly once.
+    func testCompositeKeyForeignKeyHasOne_apiMutationOmitsNestedAndKeepsForeignKeyOnce() {
+        let like = CPKLike(userId: "u-id")
+        let doc = GraphQLRequest<CPKLike>.create(like).document
+
+        XCTAssertFalse(doc.contains("user {"), doc)
+        // FK present, and not duplicated (it is already a selected primary-key scalar).
+        let occurrences = doc.components(separatedBy: "userId").count - 1
+        XCTAssertGreaterThanOrEqual(occurrences, 1, doc)
+        XCTAssertEqual(doc.components(separatedBy: "\n").filter { $0.contains("userId") }.count, 1, "userId should be selected on exactly one line\n\(doc)")
+    }
+}

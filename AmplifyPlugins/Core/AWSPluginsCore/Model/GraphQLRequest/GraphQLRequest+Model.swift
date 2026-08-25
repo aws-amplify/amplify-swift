@@ -288,7 +288,9 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     ) -> GraphQLRequest<M> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
             modelSchema: modelSchema,
-            operationType: .mutation
+            operationType: .mutation,
+            primaryKeysOnly: true,
+            includeHasOneAssociations: false
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
 

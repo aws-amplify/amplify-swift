@@ -22,45 +22,44 @@ class GraphQLHasOneMutationSelectionTests: XCTestCase {
         ModelRegistry.reset()
     }
 
-    /// - Given: a `Project2V2` model whose `team` is a `hasOne` with its foreign key (`teamID`)
-    ///   declared on the source model — the same shape as the issue's model (`Like.user`).
-    /// - When: a `.create` mutation document is generated.
-    /// - Then: the nested `team { ... }` object is NOT selected (on a mutation response AppSync
-    ///   returns it as null, which previously caused "Cannot return null for non-nullable type"),
-    ///   while the scalar foreign key `teamID` IS selected so the association stays lazy-loadable.
-    ///   See https://github.com/aws-amplify/amplify-swift/issues/3913
-    func testCreateMutationForHasOneOmitsNestedObjectAndKeepsForeignKey() {
+    /// - Given: a `Project2V2` whose `team` is a `hasOne` with its foreign key (`teamID`) on the
+    ///   source model — the shape from the issue (`Like.user`).
+    /// - When: an API category `.create` mutation request is generated.
+    /// - Then: the nested `team { ... }` object is NOT selected (AppSync returns it null on a
+    ///   mutation response, which caused "Cannot return null for non-nullable type"), while the
+    ///   scalar foreign key `teamID` IS selected so the association stays lazy-loadable.
+    ///   https://github.com/aws-amplify/amplify-swift/issues/3913
+    func testApiCreateMutationForHasOneOmitsNestedObjectAndKeepsForeignKey() {
         let project = Project2V2(name: "name", teamID: "team-id")
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelSchema: Project2V2.schema,
-            operationType: .mutation,
-            primaryKeysOnly: true
-        )
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: project, mutationType: .create))
-        let document = documentBuilder.build()
+        let request = GraphQLRequest<Project2V2>.create(project)
 
-        XCTAssertEqual(document.name, "createProject2V2")
-        XCTAssertFalse(document.stringValue.contains("team {"))
-        XCTAssertTrue(document.stringValue.contains("teamID"))
+        XCTAssertFalse(request.document.contains("team {"), request.document)
+        XCTAssertTrue(request.document.contains("teamID"), request.document)
     }
 
-    /// The same omission applies to `update` and `delete` (all mutation types share the selection).
-    func testUpdateAndDeleteMutationsForHasOneOmitNestedObjectAndKeepForeignKey() {
+    /// The same omission applies to API `update` and `delete` (all mutation types share the selection).
+    func testApiUpdateAndDeleteMutationsForHasOneOmitNestedObjectAndKeepForeignKey() {
         let project = Project2V2(name: "name", teamID: "team-id")
-        for type in [GraphQLMutationType.update, GraphQLMutationType.delete] {
-            var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-                modelSchema: Project2V2.schema,
-                operationType: .mutation,
-                primaryKeysOnly: true
-            )
-            documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
-            documentBuilder.add(decorator: ModelDecorator(model: project, mutationType: type))
-            let document = documentBuilder.build()
-
-            XCTAssertFalse(document.stringValue.contains("team {"), "\(type) should not nest the hasOne")
-            XCTAssertTrue(document.stringValue.contains("teamID"), "\(type) should keep the scalar FK")
+        let requests: [GraphQLRequest<Project2V2>] = [.update(project), .delete(project)]
+        for request in requests {
+            XCTAssertFalse(request.document.contains("team {"), request.document)
+            XCTAssertTrue(request.document.contains("teamID"), request.document)
         }
+    }
+
+    /// - Given: the same `hasOne` model.
+    /// - When: a DataStore sync mutation request is generated (`createMutation`).
+    /// - Then: the nested `team { ... }` object is STILL selected — the omission is scoped to the
+    ///   API category, so DataStore's sync/lazy-load selection is unchanged.
+    func testDataStoreSyncMutationForHasOneKeepsNestedObject() {
+        let project = Project2V2(name: "name", teamID: "team-id")
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(
+            of: project,
+            modelSchema: Project2V2.schema,
+            version: 1
+        )
+
+        XCTAssertTrue(request.document.contains("team {"), request.document)
     }
 
     /// - Given: the same `hasOne` model.
@@ -75,6 +74,6 @@ class GraphQLHasOneMutationSelectionTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         let document = documentBuilder.build()
 
-        XCTAssertTrue(document.stringValue.contains("team {"))
+        XCTAssertTrue(document.stringValue.contains("team {"), document.stringValue)
     }
 }
