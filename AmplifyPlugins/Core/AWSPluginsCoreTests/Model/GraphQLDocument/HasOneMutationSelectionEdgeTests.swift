@@ -113,6 +113,6 @@ class HasOneMutationSelectionEdgeTests: XCTestCase {
         // FK present, and not duplicated (it is already a selected primary-key scalar).
         let occurrences = doc.components(separatedBy: "userId").count - 1
         XCTAssertGreaterThanOrEqual(occurrences, 1, doc)
-        XCTAssertEqual(doc.components(separatedBy: "\n").filter { $0.contains("userId") }.count, 1, "userId should be selected on exactly one line\n\(doc)")
+        XCTAssertEqual(doc.components(separatedBy: "\n").count(where: { $0.contains("userId") }), 1, "userId should be selected on exactly one line\n\(doc)")
     }
 }
