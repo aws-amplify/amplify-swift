@@ -134,6 +134,53 @@ private struct CompositeFKParent: Model {
     static var rootPath: PropertyContainerPath? { Path() }
 }
 
+// Eager (pre-lazy) variant: the associated model declares no `rootPath`, so no lazy rebuild applies.
+private struct EagerFKChild: Model {
+    let id: String
+    init(id: String = UUID().uuidString) { self.id = id }
+
+    enum CodingKeys: String, ModelKey { case id }
+    static let keys = CodingKeys.self
+
+    static let schema = defineSchema { model in
+        model.fields(.id())
+    }
+}
+
+private struct EagerFKParent: Model {
+    let id: String
+    var childId: String
+    var child: EagerFKChild?
+
+    init(id: String = UUID().uuidString, childId: String, child: EagerFKChild? = nil) {
+        self.id = id
+        self.childId = childId
+        self.child = child
+    }
+
+    enum CodingKeys: String, ModelKey {
+        case id
+        case childId
+        case child
+    }
+    static let keys = CodingKeys.self
+
+    static let schema = defineSchema { model in
+        let parent = EagerFKParent.keys
+        model.fields(
+            .id(),
+            .field(parent.childId, is: .required, ofType: .string),
+            .hasOne(
+                parent.child,
+                is: .optional,
+                ofType: EagerFKChild.self,
+                associatedWith: EagerFKChild.keys.id,
+                targetName: "childId"
+            )
+        )
+    }
+}
+
 class HasOneForeignKeyMetadataTests: XCTestCase {
 
     override func setUp() {
@@ -141,9 +188,11 @@ class HasOneForeignKeyMetadataTests: XCTestCase {
         ModelRegistry.register(modelType: HasOneFKChild.self)
         ModelRegistry.register(modelType: CompositeFKParent.self)
         ModelRegistry.register(modelType: CompositeFKChild.self)
+        ModelRegistry.register(modelType: EagerFKParent.self)
+        ModelRegistry.register(modelType: EagerFKChild.self)
     }
 
-    override func tearDown() {
+    override class func tearDown() {
         ModelRegistry.reset()
     }
 
@@ -238,5 +287,31 @@ class HasOneForeignKeyMetadataTests: XCTestCase {
         let pairs = identifiers.compactMap(pair)
         XCTAssertTrue(pairs.contains(where: { $0 == ("teamId", "team-1") }), "\(pairs)")
         XCTAssertTrue(pairs.contains(where: { $0 == ("area", "emea") }), "\(pairs)")
+    }
+
+    /// - Given: an eager `hasOne` (associated model has no `rootPath`) whose nested object is absent
+    ///   but the foreign key is present.
+    /// - When: `addMetadata` processes the response.
+    /// - Then: no lazy-reference metadata is injected (eager models can't lazy-load), so the
+    ///   association decodes as `nil`. This matches amplify-android/js, where relation loading is
+    ///   unsupported on mutations; the related data must be re-queried.
+    func testAddMetadata_eagerHasOneMissingNestedObject_doesNotRebuild() {
+        let json: JSONValue = [
+            "id": "parent1",
+            "childId": "child1",
+            "__typename": "EagerFKParent"
+        ]
+
+        let result = AppSyncModelMetadataUtils.addMetadata(
+            toModel: json,
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
+
+        if case .object(let object) = result {
+            XCTAssertNil(object["child"])
+        } else {
+            XCTFail("Expected an object result")
+        }
     }
 }

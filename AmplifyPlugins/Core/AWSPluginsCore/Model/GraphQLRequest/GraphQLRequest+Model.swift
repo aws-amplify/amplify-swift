@@ -298,7 +298,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             let associations = includes(modelPath)
             // AppSync redacts (nulls) `hasOne` relational fields on mutation responses, so an
             // explicit `includes` of a `hasOne` would re-introduce the non-null decode failure
-            // (#3913). Drop top-level `hasOne` includes on mutations; queries are unaffected.
+            // (#3913). Drop top-level `hasOne` includes on mutations.
             let mutationSafeAssociations = associations.filter {
                 !$0.isTopLevelHasOne(on: modelSchema)
             }
@@ -465,8 +465,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 }
 
 private extension PropertyContainerPath {
-    /// Whether this include path's top-level association (directly off the root model) is a `hasOne`.
-    /// Used to drop `hasOne` includes from mutations, whose responses AppSync redacts to null (#3913).
+    /// True if this `includes` path is a `hasOne` on the model itself (e.g. `Like.user`).
+    /// These are dropped on mutations, where AppSync returns the related object as null (#3913).
     func isTopLevelHasOne(on modelSchema: ModelSchema) -> Bool {
         var metadata = getMetadata()
         var topLevelName: String?
