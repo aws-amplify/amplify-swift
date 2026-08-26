@@ -110,25 +110,14 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         log.debug("[AppSyncRealTimeClient] client start connecting")
 
         do {
-            try await RetryWithJitter.execute(
-                shouldRetryOnError: { error in
-                    // Cancellation is intentional; never retry it (avoids a busy-loop).
-                    if error is CancellationError {
-                        return false
-                    }
-                    // Non-recoverable errors (auth/limits) can never succeed on retry;
-                    // retrying them just re-hammers AppSync with new connections.
-                    return !Self.isNonRecoverable(error)
-                },
-                { [weak self] in
-                    guard let self else { return }
-                    await webSocketClient.connect(
-                        autoConnectOnNetworkStatusChange: true,
-                        autoRetryOnConnectionFailure: true
-                    )
-                    try await sendRequest(.connectionInit)
-                }
-            )
+            try await RetryWithJitter.execute(shouldRetryOnError: Self.shouldRetryConnection) { [weak self] in
+                guard let self else { return }
+                await webSocketClient.connect(
+                    autoConnectOnNetworkStatusChange: true,
+                    autoRetryOnConnectionFailure: true
+                )
+                try await sendRequest(.connectionInit)
+            }
         } catch {
             // Give up on a non-recoverable error (e.g. expired auth): turn off the
             // socket's auto-retry so it stops reconnecting into the same failure.
@@ -367,6 +356,16 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             }
         }
         return false
+    }
+
+    private static func shouldRetryConnection(_ error: Swift.Error) -> Bool {
+        // Cancellation is intentional; never retry it (avoids a busy-loop).
+        if error is CancellationError {
+            return false
+        }
+        // Non-recoverable errors (auth/limits) can never succeed on retry;
+        // retrying them just re-hammers AppSync with new connections.
+        return !isNonRecoverable(error)
     }
 
     private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
