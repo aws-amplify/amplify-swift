@@ -14,10 +14,24 @@ import XCTest
 
 private struct MFKTeam: Model {
     let id: String
-    init(id: String = UUID().uuidString) { self.id = id }
-    enum CodingKeys: String, ModelKey { case id }
+    let region: String
+    init(id: String = UUID().uuidString, region: String = "na") {
+        self.id = id
+        self.region = region
+    }
+    enum CodingKeys: String, ModelKey { case id, region }
     static let keys = CodingKeys.self
-    static let schema = defineSchema { model in model.fields(.id()) }
+    static let schema = defineSchema { model in
+        let team = MFKTeam.keys
+        model.attributes(.primaryKey(fields: [team.id, team.region]))
+        model.fields(
+            .field(team.id, is: .required, ofType: .string),
+            .field(team.region, is: .required, ofType: .string)
+        )
+    }
+
+    class Path: ModelPath<MFKTeam> {}
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 private struct MFKProject: Model {
@@ -39,9 +53,14 @@ private struct MFKProject: Model {
             .id(),
             .field(project.teamId, is: .required, ofType: .string),
             .field(project.teamName, is: .required, ofType: .string),
-            .hasOne(project.team, is: .optional, ofType: MFKTeam.self, associatedWith: MFKTeam.keys.id, targetNames: ["teamId", "teamName"])
+            .hasOne(project.team, is: .optional, ofType: MFKTeam.self, associatedFields: [MFKTeam.keys.id, MFKTeam.keys.region], targetNames: ["teamId", "teamName"])
         )
     }
+
+    class Path: ModelPath<MFKProject> {
+        var team: ModelPath<MFKTeam> { MFKTeam.Path(name: "team", parent: self) }
+    }
+    static var rootPath: PropertyContainerPath? { Path() }
 }
 
 // MARK: - `hasOne` whose foreign key is part of a composite primary key (the issue's `Like.user` shape)
@@ -114,5 +133,20 @@ class HasOneMutationSelectionEdgeTests: XCTestCase {
         let occurrences = doc.components(separatedBy: "userId").count - 1
         XCTAssertGreaterThanOrEqual(occurrences, 1, doc)
         XCTAssertEqual(doc.components(separatedBy: "\n").count(where: { $0.contains("userId") }), 1, "userId should be selected on exactly one line\n\(doc)")
+    }
+
+    /// - Given: an API `.create` mutation that explicitly `includes` a `hasOne` association.
+    /// - When: the request document is generated.
+    /// - Then: the nested object is still omitted (the hasOne include is dropped, since AppSync
+    ///   redacts it to null on a mutation response) while the scalar foreign keys remain.
+    func testHasOneIncludeOnApiMutationIsDroppedAndNestedObjectStaysOmitted() {
+        let project = MFKProject(teamId: "t-id", teamName: "t-name")
+        let doc = GraphQLRequest<MFKProject>.create(project) { path in
+            (path as? MFKProject.Path).map { [$0.team] } ?? []
+        }.document
+
+        XCTAssertFalse(doc.contains("team {"), doc)
+        XCTAssertTrue(doc.contains("teamId"), doc)
+        XCTAssertTrue(doc.contains("teamName"), doc)
     }
 }

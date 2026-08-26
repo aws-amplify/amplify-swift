@@ -64,11 +64,83 @@ private struct HasOneFKParent: Model {
     static var rootPath: PropertyContainerPath? { Path() }
 }
 
+// Composite-key variant: the `hasOne` target has a two-field primary key, so the association is
+// backed by two foreign keys (`teamId` + `area`). Exercises the multi-identifier rebuild path.
+private struct CompositeFKChild: Model {
+    let teamId: String
+    let area: String
+    init(teamId: String = UUID().uuidString, area: String) {
+        self.teamId = teamId
+        self.area = area
+    }
+
+    enum CodingKeys: String, ModelKey {
+        case teamId
+        case area
+    }
+    static let keys = CodingKeys.self
+
+    static let schema = defineSchema { model in
+        let child = CompositeFKChild.keys
+        model.attributes(.primaryKey(fields: [child.teamId, child.area]))
+        model.fields(
+            .field(child.teamId, is: .required, ofType: .string),
+            .field(child.area, is: .required, ofType: .string)
+        )
+    }
+
+    class Path: ModelPath<CompositeFKChild> {}
+    static var rootPath: PropertyContainerPath? { Path() }
+}
+
+private struct CompositeFKParent: Model {
+    let id: String
+    var childTeamId: String
+    var childArea: String
+    var child: CompositeFKChild?
+
+    init(id: String = UUID().uuidString, childTeamId: String, childArea: String, child: CompositeFKChild? = nil) {
+        self.id = id
+        self.childTeamId = childTeamId
+        self.childArea = childArea
+        self.child = child
+    }
+
+    enum CodingKeys: String, ModelKey {
+        case id
+        case childTeamId
+        case childArea
+        case child
+    }
+    static let keys = CodingKeys.self
+
+    static let schema = defineSchema { model in
+        let parent = CompositeFKParent.keys
+        model.fields(
+            .id(),
+            .field(parent.childTeamId, is: .required, ofType: .string),
+            .field(parent.childArea, is: .required, ofType: .string),
+            .hasOne(
+                parent.child,
+                is: .optional,
+                ofType: CompositeFKChild.self,
+                associatedFields: [CompositeFKChild.keys.teamId, CompositeFKChild.keys.area],
+                targetNames: ["childTeamId", "childArea"]
+            )
+        )
+    }
+
+    class Path: ModelPath<CompositeFKParent> {}
+    static var rootPath: PropertyContainerPath? { Path() }
+}
+
 class HasOneForeignKeyMetadataTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: HasOneFKParent.self)
         ModelRegistry.register(modelType: HasOneFKChild.self)
+        ModelRegistry.register(modelType: CompositeFKParent.self)
+        ModelRegistry.register(modelType: CompositeFKChild.self)
     }
 
     override func tearDown() {
@@ -126,5 +198,45 @@ class HasOneForeignKeyMetadataTests: XCTestCase {
         } else {
             XCTFail("Expected an object result")
         }
+    }
+
+    /// - Given: a mutation response for a `hasOne` whose target has a composite (two-field) primary
+    ///   key, where the nested object is absent and both scalar foreign keys are present.
+    /// - When: `addMetadata` processes the response.
+    /// - Then: lazy-load metadata is rebuilt with BOTH identifiers, each mapping the target's
+    ///   primary-key field name to the corresponding foreign-key value.
+    func testAddMetadata_compositeKeyHasOneMissingNestedObject_rebuildsAllIdentifiers() {
+        let json: JSONValue = [
+            "id": "parent1",
+            "childTeamId": "team-1",
+            "childArea": "emea",
+            "__typename": "CompositeFKParent"
+        ]
+
+        let result = AppSyncModelMetadataUtils.addMetadata(
+            toModel: json,
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
+
+        guard case .object(let childMetadata) = result["child"],
+              case .array(let identifiers) = childMetadata["identifiers"] else {
+            XCTFail("Expected lazy-load identifier metadata for `child`, rebuilt from the foreign keys")
+            return
+        }
+
+        XCTAssertEqual(identifiers.count, 2)
+
+        func pair(_ value: JSONValue) -> (String, String)? {
+            guard case .object(let identifier) = value,
+                  case .string(let name) = identifier["name"],
+                  case .string(let val) = identifier["value"] else {
+                return nil
+            }
+            return (name, val)
+        }
+        let pairs = identifiers.compactMap(pair)
+        XCTAssertTrue(pairs.contains(where: { $0 == ("teamId", "team-1") }), "\(pairs)")
+        XCTAssertTrue(pairs.contains(where: { $0 == ("area", "emea") }), "\(pairs)")
     }
 }
