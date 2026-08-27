@@ -76,4 +76,17 @@ class GraphQLHasOneMutationSelectionTests: XCTestCase {
 
         XCTAssertTrue(document.stringValue.contains("team {"), document.stringValue)
     }
+
+    /// - Given: the same `hasOne` model.
+    /// - When: a `GraphQLMutation` is built through its public initializers.
+    /// - Then: the nested `team { ... }` object is selected (the public inits default to including
+    ///   `hasOne` associations; only the API-category path opts out).
+    func testGraphQLMutationPublicInitsIncludeNestedHasOne() {
+        XCTAssertTrue(
+            GraphQLMutation(modelSchema: Project2V2.schema, primaryKeysOnly: true).stringValue.contains("team {")
+        )
+        XCTAssertTrue(
+            GraphQLMutation(modelType: Project2V2.self, primaryKeysOnly: true).stringValue.contains("team {")
+        )
+    }
 }

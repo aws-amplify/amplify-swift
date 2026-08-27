@@ -181,6 +181,45 @@ private struct EagerFKParent: Model {
     }
 }
 
+// Mismatch: a `hasOne` with a single foreign key pointing at a two-field composite-PK child, so the
+// rebuild's key count doesn't line up and no metadata is produced.
+private struct MismatchParent: Model {
+    let id: String
+    var childTeamId: String
+    var child: CompositeFKChild?
+
+    init(id: String = UUID().uuidString, childTeamId: String, child: CompositeFKChild? = nil) {
+        self.id = id
+        self.childTeamId = childTeamId
+        self.child = child
+    }
+
+    enum CodingKeys: String, ModelKey {
+        case id
+        case childTeamId
+        case child
+    }
+    static let keys = CodingKeys.self
+
+    static let schema = defineSchema { model in
+        let parent = MismatchParent.keys
+        model.fields(
+            .id(),
+            .field(parent.childTeamId, is: .required, ofType: .string),
+            .hasOne(
+                parent.child,
+                is: .optional,
+                ofType: CompositeFKChild.self,
+                associatedWith: CompositeFKChild.keys.teamId,
+                targetName: "childTeamId"
+            )
+        )
+    }
+
+    class Path: ModelPath<MismatchParent> {}
+    static var rootPath: PropertyContainerPath? { Path() }
+}
+
 class HasOneForeignKeyMetadataTests: XCTestCase {
 
     override func setUp() {
@@ -190,9 +229,10 @@ class HasOneForeignKeyMetadataTests: XCTestCase {
         ModelRegistry.register(modelType: CompositeFKChild.self)
         ModelRegistry.register(modelType: EagerFKParent.self)
         ModelRegistry.register(modelType: EagerFKChild.self)
+        ModelRegistry.register(modelType: MismatchParent.self)
     }
 
-    override class func tearDown() {
+    override func tearDown() {
         ModelRegistry.reset()
     }
 
@@ -300,6 +340,29 @@ class HasOneForeignKeyMetadataTests: XCTestCase {
             "id": "parent1",
             "childId": "child1",
             "__typename": "EagerFKParent"
+        ]
+
+        let result = AppSyncModelMetadataUtils.addMetadata(
+            toModel: json,
+            apiName: "apiName",
+            authMode: .amazonCognitoUserPools
+        )
+
+        if case .object(let object) = result {
+            XCTAssertNil(object["child"])
+        } else {
+            XCTFail("Expected an object result")
+        }
+    }
+
+    /// - Given: a `hasOne` whose single foreign key doesn't match the composite-PK child's key count.
+    /// - When: `addMetadata` processes the response.
+    /// - Then: no metadata is injected (the key counts don't line up), so the association stays nil.
+    func testAddMetadata_hasOneForeignKeyCountMismatch_doesNotRebuild() {
+        let json: JSONValue = [
+            "id": "parent1",
+            "childTeamId": "team-1",
+            "__typename": "MismatchParent"
         ]
 
         let result = AppSyncModelMetadataUtils.addMetadata(

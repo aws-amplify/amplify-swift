@@ -95,6 +95,44 @@ private struct CPKLike: Model {
     }
 }
 
+// belongsTo variant: used to verify a non-`hasOne` association is not stripped on mutations.
+private struct BTChild: Model {
+    let id: String
+    init(id: String = UUID().uuidString) { self.id = id }
+    enum CodingKeys: String, ModelKey { case id }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in model.fields(.id()) }
+
+    class Path: ModelPath<BTChild> {}
+    static var rootPath: PropertyContainerPath? { Path() }
+}
+
+private struct BTParent: Model {
+    let id: String
+    var parentId: String
+    var parent: BTChild?
+    init(id: String = UUID().uuidString, parentId: String, parent: BTChild? = nil) {
+        self.id = id
+        self.parentId = parentId
+        self.parent = parent
+    }
+    enum CodingKeys: String, ModelKey { case id, parentId, parent }
+    static let keys = CodingKeys.self
+    static let schema = defineSchema { model in
+        let btParent = BTParent.keys
+        model.fields(
+            .id(),
+            .field(btParent.parentId, is: .required, ofType: .string),
+            .belongsTo(btParent.parent, is: .optional, ofType: BTChild.self, targetName: "parentId")
+        )
+    }
+
+    class Path: ModelPath<BTParent> {
+        var parent: ModelPath<BTChild> { BTChild.Path(name: "parent", parent: self) }
+    }
+    static var rootPath: PropertyContainerPath? { Path() }
+}
+
 class HasOneMutationSelectionEdgeTests: XCTestCase {
 
     override func setUp() {
@@ -102,6 +140,8 @@ class HasOneMutationSelectionEdgeTests: XCTestCase {
         ModelRegistry.register(modelType: MFKTeam.self)
         ModelRegistry.register(modelType: CPKUser.self)
         ModelRegistry.register(modelType: CPKLike.self)
+        ModelRegistry.register(modelType: BTParent.self)
+        ModelRegistry.register(modelType: BTChild.self)
     }
 
     override func tearDown() {
@@ -148,5 +188,24 @@ class HasOneMutationSelectionEdgeTests: XCTestCase {
         XCTAssertFalse(doc.contains("team {"), doc)
         XCTAssertTrue(doc.contains("teamId"), doc)
         XCTAssertTrue(doc.contains("teamName"), doc)
+    }
+
+    /// - Given: an API `.create` mutation that explicitly `includes` a `belongsTo` association.
+    /// - When: the request document is generated.
+    /// - Then: the nested object is kept — only `hasOne` includes are dropped on mutations.
+    func testBelongsToIncludeOnApiMutationIsKept() {
+        let btParent = BTParent(parentId: "p-id")
+        let doc = GraphQLRequest<BTParent>.create(btParent) { path in
+            (path as? BTParent.Path).map { [$0.parent] } ?? []
+        }.document
+
+        XCTAssertTrue(doc.contains("parent {"), doc)
+    }
+
+    /// Verifies `_associationTargetNames` returns the foreign key(s) for a `belongsTo` and an
+    /// empty array for a non-association field.
+    func testAssociationTargetNamesForBelongsToAndScalar() {
+        XCTAssertEqual(BTParent.schema.field(withName: "parent")?._associationTargetNames, ["parentId"])
+        XCTAssertEqual(BTParent.schema.field(withName: "parentId")?._associationTargetNames, [])
     }
 }
