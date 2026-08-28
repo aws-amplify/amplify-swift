@@ -49,6 +49,17 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         let webSocketClient = MockWebSocketClient()
         let client = makeClient(webSocketClient)
 
+        // Respond only once connectionInit has been written, so the request's
+        // listener is guaranteed to be subscribed first (avoids a timing race).
+        var cancellables = Set<AnyCancellable>()
+        await webSocketClient.actionSubject
+            .sink { action in
+                guard case .write(let message) = action,
+                      message.contains("connection_init") else { return }
+                client.subject.send(.success(self.unauthorizedConnectionError))
+            }
+            .store(in: &cancellables)
+
         let failed = expectation(description: "connectionInit fails with unauthorized")
         Task {
             do {
@@ -58,10 +69,6 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
                 XCTAssertEqual(error as? AppSyncRealTimeRequest.Error, .unauthorized)
                 failed.fulfill()
             }
-        }
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000)
-            client.subject.send(.success(unauthorizedConnectionError))
         }
         await fulfillment(of: [failed], timeout: 3)
     }
