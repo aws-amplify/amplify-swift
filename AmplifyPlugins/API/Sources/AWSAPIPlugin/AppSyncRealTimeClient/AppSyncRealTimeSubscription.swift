@@ -88,7 +88,9 @@ actor AppSyncRealTimeSubscription {
             }
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to subscribe, error: \(error)")
-            if AppSyncRealTimeClient.isNonRecoverable(error) {
+            // Only a hard auth failure is terminal. Transient errors (throttling,
+            // subscription limits) stay resumable on the next reconnect.
+            if (error as? AppSyncRealTimeRequest.Error) == .unauthorized {
                 isTerminated = true
             }
             state.send(.failure)

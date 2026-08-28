@@ -358,7 +358,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         return false
     }
 
-    private static func shouldRetryConnection(_ error: Swift.Error) -> Bool {
+    static func shouldRetryConnection(_ error: Swift.Error) -> Bool {
         // Cancellation is intentional; never retry it (avoids a busy-loop).
         if error is CancellationError {
             return false

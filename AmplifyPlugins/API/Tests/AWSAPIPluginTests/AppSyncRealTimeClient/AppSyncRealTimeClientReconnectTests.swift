@@ -155,6 +155,15 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         XCTAssertFalse(AppSyncRealTimeClient.isNonRecoverable(URLError(.notConnectedToInternet)))
     }
 
+    // Guards the connect() retry predicate: cancellation and non-recoverable
+    // errors are not retried; everything else (e.g. timeout) is.
+    func testShouldRetryConnection_classification() {
+        XCTAssertFalse(AppSyncRealTimeClient.shouldRetryConnection(CancellationError()))
+        XCTAssertFalse(AppSyncRealTimeClient.shouldRetryConnection(AppSyncRealTimeRequest.Error.unauthorized))
+        XCTAssertTrue(AppSyncRealTimeClient.shouldRetryConnection(AppSyncRealTimeRequest.Error.timeout))
+        XCTAssertTrue(AppSyncRealTimeClient.shouldRetryConnection(URLError(.networkConnectionLost)))
+    }
+
     // A subscription that fails with a non-recoverable error must not be
     // resubscribed on the next reconnect (resumeExistingSubscriptions), otherwise
     // it re-sends `start` on every reconnect — the SubscribeClientError spike.
@@ -248,5 +257,58 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         let count = connectCount
         lock.unlock()
         XCTAssertEqual(count, 1, "overlapping reconnects must collapse to a single connect()")
+    }
+
+    // A transient error (e.g. LimitExceededError throttling) must NOT permanently
+    // terminate the subscription; it stays resumable on the next reconnect.
+    func testSubscription_afterLimitExceeded_isResubscribed() async {
+        let webSocketClient = MockWebSocketClient()
+        let client = makeClient(webSocketClient)
+        let subscription = AppSyncRealTimeSubscription(
+            id: "sub-limit",
+            query: "subscription { onEvent { id } }",
+            appSyncRealTimeClient: client
+        )
+
+        let lock = NSLock()
+        var startCount = 0
+        var cancellables = Set<AnyCancellable>()
+        await webSocketClient.actionSubject
+            .sink { action in
+                guard case .write(let message) = action,
+                      message.contains("sub-limit") else { return }
+                lock.lock()
+                startCount += 1
+                lock.unlock()
+                client.subject.send(.success(.init(
+                    id: "sub-limit",
+                    payload: .object([
+                        "errors": .array([
+                            .object([
+                                "errorType": "LimitExceededError",
+                                "message": "Rate exceeded"
+                            ])
+                        ])
+                    ]),
+                    type: .error
+                )))
+            }
+            .store(in: &cancellables)
+
+        // First subscribe fails with a transient limit error.
+        do {
+            try await subscription.subscribe()
+            XCTFail("subscribe should have failed")
+        } catch {
+            XCTAssertEqual(error as? AppSyncRealTimeRequest.Error, .limitExceeded)
+        }
+
+        // Resume-on-reconnect must send another start (not permanently terminated).
+        try? await subscription.subscribe()
+
+        lock.lock()
+        let count = startCount
+        lock.unlock()
+        XCTAssertEqual(count, 2, "a transient limitExceeded must be retried on resubscribe, not terminated")
     }
 }
