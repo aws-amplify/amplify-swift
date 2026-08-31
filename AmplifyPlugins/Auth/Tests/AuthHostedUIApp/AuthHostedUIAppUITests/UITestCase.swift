@@ -11,6 +11,16 @@ protocol Screen {
     var app: XCUIApplication { get }
 }
 
+extension XCUIApplication {
+    /// Matches the SpringBoard consent "Continue" control by label across any
+    /// element type, since it is no longer a button on iOS 26.
+    func consentContinueElement() -> XCUIElement {
+        descendants(matching: .any)
+            .matching(NSPredicate(format: "label == %@", "Continue"))
+            .firstMatch
+    }
+}
+
 class UITestCase: XCTestCase {
     var app: XCUIApplication!
 

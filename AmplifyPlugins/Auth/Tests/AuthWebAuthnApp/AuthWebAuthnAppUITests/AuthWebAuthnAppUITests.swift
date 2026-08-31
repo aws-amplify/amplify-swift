@@ -40,6 +40,7 @@ final class AuthWebAuthnAppUITests: XCTestCase {
             app.launchArguments.append("GEN2")
         }
         app.launch()
+        resetStaleUser()
         loadAndValidateElements()
         signUpAndSignInUser()
     }
@@ -171,6 +172,16 @@ final class AuthWebAuthnAppUITests: XCTestCase {
         let request = LocalServer.uninstall(deviceIdentifier).urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to uninstall the App")
+    }
+
+    /// Best-effort delete of any user left by a prior run so retries start clean.
+    /// Tolerates a fresh device where no user exists.
+    @MainActor
+    private func resetStaleUser() {
+        let deleteUser = app.buttons["DeleteUser"]
+        guard deleteUser.waitForExistence(timeout: timeout) else { return }
+        deleteUser.tap()
+        _ = waitForResult("User was deleted")
     }
 
     @MainActor

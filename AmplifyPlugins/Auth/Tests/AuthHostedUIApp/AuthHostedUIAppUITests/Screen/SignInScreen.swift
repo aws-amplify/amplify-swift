@@ -44,8 +44,9 @@ struct SignInScreen: Screen {
 
     func dismissSignInAlert() -> Self {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 60))
-        springboard.buttons["Continue"].tap()
+        let continueElement = springboard.consentContinueElement()
+        XCTAssertTrue(continueElement.waitForExistence(timeout: 60))
+        continueElement.tap()
         return self
     }
 
@@ -63,16 +64,23 @@ struct SignInScreen: Screen {
             "Username"
         }
 
-        _ = app.webViews.textFields[signInTextFieldName].waitForExistence(timeout: 60)
-        app.webViews.textFields[signInTextFieldName].tap()
-        app.webViews.textFields[signInTextFieldName].typeText(username)
-
-
-        app.webViews.secureTextFields["Password"].tap()
-        app.webViews.secureTextFields["Password"].typeText(password)
+        focusAndType(app.webViews.textFields[signInTextFieldName], username)
+        focusAndType(app.webViews.secureTextFields["Password"], password)
 
         app.webViews.buttons["submit"].tap()
         return self
+    }
+
+    /// iOS 26: tap until the software keyboard is up before typing to avoid dropped input.
+    private func focusAndType(_ element: XCUIElement, _ text: String) {
+        XCTAssertTrue(element.waitForExistence(timeout: 60), "Web text field not found")
+        element.tap()
+        var attempts = 0
+        while !app.keyboards.element.waitForExistence(timeout: 5) && attempts < 3 {
+            element.tap()
+            attempts += 1
+        }
+        element.typeText(text)
     }
 
     func testSignInSucceeded() -> Self {
