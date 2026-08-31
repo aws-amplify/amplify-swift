@@ -96,6 +96,10 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
 
+      - name: Disable Simulator hardware keyboard (iOS)
+        if: inputs.platform == 'iOS'
+        run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
+
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
         continue-on-error: true
