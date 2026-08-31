@@ -32,6 +32,24 @@ struct FetchAuthAWSCredentials: Action {
             return
         }
 
+        await fetchCredentials(
+            withIdentityID: identityID,
+            canRetryWithFreshIdentityID: true,
+            client: client,
+            authZEnvironment: authZEnvironment,
+            dispatcher: dispatcher,
+            environment: environment
+        )
+    }
+
+    private func fetchCredentials(
+        withIdentityID identityID: String,
+        canRetryWithFreshIdentityID: Bool,
+        client: CognitoIdentityBehavior,
+        authZEnvironment: AuthorizationEnvironment,
+        dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         let getCredentialsInput = GetCredentialsForIdentityInput(
             identityId: identityID,
             logins: loginsMap
@@ -68,10 +86,58 @@ struct FetchAuthAWSCredentials: Action {
             await dispatcher.send(event)
 
         } catch {
+            // Rejected identity ID: evict and retry via fresh GetId.
+            if canRetryWithFreshIdentityID, isStaleIdentityError(error) {
+                await retryWithFreshIdentityID(
+                    client: client,
+                    authZEnvironment: authZEnvironment,
+                    dispatcher: dispatcher,
+                    environment: environment
+                )
+                return
+            }
             let event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
         }
+    }
+
+    private func retryWithFreshIdentityID(
+        client: CognitoIdentityBehavior,
+        authZEnvironment: AuthorizationEnvironment,
+        dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
+        let getIdInput = GetIdInput(
+            identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
+            logins: loginsMap
+        )
+        do {
+            let response = try await client.getId(input: getIdInput)
+            guard let freshIdentityID = response.identityId else {
+                let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
+                await dispatcher.send(event)
+                return
+            }
+            await fetchCredentials(
+                withIdentityID: freshIdentityID,
+                canRetryWithFreshIdentityID: false,
+                client: client,
+                authZEnvironment: authZEnvironment,
+                dispatcher: dispatcher,
+                environment: environment
+            )
+        } catch {
+            let event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+        }
+    }
+
+    // Codes returned when the identity ID is stale.
+    private func isStaleIdentityError(_ error: Error) -> Bool {
+        error is AWSCognitoIdentity.NotAuthorizedException ||
+        error is AWSCognitoIdentity.ResourceNotFoundException
     }
 }
 

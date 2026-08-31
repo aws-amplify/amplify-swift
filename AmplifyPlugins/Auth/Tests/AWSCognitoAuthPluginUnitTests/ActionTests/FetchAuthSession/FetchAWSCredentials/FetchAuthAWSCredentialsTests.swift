@@ -193,4 +193,134 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         )
     }
 
+    /// NotAuthorized evicts the stale identity ID and retries via fresh GetId.
+    func testNotAuthorizedEvictsIdentityAndRetries() async {
+        await assertStaleIdentityRecovery(
+            firstError: AWSCognitoIdentity.NotAuthorizedException()
+        )
+    }
+
+    /// Same recovery for the `ResourceNotFoundException` variant.
+    func testResourceNotFoundEvictsIdentityAndRetries() async {
+        await assertStaleIdentityRecovery(
+            firstError: AWSCognitoIdentity.ResourceNotFoundException()
+        )
+    }
+
+    private func assertStaleIdentityRecovery(firstError: Error) async {
+        let recovered = expectation(description: "recoveredWithFreshIdentity")
+        let freshIdentityID = "freshIdentityId"
+
+        let credentialsCallCount = CallCounter()
+        let getIdCalled = CallCounter()
+
+        let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
+            MockIdentity(
+                mockGetIdResponse: { _ in
+                    _ = getIdCalled.increment()
+                    return GetIdOutput(identityId: freshIdentityID)
+                },
+                mockGetCredentialsResponse: { input in
+                    if credentialsCallCount.increment() == 1 {
+                        XCTAssertEqual(input.identityId, "staleIdentityId")
+                        throw firstError
+                    }
+                    XCTAssertEqual(input.identityId, freshIdentityID)
+                    return GetCredentialsForIdentityOutput(
+                        credentials: CognitoIdentityClientTypes.Credentials(
+                            accessKeyId: "accessKey",
+                            expiration: Date(),
+                            secretKey: "secretKey",
+                            sessionToken: "sessionToken"
+                        ),
+                        identityId: freshIdentityID
+                    )
+                })
+        }
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory
+        )
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
+
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "staleIdentityId")
+
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? FetchAuthSessionEvent else { return }
+                if case let .fetchedAWSCredentials(identityID, _) = event.eventType {
+                    XCTAssertEqual(identityID, freshIdentityID)
+                    recovered.fulfill()
+                }
+                if case .throwError = event.eventType {
+                    XCTFail("Should recover instead of surfacing an error")
+                }
+            },
+            environment: authEnvironment
+        )
+
+        await fulfillment(of: [recovered], timeout: 0.1)
+        XCTAssertEqual(getIdCalled.count, 1)
+        XCTAssertEqual(credentialsCallCount.count, 2)
+    }
+
+    /// Retry is bounded: a second rejection surfaces a terminal error with no extra GetId.
+    func testStaleIdentityRetryIsBoundedToSingleAttempt() async {
+        let errored = expectation(description: "terminalError")
+        let getIdCalled = CallCounter()
+        let credentialsCallCount = CallCounter()
+
+        let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
+            MockIdentity(
+                mockGetIdResponse: { _ in
+                    _ = getIdCalled.increment()
+                    return GetIdOutput(identityId: "freshIdentityId")
+                },
+                mockGetCredentialsResponse: { _ in
+                    _ = credentialsCallCount.increment()
+                    throw AWSCognitoIdentity.ResourceNotFoundException()
+                })
+        }
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory
+        )
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
+
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "staleIdentityId")
+
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? FetchAuthSessionEvent else { return }
+                if case .throwError = event.eventType {
+                    errored.fulfill()
+                }
+            },
+            environment: authEnvironment
+        )
+
+        await fulfillment(of: [errored], timeout: 0.1)
+        XCTAssertEqual(getIdCalled.count, 1)
+        XCTAssertEqual(credentialsCallCount.count, 2)
+    }
+
+}
+
+private final class CallCounter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+
+    @discardableResult
+    func increment() -> Int {
+        lock.lock(); defer { lock.unlock() }
+        value += 1
+        return value
+    }
+
+    var count: Int {
+        lock.lock(); defer { lock.unlock() }
+        return value
+    }
 }
