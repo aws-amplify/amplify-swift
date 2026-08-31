@@ -1,6 +1,7 @@
 {
   "analytics":          { "targets": ["AWSPinpointAnalyticsPlugin"],          "paths": ["AmplifyPlugins/Analytics/"] },
   "kinesis_firehose":   { "targets": ["AmplifyKinesisClient", "AmplifyFirehoseClient"], "paths": ["AmplifyClients/AmplifyKinesisClient/", "AmplifyClients/AmplifyFirehoseClient/"] },
+  "cloudwatch":         { "targets": ["AmplifyCloudWatchClient"],              "paths": ["AmplifyClients/AmplifyCloudWatchClient/"] },
   "push_notifications": { "targets": ["AWSPinpointPushNotificationsPlugin"],   "paths": ["AmplifyPlugins/Notifications/"] },
   "predictions":        { "targets": ["AWSPredictionsPlugin"],                 "paths": ["AmplifyPlugins/Predictions/"] },
   "auth":               { "targets": ["AWSCognitoAuthPlugin"],                 "paths": ["AmplifyPlugins/Auth/"] },
