@@ -72,6 +72,10 @@ runs:
         # for 26.2 and later. The Xcode version is what we are validating here, and
         # the runtime only needs to be at or above our deployment target floors.
         case $INPUT_PLATFORM/$XCODE_VERSION in
+          iOS/16.4.0)
+            DEVICE="iPhone 16 Pro Max"
+            OS_VERSION="18.5"
+            ;;
           iOS/26.5)
             DEVICE="iPhone 17 Pro Max"
             OS_VERSION="26.5"

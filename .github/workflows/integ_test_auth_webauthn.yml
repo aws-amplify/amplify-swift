@@ -14,7 +14,7 @@ permissions:
 jobs:
   auth-webauthn-integration-tests:
     name: iOS Tests | AuthWebAuthnApp
-    runs-on: macos-26
+    runs-on: macos-15
     timeout-minutes: 60
     environment: IntegrationTest
 
