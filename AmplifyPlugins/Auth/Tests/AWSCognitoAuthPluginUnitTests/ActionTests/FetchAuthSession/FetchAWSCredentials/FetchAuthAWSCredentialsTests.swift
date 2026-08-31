@@ -314,13 +314,15 @@ private final class CallCounter: @unchecked Sendable {
 
     @discardableResult
     func increment() -> Int {
-        lock.lock(); defer { lock.unlock() }
+        lock.lock()
+        defer { lock.unlock() }
         value += 1
         return value
     }
 
     var count: Int {
-        lock.lock(); defer { lock.unlock() }
+        lock.lock()
+        defer { lock.unlock() }
         return value
     }
 }
