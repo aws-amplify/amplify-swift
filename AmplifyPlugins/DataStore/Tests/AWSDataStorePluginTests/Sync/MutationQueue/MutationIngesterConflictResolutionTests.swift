@@ -104,8 +104,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Se
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
@@ -263,8 +266,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Se
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
@@ -416,8 +422,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Se
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         do {
             _ = try await Amplify.DataStore.save(mutatedPost)
             XCTFail("Should have caught error")
@@ -649,8 +658,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Se
             try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 

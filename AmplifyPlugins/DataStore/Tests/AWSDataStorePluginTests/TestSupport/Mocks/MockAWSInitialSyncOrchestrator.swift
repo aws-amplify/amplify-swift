@@ -31,8 +31,10 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
-    private static var instance: MockAWSInitialSyncOrchestrator?
-    private static var mockedResponse: SyncOperationResult?
+    // `nonisolated(unsafe)`: set by a test's `setUpWithError` before use and read after; XCTest runs
+    // one test at a time.
+    nonisolated(unsafe) private static var instance: MockAWSInitialSyncOrchestrator?
+    nonisolated(unsafe) private static var mockedResponse: SyncOperationResult?
 
     let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {

@@ -442,7 +442,7 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
 
     func expect(_ expectation: XCTestExpectation, _ currCount: Int, _ expectedCount: Int) -> Int {
         let count = currCount + 1
-        if count.get() == expectedCount {
+        if count == expectedCount {
             expectation.fulfill()
         }
         return count

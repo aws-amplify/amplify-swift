@@ -91,7 +91,8 @@ class BaseDataStoreTests: XCTestCase, @unchecked Sendable {
     func populateData<M: Model>(_ models: [M]) {
         let saveComplete = expectation(description: "save completed")
 
-        func save(model: M, index: Int) {
+        // `@Sendable` because it recurses from inside the storage adapter's `@Sendable` completion.
+        @Sendable func save(model: M, index: Int) {
             storageAdapter.save(model) {
                 switch $0 {
                 case .success:
