@@ -148,7 +148,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let expectation = expectation(
             description: "it should insert and update a Post")
 
-        func checkSavedPost(id: String) {
+        @Sendable func checkSavedPost(id: String) {
             storageAdapter.query(Post.self) {
                 switch $0 {
                 case .success(let posts):
@@ -165,15 +165,19 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        var post = Post(title: "title", content: "content", createdAt: .now())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
-                post.title = "title updated"
-                self.storageAdapter.save(post) { updateResult in
+                let updatedPost: Post = {
+                    var post = post
+                    post.title = "title updated"
+                    return post
+                }()
+                self.storageAdapter.save(updatedPost) { updateResult in
                     switch updateResult {
                     case .success:
-                        checkSavedPost(id: post.id)
+                        checkSavedPost(id: updatedPost.id)
                     case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
@@ -198,7 +202,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let expectation = expectation(
             description: "it should insert and update a Post")
 
-        func checkSavedPost(id: String) {
+        @Sendable func checkSavedPost(id: String) {
             storageAdapter.query(Post.self) {
                 switch $0 {
                 case .success(let posts):
@@ -215,16 +219,20 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        var post = Post(title: "title", content: "content", createdAt: .now())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
-                post.title = "title updated"
+                let updatedPost: Post = {
+                    var post = post
+                    post.title = "title updated"
+                    return post
+                }()
                 let condition = Post.keys.content == post.content
-                self.storageAdapter.save(post, condition: condition) { updateResult in
+                self.storageAdapter.save(updatedPost, condition: condition) { updateResult in
                     switch updateResult {
                     case .success:
-                        checkSavedPost(id: post.id)
+                        checkSavedPost(id: updatedPost.id)
                     case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
@@ -248,7 +256,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let expectation = expectation(
             description: "it should insert and update a Post")
 
-        func checkSavedPost(id: String) {
+        @Sendable func checkSavedPost(id: String) {
             storageAdapter.query(Post.self) {
                 switch $0 {
                 case .success(let posts):
@@ -265,15 +273,19 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        var post = Post(title: "title", content: "content", createdAt: .now())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
-                post.title = "title updated"
-                self.storageAdapter.save(post, condition: QueryPredicateConstant.all) { updateResult in
+                let updatedPost: Post = {
+                    var post = post
+                    post.title = "title updated"
+                    return post
+                }()
+                self.storageAdapter.save(updatedPost, condition: QueryPredicateConstant.all) { updateResult in
                     switch updateResult {
                     case .success:
-                        checkSavedPost(id: post.id)
+                        checkSavedPost(id: updatedPost.id)
                     case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
@@ -324,13 +336,17 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let expectation = expectation(
             description: "it should insert and then fail to update the Post, given bad condition")
 
-        var post = Post(title: "title not updated", content: "content", createdAt: .now())
+        let post = Post(title: "title not updated", content: "content", createdAt: .now())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
-                post.title = "title updated"
+                let updatedPost: Post = {
+                    var post = post
+                    post.title = "title updated"
+                    return post
+                }()
                 let condition = Post.keys.content == "content 2 does not match previous content"
-                self.storageAdapter.save(post, condition: condition) { updateResult in
+                self.storageAdapter.save(updatedPost, condition: condition) { updateResult in
                     switch updateResult {
                     case .success:
                         XCTFail("Update should not be successful")
