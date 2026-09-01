@@ -160,7 +160,9 @@ final class ASWebAuthenticationSessionFactory: @unchecked Sendable {
     }
 }
 
-class MockASWebAuthenticationSession: ASWebAuthenticationSession {
+// `@unchecked Sendable`: returned from the `@Sendable` session factory. `ASWebAuthenticationSession`
+// is an NSObject subclass driven on the main thread by the system.
+final class MockASWebAuthenticationSession: ASWebAuthenticationSession, @unchecked Sendable {
     private var callback: ASWebAuthenticationSession.CompletionHandler
     override init(
         url URL: URL,

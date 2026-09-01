@@ -290,7 +290,7 @@ class EmailMFATests: BasePluginTest {
     ///
     func testConfirmSignInForTOTPMFASetupSelectionStep() async {
         // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
-        let completeSignIn = AtomicValue(initialValue: false)
+        let completeSignIn = TestBox(false)
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,

@@ -283,7 +283,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     func testClearFederationToIdentityPoolWithInitialErrorState() async throws {
 
         // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
-        let shouldThrowError = AtomicValue(initialValue: false)
+        let shouldThrowError = TestBox(false)
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
@@ -841,7 +841,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testFederateToIdentityPoolWhenGetIdErrorsOut() async throws {
 
-        var shouldThrowError = false
+        // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
+
+        let shouldThrowError = TestBox(false)
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -925,7 +927,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let mockIdentityId = "mockIdentityId"
 
-        var shouldThrowError = false
+        // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
+
+        let shouldThrowError = TestBox(false)
 
         let federatedToken: FederatedToken = .testData
         let credentials = CognitoIdentityClientTypes.Credentials(
