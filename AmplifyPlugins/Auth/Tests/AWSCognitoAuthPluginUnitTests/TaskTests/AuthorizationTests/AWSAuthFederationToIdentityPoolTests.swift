@@ -282,7 +282,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testClearFederationToIdentityPoolWithInitialErrorState() async throws {
 
-        var shouldThrowError = false
+        // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let shouldThrowError = AtomicValue(initialValue: false)
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
@@ -291,7 +292,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         )
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
-            if shouldThrowError {
+            if shouldThrowError.get() {
                 throw AWSCognitoIdentity.InternalErrorException()
             } else {
                 return .init(identityId: "mockIdentityId")
@@ -317,14 +318,14 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         )
         do {
             // Should setup the plugin with a token
-            shouldThrowError = false
+            shouldThrowError.set(false)
             _ = try await plugin.federateToIdentityPool(
                 withProviderToken: "someToken",
                 for: .facebook
             )
 
             // Push the AuthState to an error state
-            shouldThrowError = true
+            shouldThrowError.set(true)
             _ = try? await plugin.federateToIdentityPool(
                 withProviderToken: "someToken",
                 for: .facebook
@@ -858,7 +859,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
-            if shouldThrowError {
+            if shouldThrowError.get() {
                 throw AWSCognitoIdentity.InvalidParameterException()
             } else {
                 return .init(credentials: credentials, identityId: mockIdentityId)
@@ -882,7 +883,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             initialState: initialState
         )
 
-        shouldThrowError = true
+        shouldThrowError.set(true)
         do {
             _ = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
         } catch let error as AuthError {
@@ -894,7 +895,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTFail("Test should throw Auth Error")
         }
 
-        shouldThrowError = false
+        shouldThrowError.set(false)
         do {
             let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(federatedResult)
@@ -940,7 +941,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            if shouldThrowError {
+            if shouldThrowError.get() {
                 throw AWSCognitoIdentity.InternalErrorException()
             } else {
                 return .init(credentials: credentials, identityId: mockIdentityId)
@@ -969,7 +970,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         )
 
 
-        shouldThrowError = true
+        shouldThrowError.set(true)
         do {
             let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
             XCTAssertFalse(session.isSignedIn)
@@ -986,7 +987,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTFail("Received failure with error \(error)")
         }
 
-        shouldThrowError = false
+        shouldThrowError.set(false)
         do {
             let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
             XCTAssertTrue(session.isSignedIn)
