@@ -11,7 +11,9 @@ import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class ListWebAuthnCredentialsTaskTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
     private var task: ListWebAuthnCredentialsTask!
     private var identityProvider: MockIdentityProvider!
 

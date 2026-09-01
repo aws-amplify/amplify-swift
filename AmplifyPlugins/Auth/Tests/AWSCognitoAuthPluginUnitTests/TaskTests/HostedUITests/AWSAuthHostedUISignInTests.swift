@@ -14,7 +14,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSAuthHostedUISignInTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
 
     var plugin: AWSCognitoAuthPlugin!
     let networkTimeout = TimeInterval(5)
