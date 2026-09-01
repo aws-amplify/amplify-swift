@@ -239,7 +239,8 @@ class StorageTransferDatabaseTests: XCTestCase, @unchecked Sendable {
 
         let exp = expectation(description: #function)
 
-        var transferTaskPairs: StorageTransferTaskPairs?
+        // Assigned from the `@Sendable` recovery completion, so it cannot be a captured `var`.
+        let transferTaskPairs = AtomicValue<StorageTransferTaskPairs?>(initialValue: nil)
         let urlSession = MockStorageURLSession(sessionTasks: sessionTasks)
 
         // trigger storing and then load to link tasks with sessions
@@ -248,7 +249,7 @@ class StorageTransferDatabaseTests: XCTestCase, @unchecked Sendable {
                 do {
                     let pairs = try result.get()
                     XCTAssertTrue(!pairs.isEmpty)
-                    transferTaskPairs = pairs
+                    transferTaskPairs.set(pairs)
                 } catch {
                     XCTFail("Error: \(error)")
                 }
@@ -258,23 +259,23 @@ class StorageTransferDatabaseTests: XCTestCase, @unchecked Sendable {
 
         await fulfillment(of: [exp], timeout: 10.0)
 
-        XCTAssertNotNil(transferTaskPairs)
-        XCTAssertEqual(transferTaskPairs?.count, 3)
+        XCTAssertNotNil(transferTaskPairs.get())
+        XCTAssertEqual(transferTaskPairs.get()?.count, 3)
 
         // the initial task will not have a taskIdentifier
-        guard let multipartUpload = transferTaskPairs?.first(where: { $0.transferTask.uploadId == uploadId && $0.transferTask.partNumber == nil }) else {
+        guard let multipartUpload = transferTaskPairs.get()?.first(where: { $0.transferTask.uploadId == uploadId && $0.transferTask.partNumber == nil }) else {
             XCTFail("Failed to get multipart upload")
             return
         }
 
         // upload part 1 will have a taskIdentifier
-        guard let part1 = transferTaskPairs?.first(where: { $0.transferTask.partNumber == 1 }) else {
+        guard let part1 = transferTaskPairs.get()?.first(where: { $0.transferTask.partNumber == 1 }) else {
             XCTFail("Failed to get part 1")
             return
         }
 
         // upload part 1 will have a taskIdentifier
-        guard let part2 = transferTaskPairs?.first(where: { $0.transferTask.partNumber == 2 }) else {
+        guard let part2 = transferTaskPairs.get()?.first(where: { $0.transferTask.partNumber == 2 }) else {
             XCTFail("Failed to get part 2")
             return
         }

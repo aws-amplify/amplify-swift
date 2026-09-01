@@ -44,16 +44,18 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
-        var numberOfTimesEntered = 0
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
         let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
-            defer { numberOfTimesEntered += 1 }
-            if numberOfTimesEntered == 0 {
+            defer { _ = numberOfTimesEntered.increment() }
+            if numberOfTimesEntered.get() == 0 {
                 let requestInputVersion = request.variables.flatMap { $0["input"] as? [String: Any] }.flatMap { $0["_version"] as? Int }
                 XCTAssertEqual(requestInputVersion, 10)
                 expectFirstCallToAPIMutate.fulfill()
                 let urlError = URLError(URLError.notConnectedToInternet)
                 return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
-            } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
+            } else if numberOfTimesEntered.get() == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
                 let remoteSyncMetadata = MutationSyncMetadata(
                     modelId: model.id,
@@ -112,14 +114,16 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
         let model = MockSynced(id: "id-1")
 
-        var numberOfTimesEntered = 0
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
         let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
-            defer { numberOfTimesEntered += 1 }
-            if numberOfTimesEntered == 0 {
+            defer { _ = numberOfTimesEntered.increment() }
+            if numberOfTimesEntered.get() == 0 {
                 expectFirstCallToAPIMutate.fulfill()
                 let urlError = URLError(URLError.notConnectedToInternet)
                 return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
-            } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
+            } else if numberOfTimesEntered.get() == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
                 let remoteSyncMetadata = MutationSyncMetadata(
                     modelId: model.id,
@@ -170,10 +174,12 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
-        var numberOfTimesEntered = 0
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
         let responder = MutateRequestResponder<MutationSync<AnyModel>> { _ in
-            defer { numberOfTimesEntered += 1 }
-            if numberOfTimesEntered == 0 {
+            defer { _ = numberOfTimesEntered.increment() }
+            if numberOfTimesEntered.get() == 0 {
                 expectFirstCallToAPIMutate.fulfill()
                 let urlError = URLError(URLError.notConnectedToInternet)
                 return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
@@ -255,7 +261,8 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
     /// When: Mutating model fails with 401
     /// Then: DataStore will try again with each auth type and eventually fails
     func testGetRetryAdviceForEachModelAuthTypeThenFail_HTTPStatusError401() async throws {
-        var numberOfTimesEntered = 0
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
         let mutationEvent = try createMutationEvent()
         let authStrategy = MockMultiAuthModeStrategy()
         let expectedNumberOfTimesEntered = authStrategy.authTypesFor(schema: mutationEvent.schema, operation: .create).count
@@ -288,7 +295,7 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         )
 
         let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
-            defer { numberOfTimesEntered += 1 }
+            defer { _ = numberOfTimesEntered.increment() }
             return .failure(.unknown("", "", error))
         }
 
@@ -319,8 +326,10 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
 
     func testGetRetryAdvice_OperationErrorAuthErrorWithSingleAuth_RetryFalse() async throws {
         let expectation = expectation(description: "operation completed")
-        var numberOfTimesEntered = 0
-        var error: APIError?
+        // Incremented from a `@Sendable` request interceptor, so it cannot be a captured `var`.
+        let numberOfTimesEntered = AtomicValue(initialValue: 0)
+        // Assigned from the `@Sendable` completion, so it cannot be a captured `var`.
+        let error = AtomicValue<APIError?>(initialValue: nil)
         let operation = try await SyncMutationToCloudOperation(
             mutationEvent: createMutationEvent(),
             getLatestSyncMetadata: { nil },
@@ -329,10 +338,10 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
             networkReachabilityPublisher: publisher,
             currentAttemptNumber: 1,
             completion: { result in
-                XCTAssertEqual(numberOfTimesEntered, 1)
+                XCTAssertEqual(numberOfTimesEntered.get(), 1)
                 switch result {
                 case .failure(let apiError):
-                    error = apiError
+                    error.set(apiError)
                 default:
                     XCTFail("Wrong result")
                 }
@@ -341,7 +350,7 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         )
 
         let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
-            defer { numberOfTimesEntered += 1 }
+            defer { _ = numberOfTimesEntered.increment() }
             let authError = AuthError.notAuthorized("", "", nil)
             return .failure(.unknown("", "", APIError.operationError("", "", authError)))
         }
@@ -351,7 +360,7 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectation])
-        XCTAssertEqual(false, operation.getRetryAdviceIfRetryable(error: error!).shouldRetry)
+        XCTAssertEqual(false, operation.getRetryAdviceIfRetryable(error: try XCTUnwrap(error.get())).shouldRetry)
     }
 
     func testGetRetryAdvice_OperationErrorAuthErrorSessionExpired_RetryTrue() async throws {

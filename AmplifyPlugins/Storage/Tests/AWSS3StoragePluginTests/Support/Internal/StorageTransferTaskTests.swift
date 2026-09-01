@@ -599,7 +599,8 @@ private class MockStorageTask: StorageTask {
     }
 }
 
-private class MockSessionTask: StorageSessionTask {
+// `@unchecked Sendable`: `StorageSessionTask` is `Sendable` now. Counters are read by a single test.
+private final class MockSessionTask: StorageSessionTask, @unchecked Sendable {
     let taskIdentifier: TaskIdentifier
     let state: URLSessionTask.State
 

@@ -215,7 +215,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase, @unchecked Sendable {
                 return
             }
 
-            switch outboxStatusReceivedCurrentCount {
+            switch outboxStatusReceivedCurrentCount.get() {
             case 1:
                 XCTAssertFalse(outboxStatusEvent.isEmpty)
                 outboxStatusOnStart.fulfill()
