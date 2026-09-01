@@ -129,7 +129,7 @@ class StateMachineTests: XCTestCase, @unchecked Sendable {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
-        let executionCount = Amplify.AtomicValue(initialValue: 0)
+        let executionCount = TestCounter()
         let action1 = BasicAction(identifier: "basic") { dispatcher, _ in
 
             action1WasExecuted.fulfill()

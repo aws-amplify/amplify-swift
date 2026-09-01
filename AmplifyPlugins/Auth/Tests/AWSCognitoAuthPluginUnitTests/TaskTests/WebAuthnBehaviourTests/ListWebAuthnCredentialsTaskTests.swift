@@ -74,10 +74,10 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        // Boxed: incremented from a `@Sendable` mock closure.
-        let listWebAuthnCredentialsCallCount = Amplify.AtomicValue(initialValue: 0)
+        // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let listWebAuthnCredentialsCallCount = TestCounter()
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
-            _ = listWebAuthnCredentialsCallCount.increment()
+            listWebAuthnCredentialsCallCount.increment()
             return .init(
                 credentials: [
                     .init(
@@ -104,7 +104,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
         let result = try await task.execute()
         let credentials = try XCTUnwrap(result.credentials)
         let nextToken = try XCTUnwrap(result.nextToken)
-        XCTAssertEqual(listWebAuthnCredentialsCallCount.get(), 1)
+        XCTAssertEqual(listWebAuthnCredentialsCallCount.current, 1)
         XCTAssertEqual(credentials.count, 2)
         XCTAssertEqual(nextToken, "nextToken")
         XCTAssertTrue(credentials.contains(where: { $0.credentialId == "credentialId1" }))

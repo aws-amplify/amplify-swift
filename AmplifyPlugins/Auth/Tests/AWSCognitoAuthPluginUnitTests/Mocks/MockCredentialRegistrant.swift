@@ -18,10 +18,10 @@ class MockCredentialRegistrant: CredentialRegistrantProtocol, @unchecked Sendabl
     var presentationAnchor: AuthUIPresentationAnchor?
 
     var mockedCreateResponse: Result<CredentialRegistrationPayload, Error>?
-    // Boxed: incremented from a `@Sendable` mock closure.
-    let createCallCount = Amplify.AtomicValue(initialValue: 0)
+    // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+    let createCallCount = TestCounter()
     func create(with options: CredentialCreationOptions) async throws -> CredentialRegistrationPayload {
-        _ = createCallCount.increment()
+        createCallCount.increment()
         if let mockedCreateResponse {
             return try mockedCreateResponse.get()
         }

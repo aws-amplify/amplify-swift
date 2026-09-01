@@ -74,15 +74,15 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        // Boxed: incremented from a `@Sendable` mock closure.
-        let deleteWebAuthnCredentialCallCount = Amplify.AtomicValue(initialValue: 0)
+        // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let deleteWebAuthnCredentialCallCount = TestCounter()
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in
-            _ = deleteWebAuthnCredentialCallCount.increment()
+            deleteWebAuthnCredentialCallCount.increment()
             return .init()
         }
 
         try await task.execute()
-        XCTAssertEqual(deleteWebAuthnCredentialCallCount.get(), 1)
+        XCTAssertEqual(deleteWebAuthnCredentialCallCount.current, 1)
     }
 
     func testExecute_withServiceError_shouldFailWithServiceError() async {
