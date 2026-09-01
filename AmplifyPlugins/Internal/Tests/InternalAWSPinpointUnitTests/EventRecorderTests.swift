@@ -199,14 +199,16 @@ class EventRecorderTests: XCTestCase {
 
 private struct RetryableError: Error, ModeledError {
     static let typeName = "RetriableError"
-    static let fault = ErrorFault.client
+    // `nonisolated(unsafe)`: `ErrorFault` comes from the AWS SDK and is not declared `Sendable`.
+    nonisolated(unsafe) static let fault = ErrorFault.client
     static let isRetryable = true
     static let isThrottling = false
 }
 
 private struct NonRetryableError: Error, ModeledError {
     static let typeName = "RetriableError"
-    static let fault = ErrorFault.client
+    // `nonisolated(unsafe)`: `ErrorFault` comes from the AWS SDK and is not declared `Sendable`.
+    nonisolated(unsafe) static let fault = ErrorFault.client
     static let isRetryable = false
     static let isThrottling = false
 }

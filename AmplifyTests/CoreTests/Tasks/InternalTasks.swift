@@ -8,14 +8,19 @@
 import Amplify
 import Foundation
 
-// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-// by a single test at a time.
-public class MagicEightBallRequest: AmplifyOperationRequest, @unchecked Sendable {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class MagicEightBallRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
+    public init(options: Options = .init(), total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay
@@ -96,14 +101,19 @@ public struct MagicEightBallPlugin {
 
 }
 
-// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-// by a single test at a time.
-public class RandomEmojiRequest: AmplifyOperationRequest, @unchecked Sendable {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class RandomEmojiRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
+    public init(options: Options = .init(), total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay

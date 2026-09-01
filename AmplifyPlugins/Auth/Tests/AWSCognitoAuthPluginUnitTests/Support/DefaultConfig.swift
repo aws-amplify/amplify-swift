@@ -307,7 +307,8 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
     }
 }
 
-class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
+// `@unchecked Sendable`: test double driven by a single test at a time.
+final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sendable {
     let credentialsKey = "amplifyCredentials"
     static var dict = AtomicDictionary<String, Data>()
 
