@@ -9,45 +9,53 @@
 
 class MockAnalyticsEventStorage: AnalyticsEventStorage {
     var deletedEvent: String = ""
-    var deleteEventCallCount = 0
-    var deleteDirtyEventCallCount = 0
-    var initializeStorageCallCount = 0
-    var deleteOldestEventCallCount = 0
-    var deleteAllEventsCallCount = 0
-    var updateEventsCallCount = 0
-    var removedFailedEventsCallCount = 0
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let deleteEventCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let deleteDirtyEventCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let initializeStorageCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let deleteOldestEventCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let deleteAllEventsCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let updateEventsCallCount = AtomicValue(initialValue: 0)
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let removedFailedEventsCallCount = AtomicValue(initialValue: 0)
     var eventRetryDictionary = [String: Int]()
     var dirtyEventDictionary = [String: Int]()
     var events = [PinpointEvent]()
-    var checkDiskSizeCallCount = 0
+    // Boxed: incremented from a `@Sendable` mock closure.
+    let checkDiskSizeCallCount = AtomicValue(initialValue: 0)
 
     func deleteEvent(eventId: String) throws {
         deletedEvent = eventId
-        deleteEventCallCount += 1
+        _ = deleteEventCallCount.increment()
         events.removeAll { $0.id == eventId }
     }
 
     func deleteDirtyEvents() throws {
-        deleteDirtyEventCallCount += 1
+        _ = deleteDirtyEventCallCount.increment()
     }
 
     func initializeStorage() throws {
-        initializeStorageCallCount += 1
+        _ = initializeStorageCallCount.increment()
     }
 
     func deleteOldestEvent() throws {
-        deleteOldestEventCallCount += 1
+        _ = deleteOldestEventCallCount.increment()
     }
 
     func deleteAllEvents() throws {
-        deleteAllEventsCallCount += 1
+        _ = deleteAllEventsCallCount.increment()
     }
     func updateEvents(
         ofType: String,
         withSessionId: PinpointSession.SessionId,
         setAttributes: [String: String]
     ) throws {
-        updateEventsCallCount += 1
+        _ = updateEventsCallCount.increment()
     }
 
     func getEventsWith(limit: Int) throws -> [PinpointEvent] {
@@ -63,7 +71,7 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
     }
 
     func removeFailedEvents() throws {
-        removedFailedEventsCallCount += 1
+        _ = removedFailedEventsCallCount.increment()
     }
 
     func saveEvent(_ event: PinpointEvent) throws {
@@ -75,7 +83,7 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
     }
 
     func checkDiskSize(limit: Byte) throws {
-        checkDiskSizeCallCount += 1
+        _ = checkDiskSizeCallCount.increment()
     }
 
     var updateSessionCount = 0

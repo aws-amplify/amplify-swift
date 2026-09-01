@@ -10,6 +10,7 @@ import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
 import struct AWSCognitoIdentityProvider.StartWebAuthnRegistrationOutput
 import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
+import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
@@ -90,34 +91,40 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        var startWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
-            startWebAuthnRegistrationCallCount += 1
+            _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
         }
 
-        var completeWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+
+        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
-            completeWebAuthnRegistrationCallCount += 1
+            _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
         }
 
         try await task.execute()
-        XCTAssertEqual(startWebAuthnRegistrationCallCount, 1)
+        XCTAssertEqual(startWebAuthnRegistrationCallCount.get(), 1)
         XCTAssertEqual(credentialRegistrant.createCallCount, 1)
-        XCTAssertEqual(completeWebAuthnRegistrationCallCount, 1)
+        XCTAssertEqual(completeWebAuthnRegistrationCallCount.get(), 1)
     }
 
     func testExecute_withRegistrationFailed_shouldFail() async {
-        var startWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
-            startWebAuthnRegistrationCallCount += 1
+            _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
         }
 
-        var completeWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+
+        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
-            completeWebAuthnRegistrationCallCount += 1
+            _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
         }
 
@@ -134,9 +141,9 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
                 return
             }
 
-            XCTAssertEqual(startWebAuthnRegistrationCallCount, 1)
+            XCTAssertEqual(startWebAuthnRegistrationCallCount.get(), 1)
             XCTAssertEqual(credentialRegistrant.createCallCount, 1)
-            XCTAssertEqual(completeWebAuthnRegistrationCallCount, 0)
+            XCTAssertEqual(completeWebAuthnRegistrationCallCount.get(), 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
@@ -147,9 +154,11 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             throw WebAuthnNotEnabledException(message: "WebAuthn is not enabled")
         }
 
-        var completeWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+
+        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
-            completeWebAuthnRegistrationCallCount += 1
+            _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
         }
 
@@ -164,7 +173,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
             XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
             XCTAssertEqual(credentialRegistrant.createCallCount, 0)
-            XCTAssertEqual(completeWebAuthnRegistrationCallCount, 0)
+            XCTAssertEqual(completeWebAuthnRegistrationCallCount.get(), 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
@@ -175,9 +184,11 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             throw CancellationError()
         }
 
-        var completeWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+
+        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
-            completeWebAuthnRegistrationCallCount += 1
+            _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
         }
 
@@ -192,16 +203,17 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
             XCTAssertEqual(description, "An unknown error type was thrown by the service. Unable to associate WebAuthn credential.")
             XCTAssertEqual(credentialRegistrant.createCallCount, 0)
-            XCTAssertEqual(completeWebAuthnRegistrationCallCount, 0)
+            XCTAssertEqual(completeWebAuthnRegistrationCallCount.get(), 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
     }
 
     func testExecute_withServiceErrorOnComplete_shouldFailWithServiceError() async {
-        var startWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
-            startWebAuthnRegistrationCallCount += 1
+            _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
         }
 
@@ -219,7 +231,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             }
 
             XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
-            XCTAssertEqual(startWebAuthnRegistrationCallCount, 1)
+            XCTAssertEqual(startWebAuthnRegistrationCallCount.get(), 1)
             XCTAssertEqual(credentialRegistrant.createCallCount, 1)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
@@ -227,9 +239,10 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withOtherErrorOnComplete_shouldFailWithUnknownServiceError() async {
-        var startWebAuthnRegistrationCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
-            startWebAuthnRegistrationCallCount += 1
+            _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
         }
 
@@ -247,7 +260,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             }
 
             XCTAssertEqual(description, "An unknown error type was thrown by the service. Unable to associate WebAuthn credential.")
-            XCTAssertEqual(startWebAuthnRegistrationCallCount, 1)
+            XCTAssertEqual(startWebAuthnRegistrationCallCount.get(), 1)
             XCTAssertEqual(credentialRegistrant.createCallCount, 1)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")

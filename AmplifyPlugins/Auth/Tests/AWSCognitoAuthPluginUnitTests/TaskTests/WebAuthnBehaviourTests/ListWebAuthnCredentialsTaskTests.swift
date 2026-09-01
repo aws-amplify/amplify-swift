@@ -8,6 +8,7 @@
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
 import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
+import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
@@ -73,9 +74,10 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        var listWebAuthnCredentialsCallCount = 0
+        // Boxed: incremented from a `@Sendable` mock closure.
+        let listWebAuthnCredentialsCallCount = AtomicValue(initialValue: 0)
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
-            listWebAuthnCredentialsCallCount += 1
+            _ = listWebAuthnCredentialsCallCount.increment()
             return .init(
                 credentials: [
                     .init(
@@ -102,7 +104,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
         let result = try await task.execute()
         let credentials = try XCTUnwrap(result.credentials)
         let nextToken = try XCTUnwrap(result.nextToken)
-        XCTAssertEqual(listWebAuthnCredentialsCallCount, 1)
+        XCTAssertEqual(listWebAuthnCredentialsCallCount.get(), 1)
         XCTAssertEqual(credentials.count, 2)
         XCTAssertEqual(nextToken, "nextToken")
         XCTAssertTrue(credentials.contains(where: { $0.credentialId == "credentialId1" }))
