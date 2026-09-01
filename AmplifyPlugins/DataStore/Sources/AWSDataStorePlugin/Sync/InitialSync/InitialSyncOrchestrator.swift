@@ -16,7 +16,8 @@ protocol InitialSyncOrchestrator {
 }
 
 // For testing
-typealias InitialSyncOrchestratorFactory =
+// `@Sendable` because the factory is stored in a `static let` and shared globally.
+typealias InitialSyncOrchestratorFactory = @Sendable
     (
         DataStoreConfiguration,
         AuthModeStrategy,
