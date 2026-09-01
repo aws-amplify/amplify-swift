@@ -77,14 +77,22 @@ class CognitoAuthInterceptorTests: XCTestCase {
     }
 }
 
-private class MockAuthTokenProvider: AmplifyAuthTokenProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockAuthTokenProvider: AmplifyAuthTokenProvider, @unchecked Sendable {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         return authToken
     }
 }
 
-private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider, @unchecked Sendable {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         throw "Intended"

@@ -40,7 +40,11 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     }
 }
 
-class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol , @unchecked Sendable {
 
 
     private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
@@ -86,7 +90,11 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
     }
 }
 
-class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor, @unchecked Sendable {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
         return event
     }
