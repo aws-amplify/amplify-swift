@@ -107,7 +107,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
         try await task.execute()
         XCTAssertEqual(startWebAuthnRegistrationCallCount.current, 1)
-        XCTAssertEqual(credentialRegistrant.createCallCount, 1)
+        XCTAssertEqual(credentialRegistrant.createCallCount.current, 1)
         XCTAssertEqual(completeWebAuthnRegistrationCallCount.current, 1)
     }
 
@@ -140,7 +140,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             }
 
             XCTAssertEqual(startWebAuthnRegistrationCallCount.current, 1)
-            XCTAssertEqual(credentialRegistrant.createCallCount, 1)
+            XCTAssertEqual(credentialRegistrant.createCallCount.current, 1)
             XCTAssertEqual(completeWebAuthnRegistrationCallCount.current, 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
@@ -169,7 +169,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             }
 
             XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
-            XCTAssertEqual(credentialRegistrant.createCallCount, 0)
+            XCTAssertEqual(credentialRegistrant.createCallCount.current, 0)
             XCTAssertEqual(completeWebAuthnRegistrationCallCount.current, 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
@@ -198,7 +198,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
             }
 
             XCTAssertEqual(description, "An unknown error type was thrown by the service. Unable to associate WebAuthn credential.")
-            XCTAssertEqual(credentialRegistrant.createCallCount, 0)
+            XCTAssertEqual(credentialRegistrant.createCallCount.current, 0)
             XCTAssertEqual(completeWebAuthnRegistrationCallCount.current, 0)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
@@ -228,7 +228,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
             XCTAssertEqual(underlyingError as? AWSCognitoAuthError, AWSCognitoAuthError.webAuthnNotEnabled)
             XCTAssertEqual(startWebAuthnRegistrationCallCount.current, 1)
-            XCTAssertEqual(credentialRegistrant.createCallCount, 1)
+            XCTAssertEqual(credentialRegistrant.createCallCount.current, 1)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
@@ -257,7 +257,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
             XCTAssertEqual(description, "An unknown error type was thrown by the service. Unable to associate WebAuthn credential.")
             XCTAssertEqual(startWebAuthnRegistrationCallCount.current, 1)
-            XCTAssertEqual(credentialRegistrant.createCallCount, 1)
+            XCTAssertEqual(credentialRegistrant.createCallCount.current, 1)
         } catch {
             XCTFail("Expected AuthError error, got \(error)")
         }
