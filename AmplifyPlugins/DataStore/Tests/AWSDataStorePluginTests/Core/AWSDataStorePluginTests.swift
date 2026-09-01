@@ -136,7 +136,7 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
         }
 
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            currCount = self.expect(startExpectation, currCount, 1)
+            currCount.set(self.expect(startExpectation, currCount.get(), 1))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -172,11 +172,11 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
 
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.clear] = ClearResponder { _ in
-            currCount = self.expect(clearExpectation, currCount, 1)
+            currCount.set(self.expect(clearExpectation, currCount.get(), 1))
         }
 
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            currCount = self.expect(startExpectation, currCount, 2)
+            currCount.set(self.expect(startExpectation, currCount.get(), 2))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -368,11 +368,11 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
         let count = AtomicValue(initialValue: 0)
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> { _ in
-            count = self.expect(startExpectation, count, 1)
+            count.set(self.expect(startExpectation, count.get(), 1))
             return .success([])
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            count.set(self.expect(clearExpectation, count.get(), 2))
         }
 
         let dataStorePublisher = DataStorePublisher()
@@ -420,7 +420,7 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
             })
             await fulfillment(of: [clearCompleted], timeout: 1.0)
             storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> {_ in
-                count = self.expect(startExpectationOnQuery, count, 3)
+                count.set(self.expect(startExpectationOnQuery, count.get(), 3))
                 return .success([])
             }
 
@@ -464,10 +464,10 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
         let count = AtomicValue(initialValue: 0)
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            count.set(self.expect(startExpectation, count.get(), 1))
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            count.set(self.expect(clearExpectation, count.get(), 2))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -697,7 +697,7 @@ class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
         // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
         let count = AtomicValue(initialValue: 0)
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
-            count = self.expect(stopExpectation, count, 1)
+            count.set(self.expect(stopExpectation, count.get(), 1))
         }
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
