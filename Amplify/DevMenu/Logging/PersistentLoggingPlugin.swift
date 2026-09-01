@@ -9,10 +9,15 @@
 import Foundation
 
 /// `LoggingCategoryPlugin` that wraps another`LoggingCategoryPlugin` and saves the logs in memory
-public class PersistentLoggingPlugin: LoggingCategoryPlugin {
+///
+/// - Note: `@unchecked Sendable` because `Plugin` is `Sendable` and the lazily-created wrapper is mutable
+///   state; `lock` guards it. Deliberately not `final` — this type is public API, and `@unchecked
+///   Sendable` does not require `final`, so marking it so would needlessly break any subclass.
+public class PersistentLoggingPlugin: LoggingCategoryPlugin, @unchecked Sendable {
 
-    var plugin: LoggingCategoryPlugin
-    var persistentLogWrapper: PersistentLogWrapper?
+    private let lock = NSLock()
+    let plugin: LoggingCategoryPlugin
+    private var _persistentLogWrapper: PersistentLogWrapper?
 
     public let key: String = DevMenuStringConstants.persistentLoggingPluginKey
 
@@ -45,7 +50,7 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
     }
 
     public func reset() async {
-        persistentLogWrapper = nil
+        lock.withLock { _persistentLogWrapper = nil }
         await plugin.reset()
     }
 
@@ -54,11 +59,19 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
     }
 
     public var `default`: Logger {
-        if persistentLogWrapper == nil {
-            persistentLogWrapper = PersistentLogWrapper(logWrapper: plugin.default)
+        if let existing = lock.withLock({ _persistentLogWrapper }) {
+            return existing
         }
-
-        return persistentLogWrapper!
+        // Built outside the lock so we never call into the wrapped plugin while holding it. Two racing
+        // callers may each build one; the loser's is discarded and both see the same wrapper.
+        let created = PersistentLogWrapper(logWrapper: plugin.default)
+        return lock.withLock {
+            if let existing = _persistentLogWrapper {
+                return existing
+            }
+            _persistentLogWrapper = created
+            return created
+        }
     }
 }
 
