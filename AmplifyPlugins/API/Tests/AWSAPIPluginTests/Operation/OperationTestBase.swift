@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 
-class OperationTestBase: XCTestCase {
+/// - Note: `@unchecked Sendable` so subclass test bodies can be captured by the `@Sendable` closures
+///   `Amplify.Publisher.create` takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class OperationTestBase: XCTestCase, @unchecked Sendable {
 
     var apiPlugin: AWSAPIPlugin!
 

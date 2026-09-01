@@ -124,8 +124,8 @@ enum Defaults {
     }
 
     static func makeDefaultCredentialStoreEnvironment(
-        amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
-        legacyStoreFactory: @escaping (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
+        amplifyStoreFactory: @escaping @Sendable () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
+        legacyStoreFactory: @escaping @Sendable (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
     ) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: makeDefaultAuthConfigData(),
@@ -139,8 +139,8 @@ enum Defaults {
 
     static func makeDefaultAuthEnvironment(
         authZEnvironment: BasicAuthorizationEnvironment? = nil,
-        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        identityPoolFactory: @escaping @Sendable () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping @Sendable () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
         hostedUIEnvironment: HostedUIEnvironment? = nil
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
@@ -180,8 +180,8 @@ enum Defaults {
 
     static func makeDefaultAuthStateMachine(
         initialState: AuthState? = nil,
-        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        identityPoolFactory: @escaping @Sendable () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping @Sendable () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
         hostedUIEnvironment: HostedUIEnvironment? = nil
     ) ->
     AuthStateMachine {
