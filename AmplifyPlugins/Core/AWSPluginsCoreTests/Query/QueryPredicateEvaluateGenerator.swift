@@ -191,7 +191,8 @@ class QueryPredicateGenerator: XCTestCase, @unchecked Sendable {
     ]
 
     func generate(_ filter: String, printCount: Bool = false) {
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         for type1 in types {
             for type2 in types {
                 for operation in operations {
@@ -215,7 +216,8 @@ class QueryPredicateGenerator: XCTestCase, @unchecked Sendable {
     }
 
     func performGeneration(type1: String, type2: String, operation: String) -> Int {
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         guard let values1 = typeToValuesMap[type1],
             let values2 = typeToValuesMap[type2]
         else {
@@ -229,7 +231,7 @@ class QueryPredicateGenerator: XCTestCase, @unchecked Sendable {
             for (val1, val2) in v1v2s {
                 for val3 in val3s {
                     if handleBetween(type1: type1, val1: val1, type2: type2, val2: val2, val3: val3, operation: operation) {
-                        count += 1
+                        _ = count.increment()
                     }
                 }
             }
@@ -244,7 +246,7 @@ class QueryPredicateGenerator: XCTestCase, @unchecked Sendable {
                 }
                 for val2 in values2 {
                     if handleOtherOperations(type1: type1, val1: val1, type2: type2, val2: val2, operation: operation) {
-                        count += 1
+                        _ = count.increment()
                     }
                 }
             }

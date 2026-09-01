@@ -84,7 +84,9 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     public typealias ProgressPublisher = AnyPublisher<InProcess, Failure>
 #endif
 
-    var count = 0
+    // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+
+    let count = AtomicValue(initialValue: 0)
     var currentProgress: Progress!
 
     public init(
@@ -129,7 +131,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     }
 
     private func advance() {
-        count += 1
+        _ = count.increment()
         work()
     }
 

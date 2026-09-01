@@ -201,13 +201,15 @@ class OutgoingMutationQueueTests: SyncEngineTestBase, @unchecked Sendable {
 
         await fulfillment(of: [mutationEventSaved], timeout: 1.0)
 
-        var outboxStatusReceivedCurrentCount = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+
+        let outboxStatusReceivedCurrentCount = AtomicValue(initialValue: 0)
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
         let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
 
         let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
         let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
-            outboxStatusReceivedCurrentCount += 1
+            _ = outboxStatusReceivedCurrentCount.increment()
             guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
                 XCTFail("Failed to cast payload data as OutboxStatusEvent")
                 return

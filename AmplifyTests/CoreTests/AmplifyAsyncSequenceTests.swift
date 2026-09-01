@@ -185,11 +185,12 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         let operation = LongOperation(request: request)
         let channel = AmplifyAsyncSequence<LongOperation.InProcess>(parent: operation)
         let token = operation.subscribe { (value: LongOperation.InProcess) in
-            count += 1
+            _ = count.increment()
             channel.send(value)
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
@@ -221,11 +222,12 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         let operation = LongOperation(request: request)
         let channel = AmplifyAsyncSequence<LongOperation.InProcess>(parent: operation)
         let token = operation.subscribe { (value: LongOperation.InProcess) in
-            count += 1
+            _ = count.increment()
             channel.send(value)
             if value.completedUnitCount >= steps / 2 {
                 channel.cancel()
@@ -257,11 +259,12 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         let operation = LongOperation(request: request)
         let channel = AmplifyAsyncThrowingSequence<LongOperation.InProcess>(parent: operation)
         let token = operation.subscribe { (value: LongOperation.InProcess) in
-            count += 1
+            _ = count.increment()
             channel.send(value)
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
@@ -293,11 +296,12 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         let operation = LongOperation(request: request)
         let channel = AmplifyAsyncThrowingSequence<LongOperation.InProcess>(parent: operation)
         let token = operation.subscribe { (value: LongOperation.InProcess) in
-            count += 1
+            _ = count.increment()
             channel.send(value)
             if value.completedUnitCount >= steps / 2 {
                 channel.cancel()
