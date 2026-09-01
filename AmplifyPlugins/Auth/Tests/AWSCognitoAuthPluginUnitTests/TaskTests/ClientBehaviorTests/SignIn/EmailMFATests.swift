@@ -113,7 +113,8 @@ class EmailMFATests: BasePluginTest {
     ///    - I should get a .confirmSignInWithOTP response
     ///
     func testSuccessfulEmailMFACodeStep() async {
-        var signInStepIterator = 0
+        // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let signInStepIterator = TestCounter()
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
@@ -122,7 +123,7 @@ class EmailMFATests: BasePluginTest {
                 session: "someSession"
             )
         }, mockRespondToAuthChallengeResponse: { input in
-            if signInStepIterator == 0 {
+            if signInStepIterator.get() == 0 {
                 return .testData(
                     challenge: .emailOtp,
                     challengeParameters: [
@@ -130,7 +131,7 @@ class EmailMFATests: BasePluginTest {
                         "CODE_DELIVERY_DESTINATION": "test@test.com"
                     ]
                 )
-            } else if signInStepIterator == 1 {
+            } else if signInStepIterator.get() == 1 {
                 XCTAssertEqual(input.challengeResponses?["EMAIL_OTP_CODE"], "123456")
                 XCTAssertEqual(input.session, "session")
                 return .testData()
@@ -156,7 +157,7 @@ class EmailMFATests: BasePluginTest {
             XCTAssertFalse(result.isSignedIn, "Signin result should be complete")
 
             // step 2: confirm sign in
-            signInStepIterator = 1
+            signInStepIterator.set(1)
             let confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
                 options: .init()
@@ -183,7 +184,8 @@ class EmailMFATests: BasePluginTest {
     ///    - I should get a .continueSignInWithMFASetupSelection response
     ///
     func testConfirmSignInForEmailMFASetupSelectionStep() async {
-        var signInStepIterator = 0
+        // Read from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let signInStepIterator = TestCounter()
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
             return InitiateAuthOutput(
                 authenticationResult: .none,
@@ -245,7 +247,7 @@ class EmailMFATests: BasePluginTest {
             }
 
             // Step 3: pass an email to setup
-            signInStepIterator = 1
+            signInStepIterator.set(1)
             confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "test@test.com")
             guard case .confirmSignInWithOTP(let deliveryDetails) = confirmSignInResult.nextStep else {
@@ -261,7 +263,7 @@ class EmailMFATests: BasePluginTest {
             XCTAssertFalse(result.isSignedIn, "Signin result should be complete")
 
             // step 4: confirm sign in
-            signInStepIterator = 2
+            signInStepIterator.set(2)
             confirmSignInResult = try await plugin.confirmSignIn(
                 challengeResponse: "123456",
                 options: .init()

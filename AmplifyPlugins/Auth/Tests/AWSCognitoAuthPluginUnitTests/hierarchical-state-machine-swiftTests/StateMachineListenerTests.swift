@@ -104,10 +104,10 @@ class StateMachineListenerTests: XCTestCase, @unchecked Sendable {
                 // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
                 let count = TestCounter()
                 for await state in seq {
-                    if count.current == 0 {
+                    if count.get() == 0 {
                         count.increment()
                         XCTAssertEqual(state.value, 10)
-                    } else if count.current == 1 {
+                    } else if count.get() == 1 {
                         count.increment()
                         XCTAssertEqual(state.value, 11)
                     } else {

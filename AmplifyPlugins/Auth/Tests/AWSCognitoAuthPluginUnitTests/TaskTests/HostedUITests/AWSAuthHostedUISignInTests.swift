@@ -40,7 +40,7 @@ class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
     ))
     let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
 
-    func urlSessionMock() -> URLSession {
+    @Sendable func urlSessionMock() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         return URLSession(configuration: configuration)
@@ -53,11 +53,11 @@ class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
             return (HTTPURLResponse(), self.mockJson)
         }
 
-        func sessionFactory() -> HostedUISessionBehavior {
+        @Sendable func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
         }
 
-        func mockRandomString() -> RandomStringBehavior {
+        @Sendable func mockRandomString() -> RandomStringBehavior {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
@@ -94,11 +94,11 @@ class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
             return (HTTPURLResponse(), self.mockJson)
         }
 
-        func sessionFactory() -> HostedUISessionBehavior {
+        @Sendable func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
         }
 
-        func mockRandomString() -> RandomStringBehavior {
+        @Sendable func mockRandomString() -> RandomStringBehavior {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 

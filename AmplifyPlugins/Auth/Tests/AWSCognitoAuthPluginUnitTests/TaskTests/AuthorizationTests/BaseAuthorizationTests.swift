@@ -18,8 +18,8 @@ class BaseAuthorizationTests: XCTestCase, @unchecked Sendable {
 
     func configurePluginWith(
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
-        userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
-        identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
+        userPool: @escaping @Sendable () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
+        identityPool: @escaping @Sendable () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
         initialState: AuthState
     ) -> AWSCognitoAuthPlugin {
         let plugin = AWSCognitoAuthPlugin()
