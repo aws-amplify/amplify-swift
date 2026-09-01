@@ -9,7 +9,9 @@ import SQLite
 import XCTest
 @testable import AmplifyRecordCache
 
-class RecordClientConcurrentFlushTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RecordClientConcurrentFlushTests: XCTestCase, @unchecked Sendable {
 
     private var storage: SQLiteRecordStorage!
     private var sender: SlowMockSender!

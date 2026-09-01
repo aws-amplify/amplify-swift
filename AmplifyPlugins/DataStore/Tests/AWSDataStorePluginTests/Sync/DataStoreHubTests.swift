@@ -7,7 +7,9 @@
 
 import XCTest
 
-class DataStoreHubTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreHubTests: XCTestCase, @unchecked Sendable {
 
     /// - Given: An API-enabled DataStore
     /// - When:

@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class StorageTransferTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageTransferTaskTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - Resume tests
     /// Given: A StorageTransferTask with a sessionTask

@@ -13,7 +13,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class StorageEngineTestsBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
     let defaultTimeout = 0.3
     var connection: Connection!
     var storageEngine: StorageEngine!

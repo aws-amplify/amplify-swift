@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 /// Test order of startup operations to ensure SyncEngine is properly following the delta sync merge algorithm
-class SyncEngineStartupTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SyncEngineStartupTests: SyncEngineTestBase, @unchecked Sendable {
 
     func testShouldPauseSubscriptions() throws {
         throw XCTSkip("Not yet implemented")

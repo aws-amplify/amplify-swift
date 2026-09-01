@@ -15,7 +15,9 @@ import Foundation
 import SQLite
 
 // swiftlint:disable type_body_length
-class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLiteStorageEngineAdapterJsonTests: XCTestCase, @unchecked Sendable {
 
     var connection: Connection!
     var storageEngine: StorageEngine!

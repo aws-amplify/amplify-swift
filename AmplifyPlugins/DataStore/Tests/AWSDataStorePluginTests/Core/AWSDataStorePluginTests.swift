@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
-class AWSDataStorePluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
 
     /// Ensure that DataStore configures successfully, regardless of what configuration is passed to `configure(using:)`
     func testConfigureWithAmplifyOutputs() throws {

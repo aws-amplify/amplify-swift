@@ -11,7 +11,9 @@ import Smithy
 import SmithyHTTPAPI
 import XCTest
 
-class UserAgentSuffixAppenderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class UserAgentSuffixAppenderTests: XCTestCase, @unchecked Sendable {
     private let userAgentKey = "User-Agent"
     private let customSuffix = "myCustomSuffix"
     private var appender: UserAgentSuffixAppender!

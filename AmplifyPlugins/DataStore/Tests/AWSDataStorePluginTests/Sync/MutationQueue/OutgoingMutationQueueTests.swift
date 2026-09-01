@@ -14,7 +14,9 @@ import XCTest
 @testable @preconcurrency import AWSPluginsCore
 @testable import AWSPluginsCore
 
-class OutgoingMutationQueueTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class OutgoingMutationQueueTests: SyncEngineTestBase, @unchecked Sendable {
 
     /// - Given: A sync-configured DataStore
     /// - When:

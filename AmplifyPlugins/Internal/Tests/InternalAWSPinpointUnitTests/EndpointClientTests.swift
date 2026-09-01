@@ -12,7 +12,9 @@ import XCTest
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class EndpointClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EndpointClientTests: XCTestCase, @unchecked Sendable {
     private let newTokenHex = "646576696365546f6b656e"
 
     private var endpointClient: EndpointClient!

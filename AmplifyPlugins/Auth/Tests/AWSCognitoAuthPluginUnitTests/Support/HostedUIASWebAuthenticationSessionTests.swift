@@ -11,7 +11,9 @@ import AuthenticationServices
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class HostedUIASWebAuthenticationSessionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
     private var session: HostedUIASWebAuthenticationSession!
     private var factory: ASWebAuthenticationSessionFactory!
 
@@ -199,7 +201,9 @@ extension HostedUIASWebAuthenticationSession {
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class HostedUIASWebAuthenticationSessionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
     func testShowHostedUI_shouldThrowServiceError() async {
         let session = HostedUIASWebAuthenticationSession()
         do {

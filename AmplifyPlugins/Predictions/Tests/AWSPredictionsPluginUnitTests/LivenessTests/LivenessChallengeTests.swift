@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSPredictionsPlugin
 @_spi(PredictionsFaceLiveness) import AWSPredictionsPlugin
 
-class LivenessChallengeTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class LivenessChallengeTests: XCTestCase, @unchecked Sendable {
 
     func testFaceMovementChallengeQueryParamterString() {
         let challenge: Challenge = .faceMovementChallenge("1.0.0")

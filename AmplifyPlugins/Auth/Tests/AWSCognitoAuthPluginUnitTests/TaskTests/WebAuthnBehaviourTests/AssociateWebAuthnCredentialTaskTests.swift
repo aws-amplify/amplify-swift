@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 @available(iOS 17.4, macOS 13.5, *)
-class AssociateWebAuthnCredentialTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     private var task: AssociateWebAuthnCredentialTask!
     private var identityProvider: MockIdentityProvider!
     private var credentialRegistrant: MockCredentialRegistrant!

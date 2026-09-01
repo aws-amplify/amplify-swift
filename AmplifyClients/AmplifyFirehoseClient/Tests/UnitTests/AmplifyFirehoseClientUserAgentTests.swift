@@ -26,7 +26,9 @@ private final class UserAgentCapturingEngine: HTTPClient, @unchecked Sendable {
     }
 }
 
-class AmplifyFirehoseClientUserAgentTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyFirehoseClientUserAgentTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the User-Agent header contains Firehose metadata.
     ///

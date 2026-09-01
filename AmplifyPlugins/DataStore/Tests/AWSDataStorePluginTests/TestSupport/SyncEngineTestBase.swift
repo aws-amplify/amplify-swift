@@ -15,7 +15,9 @@ import XCTest
 @testable import AWSPluginsCore
 
 /// Base class for SyncEngine and sync-enabled DataStore tests
-class SyncEngineTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SyncEngineTestBase: XCTestCase, @unchecked Sendable {
 
     /// Populated during setUp, used in each test during `Amplify.configure()`
     var amplifyConfig: AmplifyConfiguration!

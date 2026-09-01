@@ -13,7 +13,9 @@ import XCTest
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
-class EventRecorderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EventRecorderTests: XCTestCase, @unchecked Sendable {
     var recorder: AnalyticsEventRecording!
     var storage: MockAnalyticsEventStorage!
     var pinpointClient: MockPinpointClient!

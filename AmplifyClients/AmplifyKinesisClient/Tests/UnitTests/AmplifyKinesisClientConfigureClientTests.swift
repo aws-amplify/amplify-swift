@@ -13,7 +13,9 @@ import XCTest
 @testable import AmplifyRecordCache
 @testable import AWSKinesis
 
-class AmplifyKinesisClientConfigureClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyKinesisClientConfigureClientTests: XCTestCase, @unchecked Sendable {
 
     /// Verifies that the `configureClient` closure is applied to the underlying
     /// SDK client configuration.

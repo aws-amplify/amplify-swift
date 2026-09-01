@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class DefaultHubPluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DefaultHubPluginTests: XCTestCase, @unchecked Sendable {
 
     var plugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),

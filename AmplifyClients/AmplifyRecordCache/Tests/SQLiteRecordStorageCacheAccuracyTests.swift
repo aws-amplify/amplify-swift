@@ -9,7 +9,9 @@ import SQLite
 import XCTest
 @testable import AmplifyRecordCache
 
-class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
 
     var storage: SQLiteRecordStorage!
 

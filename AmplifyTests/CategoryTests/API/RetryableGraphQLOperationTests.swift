@@ -11,7 +11,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class RetryableGraphQLOperationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RetryableGraphQLOperationTests: XCTestCase, @unchecked Sendable {
     let testApiName = "apiName"
 
     /// Given: a RetryableGraphQLOperation with 2 operations

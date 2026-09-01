@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSLocationGeoPlugin
 
-final class GeoStressTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class GeoStressTests: XCTestCase, @unchecked Sendable {
     let timeout = 30.0
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)

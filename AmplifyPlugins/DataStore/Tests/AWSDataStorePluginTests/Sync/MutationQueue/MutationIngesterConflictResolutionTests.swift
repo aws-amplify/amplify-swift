@@ -19,7 +19,9 @@ import XCTest
 /// Tests in this class have a naming convention of `test_<existing>_<candidate>`, which is to say: given that the
 /// mutation queue has an existing record of type `<existing>`, assert the behavior when candidate a mutation of
 /// type `<candidate>`.
-class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Sendable {
 
     // MARK: - Existing == .create
 

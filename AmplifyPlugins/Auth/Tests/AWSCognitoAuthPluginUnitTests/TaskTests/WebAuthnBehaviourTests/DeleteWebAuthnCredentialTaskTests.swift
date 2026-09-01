@@ -11,7 +11,9 @@ import struct AWSCognitoIdentityProvider.WebAuthnClientMismatchException
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class DeleteWebAuthnCredentialTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     private var task: DeleteWebAuthnCredentialTask!
     private var identityProvider: MockIdentityProvider!
 

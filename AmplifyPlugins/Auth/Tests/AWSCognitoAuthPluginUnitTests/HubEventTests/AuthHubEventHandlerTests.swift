@@ -13,7 +13,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AuthHubEventHandlerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
 
     let networkTimeout = TimeInterval(2)
     var plugin: AWSCognitoAuthPlugin!

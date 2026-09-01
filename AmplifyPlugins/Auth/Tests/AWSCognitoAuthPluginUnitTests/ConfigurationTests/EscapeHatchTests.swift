@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 
-class EscapeHatchTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EscapeHatchTests: XCTestCase, @unchecked Sendable {
     /// Test escape hatch with valid config for user pool and identity pool
     ///
     /// - Given: A AWSCognitoAuthPlugin configured with User Pool and Identity Pool

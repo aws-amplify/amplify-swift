@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSPinpointAnalyticsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointAnalyticsPluginTestBase: XCTestCase, @unchecked Sendable {
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
     var mockPinpoint: MockAWSPinpoint!
     var mockNetworkMonitor: MockNetworkMonitor!

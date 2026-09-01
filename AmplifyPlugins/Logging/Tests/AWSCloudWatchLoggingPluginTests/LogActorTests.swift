@@ -11,7 +11,9 @@ import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
 
-final class LogActorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class LogActorTests: XCTestCase, @unchecked Sendable {
 
     let fileCountLimit = 5
     let fileSizeLimitInBytes = 1_024

@@ -11,7 +11,9 @@ import XCTest
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
 @testable import AWSS3StoragePlugin
 
-class DefaultStorageMultipartUploadClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable {
     private var defaultClient: DefaultStorageMultipartUploadClient!
     private var serviceProxy: MockStorageServiceProxy!
     private var session: MockStorageMultipartUploadSession!

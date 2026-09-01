@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
-class ModelMetadataTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelMetadataTests: XCTestCase, @unchecked Sendable {
     override func setUp() {
         ModelRegistry.register(modelType: Comment4.self)
         ModelRegistry.register(modelType: Post4.self)
