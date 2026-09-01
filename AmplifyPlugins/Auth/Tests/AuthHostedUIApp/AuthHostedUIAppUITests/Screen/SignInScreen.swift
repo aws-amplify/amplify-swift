@@ -44,11 +44,11 @@ struct SignInScreen: Screen {
     }
 
     func dismissSignInAlert() -> Self {
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        let continueElement = springboard.consentContinueElement()
-        if continueElement.waitForExistence(timeout: 10) {
-            continueElement.tap()
-        }
+        // With an ephemeral web session iOS may not show the consent sheet at
+        // all; when it does it can appear after a noticeable delay. Tapping it
+        // is handled together with the field wait in `signIn(username:password:)`,
+        // so this is only a best-effort early dismissal.
+        tapConsentContinueIfPresent(timeout: 5)
         return self
     }
 
@@ -66,11 +66,38 @@ struct SignInScreen: Screen {
             "Username"
         }
 
-        focusAndType(app.webViews.textFields[signInTextFieldName], username)
+        let usernameField = waitForWebTextField(app.webViews.textFields[signInTextFieldName])
+        focusAndType(usernameField, username)
         focusAndType(app.webViews.secureTextFields["Password"], password)
 
         app.webViews.buttons["submit"].tap()
         return self
+    }
+
+    /// Taps the SpringBoard consent "Continue" control if it is present.
+    @discardableResult
+    private func tapConsentContinueIfPresent(timeout: TimeInterval) -> Bool {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let continueElement = springboard.consentContinueElement()
+        if continueElement.waitForExistence(timeout: timeout) {
+            continueElement.tap()
+            return true
+        }
+        return false
+    }
+
+    /// Waits for the Hosted UI web field to appear, dismissing the consent sheet
+    /// if it shows up late. The Hosted UI page can be slow to load on iOS 26 CI
+    /// simulators, so we poll for up to ~120s rather than relying on a single wait.
+    private func waitForWebTextField(_ element: XCUIElement) -> XCUIElement {
+        let deadline = Date().addingTimeInterval(120)
+        while Date() < deadline {
+            tapConsentContinueIfPresent(timeout: 2)
+            if element.waitForExistence(timeout: 5) {
+                return element
+            }
+        }
+        return element
     }
 
     /// iOS 26: tap until the software keyboard is up before typing to avoid dropped input.
