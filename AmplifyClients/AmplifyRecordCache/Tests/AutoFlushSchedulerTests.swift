@@ -108,33 +108,29 @@ class AutoFlushSchedulerTests: XCTestCase, @unchecked Sendable {
 
 /// Mock storage that tracks operations
 actor MockRecordStorage: RecordStorage {
-    // Boxed: incremented from a `@Sendable` mock closure.
-    let addRecordCallCount = AtomicValue(initialValue: 0)
-    // Boxed: incremented from a `@Sendable` mock closure.
-    let getRecordsByStreamCallCount = AtomicValue(initialValue: 0)
-    // Boxed: incremented from a `@Sendable` mock closure.
-    let deleteRecordsCallCount = AtomicValue(initialValue: 0)
-    // Boxed: incremented from a `@Sendable` mock closure.
-    let clearRecordsCallCount = AtomicValue(initialValue: 0)
+    var addRecordCallCount = 0
+    var getRecordsByStreamCallCount = 0
+    var deleteRecordsCallCount = 0
+    var clearRecordsCallCount = 0
 
     func addRecord(_ input: RecordInput) throws {
-        _ = addRecordCallCount.increment()
+        addRecordCallCount += 1
     }
 
     func getRecordsByStream(afterIdByStream: [String: Int64]) throws -> [[Record]] {
-        _ = getRecordsByStreamCallCount.increment()
+        getRecordsByStreamCallCount += 1
         return []
     }
 
     func deleteRecords(ids: [Int64]) throws {
-        _ = deleteRecordsCallCount.increment()
+        deleteRecordsCallCount += 1
     }
 
     func incrementRetryCount(ids: [Int64]) throws {
     }
 
     func clearRecords() throws -> Int {
-        _ = clearRecordsCallCount.increment()
+        clearRecordsCallCount += 1
         return 0
     }
 
