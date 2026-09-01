@@ -136,7 +136,7 @@ jobs:
           other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       - name: Collect crash logs on failure
-        if: failure()
+        if: ${{ failure() || cancelled() }}
         continue-on-error: true
         run: |
           mkdir -p "${{ github.workspace }}/TestDiagnostics"
@@ -144,7 +144,7 @@ jobs:
         shell: bash
 
       - name: Upload test results and crash logs on failure
-        if: failure()
+        if: ${{ failure() || cancelled() }}
         continue-on-error: true
         uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
