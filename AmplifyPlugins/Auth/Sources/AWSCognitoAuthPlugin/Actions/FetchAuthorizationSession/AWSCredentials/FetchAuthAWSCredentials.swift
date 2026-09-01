@@ -86,7 +86,7 @@ struct FetchAuthAWSCredentials: Action {
             await dispatcher.send(event)
 
         } catch {
-            // Rejected identity ID: evict and retry via fresh GetId.
+            // Retry once with a fresh identity ID.
             if canRetryWithFreshIdentityID, isStaleIdentityError(error) {
                 await retryWithFreshIdentityID(
                     client: client,
@@ -134,10 +134,18 @@ struct FetchAuthAWSCredentials: Action {
         }
     }
 
-    // Codes returned when the identity ID is stale.
+    // A stale identity ID always yields ResourceNotFoundException. NotAuthorized
+    // is only stale when Cognito reports the identity is forbidden; invalid or
+    // expired login-token errors must surface immediately without a GetId retry.
     private func isStaleIdentityError(_ error: Error) -> Bool {
-        error is AWSCognitoIdentity.NotAuthorizedException ||
-        error is AWSCognitoIdentity.ResourceNotFoundException
+        if error is AWSCognitoIdentity.ResourceNotFoundException {
+            return true
+        }
+        if let notAuthorized = error as? AWSCognitoIdentity.NotAuthorizedException,
+           let message = notAuthorized.properties.message {
+            return message.contains("Access to Identity") && message.contains("is forbidden")
+        }
+        return false
     }
 }
 

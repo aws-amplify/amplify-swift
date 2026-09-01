@@ -193,10 +193,14 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         )
     }
 
-    /// NotAuthorized evicts the stale identity ID and retries via fresh GetId.
+    /// Authenticated NotAuthorized with a forbidden identity message evicts the
+    /// stale identity ID and retries via fresh GetId.
     func testNotAuthorizedEvictsIdentityAndRetries() async {
         await assertStaleIdentityRecovery(
-            firstError: AWSCognitoIdentity.NotAuthorizedException()
+            firstError: AWSCognitoIdentity.NotAuthorizedException(
+                message: "Access to Identity 'us-east-1:stale' is forbidden."
+            ),
+            loginsMap: ["provider.com": "token"]
         )
     }
 
@@ -207,7 +211,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         )
     }
 
-    private func assertStaleIdentityRecovery(firstError: Error) async {
+    private func assertStaleIdentityRecovery(
+        firstError: Error,
+        loginsMap: [String: String] = [:]
+    ) async {
         let recovered = expectation(description: "recoveredWithFreshIdentity")
         let freshIdentityID = "freshIdentityId"
 
@@ -244,7 +251,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "staleIdentityId")
+        let action = FetchAuthAWSCredentials(loginsMap: loginsMap, identityID: "staleIdentityId")
 
         await action.execute(
             withDispatcher: MockDispatcher { event in
@@ -306,6 +313,50 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         XCTAssertEqual(credentialsCallCount.count, 2)
     }
 
+    /// Authenticated NotAuthorized from an invalid/expired login token surfaces
+    /// immediately: no GetId retry, single GetCredentials call.
+    func testAuthenticatedInvalidTokenNotAuthorizedSurfacesImmediately() async {
+        let errored = expectation(description: "terminalError")
+        let getIdCalled = CallCounter()
+        let credentialsCallCount = CallCounter()
+
+        let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
+            MockIdentity(
+                mockGetIdResponse: { _ in
+                    _ = getIdCalled.increment()
+                    return GetIdOutput(identityId: "freshIdentityId")
+                },
+                mockGetCredentialsResponse: { _ in
+                    _ = credentialsCallCount.increment()
+                    throw AWSCognitoIdentity.NotAuthorizedException(
+                        message: "Invalid login token. Token expired."
+                    )
+                })
+        }
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory
+        )
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
+
+        let action = FetchAuthAWSCredentials(
+            loginsMap: ["provider.com": "token"], identityID: "identityID")
+
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? FetchAuthSessionEvent else { return }
+                if case .throwError = event.eventType {
+                    errored.fulfill()
+                }
+            },
+            environment: authEnvironment
+        )
+
+        await fulfillment(of: [errored], timeout: 0.1)
+        XCTAssertEqual(getIdCalled.count, 0)
+        XCTAssertEqual(credentialsCallCount.count, 1)
+    }
 }
 
 private final class CallCounter: @unchecked Sendable {
