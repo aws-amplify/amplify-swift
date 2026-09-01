@@ -393,5 +393,5 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase, @un
 }
 
 struct InvalidCustomStoragePath: StoragePath {
-    var resolve: (String) -> String
+    var resolve: @Sendable (String) -> String
 }

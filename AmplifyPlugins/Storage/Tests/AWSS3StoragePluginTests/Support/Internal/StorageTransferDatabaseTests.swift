@@ -17,7 +17,7 @@ import AmplifyTestCommon
 struct MockStorageURLSession: StorageURLSession {
     let sessionTasks: StorageSessionTasks
 
-    func getActiveTasks(resultHandler: @escaping (StorageSessionTasks) -> Void) {
+    func getActiveTasks(resultHandler: @escaping @Sendable (StorageSessionTasks) -> Void) {
         resultHandler(sessionTasks)
     }
 }
