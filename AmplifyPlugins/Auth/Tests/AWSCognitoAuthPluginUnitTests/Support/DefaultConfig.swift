@@ -310,7 +310,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
 // `@unchecked Sendable`: test double driven by a single test at a time.
 final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sendable {
     let credentialsKey = "amplifyCredentials"
-    static var dict = AtomicDictionary<String, Data>()
+    static let dict = AtomicDictionary<String, Data>()
 
     func saveCredential(_ credential: AmplifyCredentials) throws {
         let value = (try? JSONEncoder().encode(credential)) ?? Data()

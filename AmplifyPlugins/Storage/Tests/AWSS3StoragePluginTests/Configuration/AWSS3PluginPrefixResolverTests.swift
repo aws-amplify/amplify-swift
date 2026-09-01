@@ -22,7 +22,7 @@ extension Sequence<PrefixTestData> {
     }
 }
 
-struct PrefixTestData {
+struct PrefixTestData: Sendable {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let expectedPrefix: String
