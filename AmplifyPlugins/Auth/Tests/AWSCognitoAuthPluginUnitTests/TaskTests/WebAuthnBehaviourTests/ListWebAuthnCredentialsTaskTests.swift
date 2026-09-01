@@ -75,7 +75,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withSuccess_shouldSucceed() async throws {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let listWebAuthnCredentialsCallCount = AtomicValue(initialValue: 0)
+        let listWebAuthnCredentialsCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
             _ = listWebAuthnCredentialsCallCount.increment()
             return .init(

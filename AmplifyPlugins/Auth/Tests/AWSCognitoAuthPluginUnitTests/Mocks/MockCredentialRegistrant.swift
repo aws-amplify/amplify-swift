@@ -19,7 +19,7 @@ class MockCredentialRegistrant: CredentialRegistrantProtocol, @unchecked Sendabl
 
     var mockedCreateResponse: Result<CredentialRegistrationPayload, Error>?
     // Boxed: incremented from a `@Sendable` mock closure.
-    let createCallCount = AtomicValue(initialValue: 0)
+    let createCallCount = Amplify.AtomicValue(initialValue: 0)
     func create(with options: CredentialCreationOptions) async throws -> CredentialRegistrationPayload {
         _ = createCallCount.increment()
         if let mockedCreateResponse {

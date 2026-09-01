@@ -75,7 +75,7 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withSuccess_shouldSucceed() async throws {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let deleteWebAuthnCredentialCallCount = AtomicValue(initialValue: 0)
+        let deleteWebAuthnCredentialCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in
             _ = deleteWebAuthnCredentialCallCount.increment()
             return .init()

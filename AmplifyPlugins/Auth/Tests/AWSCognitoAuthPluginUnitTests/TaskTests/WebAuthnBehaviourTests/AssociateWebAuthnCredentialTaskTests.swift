@@ -92,7 +92,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withSuccess_shouldSucceed() async throws {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let startWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
             _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
@@ -100,7 +100,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
         // Boxed: incremented from a `@Sendable` mock closure.
 
-        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let completeWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
             _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
@@ -114,7 +114,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withRegistrationFailed_shouldFail() async {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let startWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
             _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
@@ -122,7 +122,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
         // Boxed: incremented from a `@Sendable` mock closure.
 
-        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let completeWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
             _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
@@ -156,7 +156,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
         // Boxed: incremented from a `@Sendable` mock closure.
 
-        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let completeWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
             _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
@@ -186,7 +186,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
         // Boxed: incremented from a `@Sendable` mock closure.
 
-        let completeWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let completeWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockCompleteWebAuthnRegistrationResponse = { _ in
             _ = completeWebAuthnRegistrationCallCount.increment()
             return .init()
@@ -211,7 +211,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withServiceErrorOnComplete_shouldFailWithServiceError() async {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let startWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
             _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
@@ -240,7 +240,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
 
     func testExecute_withOtherErrorOnComplete_shouldFailWithUnknownServiceError() async {
         // Boxed: incremented from a `@Sendable` mock closure.
-        let startWebAuthnRegistrationCallCount = AtomicValue(initialValue: 0)
+        let startWebAuthnRegistrationCallCount = Amplify.AtomicValue(initialValue: 0)
         identityProvider.mockStartWebAuthnRegistrationResponse = { _ in
             _ = startWebAuthnRegistrationCallCount.increment()
             return self.startWebAuthnRegistrationResponse()
