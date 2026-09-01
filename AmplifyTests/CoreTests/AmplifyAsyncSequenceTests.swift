@@ -204,7 +204,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertGreaterThanOrEqual(count.get(), steps)
+            XCTAssertGreaterThanOrEqual(count, steps)
             received.fulfill()
         }
 
@@ -241,7 +241,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertLessThan(count.get(), steps)
+            XCTAssertLessThan(count, steps)
             received.fulfill()
         }
 
@@ -278,7 +278,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertGreaterThanOrEqual(count.get(), steps)
+            XCTAssertGreaterThanOrEqual(count, steps)
             received.fulfill()
         }
 
@@ -315,7 +315,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertLessThan(count.get(), steps)
+            XCTAssertLessThan(count, steps)
             received.fulfill()
         }
 

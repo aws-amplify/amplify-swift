@@ -80,7 +80,8 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let cleanedup = expectation(description: "cleanedup")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
         let retryAdviceReceivedNetworkError = expectation(description: "retry advice received network error")
-        var currCount = 1
+        // Threaded through `@Sendable` completions, so it cannot be a captured `var`.
+        let currCount = AtomicValue(initialValue: 1)
 
         let advice = RequestRetryAdvice.init(shouldRetry: false)
         mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
@@ -103,26 +104,26 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 7, expectation: failureOnInitialSync)
+                currCount.set(self.checkAndFulfill(currCount.get(), 7, expectation: failureOnInitialSync))
             }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
-                    currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 1, expectation: storageAdapterAvailable))
                 case .subscriptionsPaused:
-                    currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 2, expectation: subscriptionsPaused))
                 case .mutationsPaused:
-                    currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 3, expectation: mutationsPaused))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
                 case .clearedStateOutgoingMutations:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 4, expectation: stateMutationsCleared))
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 5, expectation: subscriptionsInitialized))
                 case .performedInitialSync:
                     XCTFail("performedInitialQueries should not be successful")
                 case .cleanedUp:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: cleanedup)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 6, expectation: cleanedup))
                 default:
                     XCTFail("Unexpected case gets hit")
                 }
@@ -161,7 +162,9 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let mutationQueueStarted = expectation(description: "mutationQueueStarted")
         let syncStarted = expectation(description: "sync started")
 
-        var currCount = 1
+        // Threaded through `@Sendable` completions, so it cannot be a captured `var`.
+
+        let currCount = AtomicValue(initialValue: 1)
 
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
@@ -170,26 +173,26 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
             }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
-                    currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 1, expectation: storageAdapterAvailable))
                 case .subscriptionsPaused:
-                    currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 2, expectation: subscriptionsPaused))
                 case .mutationsPaused:
-                    currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 3, expectation: mutationsPaused))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
                 case .clearedStateOutgoingMutations:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 4, expectation: stateMutationsCleared))
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 5, expectation: subscriptionsInitialized))
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 6, expectation: performedInitialSync))
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 7, expectation: subscriptionActivation))
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 8, expectation: mutationQueueStarted))
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 9, expectation: syncStarted))
                 default:
                     XCTFail("unexpected call")
                 }
@@ -228,7 +231,9 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let cleanedUp = expectation(description: "cleanedUp")
         let forceFailToNotRestartSyncEngine = expectation(description: "forceFailToNotRestartSyncEngine")
 
-        var currCount = 1
+        // Threaded through `@Sendable` completions, so it cannot be a captured `var`.
+
+        let currCount = AtomicValue(initialValue: 1)
 
         let advice = RequestRetryAdvice.init(shouldRetry: false)
         mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
@@ -236,36 +241,36 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
+                currCount.set(self.checkAndFulfill(currCount.get(), 11, expectation: forceFailToNotRestartSyncEngine))
             }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
-                    currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 1, expectation: storageAdapterAvailable))
                 case .subscriptionsPaused:
-                    currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 2, expectation: subscriptionsPaused))
                 case .mutationsPaused:
-                    currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 3, expectation: mutationsPaused))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
                 case .clearedStateOutgoingMutations:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 4, expectation: stateMutationsCleared))
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 5, expectation: subscriptionsInitialized))
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 6, expectation: performedInitialSync))
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 7, expectation: subscriptionActivation))
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 8, expectation: mutationQueueStarted))
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 9, expectation: syncStarted))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue
                             .mockSendCompletion(completion: .failure(DataStoreError.unknown("", "", nil)))
                     }
                 case .cleanedUp:
-                    currCount = self.checkAndFulfill(currCount, 10, expectation: cleanedUp)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 10, expectation: cleanedUp))
                 default:
                     XCTFail("unexpected call")
                 }
@@ -307,7 +312,9 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let forceFailToNotRestartSyncEngine = expectation(description: "forceFailToNotRestartSyncEngine")
         let completionBlockCalled = expectation(description: "Completion block is called")
 
-        var currCount = 1
+        // Threaded through `@Sendable` completions, so it cannot be a captured `var`.
+
+        let currCount = AtomicValue(initialValue: 1)
 
         let advice = RequestRetryAdvice.init(shouldRetry: false)
         mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
@@ -315,39 +322,39 @@ class RemoteSyncEngineTests: XCTestCase, @unchecked Sendable {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
+                currCount.set(self.checkAndFulfill(currCount.get(), 11, expectation: forceFailToNotRestartSyncEngine))
             }, receiveValue: { (event: RemoteSyncEngineEvent) in
                 switch event {
                 case .storageAdapterAvailable:
-                    currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 1, expectation: storageAdapterAvailable))
                 case .subscriptionsPaused:
-                    currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 2, expectation: subscriptionsPaused))
                 case .mutationsPaused:
-                    currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 3, expectation: mutationsPaused))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
                 case .clearedStateOutgoingMutations:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 4, expectation: stateMutationsCleared))
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 5, expectation: subscriptionsInitialized))
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 6, expectation: performedInitialSync))
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 7, expectation: subscriptionActivation))
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 8, expectation: mutationQueueStarted))
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 9, expectation: syncStarted))
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         self.remoteSyncEngine.stop(completion: { result in
                             if case .success = result {
-                                currCount = self.checkAndFulfill(currCount, 12, expectation: completionBlockCalled)
+                                currCount.set(self.checkAndFulfill(currCount.get(), 12, expectation: completionBlockCalled))
                             }
                         })
                     }
                 case .cleanedUpForTermination:
-                    currCount = self.checkAndFulfill(currCount, 10, expectation: cleanedUpForTermination)
+                    currCount.set(self.checkAndFulfill(currCount.get(), 10, expectation: cleanedUpForTermination))
                 default:
                     XCTFail("unexpected call")
                 }

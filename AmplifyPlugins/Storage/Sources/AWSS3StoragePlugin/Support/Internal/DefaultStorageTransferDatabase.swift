@@ -177,7 +177,7 @@ class DefaultStorageTransferDatabase: @unchecked Sendable {
         // to also link these task so that delegate methods send events into StorageMultipartUploadSession to update
         // the lifecycle so that the process can be completed.
 
-        let sessionTaskHandler: (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
+        let sessionTaskHandler: @Sendable (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
             guard let self else { fatalError("self cannot be weak") }
 
             let pairs = linkTasksWithSessions(persistableTransferTasks: persistableTransferTasks, sessionTasks: sessionTasks)
