@@ -1,5 +1,5 @@
 {
-  "originHash" : "47ef19b42ce2b3011f3308f6770593bd62065f98e68cd47b42e05463fe0195c8",
+  "originHash" : "554b5661cffc5aae6aa2d29db0dc42f7d0efdd26bb1549a054ff3b39913e28a3",
   "pins" : [
     {
       "identity" : "amplify-swift-utils-notifications",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-sdk-swift",
       "state" : {
-        "revision" : "8ff2ceeff6148f55e9516dd9e1381270f791f41e",
-        "version" : "1.7.74"
+        "revision" : "61b8c1968aeae4d42226e3b452ab864fd0b96523",
+        "version" : "1.7.60"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smithy-lang/smithy-swift",
       "state" : {
-        "revision" : "e4d435944cb3985794a79514369ef5372f21267d",
-        "version" : "0.247.0"
+        "revision" : "31336dfea2e448523630ea1fe4d83ddc1156de3c",
+        "version" : "0.242.0"
       }
     },
     {
