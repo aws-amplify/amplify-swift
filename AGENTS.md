@@ -2,8 +2,8 @@
 
 ## Project Info
 
-- **Language**: Swift 5.9+ | **Build**: SPM (Xcode 16.0+) | **No CocoaPods**
-- **Platforms**: iOS 13+, macOS 12+, tvOS 13+, watchOS 9+, visionOS 1+
+- **Language**: Swift 6.0+ | **Build**: SPM (Xcode 26.0+) | **No CocoaPods**
+- **Platforms**: iOS 15+, macOS 12+, tvOS 15+, watchOS 9+, visionOS 1+
 - **Architecture**: Monorepo — core framework (`Amplify/`), category plugins (`AmplifyPlugins/`), standalone clients (`AmplifyClients/`)
 - **Setup**: `open Package.swift` or `swift package resolve`
 
@@ -13,11 +13,13 @@ Detailed conventions and patterns live closer to the code. Read the relevant gui
 
 - [`Amplify/AGENTS.md`](Amplify/AGENTS.md) — Core framework: categories, plugin protocols, error handling, configuration, Hub
 - [`AmplifyPlugins/AGENTS.md`](AmplifyPlugins/AGENTS.md) — Plugin implementations: Auth, API, Storage, DataStore, etc.
-- [`AmplifyClients/AGENTS.md`](AmplifyClients/AGENTS.md) — Standalone clients: Foundation, Bridge, Kinesis (new pattern)
+- [`AmplifyClients/AGENTS.md`](AmplifyClients/AGENTS.md) — Standalone clients: Kinesis, Firehose, Connect, EventEnrichment, plus shared RecordCache (new pattern)
 
 ## Linting & Formatting (MUST pass)
 
-**Always run `swiftformat` on changed files before every commit.** CI enforces both formatting and linting — PRs will fail if files are not formatted. See `.swiftlint.yml` and `.swiftformat` for full rules.
+**Always run `swiftformat` on changed files before every commit.** The SwiftFormat and SwiftLint workflows run on pushes to non-default branches (not on `pull_request`), so format locally rather than relying on a PR check to catch it. See `.swiftlint.yml` and `.swiftformat` for full rules.
+
+Note that `.swiftlint.yml` only lints `Amplify/` and `AmplifyPlugins/` — `AmplifyClients/`, `AmplifyFoundation/`, and `AmplifyFoundationBridge/` are outside SwiftLint's `included:` scope, though SwiftFormat covers the whole repo.
 
 ```bash
 swiftformat <changed-files>   # Format changed files before committing
@@ -42,7 +44,7 @@ swiftlint --fix               # Then lint
 amplify-swift/
 ├── Amplify/                    # Core framework (categories, protocols, errors, config)
 ├── AmplifyPlugins/             # AWS service plugins (Auth, API, Storage, DataStore, etc.)
-├── AmplifyClients/             # Standalone AWS clients (Kinesis) — new pattern
+├── AmplifyClients/             # Standalone AWS clients (Kinesis, Firehose, Connect, EventEnrichment) — new pattern
 ├── AmplifyFoundation/          # Shared protocols (credentials, logging, errors) — no deps
 ├── AmplifyFoundationBridge/    # Foundation ↔ AWS SDK adapters
 ├── AmplifyTests/               # Core unit tests
@@ -84,7 +86,7 @@ chore: update aws-swift-sdk dependency
 ```
 
 **Types**: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `perf`, `ci`
-**Scopes**: `auth`, `api`, `storage`, `datastore`, `geo`, `analytics`, `logging`, `predictions`, `push`, `kinesis`, `core`, `foundation`
+**Scopes**: `auth`, `api`, `storage`, `datastore`, `geo`, `analytics`, `logging`, `predictions`, `push`, `kinesis`, `firehose`, `connect`, `core`, `foundation`
 
 No period at end. One feature/bugfix per PR. Reference issues: `fixes #<issue>`.
 
@@ -95,7 +97,7 @@ swift test                                          # All unit tests
 swift test --filter AWSCognitoAuthPluginUnitTests    # Specific target
 ```
 
-- **Unit tests**: XCTest, defined in Package.swift (19 test targets)
+- **Unit tests**: XCTest, defined in Package.swift (23 test targets)
 - **Integration tests**: Xcode host app projects under `AmplifyPlugins/<Category>/Tests/<Category>HostApp/`
 - **Conventions**: Mock via behavior protocols, use `AmplifyTestCommon` for shared utilities, `AmplifyAsyncTesting` for async helpers
 - **Test documentation**: Use Given/When/Then doc comments on all test methods:
@@ -114,11 +116,11 @@ swift test --filter AWSCognitoAuthPluginUnitTests    # Specific target
 
 ## Semver
 
-New enum cases = **minor** bump. Breaking API changes = **major** (rare, needs approval). API surface tracked via `api-dump/` JSON snapshots and CI checks.
+New enum cases = **minor** bump. Breaking API changes = **major** (rare, needs approval). API surface tracked via `api-dump/` JSON snapshots and CI checks, currently covering four modules only: `Amplify`, `AWSPluginsCore`, `AWSDataStorePlugin`, and `CoreMLPredictionsPlugin`.
 
 ## CI/CD
 
-60+ GitHub Actions workflows in `.github/workflows/`: per-category unit tests (`unit_test_*.yml`), integration tests (`integ_test_*.yml`), platform builds, SwiftLint/SwiftFormat checks, API digester, CodeQL, Fortify. Releases via Fastlane.
+70 GitHub Actions workflows in `.github/workflows/`: per-category unit tests (`unit_test_*.yml`), integration tests (`integ_test_*.yml`), platform builds, SwiftLint/SwiftFormat checks, API digester, CodeQL, Fortify. Releases via Fastlane.
 
 ## Common Agent Tasks
 

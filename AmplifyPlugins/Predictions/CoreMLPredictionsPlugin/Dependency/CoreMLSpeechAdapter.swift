@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(Speech)
+// See CoreMLSpeechBehavior for why tvOS is excluded here.
+#if canImport(Speech) && !os(tvOS)
 import Amplify
 import Speech
 

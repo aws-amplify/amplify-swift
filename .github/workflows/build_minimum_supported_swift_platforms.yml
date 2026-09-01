@@ -17,17 +17,45 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
+  detect:
+    name: Detect affected targets
+    runs-on: macos-15
+    outputs:
+      build: ${{ steps.sel.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Build unless the change is confined to non-source paths. Pushes to main (post-merge)
+          # and manual dispatch always build.
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base='${{ github.event.pull_request.base.ref }}'
+          git fetch --no-tags origin "$base" || true
+          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          swift package dump-package > /tmp/package.json
+          sel=$(python3 scripts/python/affected_targets.py \
+            --package /tmp/package.json --changed /tmp/changed.txt \
+            --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
+          [ "$sel" = "[]" ] && echo "build=false" >> "$GITHUB_OUTPUT" || echo "build=true" >> "$GITHUB_OUTPUT"
+
   build-amplify-with-minimum-supported-xcode:
     name: Build Amplify Swift for ${{ matrix.platform }}
+    needs: detect
+    if: ${{ needs.detect.outputs.build == 'true' }}
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS]
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
 
     uses: ./.github/workflows/build_scheme.yml
     with:
       scheme: Amplify-Build
-      os-runner: 'macos-15'
+      os-runner: 'macos-26'
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
       save_build_cache: false
@@ -36,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Confirm Passing Build Steps
     if: ${{ !cancelled() }}
-    needs: [ build-amplify-with-minimum-supported-xcode ]
+    needs: [ detect, build-amplify-with-minimum-supported-xcode ]
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:

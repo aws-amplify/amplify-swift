@@ -34,7 +34,7 @@ Amplify/
 │   ├── Auth/            # AuthCategoryBehavior (sign-in, sign-up, session, MFA)
 │   ├── DataStore/       # DataStoreCategoryBehavior (sync, query, observe)
 │   ├── Geo/             # GeoCategoryBehavior (search, maps)
-│   ├── Hub/             # Built-in pub/sub event system (no plugin needed)
+│   ├── Hub/             # Pub/sub event system (no user setup needed — backed by the built-in AWSHubPlugin)
 │   ├── Logging/         # LoggingCategoryBehavior
 │   ├── Notifications/   # Push notification behavior
 │   ├── Predictions/     # ML prediction behavior (text, vision, speech)
@@ -47,7 +47,7 @@ Amplify/
 │   ├── Model/           # Model, Schema, Field definitions (DataStore)
 │   ├── Plugin/          # Plugin protocol, PluginKey, Resettable
 │   └── Support/         # AmplifyError protocol, utilities
-├── DefaultPlugins/      # Built-in default plugin implementations
+├── DefaultPlugins/      # AWSHubPlugin and AWSUnifiedLoggingPlugin (registered automatically)
 └── DevMenu/             # Developer debug menu
 ```
 
@@ -107,7 +107,7 @@ let token = Amplify.Hub.listen(to: .auth) { payload in ... }
 
 ## API Surface Stability
 
-API dumps in `api-dump/*.json` track the public surface. Breaking changes detected by CI (`api_digester_check.yml`). New enum cases = minor bump; removing/renaming public APIs = major bump (needs approval).
+API dumps in `api-dump/*.json` track the public surface of four modules (`Amplify`, `AWSPluginsCore`, `AWSDataStorePlugin`, `CoreMLPredictionsPlugin`). Breaking changes detected by CI (`api-breaking-changes-detection.yml`; `api_digester_check.yml` separately verifies the digester tool itself against the `api-dump-test/` fixtures). New enum cases = minor bump; removing/renaming public APIs = major bump (needs approval).
 
 ## Adding a New API to a Category
 

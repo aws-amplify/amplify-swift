@@ -1,12 +1,14 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
+// Swift 6.0 matches the minimum Swift toolchain supported by AWS SDK for Swift.
 import PackageDescription
 
 let platforms: [SupportedPlatform] = [
-    .iOS(.v13),
+    .iOS(.v15),
     .macOS(.v12),
-    .tvOS(.v13),
-    .watchOS(.v9)
+    .tvOS(.v15),
+    .watchOS(.v9),
+    .visionOS(.v1)
 ]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.53"),
@@ -727,5 +729,9 @@ let package = Package(
         ),
     ],
     dependencies: dependencies,
-    targets: targets
+    targets: targets,
+    // Adopting the Swift 6 language mode is tracked separately from this version bump.
+    // Raising swift-tools-version to 6.0 would otherwise switch the default language mode
+    // to Swift 6, so it is pinned to v5 here to keep this change behavior-neutral.
+    swiftLanguageModes: [.v5]
 )

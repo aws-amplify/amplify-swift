@@ -50,7 +50,7 @@ jobs:
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
       resource_subfolder: auth
-      timeout-minutes: 30
+      timeout-minutes: 60
     secrets: inherit
 
   auth-ui-integration-test-iOS:
@@ -61,8 +61,8 @@ jobs:
       platform: iOS
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
       resource_subfolder: auth
-      timeout-minutes: 30
-      xcode_version: '16.4.0'
+      timeout-minutes: 60
+      xcode_version: 'latest'
     secrets: inherit
 
   auth-webauthn-integration-test-iOS:
@@ -70,5 +70,5 @@ jobs:
     name: Auth WebAuthn Integration Tests (iOS)
     uses: ./.github/workflows/integ_test_auth_webauthn.yml
     with:
-      xcode_version: '16.4.0'
+      xcode_version: 'latest'
     secrets: inherit

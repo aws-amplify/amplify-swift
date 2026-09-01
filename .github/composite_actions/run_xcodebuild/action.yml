@@ -14,7 +14,7 @@ inputs:
   destination:
     required: false
     type: string
-    default: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+    default: 'platform=iOS Simulator,name=iPhone 17 Pro Max,OS=latest'
   sdk:
     required: false
     type: string
@@ -39,6 +39,59 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # See run_xcodebuild_test/action.yml for the full rationale. In short:
+    # resolution runs as its own bounded, retried, logged step so a slow git clone
+    # cannot masquerade as a hang and burn the job's entire timeout with no output.
+    - name: Resolve package dependencies for ${{ inputs.scheme }}
+      shell: bash
+      env:
+        PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+        RESOLVE_TIMEOUT_SECONDS: '1500'
+      run: |
+        set -o pipefail
+        if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+
+        clonedPath=()
+        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          clonedPath=(-clonedSourcePackagesDirPath "$CLONED_SOURCE_PACKAGES_PATH")
+        fi
+
+        resolve_bounded() {
+          xcodebuild -resolvePackageDependencies \
+            -scheme '${{ inputs.scheme }}' \
+            "${clonedPath[@]}" &
+          local pid=$!
+          ( sleep "$RESOLVE_TIMEOUT_SECONDS"; kill -9 "$pid" 2>/dev/null ) &
+          local watchdog=$!
+          wait "$pid"
+          local status=$?
+          kill "$watchdog" 2>/dev/null || true
+          wait "$watchdog" 2>/dev/null || true
+          return $status
+        }
+
+        for attempt in 1 2 3; do
+          echo "::group::Resolving package dependencies (attempt $attempt of 3)"
+          start=$(date +%s)
+          if resolve_bounded; then
+            echo "::endgroup::"
+            echo "Dependencies resolved in $(( $(date +%s) - start ))s on attempt $attempt."
+            exit 0
+          fi
+          echo "::endgroup::"
+          echo "Attempt $attempt failed or exceeded ${RESOLVE_TIMEOUT_SECONDS}s after $(( $(date +%s) - start ))s."
+          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          fi
+        done
+
+        echo "::error::Could not resolve package dependencies after 3 attempts. \
+        This is a dependency fetch problem, not a build failure."
+        exit 1
+
     - name: Test ${{ inputs.scheme }}
       env:
         SCHEME: ${{ inputs.scheme }}
@@ -55,10 +108,10 @@ runs:
         fi
 
         otherFlags="${{ inputs.other_flags }}"
-        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
-          echo "Disabling Automatic Package Resolution"
-          otherFlags+=" -disableAutomaticPackageResolution"
-        fi
+        # Unconditionally disabled — the resolve step above already produced the
+        # checkouts, so xcodebuild must never resolve mid-build.
+        echo "Disabling Automatic Package Resolution"
+        otherFlags+=" -disableAutomaticPackageResolution"
 
         if [ ! -z "$DERIVED_DATA_PATH" ]; then
           echo "Using custom DerivedData path"

@@ -32,6 +32,24 @@ struct FetchAuthAWSCredentials: Action {
             return
         }
 
+        await fetchCredentials(
+            withIdentityID: identityID,
+            canRetryWithFreshIdentityID: true,
+            client: client,
+            authZEnvironment: authZEnvironment,
+            dispatcher: dispatcher,
+            environment: environment
+        )
+    }
+
+    private func fetchCredentials(
+        withIdentityID identityID: String,
+        canRetryWithFreshIdentityID: Bool,
+        client: CognitoIdentityBehavior,
+        authZEnvironment: AuthorizationEnvironment,
+        dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
         let getCredentialsInput = GetCredentialsForIdentityInput(
             identityId: identityID,
             logins: loginsMap
@@ -68,10 +86,66 @@ struct FetchAuthAWSCredentials: Action {
             await dispatcher.send(event)
 
         } catch {
+            // Retry once with a fresh identity ID.
+            if canRetryWithFreshIdentityID, isStaleIdentityError(error) {
+                await retryWithFreshIdentityID(
+                    client: client,
+                    authZEnvironment: authZEnvironment,
+                    dispatcher: dispatcher,
+                    environment: environment
+                )
+                return
+            }
             let event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
         }
+    }
+
+    private func retryWithFreshIdentityID(
+        client: CognitoIdentityBehavior,
+        authZEnvironment: AuthorizationEnvironment,
+        dispatcher: EventDispatcher,
+        environment: Environment
+    ) async {
+        let getIdInput = GetIdInput(
+            identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
+            logins: loginsMap
+        )
+        do {
+            let response = try await client.getId(input: getIdInput)
+            guard let freshIdentityID = response.identityId else {
+                let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
+                await dispatcher.send(event)
+                return
+            }
+            await fetchCredentials(
+                withIdentityID: freshIdentityID,
+                canRetryWithFreshIdentityID: false,
+                client: client,
+                authZEnvironment: authZEnvironment,
+                dispatcher: dispatcher,
+                environment: environment
+            )
+        } catch {
+            let event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+        }
+    }
+
+    // A stale identity ID always yields ResourceNotFoundException. NotAuthorized
+    // is only stale when Cognito reports the identity is forbidden; invalid or
+    // expired login-token errors must surface immediately without a GetId retry.
+    private func isStaleIdentityError(_ error: Error) -> Bool {
+        if error is AWSCognitoIdentity.ResourceNotFoundException {
+            return true
+        }
+        if let notAuthorized = error as? AWSCognitoIdentity.NotAuthorizedException,
+           let message = notAuthorized.properties.message {
+            return message.contains("Access to Identity") && message.contains("is forbidden")
+        }
+        return false
     }
 }
 

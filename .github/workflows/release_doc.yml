@@ -45,4 +45,4 @@ jobs:
         env:
           GITHUB_EMAIL: aws-amplify-ops@amazon.com
           GITHUB_USER: aws-amplify-ops
-        run: bash ./CircleciScripts/jazzy_doc_gen.sh
+        run: bash ./scripts/jazzy_doc_gen.sh

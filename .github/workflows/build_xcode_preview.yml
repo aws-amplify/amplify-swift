@@ -1,0 +1,159 @@
+name: Build | Xcode Preview (Beta)
+
+# Early warning for the next Xcode release.
+#
+# Runs against the `xcode-27` preview runner image, which ships a single beta
+# Xcode as the image default. It deliberately does not use the
+# get_platform_parameters composite action: that action allowlists only the Xcode
+# versions Amplify Swift officially supports, and a beta is outside that set by
+# design.
+#
+# Advisory and non-blocking. Every job sets continue-on-error, so breakages from
+# the next Xcode surface on the PR that introduces them without ever gating a
+# merge. A beta toolchain on a capacity-constrained preview image is not a
+# suitable required check.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main' }}
+
+jobs:
+  detect:
+    name: Detect affected targets
+    runs-on: macos-15
+    outputs:
+      build: ${{ steps.sel.outputs.build }}
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: sel
+        run: |
+          # Build unless the change is confined to non-source paths. Pushes to main (post-merge)
+          # and manual dispatch always build.
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base='${{ github.event.pull_request.base.ref }}'
+          git fetch --no-tags origin "$base" || true
+          git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
+          swift package dump-package > /tmp/package.json
+          sel=$(python3 scripts/python/affected_targets.py \
+            --package /tmp/package.json --changed /tmp/changed.txt \
+            --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
+          [ "$sel" = "[]" ] && echo "build=false" >> "$GITHUB_OUTPUT" || echo "build=true" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: ${{ matrix.platform }} on Xcode preview
+    needs: detect
+    if: ${{ needs.detect.outputs.build == 'true' }}
+    runs-on: xcode-27
+    continue-on-error: true
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS
+            destination: 'platform=macOS,arch=arm64'
+          - platform: iOS
+            # Generic rather than a named device: the preview image's simulator
+            # lineup changes between beta rollouts, so a pinned device name is a
+            # guaranteed future break. Generic cannot boot a simulator, so this
+            # leg builds rather than tests.
+            destination: 'generic/platform=iOS Simulator'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Report the toolchain under test
+        run: |
+          # Use the image default Xcode rather than a hardcoded path — the beta
+          # version string changes between image rollouts.
+          xcodebuild -version
+          swift --version
+
+      # Same reasoning as the run_xcodebuild* composite actions: resolve as its
+      # own bounded, retried step so a slow fetch cannot look like a hang.
+      - name: Resolve package dependencies
+        env:
+          RESOLVE_TIMEOUT_SECONDS: '1500'
+        run: |
+          set -o pipefail
+          resolve_bounded() {
+            xcodebuild -resolvePackageDependencies -scheme Amplify-Package &
+            local pid=$!
+            ( sleep "$RESOLVE_TIMEOUT_SECONDS"; kill -9 "$pid" 2>/dev/null ) &
+            local watchdog=$!
+            wait "$pid"
+            local status=$?
+            kill "$watchdog" 2>/dev/null || true
+            wait "$watchdog" 2>/dev/null || true
+            return $status
+          }
+
+          for attempt in 1 2; do
+            echo "::group::Resolving package dependencies (attempt $attempt of 2)"
+            if resolve_bounded; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "Attempt $attempt failed or timed out."
+          done
+
+          echo "::error::Could not resolve package dependencies."
+          exit 1
+
+      - name: Build Amplify Swift for ${{ matrix.platform }}
+        run: |
+          set -o pipefail
+          # xcbeautify is preinstalled on the standard macOS images but the preview
+          # image is built separately, so fall back to raw output rather than
+          # failing on a missing formatter.
+          if command -v xcbeautify >/dev/null 2>&1; then
+            formatter=(xcbeautify --renderer github-actions)
+          else
+            echo "xcbeautify not present on this image; using raw xcodebuild output."
+            formatter=(cat)
+          fi
+
+          xcodebuild build \
+            -scheme Amplify-Package \
+            -destination '${{ matrix.destination }}' \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            | "${formatter[@]}" && exit ${PIPESTATUS[0]}
+
+  report:
+    name: Report Preview Status
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs: [ detect, build ]
+    steps:
+      - name: Summarize
+        run: |
+          RESULT="${{ needs.build.result }}"
+          if [ "$RESULT" = "success" ]; then
+            echo "Amplify Swift builds cleanly on the Xcode preview toolchain." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Amplify Swift hit failures on the Xcode preview toolchain (result: $RESULT)." >> $GITHUB_STEP_SUMMARY
+            echo "This is advisory only and does not block this PR. Investigate before the next Xcode reaches GA." >> $GITHUB_STEP_SUMMARY
+          fi

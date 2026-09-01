@@ -132,9 +132,12 @@ class FetchAuthSessionOperationHelper {
         }
 
         switch error {
-        case .sessionError(let fetchError, _):
+        case .sessionError(let fetchError, let credentials):
             if (fetchError == .notAuthorized || fetchError == .noCredentialsToRefresh) && !isSignedIn {
                 return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+            } else if case .noIdentityPool = fetchError {
+                // A missing identity pool must not fail the user-pool token result.
+                return credentials.cognitoSession
             } else {
                 authError = fetchError.authError
             }

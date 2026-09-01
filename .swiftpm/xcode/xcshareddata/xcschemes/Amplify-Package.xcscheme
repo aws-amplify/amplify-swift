@@ -895,16 +895,6 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyConnectClientIntegrationTests"
-               BuildableName = "AmplifyConnectClientIntegrationTests"
-               BlueprintName = "AmplifyConnectClientIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
