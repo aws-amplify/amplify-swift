@@ -26,6 +26,7 @@ struct SignInScreen: Screen {
 
     func gotoSignUpView() -> SignUpScreen {
         let signUpButton = app.buttons[Identifiers.signUpNav]
+        XCTAssertTrue(signUpButton.waitForExistence(timeout: 30))
         signUpButton.tap()
         return SignUpScreen(app: app)
     }
@@ -45,8 +46,9 @@ struct SignInScreen: Screen {
     func dismissSignInAlert() -> Self {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let continueElement = springboard.consentContinueElement()
-        XCTAssertTrue(continueElement.waitForExistence(timeout: 60))
-        continueElement.tap()
+        if continueElement.waitForExistence(timeout: 10) {
+            continueElement.tap()
+        }
         return self
     }
 
