@@ -220,14 +220,61 @@ the count.
 
 ---
 
+## Runtime failures found once tests actually ran
+
+Compiling was the easy half. Three runtime aborts only appeared once tests executed, and each was the
+same underlying shape: **a closure that Swift 6 treats as actor-isolated, invoked synchronously from a
+thread that is not on that actor.** In Swift 5 mode these checks are advisory; under `.v6` they abort
+the process, so each one halted the whole suite at a different point.
+
+| Site | Why it aborted | Fix |
+|---|---|---|
+| `ActivityTracker` notification names | Carried `@MainActor`, which pushed observer registration out of `init` into a `Task`; callers that post immediately after construction then saw no observer | Annotation was unnecessary — the platform notification *names* are plain constants. Registration is synchronous again, and no isolation reaches `AWSPinpointFactory` |
+| `ActivityTrackerTests.testApplicationStateChanged` | Posted notifications from a background executor into a main-actor-isolated `@objc` handler | Test is now `@MainActor`, matching its already-annotated sibling. The handler's isolation is correct: the platform posts these on the main thread |
+| `AppSyncRealTimeClient.subscribeToWebSocketEvent` | `sink`'s closures are not `@Sendable`, so they inherited the enclosing actor's isolation; Combine then called them on the publishing thread | Closures marked `@Sendable`, reaching the actor through an explicit hop |
+
+The `ActivityTracker` case is worth singling out because I got it wrong first. I assumed the `@MainActor`
+on those constants was load-bearing and worked around it asynchronously, which introduced a real
+regression. Removing the annotation and rebuilding took one command and showed it was never needed.
+**Check whether an annotation is actually required before designing around it.**
+
+## Pre-existing failure, not a migration regression
+
+`swift test` cannot get past `testPreconditionFailureInvokingBeforeConfig`. These tests rely on
+`AmplifyTesting.getInstanceFactory()`, which is gated on the `XCTestConfigurationFilePath` environment
+variable — set by Xcode's test runner, **not** by `swift test`. Without it the injected factory is nil
+and the real `Swift.preconditionFailure` fires, killing the process.
+
+Verified against a `main` worktree rather than assumed: `swift test --filter
+AmplifyTests.AuthCategoryConfigurationTests` on **`main`** dies at the *same* test, with zero
+precondition tests passing. `Fatal.swift`, `AmplifyTesting.swift`, and `TypeRegistry.swift` are all
+byte-identical to `main`.
+
+So the honest local completion criterion is: `swift test` green *except* the three
+`testPreconditionFailure*` families, which only pass under `xcodebuild`. CI uses `xcodebuild`, so it
+exercises them properly there.
+
 ## Status
 
-- `swift build` — **clean.** All modules compile under `swiftLanguageModes: [.v6]`.
-- `swift test` — **not yet compiling.** Roughly 100 sites left across ~90 test files, dominated by the
-  captured-`result` pattern that needs per-site judgment.
-- **No test has been executed yet.** Every result so far is compile-only. Runtime behaviour under the
-  new language mode is unverified, and that is the real remaining risk: the `@unchecked Sendable`
-  annotations on test doubles assert safety the compiler cannot check, so a genuinely racy test would
-  now compile silently.
-- CI on the PR is red: 144 failing checks, which are the unit-test targets plus the platform builds.
-  Only macOS was verified locally, so the visionOS/tvOS/watchOS build failures are unexamined.
+- `swift build` — **clean** under `swiftLanguageModes: [.v6]`.
+- `swift test` — **compiles with 0 errors**, and **1014 tests execute with 0 failures** (run 47).
+  The run still exits non-zero, but only at the pre-existing `testPreconditionFailure*` wall described
+  above, which fails identically on `main`.
+- Lint and format — **clean.** 0 SwiftLint errors (the one error was a 160-character line my
+  `@unchecked Sendable` addition pushed over; the conformance list is now wrapped) and 0 SwiftFormat
+  diffs. The 382 remaining SwiftLint *warnings* are pre-existing and not enforced by CI.
+- Platform builds (iOS/tvOS/watchOS/visionOS) and integration tests — still unverified locally; only
+  macOS has been exercised. Note `Integration Tests (Except DataStore & API)` also fails on `main`, so
+  those need a per-job baseline comparison rather than being read as regressions.
+
+## A process note worth keeping
+
+Two mistakes in this migration came from tooling rather than from Swift:
+
+1. **Type-unaware regex sweeps.** Rewriting declarations without rewriting every read site broke more
+   than it fixed — shadowed locals, `switch x {`, `x == y`, and array types starting with `[` all
+   slipped through. One sweep took the error count from 86 to 118 and had to be reverted wholesale.
+2. **Working directory drift.** A `swift test` invocation silently ran against the `release` checkout
+   instead of this worktree, because the session's cwd is the primary project directory and relative
+   paths resolve there. It was caught by comparing `.build` mtimes. Every SwiftPM command here should
+   pass `--package-path` explicitly rather than trusting cwd.
