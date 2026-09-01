@@ -83,10 +83,12 @@ app.post('/match', async (req, res) => {
         return res.status(400).send("Invalid deviceId")
     }
     try {
-        // Touch ID uses "fingerTouch"; Face ID uses "pearl". iPhone 17 is Face ID,
-        // so post both to satisfy whichever biometry the simulator presents.
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"])
+        await new Promise(resolve => setTimeout(resolve, 1000))
         await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.pearl.match"])
+        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"])
+        await new Promise(resolve => setTimeout(resolve, 500))
+        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.pearl.match"])
+        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"])
         res.send("Done")
     } catch (error) {
         console.error("Failed to match biometrics", error)
