@@ -12,8 +12,9 @@ import AWSTextract
 import AWSTranslate
 import Foundation
 
-public struct PredictionsAWSService<Client> {
-    let fetch: (AWSPredictionsService) -> Client
+/// - Note: `Sendable` because the `static let` service accessors below must be concurrency-safe.
+public struct PredictionsAWSService<Client>: Sendable {
+    let fetch: @Sendable (AWSPredictionsService) -> Client
 }
 
 public extension PredictionsAWSService where Client == RekognitionClientProtocol {

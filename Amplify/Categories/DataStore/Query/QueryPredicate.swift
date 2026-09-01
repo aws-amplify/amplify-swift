@@ -8,7 +8,8 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate: Evaluable, Encodable {}
+/// - Note: `Sendable` because predicates are carried into the storage engine's async query paths.
+public protocol QueryPredicate: Evaluable, Encodable, Sendable {}
 
 public enum QueryPredicateGroupType: String, Encodable {
     case and
@@ -33,7 +34,10 @@ public enum QueryPredicateConstant: QueryPredicate, Encodable {
     }
 }
 
-public class QueryPredicateGroup: QueryPredicate, Encodable {
+/// - Note: `@unchecked Sendable` rather than `final`: `type` and `predicates` are mutated while a
+///   predicate is being composed, and leaving the class open avoids a source-breaking change for
+///   anyone who subclassed it.
+public class QueryPredicateGroup: QueryPredicate, Encodable, @unchecked Sendable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 
@@ -124,7 +128,9 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
 
 }
 
-public class QueryPredicateOperation: QueryPredicate, Encodable {
+/// - Note: `@unchecked Sendable` rather than `final`, for the same reason as ``QueryPredicateGroup``.
+///   Both stored properties are immutable.
+public class QueryPredicateOperation: QueryPredicate, Encodable, @unchecked Sendable {
 
     public let field: String
     public let `operator`: QueryOperator

@@ -15,12 +15,19 @@ protocol DataStoreObserveQueryOperation {
     func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
 
-class ObserveQueryRequest: AmplifyOperationRequest {
-    var options: Any
+/// - Note: `final` and `@unchecked Sendable`: `Options` is `Any`, so the conformance cannot be
+///   checked. Nothing mutates `options` after construction.
+/// `AmplifyOperationRequest.Options` must be `Sendable`, and this request has no options — every
+/// caller passes an empty literal and nothing ever reads it — so it uses a dedicated empty type
+/// rather than `Any`.
+final class ObserveQueryRequest: AmplifyOperationRequest, Sendable {
+    struct Options: Sendable {
+        init() {}
+    }
 
-    typealias Options = Any
+    let options: Options
 
-    init(options: Any) {
+    init(options: Options = .init()) {
         self.options = options
     }
 }
@@ -39,10 +46,13 @@ class ObserveQueryRequest: AmplifyOperationRequest {
 ///
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
-class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `InternalTaskRunner`'s `Sendable`
+///   requirement. As the comment above states, the mutable properties are only touched from
+///   `serialQueue`.
+final class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation, @unchecked Sendable {
     typealias Request = ObserveQueryRequest
     typealias InProcess = DataStoreQuerySnapshot<M>
-    var request: ObserveQueryRequest
+    let request: ObserveQueryRequest
     var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
 
     private let serialQueue = DispatchQueue(
@@ -77,7 +87,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var dataStoreStateSink: AnyCancellable?
 
     init(
-        request: ObserveQueryRequest = .init(options: []),
+        request: ObserveQueryRequest = .init(),
         context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
         modelType: M.Type,
         modelSchema: ModelSchema,
@@ -205,11 +215,11 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             completion: { queryResult in
                 switch queryResult {
                 case .success(let queriedModels):
-                    currentItems.set(sortedModels: queriedModels)
-                    subscribeToModelSyncedEvent()
-                    sendSnapshot()
+                    self.currentItems.set(sortedModels: queriedModels)
+                    self.subscribeToModelSyncedEvent()
+                    self.sendSnapshot()
                 case .failure(let error):
-                    fail(error)
+                    self.fail(error)
                     return
                 }
             }

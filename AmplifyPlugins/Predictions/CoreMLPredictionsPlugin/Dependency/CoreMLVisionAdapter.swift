@@ -9,7 +9,7 @@
 import Amplify
 import Vision
 
-class CoreMLVisionAdapter: CoreMLVisionBehavior {
+final class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
     func detectLabels(_ imageURL: URL) throws -> Predictions.Identify.Labels.Result? {
         var labelsResult = [Predictions.Label]()

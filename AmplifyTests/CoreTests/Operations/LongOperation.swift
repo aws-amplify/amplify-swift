@@ -11,7 +11,11 @@ import Combine
 #endif
 import Amplify
 
-public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier, @unchecked Sendable {
     public let options: [AnyHashable: Any]
     public let steps: Int
     public let delay: Double

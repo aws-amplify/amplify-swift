@@ -11,7 +11,11 @@ import Combine
 #endif
 import Amplify
 
-public class FastOperationRequest: AmplifyOperationRequest {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+public class FastOperationRequest: AmplifyOperationRequest, @unchecked Sendable {
     public let options: [AnyHashable: Any]
     public let numbers: [Int]
 

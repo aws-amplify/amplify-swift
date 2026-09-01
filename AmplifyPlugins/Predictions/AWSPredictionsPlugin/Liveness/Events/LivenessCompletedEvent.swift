@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct CompletedEvent<T> {
+public struct CompletedEvent<T: Sendable>: Sendable {
     public init(initialEvent: T, endTimestamp: UInt64) {
         self.initialEvent = initialEvent
         self.endTimestamp = endTimestamp

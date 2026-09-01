@@ -11,7 +11,9 @@ import Combine
 import Foundation
 
 // swiftlint:disable type_body_length file_length
-class RemoteSyncEngine: RemoteSyncEngineBehavior {
+/// - Note: `final` and `@unchecked Sendable`: this is a state machine whose mutable state is
+///   only touched from its own serial queue.
+final class RemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
 
     weak var storageAdapter: StorageEngineAdapter?
 
@@ -253,7 +255,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
+    func submit(_ mutationEvent: MutationEvent, completion: @escaping @Sendable (Result<MutationEvent, DataStoreError>) -> Void) {
         mutationEventIngester.submit(mutationEvent: mutationEvent, completion: completion)
     }
 

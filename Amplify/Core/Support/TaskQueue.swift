@@ -8,7 +8,9 @@
 import Foundation
 
 /// A helper for executing asynchronous work serially.
-public class TaskQueue<Success> {
+/// - Note: `Sendable` because the only stored property is a `let` `AsyncStream.Continuation`,
+///   which is itself thread-safe.
+public final class TaskQueue<Success>: Sendable {
     typealias Block = @Sendable () async -> Void
     private let streamContinuation: AsyncStream<Block>.Continuation
 

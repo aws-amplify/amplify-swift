@@ -8,7 +8,11 @@
 import Amplify
 import XCTest
 
-class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin, @unchecked Sendable {
     let key = "NotificationListeningAnalyticsPlugin"
     let notificationReceived: XCTestExpectation
 

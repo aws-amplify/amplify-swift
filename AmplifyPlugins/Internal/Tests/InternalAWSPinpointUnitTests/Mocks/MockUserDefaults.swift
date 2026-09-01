@@ -8,7 +8,11 @@
 import Foundation
 @testable import InternalAWSPinpoint
 
-class MockUserDefaults: UserDefaultsBehaviour {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockUserDefaults: UserDefaultsBehaviour, @unchecked Sendable {
     var data: [String: UserDefaultsBehaviourValue] = [:]
     var mockedValue: UserDefaultsBehaviourValue?
 

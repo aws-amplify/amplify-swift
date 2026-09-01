@@ -152,7 +152,9 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
 // A bare class that does not forward or evaluate message autoclosure. Used to test that Amplify, as
 // a framework, does not evaluate the autoclosure
-class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger, @unchecked Sendable {
     var logLevel = LogLevel.error
 
     let key = "NonEvaluatingLoggingPlugin"

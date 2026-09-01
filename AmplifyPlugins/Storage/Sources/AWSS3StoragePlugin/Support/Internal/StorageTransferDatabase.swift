@@ -16,7 +16,8 @@ import Foundation
 // swiftlint:disable line_length
 
 /// Database protocol which supports the recovery process.
-protocol StorageTransferDatabase {
+/// - Note: `Sendable` because the transfer database is reached from URLSession delegate callbacks.
+protocol StorageTransferDatabase: Sendable {
     func insertTransferRequest(task: StorageTransferTask)
 
     func updateTransferRequest(task: StorageTransferTask)

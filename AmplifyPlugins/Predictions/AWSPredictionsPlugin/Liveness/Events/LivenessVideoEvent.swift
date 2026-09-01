@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct VideoEvent {
+public struct VideoEvent: Sendable {
     let chunk: Data
     let timestamp: UInt64
 

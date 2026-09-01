@@ -26,8 +26,18 @@ public final actor WebSocketClient: NSObject {
     private let handshakeHttpHeaders: [String: String]
     /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
+    /// Backing store for ``subject``.
+    ///
+    /// `PassthroughSubject` is not `Sendable`, but `send` is safe from any thread and this is
+    /// deliberately `nonisolated` so the `URLSessionWebSocketDelegate` callbacks can publish without
+    /// hopping onto the actor. The box carries it across that boundary; the computed property below
+    /// keeps the call sites unchanged.
+    private nonisolated let subjectBox = UncheckedSendable(PassthroughSubject<WebSocketEvent, Never>())
+
     /// Internal wriable WebSocketEvent data stream
-    private nonisolated let subject = PassthroughSubject<WebSocketEvent, Never>()
+    private nonisolated var subject: PassthroughSubject<WebSocketEvent, Never> {
+        subjectBox.value
+    }
 
     private let retryWithJitter = RetryWithJitter()
 
@@ -48,7 +58,10 @@ public final actor WebSocketClient: NSObject {
     /// A flag indicating whether to automatically retry on connection failure
     private var autoRetryOnConnectionFailure: Bool
     /// Data stream for downstream subscribers to engage with
-    public var publisher: AnyPublisher<WebSocketEvent, Never> {
+    ///
+    /// `nonisolated` because `subject` is already `nonisolated` and Combine publishers are not
+    /// `Sendable`, so returning one from actor-isolated context is rejected in Swift 6 mode.
+    public nonisolated var publisher: AnyPublisher<WebSocketEvent, Never> {
         subject.eraseToAnyPublisher()
     }
 
@@ -88,10 +101,12 @@ public final actor WebSocketClient: NSObject {
     }
 
     deinit {
+        // Only the subject is touched here. A nonisolated `deinit` cannot reach actor-isolated
+        // state in the Swift 6 language mode, and the writes that used to be here were already
+        // no-ops at this point: nothing can observe the two flags once deallocation has begun,
+        // and clearing `cancelables` is redundant because releasing the actor's storage
+        // deinitializes each `AnyCancellable`, which cancels it.
         self.subject.send(completion: .finished)
-        self.autoConnectOnNetworkStatusChange = false
-        self.autoRetryOnConnectionFailure = false
-        cancelables = Set()
     }
 
     /**

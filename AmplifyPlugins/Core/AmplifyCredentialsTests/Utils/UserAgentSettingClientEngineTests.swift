@@ -91,7 +91,9 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     }
 }
 
-class MockTargetEngine: HTTPClient {
+/// - Note: `final` and `@unchecked Sendable`: `HTTPClient` is `Sendable`. Test double driven by a
+///   single test.
+final class MockTargetEngine: HTTPClient, @unchecked Sendable {
     var request: HTTPRequest?
 
     func send(

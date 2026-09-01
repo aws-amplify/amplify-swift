@@ -8,12 +8,13 @@
 import Foundation
 
 /// A simple enum that holding a sorting direction for a field that can be applied to queries.
-public enum QuerySortBy {
+public enum QuerySortBy: Sendable {
     case ascending(CodingKey)
     case descending(CodingKey)
 }
 
-public struct QuerySortInput {
+// Explicit `Sendable`: Swift does not infer it for public types.
+public struct QuerySortInput: Sendable {
     public let inputs: [QuerySortBy]
 
     public init(_ inputs: [QuerySortBy]) {

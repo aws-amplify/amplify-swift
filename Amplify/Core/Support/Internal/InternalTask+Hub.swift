@@ -51,23 +51,25 @@ public extension InternalTaskHubResult where Self: InternalTaskIdentifiable & In
     func subscribe(resultListener: @escaping ResultListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
 
-        var unsubscribe: (() -> Void)?
+        // The listener has to be able to remove itself, which means referencing a token that
+        // does not exist until it is registered. Holding it in an `AtomicValue` lets the closure
+        // capture an immutable box; capturing a `var` assigned afterwards is a reference to a
+        // mutable variable from concurrently-executing code, rejected in Swift 6 language mode.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let resultHubListener: HubListener = { payload in
             guard let result = payload.data as? TaskResult else {
                 return
             }
             resultListener(result)
             // Automatically unsubscribe when event is received
-            unsubscribe?()
+            if let token = tokenBox.get() { Amplify.Hub.removeListener(token) }
         }
         let token = Amplify.Hub.listen(
             to: channel,
             isIncluded: idFilter,
             listener: resultHubListener
         )
-        unsubscribe = {
-            Amplify.Hub.removeListener(token)
-        }
+        tokenBox.set(token)
         return token
     }
 
@@ -123,7 +125,12 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
     func subscribe(inProcessListener: @escaping InProcessListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
 
-        var unsubscribe: (() -> Void)?
+        // The listener has to be able to remove itself, which means referencing a token that does
+        // not exist until after the listener is registered. The token is held in an `AtomicValue`
+        // so the closure captures an immutable box; capturing a `var` that is assigned afterwards
+        // is a reference to a mutable variable from concurrently-executing code, which is an error
+        // in the Swift 6 language mode.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let inProcessHubListener: HubListener = { payload in
             if let inProcessData = payload.data as? InProcess {
                 inProcessListener(inProcessData)
@@ -131,8 +138,8 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
             }
 
             // Remove listener if we see a result come through
-            if payload.data is TaskResult {
-                unsubscribe?()
+            if payload.data is TaskResult, let token = tokenBox.get() {
+                Amplify.Hub.removeListener(token)
             }
         }
         let token = Amplify.Hub.listen(
@@ -140,9 +147,7 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
             isIncluded: idFilter,
             listener: inProcessHubListener
         )
-        unsubscribe = {
-            Amplify.Hub.removeListener(token)
-        }
+        tokenBox.set(token)
         return token
     }
 
@@ -190,7 +195,11 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
         let channel = HubChannel(from: categoryType)
         let filterById = idFilter
 
-        var unsubscribe: (() -> Void)?
+        // The listener has to be able to remove itself, which means referencing a token that
+        // does not exist until it is registered. Holding it in an `AtomicValue` lets the closure
+        // capture an immutable box; capturing a `var` assigned afterwards is a reference to a
+        // mutable variable from concurrently-executing code, rejected in Swift 6 language mode.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let inProcessHubListener: HubListener = { payload in
             if let inProcessData = payload.data as? InProcess {
                 inProcessListener(inProcessData)
@@ -199,7 +208,7 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
 
             // Remove listener if we see a result come through
             if payload.data is TaskResult {
-                unsubscribe?()
+                if let token = tokenBox.get() { Amplify.Hub.removeListener(token) }
             }
         }
         let token = Amplify.Hub.listen(
@@ -207,9 +216,7 @@ public extension InternalTaskHubInProcess where Self: InternalTaskIdentifiable &
             isIncluded: filterById,
             listener: inProcessHubListener
         )
-        unsubscribe = {
-            Amplify.Hub.removeListener(token)
-        }
+        tokenBox.set(token)
         return token
     }
 

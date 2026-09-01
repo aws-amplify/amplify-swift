@@ -9,9 +9,11 @@ import Amplify
 import AuthenticationServices
 import Foundation
 
-class ShowHostedUISignIn: NSObject, Action {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `Action`'s `Sendable` requirement. The
+///   hosted UI session state is established before the action runs.
+final class ShowHostedUISignIn: NSObject, Action, @unchecked Sendable {
 
-    var identifier: String = "ShowHostedUISignIn"
+    let identifier: String = "ShowHostedUISignIn"
 
     let signingInData: HostedUISigningInState
 

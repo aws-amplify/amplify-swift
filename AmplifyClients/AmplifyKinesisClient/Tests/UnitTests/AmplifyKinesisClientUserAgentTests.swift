@@ -14,7 +14,9 @@ import XCTest
 @testable import AmplifyRecordCache
 
 /// Mock HTTP client engine that captures the User-Agent header from outgoing requests.
-private class UserAgentCapturingEngine: HTTPClient {
+/// - Note: `final` and `@unchecked Sendable`: `HTTPClient` is `Sendable`. This test double captures
+///   one header on a single request.
+private final class UserAgentCapturingEngine: HTTPClient, @unchecked Sendable {
     var capturedUserAgent: String?
 
     func send(request: SmithyHTTPAPI.HTTPRequest) async throws -> SmithyHTTPAPI.HTTPResponse {

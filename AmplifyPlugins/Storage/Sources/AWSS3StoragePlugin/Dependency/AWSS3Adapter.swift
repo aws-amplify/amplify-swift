@@ -17,7 +17,9 @@ import ClientRuntime
 /// This class acts as a wrapper to expose AWSS3 functionality through an instance over a singleton,
 /// and allows for mocking in unit tests. The methods contain no other logic other than calling the
 /// same method using the AWSS3 instance.
-class AWSS3Adapter: AWSS3Behavior {
+/// - Note: `@unchecked Sendable`: the adapter wraps an AWS SDK client that is safe to
+///   share, and it is reached from concurrent transfer work.
+class AWSS3Adapter: AWSS3Behavior, @unchecked Sendable {
     let awsS3: S3ClientProtocol
     let config: S3Client.S3ClientConfiguration
 
@@ -30,7 +32,7 @@ class AWSS3Adapter: AWSS3Behavior {
     /// - Parameters:
     ///   - request:: request identifying object
     ///   - completion: handle indicates when the operation is done
-    func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping (Result<Void, StorageError>) -> Void) {
+    func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping @Sendable (Result<Void, StorageError>) -> Void) {
         Task {
             let input = DeleteObjectInput(bucket: request.bucket, key: request.key)
             do {
@@ -46,7 +48,7 @@ class AWSS3Adapter: AWSS3Behavior {
     /// - Parameters:
     ///   - request: request identifying bucket and options
     ///   - completion: handle which return a result with list of items
-    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {
+    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping @Sendable (Result<StorageListResult, StorageError>) -> Void) {
         Task {
             var finalPrefix: String?
             if let prefix = request.prefix {
@@ -80,7 +82,7 @@ class AWSS3Adapter: AWSS3Behavior {
     /// - Parameters:
     ///   - request: request
     ///   - completion: handler which returns a result with uploadId
-    func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void) {
+    func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping @Sendable (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void) {
         Task {
             let input = CreateMultipartUploadInput(
                 bucket: request.bucket,
@@ -107,7 +109,7 @@ class AWSS3Adapter: AWSS3Behavior {
         }
     }
 
-    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<AWSS3ListUploadPartResponse, StorageError>) -> Void) {
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping @Sendable (Result<AWSS3ListUploadPartResponse, StorageError>) -> Void) {
         Task {
             let input = ListPartsInput(bucket: bucket, key: key, uploadId: uploadId)
             do {
@@ -127,7 +129,7 @@ class AWSS3Adapter: AWSS3Behavior {
     /// - Parameters:
     ///   - request: request which includes uploadId
     ///   - completion: handler which returns a result with object details
-    func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void) {
+    func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping @Sendable (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void) {
         Task {
             let parts = request.parts.map {
                 S3ClientTypes.CompletedPart(eTag: $0.eTag, partNumber: $0.partNumber)
@@ -156,7 +158,7 @@ class AWSS3Adapter: AWSS3Behavior {
     /// - Parameters:
     ///   - request: request which includes uploadId
     ///   - completion: handler which indicates when the operation is done
-    func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void) {
+    func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping @Sendable (Result<Void, StorageError>) -> Void) {
         Task {
             let input = AbortMultipartUploadInput(bucket: request.bucket, key: request.key, uploadId: request.uploadId)
             do {

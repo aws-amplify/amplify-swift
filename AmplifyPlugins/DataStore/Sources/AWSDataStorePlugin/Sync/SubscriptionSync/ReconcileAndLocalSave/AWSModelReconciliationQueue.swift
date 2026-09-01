@@ -51,7 +51,8 @@ typealias ModelReconciliationQueueFactory = (
 ///   `incomingSubscriptionEventQueue`.
 /// - `incomingRemoteEventQueue` processes its operations, which are simply to call `enqueue` for each received remote
 ///   event.
-final class AWSModelReconciliationQueue: ModelReconciliationQueue {
+/// - Note: `@unchecked Sendable`: the queue's mutable state is confined to its own serial queue.
+final class AWSModelReconciliationQueue: ModelReconciliationQueue, @unchecked Sendable {
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 

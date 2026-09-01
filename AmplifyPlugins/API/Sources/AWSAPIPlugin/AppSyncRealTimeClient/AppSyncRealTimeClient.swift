@@ -47,7 +47,13 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// WebSocketClient offering connections at the WebSocket protocol level
     var webSocketClient: AppSyncWebSocketClientProtocol
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
-    nonisolated let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
+    /// Backing store for ``subject``. `PassthroughSubject` is not `Sendable` but `send` is safe from
+    /// any thread, and this is `nonisolated` so it can be reached without hopping onto the actor.
+    private nonisolated let subjectBox = UncheckedSendable(PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>())
+
+    nonisolated var subject: PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never> {
+        subjectBox.value
+    }
 
     var isConnected: Bool {
         state.value == .connected
@@ -78,10 +84,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     deinit {
+        // Only the subject is touched here: a nonisolated `deinit` cannot reach actor-isolated state
+        // in Swift 6 mode, and clearing the cancellable sets was already redundant because releasing
+        // the actor's storage deinitializes each `AnyCancellable`, which cancels it.
         log.debug("Deinit AppSyncRealTimeClient")
         subject.send(completion: .finished)
-        cancellables = Set()
-        cancellablesBindToConnection = Set()
     }
 
     /**

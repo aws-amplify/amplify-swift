@@ -225,7 +225,11 @@ class EndpointClientTests: XCTestCase {
     }
 }
 
-class MockEndpointInformationProvider: EndpointInformationProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockEndpointInformationProvider: EndpointInformationProvider, @unchecked Sendable {
     let model = "modelModel"
     let appVersion = "mockAppVersion"
     let platformName = "mockPlatformName"
@@ -235,7 +239,11 @@ class MockEndpointInformationProvider: EndpointInformationProvider {
     }
 }
 
-class MockRemoteNotifications: RemoteNotificationsBehaviour {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockRemoteNotifications: RemoteNotificationsBehaviour, @unchecked Sendable {
     var isRegisteredForRemoteNotifications = true
 
     func requestAuthorization(_ options: UNAuthorizationOptions) async throws -> Bool {

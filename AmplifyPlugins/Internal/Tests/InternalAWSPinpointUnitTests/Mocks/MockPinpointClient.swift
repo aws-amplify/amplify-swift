@@ -9,7 +9,11 @@ import AWSPinpoint
 import Foundation
 import InternalAWSPinpoint
 
-class MockPinpointClient: PinpointClientProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockPinpointClient: PinpointClientProtocol, @unchecked Sendable {
 
     func getJourneyRunExecutionActivityMetrics(input: GetJourneyRunExecutionActivityMetricsInput) async throws -> GetJourneyRunExecutionActivityMetricsOutput {
         fatalError("Not supported")

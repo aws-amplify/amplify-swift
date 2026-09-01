@@ -111,7 +111,11 @@ class AmplifyOperationHubTests: XCTestCase {
 
 }
 
-class MockDispatchingStoragePlugin: StorageCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockDispatchingStoragePlugin: StorageCategoryPlugin, @unchecked Sendable {
 
     var key: PluginKey = "MockDispatchingStoragePlugin"
 

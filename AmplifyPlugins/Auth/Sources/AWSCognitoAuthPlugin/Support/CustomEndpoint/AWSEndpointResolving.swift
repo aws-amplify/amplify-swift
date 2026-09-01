@@ -13,13 +13,14 @@ struct AWSEndpointResolving: AWSCognitoIdentityProvider.EndpointResolver {
         try endpoint()
     }
 
-    let endpoint: () throws -> SmithyHTTPAPI.Endpoint
+    // `@Sendable` so this resolver can satisfy the AWS SDK's `Sendable` requirement.
+    let endpoint: @Sendable () throws -> SmithyHTTPAPI.Endpoint
 
-    init(_ endpoint: @escaping () throws -> SmithyHTTPAPI.Endpoint) {
+    init(_ endpoint: @escaping @Sendable () throws -> SmithyHTTPAPI.Endpoint) {
         self.endpoint = endpoint
     }
 
-    init(_ endpoint: @escaping @autoclosure () throws -> SmithyHTTPAPI.Endpoint) {
+    init(_ endpoint: @escaping @autoclosure @Sendable () throws -> SmithyHTTPAPI.Endpoint) {
         self.endpoint = endpoint
     }
 }

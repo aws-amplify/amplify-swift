@@ -213,7 +213,9 @@ class AmplifyLoggingTests: XCTestCase {
 
 
 /// Mock LogSink for testing which stores the list of log messages in memory
-final class MockLogSink: LogSinkBehavior {
+/// - Note: `@unchecked Sendable`: `LogSinkBehavior` is `Sendable`. This test double is written and
+///   read from a single test.
+final class MockLogSink: LogSinkBehavior, @unchecked Sendable {
     let id: String = UUID().uuidString
     var logLevel: LogLevel = .debug
     var logMessages: [LogMessage] = []

@@ -58,6 +58,9 @@ class RecordClientConcurrentFlushTests: XCTestCase {
         )
 
         // When: Two concurrent flushes
+        // Hoisted so the `async let`s capture the client rather than `self`, which is a non-Sendable
+        // `XCTestCase`.
+        let recordClient = recordClient!
         async let flush1 = recordClient.flush()
         // Small delay to ensure flush1 acquires the lock first
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms

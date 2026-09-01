@@ -11,7 +11,8 @@ import Foundation
 // swiftlint:disable line_length
 
 /// Default database implementation for ``StorageTransferDatabase`` protocol.
-class DefaultStorageTransferDatabase {
+/// - Note: `@unchecked Sendable`: persistence work is serialized on its own queue.
+class DefaultStorageTransferDatabase: @unchecked Sendable {
     enum Failure: Error {
         case notExists(fileURL: URL)
         case noData(fileURL: URL)

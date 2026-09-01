@@ -8,7 +8,10 @@
 import Foundation
 
 /// A convenience class for managing an Operation Queue that dispatches Hub messages
-final class HubChannelDispatcher {
+/// - Note: `@unchecked Sendable` because both stored properties are `let` and each is already
+///   thread-safe on its own: `listenersById` is an `AtomicDictionary`, and `messageQueue` is a
+///   serial `OperationQueue`.
+final class HubChannelDispatcher: @unchecked Sendable {
     /// The message queue to which the message operations are added
     private let messageQueue: OperationQueue
 
@@ -130,7 +133,8 @@ final class HubDispatchOperation: Operation, @unchecked Sendable {
 }
 
 /// A Dispatcher fans out a single payload to a group of listeners
-protocol Dispatcher {
+/// - Note: `Sendable` because dispatchers are used from the Hub's operation queue.
+protocol Dispatcher: Sendable {
     var isCancelled: Bool { get set }
     func dispatch(to listeners: [FilteredListener])
 }

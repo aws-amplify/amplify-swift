@@ -174,7 +174,9 @@ final class InitialSyncOperation: AsynchronousOperation, @unchecked Sendable {
         let authTypes = await authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
         let queryRequestsStream = AsyncStream { continuation in
             for authType in authTypes {
-                continuation.yield { [weak self] in
+                // `@Sendable` to match `RetryableGraphQLOperation`'s request stream element type,
+                // which the Swift 6 language mode requires.
+                continuation.yield { @Sendable [weak self] in
                     guard let self, let api else {
                         throw APIError.operationError(
                             "The initial synchronization process can no longer be accessed or referred to",

@@ -8,8 +8,9 @@
 import Amplify
 import Foundation
 
+/// - Note: `Sendable` because the session is driven from the WebSocket's nonisolated callbacks.
 @_spi(PredictionsFaceLiveness)
-public protocol LivenessService {
+public protocol LivenessService: Sendable {
     func send(
         _ event: LivenessEvent<some Any>,
         eventDate: @escaping () -> Date

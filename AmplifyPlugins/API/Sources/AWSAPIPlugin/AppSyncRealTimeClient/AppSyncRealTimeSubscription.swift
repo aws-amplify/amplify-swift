@@ -18,7 +18,7 @@ import Foundation
 actor AppSyncRealTimeSubscription {
     static let jsonEncoder = JSONEncoder()
 
-    enum State {
+    enum State: Sendable {
         case none
         case subscribing
         case subscribed
@@ -28,7 +28,13 @@ actor AppSyncRealTimeSubscription {
     }
 
     /// internal state for tracking subscription status
-    private let state = CurrentValueSubject<State, Never>(.none)
+    /// Boxed because `CurrentValueSubject` is not `Sendable` and `deinit` is nonisolated, so it
+    /// cannot reach actor-isolated storage in the Swift 6 language mode.
+    private nonisolated let stateBox = UncheckedSendable(CurrentValueSubject<State, Never>(.none))
+
+    private nonisolated var state: CurrentValueSubject<State, Never> {
+        stateBox.value
+    }
 
     /// publisher for monitoring subscription status
     var publisher: AnyPublisher<State, Never> {

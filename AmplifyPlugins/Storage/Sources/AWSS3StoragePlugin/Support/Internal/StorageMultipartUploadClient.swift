@@ -32,7 +32,9 @@ protocol StorageCreateMultipartUploadResponse {
     var uploadId: UploadID? { get }
 }
 
-class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
+/// - Note: `@unchecked Sendable`: upload part work is dispatched to tasks that reach
+///   back into the client, and its state is confined to a single upload session.
+class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchecked Sendable {
     weak var serviceProxy: StorageServiceProxy?
 
     let fileSystem: FileSystem
@@ -112,7 +114,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                   fatalError("Part number is required")
               }
 
-        let startUploadPart: (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
+        // `@Sendable` because the result handler below captures this and calls it from a `Task`.
+        let startUploadPart: @Sendable (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
             guard let self else { return }
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -142,7 +145,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             uploadTask.resume()
         }
 
-        let partialFileResultHandler: (Result<URL, Error>) -> Void = { [weak self] result in
+        let partialFileResultHandler: @Sendable (Result<URL, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             Task {
                 do {

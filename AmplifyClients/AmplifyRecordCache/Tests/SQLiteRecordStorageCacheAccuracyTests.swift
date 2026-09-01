@@ -140,6 +140,9 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         }
 
         let tracker = TestTracker()
+        // Hoisted so the producer/consumer tasks capture the storage rather than `self`, which is a
+        // non-Sendable `XCTestCase`.
+        let storage = storage!
 
         // Create producers - these will hammer the storage concurrently
         let producers = (0 ..< producerCount).map { producerIndex in
