@@ -11,7 +11,7 @@ let platforms: [SupportedPlatform] = [
     .visionOS(.v1)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.53"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.74"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
