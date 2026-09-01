@@ -122,6 +122,10 @@ struct ContentView: View {
     private func signUpAndSignIn() async {
         do {
             lastResult = ""
+            // A previous run may have crashed before its user was cleaned up,
+            // leaving a signed-in session in the keychain. Sign out best-effort
+            // so signIn below doesn't fail with "already a user in signedIn state".
+            _ = await Amplify.Auth.signOut()
             let signUpResult = try await Amplify.Auth.signUp(
                 username: username,
                 password: password,
