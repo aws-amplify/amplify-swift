@@ -135,26 +135,6 @@ jobs:
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
           other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
-      - name: Collect crash logs on failure
-        if: ${{ failure() || cancelled() }}
-        continue-on-error: true
-        run: |
-          mkdir -p "${{ github.workspace }}/TestDiagnostics"
-          cp -R ~/Library/Logs/DiagnosticReports/. "${{ github.workspace }}/TestDiagnostics/" 2>/dev/null || true
-        shell: bash
-
-      - name: Upload test results and crash logs on failure
-        if: ${{ failure() || cancelled() }}
-        continue-on-error: true
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
-        with:
-          name: test-diagnostics-${{ inputs.platform }}-${{ inputs.scheme }}
-          path: |
-            ${{ github.workspace }}/Build/Logs/Test/*.xcresult
-            ${{ github.workspace }}/TestDiagnostics
-          if-no-files-found: ignore
-          retention-days: 5
-
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
