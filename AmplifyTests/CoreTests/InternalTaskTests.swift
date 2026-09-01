@@ -32,10 +32,11 @@ class InternalTaskTests: XCTestCase, @unchecked Sendable {
         let task = Task<[String], Never> {
             let hubDone = expectation(description: "hub done")
             var emojis = [String]()
-            var hubValues = [String]()
+            // Appended from a `@Sendable` Hub listener, so it cannot be a captured `var`.
+            let hubValues = AtomicValue<[String]>(initialValue: [])
             let token = runner.subscribe { emoji in
-                hubValues.append(emoji)
-                if hubValues.count == total {
+                hubValues.with { $0.append(emoji) }
+                if hubValues.get().count == total {
                     hubDone.fulfill()
                 }
             }
@@ -44,7 +45,7 @@ class InternalTaskTests: XCTestCase, @unchecked Sendable {
             }
             await fulfillment(of: [hubDone])
             done.fulfill()
-            XCTAssertEqual(total, hubValues.count)
+            XCTAssertEqual(total, hubValues.get().count)
             XCTAssertEqual(total, emojis.count)
             runner.unsubscribe(token)
             return emojis

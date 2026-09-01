@@ -192,7 +192,7 @@ class SyncEngineTestBase: XCTestCase, @unchecked Sendable {
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
-    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
+    private func startAmplifyAndWaitForSync(completion: @escaping @Sendable (Swift.Result<Void, Error>) -> Void) {
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {

@@ -204,14 +204,14 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertGreaterThanOrEqual(count, steps)
+            XCTAssertGreaterThanOrEqual(count.get(), steps)
             received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
 
         XCTAssertFalse(operation.isCancelled)
-        XCTAssertGreaterThanOrEqual(count, steps)
+        XCTAssertGreaterThanOrEqual(count.get(), steps)
 
         Amplify.Hub.removeListener(token)
     }
@@ -241,14 +241,14 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertLessThan(count, steps)
+            XCTAssertLessThan(count.get(), steps)
             received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
 
         XCTAssertTrue(operation.isCancelled)
-        XCTAssertLessThan(count, steps)
+        XCTAssertLessThan(count.get(), steps)
 
         Amplify.Hub.removeListener(token)
     }
@@ -278,14 +278,14 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertGreaterThanOrEqual(count, steps)
+            XCTAssertGreaterThanOrEqual(count.get(), steps)
             received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
 
         XCTAssertFalse(operation.isCancelled)
-        XCTAssertGreaterThanOrEqual(count, steps)
+        XCTAssertGreaterThanOrEqual(count.get(), steps)
 
         Amplify.Hub.removeListener(token)
     }
@@ -315,14 +315,14 @@ final class AmplifyAsyncSequenceTests: XCTestCase, @unchecked Sendable {
                 await values.append(value)
             }
             let count = await values.elements.count
-            XCTAssertLessThan(count, steps)
+            XCTAssertLessThan(count.get(), steps)
             received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
 
         XCTAssertTrue(operation.isCancelled)
-        XCTAssertLessThan(count, steps)
+        XCTAssertLessThan(count.get(), steps)
 
         Amplify.Hub.removeListener(token)
     }

@@ -74,8 +74,8 @@ public enum LongOperationError: AmplifyError {
 }
 
 public typealias LongOperationResult = Result<LongOperationSuccess, LongOperationError>
-public typealias LongOperationProgressListener = (Progress) -> Void
-public typealias LongOperationResultListener = (LongOperationResult) -> Void
+public typealias LongOperationProgressListener = @Sendable (Progress) -> Void
+public typealias LongOperationResultListener = @Sendable (LongOperationResult) -> Void
 
 public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
@@ -122,7 +122,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
 
         reportProgress()
 
-        if count < request.steps {
+        if count.get() < request.steps {
             DispatchQueue.global().asyncAfter(deadline: .now() + request.delay, execute: advance)
         } else {
             dispatch(result: .success(LongOperationSuccess()))
@@ -136,7 +136,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     }
 
     private func reportProgress() {
-        currentProgress.completedUnitCount = Int64(count)
+        currentProgress.completedUnitCount = Int64(count.get())
         dispatchInProcess(data: currentProgress)
     }
 }

@@ -15,7 +15,7 @@ import XCTest
 class RequestIdentiferTests: XCTestCase, @unchecked Sendable {
 
     func testLongOperationRequest() {
-        let request = LongOperationRequest(options: [:], steps: 10, delay: 0.25)
+        let request = LongOperationRequest(steps: 10, delay: 0.25)
         XCTAssertFalse(request.requestID.isEmpty)
     }
 

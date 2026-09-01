@@ -18,7 +18,7 @@ protocol StorageMultipartUploadClient {
     func completeMultipartUpload(uploadId: UploadID) throws
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws
 
-    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void)
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping @Sendable () -> Void)
 }
 
 extension StorageMultipartUploadClient {
@@ -212,7 +212,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient, @unchec
         }
     }
 
-    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void) {
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping @Sendable () -> Void) {
         guard let service = serviceProxy else { return }
         service.unregister(taskIdentifiers: taskIdentifiers)
         service.urlSession.getActiveTasks { tasks in

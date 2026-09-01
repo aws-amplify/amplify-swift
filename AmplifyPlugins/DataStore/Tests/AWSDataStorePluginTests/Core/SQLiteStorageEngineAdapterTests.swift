@@ -520,17 +520,20 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let contentX = "content"
         var counter = 0
         let maxCount = 10
-        var postsAdded: [String] = []
+        // Appended from a `@Sendable` completion and read from a nested one.
+        let postsAdded = AtomicValue<[String]>(initialValue: [])
         while counter < maxCount {
             let title = "\(titleX)\(counter)"
             let content = "\(contentX)\(counter)"
 
             let post = Post(title: title, content: content, createdAt: .now())
+            // Snapshotted so the completion captures an immutable value rather than the loop variable.
+            let currentIndex = counter
             storageAdapter.save(post) { insertResult in
                 switch insertResult {
                 case .success:
-                    postsAdded.append(post.id)
-                    if counter == maxCount - 1 {
+                    postsAdded.with { $0.append(post.id) }
+                    if currentIndex == maxCount - 1 {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(
                             Post.self,
@@ -540,7 +543,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
-                                for postId in postsAdded {
+                                for postId in postsAdded.get() {
                                     self.checkIfPostIsDeleted(id: postId)
                                 }
                                 queryExpectation.fulfill()

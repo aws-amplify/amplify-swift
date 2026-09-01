@@ -19,7 +19,9 @@ import Foundation
 
 class MockModelReconciliationQueue: ModelReconciliationQueue, @unchecked Sendable {
 
-    static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
+    // `nonisolated(unsafe)`: populated during a test's setup and read within that test; XCTest runs
+    // one test at a time.
+    nonisolated(unsafe) static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
 
     private let modelSchema: ModelSchema
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
