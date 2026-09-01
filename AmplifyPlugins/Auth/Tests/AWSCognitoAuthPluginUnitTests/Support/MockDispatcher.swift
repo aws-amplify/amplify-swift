@@ -8,7 +8,8 @@
 @testable import AWSCognitoAuthPlugin
 
 struct MockDispatcher: EventDispatcher {
-    typealias SendCallback = (StateMachineEvent) -> Void
+    // `@Sendable` because `EventDispatcher` is `Sendable` and dispatch happens from detached tasks.
+    typealias SendCallback = @Sendable (StateMachineEvent) -> Void
     let sendCallback: SendCallback
 
     init(_ sendCallback: @escaping SendCallback) {

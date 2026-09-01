@@ -136,7 +136,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
     }
 }
 
-class ASWebAuthenticationSessionFactory {
+// `@unchecked Sendable` so `createSession` can be used as the `@Sendable` factory the production
+// type now expects. The mocked fields are set by a single test before use.
+final class ASWebAuthenticationSessionFactory: @unchecked Sendable {
     var mockedURL: URL?
     var mockedError: Error?
     var mockCanStart: Bool?
