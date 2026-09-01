@@ -88,27 +88,30 @@ struct SignInScreen: Screen {
 
     /// Waits for the Hosted UI web field to appear, dismissing the consent sheet
     /// if it shows up late. The Hosted UI page can be slow to load on iOS 26 CI
-    /// simulators, so we poll for up to ~120s rather than relying on a single wait.
+    /// simulators, so we poll while also clearing a late consent sheet.
     private func waitForWebTextField(_ element: XCUIElement) -> XCUIElement {
-        let deadline = Date().addingTimeInterval(120)
+        let deadline = Date().addingTimeInterval(60)
         while Date() < deadline {
             tapConsentContinueIfPresent(timeout: 2)
-            if element.waitForExistence(timeout: 5) {
+            if element.waitForExistence(timeout: 3) {
                 return element
             }
         }
         return element
     }
 
-    /// iOS 26: tap until the software keyboard is up before typing to avoid dropped input.
+    /// iOS 26: a WebView field only accepts typed input once it actually holds
+    /// keyboard focus. The software keyboard can already be up from a previously
+    /// focused field, so waiting on `app.keyboards` is not enough to know that
+    /// *this* field is focused. Tap the field's center coordinate (which focuses
+    /// WKWebView inputs more reliably than `tap()`) once to raise the keyboard,
+    /// then again to guarantee focus has moved to this field before typing.
     private func focusAndType(_ element: XCUIElement, _ text: String) {
-        XCTAssertTrue(element.waitForExistence(timeout: 60), "Web text field not found")
-        element.tap()
-        var attempts = 0
-        while !app.keyboards.element.waitForExistence(timeout: 5) && attempts < 3 {
-            element.tap()
-            attempts += 1
-        }
+        XCTAssertTrue(element.waitForExistence(timeout: 30), "Web text field not found")
+        let coordinate = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        coordinate.tap()
+        _ = app.keyboards.element.waitForExistence(timeout: 10)
+        coordinate.tap()
         element.typeText(text)
     }
 
