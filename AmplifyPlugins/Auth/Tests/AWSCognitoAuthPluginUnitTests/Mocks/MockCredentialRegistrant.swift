@@ -12,7 +12,9 @@ import Foundation
 @testable import AWSCognitoAuthPlugin
 
 @available(iOS 17.4, macOS 13.5, *)
-class MockCredentialRegistrant: CredentialRegistrantProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockCredentialRegistrant: CredentialRegistrantProtocol, @unchecked Sendable {
     var presentationAnchor: AuthUIPresentationAnchor?
 
     var mockedCreateResponse: Result<CredentialRegistrationPayload, Error>?

@@ -356,7 +356,11 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     }
 }
 
-private class MockStorageServiceProxy: StorageServiceProxy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockStorageServiceProxy: StorageServiceProxy, @unchecked Sendable {
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior! = MockAWSS3PreSignedURLBuilder()
     var awsS3: AWSS3Behavior!
     var urlSession = URLSession.shared

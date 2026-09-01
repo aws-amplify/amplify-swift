@@ -393,7 +393,11 @@ class AWSS3StorageServiceTests: XCTestCase {
     }
 }
 
-private class MockHttpClientEngineProxy: HttpClientEngineProxy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockHttpClientEngineProxy: HttpClientEngineProxy, @unchecked Sendable {
     var target: HTTPClient?
 
     var executeCount = 0
@@ -405,7 +409,11 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy {
     }
 }
 
-private class StorageTransferDatabaseMock: StorageTransferDatabase {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked Sendable {
 
     func prepareForBackground(completion: (() -> Void)?) {
         completion?()

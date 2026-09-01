@@ -625,7 +625,11 @@ private class MockSessionTask: StorageSessionTask {
     }
 }
 
-class MockLogger: Logger {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockLogger: Logger, @unchecked Sendable {
     var logLevel: LogLevel = .verbose
 
     func error(_ message: @autoclosure () -> String) {
