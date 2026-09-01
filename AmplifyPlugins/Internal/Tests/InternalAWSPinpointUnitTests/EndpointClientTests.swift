@@ -226,9 +226,7 @@ class EndpointClientTests: XCTestCase {
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 class MockEndpointInformationProvider: EndpointInformationProvider, @unchecked Sendable {
     let model = "modelModel"
     let appVersion = "mockAppVersion"
@@ -240,9 +238,7 @@ class MockEndpointInformationProvider: EndpointInformationProvider, @unchecked S
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 class MockRemoteNotifications: RemoteNotificationsBehaviour, @unchecked Sendable {
     var isRegisteredForRemoteNotifications = true
 

@@ -9,9 +9,7 @@ import Amplify
 import Foundation
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 public class MagicEightBallRequest: AmplifyOperationRequest, @unchecked Sendable {
     public let options: [AnyHashable: Any]
     public let total: Int
@@ -25,9 +23,7 @@ public class MagicEightBallRequest: AmplifyOperationRequest, @unchecked Sendable
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 public class MagicEightBallTaskRunner: InternalTaskRunner, InternalTaskAsyncSequence, InternalTaskChannel, InternalTaskIdentifiable, InternalTaskHubInProcess, @unchecked Sendable {
     public typealias Request = MagicEightBallRequest
     public typealias InProcess = String
@@ -101,9 +97,7 @@ public struct MagicEightBallPlugin {
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 public class RandomEmojiRequest: AmplifyOperationRequest, @unchecked Sendable {
     public let options: [AnyHashable: Any]
     public let total: Int
@@ -117,9 +111,7 @@ public class RandomEmojiRequest: AmplifyOperationRequest, @unchecked Sendable {
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, @unchecked Sendable {
     public typealias Request = RandomEmojiRequest
     public typealias InProcess = String

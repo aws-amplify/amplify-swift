@@ -9,9 +9,7 @@ import AWSPluginsCore
 import Foundation
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 class MockKeychainStore: KeychainStoreBehavior, @unchecked Sendable {
     var stringValues: [String: String] = [:]
     var dataValues: [String: Data] = [:]

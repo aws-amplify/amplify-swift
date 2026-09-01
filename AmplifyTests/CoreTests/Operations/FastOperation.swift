@@ -11,21 +11,24 @@ import Combine
 #endif
 import Amplify
 
-// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class FastOperationRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
 
-// by a single test at a time.
-
-public class FastOperationRequest: AmplifyOperationRequest, @unchecked Sendable {
-    public let options: [AnyHashable: Any]
+    public let options: Options
     public let numbers: [Int]
 
-    public init(options: [AnyHashable: Any] = [:], numbers: [Int]) {
+    public init(options: Options = .init(), numbers: [Int]) {
         self.options = options
         self.numbers = numbers
     }
 }
 
-public struct FastOperationSuccess {
+public struct FastOperationSuccess: Sendable {
     public let value: Int
 
     public init(value: Int) {

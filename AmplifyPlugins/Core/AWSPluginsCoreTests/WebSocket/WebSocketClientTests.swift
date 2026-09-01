@@ -195,7 +195,9 @@ class WebSocketClientTests: XCTestCase {
 }
 
 
-private class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+private final class MockNetworkMonitor: WebSocketNetworkMonitorProtocol, @unchecked Sendable {
     typealias State = AmplifyNetworkMonitor.State
     let subject = PassthroughSubject<State, Never>()
     var publisher: AnyPublisher<(State, State), Never> {

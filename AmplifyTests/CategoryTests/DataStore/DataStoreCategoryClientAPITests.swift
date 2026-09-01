@@ -50,9 +50,7 @@ class DataStoreCategoryClientAPITests: XCTestCase {
 }
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
 // by a single test at a time.
-
 class TestModel: Model, @unchecked Sendable {
     static func make() -> TestModel {
         return TestModel(id: UUID().uuidString)
