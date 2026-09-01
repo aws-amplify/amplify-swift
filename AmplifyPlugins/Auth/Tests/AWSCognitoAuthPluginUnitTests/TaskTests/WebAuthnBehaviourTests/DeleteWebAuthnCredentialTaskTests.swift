@@ -82,7 +82,7 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
         }
 
         try await task.execute()
-        XCTAssertEqual(deleteWebAuthnCredentialCallCount.current, 1)
+        XCTAssertEqual(deleteWebAuthnCredentialCallCount.get(), 1)
     }
 
     func testExecute_withServiceError_shouldFailWithServiceError() async {

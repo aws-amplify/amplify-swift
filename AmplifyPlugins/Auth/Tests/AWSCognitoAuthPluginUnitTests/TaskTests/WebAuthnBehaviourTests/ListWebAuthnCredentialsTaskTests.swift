@@ -104,7 +104,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
         let result = try await task.execute()
         let credentials = try XCTUnwrap(result.credentials)
         let nextToken = try XCTUnwrap(result.nextToken)
-        XCTAssertEqual(listWebAuthnCredentialsCallCount.current, 1)
+        XCTAssertEqual(listWebAuthnCredentialsCallCount.get(), 1)
         XCTAssertEqual(credentials.count, 2)
         XCTAssertEqual(nextToken, "nextToken")
         XCTAssertTrue(credentials.contains(where: { $0.credentialId == "credentialId1" }))
