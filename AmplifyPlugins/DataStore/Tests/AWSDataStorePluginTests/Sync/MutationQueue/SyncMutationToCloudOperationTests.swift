@@ -285,7 +285,7 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
             networkReachabilityPublisher: publisher,
             currentAttemptNumber: 1,
             completion: { result in
-                if numberOfTimesEntered == expectedNumberOfTimesEntered {
+                if numberOfTimesEntered.get() == expectedNumberOfTimesEntered {
                     expectCalllToApiMutateNTimesAndFail.fulfill()
 
                 } else {
