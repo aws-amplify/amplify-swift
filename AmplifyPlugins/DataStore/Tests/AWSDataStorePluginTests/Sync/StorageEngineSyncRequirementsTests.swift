@@ -247,7 +247,11 @@ class StorageEngineSyncRequirementsTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - Helpers
 
-    class MockAPIAuthInformationPlugin: MockAPICategoryPlugin, AWSAPIAuthInformation {
+    // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+    // by a single test at a time.
+
+    class MockAPIAuthInformationPlugin: MockAPICategoryPlugin, AWSAPIAuthInformation, @unchecked Sendable {
 
         var authType: AWSAuthorizationType?
 

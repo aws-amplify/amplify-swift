@@ -395,7 +395,11 @@ class SyncMutationToCloudOperationTests: XCTestCase, @unchecked Sendable {
 
 }
 
-public class MockMultiAuthModeStrategy: AuthModeStrategy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+public class MockMultiAuthModeStrategy: AuthModeStrategy, @unchecked Sendable {
     public weak var authDelegate: AuthModeStrategyDelegate?
     public required init() {}
 

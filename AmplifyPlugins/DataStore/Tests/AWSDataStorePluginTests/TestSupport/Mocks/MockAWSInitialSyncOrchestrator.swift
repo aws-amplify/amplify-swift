@@ -13,7 +13,11 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendable {
     static let factory: InitialSyncOrchestratorFactory = {
         dataStoreConfiguration, _, api, reconciliationQueue, storageAdapter  in
         MockAWSInitialSyncOrchestrator(

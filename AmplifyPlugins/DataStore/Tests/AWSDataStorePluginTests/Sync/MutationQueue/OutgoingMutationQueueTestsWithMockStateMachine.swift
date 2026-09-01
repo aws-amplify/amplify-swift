@@ -281,7 +281,11 @@ extension OutgoingMutationQueue.Action: Equatable {
     }
 }
 
-class MockMutationEventSource: MutationEventSource {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockMutationEventSource: MutationEventSource, @unchecked Sendable {
     var resultQueue = [DataStoreResult<MutationEvent>]()
 
     func pushMutationEvent(futureResult: DataStoreResult<MutationEvent>) {

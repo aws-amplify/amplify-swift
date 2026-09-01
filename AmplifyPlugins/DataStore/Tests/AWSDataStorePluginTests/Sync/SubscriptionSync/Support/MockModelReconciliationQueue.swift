@@ -13,7 +13,11 @@ import Foundation
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MockModelReconciliationQueue: ModelReconciliationQueue {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockModelReconciliationQueue: ModelReconciliationQueue, @unchecked Sendable {
 
     static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
 
