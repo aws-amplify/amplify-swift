@@ -21,13 +21,13 @@ class RetryableGraphQLOperationTests: XCTestCase, @unchecked Sendable {
     /// Then: return the success response
     func testShouldRetryOperationWithNotAuthorizedAuthError() async throws {
         let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
-        let operation1: () async throws -> GraphQLResponse<String> = {
+        let operation1: @Sendable () async throws -> GraphQLResponse<String> = {
             expectation1.fulfill()
             throw APIError.operationError("", "", AuthError.notAuthorized("", ""))
         }
 
         let expectation2 = expectation(description: "Operation 2 successfully finished")
-        let operation2: () async throws -> GraphQLResponse<String> = {
+        let operation2: @Sendable () async throws -> GraphQLResponse<String> = {
             expectation2.fulfill()
             return .success("operation 2")
         }
@@ -51,14 +51,14 @@ class RetryableGraphQLOperationTests: XCTestCase, @unchecked Sendable {
     /// Then: return the success response
     func testShouldNotRetryOperationWithUnknownError() async throws {
         let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
-        let operation1: () async throws -> GraphQLResponse<String> = {
+        let operation1: @Sendable () async throws -> GraphQLResponse<String> = {
             expectation1.fulfill()
             throw APIError.unknown("~Unknown~", "")
         }
 
         let expectation2 = expectation(description: "Operation 2 successfully finished")
         expectation2.isInverted = true
-        let operation2: () async throws -> GraphQLResponse<String> = {
+        let operation2: @Sendable () async throws -> GraphQLResponse<String> = {
             expectation2.fulfill()
             return .success("operation 2")
         }
