@@ -84,7 +84,6 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
-    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -95,7 +94,6 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
 #endif
     }()
 
-    @MainActor
     private static let applicationWillMoveToForegoundNotification: Notification.Name = {
     #if canImport(WatchKit)
         WKExtension.applicationWillEnterForegroundNotification
@@ -106,7 +104,6 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
     #endif
     }()
 
-    @MainActor
     private static let applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
@@ -118,9 +115,10 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
     #endif
     }()
 
-    // `@MainActor` because the three names above are: their initializers read main-actor-isolated
-    // platform statics.
-    @MainActor
+    // These three were `@MainActor` before the Swift 6 migration, which forced observer registration
+    // off `init` and made it asynchronous — breaking callers that post a notification immediately after
+    // constructing a tracker. The annotation turned out to be unnecessary: the platform notification
+    // *names* are plain constants, so reading them needs no isolation and registration stays synchronous.
     private static let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
@@ -137,30 +135,19 @@ final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
             resolver: ApplicationState.Resolver.resolve(currentState:event:)
         )
 
-        // Registration hops to the main actor because the notification names above read
-        // main-actor-isolated platform statics, and `init` itself cannot be `@MainActor`: that would
-        // propagate through `SessionClient.init` all the way to `AWSPinpointFactory.sharedPinpoint`,
-        // which is public API.
-        //
-        // The hop makes registration asynchronous, so a lifecycle notification posted in the same
-        // turn as construction could be missed. In practice the tracker is created during plugin
-        // configuration, well before any backgrounding event.
-        Task { @MainActor [weak self] in
-            guard let self else { return }
-            for notification in ActivityTracker.notifications {
-                NotificationCenter.default.addObserver(
-                    self,
-                    selector: #selector(ActivityTracker.handleApplicationStateChange),
-                    name: notification,
-                    object: nil
-                )
-            }
+        for notification in ActivityTracker.notifications {
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleApplicationStateChange),
+                name: notification,
+                object: nil
+            )
         }
     }
 
     deinit {
-        // Removes every observer registered for this object. Equivalent to unregistering each name
-        // individually, and it avoids reading the main-actor-isolated names from a nonisolated `deinit`.
+        // Removes every observer registered for this object, which is equivalent to unregistering each
+        // name individually and keeps this nonisolated `deinit` from touching any of the type's state.
         NotificationCenter.default.removeObserver(self)
         stateMachineSubscriberToken = nil
     }

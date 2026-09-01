@@ -44,7 +44,7 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
 
 // by a single test at a time.
 
-class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol , @unchecked Sendable {
+class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Sendable {
 
 
     private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()

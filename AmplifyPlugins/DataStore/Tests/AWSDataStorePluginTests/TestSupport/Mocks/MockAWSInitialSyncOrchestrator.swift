@@ -33,8 +33,8 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
 
     // `nonisolated(unsafe)`: set by a test's `setUpWithError` before use and read after; XCTest runs
     // one test at a time.
-    nonisolated(unsafe) private static var instance: MockAWSInitialSyncOrchestrator?
-    nonisolated(unsafe) private static var mockedResponse: SyncOperationResult?
+    private nonisolated(unsafe) static var instance: MockAWSInitialSyncOrchestrator?
+    private nonisolated(unsafe) static var mockedResponse: SyncOperationResult?
 
     let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {

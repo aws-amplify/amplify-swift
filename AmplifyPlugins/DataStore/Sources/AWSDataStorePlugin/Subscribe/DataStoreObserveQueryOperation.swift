@@ -49,7 +49,11 @@ final class ObserveQueryRequest: AmplifyOperationRequest, Sendable {
 /// - Note: `final` and `@unchecked Sendable` to satisfy `InternalTaskRunner`'s `Sendable`
 ///   requirement. As the comment above states, the mutable properties are only touched from
 ///   `serialQueue`.
-final class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation, @unchecked Sendable {
+final class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner,
+    InternalTaskAsyncThrowingSequence,
+    InternalTaskThrowingChannel,
+    DataStoreObserveQueryOperation,
+    @unchecked Sendable {
     typealias Request = ObserveQueryRequest
     typealias InProcess = DataStoreQuerySnapshot<M>
     let request: ObserveQueryRequest
