@@ -28,7 +28,7 @@ protocol StorageTransferDatabase: Sendable {
 
     func defaultTransferType(persistableTransferTask: StoragePersistableTransferTask) -> StorageTransferType?
 
-    func recover(urlSession: StorageURLSession, completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
+    func recover(urlSession: StorageURLSession, completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void)
 
     func attachEventHandlers(
         onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,

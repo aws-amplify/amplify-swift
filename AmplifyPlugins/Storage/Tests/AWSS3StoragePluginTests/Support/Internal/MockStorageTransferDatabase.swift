@@ -54,7 +54,7 @@ class MockStorageTransferDatabase: StorageTransferDatabase, @unchecked Sendable 
 
     func recover(
         urlSession: StorageURLSession,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         // do nothing
     }

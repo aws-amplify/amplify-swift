@@ -60,7 +60,7 @@ class DefaultStorageTransferDatabase: @unchecked Sendable {
 
     func recover(
         urlSession: StorageURLSession = URLSession.shared,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }
@@ -156,7 +156,7 @@ class DefaultStorageTransferDatabase: @unchecked Sendable {
 
     private func loadTasksAndLinkSessions(
         urlSession: StorageURLSession = URLSession.shared,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         dispatchPrecondition(condition: .notOnQueue(.main))
         dispatchPrecondition(condition: .onQueue(queue))

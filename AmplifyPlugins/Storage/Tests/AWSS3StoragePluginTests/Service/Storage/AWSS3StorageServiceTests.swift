@@ -441,7 +441,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked S
     var recoverResult: Result<StorageTransferTaskPairs, Error> =  .failure(StorageError.unknown("Result not set", nil))
     func recover(
         urlSession: StorageURLSession,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         recoverCount += 1
         completionHandler(recoverResult)
