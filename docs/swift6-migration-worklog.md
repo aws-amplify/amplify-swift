@@ -309,22 +309,34 @@ Two lessons:
    another file that must satisfy the new mode. This branch was 6 commits behind and that was enough to
    produce a failure with no local reproduction.
 
-## Open: Analytics iOS integration test
+## Analytics iOS integration: a latent abort, now an error
 
-Genuinely a regression — `main`'s job log has zero occurrences of the fatal error and needs no retries,
-while this branch crashes and retries. Localised by elimination to **`testGetEscapeHatch`**: `main` runs
-7 tests, this branch runs 6, and that is the one missing.
+This one was a real regression by CI evidence — the job is green on three consecutive `main` runs with
+zero occurrences of the fatal error and no retries, while this branch crashed and retried. Localised by
+elimination to `testGetEscapeHatch`: `main` runs 7 tests in the suite, this branch ran 6.
 
-The crash is `Fatal.preconditionFailure` from `AuthCategory.plugin`, reached via
-`AmplifyAWSCredentialsProvider.getCredentials()` → `Amplify.Auth.fetchAuthSession()`. So some Pinpoint
-work is resolving credentials while the Auth category has no plugin.
+The abort came from `AmplifyAWSCredentialsProvider` calling `Amplify.Auth.fetchAuthSession()` while the
+Auth category had no plugin, which trips the `preconditionFailure` in `AuthCategory.plugin`.
 
-What has been ruled out: every file in the Pinpoint, Analytics-plugin and host-app diffs is
-annotation-or-comment-only, `Amplify/Core/Configuration` is untouched, and `getEscapeHatch()` itself only
-reads a stored property. That points at *concurrent* Pinpoint work rather than the test body — most
-likely the static `AWSPinpointFactory.instances` cache, which survives `Amplify.reset()` in `tearDown`
-and can outlive the Auth plugin. Not yet proven; it cannot be reproduced locally because the test needs a
-real AWS backend.
+How a credentials provider ends up in that state is pre-existing and worth recording: `AWSPinpointFactory`
+caches a `PinpointContext` in a `static` dictionary that **nothing ever clears**, and neither
+`PinpointContext` nor `SessionClient` has a `deinit` or a `reset`. `AWSPinpointAnalyticsPlugin.reset()`
+only nils its own `pinpoint` reference, so the cached context — session client, auto-flush timer and all —
+outlives `Amplify.reset()`. A later flush then resolves credentials against a category that no longer has
+a plugin.
+
+Every file in the Pinpoint, Analytics-plugin and host-app diffs is annotation-or-comment-only, and
+`Amplify/Core/Configuration` is untouched, so this branch did not change the lifecycle. It changed timing
+enough to make the latent race fire.
+
+The fix targets the contract rather than the timing: a provider held by long-lived clients should treat a
+missing Auth category as recoverable, so both entry points now throw `AuthError.configuration`. That
+required exposing the condition the `plugin` getter guards on, as
+`AuthCategory.isConfiguredWithPlugin` behind `@_spi(InternalAmplifyConfiguration)`.
+
+**The Pinpoint cache lifetime is still worth fixing on its own** — it is a genuine leak that survives
+`Amplify.reset()` — but that is production lifecycle behaviour and out of scope for a language-mode
+change.
 
 ## Status
 
