@@ -290,6 +290,25 @@ Each of these was checked against `main` rather than assumed:
 - **`NSLock.lock()` / `unlock()`** — only the Xcode Preview (beta) toolchain rejects these as unavailable
   from async contexts. Converted to `withLock`, which is equivalent and portable.
 
+## CI builds the merge ref, not your branch
+
+The Xcode Preview leg reported `lock`/`unlock` errors in source that **did not exist in this branch**.
+Searching the worktree for the symbols in the error snippets (`connectionInitCount`, `startCount`) found
+nothing, which looked like a stale log.
+
+It was not. GitHub Actions builds `refs/pull/<n>/merge`, so CI compiles the branch *merged with `main`* —
+and `AppSyncRealTimeClientReconnectTests.swift` had landed on `main` after this branch was cut. That file
+uses captured `var` counters guarded by a hand-rolled `NSLock`, and both halves are rejected under the
+Swift 6 language mode.
+
+Two lessons:
+
+1. **When a CI error names source you cannot find, check `origin/main` before assuming a stale log.**
+   `git grep <symbol> origin/main` settles it in one command.
+2. A long-running language-mode migration has to keep merging `main`, because every newly landed file is
+   another file that must satisfy the new mode. This branch was 6 commits behind and that was enough to
+   produce a failure with no local reproduction.
+
 ## Open: Analytics iOS integration test
 
 Genuinely a regression — `main`'s job log has zero occurrences of the fatal error and needs no retries,
