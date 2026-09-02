@@ -164,11 +164,15 @@ class FileSystem {
     /// Returns the size in bytes of a file.
     /// - Parameter fileURL: URL of the file
     /// - Returns: size of file in bytes
-    func getFileSize(fileURL: URL) -> UInt64 {
+    /// - Throws: `StorageError.localFileNotFound` if the file's attributes cannot be read.
+    func getFileSize(fileURL: URL) throws -> UInt64 {
         guard let attributes = try? FileManager.default.attributesOfItem(atPath: fileURL.path),
               let size = attributes[.size] as? UInt64
         else {
-            Fatal.require("File size should always be accessible")
+            throw StorageError.localFileNotFound(
+                "The file to upload could not be found or is no longer accessible at \(fileURL.path).",
+                "Ensure the file exists and remains available for the entire duration of the upload."
+            )
         }
         return size
     }
