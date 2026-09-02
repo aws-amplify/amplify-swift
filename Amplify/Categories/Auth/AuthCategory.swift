@@ -46,6 +46,17 @@ public final class AuthCategory: Category, @unchecked Sendable {
 
     var isConfigured = false
 
+    /// `true` when `Amplify.configure()` has run for this category and a plugin is registered.
+    ///
+    /// Reading ``plugin`` in either of the opposite states trips a `preconditionFailure`, which aborts
+    /// the process rather than failing the call. Exposed over `@_spi` so the AWS plugin modules can
+    /// report an error instead: they hold long-lived clients that can outlive `Amplify.reset()`, and for
+    /// those a missing Auth category is a recoverable condition, not a programmer error.
+    @_spi(InternalAmplifyConfiguration)
+    public var isConfiguredWithPlugin: Bool {
+        isConfigured && !plugins.isEmpty
+    }
+
     // MARK: - Plugin handling
 
     /// Adds `plugin` to the list of Plugins that implement functionality for this category.
