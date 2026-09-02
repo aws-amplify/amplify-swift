@@ -120,7 +120,7 @@ class FileSystemTests: XCTestCase {
         defer {
             fs.removeDirectoryIfExists(directoryURL: directoryURL)
         }
-        let size = fs.getFileSize(fileURL: fileURL)
+        let size = try fs.getFileSize(fileURL: fileURL)
 
         XCTAssertEqual(UInt64(bytes.bytes), size)
     }
