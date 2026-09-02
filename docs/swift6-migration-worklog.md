@@ -254,27 +254,82 @@ So the honest local completion criterion is: `swift test` green *except* the thr
 `testPreconditionFailure*` families, which only pass under `xcodebuild`. CI uses `xcodebuild`, so it
 exercises them properly there.
 
+## Platform-gated code was the real blind spot
+
+Local `swift test` runs on macOS, so it never compiles the `#if os(...)`-gated code. Every remaining CI
+failure lived in exactly those regions, and one root cause accounted for almost all of them.
+
+| Root cause | Platform | CI impact |
+|---|---|---|
+| `AuthUIPresentationAnchorPlaceholder` not `Sendable` | tvOS, watchOS | **88 build errors → ~50 failing checks** |
+| `AmplifyReachability` passes `self` to `NWPathMonitor`'s `@Sendable` handler | watchOS | watchOS build |
+| `Amplify/DevMenu` — `PersistentLogWrapper`, `PersistentLoggingPlugin`, `LongPressGestureRecognizer` | iOS, visionOS | iOS/tvOS/visionOS builds |
+
+The anchor case is the one worth remembering. On iOS, macOS and visionOS `AuthUIPresentationAnchor` is a
+typealias for `ASPresentationAnchor`; on tvOS and watchOS it resolves to a local placeholder class that
+was not `Sendable`. Because these Auth state types are *internal*, they rely on Swift's `Sendable`
+**inference**, and inference is all-or-nothing: one non-`Sendable` member silently removed the
+conformance from `HostedUIOptions`, then `SignInMethod`, then `SignedInData`, then every state-machine
+enum carrying them. Eighty-eight errors, one missing conformance, invisible on macOS.
+
+The placeholder has no stored properties and a private `init`, so it takes a fully checked `Sendable`
+conformance — not `@unchecked`.
+
+**Lesson: a cascade of `Sendable`-inference errors usually has a single root. Find the type at the
+bottom instead of annotating the types the compiler names.**
+
+## Not caused by this branch
+
+Each of these was checked against `main` rather than assumed:
+
+- **`testPreconditionFailure*`** — `swift test` dies on these because they need `XCTestConfigurationFilePath`,
+  which only `xcodebuild` sets. `main` dies at the identical test.
+- **`DefaultStorageTransferDatabaseTests`** — 10-second timeouts in full-suite runs, passes in isolation.
+  `main` fails the same two tests the same way.
+- **HostedUI and WebAuthn integration tests** — failing on `main` as well.
+- **`NSLock.lock()` / `unlock()`** — only the Xcode Preview (beta) toolchain rejects these as unavailable
+  from async contexts. Converted to `withLock`, which is equivalent and portable.
+
+## Open: Analytics iOS integration test
+
+Genuinely a regression — `main`'s job log has zero occurrences of the fatal error and needs no retries,
+while this branch crashes and retries. Localised by elimination to **`testGetEscapeHatch`**: `main` runs
+7 tests, this branch runs 6, and that is the one missing.
+
+The crash is `Fatal.preconditionFailure` from `AuthCategory.plugin`, reached via
+`AmplifyAWSCredentialsProvider.getCredentials()` → `Amplify.Auth.fetchAuthSession()`. So some Pinpoint
+work is resolving credentials while the Auth category has no plugin.
+
+What has been ruled out: every file in the Pinpoint, Analytics-plugin and host-app diffs is
+annotation-or-comment-only, `Amplify/Core/Configuration` is untouched, and `getEscapeHatch()` itself only
+reads a stored property. That points at *concurrent* Pinpoint work rather than the test body — most
+likely the static `AWSPinpointFactory.instances` cache, which survives `Amplify.reset()` in `tearDown`
+and can outlive the Auth plugin. Not yet proven; it cannot be reproduced locally because the test needs a
+real AWS backend.
+
 ## Status
 
-- `swift build` — **clean** under `swiftLanguageModes: [.v6]`.
-- `swift test` — **compiles with 0 errors**, and **1014 tests execute with 0 failures** (run 47).
-  The run still exits non-zero, but only at the pre-existing `testPreconditionFailure*` wall described
-  above, which fails identically on `main`.
-- Lint and format — **clean.** 0 SwiftLint errors (the one error was a 160-character line my
-  `@unchecked Sendable` addition pushed over; the conformance list is now wrapped) and 0 SwiftFormat
-  diffs. The 382 remaining SwiftLint *warnings* are pre-existing and not enforced by CI.
-- Platform builds (iOS/tvOS/watchOS/visionOS) and integration tests — still unverified locally; only
-  macOS has been exercised. Note `Integration Tests (Except DataStore & API)` also fails on `main`, so
-  those need a per-job baseline comparison rather than being read as regressions.
+- `swift build` — clean under `swiftLanguageModes: [.v6]`.
+- `swift test` — **0 compile errors; all 23 of 23 test targets execute**, ~1,440 tests. The only failure
+  is the pre-existing Storage flake above, which behaves identically on `main`.
+- Lint and format — clean: 0 SwiftLint errors, 0 SwiftFormat diffs. The 382 remaining SwiftLint warnings
+  are pre-existing and not enforced.
+- Platform builds — iOS verified locally (`BUILD SUCCEEDED`). tvOS, watchOS and visionOS cannot be built
+  on this machine (no simulator runtimes or devices for them), so those rely on CI.
+- CI — **64 failing checks down to 3**, and the last of those are the Analytics job above plus codecov
+  upload steps.
 
 ## A process note worth keeping
 
-Two mistakes in this migration came from tooling rather than from Swift:
+Three mistakes here came from tooling rather than from Swift:
 
 1. **Type-unaware regex sweeps.** Rewriting declarations without rewriting every read site broke more
-   than it fixed — shadowed locals, `switch x {`, `x == y`, and array types starting with `[` all
-   slipped through. One sweep took the error count from 86 to 118 and had to be reverted wholesale.
-2. **Working directory drift.** A `swift test` invocation silently ran against the `release` checkout
-   instead of this worktree, because the session's cwd is the primary project directory and relative
-   paths resolve there. It was caught by comparing `.build` mtimes. Every SwiftPM command here should
-   pass `--package-path` explicitly rather than trusting cwd.
+   than it fixed — shadowed locals, `switch x {`, `x == y`, and array types starting with `[` all slipped
+   through. One sweep took the error count from 86 to 118 and was reverted wholesale.
+2. **Working directory drift.** A `swift test` run silently targeted the `release` checkout instead of
+   this worktree, because the session's cwd is the primary project directory. Caught by comparing
+   `.build` mtimes. Every SwiftPM command here should pass `--package-path` explicitly.
+3. **Designing around an annotation instead of testing it.** I assumed `@MainActor` on `ActivityTracker`'s
+   notification-name constants was load-bearing and restructured registration to be asynchronous, which
+   caused a real regression. Deleting the annotation and rebuilding took one command and proved it was
+   never needed.
