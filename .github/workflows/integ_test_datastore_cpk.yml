@@ -26,19 +26,9 @@ permissions:
 jobs:
   datastore-integration-cpk-tests:
     name: DataStore Integration Tests | CPK
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginCPKTestsWatch' || 'AWSDataStorePluginCPKTests' }}
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSDataStorePluginCPKTests", "tvOS": "AWSDataStorePluginCPKTests", "watchOS": "AWSDataStorePluginCPKTestsWatch"}'
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       resource_subfolder: datastore
-      timeout-minutes: 120
     secrets: inherit

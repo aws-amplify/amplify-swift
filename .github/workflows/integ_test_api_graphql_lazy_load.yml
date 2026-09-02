@@ -21,18 +21,9 @@ permissions:
 jobs:
   api-lazy-load-tests:
     name: API Integration Tests | GraphQL Lazy Load
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: AWSAPIPluginLazyLoadTests
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSAPIPluginLazyLoadTests", "tvOS": "AWSAPIPluginLazyLoadTests", "watchOS": "AWSAPIPluginLazyLoadTests"}'
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
-      timeout-minutes: 45
     secrets: inherit

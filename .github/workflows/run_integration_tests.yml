@@ -1,46 +1,54 @@
-name: Run tests for the given parameters
+name: Run integration tests for the given scheme on all supported platforms
 on:
   workflow_call:
     inputs:
       os-runner:
         type: string
         default: 'macos-26'
-      scheme:
-        description: 'The scheme to run the tests'
-        required: true
-        type: string
-      platform:
-        description: 'The platform in which to run these tests'
+      schemes:
+        description: >
+          JSON object mapping platform -> scheme, e.g.
+          {"iOS": "FooTests", "tvOS": "FooTests", "watchOS": "FooTestsWatch"}. The platforms to run
+          are exactly this object's keys (macOS is not supported); a platform may map to a different
+          scheme (e.g. a watchOS variant).
         required: true
         type: string
       project_path:
         required: false
         type: string
-      xcode_version:
-        description: 'The version of Xcode used to run these tests'
-        default: 'latest'
-        type: string
-      destination:
-        default: ''
-        type: string
       resource_subfolder:
         required: true
         type: string
+      xcode_version:
+        description: 'The version of Xcode used to run these tests'
+        required: false
+        type: string
+        default: 'latest'
       timeout-minutes:
-        description: 'The timeout for each execution'
+        # The supported platforms run back-to-back on a single runner (see below), so the budget is
+        # roughly the sum of the per-platform runs rather than the max. The resolve/build steps stay
+        # individually bounded and retried, so a genuine stall still fails fast.
+        description: 'The timeout for the whole (all-platforms) run'
         required: false
         type: number
-        default: 60
+        default: 120
 
 permissions:
     id-token: write
     contents: read
 
+# The supported platforms (iOS, tvOS, watchOS — macOS is not supported for integration tests) run
+# sequentially on ONE runner instead of fanning out one runner per platform. macOS Actions capacity
+# is a scarce shared pool, so collapsing the per-platform matrix into a single job cuts this
+# workflow's peak concurrent macOS jobs by up to 3x. Running in series keeps one simulator/compile
+# active at a time (no CPU/RAM oversubscription); the cost is longer wall-clock (raised timeout).
+#
+# Dependency resolution (~31 clones) and the build cache are restored once for the whole job and
+# reused across platforms. watchOS may use a different scheme (`scheme_watchos`) than iOS/tvOS.
 jobs:
   integration-tests:
-    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
+    name: Integration Tests | ${{ inputs.scheme }}
     runs-on: ${{ inputs.os-runner }}
-    if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
     timeout-minutes: ${{ inputs.timeout-minutes }}
     environment: IntegrationTest
     steps:
@@ -49,31 +57,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Get build parameters for ${{ inputs.platform}}
-        id: platform
+      # Platform-independent build parameters (notably the resolved Xcode version, identical for
+      # every platform) so the cache keys below can be computed before any platform runs.
+      - name: Resolve build parameters
+        id: params
         uses: ./.github/composite_actions/get_platform_parameters
         with:
-          platform: ${{ inputs.platform }}
+          platform: macOS
           xcode_version: ${{ inputs.xcode_version }}
-          destination: ${{ inputs.destination }}
-
-      - name: Install simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.platform.outputs.xcode-version }}
-          platform: ${{ inputs.platform }}
-
-      - name: Create the test configuration directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Download the Integration Test configurations
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: ${{ inputs.resource_subfolder }}
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-          destination: ~/.aws-amplify/amplify-ios/testconfiguration/
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -82,57 +73,75 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ steps.params.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
+            amplify-packages-${{ steps.params.outputs.xcode-version }}-
 
+      # One build cache for the whole job (all platforms share the same Build dir on this runner).
+      # restore-keys gives a partial-hit fallback so a Package.resolved change is not a 0% miss.
       - name: Attempt to restore the build cache
         id: build-cache
-        if: steps.dependencies-cache.outputs.cache-hit
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
-          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
+          key: Amplify-integ-all-platforms-${{ steps.params.outputs.xcode-version }}-${{ fromJSON(inputs.schemes).iOS || fromJSON(inputs.schemes).tvOS || fromJSON(inputs.schemes).watchOS }}-build-cache-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            Amplify-integ-all-platforms-${{ steps.params.outputs.xcode-version }}-${{ fromJSON(inputs.schemes).iOS || fromJSON(inputs.schemes).tvOS || fromJSON(inputs.schemes).watchOS }}-build-cache-
 
-      - name: Run ${{ inputs.platform }} Integration Tests
-        id: run-tests
-        continue-on-error: true
-        uses: ./.github/composite_actions/run_xcodebuild_test
+      # One step per platform, run in series. `!cancelled()` reproduces the old matrix's
+      # fail-fast:false behaviour: a failure on one platform still lets the rest run, and because
+      # these steps are not continue-on-error a real failure still fails the job. A platform runs
+      # only when it is a key of `inputs.schemes` (its value is the scheme); `github.event.inputs.*`
+      # honours the per-platform workflow_dispatch switches (empty -> runs, matching the old matrix
+      # `exclude`).
+      - name: iOS Integration Tests
+        if: ${{ !cancelled() && fromJSON(inputs.schemes).iOS && github.event.inputs.ios != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
         with:
-          scheme: ${{ inputs.scheme }}
-          destination: ${{ steps.platform.outputs.destination }}
-          sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          scheme: ${{ fromJSON(inputs.schemes).iOS }}
+          platform: iOS
           project_path: ${{ inputs.project_path }}
-          generate_coverage: false
-          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
-          test_without_building: false
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          resource_subfolder: ${{ inputs.resource_subfolder }}
+          xcode_version: ${{ inputs.xcode_version }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
 
-      - name: Retry ${{ inputs.platform }} Integration Tests
-        if: steps.run-tests.outcome=='failure'
-        id: retry-tests
-        uses: ./.github/composite_actions/run_xcodebuild_test
+      - name: tvOS Integration Tests
+        if: ${{ !cancelled() && fromJSON(inputs.schemes).tvOS && github.event.inputs.tvos != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
         with:
-          scheme: ${{ inputs.scheme }}
-          destination: ${{ steps.platform.outputs.destination }}
-          sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          scheme: ${{ fromJSON(inputs.schemes).tvOS }}
+          platform: tvOS
           project_path: ${{ inputs.project_path }}
-          generate_coverage: false
-          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: true
-          # Only attempt to test without building when we are not using any cache.
-          test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          resource_subfolder: ${{ inputs.resource_subfolder }}
+          xcode_version: ${{ inputs.xcode_version }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
 
+      - name: watchOS Integration Tests
+        if: ${{ !cancelled() && fromJSON(inputs.schemes).watchOS && github.event.inputs.watchos != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
+        with:
+          scheme: ${{ fromJSON(inputs.schemes).watchOS }}
+          platform: watchOS
+          project_path: ${{ inputs.project_path }}
+          resource_subfolder: ${{ inputs.resource_subfolder }}
+          xcode_version: ${{ inputs.xcode_version }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
+
+      # Save only on a fully green run (success() is false if any platform failed), so a broken
+      # build is never cached. Skipped when the exact key already hit.
       - name: Save the build cache
-        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        if: ${{ success() && steps.build-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build

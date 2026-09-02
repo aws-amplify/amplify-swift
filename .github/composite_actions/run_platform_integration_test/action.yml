@@ -1,0 +1,98 @@
+name: 'Run integration tests for one platform'
+description: >
+  Runs the given scheme's integration tests on a single platform (build parameters, simulator
+  install, test-configuration download, test + retry). Extracted so the caller can invoke it once
+  per platform as sequential steps in a single job — i.e. run every platform on one runner in
+  series, instead of fanning out one runner per platform. Dependency/build caching is owned by the
+  caller (restored once per job, shared across platforms), so it is intentionally not done here.
+
+inputs:
+  scheme:
+    description: 'The scheme to run the tests'
+    required: true
+  platform:
+    description: 'The platform in which to run these tests'
+    required: true
+  project_path:
+    required: false
+    default: ''
+  resource_subfolder:
+    description: 'The S3 subfolder holding this category''s test configuration'
+    required: true
+  xcode_version:
+    description: 'The version of Xcode used to run these tests'
+    default: 'latest'
+  aws_role_to_assume:
+    required: true
+  aws_region:
+    required: true
+  aws_s3_bucket:
+    required: true
+  build_cache_hit:
+    description: 'Whether the caller restored an exact build cache (controls retry test-without-building)'
+    default: 'false'
+  test_iterations_flags:
+    description: 'The xcodebuild flags used when running the test'
+    default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get build parameters for ${{ inputs.platform }}
+      id: platform
+      uses: ./.github/composite_actions/get_platform_parameters
+      with:
+        platform: ${{ inputs.platform }}
+        xcode_version: ${{ inputs.xcode_version }}
+
+    - name: Install simulators if needed
+      uses: ./.github/composite_actions/install_simulators_if_needed
+      with:
+        xcode_version: ${{ steps.platform.outputs.xcode-version }}
+        platform: ${{ inputs.platform }}
+
+    - name: Create the test configuration directory
+      shell: bash
+      run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+    - name: Download the Integration Test configurations
+      uses: ./.github/composite_actions/download_test_configuration
+      with:
+        resource_subfolder: ${{ inputs.resource_subfolder }}
+        aws_role_to_assume: ${{ inputs.aws_role_to_assume }}
+        aws_region: ${{ inputs.aws_region }}
+        aws_s3_bucket: ${{ inputs.aws_s3_bucket }}
+        destination: ~/.aws-amplify/amplify-ios/testconfiguration/
+
+    - name: Run ${{ inputs.platform }} Integration Tests
+      id: run-tests
+      continue-on-error: true
+      uses: ./.github/composite_actions/run_xcodebuild_test
+      with:
+        scheme: ${{ inputs.scheme }}
+        destination: ${{ steps.platform.outputs.destination }}
+        sdk: ${{ steps.platform.outputs.sdk }}
+        xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+        project_path: ${{ inputs.project_path }}
+        generate_coverage: false
+        cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+        derived_data_path: ${{ github.workspace }}/Build
+        test_without_building: false
+        other_flags: ${{ inputs.test_iterations_flags }}
+
+    - name: Retry ${{ inputs.platform }} Integration Tests
+      if: ${{ steps.run-tests.outcome == 'failure' }}
+      uses: ./.github/composite_actions/run_xcodebuild_test
+      with:
+        scheme: ${{ inputs.scheme }}
+        destination: ${{ steps.platform.outputs.destination }}
+        sdk: ${{ steps.platform.outputs.sdk }}
+        xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+        project_path: ${{ inputs.project_path }}
+        generate_coverage: false
+        cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+        derived_data_path: ${{ github.workspace }}/Build
+        # The first attempt already built into Build/, so retry without rebuilding when the caller
+        # did not start from an exact build-cache hit.
+        test_without_building: ${{ inputs.build_cache_hit != 'true' }}
+        other_flags: ${{ inputs.test_iterations_flags }}

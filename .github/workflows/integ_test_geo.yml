@@ -26,19 +26,9 @@ permissions:
 jobs:
   geo-integration-tests:
     name: Geo Integration Tests
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: ${{ matrix.platform == 'watchOS' && 'AWSLocationGeoPluginIntegrationTestsWatch' || 'AWSLocationGeoPluginIntegrationTests' }}
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSLocationGeoPluginIntegrationTests", "tvOS": "AWSLocationGeoPluginIntegrationTests", "watchOS": "AWSLocationGeoPluginIntegrationTestsWatch"}'
       project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
       resource_subfolder: geo
-      timeout-minutes: 60
     secrets: inherit

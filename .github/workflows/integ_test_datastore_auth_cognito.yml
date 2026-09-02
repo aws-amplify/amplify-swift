@@ -26,19 +26,9 @@ permissions:
 jobs:
   datastore-integration-auth-cognito-tests:
     name: DataStore Integration Tests | Auth Cognito
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginAuthCognitoTestsWatch' || 'AWSDataStorePluginAuthCognitoTests' }}
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSDataStorePluginAuthCognitoTests", "tvOS": "AWSDataStorePluginAuthCognitoTests", "watchOS": "AWSDataStorePluginAuthCognitoTestsWatch"}'
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       resource_subfolder: datastore
-      timeout-minutes: 120
     secrets: inherit

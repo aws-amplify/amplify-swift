@@ -26,19 +26,9 @@ permissions:
 jobs:
   api-graphql-lambda-auth-tests:
     name: API Integration Tests | GraphQL Lambda
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: ${{ matrix.platform == 'watchOS' && 'AWSAPIPluginGraphQLLambdaAuthTestsWatch' || 'AWSAPIPluginGraphQLLambdaAuthTests' }}
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSAPIPluginGraphQLLambdaAuthTests", "tvOS": "AWSAPIPluginGraphQLLambdaAuthTests", "watchOS": "AWSAPIPluginGraphQLLambdaAuthTestsWatch"}'
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
-      timeout-minutes: 45
     secrets: inherit

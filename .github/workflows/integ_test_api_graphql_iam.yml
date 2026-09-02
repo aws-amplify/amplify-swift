@@ -21,19 +21,9 @@ permissions:
 jobs:
   api-graphql-iam-tests:
     name: API Integration Tests | GraphQL IAM
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      scheme: ${{ matrix.platform == 'watchOS' && 'AWSAPIPluginGraphQLIAMTestsWatch' || 'AWSAPIPluginGraphQLIAMTests' }}
-      platform: ${{ matrix.platform }}
+      schemes: '{"iOS": "AWSAPIPluginGraphQLIAMTests", "tvOS": "AWSAPIPluginGraphQLIAMTests", "watchOS": "AWSAPIPluginGraphQLIAMTestsWatch"}'
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
-      timeout-minutes: 45
     secrets: inherit

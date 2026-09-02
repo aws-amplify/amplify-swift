@@ -23,54 +23,31 @@ permissions:
     id-token: write
     contents: read
 
+# All supported platforms run sequentially on ONE runner instead of one runner per platform, to cut
+# peak concurrent macOS jobs (see run_integration_tests.yml for the rationale). Push Notifications
+# cannot use that shared workflow because it needs a local Node server running alongside the tests;
+# here the server is started once and stays up across all three platform runs.
 jobs:
   push-notification-integration-tests:
-    name: ${{ matrix.platform }} Tests | PushNotificationHostApp
+    name: Integration Tests | PushNotificationHostApp
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 120
     environment: IntegrationTest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+    env:
+      PROJECT_PATH: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
+      RESOURCE_SUBFOLDER: push-notification
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           persist-credentials: false
 
-      - name: Get build parameters for ${{ matrix.platform}}
-        id: platform
+      # Platform-independent build parameters (notably the resolved Xcode version) for the cache keys.
+      - name: Resolve build parameters
+        id: params
         uses: ./.github/composite_actions/get_platform_parameters
         with:
-          platform: ${{ matrix.platform }}
-
-      - name: Install simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.platform.outputs.xcode-version }}
-          platform: ${{ matrix.platform }}
-
-      - name: Create the test configuration directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Download the Integration Test configurations
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: push-notification
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-          destination: ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Set up node
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
-        with:
-          node-version: 16.x
+          platform: macOS
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -79,59 +56,77 @@ jobs:
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
+          key: amplify-packages-${{ steps.params.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
+            amplify-packages-${{ steps.params.outputs.xcode-version }}-
 
       - name: Attempt to restore the build cache
         id: build-cache
-        if: steps.dependencies-cache.outputs.cache-hit
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
-          key: Amplify-${{ matrix.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}-build-cache-${{ hashFiles('Package.resolved') }}
+          key: Amplify-integ-all-platforms-${{ steps.params.outputs.xcode-version }}-PushNotificationHostApp-build-cache-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            Amplify-integ-all-platforms-${{ steps.params.outputs.xcode-version }}-PushNotificationHostApp-build-cache-
 
+      - name: Set up node
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 16.x
+
+      # Started once; stays up (on localhost) for every platform run below.
       - name: Run Local Server
         run: |
-          cd ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp/LocalServer
+          cd ${{ env.PROJECT_PATH }}/LocalServer
           npm install
           npm start &
         shell: bash
 
-      - name: Run ${{ matrix.platform }} Integration Tests
-        id: run-tests
-        continue-on-error: true
-        uses: ./.github/composite_actions/run_xcodebuild_test
+      # One step per platform, run in series. `!cancelled()` gives the old matrix's fail-fast:false
+      # behaviour; these steps are not continue-on-error, so a real failure still fails the job.
+      - name: iOS Integration Tests
+        if: ${{ !cancelled() && github.event.inputs.ios != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
         with:
-          scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
-          destination: ${{ steps.platform.outputs.destination }}
-          sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
-          project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
-          generate_coverage: false
-          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          scheme: PushNotificationHostApp
+          platform: iOS
+          project_path: ${{ env.PROJECT_PATH }}
+          resource_subfolder: ${{ env.RESOURCE_SUBFOLDER }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
 
-      - name: Retry ${{ matrix.platform }} Integration Tests
-        if: steps.run-tests.outcome=='failure'
-        id: retry-tests
-        uses: ./.github/composite_actions/run_xcodebuild_test
+      - name: tvOS Integration Tests
+        if: ${{ !cancelled() && github.event.inputs.tvos != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
         with:
-          scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
-          destination: ${{ steps.platform.outputs.destination }}
-          sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
-          project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
-          generate_coverage: false
-          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          derived_data_path: ${{ github.workspace }}/Build
-          disable_package_resolution: true
+          scheme: PushNotificationHostApp
+          platform: tvOS
+          project_path: ${{ env.PROJECT_PATH }}
+          resource_subfolder: ${{ env.RESOURCE_SUBFOLDER }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
+
+      - name: watchOS Integration Tests
+        if: ${{ !cancelled() && github.event.inputs.watchos != 'false' }}
+        uses: ./.github/composite_actions/run_platform_integration_test
+        with:
+          scheme: PushNotificationWatchTests
+          platform: watchOS
+          project_path: ${{ env.PROJECT_PATH }}
+          resource_subfolder: ${{ env.RESOURCE_SUBFOLDER }}
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          build_cache_hit: ${{ steps.build-cache.outputs.cache-hit }}
 
       - name: Save the build cache
-        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        if: ${{ success() && steps.build-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ github.workspace }}/Build
