@@ -9,12 +9,12 @@ import Amplify
 import Combine
 import Foundation
 
-public enum AppSyncRealTimeRequest {
+public enum AppSyncRealTimeRequest: Sendable {
     case connectionInit
     case start(StartRequest)
     case stop(String)
 
-    public struct StartRequest {
+    public struct StartRequest: Sendable {
         let id: String
         let data: String
         let auth: AppSyncRealTimeRequestAuth?
