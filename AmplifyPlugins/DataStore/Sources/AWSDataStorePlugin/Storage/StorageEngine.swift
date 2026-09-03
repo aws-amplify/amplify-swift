@@ -21,7 +21,10 @@ typealias StorageEngineBehaviorFactory =
     ) throws -> StorageEngineBehavior
 
 // swiftlint:disable type_body_length
-final class StorageEngine: StorageEngineBehavior {
+/// - Note: `@unchecked Sendable` to satisfy `StorageEngineBehavior`'s `Sendable` requirement.
+///   `syncEngine` is established during start-up and cleared on `clear`, not written concurrently
+///   with reads.
+final class StorageEngine: StorageEngineBehavior, @unchecked Sendable {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
@@ -282,7 +285,7 @@ final class StorageEngine: StorageEngineBehavior {
         modelSchema: ModelSchema,
         withId id: Model.Identifier,
         condition: QueryPredicate? = nil,
-        completion: @escaping (DataStoreResult<M?>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
     ) {
         let cascadeDeleteOperation = CascadeDeleteOperation(
             storageAdapter: storageAdapter,
@@ -337,7 +340,7 @@ final class StorageEngine: StorageEngineBehavior {
         sort: [QuerySortDescriptor]?,
         paginationInput: QueryPaginationInput?,
         eagerLoad: Bool = true,
-        completion: (DataStoreResult<[M]>) -> Void
+        completion: @escaping DataStoreCallback<[M]>
     ) {
         return storageAdapter.query(
             modelType,
@@ -356,7 +359,7 @@ final class StorageEngine: StorageEngineBehavior {
         sort: [QuerySortDescriptor]? = nil,
         paginationInput: QueryPaginationInput? = nil,
         eagerLoad: Bool = true,
-        completion: DataStoreCallback<[M]>
+        completion: @escaping DataStoreCallback<[M]>
     ) {
         query(
             modelType,

@@ -12,7 +12,7 @@ import Combine
 extension OutgoingMutationQueue {
 
     /// States are descriptive, they say what is happening in the system right now
-    enum State {
+    enum State: Sendable {
         // Startup/config states
         case notInitialized
         case stopped
@@ -23,7 +23,10 @@ extension OutgoingMutationQueue {
         case waitingForEventToProcess
 
         // Wrap-up
-        case stopping(BasicClosure)
+        // Spelled out rather than `BasicClosure` so the completion can be `@Sendable`, which the
+        // `Sendable` conformance on this enum requires. `BasicClosure` is public API used widely,
+        // so it is deliberately left alone.
+        case stopping(@Sendable () -> Void)
 
         // Terminal states
         case inError(AmplifyError)

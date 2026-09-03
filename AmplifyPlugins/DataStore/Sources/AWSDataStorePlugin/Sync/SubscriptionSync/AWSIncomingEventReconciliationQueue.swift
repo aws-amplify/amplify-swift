@@ -13,8 +13,9 @@ import Foundation
 typealias DisableSubscriptions = () -> Bool
 
 // Used for testing:
+// `@Sendable` because the factory is stored in a `static let` and therefore shared globally.
 typealias IncomingEventReconciliationQueueFactory =
-    (
+    @Sendable (
         [ModelSchema],
         APICategoryGraphQLBehavior,
         StorageEngineAdapter,
@@ -25,7 +26,9 @@ typealias IncomingEventReconciliationQueueFactory =
         @escaping DisableSubscriptions
     ) async -> IncomingEventReconciliationQueue
 
-final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
+/// - Note: `@unchecked Sendable` to satisfy `IncomingEventReconciliationQueue`'s `Sendable`
+///   requirement. The sinks dictionary is only mutated while wiring up or tearing down queues.
+final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue, @unchecked Sendable {
 
     private var modelReconciliationQueueSinks: AtomicValue<[String: AnyCancellable]> = AtomicValue(initialValue: [:])
 
@@ -214,7 +217,7 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = {
+    static let factory: IncomingEventReconciliationQueueFactory = { @Sendable
         modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
         await AWSIncomingEventReconciliationQueue(
             modelSchemas: modelSchemas,

@@ -40,7 +40,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
             guard let dispatchedModelSyncedEvent = dispatchedModelSyncedEvents[modelSchema.name] else {
                 return Fatal.preconditionFailure("`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)")
             }
-            let request = ObserveQueryRequest(options: [])
+            let request = ObserveQueryRequest()
             let taskRunner = ObserveQueryTaskRunner(
                 request: request,
                 modelType: modelType,

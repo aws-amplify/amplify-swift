@@ -40,7 +40,8 @@ enum ReconcileAndSaveQueueEvent {
 /// Additionally, this queue allows per model type cancellations on the operations that are enqueued by calling
 /// `cancelOperations(modelName)`. This allows per model type clean up, while allowing other model reconcilliations to
 /// continue to operate.
-class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
+/// - Note: `final` and `@unchecked Sendable`: all mutable state is touched only from `serialQueue`.
+final class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue, @unchecked Sendable {
 
     private let serialQueue = DispatchQueue(
         label: "com.amazonaws.ReconcileAndSaveQueue.serialQueue",
@@ -72,16 +73,21 @@ class ReconcileAndSaveQueue: ReconcileAndSaveOperationQueue {
     func addOperation(_ operation: ReconcileAndLocalSaveOperation, modelName: String) {
 
         serialQueue.async {
-            var reconcileAndLocalSaveOperationSink: AnyCancellable?
-            reconcileAndLocalSaveOperationSink = operation.publisher.sink { _ in
+            // The completion closure has to reference the cancellable it is itself assigned to, so
+            // that it can remove it on completion. Holding it in an `AtomicValue` lets the closure
+            // capture an immutable box reference; capturing the `var` directly is a reference to a
+            // mutable variable from concurrently-executing code, which is an error in the Swift 6
+            // language mode.
+            let reconcileAndLocalSaveOperationSink = AtomicValue<AnyCancellable?>(initialValue: nil)
+            reconcileAndLocalSaveOperationSink.set(operation.publisher.sink { _ in
                 self.serialQueue.async {
-                    self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink) }
+                    self.reconcileAndLocalSaveOperationSinks.with { $0.remove(reconcileAndLocalSaveOperationSink.get()) }
                     self.modelReconcileAndSaveOperations[modelName]?[operation.id] = nil
                     self.reconcileAndSaveQueueSubject.send(.operationRemoved(id: operation.id))
                 }
-            } receiveValue: { _ in }
+            } receiveValue: { _ in })
 
-            self.reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink) }
+            self.reconcileAndLocalSaveOperationSinks.with { $0.insert(reconcileAndLocalSaveOperationSink.get()) }
             self.modelReconcileAndSaveOperations[modelName]?[operation.id] = operation
             self.reconcileAndSaveQueue.addOperation(operation)
             self.reconcileAndSaveQueueSubject.send(.operationAdded(id: operation.id))
