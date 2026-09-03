@@ -9,8 +9,10 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
+/// - Note: `Sendable` because the session client is held across task boundaries by the analytics
+///   client and the app-lifecycle observers.
 @_spi(InternalAWSPinpoint)
-public protocol SessionClientBehaviour: AnyObject {
+public protocol SessionClientBehaviour: AnyObject, Sendable {
     var currentSession: PinpointSession { get }
     var analyticsClient: AnalyticsClientBehaviour? { get set }
 
@@ -23,7 +25,9 @@ struct SessionClientConfiguration {
     let uniqueDeviceId: String
 }
 
-class SessionClient: SessionClientBehaviour {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `SessionClientBehaviour`'s `Sendable`
+///   requirement. Session state transitions run on the client's own serial queue.
+final class SessionClient: SessionClientBehaviour, @unchecked Sendable {
     private var session: PinpointSession
 
     weak var analyticsClient: AnalyticsClientBehaviour?
@@ -272,5 +276,7 @@ extension SessionClient {
 }
 
 extension PinpointSession {
-    static var none = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
+    // `let` rather than `var`: nothing reassigns this sentinel, and a mutable static is not
+    // concurrency-safe in the Swift 6 language mode.
+    static let none = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
 }

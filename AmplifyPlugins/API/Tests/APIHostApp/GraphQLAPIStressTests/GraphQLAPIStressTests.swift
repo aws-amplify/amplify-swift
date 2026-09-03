@@ -27,7 +27,9 @@ import XCTest
 
  */
 
-final class APIStressTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class APIStressTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfiguration = "testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration"
     let concurrencyLimit = 50

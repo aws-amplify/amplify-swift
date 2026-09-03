@@ -7,7 +7,9 @@
 
 import Amplify
 
-class InterpretTextMultiService: MultiServiceBehavior {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `MultiServiceBehavior`; the two service
+///   references are set up before any call races them.
+final class InterpretTextMultiService: MultiServiceBehavior, @unchecked Sendable {
     weak var coreMLService: CoreMLPredictionBehavior?
     weak var predictionsService: AWSPredictionsService?
     let textToInterpret: String

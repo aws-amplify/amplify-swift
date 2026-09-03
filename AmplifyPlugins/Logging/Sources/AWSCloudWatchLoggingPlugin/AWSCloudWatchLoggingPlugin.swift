@@ -17,7 +17,10 @@ import Foundation
 /// delegates all calls to the default Console logger implementation.
 ///
 /// - Tag: CloudWatchLoggingPlugin
-public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
+/// - Note: `final` and `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`.
+///   The client and configuration are established during `configure(using:)` before any logging
+///   call can reach them.
+public final class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin, @unchecked Sendable {
     /// An instance of the authentication service.
     var loggingClient: AWSCloudWatchLoggingCategoryClient!
 

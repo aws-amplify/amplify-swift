@@ -10,7 +10,11 @@ import Foundation
 import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
-class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, @unchecked Sendable {
 
     typealias Migrationhandler = () -> Void
     typealias SaveCredentialHandler = (Codable) throws -> Void

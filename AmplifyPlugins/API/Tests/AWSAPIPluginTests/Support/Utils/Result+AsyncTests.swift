@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSAPIPlugin
 
-class ResultAsyncTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ResultAsyncTests: XCTestCase, @unchecked Sendable {
 
     func testFlatMapAsync_withSuccess_applyFunction() async {
         func plus1(_ number: Int) async -> Int {

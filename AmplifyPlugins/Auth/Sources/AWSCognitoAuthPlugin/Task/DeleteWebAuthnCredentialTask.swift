@@ -10,7 +10,8 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 
-class DeleteWebAuthnCredentialTask: AuthDeleteWebAuthnCredentialTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class DeleteWebAuthnCredentialTask: AuthDeleteWebAuthnCredentialTask, DefaultLogger, @unchecked Sendable {
     private let request: AuthDeleteWebAuthnCredentialRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: UserPoolEnvironment.CognitoUserPoolFactory

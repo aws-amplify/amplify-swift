@@ -29,7 +29,8 @@ enum RemoteSyncEngineEvent {
 }
 
 /// Behavior to sync mutation events to the remote API, and to subscribe to mutations from the remote API
-protocol RemoteSyncEngineBehavior: AnyObject {
+/// - Note: `Sendable` because the storage engine reaches the sync engine from concurrent work.
+protocol RemoteSyncEngineBehavior: AnyObject, Sendable {
 
     /// Start the sync process with a "delta sync" merge
     ///
@@ -49,7 +50,8 @@ protocol RemoteSyncEngineBehavior: AnyObject {
 
     /// Submits a new mutation for synchronization to the remote API. The response will be handled by the appropriate
     /// reconciliation queue
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void)
+    // `@Sendable` to match `MutationEventIngester.submit`, which this forwards to.
+    func submit(_ mutationEvent: MutationEvent, completion: @escaping @Sendable (Result<MutationEvent, DataStoreError>) -> Void)
 
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> { get }
 }

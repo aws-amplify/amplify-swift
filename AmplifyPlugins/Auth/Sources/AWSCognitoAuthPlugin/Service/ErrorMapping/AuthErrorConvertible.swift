@@ -10,7 +10,8 @@ import Foundation
 
 /// A type that can be represented as an AuthError
 ///
-protocol AuthErrorConvertible {
+/// - Note: `Sendable` because these errors are thrown out of actor-isolated auth work.
+protocol AuthErrorConvertible: Sendable {
     var authError: AuthError { get }
 }
 

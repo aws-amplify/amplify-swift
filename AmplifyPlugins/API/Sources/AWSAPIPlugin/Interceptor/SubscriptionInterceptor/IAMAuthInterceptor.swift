@@ -14,7 +14,9 @@ import InternalAmplifyCredentials
 import SmithyHTTPAPI
 import SmithyIdentity
 
-class IAMAuthInterceptor {
+/// - Note: `final` and `@unchecked Sendable`: all state is `let`, but
+///   `any AWSCredentialIdentityResolver` comes from the AWS SDK and is not declared `Sendable`.
+final class IAMAuthInterceptor: @unchecked Sendable {
 
     let authProvider: any AWSCredentialIdentityResolver
     let region: AWSRegionType

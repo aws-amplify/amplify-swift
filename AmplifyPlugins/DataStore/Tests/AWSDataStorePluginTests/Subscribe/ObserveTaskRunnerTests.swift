@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSDataStorePlugin
 
-final class ObserveTaskRunnerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class ObserveTaskRunnerTests: XCTestCase, @unchecked Sendable {
 
     func testSuccess() async throws {
         let dataStorePublisher = DataStorePublisher()

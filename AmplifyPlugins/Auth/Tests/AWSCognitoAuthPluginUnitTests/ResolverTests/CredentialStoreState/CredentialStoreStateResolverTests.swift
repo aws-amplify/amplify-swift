@@ -24,7 +24,9 @@ extension CredentialStoreStateSequence {
     }
 }
 
-class CredentialStoreStateResolverTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CredentialStoreStateResolverTests: XCTestCase, @unchecked Sendable {
     func testValidCredentialStoreStateSequences() throws {
         let credentialStoreError = KeychainStoreError.configuration(message: "someError")
         let testData = AmplifyCredentials.testData

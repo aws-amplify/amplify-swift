@@ -10,7 +10,11 @@ import Foundation
 import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
-class MockKeychainStoreBehavior: KeychainStoreBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockKeychainStoreBehavior: KeychainStoreBehavior, @unchecked Sendable {
 
     typealias VoidHandler = () -> Void
 

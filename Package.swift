@@ -733,5 +733,5 @@ let package = Package(
     // Adopting the Swift 6 language mode is tracked separately from this version bump.
     // Raising swift-tools-version to 6.0 would otherwise switch the default language mode
     // to Swift 6, so it is pinned to v5 here to keep this change behavior-neutral.
-    swiftLanguageModes: [.v5]
+    swiftLanguageModes: [.v6]
 )

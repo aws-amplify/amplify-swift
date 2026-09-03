@@ -11,7 +11,7 @@ import AWSPluginsCore
 
 enum UpdateAttributesOperationHelper {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     static func update(
         attributes: [AuthUserAttribute],

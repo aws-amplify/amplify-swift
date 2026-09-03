@@ -8,7 +8,9 @@
 import AmplifyBigInteger
 import XCTest
 
-final class AmplifyBigIntegerHelperTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AmplifyBigIntegerHelperTests: XCTestCase, @unchecked Sendable {
 
     func testHex236() {
         let num = AmplifyBigInt(236)

@@ -12,7 +12,10 @@ import Foundation
 import AWSLocation
 
 /// The AWSLocationPlugin implements the Geo APIs for Amazon Location
-public final class AWSLocationGeoPlugin: GeoCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The service,
+///   auth, and configuration properties are implicitly-unwrapped and populated during
+///   `configure(using:)` before any client call can reach them.
+public final class AWSLocationGeoPlugin: GeoCategoryPlugin, @unchecked Sendable {
     /// An instance of the AWS Location service
     var locationService: AWSLocationBehavior!
 

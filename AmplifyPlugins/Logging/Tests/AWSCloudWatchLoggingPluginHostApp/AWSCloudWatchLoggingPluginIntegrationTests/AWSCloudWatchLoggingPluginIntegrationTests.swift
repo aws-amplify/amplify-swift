@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSCloudWatchLoggingPlugin
 @testable import AWSCognitoAuthPlugin
 
-class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase, @unchecked Sendable {
     let amplifyConfigurationFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration"
     let amplifyOutputsFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplify_outputs"
     #if os(tvOS)

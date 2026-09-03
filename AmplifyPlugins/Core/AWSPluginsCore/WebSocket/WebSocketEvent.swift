@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(WebSocket)
-public enum WebSocketEvent {
+public enum WebSocketEvent: Sendable {
     case connected
     case disconnected(URLSessionWebSocketTask.CloseCode, String?)
     case data(Data)

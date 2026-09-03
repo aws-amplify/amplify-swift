@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum QueryOperator: Encodable {
+public enum QueryOperator: Encodable, Sendable {
     case notEqual(_ value: Persistable?)
     case equals(_ value: Persistable?)
     case lessOrEqual(_ value: Persistable)

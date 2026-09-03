@@ -38,7 +38,9 @@ actor EndpointClient: EndpointClientBehaviour {
     private let remoteNotificationsHelper: RemoteNotificationsBehaviour
 
     private var endpointProfile: PinpointEndpointProfile?
-    private static let defaultDateFormatter = ISO8601DateFormatter()
+    // `nonisolated(unsafe)`: `ISO8601DateFormatter` is documented as thread-safe for formatting but
+    // is not declared `Sendable`.
+    private nonisolated(unsafe) static let defaultDateFormatter = ISO8601DateFormatter()
 
     init(
         configuration: EndpointClient.Configuration,

@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AmplifyTestCommon
 
-class ModelRegistryTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelRegistryTests: XCTestCase, @unchecked Sendable {
 
     let postJSON =
     #"{"id":"1","title":"title","content":"content","comments":[],"createdAt":"2019-12-31T01:23:45.678Z"}"#

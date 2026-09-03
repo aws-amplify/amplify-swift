@@ -10,7 +10,8 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 
-class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class ListWebAuthnCredentialsTask: AuthListWebAuthnCredentialsTask, DefaultLogger, @unchecked Sendable {
     private let request: AuthListWebAuthnCredentialsRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: UserPoolEnvironment.CognitoUserPoolFactory

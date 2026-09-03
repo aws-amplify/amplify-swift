@@ -12,9 +12,13 @@ import Combine
 import InternalAmplifyCredentials
 
 
-public class AWSGraphQLSubscriptionTaskRunner<R>: InternalTaskRunner,
-                                                  InternalTaskAsyncThrowingSequence,
-                                                  InternalTaskThrowingChannel where R: Decodable, R: Sendable {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `InternalTaskRunner`'s `Sendable`
+///   requirement. The mutable properties are established while starting the subscription and are
+///   not written concurrently thereafter.
+public final class AWSGraphQLSubscriptionTaskRunner<R>: InternalTaskRunner,
+                                                       InternalTaskAsyncThrowingSequence,
+                                                       InternalTaskThrowingChannel,
+                                                       @unchecked Sendable where R: Decodable, R: Sendable {
     public typealias Request = GraphQLOperationRequest<R>
     public typealias InProcess = GraphQLSubscriptionEvent<R>
 

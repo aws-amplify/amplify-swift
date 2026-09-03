@@ -14,7 +14,9 @@ import InternalAmplifyCredentials
 /// Plugin APIs for AWS S3.
 ///
 /// - Tag: AWSS3StoragePlugin
-public final class AWSS3StoragePlugin: StorageCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The service,
+///   auth, and bucket properties are populated during `configure(using:)`.
+public final class AWSS3StoragePlugin: StorageCategoryPlugin, @unchecked Sendable {
 
     /// The default S3 storage service.
     var defaultStorageService: AWSS3StorageServiceBehavior! {

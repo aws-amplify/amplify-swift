@@ -9,12 +9,16 @@ import Foundation
 
 extension PushNotificationsCategory: Resettable {
     public func reset() async {
+        // Hoisted so the task closure below captures these Sendable values rather
+        // than a non-Sendable `self`, which is an error in the Swift 6 language mode.
+        let log = log
+        let categoryType = categoryType
         await withTaskGroup(of: Void.self) { taskGroup in
             for plugin in plugins.values {
-                taskGroup.addTask { [weak self] in
-                    self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin")
+                taskGroup.addTask {
+                    log.verbose("Resetting \(String(describing: categoryType)) plugin")
                     await plugin.reset()
-                    self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin: finished")
+                    log.verbose("Resetting \(String(describing: categoryType)) plugin: finished")
                 }
             }
             await taskGroup.waitForAll()

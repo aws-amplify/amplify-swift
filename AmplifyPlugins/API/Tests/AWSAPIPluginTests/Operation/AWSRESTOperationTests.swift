@@ -10,7 +10,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
-class AWSRESTOperationTests: OperationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSRESTOperationTests: OperationTestBase, @unchecked Sendable {
 
     func testRESTOperationSuccess() throws {
         throw XCTSkip("Not yet implemented")

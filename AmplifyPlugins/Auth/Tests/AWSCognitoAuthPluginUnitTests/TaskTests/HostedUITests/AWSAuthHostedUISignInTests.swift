@@ -14,7 +14,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSAuthHostedUISignInTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
 
     var plugin: AWSCognitoAuthPlugin!
     let networkTimeout = TimeInterval(5)
@@ -38,7 +40,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     ))
     let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
 
-    func urlSessionMock() -> URLSession {
+    @Sendable func urlSessionMock() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         return URLSession(configuration: configuration)
@@ -51,11 +53,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             return (HTTPURLResponse(), self.mockJson)
         }
 
-        func sessionFactory() -> HostedUISessionBehavior {
+        @Sendable func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
         }
 
-        func mockRandomString() -> RandomStringBehavior {
+        @Sendable func mockRandomString() -> RandomStringBehavior {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
@@ -92,11 +94,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             return (HTTPURLResponse(), self.mockJson)
         }
 
-        func sessionFactory() -> HostedUISessionBehavior {
+        @Sendable func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
         }
 
-        func mockRandomString() -> RandomStringBehavior {
+        @Sendable func mockRandomString() -> RandomStringBehavior {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 

@@ -16,7 +16,8 @@ import Foundation
 // swiftlint:disable line_length
 
 /// Database protocol which supports the recovery process.
-protocol StorageTransferDatabase {
+/// - Note: `Sendable` because the transfer database is reached from URLSession delegate callbacks.
+protocol StorageTransferDatabase: Sendable {
     func insertTransferRequest(task: StorageTransferTask)
 
     func updateTransferRequest(task: StorageTransferTask)
@@ -27,7 +28,7 @@ protocol StorageTransferDatabase {
 
     func defaultTransferType(persistableTransferTask: StoragePersistableTransferTask) -> StorageTransferType?
 
-    func recover(urlSession: StorageURLSession, completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
+    func recover(urlSession: StorageURLSession, completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void)
 
     func attachEventHandlers(
         onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,

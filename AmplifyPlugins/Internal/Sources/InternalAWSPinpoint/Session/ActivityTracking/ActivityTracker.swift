@@ -61,12 +61,15 @@ extension ApplicationState: DefaultLogger {
     }
 }
 
-protocol ActivityTrackerBehaviour: AnyObject {
+/// - Note: `Sendable` because the session client holding this is `Sendable`.
+protocol ActivityTrackerBehaviour: AnyObject, Sendable {
     var backgroundTrackingTimeout: TimeInterval { get set }
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void)
 }
 
-class ActivityTracker: ActivityTrackerBehaviour {
+/// - Note: `final` and `@unchecked Sendable`: the background-tracking state is only touched from the
+///   main actor, and the state machine it forwards to is internally synchronized.
+final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
 
 #if canImport(UIKit) && !os(watchOS)
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
@@ -81,7 +84,6 @@ class ActivityTracker: ActivityTrackerBehaviour {
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
-    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -92,7 +94,6 @@ class ActivityTracker: ActivityTrackerBehaviour {
 #endif
     }()
 
-    @MainActor
     private static let applicationWillMoveToForegoundNotification: Notification.Name = {
     #if canImport(WatchKit)
         WKExtension.applicationWillEnterForegroundNotification
@@ -103,8 +104,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    @MainActor
-    private static var applicationWillTerminateNotification: Notification.Name = {
+    private static let applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
         WKExtension.applicationWillResignActiveNotification
@@ -115,7 +115,10 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    @MainActor
+    // These three were `@MainActor` before the Swift 6 migration, which forced observer registration
+    // off `init` and made it asynchronous — breaking callers that post a notification immediately after
+    // constructing a tracker. The annotation turned out to be unnecessary: the platform notification
+    // *names* are plain constants, so reading them needs no isolation and registration stays synchronous.
     private static let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
@@ -143,13 +146,9 @@ class ActivityTracker: ActivityTrackerBehaviour {
     }
 
     deinit {
-        for notification in ActivityTracker.notifications {
-            NotificationCenter.default.removeObserver(
-                self,
-                name: notification,
-                object: nil
-            )
-        }
+        // Removes every observer registered for this object, which is equivalent to unregistering each
+        // name individually and keeps this nonisolated `deinit` from touching any of the type's state.
+        NotificationCenter.default.removeObserver(self)
         stateMachineSubscriberToken = nil
     }
 

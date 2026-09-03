@@ -25,7 +25,9 @@ enum StorageMultipartUploadBehavior {
 }
 
 // swiftlint:disable type_body_length
-class StorageMultipartUploadSession {
+/// - Note: `@unchecked Sendable`: the session's state transitions are serialized by its
+///   own queue.
+class StorageMultipartUploadSession: @unchecked Sendable {
     enum Failure: Error {
         case invalidStateTransition
         case partsNotDone

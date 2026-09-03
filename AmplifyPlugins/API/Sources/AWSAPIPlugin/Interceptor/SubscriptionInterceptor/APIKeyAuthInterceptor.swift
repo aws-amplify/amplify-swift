@@ -9,7 +9,9 @@ import Amplify
 import Foundation
 @_spi(WebSocket) import AWSPluginsCore
 
-class APIKeyAuthInterceptor {
+/// - Note: `final` and `@unchecked Sendable`: all state is `let`, but `getAuthHeader` is a
+///   non-`Sendable` closure produced by `authHeaderBuilder()`.
+final class APIKeyAuthInterceptor: @unchecked Sendable {
     private let apiKey: String
     private let getAuthHeader = authHeaderBuilder()
 

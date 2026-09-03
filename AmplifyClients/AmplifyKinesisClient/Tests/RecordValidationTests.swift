@@ -21,7 +21,9 @@ import XCTest
 /// - dataSize should account for both partition key and data blob
 ///
 /// See: https://docs.aws.amazon.com/kinesis/latest/APIReference/API_PutRecordsRequestEntry.html
-class RecordValidationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RecordValidationTests: XCTestCase, @unchecked Sendable {
 
     private let maxRecordSize: Int64 = 1_000
 

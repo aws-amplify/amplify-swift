@@ -13,9 +13,15 @@ import Foundation
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MockModelReconciliationQueue: ModelReconciliationQueue {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
 
-    static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
+// by a single test at a time.
+
+class MockModelReconciliationQueue: ModelReconciliationQueue, @unchecked Sendable {
+
+    // `nonisolated(unsafe)`: populated during a test's setup and read within that test; XCTest runs
+    // one test at a time.
+    nonisolated(unsafe) static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
 
     private let modelSchema: ModelSchema
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>

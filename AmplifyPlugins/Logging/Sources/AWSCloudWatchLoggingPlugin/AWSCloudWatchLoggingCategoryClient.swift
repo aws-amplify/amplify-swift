@@ -20,7 +20,9 @@ import SmithyIdentity
 /// the application's authentication state.
 ///
 /// - Tag: CloudWatchLoggingCategoryClient
-final class AWSCloudWatchLoggingCategoryClient {
+/// - Note: `@unchecked Sendable`: the client starts detached tasks that touch its state, which is
+///   guarded by its lock.
+final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
 
     private var enabled: Bool = true
 

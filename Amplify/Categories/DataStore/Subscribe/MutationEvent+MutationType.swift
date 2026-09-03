@@ -8,7 +8,8 @@
 import Foundation
 
 public extension MutationEvent {
-    enum MutationType: String, Codable {
+    // Explicit `Sendable`: Swift does not infer it for public types.
+    enum MutationType: String, Codable, Sendable {
         case create
         case update
         case delete

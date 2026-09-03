@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Amplify
 import Foundation
 import SQLite
 import XCTest
@@ -330,14 +331,15 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
     func saveModelSynchronous<M: Model>(model: M, storageEngine: StorageEngine) -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<M>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<M>?>(initialValue: nil)
 
         storageEngine.save(model) { sResult in
-            result = sResult
+            result.set(sResult)
             saveFinished.fulfill()
         }
         wait(for: [saveFinished], timeout: defaultTimeout)
-        guard let saveResult = result else {
+        guard let saveResult = result.get() else {
             return .failure(causedBy: "Save operation timed out")
         }
         return saveResult
@@ -349,15 +351,16 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
         storageEngine: StorageEngine
     ) -> DataStoreResult<[M]> {
         let queryFinished = expectation(description: "Query Finished")
-        var result: DataStoreResult<[M]>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<[M]>?>(initialValue: nil)
 
         storageEngine.query(modelType, predicate: predicate) { qResult in
-            result = qResult
+            result.set(qResult)
             queryFinished.fulfill()
         }
 
         wait(for: [queryFinished], timeout: defaultTimeout)
-        guard let queryResult = result else {
+        guard let queryResult = result.get() else {
             return .failure(causedBy: "Query operation timed out")
         }
         return queryResult
