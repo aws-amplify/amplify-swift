@@ -186,24 +186,25 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
 
     func queryPendingMutations(withModels models: [Model]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
-            var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
+            // Each outcome goes straight to the promise. The accumulator `var` that used to hold it
+            // was mutated from the nested completion closure below, which the Swift 6 language mode
+            // rejects as mutation of a captured variable in concurrently-executing code.
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
-                result = .success([])
-                promise(result)
+                promise.value(.success([]))
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.nilStorageAdapter()
                 self.notifyDropped(count: models.count, error: error)
-                result = .failure(error)
-                promise(result)
+                promise.value(.failure(error))
                 return
             }
 
             guard !models.isEmpty else {
-                result = .success([])
-                promise(result)
+                promise.value(.success([]))
                 return
             }
 
@@ -214,11 +215,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
                 switch queryResult {
                 case .failure(let dataStoreError):
                     self.notifyDropped(count: models.count, error: dataStoreError)
-                    result = .failure(dataStoreError)
+                    promise.value(.failure(dataStoreError))
                 case .success(let mutationEvents):
-                    result = .success(mutationEvents)
+                    promise.value(.success(mutationEvents))
                 }
-                promise(result)
             }
         }
     }
@@ -248,10 +248,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
 
     func queryLocalMetadata(_ remoteModels: [RemoteModel]) -> Future<([RemoteModel], [LocalMetadata]), DataStoreError> {
         Future<([RemoteModel], [LocalMetadata]), DataStoreError> { promise in
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
             var result: Result<([RemoteModel], [LocalMetadata]), DataStoreError> =
                 .failure(Self.unfulfilledDataStoreError())
             defer {
-                promise(result)
+                promise.value(result)
             }
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
@@ -357,9 +359,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
         remoteModel: RemoteModel
     ) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
             guard let modelType = ModelRegistry.modelType(from: self.modelSchema.name) else {
                 let error = DataStoreError.invalidModelName(self.modelSchema.name)
-                promise(.failure(error))
+                promise.value(.failure(error))
                 return
             }
 
@@ -373,12 +377,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        promise(.success(.dropped))
+                        promise.value(.success(.dropped))
                     } else {
-                        promise(.failure(dataStoreError))
+                        promise.value(.failure(dataStoreError))
                     }
                 case .success:
-                    promise(.success(.applied(remoteModel, remoteModel)))
+                    promise.value(.success(.applied(remoteModel, remoteModel)))
                 }
             }
         }
@@ -389,25 +393,27 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
         remoteModel: RemoteModel
     ) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
             storageAdapter.save(untypedModel: remoteModel.model.instance, eagerLoad: self.isEagerLoad) { response in
                 switch response {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        promise(.success(.dropped))
+                        promise.value(.success(.dropped))
                     } else {
-                        promise(.failure(dataStoreError))
+                        promise.value(.failure(dataStoreError))
                     }
                 case .success(let savedModel):
                     let anyModel: AnyModel
                     do {
                         anyModel = try savedModel.eraseToAnyModel()
                         let appliedModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                        promise(.success(.applied(remoteModel, appliedModel)))
+                        promise.value(.success(.applied(remoteModel, appliedModel)))
                     } catch {
                         let dataStoreError = DataStoreError(error: error)
                         self.notifyDropped(error: dataStoreError)
-                        promise(.failure(dataStoreError))
+                        promise.value(.failure(dataStoreError))
                     }
                 }
             }
@@ -448,6 +454,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
         mutationType: MutationEvent.MutationType
     ) -> Future<MutationSyncMetadata, DataStoreError> {
         Future { promise in
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
             storageAdapter.save(
                 remoteModel.syncMetadata,
                 condition: nil,
@@ -459,7 +467,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
                 case .success:
                     self.notifyHub(remoteModel: remoteModel, mutationType: mutationType)
                 }
-                promise(result)
+                promise.value(result)
             }
         }
     }
@@ -532,10 +540,12 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation, @unchecked Sendable
 
     private func waitAllPublisherFinishes(publishers: [AnyPublisher<some Any, Never>]) -> Future<Void, DataStoreError> {
         Future { promise in
+            // `Future.Promise` is not `Sendable`, but Combine calls it at most once.
+            let promise = UncheckedSendable(promise)
             Publishers.MergeMany(publishers)
                 .collect()
                 .sink(receiveCompletion: { _ in
-                    promise(.successfulVoid)
+                    promise.value(.successfulVoid)
                 }, receiveValue: { _ in  })
                 .store(in: &self.cancellables)
         }

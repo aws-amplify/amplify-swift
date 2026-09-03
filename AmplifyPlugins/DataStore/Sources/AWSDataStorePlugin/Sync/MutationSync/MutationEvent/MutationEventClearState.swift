@@ -8,7 +8,8 @@
 import Amplify
 import Foundation
 
-final class MutationEventClearState {
+/// - Note: `@unchecked Sendable`: only holds a storage adapter reference used from async work.
+final class MutationEventClearState: @unchecked Sendable {
 
     let storageAdapter: StorageEngineAdapter
     init(storageAdapter: StorageEngineAdapter) {
@@ -28,10 +29,10 @@ final class MutationEventClearState {
         ) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
-                                    log.error("Failed on clearStateOutgoingMutations: \(dataStoreError)")
+                                    self.log.error("Failed on clearStateOutgoingMutations: \(dataStoreError)")
                                 case .success(let mutationEvents):
                                     if !mutationEvents.isEmpty {
-                                        updateMutationsState(
+                                        self.updateMutationsState(
                                             mutationEvents: mutationEvents,
                                             completion: completion
                                         )
@@ -43,15 +44,17 @@ final class MutationEventClearState {
     }
 
     private func updateMutationsState(mutationEvents: [MutationEvent], completion: @escaping BasicClosure) {
-        var numMutationEventsUpdated = 0
+        // Incremented from the save completion closures below, so it is an `AtomicValue` rather
+        // than a captured `var`, which the Swift 6 language mode rejects.
+        let numMutationEventsUpdated = AtomicValue(initialValue: 0)
         for mutationEvent in mutationEvents {
             var inProcessEvent = mutationEvent
             inProcessEvent.inProcess = false
             storageAdapter.save(inProcessEvent, condition: nil, eagerLoad: true, completion: { result in
                 switch result {
                 case .success:
-                    numMutationEventsUpdated += 1
-                    if numMutationEventsUpdated >= mutationEvents.count {
+                    let updated = numMutationEventsUpdated.increment()
+                    if updated >= mutationEvents.count {
                         completion()
                     }
                 case .failure(let error):
