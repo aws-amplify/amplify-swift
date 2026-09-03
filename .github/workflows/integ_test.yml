@@ -43,9 +43,6 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends jq python3
-          # The checkout dir is owned by a different UID than the container's root user, so git in
-          # the detect script below aborts with "detected dubious ownership" unless we allow it.
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - id: sel
         env:
           EVENT_NAME: ${{ github.event_name }}
