@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct FinalClientEvent {
+public struct FinalClientEvent: Sendable {
     public init(
         initialClientEvent: InitialClientEvent,
         targetFace: CompletedEvent<FaceDetection>,

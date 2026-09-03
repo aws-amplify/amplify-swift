@@ -10,7 +10,7 @@ import Foundation
 public typealias Version = String
 
 @_spi(PredictionsFaceLiveness)
-public enum Challenge: Equatable {
+public enum Challenge: Equatable, Sendable {
     case faceMovementChallenge(Version)
     case faceMovementAndLightChallenge(Version)
 
