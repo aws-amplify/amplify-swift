@@ -14,7 +14,9 @@ import XCTest
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 // swiftlint:disable line_length
-class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class QueryPredicateEvaluateGeneratedDateTests: XCTestCase, @unchecked Sendable {
     func testTemporalDateTemporal_Date_nownotEqualTemporalDateTemporal_Date_now() throws {
         let predicate = QPredGen.keys.myDate.ne(Temporal.Date.now())
         var instance = QPredGen(name: "test")
