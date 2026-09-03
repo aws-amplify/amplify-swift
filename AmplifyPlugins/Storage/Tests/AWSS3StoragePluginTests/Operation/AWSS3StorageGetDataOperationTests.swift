@@ -14,7 +14,9 @@ import XCTest
 
 import AWSS3
 
-class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase, @unchecked Sendable {
 
     func testDownloadDataOperationValidationError() async {
         let request = StorageDownloadDataRequest(key: "", options: StorageDownloadDataRequest.Options())
@@ -391,5 +393,5 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 }
 
 struct InvalidCustomStoragePath: StoragePath {
-    var resolve: (String) -> String
+    var resolve: @Sendable (String) -> String
 }
