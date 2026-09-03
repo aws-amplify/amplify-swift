@@ -10,7 +10,9 @@ import Amplify
 import Security
 
 // swiftlint:disable identifier_name
-public protocol KeychainStoreBehavior {
+/// - Note: `Sendable` because keychain stores are shared across concurrency domains by the auth and
+///   analytics plugins; the underlying Security framework calls are thread-safe.
+public protocol KeychainStoreBehavior: Sendable {
 
     /// Get a string value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
