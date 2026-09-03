@@ -10,7 +10,7 @@ import Foundation
 /// Defines the type of a `Model` field.
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelFieldType {
+public enum ModelFieldType: Sendable {
 
     case string
     case int
