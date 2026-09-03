@@ -12,30 +12,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # One runner per platform, each running every scheme (built once). Mirrors the PR unit-test flow.
   unit_tests:
-    name: ${{ matrix.scheme }} Nightly Unit Tests
+    name: ${{ matrix.platform }} Nightly Unit Tests
     strategy:
       fail-fast: false
       matrix:
-        scheme: [
-          Amplify,
-          AWSPluginsCore,
-          AWSAPIPlugin,
-          AWSCloudWatchLoggingPlugin,
-          AWSCognitoAuthPlugin,
-          AWSDataStorePlugin,
-          AWSLocationGeoPlugin,
-          AWSPredictionsPlugin,
-          AWSPinpointAnalyticsPlugin,
-          AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin,
-          InternalAWSPinpointUnitTests
-        ]
-    uses: ./.github/workflows/run_unit_tests_platforms.yml
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
+    uses: ./.github/workflows/run_platform_all_schemes.yml
     with:
-      scheme: ${{ matrix.scheme }}
-      # All platforms now run serially on one runner; 60 was the per-platform budget.
-      timeout-minutes: 120
+      platform: ${{ matrix.platform }}
+      schemes: >-
+        ["Amplify", "AWSPluginsCore", "AWSAPIPlugin", "AWSCloudWatchLoggingPlugin",
+         "AWSCognitoAuthPlugin", "AWSDataStorePlugin", "AWSLocationGeoPlugin", "AWSPredictionsPlugin",
+         "AWSPinpointAnalyticsPlugin", "AWSPinpointPushNotificationsPlugin", "AWSS3StoragePlugin",
+         "CoreMLPredictionsPlugin", "InternalAWSPinpointUnitTests"]
       generate_coverage_report: false
       retry_tests: false

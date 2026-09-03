@@ -57,8 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     container: swift:6.0
     outputs:
-      cov: ${{ steps.sel.outputs.cov }}
-      nocov: ${{ steps.sel.outputs.nocov }}
+      selected: ${{ steps.sel.outputs.selected }}
       covfiles: ${{ steps.sel.outputs.covfiles }}
     steps:
       - uses: actions/checkout@v4
@@ -100,39 +99,35 @@ jobs:
             '[to_entries[] | select(.value.flags != null and (.key as $k | $sel | index($k))) | {scheme: .key, flags: .value.flags}]' \
             scripts/python/unit_test_groups.json)
           {
-            echo "nocov=$(jq -c '[.[]|select(.=="InternalAWSPinpointUnitTests")]' <<<"$sel")"
-            echo "cov=$(jq -c '[.[]|select(.!="InternalAWSPinpointUnitTests")]' <<<"$sel")"
+            echo "selected=$sel"
             echo "covfiles=$covfiles"
           } >> "$GITHUB_OUTPUT"
 
-  targets-without-coverage:
-    name: ${{ matrix.scheme }} Unit Tests
+  # One runner per platform, each running every affected scheme (built once via build-for-testing).
+  # This caps peak macOS jobs at the platform count regardless of how many schemes changed.
+  unit-tests:
+    name: ${{ matrix.platform }} Unit Tests
     needs: detect
-    if: ${{ needs.detect.outputs.nocov != '[]' }}
+    if: ${{ needs.detect.outputs.selected != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        scheme: ${{ fromJSON(needs.detect.outputs.nocov) }}
-    uses: ./.github/workflows/run_unit_tests_platforms.yml
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+          - platform: ${{ github.event.inputs.visionos == 'false' && 'visionOS' || 'None' }}
+    uses: ./.github/workflows/run_platform_all_schemes.yml
     with:
-      scheme: ${{ matrix.scheme }}
-      generate_coverage_report: false
-
-  targets-with-coverage:
-    name: ${{ matrix.scheme }} Unit Tests
-    needs: detect
-    if: ${{ needs.detect.outputs.cov != '[]' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        scheme: ${{ fromJSON(needs.detect.outputs.cov) }}
-    uses: ./.github/workflows/run_unit_tests_platforms.yml
-    with:
-      scheme: ${{ matrix.scheme }}
-      generate_coverage_report: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
+      platform: ${{ matrix.platform }}
+      schemes: ${{ needs.detect.outputs.selected }}
+      # Coverage is exported on iOS only (as before): one platform's numbers, uploaded per scheme.
+      generate_coverage_report: ${{ matrix.platform == 'iOS' && vars.DISABLE_COVERAGE_REPORT != 'true' }}
 
   report-coverage:
-    needs: [detect, targets-with-coverage]
+    needs: [detect, unit-tests]
     if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' && needs.detect.outputs.covfiles != '[]' }}
     name: ${{ matrix.file.scheme }} Unit Tests
     strategy:
@@ -149,11 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Confirm Passing Unit Tests
     if: ${{ !cancelled() }}
-    needs: [
-      detect,
-      targets-with-coverage,
-      targets-without-coverage
-    ]
+    needs: [ detect, unit-tests ]
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:
