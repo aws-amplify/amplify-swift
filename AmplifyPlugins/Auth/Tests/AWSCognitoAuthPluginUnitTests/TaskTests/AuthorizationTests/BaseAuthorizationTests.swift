@@ -10,14 +10,16 @@ import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class BaseAuthorizationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class BaseAuthorizationTests: XCTestCase, @unchecked Sendable {
 
     let apiTimeout = 2.0
 
     func configurePluginWith(
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
-        userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
-        identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
+        userPool: @escaping @Sendable () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
+        identityPool: @escaping @Sendable () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
         initialState: AuthState
     ) -> AWSCognitoAuthPlugin {
         let plugin = AWSCognitoAuthPlugin()

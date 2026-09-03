@@ -9,7 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSCognitoAuthPluginAppSyncSignerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSCognitoAuthPluginAppSyncSignerTests: XCTestCase, @unchecked Sendable {
 
     /// Tests translating the URLRequest to the SDKRequest
     /// The translation should account for expected fields, as asserted in the test.
