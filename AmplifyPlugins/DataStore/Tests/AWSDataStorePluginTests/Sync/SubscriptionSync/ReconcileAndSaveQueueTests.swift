@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class ReconcileAndSaveQueueTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ReconcileAndSaveQueueTests: XCTestCase, @unchecked Sendable {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var anyPostMetadata: MutationSyncMetadata!
     var anyPostMutationSync: MutationSync<AnyModel>!

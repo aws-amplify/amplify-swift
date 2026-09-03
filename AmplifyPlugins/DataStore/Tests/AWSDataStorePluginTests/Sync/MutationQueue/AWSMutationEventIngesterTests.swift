@@ -12,7 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class AWSMutationEventIngesterTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSMutationEventIngesterTests: XCTestCase, @unchecked Sendable {
     // Used by tests to assert that the MutationEvent table is being updated
     var storageAdapter: SQLiteStorageEngineAdapter!
 

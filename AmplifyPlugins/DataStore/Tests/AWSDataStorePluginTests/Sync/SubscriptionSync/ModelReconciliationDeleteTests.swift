@@ -17,7 +17,9 @@ import XCTest
 typealias MutationSyncInProcessListener = GraphQLSubscriptionOperation<MutationSync<AnyModel>>.InProcessListener
 
 /// Tests system behavior at a higher level than the reconciler tests--ensures data is appropriately applied and deleted
-class ModelReconciliationDeleteTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelReconciliationDeleteTests: SyncEngineTestBase, @unchecked Sendable {
 
     /// - Given:
     ///   - A sync-enabled DataStore

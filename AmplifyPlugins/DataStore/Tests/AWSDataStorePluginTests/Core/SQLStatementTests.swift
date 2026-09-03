@@ -15,7 +15,9 @@ import XCTest
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 // TODO: Refactor this into separate test suites
-class SQLStatementTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLStatementTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() {
         // one-to-many/many-to-one association

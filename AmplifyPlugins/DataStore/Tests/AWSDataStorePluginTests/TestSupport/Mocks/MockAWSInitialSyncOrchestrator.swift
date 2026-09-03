@@ -13,7 +13,11 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendable {
     static let factory: InitialSyncOrchestratorFactory = {
         dataStoreConfiguration, _, api, reconciliationQueue, storageAdapter  in
         MockAWSInitialSyncOrchestrator(
@@ -27,8 +31,10 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
-    private static var instance: MockAWSInitialSyncOrchestrator?
-    private static var mockedResponse: SyncOperationResult?
+    // `nonisolated(unsafe)`: set by a test's `setUpWithError` before use and read after; XCTest runs
+    // one test at a time.
+    private nonisolated(unsafe) static var instance: MockAWSInitialSyncOrchestrator?
+    private nonisolated(unsafe) static var mockedResponse: SyncOperationResult?
 
     let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {

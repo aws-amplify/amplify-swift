@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MutationSyncMetadataMigrationTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class MutationSyncMetadataMigrationTestBase: XCTestCase, @unchecked Sendable {
     var storageAdapter: SQLiteStorageEngineAdapter!
     var modelSchemas: [ModelSchema]!
 
@@ -69,31 +71,33 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
 
     func queryMutationSyncMetadata() -> [MutationSyncMetadata]? {
         let firstQueryModelSyncMetadata = expectation(description: "query successful")
-        var result: [MutationSyncMetadata]?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<[MutationSyncMetadata]?>(initialValue: nil)
         storageAdapter.query(MutationSyncMetadata.self) {
             switch $0 {
             case .success(let mutationSyncMetadatas):
-                result = mutationSyncMetadatas
+                result.set(mutationSyncMetadatas)
                 firstQueryModelSyncMetadata.fulfill()
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
         wait(for: [firstQueryModelSyncMetadata], timeout: 1)
-        return result
+        return result.get()
     }
 
     func queryModelSyncMetadata() -> [ModelSyncMetadata]? {
         let queryModelSyncMetadata = expectation(description: "query model sync metadata successful")
-        var result: [ModelSyncMetadata]?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<[ModelSyncMetadata]?>(initialValue: nil)
         storageAdapter.query(ModelSyncMetadata.self) {
             switch $0 {
             case .success(let modelSyncMetadatas):
-                result = modelSyncMetadatas
+                result.set(modelSyncMetadatas)
                 queryModelSyncMetadata.fulfill()
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
         wait(for: [queryModelSyncMetadata], timeout: 1)
-        return result
+        return result.get()
     }
 }

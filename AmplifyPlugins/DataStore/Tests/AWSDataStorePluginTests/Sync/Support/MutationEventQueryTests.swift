@@ -14,7 +14,11 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MutationEventQueryTests: BaseDataStoreTests {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` completion
+
+///   closures the production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+
+final class MutationEventQueryTests: BaseDataStoreTests, @unchecked Sendable {
 
     func testQueryPendingMutation_EmptyResult() {
         let querySuccess = expectation(description: "query mutation events success")

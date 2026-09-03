@@ -15,7 +15,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class ReadyEventEmitterTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ReadyEventEmitterTests: XCTestCase, @unchecked Sendable {
     var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
     var readyEventEmitter: ReadyEventEmitter?
     var readyEventSink: AnyCancellable?

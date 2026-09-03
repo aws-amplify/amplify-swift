@@ -14,7 +14,9 @@ import XCTest
 
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length
-class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and then immediately updated
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state

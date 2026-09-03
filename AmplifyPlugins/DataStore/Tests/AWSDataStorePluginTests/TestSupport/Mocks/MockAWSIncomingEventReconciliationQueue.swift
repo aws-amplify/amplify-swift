@@ -12,7 +12,11 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue, @unchecked Sendable {
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _, _ in
         MockAWSIncomingEventReconciliationQueue(
             modelSchemas: modelSchemas,
@@ -27,7 +31,7 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
         return incomingEventSubject.eraseToAnyPublisher()
     }
 
-    static var lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
+    static let lastInstance = AtomicValue<MockAWSIncomingEventReconciliationQueue?>(initialValue: nil)
     init(
         modelSchemas: [ModelSchema],
         api: APICategoryGraphQLBehavior?,

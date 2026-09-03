@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 /// Base class for Local data store tests
-class BaseDataStoreTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class BaseDataStoreTests: XCTestCase, @unchecked Sendable {
 
     var connection: Connection!
     var storageEngine: StorageEngine!
@@ -89,7 +91,8 @@ class BaseDataStoreTests: XCTestCase {
     func populateData<M: Model>(_ models: [M]) {
         let saveComplete = expectation(description: "save completed")
 
-        func save(model: M, index: Int) {
+        // `@Sendable` because it recurses from inside the storage adapter's `@Sendable` completion.
+        @Sendable func save(model: M, index: Int) {
             storageAdapter.save(model) {
                 switch $0 {
                 case .success:
