@@ -24,7 +24,8 @@ import Foundation
 ///
 /// * [File System Programming Guide](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html)
 /// // swiftlint:enable line_length
-class FileSystem {
+/// - Note: `@unchecked Sendable`: file work is dispatched to its own queue.
+class FileSystem: @unchecked Sendable {
     enum Failure: Error {
         case fatalError(errorDescription: String)
     }
