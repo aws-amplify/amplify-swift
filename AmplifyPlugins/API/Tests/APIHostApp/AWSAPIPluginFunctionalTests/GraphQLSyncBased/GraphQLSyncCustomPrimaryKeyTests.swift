@@ -10,7 +10,9 @@ import XCTest
 @testable import APIHostApp
 @testable import AWSAPIPlugin
 
-class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLSyncCustomPrimaryKeyTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLSyncBasedTests-amplifyconfiguration"
 

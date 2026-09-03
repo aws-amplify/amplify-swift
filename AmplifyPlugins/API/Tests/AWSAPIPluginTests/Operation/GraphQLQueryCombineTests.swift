@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AWSAPIPlugin
 
-class GraphQLQueryCombineTests: OperationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLQueryCombineTests: OperationTestBase, @unchecked Sendable {
     let testDocument = "query { getTodo { id name description }}"
 
     func testQuerySucceeds() async throws {

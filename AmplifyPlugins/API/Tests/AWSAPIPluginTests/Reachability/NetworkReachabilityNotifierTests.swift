@@ -11,7 +11,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
-class NetworkReachabilityNotifierTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class NetworkReachabilityNotifierTests: XCTestCase, @unchecked Sendable {
     var notification: Notification!
     var notifier: NetworkReachabilityNotifier!
 
