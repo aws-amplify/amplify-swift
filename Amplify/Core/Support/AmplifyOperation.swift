@@ -31,7 +31,7 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     public typealias OperationResult = Result<Success, Failure>
 
     /// Convenience typealias for the `listener` callback submitted during Operation creation
-    public typealias ResultListener = (OperationResult) -> Void
+    public typealias ResultListener = @Sendable (OperationResult) -> Void
 
     /// The unique ID of the operation. In categories where operations are persisted for future processing, this id can
     /// be used to identify previously-scheduled work for progress tracking or other functions.
@@ -123,7 +123,9 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.forOperation(self)
 
-        var token: UnsubscribeToken?
+        // See `InternalTask+Hub`: the listener removes itself, so the token is held in an
+        // `AtomicValue` box rather than a `var` captured before assignment.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let resultHubListener: HubListener = { payload in
             guard let result = payload.data as? OperationResult else {
                 return
@@ -132,16 +134,16 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
             resultListener(result)
 
             // Automatically unsubscribe when event is received
-            guard let token else {
+            guard let token = tokenBox.get() else {
                 return
             }
             Amplify.Hub.removeListener(token)
         }
 
-        token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: resultHubListener)
+        let token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: resultHubListener)
+        tokenBox.set(token)
 
-        // We know that `token` is assigned by `Amplify.Hub.listen` so it's safe to force-unwrap
-        return token!
+        return token
     }
 
     /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
@@ -204,9 +206,11 @@ extension AmplifyOperation: HubPayloadEventNameable { }
 extension AmplifyOperation: Cancellable { }
 
 /// Describes the parameters that are passed during the creation of an AmplifyOperation
-public protocol AmplifyOperationRequest {
+/// - Note: `Sendable` because requests and their metatypes are captured by the operations and tasks
+///   that carry them across isolation boundaries.
+public protocol AmplifyOperationRequest: Sendable {
     /// The concrete Options type that adjusts the behavior of the request type
-    associatedtype Options
+    associatedtype Options: Sendable
 
     /// Options to adjust the behavior of this request, including plugin options
     var options: Options { get }

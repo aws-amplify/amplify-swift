@@ -107,7 +107,11 @@ public protocol InternalTaskThrowingChannel {
 
 // MARK: - Control -
 
-public protocol InternalTaskRunner: AnyObject, AmplifyCancellable {
+/// - Note: `Sendable` because the whole point of a runner is that `run()` is driven from a
+///   detached `Task`, so conformers already cross concurrency domains. Requiring it here is
+///   what lets `InternalTask+AsyncSequence` start that task without sending a non-`Sendable`
+///   `self`.
+public protocol InternalTaskRunner: AnyObject, AmplifyCancellable, Sendable {
     associatedtype Request: AmplifyOperationRequest
     var request: Request { get }
 
@@ -123,7 +127,8 @@ public protocol InternalTaskController {
 
 // MARK: - Hub Support -
 
-public protocol InternalTaskIdentifiable {
+/// - Note: `Sendable` because `idFilter` builds a `@Sendable` Hub filter that closes over `self`.
+public protocol InternalTaskIdentifiable: Sendable {
     associatedtype Request: AmplifyOperationRequest
     var id: UUID { get }
     var request: Request { get }
@@ -131,13 +136,14 @@ public protocol InternalTaskIdentifiable {
     var eventName: HubPayloadEventName { get }
 }
 
-public protocol InternalTaskHubResult {
+/// - Note: `Sendable` because the Hub listener built below closes over `self`.
+public protocol InternalTaskHubResult: Sendable {
     associatedtype Request: AmplifyOperationRequest
     associatedtype Success
     associatedtype Failure: AmplifyError
 
     typealias OperationResult = Result<Success, Failure>
-    typealias ResultListener = (OperationResult) -> Void
+    typealias ResultListener = @Sendable (OperationResult) -> Void
 
     /// Subscribe for result
     /// - Parameter resultListener: result listener
@@ -153,11 +159,12 @@ public protocol InternalTaskHubResult {
     func dispatch(result: OperationResult)
 }
 
-public protocol InternalTaskHubInProcess {
+/// - Note: `Sendable` for the same reason as `InternalTaskHubResult`.
+public protocol InternalTaskHubInProcess: Sendable {
     associatedtype Request: AmplifyOperationRequest
     associatedtype InProcess: Sendable
 
-    typealias InProcessListener = (InProcess) -> Void
+    typealias InProcessListener = @Sendable (InProcess) -> Void
 
     /// Subscribe for result
     /// - Parameter resultListener: result listener

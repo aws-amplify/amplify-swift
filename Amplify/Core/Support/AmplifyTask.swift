@@ -17,7 +17,9 @@ import Combine
 /// - Tag: AmplifyTask
 public protocol AmplifyTask {
     associatedtype Request
-    associatedtype Success
+    // `Success` crosses task and actor boundaries (`value`, `resultPublisher`), so it
+    // must be `Sendable` in the Swift 6 language mode.
+    associatedtype Success: Sendable
     associatedtype Failure: AmplifyError
 
     /// Blocks until the receiver has successfully collected a result or throws if an error was encountered.
@@ -51,7 +53,9 @@ public protocol AmplifyTask {
 ///
 /// - Tag: AmplifyInProcessReportingTask
 public protocol AmplifyInProcessReportingTask {
-    associatedtype InProcess
+    // Carried through `AmplifyAsyncSequence` and a Combine publisher, both of which
+    // require their element to be `Sendable` under the Swift 6 language mode.
+    associatedtype InProcess: Sendable
 
     /// An async sequence that is able to report on the progress of the work represented by the receiver.
     ///

@@ -26,7 +26,8 @@ public protocol UserProfile {
 }
 
 /// Contains specific data for a Location
-public struct UserProfileLocation {
+// Explicit `Sendable`: Swift does not infer it for public types.
+public struct UserProfileLocation: Sendable {
 
     /// The user's latitude
     public var latitude: Double?

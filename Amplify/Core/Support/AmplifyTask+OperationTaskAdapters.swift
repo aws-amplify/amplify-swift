@@ -12,7 +12,7 @@ import Combine
 
 public class AmplifyOperationTaskAdapter<
     Request: AmplifyOperationRequest,
-    Success,
+    Success: Sendable,
     Failure: AmplifyError
 >: AmplifyTask, @unchecked Sendable {
     let operation: AmplifyOperation<Request, Success, Failure>
@@ -68,8 +68,8 @@ public class AmplifyOperationTaskAdapter<
 
 public class AmplifyInProcessReportingOperationTaskAdapter<
     Request: AmplifyOperationRequest,
-    InProcess,
-    Success,
+    InProcess: Sendable,
+    Success: Sendable,
     Failure: AmplifyError
 >: AmplifyTask, AmplifyInProcessReportingTask, @unchecked Sendable {
     let operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>
