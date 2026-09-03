@@ -14,7 +14,9 @@ import XCTest
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 // swiftlint:disable type_name
-class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class QueryPredicateEvaluateGeneratedDoubleTests: XCTestCase, @unchecked Sendable {
     func testDouble1_1notEqualDouble1_1() throws {
         let predicate = QPredGen.keys.myDouble.ne(1.1)
         var instance = QPredGen(name: "test")
