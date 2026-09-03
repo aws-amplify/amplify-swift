@@ -9,19 +9,30 @@ import Foundation
 
 public typealias WeakAmplifyAsyncSequenceRef<Element> = WeakRef<AmplifyAsyncSequence<Element>>
 
-public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable {
+/// - Note: `@unchecked Sendable` because `parent` and `isCancelled` are mutable but
+///   every access is serialized by `lock`. The compiler cannot verify that, so the
+///   guarantee is asserted here and enforced by the accessors below.
+public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable, @unchecked Sendable {
     public typealias Iterator = AsyncStream<Element>.Iterator
     private let asyncStream: AsyncStream<Element>
     private let continuation: AsyncStream<Element>.Continuation
-    private var parent: Cancellable?
 
-    public private(set) var isCancelled: Bool = false
+    /// Guards `_parent` and `_isCancelled`. `AsyncStream.Continuation` is itself
+    /// thread-safe, so `continuation` is deliberately not covered by this lock.
+    private let lock = NSLock()
+    private var _parent: Cancellable?
+    private var _isCancelled: Bool = false
+
+    /// Externally read-only, exactly as the previous `public private(set)` stored property was.
+    public var isCancelled: Bool {
+        lock.withLock { _isCancelled }
+    }
 
     public init(
         parent: Cancellable? = nil,
         bufferingPolicy: AsyncStream<Element>.Continuation.BufferingPolicy = .unbounded
     ) {
-        self.parent = parent
+        self._parent = parent
         (self.asyncStream, self.continuation) = AsyncStream.makeStream(of: Element.self, bufferingPolicy: bufferingPolicy)
     }
 
@@ -35,13 +46,20 @@ public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable
 
     public func finish() {
         continuation.finish()
-        parent = nil
+        lock.withLock { _parent = nil }
     }
 
     public func cancel() {
-        guard !isCancelled else { return }
-        isCancelled = true
-        parent?.cancel()
+        // Claim the cancellation under the lock so concurrent callers cannot both observe
+        // `false` and then cancel `parent` twice. Previously this was a check-then-set on
+        // unsynchronized state, so a double cancel was possible.
+        let claimed: (didClaim: Bool, parent: Cancellable?) = lock.withLock {
+            guard !_isCancelled else { return (false, nil) }
+            _isCancelled = true
+            return (true, _parent)
+        }
+        guard claimed.didClaim else { return }
+        claimed.parent?.cancel()
         finish()
     }
 }
