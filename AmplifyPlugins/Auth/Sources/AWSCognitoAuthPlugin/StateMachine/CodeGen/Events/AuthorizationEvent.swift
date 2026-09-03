@@ -8,7 +8,8 @@
 import Foundation
 
 struct AuthorizationEvent: StateMachineEvent {
-    enum EventType: Equatable {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Equatable, Sendable {
 
         case configure
 
