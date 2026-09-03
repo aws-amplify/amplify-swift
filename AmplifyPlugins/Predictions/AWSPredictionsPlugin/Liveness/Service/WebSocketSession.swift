@@ -8,7 +8,9 @@
 import Amplify
 import Foundation
 
-final class WebSocketSession {
+/// - Note: `@unchecked Sendable`: the session wraps a `URLSessionWebSocketTask`, which is
+///   thread-safe, and its callbacks are invoked off the calling thread.
+final class WebSocketSession: @unchecked Sendable {
     private let urlSessionWebSocketDelegate: Delegate
     private let session: URLSession
     private var task: URLSessionWebSocketTask?

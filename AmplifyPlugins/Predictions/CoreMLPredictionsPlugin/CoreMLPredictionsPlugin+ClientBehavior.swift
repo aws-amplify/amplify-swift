@@ -89,14 +89,15 @@ public extension CoreMLPredictionsPlugin {
                 speechToText: input,
                 options: options
             )
+            // Hoisted so the task captures only this `URL` rather than the whole request, which
+            // is not `Sendable`.
+            let speechToText = request.speechToText
             let stream = AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error> { continuation in
                 Task {
                     do {
-                        let result = try await coreMLSpeech.getTranscription(
-                            request.speechToText
-                        )
+                        let result = try await coreMLSpeech.getTranscription(speechToText)
                         continuation.yield(
-                            .init(transcription: result.bestTranscription.formattedString)
+                            .init(transcription: result.formattedString)
                         )
                         if result.isFinal {
                             continuation.finish()
