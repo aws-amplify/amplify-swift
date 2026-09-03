@@ -11,7 +11,9 @@ import Foundation
 
 typealias StorageSessionTasks = [StorageSessionTask]
 
-protocol StorageSessionTask {
+/// - Note: `Sendable` because these are handed to `StorageURLSession.getActiveTasks` completions,
+///   which run off the calling thread. `URLSessionTask` is thread-safe.
+protocol StorageSessionTask: Sendable {
     var state: URLSessionTask.State { get }
     var taskIdentifier: TaskIdentifier { get }
 
