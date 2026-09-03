@@ -8,7 +8,8 @@
 import Foundation
 
 /// Convenience typealias defining a closure that can be used to listen to Hub messages
-public typealias HubListener = (HubPayload) -> Void
+/// - Note: `@Sendable` because listeners are invoked on the Hub's dispatch queue.
+public typealias HubListener = @Sendable (HubPayload) -> Void
 
 /// Behavior of the Hub category that clients will use
 public protocol HubCategoryBehavior {

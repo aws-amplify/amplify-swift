@@ -6,7 +6,10 @@
 //
 
 /// The payload of a Hub message
-public struct HubPayload {
+/// - Note: `@unchecked Sendable` rather than `Sendable`: `context` and `data` are `Any?`, which
+///   cannot be checked. Narrowing those to a `Sendable` existential would be a source-breaking change
+///   to a widely used public type, so the guarantee is left to whatever is put in them.
+public struct HubPayload: @unchecked Sendable {
 
     /// Event names registered by Amplify Operations
     public struct EventName {}
