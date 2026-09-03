@@ -6,7 +6,11 @@
 //
 
 /// The API category provides a solution for making HTTP requests to REST and GraphQL endpoints.
-public final class APICategory: Category {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement that the category behavior
+///   protocol now carries. `plugins` is populated during `Amplify.configure()` and only read
+///   afterwards, and the conformance must be declared here because the behavior conformance lives
+///   in an extension in another file.
+public final class APICategory: Category, @unchecked Sendable {
     /// The category type for API
     public var categoryType: CategoryType {
         .api
