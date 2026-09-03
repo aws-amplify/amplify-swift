@@ -33,18 +33,6 @@ permissions:
 
 jobs:
   logging-unit-tests:
-    name: ${{ matrix.platform }} Unit Tests
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, macOS, tvOS, watchOS, visionOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
-          - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
-          - platform: ${{ github.event.inputs.visionos == 'false' && 'visionOS' || 'None' }}
-    uses: ./.github/workflows/run_platform_all_schemes.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
-      platform: ${{ matrix.platform }}
-      schemes: '["AWSCloudWatchLoggingPlugin"]'
+      scheme: AWSCloudWatchLoggingPlugin
