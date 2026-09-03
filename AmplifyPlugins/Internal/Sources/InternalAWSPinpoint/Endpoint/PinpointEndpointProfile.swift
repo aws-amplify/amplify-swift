@@ -10,7 +10,7 @@ import AWSPinpoint
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public struct PinpointEndpointProfile: Codable, Equatable {
+public struct PinpointEndpointProfile: Codable, Equatable, Sendable {
     typealias DeviceToken = String
 
     var applicationId: String
