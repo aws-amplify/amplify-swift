@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class EndpointResolvingTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EndpointResolvingTestCase: XCTestCase, @unchecked Sendable {
     /// Given: A String representation of a URL.
     /// When: That String satisfies the ValidationSteps `.schemeIsEmpty()`,
     /// `.validURL()`, and `.pathIsEmpty()` (in this order)
