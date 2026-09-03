@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public struct PinpointSession: Codable {
+public struct PinpointSession: Codable, Sendable {
     private enum State: Codable {
         case active
         case paused(date: Date)
