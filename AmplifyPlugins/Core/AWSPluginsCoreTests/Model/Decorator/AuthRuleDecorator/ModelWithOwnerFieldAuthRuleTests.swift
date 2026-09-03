@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
-class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelWithOwnerFieldAuthRuleTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() {
         ModelRegistry.register(modelType: ModelWithOwnerField.self)
