@@ -9,7 +9,9 @@ import SQLite
 import XCTest
 @testable import AmplifyRecordCache
 
-class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLiteRecordStorageCacheAccuracyTests: XCTestCase, @unchecked Sendable {
 
     var storage: SQLiteRecordStorage!
 
@@ -140,6 +142,9 @@ class SQLiteRecordStorageCacheAccuracyTests: XCTestCase {
         }
 
         let tracker = TestTracker()
+        // Hoisted so the producer/consumer tasks capture the storage rather than `self`, which is a
+        // non-Sendable `XCTestCase`.
+        let storage = storage!
 
         // Create producers - these will hammer the storage concurrently
         let producers = (0 ..< producerCount).map { producerIndex in

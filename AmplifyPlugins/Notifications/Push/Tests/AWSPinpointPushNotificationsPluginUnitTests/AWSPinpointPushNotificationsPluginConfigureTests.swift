@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSPinpointPushNotificationsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificationsPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificationsPluginTestBase, @unchecked Sendable {
     private var hubPlugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
             plugin.key == "awsHubPlugin"

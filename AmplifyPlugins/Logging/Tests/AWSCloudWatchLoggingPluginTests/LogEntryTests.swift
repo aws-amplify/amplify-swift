@@ -10,7 +10,9 @@ import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
 
-final class LogEntryTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class LogEntryTests: XCTestCase, @unchecked Sendable {
 
     let levels = [
         LogLevel.error,
