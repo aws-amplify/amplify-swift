@@ -7,12 +7,14 @@
 
 import Foundation
 
-public typealias IdentityIDPathResolver = (String) -> String
+/// - Note: `@Sendable` because resolvers are invoked from the storage plugins async work.
+public typealias IdentityIDPathResolver = @Sendable (String) -> String
 
 /// Protocol that provides a closure to resolve the storage path.
 ///
 /// - Tag: StoragePath
-public protocol StoragePath {
+/// - Note: `Sendable` because paths are stored on storage requests, which cross task boundaries.
+public protocol StoragePath: Sendable {
     associatedtype Input
     var resolve: (Input) -> String { get }
 }
@@ -33,7 +35,7 @@ public extension StoragePath where Self == IdentityIDStoragePath {
 ///
 /// - Tag: StringStoragePath
 public struct StringStoragePath: StoragePath {
-    public let resolve: (String) -> String
+    public let resolve: @Sendable (String) -> String
 }
 
 /// Conforms to StoragePath protocol.
