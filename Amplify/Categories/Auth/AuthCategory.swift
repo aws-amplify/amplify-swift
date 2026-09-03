@@ -5,7 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public final class AuthCategory: Category {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement that the category behavior
+///   protocol now carries. `plugins` is populated during `Amplify.configure()` and only read
+///   afterwards, and the conformance must be declared here because the behavior conformance lives
+///   in an extension in another file.
+public final class AuthCategory: Category, @unchecked Sendable {
 
     public let categoryType =  CategoryType.auth
 
@@ -41,6 +45,17 @@ public final class AuthCategory: Category {
     }
 
     var isConfigured = false
+
+    /// `true` when `Amplify.configure()` has run for this category and a plugin is registered.
+    ///
+    /// Reading ``plugin`` in either of the opposite states trips a `preconditionFailure`, which aborts
+    /// the process rather than failing the call. Exposed over `@_spi` so the AWS plugin modules can
+    /// report an error instead: they hold long-lived clients that can outlive `Amplify.reset()`, and for
+    /// those a missing Auth category is a recoverable condition, not a programmer error.
+    @_spi(InternalAmplifyConfiguration)
+    public var isConfiguredWithPlugin: Bool {
+        isConfigured && !plugins.isEmpty
+    }
 
     // MARK: - Plugin handling
 
