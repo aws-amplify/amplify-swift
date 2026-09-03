@@ -174,7 +174,10 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild $action -scheme $SCHEME -destination '${{ inputs.destination }}' -skipPackagePluginValidation ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
+        # CI build-setting speedups: skip the index store (only useful in-IDE) and build a single
+        # active arch for the destination instead of a fat binary. No effect on test correctness.
+        ciBuildSettings="COMPILER_INDEX_STORE_ENABLE=NO ONLY_ACTIVE_ARCH=YES"
+        xcodebuild $action -scheme $SCHEME -destination '${{ inputs.destination }}' -skipPackagePluginValidation ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags $ciBuildSettings | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report

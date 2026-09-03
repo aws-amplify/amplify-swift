@@ -38,18 +38,31 @@ import sys
 
 # Paths that can never affect tests. Kept deliberately small — anything not listed here and not
 # owned by a target falls through to the fail-closed "run everything" branch.
-# Repo/editor metadata that is inert wherever it lives — never affects a build or test, so it is
-# ignored even inside a target directory (checked before target ownership).
-ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig")
-ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE")
+# Repo/editor metadata and documentation that is inert wherever it lives — never affects a build or
+# test, so it is ignored even inside a target directory (checked before target ownership). `.md` is
+# here rather than in the unowned-only list below because a README/AGENTS doc inside a target dir is
+# still just prose: it is never compiled and never consumed as a test resource, so editing it should
+# not trigger that target's 5-platform matrix. (`.yml`/`.yaml` are deliberately NOT promoted — an
+# in-target YAML fixture is real test input and must stay owned; see the unowned-only list.)
+ALWAYS_IGNORE_SUFFIXES = (".gitignore", ".gitattributes", ".swiftformat", ".editorconfig", ".md")
+ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE", ".git-blame-ignore-revs", ".gitallowed",
+                       # Xcode file-header template macros: an IDE authoring convenience only
+                       # (defines the //___FILEHEADER___ text). Never compiled or tested.
+                       "IDETemplateMacros.plist")
 
 # Files safe to ignore only when they aren't owned by an SPM target — none of which affect unit or
-# integration test outcomes: docs and CI/lint/tooling config (.md, .yml/.yaml — an in-target YAML
-# fixture is still owned and runs), images, repo metadata under .github/, the separately-tested
-# canary apps, API-dump baselines/fixtures, fastlane config, the standalone AmplifyTools CLI, and
-# repo scripts under scripts/ (the detect job runs the selector regardless, so a broken selector or
-# group config still fails detect rather than being silently skipped).
-IGNORE_SUFFIXES = (".md", ".yml", ".yaml")
+# integration test outcomes: CI/lint/tooling config (.yml/.yaml — an in-target YAML fixture is still
+# owned and runs), images, repo metadata under .github/, the separately-tested canary apps, API-dump
+# baselines/fixtures, fastlane config, the standalone AmplifyTools CLI, and repo scripts under
+# scripts/ (the detect job runs the selector regardless, so a broken selector or group config still
+# fails detect rather than being silently skipped). Documentation (.md) is instead always-ignored
+# above, since it is inert even inside a target dir.
+# Gemfile/Gemfile.lock pin the Ruby tooling (fastlane, jazzy, xcpretty) used for docs and release
+# automation; the gated unit/integration jobs run xcodebuild directly and never `bundle exec`, so a
+# gem bump cannot change a test outcome. (Package.resolved and Package.swift are deliberately NOT
+# listed: a dependency-pin bump or a manifest change can affect any target, so they fail closed.)
+IGNORE_SUFFIXES = (".yml", ".yaml")
+IGNORE_NAMES = ("Gemfile", "Gemfile.lock")
 IGNORE_PREFIXES = (
     "readme-images/",
     ".github/",
@@ -60,6 +73,16 @@ IGNORE_PREFIXES = (
     "AmplifyTools/",
     "scripts/",
 )
+
+# Shared Xcode schemes live here, one <SchemeName>.xcscheme per scheme. A scheme configures exactly
+# how one scheme's build/tests run (which test targets, test plan, arguments), so an edit to it can
+# only affect that scheme — not the whole matrix. For every per-target scheme the filename equals a
+# SwiftPM target, so we attribute the change to that target (below) and let the dependency logic pick
+# the affected group(s). Umbrella schemes (Amplify-Package, Amplify-Build) name no single target and
+# fall through to fail closed, as do other .swiftpm files (e.g. the workspace's package references in
+# contents.xcworkspacedata, which can affect every scheme's resolution).
+XCSCHEME_DIR = ".swiftpm/xcode/xcshareddata/xcschemes/"
+XCSCHEME_SUFFIX = ".xcscheme"
 
 
 def build_graph(pkg):
@@ -138,9 +161,18 @@ def main():
                     key=lambda n: len(path_of[n]), default=None)
         if owner:
             changed_targets.add(owner)
+        elif f.startswith(XCSCHEME_DIR) and f.endswith(XCSCHEME_SUFFIX):
+            # A per-target scheme -> attribute to that target and let dependency logic narrow it.
+            # An umbrella/aggregate scheme names no target -> fail closed (whole-package impact).
+            scheme = f[len(XCSCHEME_DIR):-len(XCSCHEME_SUFFIX)]
+            if scheme in path_of:
+                changed_targets.add(scheme)
+            else:
+                emit(groups.keys())
         elif any(f.startswith(p) for p in group_paths):
             continue  # attributed to a group by its path rule below
-        elif f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES):
+        elif (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
+              or f.rsplit("/", 1)[-1] in IGNORE_NAMES):
             continue
         else:
             emit(groups.keys())
