@@ -26,9 +26,19 @@ permissions:
 jobs:
   api-functional-tests:
     name: API Integration Tests | Functional
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSAPIPluginFunctionalTests", "tvOS": "AWSAPIPluginFunctionalTests", "watchOS": "AWSAPIPluginFunctionalTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSAPIPluginFunctionalTestsWatch' || 'AWSAPIPluginFunctionalTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
+      timeout-minutes: 45
     secrets: inherit

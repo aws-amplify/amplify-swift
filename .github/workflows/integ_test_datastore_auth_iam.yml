@@ -26,9 +26,19 @@ permissions:
 jobs:
   datastore-integration-auth-iam-tests:
     name: DataStore Integration Tests | Auth IAM
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSDataStorePluginAuthIAMTests", "tvOS": "AWSDataStorePluginAuthIAMTests", "watchOS": "AWSDataStorePluginAuthIAMTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginAuthIAMTestsWatch' || 'AWSDataStorePluginAuthIAMTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       resource_subfolder: datastore
+      timeout-minutes: 120
     secrets: inherit

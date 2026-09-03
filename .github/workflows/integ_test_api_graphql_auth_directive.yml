@@ -21,9 +21,19 @@ permissions:
 jobs:
   api-graphql-auth-directive-tests:
     name: API Integration Tests | GraphQL Auth Directive
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSAPIPluginGraphQLAuthDirectiveTests", "tvOS": "AWSAPIPluginGraphQLAuthDirectiveTests", "watchOS": "AWSAPIPluginGraphQLAuthDirectiveTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSAPIPluginGraphQLAuthDirectiveTestsWatch' || 'AWSAPIPluginGraphQLAuthDirectiveTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
+      timeout-minutes: 45
     secrets: inherit

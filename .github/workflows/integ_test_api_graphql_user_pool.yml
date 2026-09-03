@@ -21,9 +21,18 @@ permissions:
 jobs:
   api-graphql-user-pool-tests:
     name: API Integration Tests | GraphQL User Pool
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSAPIPluginGraphQLUserPoolTests", "tvOS": "AWSAPIPluginGraphQLUserPoolTests"}'
+      scheme: AWSAPIPluginGraphQLUserPoolTests
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       resource_subfolder: api
+      timeout-minutes: 45
     secrets: inherit

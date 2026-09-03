@@ -26,9 +26,19 @@ permissions:
 jobs:
   analytics-integration-tests:
     name: Analytics Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSPinpointAnalyticsPluginIntegrationTests", "tvOS": "AWSPinpointAnalyticsPluginIntegrationTests", "watchOS": "AWSPinpointAnalyticsPluginIntegrationTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSPinpointAnalyticsPluginIntegrationTestsWatch' || 'AWSPinpointAnalyticsPluginIntegrationTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Analytics/Tests/AnalyticsHostApp
       resource_subfolder: analytics
+      timeout-minutes: 60
     secrets: inherit

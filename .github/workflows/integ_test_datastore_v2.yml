@@ -26,9 +26,19 @@ permissions:
 jobs:
   datastore-integration-v2-tests:
     name: DataStore Integration Tests | Transformer V2
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSDataStorePluginV2Tests", "tvOS": "AWSDataStorePluginV2Tests", "watchOS": "AWSDataStorePluginV2TestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginV2TestsWatch' || 'AWSDataStorePluginV2Tests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       resource_subfolder: datastore
+      timeout-minutes: 120
     secrets: inherit

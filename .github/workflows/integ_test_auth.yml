@@ -36,20 +36,32 @@ permissions:
 jobs:
   auth-integration-tests:
     name: Auth Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AuthIntegrationTests", "tvOS": "AuthIntegrationTests", "watchOS": "AuthIntegrationTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AuthIntegrationTestsWatch' || 'AuthIntegrationTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
       resource_subfolder: auth
+      timeout-minutes: 60
     secrets: inherit
 
   auth-ui-integration-test-iOS:
     if: ${{ inputs.hostedui-ios != 'false' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AuthHostedUIApp"}'
+      scheme: AuthHostedUIApp
+      platform: iOS
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
       resource_subfolder: auth
+      timeout-minutes: 60
       xcode_version: 'latest'
     secrets: inherit
 

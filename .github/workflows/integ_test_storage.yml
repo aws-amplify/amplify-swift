@@ -26,9 +26,19 @@ permissions:
 jobs:
   storage-integration-tests:
     name: Storage Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSS3StoragePluginIntegrationTests", "tvOS": "AWSS3StoragePluginIntegrationTests", "watchOS": "AWSS3StoragePluginIntegrationTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSS3StoragePluginIntegrationTestsWatch' || 'AWSS3StoragePluginIntegrationTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
       resource_subfolder: storage
+      timeout-minutes: 60
     secrets: inherit

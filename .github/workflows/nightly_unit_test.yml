@@ -35,7 +35,6 @@ jobs:
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
-      # All platforms now run serially on one runner; 60 was the per-platform budget.
-      timeout-minutes: 120
+      timeout-minutes: 60
       generate_coverage_report: false
       retry_tests: false

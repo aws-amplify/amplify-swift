@@ -26,9 +26,19 @@ permissions:
 jobs:
   predictions-integration-tests:
     name: Predictions Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
-      schemes: '{"iOS": "AWSPredictionsPluginIntegrationTests", "tvOS": "AWSPredictionsPluginIntegrationTests", "watchOS": "AWSPredictionsPluginIntegrationTestsWatch"}'
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSPredictionsPluginIntegrationTestsWatch' || 'AWSPredictionsPluginIntegrationTests' }}
+      platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
       resource_subfolder: predictions
+      timeout-minutes: 60
     secrets: inherit
