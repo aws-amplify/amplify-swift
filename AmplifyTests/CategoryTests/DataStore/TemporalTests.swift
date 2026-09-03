@@ -12,7 +12,9 @@ import XCTest
 
 let pst = TimeZone(secondsFromGMT: -28_800)!
 
-class TemporalTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class TemporalTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - DateTime
 
