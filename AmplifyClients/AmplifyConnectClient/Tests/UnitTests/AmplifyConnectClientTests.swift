@@ -11,7 +11,9 @@ import Foundation
 import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
-final class AmplifyConnectClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AmplifyConnectClientTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the identify-user request body contains only the user profile
     ///

@@ -8,7 +8,9 @@
 import XCTest
 @testable import AmplifyFoundation
 
-class AmplifyLoggingTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyLoggingTests: XCTestCase, @unchecked Sendable {
     var logSink: MockLogSink!
 
     override func setUp() {
@@ -213,7 +215,9 @@ class AmplifyLoggingTests: XCTestCase {
 
 
 /// Mock LogSink for testing which stores the list of log messages in memory
-final class MockLogSink: LogSinkBehavior {
+/// - Note: `@unchecked Sendable`: `LogSinkBehavior` is `Sendable`. This test double is written and
+///   read from a single test.
+final class MockLogSink: LogSinkBehavior, @unchecked Sendable {
     let id: String = UUID().uuidString
     var logLevel: LogLevel = .debug
     var logMessages: [LogMessage] = []
