@@ -9,7 +9,9 @@ import AWSPinpoint
 import XCTest
 @testable import InternalAWSPinpoint
 
-class PinpointClientTypesCodableTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PinpointClientTypesCodableTests: XCTestCase, @unchecked Sendable {
     /// Given: Instances of PinpointClient types that conform to Codable
     /// When: They are encoded and decoded
     /// Then: The encoded data can be decoded, and the decoded data is equal to the original one

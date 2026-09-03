@@ -19,7 +19,9 @@ import AppKit
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 @MainActor
-final class ActivityTrackerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class ActivityTrackerTests: XCTestCase, @unchecked Sendable {
 
     /// Test that ActivityTracker calls onPause when background notification is posted
     ///
