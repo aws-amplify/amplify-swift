@@ -31,10 +31,11 @@ extension APIError {
         rule.isUnauthorized(self)
     }
 
-    public struct UnauthorizedDetermining {
-        let isUnauthorized: (APIError) -> Bool
+    /// - Note: `Sendable` because `default` is a `static let`, which must be concurrency-safe.
+    public struct UnauthorizedDetermining: Sendable {
+        let isUnauthorized: @Sendable (APIError) -> Bool
 
-        public init(isUnauthenticated: @escaping (APIError) -> Bool) {
+        public init(isUnauthenticated: @escaping @Sendable (APIError) -> Bool) {
             self.isUnauthorized = isUnauthenticated
         }
 

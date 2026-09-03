@@ -10,7 +10,13 @@ import AWSPluginsCore
 import Foundation
 import Foundation
 
-public class AppSyncListProvider<Element: Model>: ModelListProvider {
+/// - Note: `@unchecked Sendable` because `Model` is `Sendable` and codegen'd models hold list
+///   providers, so this has to be `Sendable` for them to compile.
+///
+///   Same caveat as ``List`` and ``LazyReference``: `loadedState` and `limit` are mutated on load and
+///   are not synchronized, so two concurrent `load()` calls can both fetch. That predates this
+///   migration and is worth addressing on its own.
+public class AppSyncListProvider<Element: Model>: ModelListProvider, @unchecked Sendable {
 
     /// The API friendly name used to reference the API to call
     let apiName: String?
