@@ -15,7 +15,9 @@ import Smithy
 import SmithyHTTPAPI
 import SmithyIdentity
 
-public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
+/// - Note: `final` and `@unchecked Sendable`: `refresh()` starts a detached task that reaches back
+///   into this provider.
+public final class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider, @unchecked Sendable {
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
     private let credentialProvider: (any AWSCredentialIdentityResolver)?

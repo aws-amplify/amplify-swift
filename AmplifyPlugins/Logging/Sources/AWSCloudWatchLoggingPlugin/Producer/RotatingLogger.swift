@@ -9,7 +9,9 @@ import Amplify
 @preconcurrency import Combine
 import Foundation
 
-final class RotatingLogger {
+/// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
+///   concurrently with reads.
+final class RotatingLogger: @unchecked Sendable {
 
     var logLevel: Amplify.LogLevel
 
