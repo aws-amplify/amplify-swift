@@ -11,7 +11,9 @@ import AuthenticationServices
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class HostedUIASWebAuthenticationSessionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
     private var session: HostedUIASWebAuthenticationSession!
     private var factory: ASWebAuthenticationSessionFactory!
 
@@ -134,7 +136,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
     }
 }
 
-class ASWebAuthenticationSessionFactory {
+// `@unchecked Sendable` so `createSession` can be used as the `@Sendable` factory the production
+// type now expects. The mocked fields are set by a single test before use.
+final class ASWebAuthenticationSessionFactory: @unchecked Sendable {
     var mockedURL: URL?
     var mockedError: Error?
     var mockCanStart: Bool?
@@ -156,7 +160,9 @@ class ASWebAuthenticationSessionFactory {
     }
 }
 
-class MockASWebAuthenticationSession: ASWebAuthenticationSession {
+// `@unchecked Sendable`: returned from the `@Sendable` session factory. `ASWebAuthenticationSession`
+// is an NSObject subclass driven on the main thread by the system.
+final class MockASWebAuthenticationSession: ASWebAuthenticationSession, @unchecked Sendable {
     private var callback: ASWebAuthenticationSession.CompletionHandler
     override init(
         url URL: URL,
@@ -199,7 +205,9 @@ extension HostedUIASWebAuthenticationSession {
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class HostedUIASWebAuthenticationSessionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
     func testShowHostedUI_shouldThrowServiceError() async {
         let session = HostedUIASWebAuthenticationSession()
         do {

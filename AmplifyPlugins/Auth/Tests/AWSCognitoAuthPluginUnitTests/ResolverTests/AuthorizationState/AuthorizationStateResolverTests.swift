@@ -23,7 +23,9 @@ extension AuthorizationStateSequence {
         self.expected = expected
     }
 }
-class AuthorizationStateResolverTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AuthorizationStateResolverTests: XCTestCase, @unchecked Sendable {
 
     func testValidAuthorizationStateSequences() throws {
         let authorizationError = AuthorizationError.configuration(message: "someError")

@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class SignOutGloballyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SignOutGloballyTests: XCTestCase, @unchecked Sendable {
 
     func testGlobalSignOutInvoked() async {
         let globalSignOutInvoked = expectation(description: "globalSignOutInvoked")
