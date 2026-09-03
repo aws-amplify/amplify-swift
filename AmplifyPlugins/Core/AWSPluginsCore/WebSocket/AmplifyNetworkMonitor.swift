@@ -8,10 +8,14 @@
 import Combine
 import Network
 
+/// - Note: `@unchecked Sendable` because both stored properties are `let` and each is safe to use
+///   concurrently — `NWPathMonitor` delivers on its own queue, and `PassthroughSubject.send` is
+///   safe from any thread. Neither type is declared `Sendable`, so the conformance cannot be
+///   checked, and it must be stated here rather than in the protocol's extension.
 @_spi(WebSocket)
-public final class AmplifyNetworkMonitor {
+public final class AmplifyNetworkMonitor: @unchecked Sendable {
 
-    public enum State {
+    public enum State: Sendable {
         case none
         case online
         case offline

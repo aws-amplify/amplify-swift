@@ -8,7 +8,9 @@
 import Amplify
 import Foundation
 
-public struct PaginatedList<ModelType: Model>: Decodable {
+// Explicit `Sendable`: Swift does not infer it for public types, and this is carried across
+// task boundaries by the sync engine.
+public struct PaginatedList<ModelType: Model>: Decodable, Sendable {
     public let items: [MutationSync<ModelType>]
     public let nextToken: String?
     public let startedAt: Int64?

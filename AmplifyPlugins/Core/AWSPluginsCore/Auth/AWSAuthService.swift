@@ -8,7 +8,10 @@
 import Amplify
 import Foundation
 
-public class AWSAuthService: AWSAuthServiceBehavior {
+/// - Note: `@unchecked Sendable` rather than `final`: the class has no stored state, so it is
+///   genuinely safe to share, and leaving it open avoids a source-breaking change for anyone who
+///   subclassed it.
+public class AWSAuthService: AWSAuthServiceBehavior, @unchecked Sendable {
 
     public init() {}
 
