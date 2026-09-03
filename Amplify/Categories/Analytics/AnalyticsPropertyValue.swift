@@ -8,7 +8,9 @@
 import Foundation
 
 /// Analytics properties can store values of common types
-public protocol AnalyticsPropertyValue {}
+/// - Note: `Sendable` because analytics properties are carried into the plugin's async recording
+///   paths. The conforming types are `String`, `Int`, `Double` and `Bool`.
+public protocol AnalyticsPropertyValue: Sendable {}
 
 extension String: AnalyticsPropertyValue {}
 extension Int: AnalyticsPropertyValue {}
