@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import SQLite
 import XCTest
@@ -53,14 +54,15 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
     func testSaveModelWithPredicateAll() {
         let team = Team(name: "Team")
         let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<Team>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<Team>?>(initialValue: nil)
         storageEngine.save(team, condition: QueryPredicateConstant.all) { sResult in
-            result = sResult
+            result.set(sResult)
             saveFinished.fulfill()
         }
         wait(for: [saveFinished], timeout: defaultTimeout)
 
-        guard result != nil else {
+        guard result.get() != nil else {
             XCTFail("Save operation timed out")
             return
         }

@@ -15,7 +15,11 @@ import Foundation
 
 typealias OnSubmitCallBack = (MutationEvent, @escaping (Result<MutationEvent, DataStoreError>) -> Void) -> Void
 
-class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockRemoteSyncEngine: RemoteSyncEngineBehavior, @unchecked Sendable {
     var syncing = false
 
     func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
