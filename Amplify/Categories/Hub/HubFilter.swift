@@ -8,7 +8,9 @@
 import Foundation
 
 /// Convenience typealias defining a closure that can be used to filter Hub messages
-public typealias HubFilter = (HubPayload) -> Bool
+/// - Note: `@Sendable` because filters are evaluated on the Hub's dispatch queue, off the thread
+///   that registered them.
+public typealias HubFilter = @Sendable (HubPayload) -> Bool
 
 /// Convenience filters for common filtering use cases
 public enum HubFilters {
