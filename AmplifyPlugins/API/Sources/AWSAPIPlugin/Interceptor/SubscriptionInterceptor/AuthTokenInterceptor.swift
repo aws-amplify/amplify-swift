@@ -11,11 +11,12 @@ import Foundation
 
 /// General purpose authenticatication subscriptions interceptor for providers whose only
 /// requirement is to provide an authentication token via the "Authorization" header
-class AuthTokenInterceptor {
+/// - Note: `final` and `Sendable`: all state is `let` and the token closure is `@Sendable`.
+final class AuthTokenInterceptor: Sendable {
 
-    let getLatestAuthToken: () async throws -> String?
+    let getLatestAuthToken: @Sendable () async throws -> String?
 
-    init(getLatestAuthToken: @escaping () async throws -> String?) {
+    init(getLatestAuthToken: @escaping @Sendable () async throws -> String?) {
         self.getLatestAuthToken = getLatestAuthToken
     }
 
