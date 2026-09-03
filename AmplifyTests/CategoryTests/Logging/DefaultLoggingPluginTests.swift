@@ -16,7 +16,9 @@ import XCTest
 /// important. The `message` arguments are auto-closures, and we're relying on that fact to determine whether a message
 /// is being evaluated or not. In other words, don't assign the message to a variable, and then pass it to the logging
 /// method.
-class DefaultLoggingPluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DefaultLoggingPluginTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         await Amplify.reset()

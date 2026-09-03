@@ -8,7 +8,9 @@
 import Amplify
 import XCTest
 
-class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin, @unchecked Sendable {
     let key = "NotificationListeningAnalyticsPlugin"
     let notificationReceived: XCTestExpectation
 
@@ -19,13 +21,16 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
     func configure(using configuration: Any?) throws {
         let isConfigured = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
 
-        var token: UnsubscribeToken?
-        token = Amplify.Hub.listen(to: .analytics, isIncluded: isConfigured) { _ in
+        // The listener removes itself, so the token is held in a box rather than a `var` captured
+        // before assignment.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: isConfigured) { _ in
             self.notificationReceived.fulfill()
-            if let token {
+            if let token = tokenBox.get() {
                 Amplify.Hub.removeListener(token)
             }
         }
+        tokenBox.set(token)
     }
 
     func identifyUser(userId identityId: String, userProfile: AnalyticsUserProfile?) {

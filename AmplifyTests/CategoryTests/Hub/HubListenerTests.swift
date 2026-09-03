@@ -10,7 +10,9 @@ import XCTest
 
 @testable import AmplifyTestCommon
 
-class HubListenerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class HubListenerTests: XCTestCase, @unchecked Sendable {
 
     /// Given: A configured hub, and a category API that takes a listener callback
     /// When: I invoke the API with a callback
