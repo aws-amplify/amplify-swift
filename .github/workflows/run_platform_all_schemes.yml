@@ -30,9 +30,13 @@ on:
         type: number
         default: 120
       test_iterations_flags:
+        # Parallel testing is ON: xcodebuild distributes a scheme's tests across cloned simulators
+        # (each clone is a separate process/device, so keychain/UserDefaults/filesystem state is
+        # isolated per worker). This reclaims the wall-clock lost to running schemes serially on one
+        # runner. Watch for flakiness from tests that assume a single shared simulator.
         required: false
         type: string
-        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
+        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled YES -test-repetition-relaunch-enabled YES'
       retry_tests:
         required: false
         type: boolean
@@ -103,11 +107,21 @@ jobs:
         shell: bash
         env:
           DESTINATION: ${{ steps.platform.outputs.destination }}
+          DEVICE: ${{ steps.platform.outputs.device }}
           XCODE_PATH: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           CLONED: /Users/runner/Library/Developer/Xcode/DerivedData/Amplify
           RESOLVE_TIMEOUT_SECONDS: '1500'
         run: |
           sudo xcode-select -s "$XCODE_PATH"
+
+          # Kick off the simulator boot now so it warms up while build-for-testing compiles (that
+          # step needs no simulator). simctl boot returns as soon as boot is initiated, so the build
+          # proceeds in parallel. macOS has no simulator device, so this is skipped there.
+          if [ -n "$DEVICE" ]; then
+            echo "Booting simulator '$DEVICE' in the background..."
+            xcrun simctl boot "$DEVICE" 2>/dev/null || true
+          fi
+
           resolve_bounded() {
             xcodebuild -resolvePackageDependencies -scheme Amplify-Package \
               -clonedSourcePackagesDirPath "$CLONED" &
