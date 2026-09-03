@@ -12,7 +12,9 @@ import XCTest
 @testable import APIHostApp
 @testable import AWSPluginsCore
 
-class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase, @unchecked Sendable {
 
     var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
 

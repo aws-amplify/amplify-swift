@@ -9,7 +9,9 @@ import AWSAPIPlugin
 import XCTest
 
 // swiftlint:disable:next type_name
-class AWSAPICategoryPluginAmplifyVersionableTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAPICategoryPluginAmplifyVersionableTests: XCTestCase, @unchecked Sendable {
 
     func testVersionExists() {
         let plugin = AWSAPIPlugin()

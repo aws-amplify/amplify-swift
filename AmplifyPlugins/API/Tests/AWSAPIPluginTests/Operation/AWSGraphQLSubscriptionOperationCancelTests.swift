@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name
-class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase, @unchecked Sendable {
     var apiPlugin: AWSAPIPlugin!
     var authService: MockAWSAuthService!
     var pluginConfig: AWSAPICategoryPluginConfiguration!

@@ -12,7 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
-class GraphQLResponseDecoderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLResponseDecoderTests: XCTestCase, @unchecked Sendable {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
