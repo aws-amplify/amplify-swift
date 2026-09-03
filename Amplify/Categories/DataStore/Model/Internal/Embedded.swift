@@ -17,7 +17,8 @@ import Foundation
 ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
 ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
 ///   breaking change.
-public protocol Embeddable: Codable {
+/// - Note: `Sendable` because embedded types are stored on models, and `Model` is `Sendable`.
+public protocol Embeddable: Codable, Sendable {
 
     /// A reference to the `ModelSchema` associated with this embedded type.
     static var schema: ModelSchema { get }
