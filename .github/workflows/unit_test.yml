@@ -96,6 +96,9 @@ jobs:
     if: ${{ needs.detect.outputs.nocov != '[]' }}
     strategy:
       fail-fast: false
+      # Cap concurrent schemes so this workflow uses at most ~5 schemes x 5 platforms of the shared
+      # macOS runner pool at once, instead of fanning out every affected scheme simultaneously.
+      max-parallel: 5
       matrix:
         scheme: ${{ fromJSON(needs.detect.outputs.nocov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
@@ -109,6 +112,9 @@ jobs:
     if: ${{ needs.detect.outputs.cov != '[]' }}
     strategy:
       fail-fast: false
+      # Cap concurrent schemes so this workflow uses at most ~5 schemes x 5 platforms of the shared
+      # macOS runner pool at once, instead of fanning out every affected scheme simultaneously.
+      max-parallel: 5
       matrix:
         scheme: ${{ fromJSON(needs.detect.outputs.cov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
