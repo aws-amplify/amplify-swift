@@ -22,7 +22,9 @@ import XCTest
 ///
 /// On my laptop, on my network, I only get "progress: 1.0" notifications for payloads
 /// of ~0-1MB. After ~1 MB, I start getting notified more frequently.
-class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     /// - Given: An upload task
     /// - When: A subscription to its progress `resultPublisher` is established **during** upload
