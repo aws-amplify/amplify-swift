@@ -11,7 +11,9 @@ import Smithy
 import SmithyHTTPAPI
 import XCTest
 
-class UserAgentSuffixAppenderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class UserAgentSuffixAppenderTests: XCTestCase, @unchecked Sendable {
     private let userAgentKey = "User-Agent"
     private let customSuffix = "myCustomSuffix"
     private var appender: UserAgentSuffixAppender!
@@ -83,7 +85,9 @@ class UserAgentSuffixAppenderTests: XCTestCase {
     }
 }
 
-private class MockHttpClientEngine: HTTPClient {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+private class MockHttpClientEngine: HTTPClient, @unchecked Sendable {
     var executeCount = 0
     var executeRequest: HTTPRequest?
     func send(request: HTTPRequest) async throws -> HTTPResponse {

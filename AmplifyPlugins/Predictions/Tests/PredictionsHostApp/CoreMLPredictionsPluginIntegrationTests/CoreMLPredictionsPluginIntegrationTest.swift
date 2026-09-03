@@ -9,7 +9,9 @@ import Amplify
 import AVFoundation
 import XCTest
 
-class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase, @unchecked Sendable {
 
     func testIdentify() async throws {
         let testBundle = Bundle(for: type(of: self))
