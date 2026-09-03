@@ -16,7 +16,9 @@ import Combine
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 /// using serialized JSON models
-class LocalSubscriptionWithJSONModelTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
     var dataStorePlugin: AWSDataStorePlugin!
 
     override func setUp() async throws {

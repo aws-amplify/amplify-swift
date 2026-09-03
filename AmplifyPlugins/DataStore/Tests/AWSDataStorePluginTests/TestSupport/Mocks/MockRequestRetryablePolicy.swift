@@ -12,7 +12,11 @@ import Foundation
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MockRequestRetryablePolicy: RequestRetryablePolicy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockRequestRetryablePolicy: RequestRetryablePolicy, @unchecked Sendable {
 
     var responseQueue: [RequestRetryAdvice] = []
     var onRetryRequestAdvice: ((URLError?, HTTPURLResponse?, Int) -> Void)?

@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable @preconcurrency import AWSPluginsCore
 
-class InitialSyncOrchestratorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class InitialSyncOrchestratorTests: XCTestCase, @unchecked Sendable {
 
     override class func setUp() {
         Amplify.Logging.logLevel = .info

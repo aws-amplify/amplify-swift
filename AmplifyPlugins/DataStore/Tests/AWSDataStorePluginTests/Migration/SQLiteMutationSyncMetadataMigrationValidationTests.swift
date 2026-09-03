@@ -14,7 +14,9 @@ import SQLite3
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase, @unchecked Sendable {
 
     // MARK: - Precondition tests
     func testPreconditionSuccess() throws {

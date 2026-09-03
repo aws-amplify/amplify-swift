@@ -13,7 +13,7 @@ public enum ExampleEnum: String, EnumPersistable {
     case bar
 }
 
-public struct ExampleNonModelType: Codable {
+public struct ExampleNonModelType: Codable, Sendable {
 
     public let someString: String
     public let someEnum: ExampleEnum
