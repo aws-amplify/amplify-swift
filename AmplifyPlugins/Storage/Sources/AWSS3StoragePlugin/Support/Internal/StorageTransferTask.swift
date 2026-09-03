@@ -9,7 +9,10 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-class StorageTransferTask {
+/// - Note: `@unchecked Sendable`: a transfer task is handed to URLSession delegate
+///   callbacks and to the multipart upload path, both of which run off the calling thread. Its
+///   mutable state is written while the transfer is being set up.
+class StorageTransferTask: @unchecked Sendable {
     typealias Action = () -> Void
 
     let transferID: String

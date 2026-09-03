@@ -11,7 +11,8 @@ import Foundation
 // swiftlint:disable line_length
 
 /// Default database implementation for ``StorageTransferDatabase`` protocol.
-class DefaultStorageTransferDatabase {
+/// - Note: `@unchecked Sendable`: persistence work is serialized on its own queue.
+class DefaultStorageTransferDatabase: @unchecked Sendable {
     enum Failure: Error {
         case notExists(fileURL: URL)
         case noData(fileURL: URL)
@@ -59,7 +60,7 @@ class DefaultStorageTransferDatabase {
 
     func recover(
         urlSession: StorageURLSession = URLSession.shared,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         queue.async { [weak self] in
             guard let self else { fatalError("self cannot be weak") }
@@ -155,7 +156,7 @@ class DefaultStorageTransferDatabase {
 
     private func loadTasksAndLinkSessions(
         urlSession: StorageURLSession = URLSession.shared,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         dispatchPrecondition(condition: .notOnQueue(.main))
         dispatchPrecondition(condition: .onQueue(queue))
@@ -176,7 +177,7 @@ class DefaultStorageTransferDatabase {
         // to also link these task so that delegate methods send events into StorageMultipartUploadSession to update
         // the lifecycle so that the process can be completed.
 
-        let sessionTaskHandler: (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
+        let sessionTaskHandler: @Sendable (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
             guard let self else { fatalError("self cannot be weak") }
 
             let pairs = linkTasksWithSessions(persistableTransferTasks: persistableTransferTasks, sessionTasks: sessionTasks)
