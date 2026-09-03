@@ -11,7 +11,9 @@ import Amplify
 import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
-class LoadCredentialsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class LoadCredentialsTests: XCTestCase, @unchecked Sendable {
 
     /// Test is responsible to check the happy path of retrieving credentials from the store
     ///

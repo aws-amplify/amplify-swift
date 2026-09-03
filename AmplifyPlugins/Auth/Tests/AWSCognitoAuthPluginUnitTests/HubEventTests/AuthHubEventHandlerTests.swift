@@ -13,7 +13,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AuthHubEventHandlerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
 
     let networkTimeout = TimeInterval(2)
     var plugin: AWSCognitoAuthPlugin!
@@ -445,7 +447,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
 
-    private func urlSessionMock() -> URLSession {
+    @Sendable private func urlSessionMock() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         return URLSession(configuration: configuration)
@@ -477,11 +479,11 @@ class AuthHubEventHandlerTests: XCTestCase {
             return (HTTPURLResponse(), mockJson)
         }
 
-        func sessionFactory() -> HostedUISessionBehavior {
+        @Sendable func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
         }
 
-        func mockRandomString() -> RandomStringBehavior {
+        @Sendable func mockRandomString() -> RandomStringBehavior {
             return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
