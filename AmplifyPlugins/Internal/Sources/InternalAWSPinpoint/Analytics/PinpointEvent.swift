@@ -10,8 +10,11 @@ import Foundation
 
 private typealias Constants = AWSPinpointAnalytics.Constants.Event
 
+/// - Note: `final` and `@unchecked Sendable`: the identity and session fields are `let`; the lazy
+///   attribute/metric dictionaries are populated while the event is being built, before it is handed
+///   to the recorder.
 @_spi(InternalAWSPinpoint)
-public class PinpointEvent: AnalyticsPropertiesModel {
+public final class PinpointEvent: AnalyticsPropertiesModel, @unchecked Sendable {
     let id: String
     public let eventType: String
     let eventDate: Date
