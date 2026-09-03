@@ -14,7 +14,9 @@ import XCTest
 @testable import APIHostApp
 #endif
 
-class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLWithLambdaAuthIntegrationTests: XCTestCase, @unchecked Sendable {
 
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
 

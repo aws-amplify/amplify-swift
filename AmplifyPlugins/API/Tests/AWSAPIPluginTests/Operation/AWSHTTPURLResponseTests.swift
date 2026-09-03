@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSAPIPlugin
 
-class AWSHTTPURLResponseTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSHTTPURLResponseTests: XCTestCase, @unchecked Sendable {
 
     func testAWSHTTPURLResponse() throws {
         let body = Data("responseBody".utf8)
