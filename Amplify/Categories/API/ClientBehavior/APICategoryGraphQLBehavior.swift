@@ -6,7 +6,9 @@
 //
 
 /// Behavior of the API category related to GraphQL operations
-public protocol APICategoryGraphQLBehavior: AnyObject {
+/// - Note: `Sendable` because the implementing plugin is `Sendable` (see `Plugin`) and DataStore
+///   holds this behavior across task boundaries throughout the sync engine.
+public protocol APICategoryGraphQLBehavior: AnyObject, Sendable {
 
     // MARK: - Request-based GraphQL Operations
 

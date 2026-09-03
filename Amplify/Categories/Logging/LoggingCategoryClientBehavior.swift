@@ -29,7 +29,10 @@ public protocol LoggingCategoryClientBehavior {
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger
 }
 
-public protocol Logger {
+/// - Note: `Sendable` because loggers are captured by concurrent work throughout the
+///   library (task groups, detached tasks, actor bodies). Conformers are responsible for
+///   making their own state thread-safe.
+public protocol Logger: Sendable {
 
     /// The log level of the logger.
     var logLevel: LogLevel { get set }

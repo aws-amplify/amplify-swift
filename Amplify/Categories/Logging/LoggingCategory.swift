@@ -8,7 +8,10 @@
 import Foundation
 
 /// AWS Amplify writes console logs through Logger. You can use Logger in your apps for the same purpose.
-public final class LoggingCategory: Category {
+/// - Note: `@unchecked Sendable` because `_logLevel` and the configuration state are
+///   mutable but every access is serialized by `lock`. The `Logger` conformance lives in
+///   an extension in another file, so the conformance must be declared here.
+public final class LoggingCategory: Category, @unchecked Sendable {
     enum ConfigurationState {
         /// Default configuration at initialization
         case `default`
@@ -20,7 +23,9 @@ public final class LoggingCategory: Category {
         case configured
     }
 
-    let lock: NSLocking = NSLock()
+    // Concrete `NSLock` rather than `any NSLocking`: the existential is not `Sendable`,
+    // which blocks the `Sendable` conformance this class needs.
+    let lock = NSLock()
 
     public let categoryType = CategoryType.logging
 
