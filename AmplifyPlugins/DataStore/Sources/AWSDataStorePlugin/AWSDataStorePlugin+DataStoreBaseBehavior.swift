@@ -79,7 +79,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(
         _ modelType: M.Type,
         byId id: String,
-        completion: DataStoreCallback<M?>
+        completion: @escaping DataStoreCallback<M?>
     ) {
         let predicate: QueryPredicate = field("id") == id
         query(modelType, where: predicate, paginate: .firstResult) {
@@ -111,7 +111,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(
         _ modelType: M.Type,
         byIdentifier identifier: String,
-        completion: DataStoreCallback<M?>
+        completion: @escaping DataStoreCallback<M?>
     ) where M: ModelIdentifiable,
                                                                          M.IdentifierFormat == ModelIdentifierFormat.Default {
         queryByIdentifier(
@@ -137,7 +137,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(
         _ modelType: M.Type,
         byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-        completion: DataStoreCallback<M?>
+        completion: @escaping DataStoreCallback<M?>
     ) where M: ModelIdentifiable {
         queryByIdentifier(
             modelType,
@@ -163,7 +163,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         _ modelType: M.Type,
         modelSchema: ModelSchema,
         identifier: ModelIdentifierProtocol,
-        completion: DataStoreCallback<M?>
+        completion: @escaping DataStoreCallback<M?>
     ) {
         query(
             modelType,
@@ -202,7 +202,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         where predicate: QueryPredicate? = nil,
         sort sortInput: QuerySortInput? = nil,
         paginate paginationInput: QueryPaginationInput? = nil,
-        completion: DataStoreCallback<[M]>
+        completion: @escaping DataStoreCallback<[M]>
     ) {
         query(
             modelType,
@@ -235,7 +235,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         where predicate: QueryPredicate? = nil,
         sort sortInput: [QuerySortDescriptor]? = nil,
         paginate paginationInput: QueryPaginationInput? = nil,
-        completion: DataStoreCallback<[M]>
+        completion: @escaping DataStoreCallback<[M]>
     ) {
         switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
@@ -675,7 +675,7 @@ public extension AWSDataStorePlugin {
         _ modelType: M.Type,
         modelSchema: ModelSchema,
         byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-        completion: DataStoreCallback<M?>
+        completion: @escaping DataStoreCallback<M?>
     ) where M: ModelIdentifiable {
         queryByIdentifier(
             modelType,

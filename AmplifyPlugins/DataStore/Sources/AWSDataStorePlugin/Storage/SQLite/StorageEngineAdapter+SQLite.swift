@@ -13,7 +13,10 @@ import SQLite
 // swiftlint:disable type_body_length file_length
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
-final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+/// - Note: `@unchecked Sendable` to satisfy `StorageEngineAdapter`'s `Sendable` requirement.
+///   `connection` is established during setup and replaced only by `clear`/`setUp`, never
+///   concurrently with queries.
+final class SQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendable {
     var connection: Connection?
     var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
@@ -25,7 +28,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     // less (equaling 950) than the maximum because it is possible that our SQLStatement already has
     // some expressions.  If we encounter performance problems in the future, we will want to profile
     // our system and find an optimal value.
-    static var maxNumberOfPredicates: Int = 950
+    static let maxNumberOfPredicates: Int = 950
 
     convenience init(
         version: String,
@@ -272,7 +275,8 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         modelSchema: ModelSchema,
         withId id: Model.Identifier,
         condition: QueryPredicate? = nil,
-        completion: (DataStoreResult<M?>) -> Void
+        // `@Sendable` because the inner `delete` invokes it from an escaping completion.
+        completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
     ) {
         delete(
             untypedModelType: modelType,
