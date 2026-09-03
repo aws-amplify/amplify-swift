@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-protocol EventDispatcher {
+/// - Note: `Sendable` because the dispatcher is handed to actions that run concurrently.
+protocol EventDispatcher: Sendable {
     func send(_ event: StateMachineEvent) async
 }

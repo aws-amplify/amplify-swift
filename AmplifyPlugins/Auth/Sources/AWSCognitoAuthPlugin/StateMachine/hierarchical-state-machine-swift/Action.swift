@@ -5,9 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-typealias BasicActionClosure = (EventDispatcher, Environment) async -> Void
+// `@Sendable` because `Action` is `Sendable` and executors run these in detached tasks.
+typealias BasicActionClosure = @Sendable (EventDispatcher, Environment) async -> Void
 
-protocol Action {
+/// - Note: `Sendable` because the executors run actions in detached tasks.
+protocol Action: Sendable {
     /// Used for deduping and cancelling actions
     var identifier: String { get }
 
