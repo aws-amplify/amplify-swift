@@ -20,7 +20,9 @@ import XCTest
  }
  */
 
-class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {

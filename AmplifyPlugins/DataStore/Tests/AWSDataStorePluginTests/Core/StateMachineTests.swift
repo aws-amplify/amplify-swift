@@ -11,7 +11,9 @@ import XCTest
 // Testable import b/c StateMachine is an internal type
 @testable @preconcurrency import AWSDataStorePlugin
 
-class StateMachineTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StateMachineTests: XCTestCase, @unchecked Sendable {
 
     /// - Given: A simple state machine
     /// - When:
