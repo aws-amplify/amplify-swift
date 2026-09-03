@@ -10,7 +10,9 @@ import XCTest
 @testable import AmplifyTestCommon
 
 // Tests that the client behavior API calls pass through from Category to CategoryPlugin
-class AnalyticsCategoryClientAPITests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AnalyticsCategoryClientAPITests: XCTestCase, @unchecked Sendable {
     var analytics: AnalyticsCategory!
     var plugin: MockAnalyticsCategoryPlugin!
 
