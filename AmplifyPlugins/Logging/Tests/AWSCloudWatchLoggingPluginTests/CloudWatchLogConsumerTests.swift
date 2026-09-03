@@ -12,7 +12,9 @@ import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
 
-final class CloudWatchLogConsumerTests: XCTestCase {
+/// - Note: `@unchecked Sendable` because this test case conforms to `LogBatch` (which is `Sendable`)
+///   in an extension below, and a `Sendable` class cannot inherit from `XCTestCase`.
+final class CloudWatchLogConsumerTests: XCTestCase, @unchecked Sendable {
 
     var systemUnderTest: CloudWatchLoggingConsumer!
     var client: MockCloudWatchLogsClient!

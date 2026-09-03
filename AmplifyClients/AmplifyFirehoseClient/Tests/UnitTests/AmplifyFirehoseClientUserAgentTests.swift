@@ -14,7 +14,9 @@ import XCTest
 @testable import AmplifyRecordCache
 
 /// Mock HTTP client engine that captures the User-Agent header from outgoing requests.
-private class UserAgentCapturingEngine: HTTPClient {
+/// - Note: `final` and `@unchecked Sendable`: `HTTPClient` is `Sendable`. This test double captures
+///   one header on a single request.
+private final class UserAgentCapturingEngine: HTTPClient, @unchecked Sendable {
     var capturedUserAgent: String?
 
     func send(request: SmithyHTTPAPI.HTTPRequest) async throws -> SmithyHTTPAPI.HTTPResponse {
@@ -24,7 +26,9 @@ private class UserAgentCapturingEngine: HTTPClient {
     }
 }
 
-class AmplifyFirehoseClientUserAgentTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyFirehoseClientUserAgentTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the User-Agent header contains Firehose metadata.
     ///
