@@ -10,7 +10,10 @@ import AWSPluginsCore
 import Foundation
 import InternalAmplifyCredentials
 
-public final class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The service and
+///   configuration properties are populated during `configure(using:)` before any client call can
+///   reach them.
+public final class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation, @unchecked Sendable {
     /// Used for the default GraphQL API represented by the `data` category in `amplify_outputs.json`
     /// This constant is not used for APIs present in `amplifyconfiguration.json` since they always have names.
     public static let defaultGraphQLAPI = "defaultGraphQLAPI"
