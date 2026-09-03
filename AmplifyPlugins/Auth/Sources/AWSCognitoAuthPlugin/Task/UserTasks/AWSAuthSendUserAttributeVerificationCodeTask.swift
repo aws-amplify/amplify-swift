@@ -10,8 +10,9 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerificationCodeTask, DefaultLogger {
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerificationCodeTask, DefaultLogger, @unchecked Sendable {
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let request: AuthSendUserAttributeVerificationCodeRequest
     private let authStateMachine: AuthStateMachine

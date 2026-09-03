@@ -11,7 +11,8 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 
-class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthResetPasswordRequest
     private let environment: AuthEnvironment

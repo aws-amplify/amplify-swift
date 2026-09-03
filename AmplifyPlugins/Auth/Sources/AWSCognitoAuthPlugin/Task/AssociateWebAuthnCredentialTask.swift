@@ -11,8 +11,9 @@ import AuthenticationServices
 import AWSCognitoIdentityProvider
 import Foundation
 
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredentialTask, DefaultLogger {
+final class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCredentialTask, DefaultLogger, @unchecked Sendable {
     private let request: AuthAssociateWebAuthnCredentialRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: UserPoolEnvironment.CognitoUserPoolFactory

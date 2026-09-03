@@ -7,7 +7,8 @@
 
 import Foundation
 
-typealias EventIDFactory = () -> String
+/// - Note: `@Sendable` because the factory lives on a `Sendable` environment.
+typealias EventIDFactory = @Sendable () -> String
 
 enum UUIDFactory {
     nonisolated(unsafe) static let factory: EventIDFactory = { UUID().uuidString }

@@ -9,7 +9,8 @@ import Amplify
 import AWSCognitoIdentityProvider
 import Foundation
 
-class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthSignUpRequest
     private let authStateMachine: AuthStateMachine

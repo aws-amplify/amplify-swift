@@ -8,7 +8,8 @@
 import Amplify
 import Foundation
 
-class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine

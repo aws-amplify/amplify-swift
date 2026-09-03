@@ -31,7 +31,7 @@ public struct AuthFederateToIdentityPoolRequest: AmplifyOperationRequest {
 
 public extension AuthFederateToIdentityPoolRequest {
 
-    struct Options {
+    struct Options: Sendable {
 
         public let developerProvidedIdentityID: String?
 
