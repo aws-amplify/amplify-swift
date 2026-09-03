@@ -10,7 +10,13 @@ import Foundation
 import UIKit
 
 /// A class for recognizing long press gesture which notifies a `TriggerDelegate` of the event
-class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecognizerDelegate {
+///
+/// - Note: `@preconcurrency` on the `TriggerRecognizer` conformance: this type is main-actor-isolated
+///   because it holds and configures UIKit objects, while `TriggerRecognizer` is not isolated, so the
+///   conformance crosses isolation. Gesture callbacks only ever arrive on the main thread. This matches
+///   the `@preconcurrency` conformances already on `AmplifyDevMenu`, and avoids isolating the public
+///   `TriggerRecognizer` protocol.
+class LongPressGestureRecognizer: NSObject, @preconcurrency TriggerRecognizer, UIGestureRecognizerDelegate {
 
     weak var triggerDelegate: TriggerDelegate?
     weak var uiWindow: UIWindow?
