@@ -18,8 +18,10 @@ public extension HubPayload.EventName.Auth {
     static let clearedFederationToIdentityPoolAPI = "Auth.federationToIdentityPoolCleared"
 }
 
-public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask,
-                                                       DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+public final class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask,
+                                                             DefaultLogger,
+                                                             @unchecked Sendable {
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
     private let taskHelper: AWSAuthTaskHelper

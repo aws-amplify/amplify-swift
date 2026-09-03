@@ -9,11 +9,11 @@ import Foundation
 
 protocol HostedUIEnvironment: Environment {
 
-    typealias HostedUISessionFactory = () -> HostedUISessionBehavior
+    typealias HostedUISessionFactory = @Sendable () -> HostedUISessionBehavior
 
-    typealias URLSessionFactory = () -> URLSession
+    typealias URLSessionFactory = @Sendable () -> URLSession
 
-    typealias RandomStringFactory = () -> RandomStringBehavior
+    typealias RandomStringFactory = @Sendable () -> RandomStringBehavior
 
     var configuration: HostedUIConfigurationData { get }
 

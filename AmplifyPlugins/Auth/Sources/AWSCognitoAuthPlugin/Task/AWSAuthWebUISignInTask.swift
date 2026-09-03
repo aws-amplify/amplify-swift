@@ -10,7 +10,8 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger, @unchecked Sendable {
 
     private let helper: HostedUISignInHelper
     private let request: AuthWebUISignInRequest
