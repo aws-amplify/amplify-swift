@@ -41,15 +41,14 @@ on:
 permissions:
     contents: read
 
-# One runner per PLATFORM, running every affected scheme on it. The whole package is compiled ONCE
-# via `build-for-testing` on the umbrella Amplify-Package scheme; each scheme then runs via
-# `test-without-building` (no compilation). This is deliberate: separate `xcodebuild test -scheme X`
-# invocations do NOT reliably reuse each other's build products — across distinct schemes on a
-# SwiftPM package Xcode re-plans and recompiles the shared dependency graph (Amplify core, the AWS
-# SDK, CRT) every time — so a per-scheme build rebuilds that expensive graph N times. build-for-
-# testing compiles the graph (the expensive part) plus all test bundles a single time. This caps
-# peak macOS jobs at the platform count regardless of scheme count, and keeps each platform on its
-# own clean runner (no cross-platform host-state sharing).
+# One runner per PLATFORM, running every affected scheme on it. Each scheme builds independently
+# (its own `xcodebuild test -scheme <scheme>`), but they all share one resolved-dependencies dir and
+# one DerivedData on the runner: the heavy dependency graph (Amplify core, the AWS SDK, CRT) compiles
+# on the first scheme and every later scheme reuses it incrementally, building only its own test
+# target. So the graph is built once per platform (not once per scheme × platform) while unaffected
+# schemes are never compiled. This caps peak macOS jobs at the platform count regardless of how many
+# schemes changed, and keeps each platform on its own clean runner (no cross-platform host-state
+# sharing).
 jobs:
   run:
     name: ${{ inputs.platform }} Unit Tests
@@ -99,10 +98,9 @@ jobs:
       # Resolve the whole graph once, up front (bounded/retried like the run_xcodebuild* actions, so
       # a slow clone fails fast rather than hanging the job). Every per-scheme build below then runs
       # with -disableAutomaticPackageResolution against this shared checkout.
-      - name: Resolve dependencies and build for testing
+      - name: Resolve package dependencies
         shell: bash
         env:
-          DESTINATION: ${{ steps.platform.outputs.destination }}
           XCODE_PATH: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           CLONED: /Users/runner/Library/Developer/Xcode/DerivedData/Amplify
           RESOLVE_TIMEOUT_SECONDS: '1500'
@@ -125,23 +123,10 @@ jobs:
           done
           [ "${resolved:-0}" = "1" ] || { echo "::error::Could not resolve package dependencies."; exit 1; }
 
-          echo "::group::Build for testing (Amplify-Package)"
-          set -o pipefail
-          xcodebuild build-for-testing \
-            -scheme Amplify-Package \
-            -destination "$DESTINATION" \
-            -derivedDataPath "$GITHUB_WORKSPACE/Build" \
-            -clonedSourcePackagesDirPath "$CLONED" \
-            -skipPackagePluginValidation \
-            -disableAutomaticPackageResolution \
-            | xcbeautify --renderer github-actions && st=${PIPESTATUS[0]} || st=$?
-          echo "::endgroup::"
-          exit ${st:-0}
-
-      # Everything was compiled once above. Each scheme now runs via test-without-building (no
-      # compilation), so the expensive dependency graph is built exactly once per platform. A
-      # per-scheme failure is retried once (if enabled); every scheme runs regardless
-      # (fail-fast:false) and the job fails if any failed.
+      # Each scheme builds and tests independently, but shares the resolved deps and DerivedData: the
+      # first scheme compiles the dependency graph, later schemes reuse it and build only their own
+      # test target. A per-scheme failure is retried once (if enabled) and, if it still fails,
+      # recorded; every scheme runs regardless (fail-fast:false) and the job fails if any failed.
       - name: Run affected schemes
         shell: bash
         env:
@@ -161,9 +146,10 @@ jobs:
             local s="$1" cov_flag=""
             [ "$COV" = "true" ] && cov_flag="-enableCodeCoverage YES"
             set -o pipefail
-            # test-without-building: build-for-testing above already compiled this scheme's test
-            # bundle (and the shared graph), so this only runs — no recompilation.
-            xcodebuild test-without-building \
+            # `test` (not test-without-building): builds this scheme's own test target, reusing the
+            # already-compiled dependency graph from shared DerivedData; resolution is disabled since
+            # the Resolve step above already populated the checkout.
+            xcodebuild test \
               -scheme "$s" \
               -destination "$DESTINATION" \
               -derivedDataPath "$GITHUB_WORKSPACE/Build" \
