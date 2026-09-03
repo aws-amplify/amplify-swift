@@ -176,24 +176,40 @@ class WebSocketClientTests: XCTestCase {
             return
         }
 
-        // Inject a dead probe (no pong) so the client detects the zombie socket and recycles it.
+        // Dead socket (no pong) for the first connection, healthy after: the client should
+        // detect the zombie, recycle, and reconnect.
+        actor DeadThenAlive {
+            private var calls = 0
+            func probe() -> Bool {
+                calls += 1
+                return calls > 2
+            }
+        }
+        let probe = DeadThenAlive()
+
         let webSocketClient = WebSocketClient(
             url: endpoint,
-            pingInterval: 0.5,
-            pingTimeout: 0.5,
-            isConnectionAlive: { _, _ in false }
+            pingInterval: 0.3,
+            pingTimeout: 0.3,
+            isConnectionAlive: { _, _ in await probe.probe() }
         )
-        await verifyConnected(webSocketClient)
+        await verifyConnected(webSocketClient, autoRetryOnConnectionFailure: true)
 
-        let recycledExpectation = expectation(description: "Dead ping should recycle the connection")
+        let disconnected = expectation(description: "Dead ping disconnects the socket")
+        let reconnected = expectation(description: "Client reconnects after recycling")
         await webSocketClient.publisher.sink { event in
-            if case let .disconnected(closeCode, _) = event, closeCode == .abnormalClosure {
-                recycledExpectation.fulfill()
+            switch event {
+            case let .disconnected(closeCode, _) where closeCode == .abnormalClosure:
+                disconnected.fulfill()
+            case .connected:
+                reconnected.fulfill()
+            default:
+                break
             }
         }
         .store(in: &cancellables)
 
-        await fulfillment(of: [recycledExpectation], timeout: timeout)
+        await fulfillment(of: [disconnected, reconnected], timeout: timeout, enforceOrder: true)
     }
 
     func testLivenessPing_doesNotRecycle_onSingleMiss() async throws {
@@ -202,7 +218,7 @@ class WebSocketClientTests: XCTestCase {
             return
         }
 
-        // One miss then healthy: a single (non-consecutive) miss must not recycle.
+        // Anti-flap guard (not a #3976 regression test): one miss then healthy must not recycle.
         actor MissOnce {
             private var calls = 0
             func probe() -> Bool {
