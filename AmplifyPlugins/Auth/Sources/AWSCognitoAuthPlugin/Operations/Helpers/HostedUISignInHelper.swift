@@ -57,6 +57,20 @@ struct HostedUISignInHelper: DefaultLogger {
                 )
             case .signedOut:
                 return
+            case .signingOut(let signOutState):
+                // A failed sign out parks the machine in `.signingOut(.error)`, which
+                // it cannot leave on its own, so falling through to `continue` would
+                // wait forever: the caller hangs with no web UI presented and no error
+                // reported. Cancelling returns it to `.signedOut` so this sign in can
+                // proceed. Every other sign out sub-state is still in flight and
+                // settles on its own.
+                if case .error = signOutState {
+                    await sendCancelSignOutEvent()
+                }
+            case .error:
+                // `.error` is likewise terminal until it is cancelled. The resolver
+                // maps `cancelSignIn` on `.error` back to `.signedOut`.
+                await sendCancelSignInEvent()
             default: continue
             }
         }
@@ -149,6 +163,11 @@ struct HostedUISignInHelper: DefaultLogger {
 
     private func sendCancelSignInEvent() async {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
+        await authStateMachine.send(event)
+    }
+
+    private func sendCancelSignOutEvent() async {
+        let event = AuthenticationEvent(eventType: .cancelSignOut(nil))
         await authStateMachine.send(event)
     }
 
