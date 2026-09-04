@@ -30,6 +30,10 @@ actor AppSyncRealTimeSubscription {
     /// internal state for tracking subscription status
     private let state = CurrentValueSubject<State, Never>(.none)
 
+    /// Set when subscribe() fails with a non-recoverable error (e.g. expired
+    /// auth). A terminated subscription is not resubscribed on reconnect.
+    private var isTerminated = false
+
     /// publisher for monitoring subscription status
     var publisher: AnyPublisher<State, Never> {
         state.eraseToAnyPublisher()
@@ -52,6 +56,14 @@ actor AppSyncRealTimeSubscription {
     }
 
     func subscribe() async throws {
+        // A subscription that failed with a non-recoverable error (e.g. expired
+        // auth) must not be resubscribed on reconnect, otherwise it re-hammers
+        // AppSync with a subscription that can never succeed.
+        guard !isTerminated else {
+            log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription terminated, not resubscribing")
+            return
+        }
+
         guard state.value != .subscribing else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription already in subscribing state")
             return
@@ -76,6 +88,11 @@ actor AppSyncRealTimeSubscription {
             }
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to subscribe, error: \(error)")
+            // Only a hard auth failure is terminal. Transient errors (throttling,
+            // subscription limits) stay resumable on the next reconnect.
+            if (error as? AppSyncRealTimeRequest.Error) == .unauthorized {
+                isTerminated = true
+            }
             state.send(.failure)
             throw error
         }

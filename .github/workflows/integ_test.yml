@@ -34,16 +34,19 @@ jobs:
         with:
           fetch-depth: 0
       - id: sel
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.event.pull_request.base.ref || 'main' }}
         run: |
           # Only gate on pull requests. Pushes to main (post-merge) and manual dispatch run all.
           categories=($(jq -r 'keys[]' scripts/python/integ_test_groups.json))
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
+          if [ "$EVENT_NAME" != "pull_request" ]; then
             for c in "${categories[@]}"; do
               echo "$c=true" >> "$GITHUB_OUTPUT"
             done
             exit 0
           fi
-          base='${{ github.event.pull_request.base.ref || 'main' }}'
+          base="$BASE_REF"
           git fetch --no-tags origin "$base" || true
           git diff --name-only "$(git merge-base HEAD "origin/$base")" HEAD > /tmp/changed.txt
           swift package dump-package > /tmp/package.json
