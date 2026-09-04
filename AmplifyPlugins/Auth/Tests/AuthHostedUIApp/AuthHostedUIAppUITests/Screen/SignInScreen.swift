@@ -128,7 +128,7 @@ struct SignInScreen: Screen {
     ) {
         if !element.waitForExistence(timeout: 30) {
             failIfSignInReportedError()
-            XCTFail("\(fieldDescription) web text field not found")
+            XCTFail("\(fieldDescription) web text field not found. \(webUIDiagnostics())")
             return
         }
         let coordinate = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
@@ -136,6 +136,23 @@ struct SignInScreen: Screen {
         _ = app.keyboards.element.waitForExistence(timeout: 10)
         coordinate.tap()
         element.typeText(text)
+    }
+
+    /// Reports what is actually on screen when a Hosted UI field is missing, so the
+    /// cause is visible from CI logs where the .xcresult is intentionally not kept.
+    /// Only page structure is reported (identifiers and labels), never entered values.
+    private func webUIDiagnostics() -> String {
+        func names(_ query: XCUIElementQuery) -> [String] {
+            query.allElementsBoundByIndex.map {
+                $0.identifier.isEmpty ? $0.label : $0.identifier
+            }
+        }
+        return "webViews=\(app.webViews.count)"
+            + " textFields=\(names(app.webViews.textFields))"
+            + " secureTextFields=\(names(app.webViews.secureTextFields))"
+            + " webButtons=\(names(app.webViews.buttons))"
+            + " errorLabelShown=\(app.staticTexts[Identifiers.errorLabel].exists)"
+            + " signInButtonVisible=\(app.buttons[Identifiers.signInButton].exists)"
     }
 
     func testSignInSucceeded() -> Self {
