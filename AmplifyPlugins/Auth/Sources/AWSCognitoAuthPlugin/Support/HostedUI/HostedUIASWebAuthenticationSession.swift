@@ -127,19 +127,13 @@ extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationCon
         // web UI would present off-screen and never load. Fall back to the app's
         // active key window instead.
         #if canImport(UIKit)
-        let windowScenes = UIApplication.shared.connectedScenes
+        let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
-        let foregroundScenes = windowScenes.filter { $0.activationState == .foregroundActive }
-        // A backgrounded scene's window is also never displayed, and the app may
-        // have no window flagged as key while a presentation is in flight, so
-        // prefer a foreground scene and fall back to any window it owns.
-        let windows = (foregroundScenes.isEmpty ? windowScenes : foregroundScenes)
             .flatMap { $0.windows }
-        return windows.first { $0.isKeyWindow } ?? windows.first ?? ASPresentationAnchor()
+            .first { $0.isKeyWindow }
+        return keyWindow ?? ASPresentationAnchor()
         #elseif canImport(AppKit)
-        return NSApplication.shared.keyWindow
-            ?? NSApplication.shared.windows.first
-            ?? ASPresentationAnchor()
+        return NSApplication.shared.keyWindow ?? ASPresentationAnchor()
         #else
         return ASPresentationAnchor()
         #endif
