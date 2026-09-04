@@ -135,6 +135,94 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         XCTAssertTrue(result.isSignedIn)
     }
 
+    private func makePlugin(initialState: AuthState) -> AWSCognitoAuthPlugin {
+        let plugin = AWSCognitoAuthPlugin()
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { _ in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        func sessionFactory() -> HostedUISessionBehavior {
+            MockHostedUISession(result: mockHostedUIResult)
+        }
+
+        func mockRandomString() -> RandomStringBehavior {
+            return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
+        }
+
+        let environment = BasicHostedUIEnvironment(
+            configuration: configuration,
+            hostedUISessionFactory: sessionFactory,
+            urlSessionFactory: urlSessionMock,
+            randomStringFactory: mockRandomString
+        )
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: { self.mockIdentityProvider },
+            hostedUIEnvironment: environment
+        )
+        plugin.configure(
+            authConfiguration: Defaults.makeDefaultAuthConfigData(withHostedUI: configuration),
+            authEnvironment: authEnvironment,
+            authStateMachine: Defaults.authStateMachineWith(
+                environment: authEnvironment,
+                initialState: initialState
+            ),
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler()
+        )
+        return plugin
+    }
+
+    /// Given: the authentication state machine is parked in `.error`, which it cannot
+    /// leave on its own after an earlier operation failed.
+    /// When: `signInWithWebUI` is invoked.
+    /// Then: the sign in recovers the state and completes, rather than waiting forever
+    /// for a state that never arrives (no web UI presented and no error reported).
+    @MainActor
+    func testSignInRecoversFromErrorState() async throws {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let sut = makePlugin(
+            initialState: .configured(
+                .error(.unknown(message: "an earlier operation failed")),
+                .configured,
+                .notStarted
+            )
+        )
+        let result = try await sut.signInWithWebUI(
+            presentationAnchor: ASPresentationAnchor(),
+            options: nil
+        )
+        XCTAssertTrue(result.isSignedIn)
+    }
+
+    /// Given: a failed sign out parked the authentication state machine in
+    /// `.signingOut(.error)`, which never settles into `.signedOut`.
+    /// When: `signInWithWebUI` is invoked.
+    /// Then: the sign in cancels the stuck sign out and completes, rather than hanging.
+    @MainActor
+    func testSignInRecoversFromFailedSignOut() async throws {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let sut = makePlugin(
+            initialState: .configured(
+                .signingOut(.error(.localSignOut)),
+                .configured,
+                .notStarted
+            )
+        )
+        let result = try await sut.signInWithWebUI(
+            presentationAnchor: ASPresentationAnchor(),
+            options: nil
+        )
+        XCTAssertTrue(result.isSignedIn)
+    }
+
     @MainActor
     func testSuccessfulSignIn_missingExpiresIn() async throws {
         mockTokenResult = [
