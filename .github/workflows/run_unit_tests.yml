@@ -1,0 +1,145 @@
+name: Run Unit Tests for the given parameters
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the tests'
+        required: true
+        type: string
+      platform:
+        description: 'The platform in which to run these tests'
+        required: true
+        type: string
+      project_path:
+        required: false
+        type: string
+      xcode_version:
+        description: 'The version of Xcode used to run these tests'
+        default: 'latest'
+        type: string
+      timeout-minutes:
+        # 30 minutes was not enough headroom. A job that has to fetch the whole
+        # dependency graph before compiling anything spends most of its budget
+        # there, and simulator startup on visionOS/iOS has been observed taking
+        # tens of minutes on a loaded runner. The old ceiling turned that slowness
+        # into a wall of cancelled jobs that looked like test failures.
+        #
+        # This is headroom, not the fix: resolution is separately bounded and
+        # retried in the run_xcodebuild* actions, so a genuine stall still fails
+        # fast and explicitly rather than sitting here until the job is killed.
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 60
+      generate_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
+      test_iterations_flags:
+        description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
+        required: false
+        type: string
+        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
+      retry_tests:
+        required: false
+        type: boolean
+        default: true
+      os-runner:
+        description: 'runs-on input'
+        type: string
+
+permissions:
+    contents: read
+
+jobs:
+  unit-tests:
+    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
+    runs-on: ${{ inputs.os-runner }}
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Get build parameters for ${{ inputs.platform}}
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: ${{ inputs.platform }}
+          xcode_version: ${{ inputs.xcode_version }}
+
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ steps.platform.outputs.xcode-version }}
+          platform: ${{ inputs.platform }}
+
+      - name: Attempt to use the dependencies cache
+        id: dependencies-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
+
+      - name: Attempt to restore the build cache
+        id: build-cache
+        if: steps.dependencies-cache.outputs.cache-hit
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ${{ github.workspace }}/Build
+          key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
+
+      - name: Run ${{ inputs.platform }} Unit Tests
+        id: run-tests
+        continue-on-error: ${{ inputs.retry_tests == true }}
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ inputs.scheme }}
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          other_flags: ${{ inputs.test_iterations_flags }}
+
+      - name: Retry ${{ inputs.platform }} Unit Tests
+        if: ${{ (steps.run-tests.outcome == 'failure') && (inputs.retry_tests == true) }}
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ inputs.scheme }}
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          project_path: ${{ inputs.project_path }}
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          other_flags: ${{ inputs.test_iterations_flags }}
+
+      - name: Save the build cache
+        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.build-cache.outputs.cache-primary-key }}
+
+      - name: Store Coverage Report File
+        if: ${{ inputs.generate_coverage_report == true }}
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+        with:
+          name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ inputs.scheme }}-Coverage.lcov
+          if-no-files-found: error
+          retention-days: 1

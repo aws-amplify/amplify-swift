@@ -34,10 +34,9 @@ on:
         default: true
         type: boolean 
       
-  # Feature-branch pushes (PR CI) run a reduced platform set; pushes to main run the full matrix
-  # (see the platform selection in `detect`). release is built by its own pipeline.
   push:
     branches-ignore:
+      - main
       - release
 
 permissions:
@@ -50,17 +49,16 @@ concurrency:
 jobs:
   detect:
     name: Detect affected targets
-    # Runs on ubuntu (abundant pool) rather than macOS (the scarce, shared Actions
-    # pool this whole gating effort exists to conserve). The job only needs git, jq,
-    # python3, and `swift package dump-package`; the official swift image supplies
-    # Swift on Linux with no third-party action, and the manifest has no host-OS
-    # conditionals so the dumped dependency graph is identical to macOS.
+    # Runs on ubuntu (abundant pool) rather than macOS (the scarce, shared Actions pool this gating
+    # effort conserves). Needs only git, jq, python3, and `swift package dump-package`; the official
+    # swift image supplies Swift on Linux with no third-party action, and the manifest has no host-OS
+    # conditionals so the dumped dependency graph matches macOS.
     runs-on: ubuntu-latest
     container: swift:6.0
     outputs:
-      selected: ${{ steps.sel.outputs.selected }}
+      cov: ${{ steps.sel.outputs.cov }}
+      nocov: ${{ steps.sel.outputs.nocov }}
       covfiles: ${{ steps.sel.outputs.covfiles }}
-      platforms: ${{ steps.sel.outputs.platforms }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,15 +77,11 @@ jobs:
           IDENTIFIER: ${{ inputs.identifier }}
           EVENT_NAME: ${{ github.event_name }}
           BASE_REF: ${{ github.event.pull_request.base.ref || 'main' }}
-          RUN_IOS: ${{ github.event.inputs.ios }}
-          RUN_MACOS: ${{ github.event.inputs.macos }}
-          RUN_TVOS: ${{ github.event.inputs.tvos }}
-          RUN_WATCHOS: ${{ github.event.inputs.watchos }}
-          RUN_VISIONOS: ${{ github.event.inputs.visionos }}
         run: |
-          # A "full" run (deploy via workflow_call/identifier, manual dispatch, or a push to main)
-          # exercises every scheme; only a genuine feature-branch push (PR CI) is change-gated.
-          if [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ] || [ "$GITHUB_REF_NAME" = "main" ]; then
+          # Gate only on a genuine feature-branch push. Deploy pipelines invoke this workflow via
+          # workflow_call (which passes `identifier`), and manual runs use workflow_dispatch — both
+          # must exercise the full matrix, so only an unqualified `push` event is change-gated.
+          if [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ]; then
             sel=$(jq -c 'keys' scripts/python/unit_test_groups.json)
           else
             base="$BASE_REF"
@@ -99,56 +93,45 @@ jobs:
               --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
           fi
           echo "selected: $sel"
-
-          # Platform set. Feature-branch PR CI runs only iOS + macOS to stay well under the job
-          # timeout (the full 5-platform run serialized per platform is too slow for PRs). Pushes to
-          # main and deploys run the full matrix; manual dispatch honors the per-platform toggles.
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            arr=()
-            [ "$RUN_IOS" != "false" ]      && arr+=('"iOS"')
-            [ "$RUN_MACOS" != "false" ]    && arr+=('"macOS"')
-            [ "$RUN_TVOS" != "false" ]     && arr+=('"tvOS"')
-            [ "$RUN_WATCHOS" != "false" ]  && arr+=('"watchOS"')
-            [ "$RUN_VISIONOS" != "false" ] && arr+=('"visionOS"')
-            platforms="[$(IFS=,; echo "${arr[*]}")]"
-          elif [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ] || [ "$GITHUB_REF_NAME" = "main" ]; then
-            platforms='["iOS", "macOS", "tvOS", "watchOS", "visionOS"]'
-          else
-            platforms='["iOS", "macOS"]'
-          fi
-          echo "platforms: $platforms"
-
           # Coverage matrix: the selected schemes that carry codecov flags (excludes the
           # no-coverage InternalAWSPinpointUnitTests, which has no `flags`).
           covfiles=$(jq -c --argjson sel "$sel" \
             '[to_entries[] | select(.value.flags != null and (.key as $k | $sel | index($k))) | {scheme: .key, flags: .value.flags}]' \
             scripts/python/unit_test_groups.json)
           {
-            echo "selected=$sel"
+            echo "nocov=$(jq -c '[.[]|select(.=="InternalAWSPinpointUnitTests")]' <<<"$sel")"
+            echo "cov=$(jq -c '[.[]|select(.!="InternalAWSPinpointUnitTests")]' <<<"$sel")"
             echo "covfiles=$covfiles"
-            echo "platforms=$platforms"
           } >> "$GITHUB_OUTPUT"
 
-  # One runner per platform, each running every affected scheme (built once via build-for-testing).
-  # This caps peak macOS jobs at the platform count regardless of how many schemes changed.
-  unit-tests:
-    name: ${{ matrix.platform }} Unit Tests
+  targets-without-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
     needs: detect
-    if: ${{ needs.detect.outputs.selected != '[]' }}
+    if: ${{ needs.detect.outputs.nocov != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        # PRs -> [iOS, macOS]; main/deploy/dispatch -> full set (computed in detect).
-        platform: ${{ fromJSON(needs.detect.outputs.platforms) }}
-    uses: ./.github/workflows/run_platform_all_schemes.yml
+        scheme: ${{ fromJSON(needs.detect.outputs.nocov) }}
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
-      platform: ${{ matrix.platform }}
-      schemes: ${{ needs.detect.outputs.selected }}
-      # Coverage is exported on iOS only (as before): one platform's numbers, uploaded per scheme.
-      generate_coverage_report: ${{ matrix.platform == 'iOS' && vars.DISABLE_COVERAGE_REPORT != 'true' }}
+      scheme: ${{ matrix.scheme }}
+      generate_coverage_report: false
+
+  targets-with-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.cov != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: ${{ fromJSON(needs.detect.outputs.cov) }}
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      generate_coverage_report: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
 
   report-coverage:
-    needs: [detect, unit-tests]
+    needs: [detect, targets-with-coverage]
     if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' && needs.detect.outputs.covfiles != '[]' }}
     name: ${{ matrix.file.scheme }} Unit Tests
     strategy:
@@ -165,7 +148,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Confirm Passing Unit Tests
     if: ${{ !cancelled() }}
-    needs: [ detect, unit-tests ]
+    needs: [
+      detect,
+      targets-with-coverage,
+      targets-without-coverage
+    ]
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:
