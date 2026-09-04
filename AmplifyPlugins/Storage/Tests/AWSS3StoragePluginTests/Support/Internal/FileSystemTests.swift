@@ -120,9 +120,25 @@ class FileSystemTests: XCTestCase {
         defer {
             fs.removeDirectoryIfExists(directoryURL: directoryURL)
         }
-        let size = fs.getFileSize(fileURL: fileURL)
+        let size = try fs.getFileSize(fileURL: fileURL)
 
         XCTAssertEqual(UInt64(bytes.bytes), size)
+    }
+
+    /// Given: A file URL that does not exist
+    /// When: getFileSize is invoked
+    /// Then: It throws `StorageError.localFileNotFound` instead of crashing
+    func testGetFileSizeForMissingFileThrowsInsteadOfCrashing() {
+        let fs = FileSystem()
+        let missingURL = fs.createTemporaryDirectoryURL()
+            .appendingPathComponent("does-not-exist.bin", isDirectory: false)
+
+        XCTAssertThrowsError(try fs.getFileSize(fileURL: missingURL)) { error in
+            guard case StorageError.localFileNotFound = error else {
+                XCTFail("Expected StorageError.localFileNotFound, got \(error)")
+                return
+            }
+        }
     }
 
     func testGeneratingZeroBytes() throws {
