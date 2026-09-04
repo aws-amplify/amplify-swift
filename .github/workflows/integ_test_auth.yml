@@ -55,6 +55,19 @@ jobs:
 
   auth-ui-integration-test-iOS:
     if: ${{ inputs.hostedui-ios != 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Each Hosted UI test must get its own simulator. iOS 26 does not present a
+        # second ASWebAuthenticationSession in the same simulator session: the first
+        # web sign-in works and every later one silently never presents, so the
+        # tests hang instead of failing. Running one test per runner keeps both
+        # tests enabled and gives each a clean simulator.
+        include:
+          - name: SignIn
+            test: AuthHostedUIAppUITests/HostedUISignInTests/testSignInSuccess
+          - name: SignInWithoutPresentationAnchor
+            test: AuthHostedUIAppUITests/HostedUISignInTests/testSignInWithoutPresentationAnchorSuccess
     uses: ./.github/workflows/run_integration_tests.yml
     with:
       scheme: AuthHostedUIApp
@@ -63,6 +76,8 @@ jobs:
       resource_subfolder: auth
       timeout-minutes: 60
       xcode_version: 'latest'
+      only_testing: ${{ matrix.test }}
+      job_name_suffix: ' | ${{ matrix.name }}'
     secrets: inherit
 
   auth-webauthn-integration-test-iOS:
