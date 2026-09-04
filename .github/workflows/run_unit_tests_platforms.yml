@@ -1,4 +1,4 @@
-name: Run Unit Tests for the given scheme on all platforms (one runner)
+name: Run Unit Tests for the given scheme on all supported platforms
 on:
   workflow_call:
     inputs:
@@ -6,178 +6,52 @@ on:
         description: 'The scheme to run the tests'
         required: true
         type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 60
       generate_coverage_report:
-        description: 'Whether to generate and export code coverage'
+        description: 'Whether to generate and report code coverage'
         required: false
         type: boolean
         default: false
-      xcode_version:
-        description: "The version of Xcode used to run these tests"
-        required: false
-        type: string
-        default: 'latest'
-      timeout-minutes:
-        required: false
-        type: number
-        default: 90
       test_iterations_flags:
+        description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
         required: false
         type: string
-        default: '-test-iterations 3 -retry-tests-on-failure -test-repetition-relaunch-enabled YES'
+        default: '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
       retry_tests:
         required: false
         type: boolean
         default: true
+      os-runner:
+        description: 'runs-on input'
+        type: string
+        default: 'macos-26'
 
 permissions:
     contents: read
 
-# One runner runs the scheme's tests on ALL supported platforms in parallel, via a single
-# `xcodebuild test` with multiple -destination flags (xcodebuild runs destinations concurrently by
-# default). This keeps peak macOS jobs at one-per-scheme (capped by the caller's max-parallel)
-# instead of one-per-(scheme x platform), while staying parallel — so wall-clock is ~max(platform)
-# rather than the sum. It relies on the large runner (macos-26-xlarge) to absorb 4 simulators + 5 SDK
-# builds at once. Per-platform workflow_dispatch toggles drop a destination when set to 'false'.
 jobs:
-  test-all-platforms:
-    name: Unit Tests | ${{ inputs.scheme }}
-    # A big runner is required: this one job builds the scheme for all five Apple SDKs and boots four
-    # simulators to run every platform's tests IN PARALLEL. A standard ~4-core/14GB runner would
-    # thrash; macos-26-xlarge has the cores/memory to absorb it.
-    runs-on: macos-26-xlarge
-    timeout-minutes: ${{ inputs.timeout-minutes }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-        with:
-          persist-credentials: false
-
-      - name: iOS parameters
-        id: ios
-        uses: ./.github/composite_actions/get_platform_parameters
-        with:
-          platform: iOS
-          xcode_version: ${{ inputs.xcode_version }}
-      - name: macOS parameters
-        id: macos
-        uses: ./.github/composite_actions/get_platform_parameters
-        with:
-          platform: macOS
-          xcode_version: ${{ inputs.xcode_version }}
-      - name: tvOS parameters
-        id: tvos
-        uses: ./.github/composite_actions/get_platform_parameters
-        with:
-          platform: tvOS
-          xcode_version: ${{ inputs.xcode_version }}
-      - name: watchOS parameters
-        id: watchos
-        uses: ./.github/composite_actions/get_platform_parameters
-        with:
-          platform: watchOS
-          xcode_version: ${{ inputs.xcode_version }}
-      - name: visionOS parameters
-        id: visionos
-        uses: ./.github/composite_actions/get_platform_parameters
-        with:
-          platform: visionOS
-          xcode_version: ${{ inputs.xcode_version }}
-
-      # No-op on the default Xcode (simulators preinstalled); installs runtimes otherwise.
-      - name: Install iOS simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.ios.outputs.xcode-version }}
-          platform: iOS
-      - name: Install tvOS simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.tvos.outputs.xcode-version }}
-          platform: tvOS
-      - name: Install watchOS simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.watchos.outputs.xcode-version }}
-          platform: watchOS
-      - name: Install visionOS simulators if needed
-        uses: ./.github/composite_actions/install_simulators_if_needed
-        with:
-          xcode_version: ${{ steps.visionos.outputs.xcode-version }}
-          platform: visionOS
-
-      - name: Test all platforms in parallel
-        shell: bash
-        env:
-          SCHEME: ${{ inputs.scheme }}
-          XCODE_PATH: /Applications/Xcode_${{ steps.ios.outputs.xcode-version }}.app
-          CLONED: /Users/runner/Library/Developer/Xcode/DerivedData/Amplify
-          IOS_DEST: ${{ steps.ios.outputs.destination }}
-          MACOS_DEST: ${{ steps.macos.outputs.destination }}
-          TVOS_DEST: ${{ steps.tvos.outputs.destination }}
-          WATCHOS_DEST: ${{ steps.watchos.outputs.destination }}
-          VISIONOS_DEST: ${{ steps.visionos.outputs.destination }}
-          # Per-platform workflow_dispatch toggles ('' when not a manual run -> platform included).
-          RUN_IOS: ${{ github.event.inputs.ios }}
-          RUN_MACOS: ${{ github.event.inputs.macos }}
-          RUN_TVOS: ${{ github.event.inputs.tvos }}
-          RUN_WATCHOS: ${{ github.event.inputs.watchos }}
-          RUN_VISIONOS: ${{ github.event.inputs.visionos }}
-          COV: ${{ inputs.generate_coverage_report }}
-          ITER_FLAGS: ${{ inputs.test_iterations_flags }}
-          RETRY: ${{ inputs.retry_tests }}
-        run: |
-          set -o pipefail
-          sudo xcode-select -s "$XCODE_PATH"
-
-          # Assemble one -destination per enabled platform. xcodebuild runs them concurrently.
-          dests=()
-          [ "$RUN_IOS" != "false" ]       && dests+=(-destination "$IOS_DEST")
-          [ "$RUN_MACOS" != "false" ]     && dests+=(-destination "$MACOS_DEST")
-          [ "$RUN_TVOS" != "false" ]      && dests+=(-destination "$TVOS_DEST")
-          [ "$RUN_WATCHOS" != "false" ]   && dests+=(-destination "$WATCHOS_DEST")
-          [ "$RUN_VISIONOS" != "false" ]  && dests+=(-destination "$VISIONOS_DEST")
-
-          cov_flag=""
-          [ "$COV" = "true" ] && cov_flag="-enableCodeCoverage YES"
-
-          run_all() {
-            xcodebuild test \
-              -scheme "$SCHEME" \
-              "${dests[@]}" \
-              -derivedDataPath "$GITHUB_WORKSPACE/Build" \
-              -clonedSourcePackagesDirPath "$CLONED" \
-              -skipPackagePluginValidation \
-              $cov_flag $ITER_FLAGS \
-              | xcbeautify --renderer github-actions && return ${PIPESTATUS[0]} || return $?
-          }
-
-          if run_all; then :
-          elif [ "$RETRY" = "true" ] && run_all; then :
-          else echo "::error::$SCHEME failed"; exit 1; fi
-
-      - name: Store Coverage Report File
-        if: ${{ inputs.generate_coverage_report == true }}
-        shell: bash
-        env:
-          SCHEME: ${{ inputs.scheme }}
-          SDK: ${{ steps.ios.outputs.sdk }}
-        run: |
-          # Best-effort export of the scheme's merged coverage (codecov flags are per-scheme, so a
-          # single lcov is fine). Not a gate.
-          profdir=$(ls -dt "$GITHUB_WORKSPACE"/Build/Build/ProfileData/*/ 2>/dev/null | head -1)
-          bin="$GITHUB_WORKSPACE/Build/Build/Products/Debug-${SDK}/${SCHEME}.o"
-          if [ -n "$profdir" ] && [ -f "${profdir}Coverage.profdata" ] && [ -e "$bin" ]; then
-            xcrun llvm-cov export -format=lcov -instr-profile "${profdir}Coverage.profdata" "$bin" \
-              > "$GITHUB_WORKSPACE/${SCHEME}-Coverage.lcov" || echo "coverage export failed (non-fatal)"
-          else
-            echo "no coverage inputs found (non-fatal)"
-          fi
-
-      - name: Upload Coverage Report File
-        if: ${{ inputs.generate_coverage_report == true && hashFiles(format('{0}-Coverage.lcov', inputs.scheme)) != '' }}
-        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
-        with:
-          name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
-          path: ${{ github.workspace }}/${{ inputs.scheme }}-Coverage.lcov
-          if-no-files-found: warn
-          retention-days: 1
+  run-unit-tests:
+    name: ${{ matrix.platform }} Tests | ${{ inputs.scheme }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, macOS, tvOS, watchOS, visionOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+          - platform: ${{ github.event.inputs.visionos == 'false' && 'visionOS' || 'None' }}
+    uses: ./.github/workflows/run_unit_tests.yml
+    with:
+      scheme: ${{ inputs.scheme }}
+      platform: ${{ matrix.platform }}
+      generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
+      timeout-minutes: ${{ inputs.timeout-minutes }}
+      test_iterations_flags: ${{ inputs.test_iterations_flags }}
+      retry_tests: ${{ inputs.retry_tests }}
+      os-runner: ${{ inputs.os-runner }}
