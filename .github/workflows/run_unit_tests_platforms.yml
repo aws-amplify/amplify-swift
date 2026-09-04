@@ -29,6 +29,11 @@ on:
         description: 'runs-on input'
         type: string
         default: 'macos-26'
+      platforms:
+        description: 'JSON array of platforms to run. Defaults to all; callers pass a subset (e.g. PRs run iOS + macOS only).'
+        required: false
+        type: string
+        default: '["iOS", "macOS", "tvOS", "watchOS", "visionOS"]'
 
 permissions:
     contents: read
@@ -39,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, macOS, tvOS, watchOS, visionOS]
+        platform: ${{ fromJSON(inputs.platforms) }}
         exclude:
           - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
           - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}

@@ -17,7 +17,12 @@ concurrency:
 jobs:
   detect:
     name: Detect whether API is affected
-    runs-on: macos-15
+    # Runs on ubuntu (abundant pool) rather than macOS (the scarce, shared Actions pool this
+    # gating effort conserves). Needs only git, jq, python3, and `swift package dump-package`;
+    # the official swift image supplies Swift on Linux with no third-party action, and the
+    # manifest has no host-OS conditionals so the dumped dependency graph matches macOS.
+    runs-on: ubuntu-latest
+    container: swift:6.0
     permissions:
       contents: read
     outputs:
@@ -26,7 +31,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Install jq and python3
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends jq python3
+          # The checkout dir is owned by a different UID than the container's root user, so git
+          # in the detect script aborts with "detected dubious ownership" unless we allow it.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - id: sel
+        shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
           BASE_REF: ${{ github.event.pull_request.base.ref || 'main' }}
