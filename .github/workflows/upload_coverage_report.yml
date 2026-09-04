@@ -25,14 +25,22 @@ jobs:
         with:
           persist-credentials: false
 
+      # Best-effort: coverage is not a gate. If the producing job failed to generate the .lcov (a
+      # real test failure, caught separately by unit-test-pass-confirmation), don't turn the missing
+      # artifact into a confusing hard error here.
+      # All schemes' .lcov files ship in one artifact produced by the coverage platform job.
       - name: Retrieve Coverage report
+        id: download
+        continue-on-error: true
         uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # 4.1.0
         with:
-          name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
+          name: unit-coverage-${{ github.sha }}
           path: ${{ github.workspace }}
 
       - name: Upload report to Codecov
+        if: ${{ steps.download.outcome == 'success' && hashFiles(format('{0}-Coverage.lcov', inputs.scheme)) != '' }}
         uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ inputs.scheme }}-Coverage.lcov
           flags: ${{ inputs.flags }}
