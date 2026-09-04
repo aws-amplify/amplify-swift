@@ -97,8 +97,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-all-schemes-build-cache-${{ hashFiles('Package.resolved') }}
-          restore-keys: |
-            Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-all-schemes-build-cache-
 
       # Resolve the whole graph once, up front (bounded/retried like the run_xcodebuild* actions, so
       # a slow clone fails fast rather than hanging the job). Every per-scheme build below then runs
@@ -141,8 +139,6 @@ jobs:
 
           echo "::group::Build for testing (Amplify-Package)"
           set -o pipefail
-          # CI build-setting speedups: skip the index store (only useful in-IDE) and build a single
-          # active arch for the destination instead of a fat binary. No effect on test correctness.
           xcodebuild build-for-testing \
             -scheme Amplify-Package \
             -destination "$DESTINATION" \
@@ -150,7 +146,6 @@ jobs:
             -clonedSourcePackagesDirPath "$CLONED" \
             -skipPackagePluginValidation \
             -disableAutomaticPackageResolution \
-            COMPILER_INDEX_STORE_ENABLE=NO ONLY_ACTIVE_ARCH=YES \
             | xcbeautify --renderer github-actions && st=${PIPESTATUS[0]} || st=$?
           echo "::endgroup::"
           exit ${st:-0}

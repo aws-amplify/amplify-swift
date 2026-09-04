@@ -95,9 +95,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
-          # Warm-incremental fallback when Package.resolved changed, instead of a 0% cache miss.
-          restore-keys: |
-            Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-
 
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
