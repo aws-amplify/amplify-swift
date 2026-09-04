@@ -67,12 +67,8 @@ struct SignInScreen: Screen {
         }
 
         let usernameField = waitForWebTextField(app.webViews.textFields[signInTextFieldName])
-        focusAndType(usernameField, username, fieldDescription: "Username")
-        focusAndType(
-            app.webViews.secureTextFields["Password"],
-            password,
-            fieldDescription: "Password"
-        )
+        focusAndType(usernameField, username)
+        focusAndType(app.webViews.secureTextFields["Password"], password)
 
         app.webViews.buttons["submit"].tap()
         return self
@@ -100,19 +96,8 @@ struct SignInScreen: Screen {
             if element.waitForExistence(timeout: 3) {
                 return element
             }
-            failIfSignInReportedError()
         }
         return element
-    }
-
-    /// The app reports Amplify failures in a label instead of throwing, so a
-    /// rejected `signInWithWebUI` (which never presents the Hosted UI) is
-    /// indistinguishable from a slow page load. Surface the reported error so the
-    /// real cause appears in the test output instead of a generic field timeout.
-    private func failIfSignInReportedError() {
-        let errorText = app.staticTexts[Identifiers.errorLabel]
-        guard errorText.exists else { return }
-        XCTFail("SignIn failed before the Hosted UI was shown: \(errorText.label)")
     }
 
     /// iOS 26: a WebView field only accepts typed input once it actually holds
@@ -121,38 +106,13 @@ struct SignInScreen: Screen {
     /// *this* field is focused. Tap the field's center coordinate (which focuses
     /// WKWebView inputs more reliably than `tap()`) once to raise the keyboard,
     /// then again to guarantee focus has moved to this field before typing.
-    private func focusAndType(
-        _ element: XCUIElement,
-        _ text: String,
-        fieldDescription: String
-    ) {
-        if !element.waitForExistence(timeout: 30) {
-            failIfSignInReportedError()
-            XCTFail("\(fieldDescription) web text field not found. \(webUIDiagnostics())")
-            return
-        }
+    private func focusAndType(_ element: XCUIElement, _ text: String) {
+        XCTAssertTrue(element.waitForExistence(timeout: 30), "Web text field not found")
         let coordinate = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         coordinate.tap()
         _ = app.keyboards.element.waitForExistence(timeout: 10)
         coordinate.tap()
         element.typeText(text)
-    }
-
-    /// Reports what is actually on screen when a Hosted UI field is missing, so the
-    /// cause is visible from CI logs where the .xcresult is intentionally not kept.
-    /// Only page structure is reported (identifiers and labels), never entered values.
-    private func webUIDiagnostics() -> String {
-        func names(_ query: XCUIElementQuery) -> [String] {
-            query.allElementsBoundByIndex.map {
-                $0.identifier.isEmpty ? $0.label : $0.identifier
-            }
-        }
-        return "webViews=\(app.webViews.count)"
-            + " textFields=\(names(app.webViews.textFields))"
-            + " secureTextFields=\(names(app.webViews.secureTextFields))"
-            + " webButtons=\(names(app.webViews.buttons))"
-            + " errorLabelShown=\(app.staticTexts[Identifiers.errorLabel].exists)"
-            + " signInButtonVisible=\(app.buttons[Identifiers.signInButton].exists)"
     }
 
     func testSignInSucceeded() -> Self {
