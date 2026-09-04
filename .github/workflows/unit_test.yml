@@ -34,9 +34,10 @@ on:
         default: true
         type: boolean 
       
+  # Feature-branch pushes (PR CI) run a reduced platform set; pushes to main run the full matrix
+  # (see the platform selection in `detect`). release is built by its own pipeline.
   push:
     branches-ignore:
-      - main
       - release
 
 permissions:
@@ -59,6 +60,7 @@ jobs:
       cov: ${{ steps.sel.outputs.cov }}
       nocov: ${{ steps.sel.outputs.nocov }}
       covfiles: ${{ steps.sel.outputs.covfiles }}
+      platforms: ${{ steps.sel.outputs.platforms }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -78,10 +80,9 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           BASE_REF: ${{ github.event.pull_request.base.ref || 'main' }}
         run: |
-          # Gate only on a genuine feature-branch push. Deploy pipelines invoke this workflow via
-          # workflow_call (which passes `identifier`), and manual runs use workflow_dispatch — both
-          # must exercise the full matrix, so only an unqualified `push` event is change-gated.
-          if [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ]; then
+          # A "full" run (deploy via workflow_call/identifier, manual dispatch, or a push to main)
+          # exercises every scheme; only a genuine feature-branch push (PR CI) is change-gated.
+          if [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ] || [ "$GITHUB_REF_NAME" = "main" ]; then
             sel=$(jq -c 'keys' scripts/python/unit_test_groups.json)
           else
             base="$BASE_REF"
@@ -93,6 +94,18 @@ jobs:
               --groups scripts/python/unit_test_groups.json | grep '^selected=' | cut -d= -f2-)
           fi
           echo "selected: $sel"
+
+          # Platform set. Feature-branch PR CI runs only iOS + macOS (the full 5-platform matrix is
+          # too slow/heavy for every PR). Deploys (identifier), manual dispatch, and pushes to main
+          # run the full matrix — on dispatch, run_unit_tests_platforms's exclude block then trims it
+          # to the per-platform toggles.
+          if [ -n "$IDENTIFIER" ] || [ "$EVENT_NAME" != "push" ] || [ "$GITHUB_REF_NAME" = "main" ]; then
+            platforms='["iOS", "macOS", "tvOS", "watchOS", "visionOS"]'
+          else
+            platforms='["iOS", "macOS"]'
+          fi
+          echo "platforms: $platforms"
+
           # Coverage matrix: the selected schemes that carry codecov flags (excludes the
           # no-coverage InternalAWSPinpointUnitTests, which has no `flags`).
           covfiles=$(jq -c --argjson sel "$sel" \
@@ -102,6 +115,7 @@ jobs:
             echo "nocov=$(jq -c '[.[]|select(.=="InternalAWSPinpointUnitTests")]' <<<"$sel")"
             echo "cov=$(jq -c '[.[]|select(.!="InternalAWSPinpointUnitTests")]' <<<"$sel")"
             echo "covfiles=$covfiles"
+            echo "platforms=$platforms"
           } >> "$GITHUB_OUTPUT"
 
   targets-without-coverage:
@@ -110,12 +124,16 @@ jobs:
     if: ${{ needs.detect.outputs.nocov != '[]' }}
     strategy:
       fail-fast: false
+      # Cap concurrent schemes so the workflow uses at most ~10 schemes x its platforms of the
+      # shared macOS runner pool at once, instead of fanning out every affected scheme simultaneously.
+      max-parallel: 10
       matrix:
         scheme: ${{ fromJSON(needs.detect.outputs.nocov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: false
+      platforms: ${{ needs.detect.outputs.platforms }}
 
   targets-with-coverage:
     name: ${{ matrix.scheme }} Unit Tests
@@ -123,12 +141,16 @@ jobs:
     if: ${{ needs.detect.outputs.cov != '[]' }}
     strategy:
       fail-fast: false
+      # Cap concurrent schemes so the workflow uses at most ~10 schemes x its platforms of the
+      # shared macOS runner pool at once, instead of fanning out every affected scheme simultaneously.
+      max-parallel: 10
       matrix:
         scheme: ${{ fromJSON(needs.detect.outputs.cov) }}
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
+      platforms: ${{ needs.detect.outputs.platforms }}
 
   report-coverage:
     needs: [detect, targets-with-coverage]
