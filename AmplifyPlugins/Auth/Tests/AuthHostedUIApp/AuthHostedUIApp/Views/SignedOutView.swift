@@ -45,7 +45,7 @@ struct SignedOutView: View {
             Spacer()
             if let error = errorLabel {
                 Text("Error occured: \(error)")
-                    .accessibilityLabel(Identifiers.errorLabel)
+                    .accessibility(identifier: Identifiers.errorLabel)
             }
             if let successLabel {
                 Text("Succeeded: \(successLabel)")
@@ -57,7 +57,19 @@ struct SignedOutView: View {
     }
 
     func signInWithWebUI(anchor: AuthUIPresentationAnchor?) async {
+        errorLabel = nil
+        successLabel = nil
         do {
+            // A previous test in this simulator can leave Amplify's state machine in
+            // `signedIn` while this signed-out screen is showing (credentials are
+            // restored from the keychain asynchronously, after `getCurrentUser()`
+            // has already reported no user). `signInWithWebUI` rejects that state
+            // with "There is already a user in signedIn state" *before* presenting
+            // any web UI, so the Hosted UI login form would never appear. Sign out
+            // best-effort first. Because sign-in below uses a private session, this
+            // never presents a web sign-out page.
+            _ = await Amplify.Auth.signOut()
+
             // Use a private (ephemeral) web session so no Cognito cookie persists
             // between test runs. Otherwise the Hosted UI skips the login form on
             // subsequent sign-ins and the username/password fields never appear.
