@@ -32,9 +32,7 @@ struct AuthenticatedScreen: Screen {
     }
 
     func dismissSignOutAlert() -> Self {
-        // The sign-out web session's consent sheet can appear after a delay on
-        // iOS 26 CI simulators. Poll for it so we don't leave the sign-out web
-        // session dangling, which would block the next sign-in from presenting.
+        // Consent sheet can arrive late on iOS 26 simulators.
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let deadline = Date().addingTimeInterval(30)
         while Date() < deadline {
@@ -43,7 +41,6 @@ struct AuthenticatedScreen: Screen {
                 continueElement.tap()
                 break
             }
-            // Already back on the signed-out screen: nothing to dismiss.
             if app.buttons[Identifiers.signInButton].exists {
                 break
             }
@@ -52,8 +49,6 @@ struct AuthenticatedScreen: Screen {
     }
 
     func testSignOutSucceeded() -> Self {
-        // Wait until the signed-out screen is shown again, proving the sign-out
-        // web session has fully closed before the next sign-in starts.
         XCTAssertTrue(
             app.buttons[Identifiers.signInButton].waitForExistence(timeout: 30),
             "Sign out did not complete"

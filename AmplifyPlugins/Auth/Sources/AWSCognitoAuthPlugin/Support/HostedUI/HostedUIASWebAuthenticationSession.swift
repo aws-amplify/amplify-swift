@@ -122,10 +122,7 @@ extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationCon
         if let webPresentation {
             return webPresentation
         }
-        // No anchor was provided. An empty `ASPresentationAnchor()` is a window
-        // with no window scene, which iOS's scene-based UI never displays, so the
-        // web UI would present off-screen and never load. Fall back to the app's
-        // active key window instead.
+        // An empty anchor has no window scene, so it never presents.
         #if canImport(UIKit)
         let keyWindow = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }

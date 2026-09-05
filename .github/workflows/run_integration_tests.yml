@@ -32,12 +32,10 @@ on:
         type: number
         default: 60
       only_testing:
-        description: 'Optional xcodebuild -only-testing identifier to scope the run to a single test'
         required: false
         type: string
         default: ''
       job_name_suffix:
-        description: 'Appended to the job name so scoped runs report as distinct checks'
         required: false
         type: string
         default: ''
