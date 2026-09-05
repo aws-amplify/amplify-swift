@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSCognitoAuthPlugin
 import SwiftUI
 
 struct SignedOutView: View {
@@ -57,7 +58,13 @@ struct SignedOutView: View {
 
     func signInWithWebUI(anchor: AuthUIPresentationAnchor?) async {
         do {
-            let signInResult = try await Amplify.Auth.signInWithWebUI(presentationAnchor: anchor)
+            // Use a private (ephemeral) web session so no Cognito cookie persists
+            // between test runs. Otherwise the Hosted UI skips the login form on
+            // subsequent sign-ins and the username/password fields never appear.
+            let signInResult = try await Amplify.Auth.signInWithWebUI(
+                presentationAnchor: anchor,
+                options: .preferPrivateSession()
+            )
             if signInResult.isSignedIn {
                 successLabel = "SignedIn"
             }

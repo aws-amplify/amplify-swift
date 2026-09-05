@@ -31,6 +31,16 @@ on:
         required: false
         type: number
         default: 60
+      only_testing:
+        description: 'Optional -only-testing identifier to scope the run'
+        required: false
+        type: string
+        default: ''
+      job_name_suffix:
+        description: 'Appended to the job name to keep scoped runs distinct'
+        required: false
+        type: string
+        default: ''
 
 permissions:
     id-token: write
@@ -38,7 +48,7 @@ permissions:
 
 jobs:
   integration-tests:
-    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
+    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}${{ inputs.job_name_suffix }}
     runs-on: ${{ inputs.os-runner }}
     if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
     timeout-minutes: ${{ inputs.timeout-minutes }}
@@ -96,6 +106,10 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
 
+      - name: Disable Simulator hardware keyboard (iOS)
+        if: inputs.platform == 'iOS'
+        run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
+
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
         continue-on-error: true
@@ -111,7 +125,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES ${{ inputs.only_testing != '' && format('-only-testing:{0}', inputs.only_testing) || '' }}
 
       - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure'
@@ -129,7 +143,7 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES ${{ inputs.only_testing != '' && format('-only-testing:{0}', inputs.only_testing) || '' }}
 
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')

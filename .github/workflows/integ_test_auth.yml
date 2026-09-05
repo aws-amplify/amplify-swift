@@ -55,6 +55,15 @@ jobs:
 
   auth-ui-integration-test-iOS:
     if: ${{ inputs.hostedui-ios != 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # iOS 26 only presents the first ASWebAuthenticationSession per simulator.
+        include:
+          - name: SignIn
+            test: AuthHostedUIAppUITests/HostedUISignInTests/testSignInSuccess
+          - name: SignInWithoutPresentationAnchor
+            test: AuthHostedUIAppUITests/HostedUISignInTests/testSignInWithoutPresentationAnchorSuccess
     uses: ./.github/workflows/run_integration_tests.yml
     with:
       scheme: AuthHostedUIApp
@@ -63,6 +72,8 @@ jobs:
       resource_subfolder: auth
       timeout-minutes: 60
       xcode_version: 'latest'
+      only_testing: ${{ matrix.test }}
+      job_name_suffix: ' | ${{ matrix.name }}'
     secrets: inherit
 
   auth-webauthn-integration-test-iOS:

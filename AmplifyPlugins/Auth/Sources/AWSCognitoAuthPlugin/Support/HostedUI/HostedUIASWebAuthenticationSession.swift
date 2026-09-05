@@ -10,6 +10,11 @@ import Foundation
 #if os(iOS) || os(macOS) || os(visionOS)
 @preconcurrency import AuthenticationServices
 #endif
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
@@ -114,7 +119,24 @@ extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationCon
 
     @MainActor
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return webPresentation ?? ASPresentationAnchor()
+        if let webPresentation {
+            return webPresentation
+        }
+        // No anchor was provided. An empty `ASPresentationAnchor()` is a window
+        // with no window scene, which iOS's scene-based UI never displays, so the
+        // web UI would present off-screen and never load. Fall back to the app's
+        // active key window instead.
+        #if canImport(UIKit)
+        let keyWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        return keyWindow ?? ASPresentationAnchor()
+        #elseif canImport(AppKit)
+        return NSApplication.shared.keyWindow ?? ASPresentationAnchor()
+        #else
+        return ASPresentationAnchor()
+        #endif
     }
 }
 #endif

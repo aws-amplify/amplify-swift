@@ -26,6 +26,7 @@ struct SignInScreen: Screen {
 
     func gotoSignUpView() -> SignUpScreen {
         let signUpButton = app.buttons[Identifiers.signUpNav]
+        XCTAssertTrue(signUpButton.waitForExistence(timeout: 30))
         signUpButton.tap()
         return SignUpScreen(app: app)
     }
@@ -43,9 +44,11 @@ struct SignInScreen: Screen {
     }
 
     func dismissSignInAlert() -> Self {
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 60))
-        springboard.buttons["Continue"].tap()
+        // With an ephemeral web session iOS may not show the consent sheet at
+        // all; when it does it can appear after a noticeable delay. Tapping it
+        // is handled together with the field wait in `signIn(username:password:)`,
+        // so this is only a best-effort early dismissal.
+        tapConsentContinueIfPresent(timeout: 5)
         return self
     }
 
@@ -63,16 +66,53 @@ struct SignInScreen: Screen {
             "Username"
         }
 
-        _ = app.webViews.textFields[signInTextFieldName].waitForExistence(timeout: 60)
-        app.webViews.textFields[signInTextFieldName].tap()
-        app.webViews.textFields[signInTextFieldName].typeText(username)
-
-
-        app.webViews.secureTextFields["Password"].tap()
-        app.webViews.secureTextFields["Password"].typeText(password)
+        let usernameField = waitForWebTextField(app.webViews.textFields[signInTextFieldName])
+        focusAndType(usernameField, username)
+        focusAndType(app.webViews.secureTextFields["Password"], password)
 
         app.webViews.buttons["submit"].tap()
         return self
+    }
+
+    /// Taps the SpringBoard consent "Continue" control if it is present.
+    @discardableResult
+    private func tapConsentContinueIfPresent(timeout: TimeInterval) -> Bool {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let continueElement = springboard.consentContinueElement()
+        if continueElement.waitForExistence(timeout: timeout) {
+            continueElement.tap()
+            return true
+        }
+        return false
+    }
+
+    /// Waits for the Hosted UI web field to appear, dismissing the consent sheet
+    /// if it shows up late. The Hosted UI page can be slow to load on iOS 26 CI
+    /// simulators, so we poll while also clearing a late consent sheet.
+    private func waitForWebTextField(_ element: XCUIElement) -> XCUIElement {
+        let deadline = Date().addingTimeInterval(60)
+        while Date() < deadline {
+            tapConsentContinueIfPresent(timeout: 2)
+            if element.waitForExistence(timeout: 3) {
+                return element
+            }
+        }
+        return element
+    }
+
+    /// iOS 26: a WebView field only accepts typed input once it actually holds
+    /// keyboard focus. The software keyboard can already be up from a previously
+    /// focused field, so waiting on `app.keyboards` is not enough to know that
+    /// *this* field is focused. Tap the field's center coordinate (which focuses
+    /// WKWebView inputs more reliably than `tap()`) once to raise the keyboard,
+    /// then again to guarantee focus has moved to this field before typing.
+    private func focusAndType(_ element: XCUIElement, _ text: String) {
+        XCTAssertTrue(element.waitForExistence(timeout: 30), "Web text field not found")
+        let coordinate = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        coordinate.tap()
+        _ = app.keyboards.element.waitForExistence(timeout: 10)
+        coordinate.tap()
+        element.typeText(text)
     }
 
     func testSignInSucceeded() -> Self {
