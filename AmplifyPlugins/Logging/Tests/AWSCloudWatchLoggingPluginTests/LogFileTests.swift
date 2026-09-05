@@ -9,6 +9,7 @@ import Amplify
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 final class LogFileTests: XCTestCase {
 

@@ -11,6 +11,7 @@ import AWSCloudWatchLogs
 import AWSPluginsCore
 import Combine
 import Foundation
+import InternalCloudWatchLogging
 import Network
 import SmithyIdentity
 

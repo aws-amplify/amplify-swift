@@ -10,6 +10,7 @@ import AWSClientRuntime
 import AWSCloudWatchLogs
 import AWSPluginsCore
 import Foundation
+import InternalCloudWatchLogging
 
 class CloudWatchLoggingConsumer {
 
@@ -43,9 +44,9 @@ class CloudWatchLoggingConsumer {
 }
 
 extension CloudWatchLoggingConsumer: LogBatchConsumer {
-    func consume(batch: LogBatch) async throws {
-        let entries = try batch.readEntries()
-        if entries.isEmpty {
+    func consume(batch: any LogBatch) async throws {
+        let rawEntries = try batch.readEntries()
+        guard let entries = rawEntries as? [LogEntry], !entries.isEmpty else {
             try batch.complete()
             return
         }
@@ -70,13 +71,13 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
 
-        if entriesCopy.count > AWSCloudWatchConstants.maxLogEvents {
-            let smallerEntries = entriesCopy.chunked(into: AWSCloudWatchConstants.maxLogEvents)
+        if entriesCopy.count > CloudWatchConstants.maxLogEvents {
+            let smallerEntries = entriesCopy.chunked(into: CloudWatchConstants.maxLogEvents)
             for entries in smallerEntries {
                 do {
                     let entrySize = try safeEncode(entries).count
-                    if entrySize > AWSCloudWatchConstants.maxBatchByteSize {
-                        let chunks = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
+                    if entrySize > CloudWatchConstants.maxBatchByteSize {
+                        let chunks = try chunk(entries, into: CloudWatchConstants.maxBatchByteSize)
                         for chunk in chunks {
                             try await sendLogEvents(chunk)
                         }
@@ -88,9 +89,9 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                     continue
                 }
             }
-        } else if batchByteSize > AWSCloudWatchConstants.maxBatchByteSize {
+        } else if batchByteSize > CloudWatchConstants.maxBatchByteSize {
             do {
-                let smallerEntries = try chunk(entriesCopy, into: AWSCloudWatchConstants.maxBatchByteSize)
+                let smallerEntries = try chunk(entriesCopy, into: CloudWatchConstants.maxBatchByteSize)
                 for entries in smallerEntries {
                     try await sendLogEvents(entries)
                 }
