@@ -19,7 +19,7 @@ struct InitializeFetchUnAuthSession: Action {
 
         let event: FetchAuthSessionEvent = switch configuration {
         case .userPools:
-            // If only user pool is configured then we do not have any unauthsession
+            // If only user pool is configured then we do not have any unauthsession TEST
             .init(eventType: .throwError(.noIdentityPool))
         default:
             .init(eventType: .fetchUnAuthIdentityID)
