@@ -83,3 +83,7 @@ GraphQLWithIAMIntegrationTests-credentials.json
 AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
 *.code-workspace
 AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/infra/
+
+# IDEs
+.idea/
+.vscode/
