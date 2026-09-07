@@ -54,7 +54,7 @@ jobs:
     secrets: inherit
 
   auth-ui-integration-test-iOS:
-    if: ${{ inputs.hostedui-ios != 'false' }}
+    if: ${{ github.event.inputs.hostedui-ios != 'false' }}
     strategy:
       fail-fast: false
       matrix:
@@ -77,7 +77,7 @@ jobs:
     secrets: inherit
 
   auth-webauthn-integration-test-iOS:
-    if: ${{ inputs.webauthn-ios != 'false' }}
+    if: ${{ github.event.inputs.webauthn-ios != 'false' }}
     name: Auth WebAuthn Integration Tests (iOS)
     uses: ./.github/workflows/integ_test_auth_webauthn.yml
     with:

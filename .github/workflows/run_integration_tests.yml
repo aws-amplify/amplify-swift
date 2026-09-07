@@ -110,7 +110,7 @@ jobs:
 
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ inputs.only_testing == '' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ inputs.scheme }}
@@ -123,10 +123,11 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES ${{ inputs.only_testing != '' && format('-only-testing:{0}', inputs.only_testing) || '' }}
+          # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
+          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES' }}
 
       - name: Retry ${{ inputs.platform }} Integration Tests
-        if: steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure' && inputs.only_testing == ''
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -141,7 +142,7 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES ${{ inputs.only_testing != '' && format('-only-testing:{0}', inputs.only_testing) || '' }}
+          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')

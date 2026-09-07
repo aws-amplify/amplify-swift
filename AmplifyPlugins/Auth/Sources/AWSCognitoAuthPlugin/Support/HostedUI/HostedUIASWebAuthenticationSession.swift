@@ -124,13 +124,14 @@ extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationCon
         }
         // An empty anchor has no window scene, so it never presents.
         #if canImport(UIKit)
-        let keyWindow = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-        return keyWindow ?? ASPresentationAnchor()
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let ordered = scenes.filter { $0.activationState == .foregroundActive } + scenes
+        let window = ordered.compactMap { scene in
+            scene.windows.first { $0.isKeyWindow } ?? scene.windows.first
+        }.first
+        return window ?? ASPresentationAnchor()
         #elseif canImport(AppKit)
-        return NSApplication.shared.keyWindow ?? ASPresentationAnchor()
+        return NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first ?? ASPresentationAnchor()
         #else
         return ASPresentationAnchor()
         #endif
