@@ -33,8 +33,8 @@ class AmplifyAWSCredentialsProviderTests: XCTestCase, @unchecked Sendable {
     ///    - It throws `AuthError.configuration` instead of aborting the process
     ///
     func testGetCredentials_withUnconfiguredAuthCategory_throwsConfigurationError() async {
-        XCTAssertFalse(
-            Amplify.Auth.isConfiguredWithPlugin,
+        XCTAssertNil(
+            Amplify.Auth.configuredPlugin,
             "Precondition: Auth must be unconfigured for this test to exercise the guard"
         )
 
@@ -60,7 +60,7 @@ class AmplifyAWSCredentialsProviderTests: XCTestCase, @unchecked Sendable {
     ///    - It throws `AuthError.configuration` instead of aborting the process
     ///
     func testGetIdentity_withUnconfiguredAuthCategory_throwsConfigurationError() async {
-        XCTAssertFalse(Amplify.Auth.isConfiguredWithPlugin)
+        XCTAssertNil(Amplify.Auth.configuredPlugin)
 
         do {
             _ = try await AmplifyAWSCredentialsProvider().getIdentity()
