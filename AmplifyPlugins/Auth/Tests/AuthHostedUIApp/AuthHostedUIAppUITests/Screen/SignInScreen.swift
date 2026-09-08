@@ -26,6 +26,7 @@ struct SignInScreen: Screen {
 
     func gotoSignUpView() -> SignUpScreen {
         let signUpButton = app.buttons[Identifiers.signUpNav]
+        XCTAssertTrue(signUpButton.waitForExistence(timeout: 30))
         signUpButton.tap()
         return SignUpScreen(app: app)
     }
@@ -43,9 +44,8 @@ struct SignInScreen: Screen {
     }
 
     func dismissSignInAlert() -> Self {
-        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 60))
-        springboard.buttons["Continue"].tap()
+        // Best effort; the real wait is in signIn(username:password:).
+        tapConsentContinueIfPresent(timeout: 5)
         return self
     }
 
@@ -63,16 +63,45 @@ struct SignInScreen: Screen {
             "Username"
         }
 
-        _ = app.webViews.textFields[signInTextFieldName].waitForExistence(timeout: 60)
-        app.webViews.textFields[signInTextFieldName].tap()
-        app.webViews.textFields[signInTextFieldName].typeText(username)
-
-
-        app.webViews.secureTextFields["Password"].tap()
-        app.webViews.secureTextFields["Password"].typeText(password)
+        let usernameField = waitForWebTextField(app.webViews.textFields[signInTextFieldName])
+        focusAndType(usernameField, username)
+        focusAndType(app.webViews.secureTextFields["Password"], password)
 
         app.webViews.buttons["submit"].tap()
         return self
+    }
+
+    @discardableResult
+    private func tapConsentContinueIfPresent(timeout: TimeInterval) -> Bool {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let continueElement = springboard.consentContinueElement()
+        if continueElement.waitForExistence(timeout: timeout) {
+            continueElement.tap()
+            return true
+        }
+        return false
+    }
+
+    // Consent sheet can arrive late, so keep clearing it while polling.
+    private func waitForWebTextField(_ element: XCUIElement) -> XCUIElement {
+        let deadline = Date().addingTimeInterval(60)
+        while Date() < deadline {
+            tapConsentContinueIfPresent(timeout: 2)
+            if element.waitForExistence(timeout: 3) {
+                return element
+            }
+        }
+        return element
+    }
+
+    // iOS 26: first tap raises the keyboard, second moves focus to this field.
+    private func focusAndType(_ element: XCUIElement, _ text: String) {
+        XCTAssertTrue(element.waitForExistence(timeout: 30), "Web text field not found")
+        let coordinate = element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        coordinate.tap()
+        _ = app.keyboards.element.waitForExistence(timeout: 10)
+        coordinate.tap()
+        element.typeText(text)
     }
 
     func testSignInSucceeded() -> Self {

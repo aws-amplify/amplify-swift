@@ -31,6 +31,14 @@ on:
         required: false
         type: number
         default: 60
+      only_testing:
+        required: false
+        type: string
+        default: ''
+      job_name_suffix:
+        required: false
+        type: string
+        default: ''
 
 permissions:
     id-token: write
@@ -38,7 +46,7 @@ permissions:
 
 jobs:
   integration-tests:
-    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
+    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}${{ inputs.job_name_suffix }}
     runs-on: ${{ inputs.os-runner }}
     if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
     timeout-minutes: ${{ inputs.timeout-minutes }}
@@ -96,9 +104,13 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-${{ steps.platform.outputs.xcode-version }}-${{ inputs.scheme }}-build-cache-${{ hashFiles('Package.resolved') }}
 
+      - name: Disable Simulator hardware keyboard (iOS)
+        if: inputs.platform == 'iOS'
+        run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
+
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ inputs.only_testing == '' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ inputs.scheme }}
@@ -111,10 +123,11 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
+          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES' }}
 
       - name: Retry ${{ inputs.platform }} Integration Tests
-        if: steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure' && inputs.only_testing == ''
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
