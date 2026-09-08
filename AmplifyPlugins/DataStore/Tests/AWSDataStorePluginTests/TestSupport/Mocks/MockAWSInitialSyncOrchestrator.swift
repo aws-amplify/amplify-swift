@@ -31,10 +31,13 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
-    // `nonisolated(unsafe)`: set by a test's `setUpWithError` before use and read after; XCTest runs
-    // one test at a time.
-    private nonisolated(unsafe) static var instance: MockAWSInitialSyncOrchestrator?
-    private nonisolated(unsafe) static var mockedResponse: SyncOperationResult?
+    /// `AtomicValue` rather than `nonisolated(unsafe) static var`: this outlives an individual test, and
+    /// the sync engine keeps a strong reference that can fire `sync(completion:)` during teardown — so a
+    /// `reset()` from the next test's `setUp` can overlap a read from the previous test's engine. XCTest
+    /// running one test at a time does not cover that, which is what the previous annotation assumed.
+    ///
+    /// The unused `instance` static that sat here was dead and has been removed.
+    private static let mockedResponse = AtomicValue<SyncOperationResult?>(initialValue: nil)
 
     let initialSyncOrchestratorTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
@@ -51,15 +54,15 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
     }
 
     static func reset() {
-        mockedResponse = nil
+        mockedResponse.set(nil)
     }
 
     static func setResponseOnSync(result: SyncOperationResult) {
-        mockedResponse = result
+        mockedResponse.set(result)
     }
 
     func sync(completion: @escaping SyncOperationResultHandler) {
-        let response = MockAWSInitialSyncOrchestrator.mockedResponse ?? .successfulVoid
+        let response = MockAWSInitialSyncOrchestrator.mockedResponse.get() ?? .successfulVoid
         completion(response)
     }
 }
