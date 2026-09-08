@@ -7,6 +7,7 @@
 
 import AmplifyFoundation
 import AWSCloudWatchLogs
+import Combine
 import XCTest
 
 @_spi(AmplifyExperimental) @testable import AmplifyCloudWatchClient
@@ -291,6 +292,59 @@ final class CloudWatchLogConsumerTests: XCTestCase {
             "readEntries()",
             "complete()"
         ])
+    }
+
+    /// - Given: a single entry larger than the per-batch size limit
+    /// - When: the consumer processes it
+    /// - Then: it is dropped (never sent) and a failure event is emitted
+    func testOversizedEntryIsDroppedAndEmitsEvent() async throws {
+        let eventSubject = PassthroughSubject<LoggingEvent, Never>()
+        var events: [LoggingEvent] = []
+        let subscription = eventSubject.sink { events.append($0) }
+        defer { subscription.cancel() }
+        systemUnderTest = CloudWatchLoggingConsumer(
+            client: client, logGroupName: logGroupName, userIdentifier: "guest", eventSubject: eventSubject
+        )
+        entries = [LogEntry(namespace: "t", level: .error, message: String(repeating: "a", count: 1_100_000))]
+
+        try await systemUnderTest.consume(batch: self)
+
+        XCTAssertFalse(client.interactions.contains("putLogEvents(input:)"))
+        XCTAssertTrue(events.contains { if case .flushLogFailure = $0 { return true } else { return false } })
+    }
+
+    /// - Given: entries the server reports as too old
+    /// - When: the consumer processes the batch
+    /// - Then: a failure event is emitted for the undeliverable entries
+    func testTooOldRejectedEntriesEmitEvent() async throws {
+        try await assertRejectionEmitsEvent(.init(tooOldLogEventEndIndex: 0))
+    }
+
+    /// - Given: entries the server reports as expired
+    /// - When: the consumer processes the batch
+    /// - Then: a failure event is emitted for the undeliverable entries
+    func testExpiredRejectedEntriesEmitEvent() async throws {
+        try await assertRejectionEmitsEvent(.init(expiredLogEventEndIndex: 0))
+    }
+
+    private func assertRejectionEmitsEvent(
+        _ rejected: CloudWatchLogsClientTypes.RejectedLogEventsInfo
+    ) async throws {
+        let eventSubject = PassthroughSubject<LoggingEvent, Never>()
+        var events: [LoggingEvent] = []
+        let subscription = eventSubject.sink { events.append($0) }
+        defer { subscription.cancel() }
+        systemUnderTest = CloudWatchLoggingConsumer(
+            client: client, logGroupName: logGroupName, userIdentifier: "guest", eventSubject: eventSubject
+        )
+        entries = (0 ..< 5).map {
+            LogEntry(namespace: "t", level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0)))
+        }
+        client.putLogEventsHandler = { _ in .init(nextSequenceToken: nil, rejectedLogEventsInfo: rejected) }
+
+        try await systemUnderTest.consume(batch: self)
+
+        XCTAssertTrue(events.contains { if case .flushLogFailure = $0 { return true } else { return false } })
     }
 }
 

@@ -42,17 +42,10 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         }
     }
 
-    var logLevel: LogLevel {
-        didSet {
-            session?.logger.logLevel = logLevel
-        }
-    }
-
     init(
         client: CloudWatchLogsClientProtocol,
         logFilter: CloudWatchLoggingFilterBehavior,
         namespace: String,
-        logLevel: LogLevel,
         logGroupName: String,
         region: String,
         localStoreMaxSizeInMB: Int,
@@ -63,7 +56,6 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         self.client = client
         self.logFilter = logFilter
         self.namespace = namespace
-        self.logLevel = logLevel
         self.logGroupName = logGroupName
         self.region = region
         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
@@ -103,9 +95,10 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
                 do {
                     try await consumer.consume(batch: batch)
                 } catch {
+                    // Keep the batch on failure so it can be retried on the next flush; rotation bounds
+                    // disk usage. Deleting here would permanently discard logs on any transient error.
                     self?.internalLogger.error("Error flushing logs: \(error.localizedDescription)")
                     self?.eventSubject.send(.flushLogFailure(context: error.localizedDescription, error: error))
-                    try batch.complete()
                 }
             }
         }
@@ -115,22 +108,25 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         return CloudWatchLoggingConsumer(
             client: client,
             logGroupName: logGroupName,
-            userIdentifier: userIdentifier
+            userIdentifier: userIdentifier,
+            eventSubject: eventSubject
         )
     }
 
     private func userIdentifierDidChange() {
-        resetCurrentLogs()
+        // Reset the OUTGOING user's logs — capture the session before it's replaced, so we neither delete
+        // the new user's logs nor leave the previous user's logs to ship under the new identity.
+        let previousSession = session
         updateSession()
         updateConsumer()
         connectProducerAndConsumer()
+        resetLogs(for: previousSession)
     }
 
     private func updateSession() {
         do {
             session = try CloudWatchLoggingSession(
                 namespace: namespace,
-                logLevel: logLevel,
                 userIdentifier: userIdentifier,
                 localStoreMaxSizeInMB: localStoreMaxSizeInMB,
                 eventSubject: eventSubject
@@ -146,6 +142,9 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     func flushLogs() async throws {
+        // Skip flushing while offline — every PutLogEvents would fail and (until the batch is retained)
+        // waste retries. Matches the connectivity guard on the rotation subscription above.
+        guard networkMonitor.isOnline else { return }
         guard let logBatches = try await session?.logger.getLogBatches() else { return }
 
         for batch in logBatches {
@@ -162,18 +161,20 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         do {
             try await consumer.consume(batch: batch)
         } catch {
+            // Keep the batch on failure so it can be retried on the next flush; rotation bounds disk
+            // usage. Deleting here would permanently discard logs on any transient error.
             internalLogger.error("Error flushing logs: \(error.localizedDescription)")
             eventSubject.send(.flushLogFailure(context: error.localizedDescription, error: error))
-            try batch.complete()
         }
     }
 
-    private func resetCurrentLogs() {
+    private func resetLogs(for session: CloudWatchLoggingSession?) {
+        guard let session else { return }
         Task { [weak self] in
             do {
-                try await self?.session?.logger.resetLogs()
+                try await session.logger.resetLogs()
             } catch {
-                self?.internalLogger.error("Error resetting logs: \(error)")
+                self?.internalLogger.error("Error resetting previous user's logs: \(error)")
             }
         }
     }

@@ -49,8 +49,10 @@ struct LogEntryCodec {
             }
             let lines = contentAsString.split(whereSeparator: \.isNewline).map { String($0) }
             let decoder = LogEntryCodec()
-            return try lines.compactMap { line in
-                return try decoder.decode(string: line)
+            // Skip any unparseable line (e.g. a partial write from a crash) rather than throwing for
+            // the whole file, which would otherwise cause the entire batch to be discarded.
+            return lines.compactMap { line in
+                try? decoder.decode(string: line)
             }
         } catch let error as CloudWatchError {
             throw error

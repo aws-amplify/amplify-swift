@@ -44,10 +44,6 @@ struct LogEntry: Codable, Hashable, Sendable, LogEntryRepresentable {
         }
     }
 
-    var millisecondsSince1970: Int {
-        Int((created.timeIntervalSince1970 * 1_000.0).rounded())
-    }
-
     init(namespace: String, level: LogLevel, message: String, created: Date = Date()) {
         self.created = created
         self.level = level.rawValue

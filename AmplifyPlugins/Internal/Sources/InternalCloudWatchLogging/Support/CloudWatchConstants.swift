@@ -15,4 +15,7 @@ package enum CloudWatchConstants {
 
     /// the max number of log events that can be sent is 10,000
     package static let maxLogEvents = 10_000
+
+    /// CloudWatch adds 26 bytes of overhead per log event when computing batch size.
+    package static let perEventOverheadInBytes = 26
 }

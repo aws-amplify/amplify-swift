@@ -29,6 +29,10 @@ class CloudWatchLoggingMonitor {
         self.queue = queue
     }
 
+    deinit {
+        automaticFlushLogsTimer?.cancel()
+    }
+
     func setAutomaticFlushIntervals() {
         guard automaticFlushLogsInterval != .zero else {
             automaticFlushLogsTimer = nil

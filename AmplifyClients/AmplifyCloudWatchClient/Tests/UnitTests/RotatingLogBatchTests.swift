@@ -53,12 +53,14 @@ final class RotatingLogBatchTests: XCTestCase {
     func testSuccessfullyCompleteEntriesAndRemovesFile() throws {
         let rotatingLogBatch = RotatingLogBatch(url: fileURL)
         try rotatingLogBatch.complete()
-        XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.absoluteString))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.path))
     }
 }
 
-extension RotatingLogBatch: CustomStringConvertible {
-    public var description: String {
-        return "\((url.path as NSString).lastPathComponent)"
+extension RotatingLogBatch {
+    /// Test-only accessor for the batch's file name. Explicitly named rather than a production
+    /// `CustomStringConvertible` conformance that other tests would silently depend on.
+    var testFileName: String {
+        (url.path as NSString).lastPathComponent
     }
 }

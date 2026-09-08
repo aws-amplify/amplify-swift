@@ -27,7 +27,7 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
         let constraints = loggingConstraints
         let loweredCasedNamespace = namespace?.lowercased()
 
-        if let userConstraints = constraints.userLogLevel?.first(where: { $0.key == userIdentifier })?.value {
+        if let userConstraints = constraints.userLogLevel.first(where: { $0.key == userIdentifier })?.value {
             if let ns = loweredCasedNamespace,
                let namespaceLogLevel = userConstraints.namespaceLogLevel.first(where: { $0.key.lowercased() == ns })?.value {
                 return logLevel.rawValue <= namespaceLogLevel.rawValue && namespaceLogLevel != .none
@@ -36,7 +36,7 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
         }
 
         if let ns = loweredCasedNamespace,
-           let namespaceLogLevel = constraints.namespaceLogLevel?.first(where: { $0.key.lowercased() == ns })?.value {
+           let namespaceLogLevel = constraints.namespaceLogLevel.first(where: { $0.key.lowercased() == ns })?.value {
             return logLevel.rawValue <= namespaceLogLevel.rawValue && namespaceLogLevel != .none
         }
 
@@ -47,7 +47,7 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
         let constraints = loggingConstraints
         let loweredCasedNamespace = namespace?.lowercased()
 
-        if let userConstraints = constraints.userLogLevel?.first(where: { $0.key == userIdentifier })?.value {
+        if let userConstraints = constraints.userLogLevel.first(where: { $0.key == userIdentifier })?.value {
             if let ns = loweredCasedNamespace,
                let namespaceLogLevel = userConstraints.namespaceLogLevel.first(where: { $0.key.lowercased() == ns })?.value {
                 return namespaceLogLevel
@@ -56,7 +56,7 @@ final class CloudWatchLoggingFilter: CloudWatchLoggingFilterBehavior, @unchecked
         }
 
         if let ns = loweredCasedNamespace,
-           let namespaceLogLevel = constraints.namespaceLogLevel?.first(where: { $0.key.lowercased() == ns })?.value {
+           let namespaceLogLevel = constraints.namespaceLogLevel.first(where: { $0.key.lowercased() == ns })?.value {
             return namespaceLogLevel
         }
 

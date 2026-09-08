@@ -576,7 +576,10 @@ let loggingTargets: [Target] = [
     .target(
         name: "InternalCloudWatchLogging",
         dependencies: [],
-        path: "AmplifyPlugins/Internal/Sources/InternalCloudWatchLogging"
+        path: "AmplifyPlugins/Internal/Sources/InternalCloudWatchLogging",
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
     ),
     .target(
         name: "AWSCloudWatchLoggingPlugin",

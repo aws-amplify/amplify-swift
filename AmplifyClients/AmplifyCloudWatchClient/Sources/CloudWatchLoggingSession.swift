@@ -18,12 +18,11 @@ final class CloudWatchLoggingSession {
     let userIdentifier: String?
     let logger: RotatingLogger
 
-    init(namespace: String, logLevel: LogLevel, userIdentifier: String? = nil, localStoreMaxSizeInMB: Int, eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil) throws {
+    init(namespace: String, userIdentifier: String? = nil, localStoreMaxSizeInMB: Int, eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil) throws {
         self.namespace = namespace
         self.userIdentifier = userIdentifier
         self.logger = try Self.createLogger(
             namespace: namespace,
-            logLevel: logLevel,
             userIdentifier: userIdentifier,
             localStoreMaxSizeInMB: localStoreMaxSizeInMB,
             eventSubject: eventSubject
@@ -32,7 +31,6 @@ final class CloudWatchLoggingSession {
 
     private static func createLogger(
         namespace: String,
-        logLevel: LogLevel,
         userIdentifier: String?,
         localStoreMaxSizeInMB: Int,
         fileManager: FileManager = .default,
@@ -51,7 +49,6 @@ final class CloudWatchLoggingSession {
         return try RotatingLogger(
             directory: directory,
             namespace: namespace,
-            logLevel: logLevel,
             fileSizeLimitInBytes: fileSizeLimitInBytes,
             eventSubject: eventSubject
         )

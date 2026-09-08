@@ -90,7 +90,7 @@ class CloudWatchLoggingClientIntegrationTests: XCTestCase {
     /// - When: the escape hatch is requested
     /// - Then: the AWS CloudWatch client is returned
     func testGetEscapeHatch() throws {
-        let cloudWatchClient = try loggingClient.getCloudWatchLogsClient()
+        let cloudWatchClient = try XCTUnwrap(loggingClient.getCloudWatchLogsClient())
         XCTAssertNotNil(cloudWatchClient)
     }
 
@@ -109,7 +109,7 @@ class CloudWatchLoggingClientIntegrationTests: XCTestCase {
         try await loggingClient.flushLogs()
         try await Task.sleep(seconds: 30)
 
-        let cloudWatchClient = try loggingClient.getCloudWatchLogsClient()
+        let cloudWatchClient = try XCTUnwrap(loggingClient.getCloudWatchLogsClient())
         try await verifyMessagesSent(
             client: cloudWatchClient,
             logGroupName: Self.cloudWatchConfig.cloudWatchClient.logGroupName,
@@ -134,7 +134,7 @@ class CloudWatchLoggingClientIntegrationTests: XCTestCase {
         try await loggingClient.flushLogs()
         try await Task.sleep(seconds: 30)
 
-        let cloudWatchClient = try loggingClient.getCloudWatchLogsClient()
+        let cloudWatchClient = try XCTUnwrap(loggingClient.getCloudWatchLogsClient())
         try await verifyMessageSent(
             client: cloudWatchClient,
             logGroupName: Self.cloudWatchConfig.cloudWatchClient.logGroupName,
@@ -159,7 +159,7 @@ class CloudWatchLoggingClientIntegrationTests: XCTestCase {
         try await loggingClient.flushLogs()
         try await Task.sleep(seconds: 30)
 
-        let cloudWatchClient = try loggingClient.getCloudWatchLogsClient()
+        let cloudWatchClient = try XCTUnwrap(loggingClient.getCloudWatchLogsClient())
         try await verifyMessageNotSent(
             client: cloudWatchClient,
             logGroupName: Self.cloudWatchConfig.cloudWatchClient.logGroupName,

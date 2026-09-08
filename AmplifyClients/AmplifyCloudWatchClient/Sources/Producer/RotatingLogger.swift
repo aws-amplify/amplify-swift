@@ -12,28 +12,27 @@ import InternalCloudWatchLogging
 
 final class RotatingLogger: @unchecked Sendable {
 
-    var logLevel: LogLevel
-
     private let namespace: String
     private let logActor: LogActor
     private let batchSubject: PassthroughSubject<LogBatch, Never>
     private let eventSubject: PassthroughSubject<LoggingEvent, Never>?
-    private var rotationSubscription: Combine.Cancellable? {
-        willSet { rotationSubscription?.cancel() }
-    }
+    private let rotationSubscription: Combine.Cancellable
 
     init(
         directory: URL,
         namespace: String,
-        logLevel: LogLevel,
         fileSizeLimitInBytes: Int,
         eventSubject: PassthroughSubject<LoggingEvent, Never>? = nil
     ) throws {
         self.namespace = namespace
         self.logActor = try LogActor(directory: directory, fileSizeLimitInBytes: fileSizeLimitInBytes)
-        self.batchSubject = PassthroughSubject()
-        self.logLevel = logLevel
+        let batchSubject = PassthroughSubject<LogBatch, Never>()
+        self.batchSubject = batchSubject
         self.eventSubject = eventSubject
+        // Subscribe once, eagerly, so two concurrent first records can't create competing subscriptions.
+        self.rotationSubscription = logActor.rotationPublisher().sink { url in
+            batchSubject.send(RotatingLogBatch(url: url))
+        }
     }
 
     func synchronize() async throws {
@@ -66,20 +65,9 @@ final class RotatingLogger: @unchecked Sendable {
     }
 
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
-        try await setupSubscription()
         let entry = LogEntry(namespace: namespace, level: level, message: message())
         let data = try LogEntryCodec().encode(entry: entry)
         try await logActor.record(data)
-    }
-
-    private func setupSubscription() async throws {
-        if rotationSubscription == nil {
-            let rotationPublisher = logActor.rotationPublisher()
-            rotationSubscription = rotationPublisher.sink { [weak self] url in
-                guard let self else { return }
-                batchSubject.send(RotatingLogBatch(url: url))
-            }
-        }
     }
 
     func _record(level: LogLevel, message: @autoclosure () -> String) {

@@ -63,7 +63,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
     /// - Then: getCloudWatchLogsClient returns a valid client
     ///
     func testInitializationCreatesCloudWatchClient() throws {
-        let client = try systemUnderTest.getCloudWatchLogsClient()
+        let client = systemUnderTest.getCloudWatchLogsClient()
         XCTAssertNotNil(client)
     }
 
@@ -117,5 +117,70 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         systemUnderTest.disable()
         XCTAssertFalse(systemUnderTest.isEnabled(for: .error))
         XCTAssertFalse(systemUnderTest.isEnabled(for: .verbose))
+    }
+
+    // MARK: - Level keying / concurrency / teardown (injected client)
+
+    /// Given: an injected client
+    /// When: messages at several levels are emitted under one namespace
+    /// Then: they share a single controller — the level is not part of the key
+    func testMultipleLevelsUnderOneNamespaceUseASingleController() {
+        let client = makeClient(mockClient: MockCloudWatchLogsClient())
+
+        client.emit(message: LogMessage(level: .error, name: "OneNamespace", content: "e"))
+        client.emit(message: LogMessage(level: .debug, name: "OneNamespace", content: "d"))
+        client.emit(message: LogMessage(level: .info, name: "OneNamespace", content: "i"))
+        XCTAssertEqual(client.controllerCount, 1)
+
+        // Sanity: a different namespace still gets its own controller.
+        client.emit(message: LogMessage(level: .error, name: "OtherNamespace", content: "x"))
+        XCTAssertEqual(client.controllerCount, 2)
+    }
+
+    /// Given: an injected client
+    /// When: many emits and a flush run concurrently
+    /// Then: the run completes without a crash or data-race trap (exercises the client's locking)
+    func testConcurrentEmitAndFlushDoNotCrash() async throws {
+        let mockClient = MockCloudWatchLogsClient()
+        let client = makeClient(mockClient: mockClient)
+
+        await withTaskGroup(of: Void.self) { group in
+            for index in 0 ..< 200 {
+                group.addTask {
+                    client.emit(message: LogMessage(level: .error, name: "ns\(index % 5)", content: "m"))
+                }
+            }
+            group.addTask { try? await client.flushLogs() }
+        }
+    }
+
+    /// Given: a client with an interval flush strategy (creates a repeating timer)
+    /// When: the last strong reference is released
+    /// Then: the client deallocates — no retained timer / network-monitor cycle
+    func testClientDeallocatesWithoutRetainCycle() throws {
+        weak var weakClient: AmplifyCloudWatchClient?
+        func scope() {
+            let client = makeClient(mockClient: MockCloudWatchLogsClient(), flushStrategy: .interval(1))
+            weakClient = client
+            XCTAssertNotNil(weakClient)
+        }
+        scope()
+        XCTAssertNil(weakClient)
+    }
+
+    // MARK: - Helpers
+
+    private func makeClient(
+        mockClient: MockCloudWatchLogsClient,
+        constraints: LoggingConstraints = LoggingConstraints(defaultLogLevel: .verbose),
+        flushStrategy: FlushStrategy = .none
+    ) -> AmplifyCloudWatchClient {
+        AmplifyCloudWatchClient(
+            cloudWatchClient: mockClient,
+            logGroupName: "/test/unit",
+            loggingConstraints: constraints,
+            networkMonitor: MockLoggingNetworkMonitor(),
+            flushStrategy: flushStrategy
+        )
     }
 }
