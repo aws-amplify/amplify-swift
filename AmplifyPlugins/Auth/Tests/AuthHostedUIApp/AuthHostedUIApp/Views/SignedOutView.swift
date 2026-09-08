@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSCognitoAuthPlugin
 import SwiftUI
 
 struct SignedOutView: View {
@@ -57,7 +58,11 @@ struct SignedOutView: View {
 
     func signInWithWebUI(anchor: AuthUIPresentationAnchor?) async {
         do {
-            let signInResult = try await Amplify.Auth.signInWithWebUI(presentationAnchor: anchor)
+            // Ephemeral session, else a persisted cookie skips the login form.
+            let signInResult = try await Amplify.Auth.signInWithWebUI(
+                presentationAnchor: anchor,
+                options: .preferPrivateSession()
+            )
             if signInResult.isSignedIn {
                 successLabel = "SignedIn"
             }
