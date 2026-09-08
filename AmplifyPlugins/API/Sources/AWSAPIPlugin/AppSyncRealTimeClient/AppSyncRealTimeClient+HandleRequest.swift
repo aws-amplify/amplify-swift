@@ -79,6 +79,17 @@ extension AppSyncRealTimeClient {
             case (.connectionInit, .connectionAck):
                 return justTheResponse
 
+            case (.connectionInit, .connectionError):
+                // Surface connection-level errors (e.g. 401 UnauthorizedException)
+                // as a failure so connect()'s retry can stop on non-recoverable errors.
+                let errorsJson = response.payload?.errors
+                let errors = errorsJson?.asArray ?? errorsJson.map { [$0] } ?? []
+                let requestErrors = errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
+                return Fail(
+                    outputType: AppSyncRealTimeResponse.self,
+                    failure: requestErrors.first ?? .unknown(message: "connectionError", causedBy: nil, payload: nil)
+                ).eraseToAnyPublisher()
+
             case (.start(let startRequest), .startAck) where startRequest.id == response.id:
                 return justTheResponse
 

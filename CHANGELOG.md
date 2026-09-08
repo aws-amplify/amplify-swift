@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.60.2 (2026-09-01)
+
+### Bug Fixes
+
+- **auth**: preserve user pool tokens when no identity pool is configured (#4280)
+- **api**: stop AppSync reconnect and re-subscribe loop on non-recoverable errors (#4277)
+- **auth**: Refresh rejected identity ID (#4281)
+- **api**: percent-encode semicolons in REST query parameter values (#4274)
+
 ## 2.60.1 (2026-08-04)
 
 ### Bug Fixes
