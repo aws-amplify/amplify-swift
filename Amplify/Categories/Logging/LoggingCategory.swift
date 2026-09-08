@@ -8,9 +8,15 @@
 import Foundation
 
 /// AWS Amplify writes console logs through Logger. You can use Logger in your apps for the same purpose.
-/// - Note: `@unchecked Sendable` because `_logLevel` and the configuration state are
-///   mutable but every access is serialized by `lock`. The `Logger` conformance lives in
-///   an extension in another file, so the conformance must be declared here.
+/// - Note: `@unchecked Sendable`. The lock does **not** cover everything: only `_logLevel` goes through
+///   it. `configurationState` and `plugins` are plain mutable state, written by `add(plugin:)` and
+///   `removePlugin(for:)` after initialization, and read without the lock. So the locking discipline here
+///   is partial rather than complete.
+///
+///   In practice configuration happens once during start-up and the state is read-only afterwards, but
+///   nothing in this type enforces that. Bringing those two under the same lock would be the real fix and
+///   is worth doing separately — it needs care, because several accessors call each other and would
+///   deadlock on a non-recursive lock.
 public final class LoggingCategory: Category, @unchecked Sendable {
     enum ConfigurationState {
         /// Default configuration at initialization

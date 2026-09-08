@@ -7,9 +7,13 @@
 
 /// The API category provides a solution for making HTTP requests to REST and GraphQL endpoints.
 /// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement that the category behavior
-///   protocol now carries. `plugins` is populated during `Amplify.configure()` and only read
-///   afterwards, and the conformance must be declared here because the behavior conformance lives
-///   in an extension in another file.
+///   protocol now carries.
+///
+///   Unchecked in the literal sense: `plugins` and `isConfigured` are plain mutable state with no lock,
+///   and `isConfigured` is `public`, so callers can flip it. `add(plugin:)` cannot race a configured
+///   category — it throws once `isConfigured` is set — but `removePlugin(for:)` has no such guard, so it
+///   can race a concurrent read. The exposure predates this annotation, which only stops the compiler
+///   from asking about it.
 public final class APICategory: Category, @unchecked Sendable {
     /// The category type for API
     public var categoryType: CategoryType {

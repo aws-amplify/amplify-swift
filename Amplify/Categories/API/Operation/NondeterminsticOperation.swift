@@ -115,8 +115,17 @@ final class NondeterminsticOperation<T: Sendable>: @unchecked Sendable {
     }
 
     /// Cancel the operation
+    ///
+    /// Reads the task and clears the cancellables under a single lock acquisition. Going through the
+    /// `task` and `cancellables` accessors would take the lock twice, letting a concurrent `execute()`
+    /// install a new task in between — that task would then survive the cancel. The task is cancelled
+    /// after the lock is released, so cancellation never runs while holding it.
     func cancel() {
-        task?.cancel()
-        cancellables = Set<AnyCancellable>()
+        let taskToCancel: Task<Void, Never>? = lock.withLock {
+            let current = _task
+            _cancellables = Set<AnyCancellable>()
+            return current
+        }
+        taskToCancel?.cancel()
     }
 }
