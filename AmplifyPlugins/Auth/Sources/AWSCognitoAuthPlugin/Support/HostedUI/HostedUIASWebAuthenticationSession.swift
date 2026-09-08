@@ -10,6 +10,11 @@ import Foundation
 #if os(iOS) || os(macOS) || os(visionOS)
 @preconcurrency import AuthenticationServices
 #endif
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// - Note: `final` and `@unchecked Sendable` to satisfy `HostedUISessionBehavior`. The presentation
 ///   anchor and session factory are assigned before the session is shown.
@@ -116,7 +121,22 @@ extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationCon
 
     @MainActor
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return webPresentation ?? ASPresentationAnchor()
+        if let webPresentation {
+            return webPresentation
+        }
+        // An empty anchor has no window scene, so it never presents.
+        #if canImport(UIKit)
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let ordered = scenes.filter { $0.activationState == .foregroundActive } + scenes
+        let window = ordered.compactMap { scene in
+            scene.windows.first { $0.isKeyWindow } ?? scene.windows.first
+        }.first
+        return window ?? ASPresentationAnchor()
+        #elseif canImport(AppKit)
+        return NSApplication.shared.keyWindow ?? NSApplication.shared.windows.first ?? ASPresentationAnchor()
+        #else
+        return ASPresentationAnchor()
+        #endif
     }
 }
 #endif

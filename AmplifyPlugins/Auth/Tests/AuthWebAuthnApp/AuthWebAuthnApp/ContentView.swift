@@ -122,6 +122,8 @@ struct ContentView: View {
     private func signUpAndSignIn() async {
         do {
             lastResult = ""
+            // A crashed previous run can leave a signed-in session behind.
+            _ = await Amplify.Auth.signOut()
             let signUpResult = try await Amplify.Auth.signUp(
                 username: username,
                 password: password,
