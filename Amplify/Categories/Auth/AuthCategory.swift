@@ -6,9 +6,15 @@
 //
 
 /// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement that the category behavior
-///   protocol now carries. `plugins` is populated during `Amplify.configure()` and only read
-///   afterwards, and the conformance must be declared here because the behavior conformance lives
-///   in an extension in another file.
+///   protocol now carries. The conformance must be declared here because the behavior conformance
+///   lives in an extension in another file.
+///
+///   The conformance is **unchecked in the literal sense**: `plugins` and `isConfigured` are plain
+///   mutable state with no lock, and `add(plugin:)` / `removePlugin(for:)` mutate `plugins` after
+///   configuration. In practice `Amplify.configure()` runs once during start-up and the state is
+///   read-only afterwards, but nothing in this type enforces that — a caller that adds or removes a
+///   plugin concurrently with category access races. That predates this annotation; the annotation
+///   only stops the compiler from asking about it.
 public final class AuthCategory: Category, @unchecked Sendable {
 
     public let categoryType =  CategoryType.auth
@@ -52,6 +58,12 @@ public final class AuthCategory: Category, @unchecked Sendable {
     /// the process rather than failing the call. Exposed over `@_spi` so the AWS plugin modules can
     /// report an error instead: they hold long-lived clients that can outlive `Amplify.reset()`, and for
     /// those a missing Auth category is a recoverable condition, not a programmer error.
+    ///
+    /// - Important: This is **advisory, not a guarantee**. It reads `isConfigured` and `plugins` without
+    ///   synchronization, and a caller acts on the result after it returns, so `Amplify.reset()` running
+    ///   in between still leads to the `preconditionFailure` it was meant to avoid. It narrows the window
+    ///   rather than closing it. Closing it would mean giving ``plugin`` a non-trapping counterpart, which
+    ///   is a larger change to the category contract.
     @_spi(InternalAmplifyConfiguration)
     public var isConfiguredWithPlugin: Bool {
         isConfigured && !plugins.isEmpty
