@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSAPIPlugin
 
-class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase, @unchecked Sendable {
 
     func testReset() async {
         let resettable = apiPlugin as Resettable

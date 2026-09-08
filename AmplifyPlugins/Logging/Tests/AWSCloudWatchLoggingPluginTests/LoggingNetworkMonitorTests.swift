@@ -13,7 +13,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSCloudWatchLoggingPlugin
 
-final class LoggingNetworkMonitorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class LoggingNetworkMonitorTests: XCTestCase, @unchecked Sendable {
     func testNetworkMonitorEvent() {
         let onlineExpectation = expectation(description: "Device is online")
         let loggingMonitor: LoggingNetworkMonitor = NWPathMonitor()

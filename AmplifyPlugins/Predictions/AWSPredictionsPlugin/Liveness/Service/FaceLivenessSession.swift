@@ -8,8 +8,11 @@
 import Amplify
 import Foundation
 
+/// - Note: `@unchecked Sendable` to satisfy `LivenessService`'s `Sendable` requirement. The listener
+///   dictionaries and reconnect state are only mutated while the session is being configured, before
+///   the socket starts delivering events.
 @_spi(PredictionsFaceLiveness)
-public final class FaceLivenessSession: LivenessService {
+public final class FaceLivenessSession: LivenessService, @unchecked Sendable {
     let websocket: WebSocketSession
     let eventStreamEncoder: EventStream.Encoder
     let eventStreamDecoder: EventStream.Decoder

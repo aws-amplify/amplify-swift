@@ -14,7 +14,9 @@ import XCTest
 /// fetchAuthSession reconcile path does not destroy locally-originated
 /// in-flight sign-in/sign-out work, and only reconfigures when the
 /// shared keychain genuinely diverges from the in-memory state machine.
-class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAuthFetchSessionTaskKeychainSharingTests: XCTestCase, @unchecked Sendable {
 
     private actor StateRecorder {
         private(set) var seenStateTypes: Set<String> = []

@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
-class AWSDataStorePluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStorePluginTests: XCTestCase, @unchecked Sendable {
 
     /// Ensure that DataStore configures successfully, regardless of what configuration is passed to `configure(using:)`
     func testConfigureWithAmplifyOutputs() throws {
@@ -125,7 +127,8 @@ class AWSDataStorePluginTests: XCTestCase {
         let stopExpectation = expectation(description: "Stop plugin should be called")
         stopExpectation.isInverted = true
         let startExpectation = expectation(description: "Start Sync should be called")
-        var currCount = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let currCount = AtomicValue(initialValue: 0)
         let storageEngine = MockStorageEngineBehavior()
 
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
@@ -133,7 +136,7 @@ class AWSDataStorePluginTests: XCTestCase {
         }
 
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            currCount = self.expect(startExpectation, currCount, 1)
+            currCount.set(self.expect(startExpectation, currCount.get(), 1))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -164,15 +167,16 @@ class AWSDataStorePluginTests: XCTestCase {
     func testStorageEngineStartsOnPluginClearStart() async throws {
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectation = expectation(description: "Start Sync should be called")
-        var currCount = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let currCount = AtomicValue(initialValue: 0)
 
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.clear] = ClearResponder { _ in
-            currCount = self.expect(clearExpectation, currCount, 1)
+            currCount.set(self.expect(clearExpectation, currCount.get(), 1))
         }
 
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            currCount = self.expect(startExpectation, currCount, 2)
+            currCount.set(self.expect(startExpectation, currCount.get(), 2))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -360,14 +364,15 @@ class AWSDataStorePluginTests: XCTestCase {
         let startExpectation = expectation(description: "Start Sync should be called with Query")
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectationOnQuery = expectation(description: "Start Sync should be called again with Query")
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> { _ in
-            count = self.expect(startExpectation, count, 1)
+            count.set(self.expect(startExpectation, count.get(), 1))
             return .success([])
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            count.set(self.expect(clearExpectation, count.get(), 2))
         }
 
         let dataStorePublisher = DataStorePublisher()
@@ -415,7 +420,7 @@ class AWSDataStorePluginTests: XCTestCase {
             })
             await fulfillment(of: [clearCompleted], timeout: 1.0)
             storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> {_ in
-                count = self.expect(startExpectationOnQuery, count, 3)
+                count.set(self.expect(startExpectationOnQuery, count.get(), 3))
                 return .success([])
             }
 
@@ -454,13 +459,15 @@ class AWSDataStorePluginTests: XCTestCase {
         let startExpectation = expectation(description: "Start Sync should be called with start")
         let clearExpectation = expectation(description: "Clear should be called")
 
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+
+        let count = AtomicValue(initialValue: 0)
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            count.set(self.expect(startExpectation, count.get(), 1))
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            count.set(self.expect(clearExpectation, count.get(), 2))
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -687,9 +694,10 @@ class AWSDataStorePluginTests: XCTestCase {
     func testStopStorageEngineOnTerminalFailureEvent() async {
         let storageEngine = MockStorageEngineBehavior()
         let stopExpectation = expectation(description: "stop should be called")
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
-            count = self.expect(stopExpectation, count, 1)
+            count.set(self.expect(stopExpectation, count.get(), 1))
         }
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine

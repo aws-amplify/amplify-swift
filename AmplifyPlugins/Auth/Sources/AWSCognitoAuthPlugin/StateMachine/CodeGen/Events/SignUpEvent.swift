@@ -16,7 +16,8 @@ struct SignUpEvent: StateMachineEvent {
     var time: Date?
     let eventType: EventType
 
-    enum EventType {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Sendable {
         case initiateSignUp(SignUpEventData, Password?, [AuthUserAttribute]?)
         case initiateSignUpComplete(SignUpEventData, AuthSignUpResult)
         case confirmSignUp(SignUpEventData, ConfirmationCode, ForceAliasCreation?)

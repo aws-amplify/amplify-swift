@@ -10,7 +10,9 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-class FetchAuthSessionOperationHelper {
+/// - Note: `final` and `@unchecked Sendable`: the helper is used from detached auth tasks and its
+///   state is confined to a single fetch.
+final class FetchAuthSessionOperationHelper: @unchecked Sendable {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
     var environment: Environment?

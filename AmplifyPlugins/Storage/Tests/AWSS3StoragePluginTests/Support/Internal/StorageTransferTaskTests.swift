@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class StorageTransferTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageTransferTaskTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - Resume tests
     /// Given: A StorageTransferTask with a sessionTask
@@ -597,7 +599,8 @@ private class MockStorageTask: StorageTask {
     }
 }
 
-private class MockSessionTask: StorageSessionTask {
+// `@unchecked Sendable`: `StorageSessionTask` is `Sendable` now. Counters are read by a single test.
+private final class MockSessionTask: StorageSessionTask, @unchecked Sendable {
     let taskIdentifier: TaskIdentifier
     let state: URLSessionTask.State
 
@@ -625,7 +628,11 @@ private class MockSessionTask: StorageSessionTask {
     }
 }
 
-class MockLogger: Logger {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockLogger: Logger, @unchecked Sendable {
     var logLevel: LogLevel = .verbose
 
     func error(_ message: @autoclosure () -> String) {

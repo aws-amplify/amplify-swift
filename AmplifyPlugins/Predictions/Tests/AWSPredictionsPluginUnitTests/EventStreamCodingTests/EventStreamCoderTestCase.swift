@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSPredictionsPlugin
 
-final class EventStreamCoderTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class EventStreamCoderTestCase: XCTestCase, @unchecked Sendable {
     struct Model: Codable, Equatable {
         let foo: Int
         let bar: String

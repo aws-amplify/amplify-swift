@@ -28,7 +28,9 @@ type Comment3 @model
 See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 */
 
-class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
 
     func testSavePostAndCommentSyncToCloud() throws {
         try startAmplifyAndWaitForSync()

@@ -13,7 +13,9 @@ import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
-class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` completion
+///   closures the production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+final class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase, @unchecked Sendable {
     let testName = "testName"
     let testIdentityId = "identityId"
     let testEmail = "testEmail"

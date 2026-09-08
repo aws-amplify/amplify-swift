@@ -12,7 +12,8 @@ import StoreKit
 
 @_spi(InternalAWSPinpoint)
 public protocol AnalyticsClientBehaviour: Actor {
-    typealias SubmitResult = (Result<[PinpointEvent], Error>) -> Void
+    // `@Sendable` because the auto-flush timer invokes it from a `Task`.
+    typealias SubmitResult = @Sendable (Result<[PinpointEvent], Error>) -> Void
     nonisolated var pinpointClient: PinpointClientProtocol { get }
 
     func addGlobalAttribute(_ attribute: String, forKey key: String)
@@ -55,7 +56,8 @@ extension AnalyticsClientBehaviour {
     }
 }
 
-typealias SessionProvider = () -> PinpointSession
+// `@Sendable` because the provider is held by the analytics actor and called from its tasks.
+typealias SessionProvider = @Sendable () -> PinpointSession
 
 actor AnalyticsClient: AnalyticsClientBehaviour {
     private var automaticSubmitEventsInterval: TimeInterval = .zero

@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class BasePluginTest: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class BasePluginTest: XCTestCase, @unchecked Sendable {
 
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
@@ -73,8 +75,8 @@ class BasePluginTest: XCTestCase {
 
     func configureCustomPluginWith(
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
-        userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
-        identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
+        userPool: @escaping @Sendable () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
+        identityPool: @escaping @Sendable () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
         initialState: AuthState
     ) -> AWSCognitoAuthPlugin {
             let plugin = AWSCognitoAuthPlugin()

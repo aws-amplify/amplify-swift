@@ -8,7 +8,9 @@
 import XCTest
 @testable import Amplify
 
-class FoundationUtilsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class FoundationUtilsTests: XCTestCase, @unchecked Sendable {
 
     func test_isEmpty_extensionPlaysNicelyWithStandardLib_Array() {
         let notEmpty = ["Foo"]

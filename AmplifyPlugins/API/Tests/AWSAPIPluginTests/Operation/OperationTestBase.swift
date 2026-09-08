@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 
-class OperationTestBase: XCTestCase {
+/// - Note: `@unchecked Sendable` so subclass test bodies can be captured by the `@Sendable` closures
+///   `Amplify.Publisher.create` takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class OperationTestBase: XCTestCase, @unchecked Sendable {
 
     var apiPlugin: AWSAPIPlugin!
 
@@ -52,14 +54,14 @@ class OperationTestBase: XCTestCase {
         sending data: Data,
         for endpointType: AWSAPICategoryPluginEndpointType
     ) throws {
-        let task = try makeSingleValueSuccessMockTask(sending: data)
+        let task = makeSingleValueSuccessMockTask(sending: data)
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let sessionFactory = MockSessionFactory(returning: mockSession)
         try setUpPlugin(sessionFactory: sessionFactory, endpointType: endpointType)
     }
 
     func setUpPluginForSingleError(for endpointType: AWSAPICategoryPluginEndpointType) throws {
-        let task = try Self.makeSingleValueErrorMockTask()
+        let task = Self.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let sessionFactory = MockSessionFactory(returning: mockSession)
         try setUpPlugin(sessionFactory: sessionFactory, endpointType: endpointType)
@@ -77,9 +79,13 @@ class OperationTestBase: XCTestCase {
         )
     }
 
-    func makeSingleValueSuccessMockTask(sending data: Data) throws -> MockURLSessionTask {
-        var mockTask: MockURLSessionTask!
-        mockTask = MockURLSessionTask(onResume: {
+    func makeSingleValueSuccessMockTask(sending data: Data) -> MockURLSessionTask {
+        // The `onResume` closure has to reference the task it is being assigned to, so the task is
+        // held in an `AtomicValue`: capturing the `var` directly is a reference to a mutable variable
+        // from concurrently-executing code, which the Swift 6 language mode rejects.
+        let mockTaskBox = AtomicValue<MockURLSessionTask?>(initialValue: nil)
+        let mockTask = MockURLSessionTask(onResume: {
+            guard let mockTask = mockTaskBox.get() else { return }
             guard let mockSession = mockTask.mockSession,
                 let delegate = mockSession.sessionBehaviorDelegate
                 else {
@@ -99,16 +105,17 @@ class OperationTestBase: XCTestCase {
             )
         })
 
-        guard let task = mockTask else {
-            throw "mockTask unexpectedly nil"
-        }
-
-        return task
+        mockTaskBox.set(mockTask)
+        return mockTask
     }
 
-    static func makeSingleValueErrorMockTask() throws -> MockURLSessionTask {
-        var mockTask: MockURLSessionTask!
-        mockTask = MockURLSessionTask(onResume: {
+    static func makeSingleValueErrorMockTask() -> MockURLSessionTask {
+        // The `onResume` closure has to reference the task it is being assigned to, so the task is
+        // held in an `AtomicValue`: capturing the `var` directly is a reference to a mutable variable
+        // from concurrently-executing code, which the Swift 6 language mode rejects.
+        let mockTaskBox = AtomicValue<MockURLSessionTask?>(initialValue: nil)
+        let mockTask = MockURLSessionTask(onResume: {
+            guard let mockTask = mockTaskBox.get() else { return }
             guard let mockSession = mockTask.mockSession,
                 let delegate = mockSession.sessionBehaviorDelegate
                 else {
@@ -122,11 +129,8 @@ class OperationTestBase: XCTestCase {
             )
         })
 
-        guard let task = mockTask else {
-            throw "mockTask unexpectedly nil"
-        }
-
-        return task
+        mockTaskBox.set(mockTask)
+        return mockTask
     }
 
 }

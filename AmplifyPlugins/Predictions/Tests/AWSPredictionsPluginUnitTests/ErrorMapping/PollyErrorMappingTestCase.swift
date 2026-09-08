@@ -10,7 +10,9 @@ import AWSPolly
 import XCTest
 @testable import AWSPredictionsPlugin
 
-final class PollyErrorMappingTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class PollyErrorMappingTestCase: XCTestCase, @unchecked Sendable {
     private func assertCatchVariations(
         for sdkError: Error,
         expecting expectedServiceError: PredictionsError.ServiceError,

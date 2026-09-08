@@ -9,10 +9,21 @@
 import Foundation
 
 /// Class that wraps another `Logger` and saves the logs in memory
-class PersistentLogWrapper: Logger {
-    var logLevel: LogLevel
+///
+/// - Note: `final` and `@unchecked Sendable` because `Logger` is `Sendable`. The mutable state really is
+///   shared — log calls arrive from whichever thread emitted them — so `lock` guards every access to it
+///   rather than the conformance simply asserting safety.
+final class PersistentLogWrapper: Logger, @unchecked Sendable {
+    private let lock = NSLock()
 
-    var wrapper: Logger
+    private var _logLevel: LogLevel
+
+    var logLevel: LogLevel {
+        get { lock.withLock { _logLevel } }
+        set { lock.withLock { _logLevel = newValue } }
+    }
+
+    private let wrapper: Logger
 
     /// Array of `LogEntry` containing the history of logs
     private var logHistory: [LogEntryItem] = []
@@ -22,7 +33,7 @@ class PersistentLogWrapper: Logger {
 
     init(logWrapper: Logger) {
         self.wrapper = logWrapper
-        self.logLevel = logWrapper.logLevel
+        self._logLevel = logWrapper.logLevel
     }
 
     func error(_ message: @autoclosure () -> String) {
@@ -56,15 +67,17 @@ class PersistentLogWrapper: Logger {
     }
 
     func getLogHistory() -> [LogEntryItem] {
-        return logHistory
+        return lock.withLock { logHistory }
     }
 
     private func addToLogHistory(logItem: LogEntryItem) {
-        if logHistory.count == PersistentLogWrapper.logLimit {
-            logHistory.removeFirst()
-        }
+        lock.withLock {
+            if logHistory.count == PersistentLogWrapper.logLimit {
+                logHistory.removeFirst()
+            }
 
-        logHistory.append(logItem)
+            logHistory.append(logItem)
+        }
     }
 
 }

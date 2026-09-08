@@ -15,7 +15,9 @@ import XCTest
 @testable import AWSPluginsCore
 
 /// Base class for SyncEngine and sync-enabled DataStore tests
-class SyncEngineTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SyncEngineTestBase: XCTestCase, @unchecked Sendable {
 
     /// Populated during setUp, used in each test during `Amplify.configure()`
     var amplifyConfig: AmplifyConfiguration!
@@ -190,7 +192,7 @@ class SyncEngineTestBase: XCTestCase {
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
-    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>) -> Void) {
+    private func startAmplifyAndWaitForSync(completion: @escaping @Sendable (Swift.Result<Void, Error>) -> Void) {
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {

@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct InitialClientEvent {
+public struct InitialClientEvent: Sendable {
     public init(
         challengeID: String,
         initialFaceLocation: FaceDetection,

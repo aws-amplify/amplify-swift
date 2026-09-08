@@ -16,7 +16,9 @@ import UIKit
 import AppKit
 #endif
 
-class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `HostedUISessionBehavior`. The presentation
+///   anchor and session factory are assigned before the session is shown.
+final class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior, @unchecked Sendable {
 
     weak var webPresentation: AuthUIPresentationAnchor?
 

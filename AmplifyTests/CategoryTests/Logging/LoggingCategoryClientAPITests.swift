@@ -9,7 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class LoggingCategoryClientAPITests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class LoggingCategoryClientAPITests: XCTestCase, @unchecked Sendable {
     var mockAmplifyConfig: AmplifyConfiguration!
 
     override func setUp() async throws {
@@ -152,7 +154,9 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
 // A bare class that does not forward or evaluate message autoclosure. Used to test that Amplify, as
 // a framework, does not evaluate the autoclosure
-class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger, @unchecked Sendable {
     var logLevel = LogLevel.error
 
     let key = "NonEvaluatingLoggingPlugin"

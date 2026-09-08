@@ -12,7 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
-class AuthTokenURLRequestInterceptorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AuthTokenURLRequestInterceptorTests: XCTestCase, @unchecked Sendable {
     func testAuthTokenInterceptor() async throws {
         let mockTokenProvider = MockTokenProvider()
         let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: mockTokenProvider)

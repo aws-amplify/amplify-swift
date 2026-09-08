@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class VerifySignInChallengeTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class VerifySignInChallengeTests: XCTestCase, @unchecked Sendable {
 
     typealias CognitoFactory = BasicSRPAuthEnvironment.CognitoUserPoolFactory
 

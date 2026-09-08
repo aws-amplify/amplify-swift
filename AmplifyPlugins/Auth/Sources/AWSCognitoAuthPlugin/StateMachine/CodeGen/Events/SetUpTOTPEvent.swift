@@ -12,7 +12,8 @@ typealias UserSession = String
 
 struct SetUpTOTPEvent: StateMachineEvent {
 
-    enum EventType {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Sendable {
 
         case setUpTOTP(RespondToAuthChallenge)
 

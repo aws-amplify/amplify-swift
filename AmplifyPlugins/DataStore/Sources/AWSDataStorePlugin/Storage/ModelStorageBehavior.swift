@@ -60,7 +60,7 @@ protocol ModelStorageBehavior {
         sort: [QuerySortDescriptor]?,
         paginationInput: QueryPaginationInput?,
         eagerLoad: Bool,
-        completion: DataStoreCallback<[M]>
+        completion: @escaping DataStoreCallback<[M]>
     )
 
     func query<M: Model>(
@@ -70,7 +70,7 @@ protocol ModelStorageBehavior {
         sort: [QuerySortDescriptor]?,
         paginationInput: QueryPaginationInput?,
         eagerLoad: Bool,
-        completion: DataStoreCallback<[M]>
+        completion: @escaping DataStoreCallback<[M]>
     )
 
 }

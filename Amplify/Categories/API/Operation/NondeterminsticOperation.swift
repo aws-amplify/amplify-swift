@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 /**
  A non-deterministic operation offers multiple paths to accomplish its task.
@@ -16,15 +17,35 @@ enum NondeterminsticOperationError: Error {
     case cancelled
 }
 
-final class NondeterminsticOperation<T> {
+/// - Note: `@unchecked Sendable` because `_cancellables` and `_task` are mutable but every
+///   access is serialized by `lock`.
+final class NondeterminsticOperation<T: Sendable>: @unchecked Sendable {
     /// operation that to be eval
-    typealias Operation = () async throws -> T
-    typealias OnError = (Error) -> Bool
+    // Both closures are handed to a `Task` and yielded through an `AsyncStream`, so they
+    // must be `@Sendable` under the Swift 6 language mode.
+    typealias Operation = @Sendable () async throws -> T
+    typealias OnError = @Sendable (Error) -> Bool
 
     private let operations: AsyncStream<Operation>
-    private var shouldTryNextOnError: OnError = { _ in true }
-    private var cancellables = Set<AnyCancellable>()
-    private var task: Task<Void, Never>?
+
+    /// Immutable now that it is assigned once in `init`, which is what removes it from the
+    /// mutable state the lock below has to cover.
+    private let shouldTryNextOnError: OnError
+
+    /// Guards `_cancellables` and `_task`.
+    private let lock = NSLock()
+    private var _cancellables = Set<AnyCancellable>()
+    private var _task: Task<Void, Never>?
+
+    private var cancellables: Set<AnyCancellable> {
+        get { lock.withLock { _cancellables } }
+        set { lock.withLock { _cancellables = newValue } }
+    }
+
+    private var task: Task<Void, Never>? {
+        get { lock.withLock { _task } }
+        set { lock.withLock { _task = newValue } }
+    }
 
     deinit {
         cancel()
@@ -32,9 +53,7 @@ final class NondeterminsticOperation<T> {
 
     init(operations: AsyncStream<Operation>, shouldTryNextOnError: OnError? = nil) {
         self.operations = operations
-        if let shouldTryNextOnError {
-            self.shouldTryNextOnError = shouldTryNextOnError
-        }
+        self.shouldTryNextOnError = shouldTryNextOnError ?? { _ in true }
     }
 
     convenience init(
@@ -59,15 +78,18 @@ final class NondeterminsticOperation<T> {
     /// Synchronous version of executing the operations
     func execute() -> Future<T, Error> {
         Future { [weak self] promise in
+            // `Future.Promise` is not `Sendable`; Combine calls it at most once, so moving it
+            // into the task is safe.
+            let promise = UncheckedSendable(promise)
             self?.task = Task { [weak self] in
                 do {
                     if let self {
-                        try await promise(.success(run()))
+                        try await promise.value(.success(run()))
                     } else {
-                        promise(.failure(NondeterminsticOperationError.cancelled))
+                        promise.value(.failure(NondeterminsticOperationError.cancelled))
                     }
                 } catch {
-                    promise(.failure(error))
+                    promise.value(.failure(error))
                 }
             }
         }
@@ -93,8 +115,17 @@ final class NondeterminsticOperation<T> {
     }
 
     /// Cancel the operation
+    ///
+    /// Reads the task and clears the cancellables under a single lock acquisition. Going through the
+    /// `task` and `cancellables` accessors would take the lock twice, letting a concurrent `execute()`
+    /// install a new task in between — that task would then survive the cancel. The task is cancelled
+    /// after the lock is released, so cancellation never runs while holding it.
     func cancel() {
-        task?.cancel()
-        cancellables = Set<AnyCancellable>()
+        let taskToCancel: Task<Void, Never>? = lock.withLock {
+            let current = _task
+            _cancellables = Set<AnyCancellable>()
+            return current
+        }
+        taskToCancel?.cancel()
     }
 }

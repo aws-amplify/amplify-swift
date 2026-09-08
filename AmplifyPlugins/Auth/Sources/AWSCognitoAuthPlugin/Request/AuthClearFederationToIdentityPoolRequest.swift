@@ -21,7 +21,7 @@ public struct AuthClearFederationToIdentityPoolRequest: AmplifyOperationRequest 
 
 public extension AuthClearFederationToIdentityPoolRequest {
 
-    struct Options {
+    struct Options: Sendable {
 
         public init() { }
     }

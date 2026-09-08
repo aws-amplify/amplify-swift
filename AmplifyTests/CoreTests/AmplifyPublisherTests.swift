@@ -12,7 +12,11 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class AmplifyPublisherTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` completion
+
+///   closures the production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+
+final class AmplifyPublisherTests: XCTestCase, @unchecked Sendable {
     enum Failure: Error {
         case unluckyNumber
     }

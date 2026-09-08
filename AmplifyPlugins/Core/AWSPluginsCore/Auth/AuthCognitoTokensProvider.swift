@@ -12,7 +12,8 @@ public protocol AuthCognitoTokensProvider {
     func getCognitoTokens() -> Result<AuthCognitoTokens, AuthError>
 }
 
-public protocol AuthCognitoTokens {
+/// - Note: `Sendable` because tokens are carried across task boundaries by the auth and API layers.
+public protocol AuthCognitoTokens: Sendable {
 
     var idToken: String {get}
 

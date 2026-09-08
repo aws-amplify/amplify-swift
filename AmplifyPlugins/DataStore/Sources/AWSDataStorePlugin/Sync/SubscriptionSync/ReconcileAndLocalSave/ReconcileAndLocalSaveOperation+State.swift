@@ -10,7 +10,7 @@ import Amplify
 extension ReconcileAndLocalSaveOperation {
 
     /// States are descriptive, they say what is happening in the system right now
-    enum State {
+    enum State: Sendable {
         /// Waiting to be started by the queue
         case waiting
 

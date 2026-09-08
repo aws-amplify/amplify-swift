@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSAPIPlugin
 
-class AppSyncRealTimeRequestAuthTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AppSyncRealTimeRequestAuthTests: XCTestCase, @unchecked Sendable {
     let host = UUID().uuidString
     let apiKey = UUID().uuidString
     let date = UUID().uuidString

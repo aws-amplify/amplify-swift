@@ -10,7 +10,9 @@ import XCTest
 @testable import AmplifyKinesisClient
 @testable import AmplifyRecordCache
 
-class KinesisRecordSenderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class KinesisRecordSenderTests: XCTestCase, @unchecked Sendable {
 
     private let testStreamName = "test-stream"
     private let maxRetries = 3

@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable @preconcurrency import AWSPluginsCore
 
-class InitialSyncOperationSyncExpressionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class InitialSyncOperationSyncExpressionTests: XCTestCase, @unchecked Sendable {
     typealias APIPluginQueryResponder = QueryRequestResponder<PaginatedList<AnyModel>>
 
     var storageAdapter: StorageEngineAdapter!

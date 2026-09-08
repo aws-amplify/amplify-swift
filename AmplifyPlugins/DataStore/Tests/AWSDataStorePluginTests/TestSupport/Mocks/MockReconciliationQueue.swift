@@ -11,7 +11,11 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliationQueue {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockReconciliationQueue: MessageReporter, IncomingEventReconciliationQueue, @unchecked Sendable {
 
     func start() {
         notify()

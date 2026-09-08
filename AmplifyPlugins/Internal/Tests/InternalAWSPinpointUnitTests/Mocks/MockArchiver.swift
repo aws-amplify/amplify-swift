@@ -8,7 +8,9 @@
 import Foundation
 @testable import InternalAWSPinpoint
 
-class MockArchiver: AmplifyArchiverBehaviour {
+// `@unchecked Sendable`: driven by a single test at a time.
+
+final class MockArchiver: AmplifyArchiverBehaviour, @unchecked Sendable {
     var encoded: Data = .init()
     var decoded: Decodable?
 

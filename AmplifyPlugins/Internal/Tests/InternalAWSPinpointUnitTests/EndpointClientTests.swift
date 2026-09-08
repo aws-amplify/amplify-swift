@@ -12,7 +12,9 @@ import XCTest
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class EndpointClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EndpointClientTests: XCTestCase, @unchecked Sendable {
     private let newTokenHex = "646576696365546f6b656e"
 
     private var endpointClient: EndpointClient!
@@ -225,7 +227,9 @@ class EndpointClientTests: XCTestCase {
     }
 }
 
-class MockEndpointInformationProvider: EndpointInformationProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockEndpointInformationProvider: EndpointInformationProvider, @unchecked Sendable {
     let model = "modelModel"
     let appVersion = "mockAppVersion"
     let platformName = "mockPlatformName"
@@ -235,7 +239,9 @@ class MockEndpointInformationProvider: EndpointInformationProvider {
     }
 }
 
-class MockRemoteNotifications: RemoteNotificationsBehaviour {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockRemoteNotifications: RemoteNotificationsBehaviour, @unchecked Sendable {
     var isRegisteredForRemoteNotifications = true
 
     func requestAuthorization(_ options: UNAuthorizationOptions) async throws -> Bool {

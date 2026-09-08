@@ -11,7 +11,9 @@ import XCTest
 
 private let timeout: TimeInterval = 5
 
-class WebSocketClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class WebSocketClientTests: XCTestCase, @unchecked Sendable {
     var localWebSocketServer: LocalWebSocketServer?
 
     override func setUp() async throws {
@@ -195,7 +197,9 @@ class WebSocketClientTests: XCTestCase {
 }
 
 
-private class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+private final class MockNetworkMonitor: WebSocketNetworkMonitorProtocol, @unchecked Sendable {
     typealias State = AmplifyNetworkMonitor.State
     let subject = PassthroughSubject<State, Never>()
     var publisher: AnyPublisher<(State, State), Never> {

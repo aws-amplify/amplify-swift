@@ -20,11 +20,18 @@ import SmithyIdentity
 /// the application's authentication state.
 ///
 /// - Tag: CloudWatchLoggingCategoryClient
-final class AWSCloudWatchLoggingCategoryClient {
+/// - Note: `@unchecked Sendable`: the client starts detached tasks that touch its state, so every
+///   access to `_enabled`, `loggersByKey` and `userIdentifier` goes through `lock`. Members that already
+///   hold the lock read the underscored storage directly, because `NSLock` is not recursive.
+final class AWSCloudWatchLoggingCategoryClient: @unchecked Sendable {
 
-    private var enabled: Bool = true
+    /// Guarded by `lock`. Read through `isEnabled` from unlocked contexts.
+    private var _enabled: Bool = true
 
     private let lock = NSLock()
+
+    /// `_userIdentifier` for callers that do not already hold `lock`.
+    private var currentUserIdentifier: String? { lock.execute { _userIdentifier } }
     private let logGroupName: String
     private let region: String
     private let credentialIdentityResolver: any AWSCredentialIdentityResolver
@@ -33,7 +40,8 @@ final class AWSCloudWatchLoggingCategoryClient {
     private let localStoreMaxSizeInMB: Int
     private var automaticFlushLogMonitor: AWSCLoudWatchLoggingMonitor?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
-    private var userIdentifier: String?
+    /// Guarded by `lock`. Read through `currentUserIdentifier` from unlocked contexts.
+    private var _userIdentifier: String?
     private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
     private let networkMonitor: LoggingNetworkMonitor
 
@@ -48,7 +56,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         flushIntervalInSeconds: Int,
         networkMonitor: LoggingNetworkMonitor = NWPathMonitor()
     ) {
-        self.enabled = enable
+        self._enabled = enable
         self.credentialIdentityResolver = credentialIdentityResolver
         self.authentication = authentication
         self.logGroupName = logGroupName
@@ -68,9 +76,9 @@ final class AWSCloudWatchLoggingCategoryClient {
         Task {
             do {
                 let user = try await authentication.getCurrentUser()
-                self.userIdentifier = user.userId
+                self.lock.execute { self._userIdentifier = user.userId }
             } catch {
-                self.userIdentifier = nil
+                self.lock.execute { self._userIdentifier = nil }
             }
             self.updateSessionControllers()
         }
@@ -79,7 +87,7 @@ final class AWSCloudWatchLoggingCategoryClient {
     private func updateSessionControllers() {
         lock.execute {
             for controller in loggersByKey.values {
-                controller.setCurrentUser(identifier: self.userIdentifier)
+                controller.setCurrentUser(identifier: self._userIdentifier)
             }
         }
     }
@@ -94,7 +102,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue, CognitoEventName.configured.rawValue:
             takeUserIdentifierFromCurrentUser()
         case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
-            userIdentifier = nil
+            lock.execute { _userIdentifier = nil }
             updateSessionControllers()
         default:
             break
@@ -110,17 +118,14 @@ final class AWSCloudWatchLoggingCategoryClient {
 
     func getLoggerSessionController(forCategory category: String, logLevel: LogLevel) -> AWSCloudWatchLoggingSessionController? {
         let key = LoggerKey(category: category, logLevel: logLevel)
-        if let existing = loggersByKey[key] {
-            return existing
-        }
-        return nil
+        return lock.execute { loggersByKey[key] }
     }
 }
 
 extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     func enable() {
-        enabled = true
         lock.execute {
+            _enabled = true
             for controller in loggersByKey.values {
                 controller.enable()
             }
@@ -128,8 +133,8 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 
     func disable() {
-        enabled = false
         lock.execute {
+            _enabled = false
             for controller in loggersByKey.values {
                 controller.disable()
             }
@@ -157,10 +162,10 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                 logGroupName: self.logGroupName,
                 region: self.region,
                 localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
-                userIdentifier: self.userIdentifier,
+                userIdentifier: self._userIdentifier,
                 networkMonitor: self.networkMonitor
             )
-            if enabled {
+            if _enabled {
                 controller.enable()
             }
             loggersByKey[key] = controller
@@ -173,7 +178,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 
     func logger(forCategory category: String) -> Logger {
-        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: userIdentifier)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: currentUserIdentifier)
         return logger(forCategory: category, namespace: nil, logLevel: defaultLogLevel)
     }
 
@@ -182,12 +187,12 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
 
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: userIdentifier)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: currentUserIdentifier)
         return logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
     }
 
     func getInternalClient() -> CloudWatchLogsClientProtocol {
-        guard let client = loggersByKey.first(where: { $0.value.client != nil })?.value.client else {
+        guard let client = lock.execute({ loggersByKey.first(where: { $0.value.client != nil })?.value.client }) else {
             return Fatal.preconditionFailure(
                 """
                 AWSCloudWatchLoggingPlugin is missing an internal AWS CloudWatch client.  Ensure that
@@ -198,9 +203,17 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
         return client
     }
 
+    /// Snapshots the controllers under the lock, then flushes outside it.
+    ///
+    /// This runs on a repeating background timer, so iterating `loggersByKey` directly raced every
+    /// insertion made under the lock by `logger(forCategory:namespace:logLevel:)`. Awaiting while holding
+    /// the lock is not an option either, hence the snapshot.
     func flushLogs() async throws {
-        guard enabled else { return }
-        for logger in loggersByKey.values {
+        let controllers: [AWSCloudWatchLoggingSessionController] = lock.execute {
+            guard _enabled else { return [] }
+            return Array(loggersByKey.values)
+        }
+        for logger in controllers {
             try await logger.flushLogs()
         }
     }

@@ -8,7 +8,9 @@
 import Foundation
 
 /// User specific data
-public struct AnalyticsUserProfile {
+// Explicit `Sendable`: Swift does not infer it for public types, and profiles are passed into the
+// plugin's async endpoint-update path.
+public struct AnalyticsUserProfile: Sendable {
 
     /// Name of the user
     public var name: String?

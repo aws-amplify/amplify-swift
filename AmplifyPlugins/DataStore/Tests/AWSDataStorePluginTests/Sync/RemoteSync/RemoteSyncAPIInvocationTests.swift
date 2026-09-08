@@ -15,7 +15,9 @@ import Combine
 @testable import AWSDataStorePlugin
 
 /// Tests that DataStore invokes proper API methods to fulfill remote sync
-class RemoteSyncAPIInvocationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RemoteSyncAPIInvocationTests: XCTestCase, @unchecked Sendable {
 
     /// Convenience property to get easy access to the mock API plugin
     var apiPlugin: MockAPICategoryPlugin!

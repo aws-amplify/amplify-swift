@@ -7,7 +7,8 @@
 
 import Foundation
 
-protocol AuthHubEventBehavior {
+/// - Note: `Sendable` because the handler is stored on the plugin, which is `Sendable`.
+protocol AuthHubEventBehavior: Sendable {
 
     func sendUserSignedInEvent()
 

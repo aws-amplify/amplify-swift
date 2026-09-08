@@ -10,7 +10,9 @@ import XCTest
 
 @testable import AWSCognitoAuthPlugin
 
-class SRPClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SRPClientTests: XCTestCase, @unchecked Sendable {
 
     func srpClient(NHexValue N: String, gHexValue g: String) throws -> SRPClientBehavior {
         return try AmplifySRPClient(NHexValue: N, gHexValue: g)

@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSPredictionsPlugin
 
 // swiftlint:disable file_length type_body_length
-class PredictionsServiceRekognitionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PredictionsServiceRekognitionTests: XCTestCase, @unchecked Sendable {
     var predictionsService: AWSPredictionsService!
     var mockRekognition = MockRekognitionBehavior()
     var mockConfigurationJSON = """

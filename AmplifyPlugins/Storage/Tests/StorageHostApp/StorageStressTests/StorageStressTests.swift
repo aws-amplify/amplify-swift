@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-final class StorageStressTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class StorageStressTests: XCTestCase, @unchecked Sendable {
 
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
 

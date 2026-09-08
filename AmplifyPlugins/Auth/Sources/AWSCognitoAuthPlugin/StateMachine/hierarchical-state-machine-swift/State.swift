@@ -163,7 +163,9 @@
 /// 10. The parent `AuthState` returns an Effect to dispatch an `authIsReady` event
 ///
 /// - seealso: `Effect`
-protocol State: Equatable {
+/// - Note: `Sendable` because states are read out of the actor-isolated state machine and passed
+///   between tasks.
+protocol State: Equatable, Sendable {
 
     var type: String { get }
 }

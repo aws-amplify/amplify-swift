@@ -17,7 +17,9 @@ public protocol CategoryTypeable {
 /// Amplify supports these Category types
 ///
 /// - Tag: CategoryType
-public enum CategoryType: String {
+// `Sendable` is explicit rather than inferred: Swift only infers it for non-public
+// types, so a public enum must state it even when every case is payload-free.
+public enum CategoryType: String, Sendable {
     /// Record app metrics and analytics data
     ///
     /// - Tag: CategoryType.analytics

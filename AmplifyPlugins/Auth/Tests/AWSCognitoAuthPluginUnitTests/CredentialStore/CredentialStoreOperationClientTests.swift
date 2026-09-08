@@ -10,7 +10,9 @@ import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class CredentialStoreOperationClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CredentialStoreOperationClientTests: XCTestCase, @unchecked Sendable {
 
     var credentialClient: CredentialStoreStateBehavior!
 

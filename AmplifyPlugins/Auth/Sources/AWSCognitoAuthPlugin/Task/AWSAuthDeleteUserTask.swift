@@ -9,7 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger, @unchecked Sendable {
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
     private let configuration: AuthConfiguration

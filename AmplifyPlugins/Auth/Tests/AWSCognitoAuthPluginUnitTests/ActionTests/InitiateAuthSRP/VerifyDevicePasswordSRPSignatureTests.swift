@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class VerifyDevicePasswordSRPSignatureTests: XCTestCase, @unchecked Sendable {
     private var srpClient: MockSRPClientBehavior!
 
     override func setUp() async throws {

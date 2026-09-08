@@ -13,7 +13,9 @@ import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 /// - Tag: AWSS3StorageService
-class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
+/// - Note: `@unchecked Sendable`: the service is held by the plugin and drives transfer
+///   work from detached tasks; its mutable state is established during configuration.
+class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy, @unchecked Sendable {
 
     // resettable values
     private var authService: AWSAuthCredentialsProviderBehavior?

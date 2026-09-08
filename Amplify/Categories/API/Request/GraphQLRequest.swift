@@ -6,7 +6,8 @@
 //
 
 /// Empty protocol for plugins to define specific `AuthorizationMode` types for the request.
-public protocol AuthorizationMode { }
+/// - Note: `Sendable` because the auth mode is stored on requests that cross task boundaries.
+public protocol AuthorizationMode: Sendable { }
 
 /// GraphQL Request
 public struct GraphQLRequest<R: Decodable> {
@@ -57,7 +58,9 @@ public struct GraphQLRequest<R: Decodable> {
 // MARK: GraphQLRequest + Options
 
 public extension GraphQLRequest {
-    struct Options {
+    struct Options: @unchecked Sendable {
+        // `@unchecked`: `pluginOptions` is `Any?`, which cannot be checked. Narrowing it would be
+        // source-breaking for every plugin that passes options through.
         public let pluginOptions: Any?
 
         public init(pluginOptions: Any?) {

@@ -9,7 +9,11 @@ import Foundation
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class MockStorageTransferDatabase: StorageTransferDatabase {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockStorageTransferDatabase: StorageTransferDatabase, @unchecked Sendable {
 
     private let queue = DispatchQueue(
         label: "com.amazon.aws.amplify.storage-tests",
@@ -50,7 +54,7 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
 
     func recover(
         urlSession: StorageURLSession,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         // do nothing
     }
