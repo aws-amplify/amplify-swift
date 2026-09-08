@@ -34,9 +34,17 @@ public enum QueryPredicateConstant: QueryPredicate, Encodable {
     }
 }
 
-/// - Note: `@unchecked Sendable` rather than `final`: `type` and `predicates` are mutated while a
-///   predicate is being composed, and leaving the class open avoids a source-breaking change for
-///   anyone who subclassed it.
+/// - Note: `@unchecked Sendable`, and not `final`, so that anyone who subclassed this keeps compiling.
+///
+///   The conformance is a genuine assertion, not a checked fact. `and(_:)` and `or(_:)` mutate
+///   `predicates` **in place and return `self`** when the group type already matches, so two tasks
+///   composing onto the same group race on an array — and `predicates` is `public internal(set)`, so
+///   external code reads it directly and a lock here would not cover those reads without turning it into
+///   a computed property.
+///
+///   What makes this safe in practice is usage, not structure: a predicate is built up on one task and
+///   then handed to a query. Sharing a part-built group across tasks is unsupported, and nothing in the
+///   type enforces that. The exposure predates this annotation, which only stops the compiler asking.
 public class QueryPredicateGroup: QueryPredicate, Encodable, @unchecked Sendable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
