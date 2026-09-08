@@ -7,7 +7,9 @@
 
 import Foundation
 
-class StorageTaskReference {
+/// - Note: `@unchecked Sendable`: the wrapped `URLSessionTask` is thread-safe and this
+///   reference is handed to event callbacks that run off the calling thread.
+class StorageTaskReference: @unchecked Sendable {
     let task: StorageTask
 
     init(_ task: StorageTransferTask) {

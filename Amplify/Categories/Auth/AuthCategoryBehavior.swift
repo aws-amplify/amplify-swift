@@ -13,7 +13,9 @@ public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 
 /// Behavior of the Auth category that clients will use
-public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior, AuthCategoryWebAuthnBehaviour {
+/// - Note: `Sendable` for the same reason as `APICategoryGraphQLBehavior`: the implementing plugin
+///   is `Sendable` and this behavior is captured by concurrent sync work.
+public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior, AuthCategoryWebAuthnBehaviour, Sendable {
 
     /// SignUp a user with the authentication provider.
     ///

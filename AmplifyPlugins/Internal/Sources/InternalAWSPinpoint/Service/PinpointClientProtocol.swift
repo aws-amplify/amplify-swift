@@ -10,7 +10,8 @@ import AWSPinpoint
 import Foundation
 
 // swiftlint:disable file_length
-public protocol PinpointClientProtocol {
+/// - Note: `Sendable` because the client is held by the analytics actor and used from its tasks.
+public protocol PinpointClientProtocol: Sendable {
     /// Performs the `CreateApp` operation on the `Pinpoint` service.
     ///
     /// Creates an application.

@@ -11,7 +11,9 @@ import XCTest
 
 /// Uses internal methods of the Amplify configuration system to ensure we are throwing expected errors in exceptional
 /// circumstances
-class AmplifyOutputsInitializationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyOutputsInitializationTests: XCTestCase, @unchecked Sendable {
 
     static let tempDir: URL = {
         let fileManager = FileManager.default

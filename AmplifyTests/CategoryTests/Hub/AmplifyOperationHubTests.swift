@@ -9,7 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class AmplifyOperationHubTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyOperationHubTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         await Amplify.reset()
@@ -111,7 +113,9 @@ class AmplifyOperationHubTests: XCTestCase {
 
 }
 
-class MockDispatchingStoragePlugin: StorageCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockDispatchingStoragePlugin: StorageCategoryPlugin, @unchecked Sendable {
 
     var key: PluginKey = "MockDispatchingStoragePlugin"
 

@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import AWSAPIPlugin
 
-class RESTCombineTests: OperationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RESTCombineTests: OperationTestBase, @unchecked Sendable {
 
     func testGetSucceeds() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])

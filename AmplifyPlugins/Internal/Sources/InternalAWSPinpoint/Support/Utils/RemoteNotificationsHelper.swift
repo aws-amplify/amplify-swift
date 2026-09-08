@@ -10,8 +10,9 @@ import AmplifyUtilsNotifications
 import Foundation
 import UserNotifications
 
+/// - Note: `Sendable` because `shared` is a global and the endpoint client reads it from tasks.
 @_spi(InternalAWSPinpoint)
-public protocol RemoteNotificationsBehaviour {
+public protocol RemoteNotificationsBehaviour: Sendable {
     var isRegisteredForRemoteNotifications: Bool { get async }
     func requestAuthorization(_ options: UNAuthorizationOptions) async throws -> Bool
     func registerForRemoteNotifications() async
@@ -28,7 +29,8 @@ public extension RemoteNotificationsBehaviour where Self == AmplifyRemoteNotific
 public struct AmplifyRemoteNotificationsHelper: RemoteNotificationsBehaviour {
     private init() {}
 
-    static var shared: RemoteNotificationsBehaviour = AmplifyRemoteNotificationsHelper()
+    // `nonisolated(unsafe)`: overridden by tests before use, otherwise read-only.
+    nonisolated(unsafe) static var shared: RemoteNotificationsBehaviour = AmplifyRemoteNotificationsHelper()
 
     public var isRegisteredForRemoteNotifications: Bool {
         get async {

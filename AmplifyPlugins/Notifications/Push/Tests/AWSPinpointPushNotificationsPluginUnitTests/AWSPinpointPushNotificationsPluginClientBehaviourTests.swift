@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSPinpointPushNotificationsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNotificationsPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNotificationsPluginTestBase, @unchecked Sendable {
     override func setUp() async throws {
         try await super.setUp()
         plugin.configure(

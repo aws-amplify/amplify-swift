@@ -10,7 +10,9 @@
 import Amplify
 import XCTest
 
-final class AWSCloudWatchLoggingPluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AWSCloudWatchLoggingPluginTests: XCTestCase, @unchecked Sendable {
 
     func testDefaultPluginConstructor() throws {
         let plugin = AWSCloudWatchLoggingPlugin()

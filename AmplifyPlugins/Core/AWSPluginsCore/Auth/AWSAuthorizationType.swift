@@ -14,7 +14,7 @@ import Foundation
 /// GraphQL backend, or an Amazon API Gateway endpoint.
 ///
 /// - SeeAlso: [https://docs.aws.amazon.com/appsync/latest/devguide/security.html](AppSync Security)
-public enum AWSAuthorizationType: String, AuthorizationMode {
+public enum AWSAuthorizationType: String, AuthorizationMode, Sendable {
 
     /// For public APIs
     case none = "NONE"

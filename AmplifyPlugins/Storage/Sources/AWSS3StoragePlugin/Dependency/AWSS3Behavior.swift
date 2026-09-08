@@ -17,22 +17,22 @@ import ClientRuntime
 protocol AWSS3Behavior {
 
     // Deletes object.
-    func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
+    func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping @Sendable (Result<Void, StorageError>) -> Void)
 
     // Lists objects in a bucket.
-    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void)
+    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping @Sendable (Result<StorageListResult, StorageError>) -> Void)
 
     // Creates a Multipart Upload.
-    func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void)
+    func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping @Sendable (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void)
 
     // Get list of uploaded parts (supports development)
-    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<ListPartsOutput, StorageError>) -> Void)
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping @Sendable (Result<ListPartsOutput, StorageError>) -> Void)
 
     // Completes a Multipart Upload.
-    func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void)
+    func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping @Sendable (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void)
 
     // Aborts a Multipart Upload.
-    func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
+    func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping @Sendable (Result<Void, StorageError>) -> Void)
 
     // Gets a client for AWS S3 Service.
     func getS3() -> S3ClientProtocol
@@ -40,7 +40,7 @@ protocol AWSS3Behavior {
 }
 
 extension AWSS3Behavior {
-    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<ListPartsOutput, StorageError>) -> Void) {
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping @Sendable (Result<ListPartsOutput, StorageError>) -> Void) {
         // do nothing
     }
 }

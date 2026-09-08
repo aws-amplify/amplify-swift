@@ -151,11 +151,11 @@ enum StorageTransferType {
             return result
         }
 
-        private static var defaultGetPreSignedURLEvent: AWSS3StorageServiceBehavior.StorageServiceGetPreSignedURLEventHandler = { _ in  }
-        private static var defaultDownloadEvent: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler = { _ in  }
-        private static var defaultUploadEvent: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler = { _ in }
-        private static var defaultMultiPartUploadEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { _ in }
-        private static var defaultListEvent: AWSS3StorageServiceBehavior.StorageServiceListEventHandler = { _ in  }
-        private static var defaultRemoveEvent: AWSS3StorageServiceBehavior.StorageServiceDeleteEventHandler = { _ in  }
+        private static let defaultGetPreSignedURLEvent: AWSS3StorageServiceBehavior.StorageServiceGetPreSignedURLEventHandler = { _ in  }
+        private static let defaultDownloadEvent: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler = { _ in  }
+        private static let defaultUploadEvent: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler = { _ in }
+        private static let defaultMultiPartUploadEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { _ in }
+        private static let defaultListEvent: AWSS3StorageServiceBehavior.StorageServiceListEventHandler = { _ in  }
+        private static let defaultRemoveEvent: AWSS3StorageServiceBehavior.StorageServiceDeleteEventHandler = { _ in  }
     }
 }

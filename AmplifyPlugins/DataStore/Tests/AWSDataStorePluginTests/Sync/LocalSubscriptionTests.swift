@@ -15,7 +15,9 @@ import Combine
 @testable import AWSPluginsCore
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
-class LocalSubscriptionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class LocalSubscriptionTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()

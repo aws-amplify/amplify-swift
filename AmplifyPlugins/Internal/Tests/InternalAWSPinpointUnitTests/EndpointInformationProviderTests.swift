@@ -8,7 +8,9 @@
 import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class EndpointInformationProviderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EndpointInformationProviderTests: XCTestCase, @unchecked Sendable {
 
     /// Given: DefaultEndpointInformationProvider
     /// When: endpointInfo() is called

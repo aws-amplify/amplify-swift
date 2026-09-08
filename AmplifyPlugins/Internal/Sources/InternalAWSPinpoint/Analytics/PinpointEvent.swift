@@ -10,8 +10,19 @@ import Foundation
 
 private typealias Constants = AWSPinpointAnalytics.Constants.Event
 
+/// - Note: `final` and `@unchecked Sendable`. The identity and session fields are `let`, so those are
+///   genuinely immutable. `attributes` and `metrics` are not: they are `lazy var` with `public` mutators
+///   (`addAttribute(_:forKey:)`, `addMetric(_:forKey:)`), and they are unsynchronized.
+///
+///   The intended lifecycle is build-then-submit — attributes are added while composing the event, and it
+///   is immutable in practice once handed to the recorder. But that is a caller contract, not something
+///   this type enforces: nothing stops a caller retaining the event and adding an attribute after it is
+///   enqueued, and because events are queued for a later flush the two can genuinely overlap. `lazy`
+///   makes it slightly worse, since even a first *read* mutates the storage.
+///
+///   The exposure predates this annotation, which only stops the compiler from asking about it.
 @_spi(InternalAWSPinpoint)
-public class PinpointEvent: AnalyticsPropertiesModel {
+public final class PinpointEvent: AnalyticsPropertiesModel, @unchecked Sendable {
     let id: String
     public let eventType: String
     let eventDate: Date

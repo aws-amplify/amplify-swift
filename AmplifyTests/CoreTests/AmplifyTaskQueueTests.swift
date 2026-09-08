@@ -29,7 +29,9 @@ import XCTest
 // does not guarantee order of execution. TaskQueue is intended to serialize execution to guarantee
 // that the in-process task completes before the new one is executed.
 
-final class AmplifyTaskQueueTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AmplifyTaskQueueTests: XCTestCase, @unchecked Sendable {
 
     /// Test basic TaskQueue.sync behavior
     ///

@@ -14,7 +14,9 @@ import Foundation
 ///
 /// If the underlying service does not support one of these, it is expected that the plugin will
 /// cast it to another supported type. For example, casting a `Bool` to a `String`.
-public protocol UserProfilePropertyValue {}
+/// - Note: `Sendable` for the same reason as `AnalyticsPropertyValue`: profile properties are
+///   carried into async plugin work. Conformers are `String`, `Int`, `Double` and `Bool`.
+public protocol UserProfilePropertyValue: Sendable {}
 
 extension String: UserProfilePropertyValue {}
 extension Int: UserProfilePropertyValue {}

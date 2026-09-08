@@ -10,13 +10,13 @@ import Foundation
 
 
 // MARK: - RetryableGraphQLOperation
-public final class RetryableGraphQLOperation<Payload: Decodable> {
+public final class RetryableGraphQLOperation<Payload: Decodable & Sendable> {
     public typealias Payload = Payload
 
     private let nondeterminsticOperation: NondeterminsticOperation<GraphQLTask<Payload>.Success>
 
     public init(
-        requestStream: AsyncStream<() async throws -> GraphQLTask<Payload>.Success>
+        requestStream: AsyncStream<@Sendable () async throws -> GraphQLTask<Payload>.Success>
     ) {
         self.nondeterminsticOperation = NondeterminsticOperation(
             operations: requestStream,
@@ -72,15 +72,27 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 
 }
 
-public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload: Decodable, Payload: Sendable {
+/// - Note: `@unchecked Sendable` because `_task` is mutable but every access is serialized by
+///   `lock`.
+public final class RetryableGraphQLSubscriptionOperation<Payload>: @unchecked Sendable
+    where Payload: Decodable, Payload: Sendable {
 
     public typealias Payload = Payload
     public typealias SubscriptionEvents = GraphQLSubscriptionEvent<Payload>
-    private var task: Task<Void, Never>?
+
+    /// Guards `_task`.
+    private let lock = NSLock()
+    private var _task: Task<Void, Never>?
+
+    private var task: Task<Void, Never>? {
+        get { lock.withLock { _task } }
+        set { lock.withLock { _task = newValue } }
+    }
+
     private let nondeterminsticOperation: NondeterminsticOperation<AmplifyAsyncThrowingSequence<SubscriptionEvents>>
 
     public init(
-        requestStream: AsyncStream<() async throws -> AmplifyAsyncThrowingSequence<SubscriptionEvents>>
+        requestStream: AsyncStream<@Sendable () async throws -> AmplifyAsyncThrowingSequence<SubscriptionEvents>>
     ) {
         self.nondeterminsticOperation = NondeterminsticOperation(operations: requestStream)
     }
@@ -91,7 +103,9 @@ public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload:
 
     public func subscribe() -> AnyPublisher<SubscriptionEvents, APIError> {
         let subject = PassthroughSubject<SubscriptionEvents, APIError>()
-        task = Task { await self.trySubscribe(subject) }
+        // `PassthroughSubject` is not `Sendable`, but `send` is safe to call from any thread.
+        let boxedSubject = UncheckedSendable(subject)
+        task = Task { await self.trySubscribe(boxedSubject.value) }
         return subject.eraseToAnyPublisher()
     }
 
@@ -127,7 +141,9 @@ public final class RetryableGraphQLSubscriptionOperation<Payload> where Payload:
     }
 }
 
-private extension AsyncSequence {
+// The sequence is captured by a `Task` and its elements are yielded to a continuation, so
+// both must be `Sendable` in the Swift 6 language mode.
+private extension AsyncSequence where Self: Sendable, Element: Sendable {
     var asyncStream: AsyncStream<Self.Element> {
         AsyncStream { continuation in
             Task {

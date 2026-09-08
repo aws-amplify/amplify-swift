@@ -10,7 +10,9 @@ import AWSComprehend
 import XCTest
 @testable import AWSPredictionsPlugin
 
-class PredictionsServiceComprehendTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PredictionsServiceComprehendTests: XCTestCase, @unchecked Sendable {
     var predictionsService: AWSPredictionsService!
     var mockComprehend: MockComprehendBehavior!
     let inputForTest = "Input text for testing"

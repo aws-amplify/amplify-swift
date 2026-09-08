@@ -10,10 +10,14 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
 class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
                              APICategoryReachabilityBehavior,
-                             APICategoryGraphQLBehavior {
+                             APICategoryGraphQLBehavior,
+                             @unchecked Sendable {
 
     var authProviderFactory: APIAuthProviderFactory?
 
@@ -292,7 +296,9 @@ class MockAPICategoryPlugin: MessageReporter,
     }
 }
 
-class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondAPICategoryPlugin: MockAPICategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondAPICategoryPlugin"
     }
@@ -374,7 +380,8 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
     }
 }
 
-class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
+// `@unchecked Sendable`: test double whose `result` is set up before use.
+final class MockOIDCAuthProvider: AmplifyOIDCAuthProvider, @unchecked Sendable {
     var result: Result<AuthToken, Error>?
 
     func getLatestAuthToken() async throws -> String {
@@ -386,7 +393,8 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
     }
 }
 
-class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
+// `@unchecked Sendable`: test double whose `result` is set up before use.
+final class MockFunctionAuthProvider: AmplifyFunctionAuthProvider, @unchecked Sendable {
     var result: Result<AuthToken, Error>?
 
     func getLatestAuthToken() async throws -> String {
@@ -398,7 +406,9 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     }
 }
 
-class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable & Sendable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, @unchecked Sendable {
 
     typealias Request = GraphQLOperationRequest<R>
     typealias InProcess = GraphQLSubscriptionEvent<R>

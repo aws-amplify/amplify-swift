@@ -16,7 +16,8 @@ protocol InitialSyncOrchestrator {
 }
 
 // For testing
-typealias InitialSyncOrchestratorFactory =
+// `@Sendable` because the factory is stored in a `static let` and shared globally.
+typealias InitialSyncOrchestratorFactory = @Sendable
     (
         DataStoreConfiguration,
         AuthModeStrategy,
@@ -25,7 +26,9 @@ typealias InitialSyncOrchestratorFactory =
         StorageEngineAdapter?
     ) -> InitialSyncOrchestrator
 
-final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
+/// - Note: `@unchecked Sendable`: the orchestrator's progress state is updated from its own
+///   serialized sync flow.
+final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendable {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 

@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSAPIPlugin
 
-class APIKeyAuthInterceptorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class APIKeyAuthInterceptorTests: XCTestCase, @unchecked Sendable {
 
     func testInterceptConnection_addApiKeyInRequestHeader() async {
         let apiKey = UUID().uuidString

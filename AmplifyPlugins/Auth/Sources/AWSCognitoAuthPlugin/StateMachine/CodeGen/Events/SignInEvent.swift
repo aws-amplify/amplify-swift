@@ -15,11 +15,14 @@ typealias Username = String
 typealias Password = String
 typealias ClientMetadata = [String: String]
 
-struct SignInEvent: StateMachineEvent {
+/// - Note: `@unchecked Sendable`: `StateMachineEvent` requires `Sendable`, but `data` is `Any?`,
+///   which the compiler cannot verify. The value stored there is always a `Sendable` payload.
+struct SignInEvent: StateMachineEvent, @unchecked Sendable {
 
     var data: Any?
 
-    enum EventType {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Sendable {
 
         case initiateSignInWithSRP(SignInEventData, DeviceMetadata, RespondToAuthChallenge?)
 

@@ -12,7 +12,11 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
-class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockSQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendable {
 
     static let maxNumberOfPredicates: Int = 950
 
@@ -310,7 +314,11 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 }
 
-class MockStorageEngineBehavior: StorageEngineBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockStorageEngineBehavior: StorageEngineBehavior, @unchecked Sendable {
 
     static let mockStorageEngineBehaviorFactory =
         MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)

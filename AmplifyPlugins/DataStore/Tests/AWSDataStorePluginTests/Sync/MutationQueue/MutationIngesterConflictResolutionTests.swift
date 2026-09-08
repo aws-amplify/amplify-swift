@@ -19,7 +19,9 @@ import XCTest
 /// Tests in this class have a naming convention of `test_<existing>_<candidate>`, which is to say: given that the
 /// mutation queue has an existing record of type `<existing>`, assert the behavior when candidate a mutation of
 /// type `<candidate>`.
-class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class MutationIngesterConflictResolutionTests: SyncEngineTestBase, @unchecked Sendable {
 
     // MARK: - Existing == .create
 
@@ -102,8 +104,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
@@ -261,8 +266,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
@@ -414,8 +422,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try await startAmplifyAndWaitForSync()
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         do {
             _ = try await Amplify.DataStore.save(mutatedPost)
             XCTFail("Should have caught error")
@@ -647,8 +658,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 
-        var mutatedPost = post
-        mutatedPost.content = "UPDATED CONTENT"
+        let mutatedPost: Post = {
+            var post = post
+            post.content = "UPDATED CONTENT"
+            return post
+        }()
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 

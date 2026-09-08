@@ -66,7 +66,7 @@ public extension DeprecatedTodo {
     }
 }
 
-public struct Note: Codable {
+public struct Note: Codable, Sendable {
     var name: String
     var color: String
 }

@@ -11,7 +11,8 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 
-class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger, @unchecked Sendable {
     private let request: AuthResendSignUpCodeRequest
     private let environment: AuthEnvironment
     private let authConfiguration: AuthConfiguration

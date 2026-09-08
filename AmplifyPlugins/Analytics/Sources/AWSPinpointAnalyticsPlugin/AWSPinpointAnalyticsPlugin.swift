@@ -12,7 +12,10 @@ import Foundation
 import Network
 
 /// The AWSPinpointAnalyticsPlugin implements the Analytics APIs for Pinpoint
-public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The Pinpoint
+///   client and configuration are populated during `configure(using:)` before any client call can
+///   reach them.
+public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin, @unchecked Sendable {
     /// An instance of the AWS Pinpoint service
     var pinpoint: AWSPinpointBehavior!
 

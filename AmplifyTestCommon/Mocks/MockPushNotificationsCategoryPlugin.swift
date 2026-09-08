@@ -9,7 +9,10 @@ import Amplify
 import Foundation
 import UserNotifications
 
-class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCategoryPlugin, @unchecked Sendable {
     var key: String {
         "MockPushNotificationsCategoryPlugin"
     }
@@ -41,7 +44,9 @@ class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCat
 #endif
 }
 
-class MockSecondPushNotificationsCategoryPlugin: MockPushNotificationsCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondPushNotificationsCategoryPlugin: MockPushNotificationsCategoryPlugin, @unchecked Sendable {
     override var key: String {
         "MockSecondPushNotificationsCategoryPlugin"
     }

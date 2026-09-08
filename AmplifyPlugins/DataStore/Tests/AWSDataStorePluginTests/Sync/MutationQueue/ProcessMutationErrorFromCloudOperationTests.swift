@@ -18,7 +18,9 @@ import XCTest
 // swiftlint:disable type_body_length
 // swiftlint:disable type_name
 // swiftlint:disable file_length
-class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ProcessMutationErrorFromCloudOperationTests: XCTestCase, @unchecked Sendable {
     // swiftlint:enable type_name
     let defaultAsyncWaitTimeout = 10.0
     var mockAPIPlugin: MockAPICategoryPlugin!

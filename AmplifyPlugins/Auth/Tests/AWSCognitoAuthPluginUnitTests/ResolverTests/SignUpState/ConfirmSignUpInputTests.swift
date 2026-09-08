@@ -11,7 +11,9 @@ import XCTest
 
 import AWSCognitoIdentityProvider
 
-class ConfirmSignUpInputTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ConfirmSignUpInputTests: XCTestCase, @unchecked Sendable {
 
     func testConfirmSignUpInputWithClientSecretAndAsfDeviceId() async throws {
         let username = "jeff"

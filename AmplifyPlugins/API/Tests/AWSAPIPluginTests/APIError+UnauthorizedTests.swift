@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 
-class APIErrorUnauthorizedTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class APIErrorUnauthorizedTests: XCTestCase, @unchecked Sendable {
 
     func testAPIErrorUnauthorized() throws {
         let apiError = APIError.operationError("Unauthorized", "", nil)

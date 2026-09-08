@@ -23,7 +23,8 @@ extension OutgoingMutationQueue {
         case processedEvent
 
         // Wrap-up
-        case receivedStop(BasicClosure)
+        // `@Sendable` to match the `stopping` case on `State`, which this completion flows into.
+        case receivedStop(@Sendable () -> Void)
         case doneStopping
 
         // Terminal actions

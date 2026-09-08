@@ -14,8 +14,11 @@ import Foundation
 ///    independently of the Amplify Storage plugin and this function will indiciate if it will handle the given identifier.
 class StorageBackgroundEventsRegistry {
     typealias StorageBackgroundEventsContinuation = CheckedContinuation<Bool, Never>
-    static var identifier: String?
-    static var continuation: StorageBackgroundEventsContinuation?
+    // `nonisolated(unsafe)`: this is a process-wide handoff for URLSession background events, set
+    // and read from the app delegate on the main thread. There is no lock to point at, so the
+    // annotation records that the safety is by convention rather than enforced.
+    nonisolated(unsafe) static var identifier: String?
+    nonisolated(unsafe) static var continuation: StorageBackgroundEventsContinuation?
 
     /// Handles background events for URLSession on iOS.
     /// - Parameters:

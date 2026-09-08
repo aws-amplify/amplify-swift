@@ -15,7 +15,9 @@ import Combine
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase, @unchecked Sendable {
 
     var cancellables = Set<AnyCancellable>()
 

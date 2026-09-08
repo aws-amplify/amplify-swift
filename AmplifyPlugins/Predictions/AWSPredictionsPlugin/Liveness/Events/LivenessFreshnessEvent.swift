@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct FreshnessEvent {
+public struct FreshnessEvent: Sendable {
     let challengeID: String
     let color: [Int]
     let sequenceNumber: Int

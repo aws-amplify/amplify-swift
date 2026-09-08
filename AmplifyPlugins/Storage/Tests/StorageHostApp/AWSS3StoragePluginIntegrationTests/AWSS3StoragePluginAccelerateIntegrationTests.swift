@@ -12,7 +12,9 @@ import var CommonCrypto.CC_MD5_DIGEST_LENGTH
 import XCTest
 @testable import Amplify
 
-class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     var useAccelerateEndpoint = false
 

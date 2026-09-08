@@ -730,8 +730,8 @@ let package = Package(
     ],
     dependencies: dependencies,
     targets: targets,
-    // Adopting the Swift 6 language mode is tracked separately from this version bump.
-    // Raising swift-tools-version to 6.0 would otherwise switch the default language mode
-    // to Swift 6, so it is pinned to v5 here to keep this change behavior-neutral.
-    swiftLanguageModes: [.v5]
+    // Every target builds in the Swift 6 language mode, so strict concurrency checking is enforced
+    // package-wide rather than per target. Set last in this migration: until it flips, `Sendable`
+    // violations are warnings, which is what let the preceding changes land incrementally.
+    swiftLanguageModes: [.v6]
 )

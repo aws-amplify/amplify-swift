@@ -8,7 +8,8 @@
 import Amplify
 import Foundation
 
-protocol AmplifyAuthTaskNonThrowing {
+/// - Note: `Sendable` for the same reason as `AmplifyAuthTask`.
+protocol AmplifyAuthTaskNonThrowing: Sendable {
 
     associatedtype Success
     associatedtype Request

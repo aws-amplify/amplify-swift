@@ -6,7 +6,7 @@
 //
 
 /// The type of a GraphQL operation
-public enum GraphQLOperationType: String {
+public enum GraphQLOperationType: String, Sendable {
     /// A GraphQL Query operation
     case query
 

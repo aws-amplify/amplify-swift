@@ -40,7 +40,9 @@ struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
 ///
 /// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
-public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
+/// - Note: `@unchecked Sendable` for the same reason, and with the same caveat, as ``List``: the
+///   lazy-load transition on `loadedState` is not synchronized.
+public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue, @unchecked Sendable {
 
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {

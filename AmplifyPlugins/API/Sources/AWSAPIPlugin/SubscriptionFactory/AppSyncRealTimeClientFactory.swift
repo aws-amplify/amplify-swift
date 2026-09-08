@@ -21,7 +21,7 @@ protocol AppSyncRealTimeClientFactoryProtocol {
     ) async throws -> AppSyncRealTimeClientProtocol
 }
 
-protocol AppSyncRealTimeClientProtocol {
+protocol AppSyncRealTimeClientProtocol: Sendable {
     func connect() async throws
     func disconnectWhenIdel() async
     func disconnect() async

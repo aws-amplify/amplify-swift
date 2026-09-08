@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter {
+protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErrorBehavior, StorageEngineMigrationAdapter, Sendable {
 
     static var maxNumberOfPredicates: Int { get }
 

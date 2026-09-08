@@ -18,7 +18,9 @@ import XCTest
 /// These tests require a deployed backend. See README.md for setup instructions.
 /// Place `amplify_outputs.json` in the test bundle resources.
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
-final class AmplifyConnectClientIntegrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AmplifyConnectClientIntegrationTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyOutputs = "testconfiguration/AmplifyConnectClientIntegrationTests-amplify_outputs"
     static let credentialsResource = "testconfiguration/AmplifyConnectClientIntegrationTests-credentials"

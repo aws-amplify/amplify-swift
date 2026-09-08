@@ -8,7 +8,10 @@
 import Amplify
 import Foundation
 
-class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin, @unchecked Sendable {
     var key: String {
         return "MockGeoCategoryPlugin"
     }
@@ -65,7 +68,9 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     }
 }
 
-class MockSecondGeoCategoryPlugin: MockGeoCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondGeoCategoryPlugin: MockGeoCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondGeoCategoryPlugin"
     }

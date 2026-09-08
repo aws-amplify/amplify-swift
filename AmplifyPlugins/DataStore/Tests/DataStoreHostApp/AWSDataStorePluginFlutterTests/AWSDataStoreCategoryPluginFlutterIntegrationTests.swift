@@ -9,7 +9,9 @@ import Amplify
 import AWSDataStorePlugin
 import XCTest
 
-class AWSDataStorePluginFlutterConfigurationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStorePluginFlutterConfigurationTests: XCTestCase, @unchecked Sendable {
 
     // Note this test requires the ability to write a new database in the Documents directory, so it must be embedded
     // in a host app

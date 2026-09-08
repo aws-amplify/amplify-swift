@@ -10,7 +10,9 @@ import AWSLocation
 import XCTest
 @testable import AWSLocationGeoPlugin
 
-class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase, @unchecked Sendable {
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
 

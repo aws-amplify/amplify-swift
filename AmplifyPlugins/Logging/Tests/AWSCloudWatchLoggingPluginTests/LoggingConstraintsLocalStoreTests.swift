@@ -10,7 +10,9 @@ import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
 
-final class LoggingConstraintsLocalStoreTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class LoggingConstraintsLocalStoreTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsKey)

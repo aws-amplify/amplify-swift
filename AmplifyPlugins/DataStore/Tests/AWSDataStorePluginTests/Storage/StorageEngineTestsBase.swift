@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import SQLite
 import XCTest
@@ -13,7 +14,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class StorageEngineTestsBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
     let defaultTimeout = 0.3
     var connection: Connection!
     var storageEngine: StorageEngine!
@@ -26,14 +29,15 @@ class StorageEngineTestsBase: XCTestCase {
      */
     func saveModelSynchronous<M: Model>(model: M) -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<M>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<M>?>(initialValue: nil)
 
         storageEngine.save(model) { sResult in
-            result = sResult
+            result.set(sResult)
             saveFinished.fulfill()
         }
         wait(for: [saveFinished], timeout: defaultTimeout)
-        guard let saveResult = result else {
+        guard let saveResult = result.get() else {
             return .failure(causedBy: "Save operation timed out")
         }
         return saveResult
@@ -41,14 +45,15 @@ class StorageEngineTestsBase: XCTestCase {
 
     func saveModelSynchronous<M: Model>(model: M) async -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<M>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<M>?>(initialValue: nil)
 
         storageEngine.save(model) { sResult in
-            result = sResult
+            result.set(sResult)
             saveFinished.fulfill()
         }
         await fulfillment(of: [saveFinished], timeout: defaultTimeout)
-        guard let saveResult = result else {
+        guard let saveResult = result.get() else {
             return .failure(causedBy: "Save operation timed out")
         }
         return saveResult
@@ -82,15 +87,16 @@ class StorageEngineTestsBase: XCTestCase {
 
     func queryModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) -> DataStoreResult<[M]> {
         let queryFinished = expectation(description: "Query Finished")
-        var result: DataStoreResult<[M]>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<[M]>?>(initialValue: nil)
 
         storageEngine.query(modelType, predicate: predicate) { qResult in
-            result = qResult
+            result.set(qResult)
             queryFinished.fulfill()
         }
 
         wait(for: [queryFinished], timeout: defaultTimeout)
-        guard let queryResult = result else {
+        guard let queryResult = result.get() else {
             return .failure(causedBy: "Query operation timed out")
         }
         return queryResult
@@ -98,15 +104,16 @@ class StorageEngineTestsBase: XCTestCase {
 
     func queryModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) async -> DataStoreResult<[M]> {
         let queryFinished = expectation(description: "Query Finished")
-        var result: DataStoreResult<[M]>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<[M]>?>(initialValue: nil)
 
         storageEngine.query(modelType, predicate: predicate) { qResult in
-            result = qResult
+            result.set(qResult)
             queryFinished.fulfill()
         }
 
         await fulfillment(of: [queryFinished], timeout: defaultTimeout)
-        guard let queryResult = result else {
+        guard let queryResult = result.get() else {
             return .failure(causedBy: "Query operation timed out")
         }
         return queryResult
@@ -173,7 +180,8 @@ class StorageEngineTestsBase: XCTestCase {
         timeout: TimeInterval = 10
     ) -> DataStoreResult<M?> {
         let deleteFinished = expectation(description: "Delete Finished")
-        var result: DataStoreResult<M?>?
+        // Assigned from a `@Sendable` completion, so it cannot be a captured `var`.
+        let result = AtomicValue<DataStoreResult<M?>?>(initialValue: nil)
 
         storageEngine.delete(
             modelType,
@@ -181,13 +189,13 @@ class StorageEngineTestsBase: XCTestCase {
             withId: id,
             condition: predicate,
             completion: { dResult in
-            result = dResult
+            result.set(dResult)
             deleteFinished.fulfill()
         }
         )
 
         wait(for: [deleteFinished], timeout: timeout)
-        guard let deleteResult = result else {
+        guard let deleteResult = result.get() else {
             return .failure(causedBy: "Delete operation timed out")
         }
         return deleteResult

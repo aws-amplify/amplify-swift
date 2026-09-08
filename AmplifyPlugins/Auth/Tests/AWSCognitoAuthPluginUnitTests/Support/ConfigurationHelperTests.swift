@@ -9,7 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-final class ConfigurationHelperTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class ConfigurationHelperTests: XCTestCase, @unchecked Sendable {
 
     /// Test parsing the config and verifying the defaults that are set.
     func testParseUserPoolData_Defaults() throws {

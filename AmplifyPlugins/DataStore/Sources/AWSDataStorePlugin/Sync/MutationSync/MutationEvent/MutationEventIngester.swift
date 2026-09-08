@@ -10,5 +10,6 @@ import Combine
 
 /// Ingests MutationEvents from and writes them to the MutationEvent persistent store
 protocol MutationEventIngester: AnyObject {
-    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void)
+    // `@Sendable` to match the implementation, which invokes the completion from a `Future`.
+    func submit(mutationEvent: MutationEvent, completion: @escaping @Sendable (Result<MutationEvent, DataStoreError>) -> Void)
 }

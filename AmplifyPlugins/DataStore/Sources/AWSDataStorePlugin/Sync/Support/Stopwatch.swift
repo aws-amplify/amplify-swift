@@ -9,7 +9,8 @@ import Amplify
 import Foundation
 
 /// A simple implementation of a stopwatch used for gathering metrics of elapsed time.
-class Stopwatch {
+// `@unchecked Sendable`: driven by a single test at a time.
+final class Stopwatch: @unchecked Sendable {
     let lock = NSLock()
     var startTime: DispatchTime?
     var lapStart: DispatchTime?

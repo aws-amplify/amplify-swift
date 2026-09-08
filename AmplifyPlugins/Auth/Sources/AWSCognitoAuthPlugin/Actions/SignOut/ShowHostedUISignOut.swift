@@ -9,9 +9,10 @@ import Amplify
 import AuthenticationServices
 import Foundation
 
-class ShowHostedUISignOut: NSObject, Action {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `Action`'s `Sendable` requirement.
+final class ShowHostedUISignOut: NSObject, Action, @unchecked Sendable {
 
-    var identifier: String = "ShowHostedUISignOut"
+    let identifier: String = "ShowHostedUISignOut"
 
     let signOutEvent: SignOutEventData
     let signInData: SignedInData

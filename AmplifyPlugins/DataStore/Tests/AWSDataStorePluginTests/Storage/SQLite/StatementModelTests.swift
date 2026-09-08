@@ -13,7 +13,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class StatementModelTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StatementModelTests: XCTestCase, @unchecked Sendable {
 
     func testDropLastPath_invalidString() throws {
         let path = "post."

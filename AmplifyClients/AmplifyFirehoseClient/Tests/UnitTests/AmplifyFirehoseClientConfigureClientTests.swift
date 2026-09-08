@@ -13,7 +13,9 @@ import XCTest
 @testable import AmplifyRecordCache
 @testable import AWSFirehose
 
-class AmplifyFirehoseClientConfigureClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyFirehoseClientConfigureClientTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the configureClient closure is applied to the SDK configuration.
     ///

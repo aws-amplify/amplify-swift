@@ -9,11 +9,11 @@ import Foundation
 
 protocol UserPoolEnvironment: Environment {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
-    typealias CognitoUserPoolASFFactory = () -> AdvancedSecurityBehavior
+    typealias CognitoUserPoolASFFactory = @Sendable () -> AdvancedSecurityBehavior
 
-    typealias CognitoUserPoolAnalyticsHandlerFactory = () -> UserPoolAnalyticsBehavior
+    typealias CognitoUserPoolAnalyticsHandlerFactory = @Sendable () -> UserPoolAnalyticsBehavior
 
     var userPoolConfiguration: UserPoolConfigurationData { get }
     var cognitoUserPoolFactory: CognitoUserPoolFactory { get }

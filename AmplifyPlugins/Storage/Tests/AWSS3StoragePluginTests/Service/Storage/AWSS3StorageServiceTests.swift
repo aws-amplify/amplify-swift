@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageServiceTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageServiceTests: XCTestCase, @unchecked Sendable {
     private var service: AWSS3StorageService!
     private var authService: MockAWSAuthService!
     private var database: StorageTransferDatabaseMock!
@@ -393,7 +395,11 @@ class AWSS3StorageServiceTests: XCTestCase {
     }
 }
 
-private class MockHttpClientEngineProxy: HttpClientEngineProxy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockHttpClientEngineProxy: HttpClientEngineProxy, @unchecked Sendable {
     var target: HTTPClient?
 
     var executeCount = 0
@@ -405,7 +411,11 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy {
     }
 }
 
-private class StorageTransferDatabaseMock: StorageTransferDatabase {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked Sendable {
 
     func prepareForBackground(completion: (() -> Void)?) {
         completion?()
@@ -431,7 +441,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase {
     var recoverResult: Result<StorageTransferTaskPairs, Error> =  .failure(StorageError.unknown("Result not set", nil))
     func recover(
         urlSession: StorageURLSession,
-        completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void
+        completionHandler: @escaping @Sendable (Result<StorageTransferTaskPairs, Error>) -> Void
     ) {
         recoverCount += 1
         completionHandler(recoverResult)
