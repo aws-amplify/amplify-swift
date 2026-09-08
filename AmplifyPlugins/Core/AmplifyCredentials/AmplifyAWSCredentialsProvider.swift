@@ -14,22 +14,19 @@ import SmithyIdentity
 
 public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProviding, @unchecked Sendable {
 
-    /// Fetches the auth session, reporting an already-unconfigured Auth category as a thrown error.
+    /// Fetches the auth session, reporting an unconfigured Auth category as a thrown error.
     ///
-    /// Reading `Amplify.Auth` with no plugin registered hits a `preconditionFailure`, which aborts the
-    /// process rather than failing the request. A credentials provider is reachable from long-lived
+    /// Reading `Amplify.Auth.plugin` with no plugin registered hits a `preconditionFailure`, which aborts
+    /// the process rather than failing the request. A credentials provider is reachable from long-lived
     /// clients that can outlive `Amplify.reset()` — the cached `PinpointContext` in `AWSPinpointFactory`
     /// is one, since nothing ever clears it — so this is a state the provider can genuinely be called in,
     /// and it should surface as an error the caller can handle.
     ///
-    /// - Important: This is **best-effort, not a guarantee.** The check and the subsequent
-    ///   `fetchAuthSession()` are not atomic, so an `Amplify.reset()` landing between them still reaches
-    ///   the `preconditionFailure`. It converts the common, deterministic case — a client used after
-    ///   reset, or before configuration — into a catchable error, and leaves a narrow race behind.
-    ///   Eliminating it needs a non-trapping way to reach the plugin, which is a change to the category
-    ///   contract rather than to this type.
+    /// The plugin is captured once and invoked directly. That is what makes this airtight rather than
+    /// best-effort: there is no second read of `Amplify.Auth` for a concurrent `Amplify.reset()` to slip
+    /// in front of, so the crash window is closed rather than merely narrowed.
     private static func fetchAuthSession() async throws -> AuthSession {
-        guard Amplify.Auth.isConfiguredWithPlugin else {
+        guard let plugin = Amplify.Auth.configuredPlugin else {
             throw AuthError.configuration(
                 "The Auth category is not configured",
                 """
@@ -39,7 +36,7 @@ public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProvi
                 """
             )
         }
-        return try await Amplify.Auth.fetchAuthSession()
+        return try await plugin.fetchAuthSession(options: nil)
     }
 
     public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
