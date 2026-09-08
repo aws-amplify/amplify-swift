@@ -169,6 +169,54 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [disconnectExpectation, reconnectedExpectation], timeout: timeout, enforceOrder: true)
     }
 
+    /// Regression test for https://github.com/aws-amplify/amplify-swift/issues/4220.
+    /// Verifies that when `didCompleteWithError` fires with a connection error,
+    /// the client emits `.disconnected` directly (bypassing the network monitor)
+    /// so auto-retry can reconnect without depending on NWPathMonitor.
+    ///
+    /// - Given:
+    ///    - A WebSocketClient connected to a local server with
+    ///      autoRetryOnConnectionFailure enabled.
+    /// - When:
+    ///    - The server sends a close frame with internalServerError
+    ///      (simulating connection abort from process suspension).
+    /// - Then:
+    ///    - The client emits a `.disconnected` event.
+    ///    - The client automatically reconnects via auto-retry.
+    func testWebSocketClient_whenConnectionAborts_shouldEmitDisconnectedAndReconnect() async throws {
+        var cancellables = Set<AnyCancellable>()
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        let webSocketClient = WebSocketClient(url: endpoint)
+        await verifyConnected(webSocketClient, autoRetryOnConnectionFailure: true)
+
+        let disconnectedExpectation = expectation(description: "Should receive disconnected event")
+        let reconnectedExpectation = expectation(description: "Should reconnect after disconnect")
+
+        await webSocketClient.publisher.sink { event in
+            switch event {
+            case .disconnected:
+                disconnectedExpectation.fulfill()
+            case .connected:
+                reconnectedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
+
+        localWebSocketServer?.sendTransientFailureToConnections()
+
+        await fulfillment(
+            of: [disconnectedExpectation, reconnectedExpectation],
+            timeout: timeout,
+            enforceOrder: true
+        )
+    }
+
     private func verifyConnected(
         _ webSocketClient: WebSocketClient,
         autoConnectOnNetworkStatusChange: Bool = false,
