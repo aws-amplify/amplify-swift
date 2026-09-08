@@ -28,8 +28,14 @@ actor AppSyncRealTimeSubscription {
     }
 
     /// internal state for tracking subscription status
-    /// Boxed because `CurrentValueSubject` is not `Sendable` and `deinit` is nonisolated, so it
-    /// cannot reach actor-isolated storage in the Swift 6 language mode.
+    ///
+    /// Boxed because `CurrentValueSubject` is not `Sendable` and `deinit` is nonisolated, so it cannot
+    /// reach actor-isolated storage in the Swift 6 language mode.
+    ///
+    /// The box is sound rather than merely convenient: `CurrentValueSubject` is documented as safe to
+    /// send values to and subscribe from concurrently, so the only thing the annotation suppresses is the
+    /// missing `Sendable` conformance, not an actual synchronization gap. The `let` also means the
+    /// reference itself never changes.
     private nonisolated let stateBox = UncheckedSendable(CurrentValueSubject<State, Never>(.none))
 
     private nonisolated var state: CurrentValueSubject<State, Never> {
