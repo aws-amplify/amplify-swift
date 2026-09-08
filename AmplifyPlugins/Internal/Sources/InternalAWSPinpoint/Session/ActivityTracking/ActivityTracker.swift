@@ -70,17 +70,25 @@ protocol ActivityTrackerBehaviour: AnyObject, Sendable {
 /// - Note: `final` and `@unchecked Sendable` to satisfy `ActivityTrackerBehaviour`. The claim is only
 ///   partly true, so to be precise about which parts:
 ///
-///   - `backgroundTask` and `backgroundTimer` are touched solely by `beginBackgroundTracking()` and
-///     `stopBackgroundTracking()`, both `@MainActor`, so those two are genuinely main-actor confined.
-///   - `backgroundTrackingTimeout` is **not**: the protocol requires it settable, so any context can
-///     write it while a main-actor method reads it.
-///   - `stateMachineSubscriberToken` is **not**: `beginActivityTracking(_:)` is nonisolated and `deinit`
-///     clears it.
-///   - The state machine it forwards to is internally synchronized.
+///   - `backgroundTask` is only touched inside `beginBackgroundTracking()` / `stopBackgroundTracking()`,
+///     both `@MainActor`, and the `beginBackgroundTask` expiration handler inherits that isolation — so
+///     it is main-actor confined and the compiler enforces it.
+///   - `backgroundTimer` is touched by the same two methods, but `stopBackgroundTracking()` is also
+///     called from the `Timer.scheduledTimer` block, which is `@Sendable` and therefore nonisolated.
+///     Swift 6 only warns there because `NSTimer`'s block is imported preconcurrency, so this
+///     confinement rests on the run-loop convention, not on the compiler.
+///   - `backgroundTrackingTimeout` is **not** confined: the protocol requires it settable, and
+///     `SessionClient.startTrackingSessions` writes it from a nonisolated context.
+///   - `stateMachineSubscriberToken` is **not** confined: `beginActivityTracking(_:)` is nonisolated and
+///     `deinit` clears it.
+///   - `StateMachine.process` serializes on its own queue, but `subscribe`/`unsubscribe` touch the
+///     publisher without it, so "internally synchronized" is only true of `process`.
 ///
-///   Neither unsynchronized property is written after set-up in practice — the timeout is configured
-///   once and tracking begins once — but nothing here enforces that. The exposure predates this
-///   annotation, which only stops the compiler from asking.
+///   Do not read this as "written once at set-up". `AWSPinpointFactory` caches its `PinpointContext`
+///   forever, so an `Amplify.reset()` followed by reconfiguration calls `startTrackingSessions` again —
+///   writing the timeout a second time and replacing the subscriber token. That is the same cache that
+///   makes the credentials crash in `AmplifyAWSCredentialsProvider` reachable. Nothing here enforces
+///   single-assignment; the exposure predates this annotation, which only stops the compiler from asking.
 final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
 
 #if canImport(UIKit) && !os(watchOS)
