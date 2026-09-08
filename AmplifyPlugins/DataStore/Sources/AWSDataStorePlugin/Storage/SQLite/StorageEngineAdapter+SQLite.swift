@@ -13,9 +13,17 @@ import SQLite
 // swiftlint:disable type_body_length file_length
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
-/// - Note: `@unchecked Sendable` to satisfy `StorageEngineAdapter`'s `Sendable` requirement.
-///   `connection` is established during setup and replaced only by `clear`/`setUp`, never
-///   concurrently with queries.
+/// - Note: `@unchecked Sendable` to satisfy `StorageEngineAdapter`'s `Sendable` requirement, and
+///   unchecked in the literal sense — there is no lock and no serial queue here.
+///
+///   `connection` and `dbFilePath` are plain `var`s. The adapter is called synchronously from many
+///   concurrent query and reconciliation paths, while `setUp` and `clear` reassign `connection`. Nothing
+///   prevents a reassignment overlapping a query; what keeps it working is that set-up completes before
+///   sync starts and `clear` is driven from the plugin's own serialized teardown.
+///
+///   That is a sequencing convention, not a structural guarantee, and it predates this annotation. Giving
+///   the adapter a serial queue would be the real fix and is a change to DataStore's internals rather
+///   than to this conformance.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter, @unchecked Sendable {
     var connection: Connection?
     var dbFilePath: URL?

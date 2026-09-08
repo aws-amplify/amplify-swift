@@ -21,9 +21,16 @@ typealias StorageEngineBehaviorFactory =
     ) throws -> StorageEngineBehavior
 
 // swiftlint:disable type_body_length
-/// - Note: `@unchecked Sendable` to satisfy `StorageEngineBehavior`'s `Sendable` requirement.
-///   `syncEngine` is established during start-up and cleared on `clear`, not written concurrently
-///   with reads.
+/// - Note: `@unchecked Sendable` to satisfy `StorageEngineBehavior`'s `Sendable` requirement, with no
+///   lock or serial queue backing it.
+///
+///   `syncEngine`, `signInListener` and the Combine sinks are plain `var`s. `syncEngine` is read on the
+///   hot mutation path — `save` and `delete` forward to it — and written during start-up and `clear`, so
+///   a `clear` concurrent with an in-flight mutation races on a class reference. The ordering that makes
+///   this work in practice comes from the plugin driving start-up and teardown in sequence, not from
+///   anything in this type.
+///
+///   The exposure predates this annotation, which only stops the compiler from asking about it.
 final class StorageEngine: StorageEngineBehavior, @unchecked Sendable {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
