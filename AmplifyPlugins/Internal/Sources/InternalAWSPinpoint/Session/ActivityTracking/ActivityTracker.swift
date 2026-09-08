@@ -67,8 +67,20 @@ protocol ActivityTrackerBehaviour: AnyObject, Sendable {
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void)
 }
 
-/// - Note: `final` and `@unchecked Sendable`: the background-tracking state is only touched from the
-///   main actor, and the state machine it forwards to is internally synchronized.
+/// - Note: `final` and `@unchecked Sendable` to satisfy `ActivityTrackerBehaviour`. The claim is only
+///   partly true, so to be precise about which parts:
+///
+///   - `backgroundTask` and `backgroundTimer` are touched solely by `beginBackgroundTracking()` and
+///     `stopBackgroundTracking()`, both `@MainActor`, so those two are genuinely main-actor confined.
+///   - `backgroundTrackingTimeout` is **not**: the protocol requires it settable, so any context can
+///     write it while a main-actor method reads it.
+///   - `stateMachineSubscriberToken` is **not**: `beginActivityTracking(_:)` is nonisolated and `deinit`
+///     clears it.
+///   - The state machine it forwards to is internally synchronized.
+///
+///   Neither unsynchronized property is written after set-up in practice — the timeout is configured
+///   once and tracking begins once — but nothing here enforces that. The exposure predates this
+///   annotation, which only stops the compiler from asking.
 final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
 
 #if canImport(UIKit) && !os(watchOS)
