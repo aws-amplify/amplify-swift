@@ -259,20 +259,17 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     // Both closures are `@Sendable` so they do not inherit this actor's isolation. Combine calls them
     // synchronously on whichever thread published the event, which would trip the isolation check at
-    // runtime if they were actor-isolated. Reaching `self` therefore goes through an explicit hop.
+    // runtime if they were actor-isolated. Reaching actor-isolated members therefore needs an explicit
+    // hop — but `log` is `nonisolated`, so logging stays a direct synchronous call as before.
     private func subscribeToWebSocketEvent() async {
         let cancellable = await webSocketClient.publisher.sink { @Sendable [weak self] _ in
-            Task { [weak self] in await self?.logWebSocketClientTerminated() }
+            self?.log.debug("[AppSyncRealTimeClient] WebSocketClient terminated")
         } receiveValue: { @Sendable [weak self] webSocketEvent in
             guard let self else { return }
             let task = Task { await self.onWebSocketEvent(webSocketEvent) }
             Task { await self.storeInCancellables(task.toAnyCancellable) }
         }
         storeInCancellables(cancellable)
-    }
-
-    private func logWebSocketClientTerminated() {
-        log.debug("[AppSyncRealTimeClient] WebSocketClient terminated")
     }
 
     private func resumeExistingSubscriptions() {
