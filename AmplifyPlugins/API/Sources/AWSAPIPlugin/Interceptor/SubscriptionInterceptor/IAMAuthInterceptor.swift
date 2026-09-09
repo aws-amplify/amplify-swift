@@ -78,11 +78,14 @@ class IAMAuthInterceptor {
                 }
             }
 
+            let authToken: String = headers["authorization"]?.stringValue ?? ""
+            let securityToken: String = headers["x-amz-security-token"]?.stringValue ?? ""
+            let amzDate: String = headers["x-amz-date"]?.stringValue ?? ""
             return .init(
                 host: host,
-                authToken: headers["authorization"]?.stringValue ?? "",
-                securityToken: headers["x-amz-security-token"]?.stringValue ?? "",
-                amzDate: headers["x-amz-date"]?.stringValue ?? ""
+                authToken: authToken,
+                securityToken: securityToken,
+                amzDate: amzDate
             )
         } catch {
             Amplify.Logging.error("Unable to sign request")
