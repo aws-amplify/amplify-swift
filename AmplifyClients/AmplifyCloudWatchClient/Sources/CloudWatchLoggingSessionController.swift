@@ -169,10 +169,13 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
     }
 
     private func resetLogs(for session: CloudWatchLoggingSession?) {
-        guard let session else { return }
+        // Capture the logger (which is `Sendable`) rather than the whole `CloudWatchLoggingSession`
+        // (a plain `final class`) so the closure doesn't capture a non-Sendable value into the Task —
+        // that is a data-race error under the Swift 6 language mode.
+        guard let logger = session?.logger else { return }
         Task { [weak self] in
             do {
-                try await session.logger.resetLogs()
+                try await logger.resetLogs()
             } catch {
                 self?.internalLogger.error("Error resetting previous user's logs: \(error)")
             }

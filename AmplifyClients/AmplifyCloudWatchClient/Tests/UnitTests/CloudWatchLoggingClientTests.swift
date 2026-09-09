@@ -162,6 +162,10 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         func scope() {
             let client = makeClient(mockClient: MockCloudWatchLogsClient(), flushStrategy: .interval(1))
             weakClient = client
+            // Emit so a CloudWatchLoggingSessionController / CloudWatchLoggingSession is actually
+            // constructed — that is the object graph a retain cycle would most likely hide in.
+            client.emit(message: LogMessage(level: .error, name: "DeallocNamespace", content: "m"))
+            XCTAssertEqual(client.controllerCount, 1)
             XCTAssertNotNil(weakClient)
         }
         scope()
