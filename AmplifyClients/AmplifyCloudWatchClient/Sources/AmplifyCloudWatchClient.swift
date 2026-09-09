@@ -79,12 +79,12 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
     public var id: String { sinkId }
 
     public func isEnabled(for logLevel: AmplifyFoundation.LogLevel) -> Bool {
-        return enabled
+        return lock.execute { enabled }
     }
 
     public func emit(message: AmplifyFoundation.LogMessage) {
-        guard enabled else { return }
-        let controller = getOrCreateController(namespace: message.name, logLevel: message.level)
+        guard lock.execute({ enabled }) else { return }
+        let controller = getOrCreateController(namespace: message.name)
         controller.log(message.level, message.content, message.error)
     }
 
@@ -152,12 +152,43 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
         }
     }
 
+    /// Test-only initializer that injects the CloudWatch Logs client and network monitor so unit tests
+    /// can drive flushing and observe controller/stream behavior without a real backend.
+    init(
+        cloudWatchClient: CloudWatchLogsClientProtocol,
+        logGroupName: String,
+        region: String = "us-east-1",
+        localStoreMaxSizeInMB: Int = 5,
+        loggingConstraints: LoggingConstraints = LoggingConstraints(),
+        networkMonitor: LoggingNetworkMonitor,
+        flushStrategy: FlushStrategy = .none
+    ) {
+        self.cloudWatchClient = cloudWatchClient
+        self.logGroupName = logGroupName
+        self.region = region
+        self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
+        self.logFilter = CloudWatchLoggingFilter(loggingConstraints: loggingConstraints)
+        self.networkMonitor = networkMonitor
+        if case .interval(let interval) = flushStrategy {
+            self.automaticFlushLogMonitor = CloudWatchLoggingMonitor(
+                flushIntervalInSeconds: interval,
+                eventDelegate: self
+            )
+            automaticFlushLogMonitor?.setAutomaticFlushIntervals()
+        }
+    }
+
+    deinit {
+        networkMonitor.stopMonitoring()
+        // automaticFlushLogMonitor cancels its repeating timer in its own deinit when released.
+    }
+
     // MARK: - Lifecycle
 
     /// Enable logging and automatic flushing.
     public func enable() {
-        enabled = true
         lock.execute {
+            enabled = true
             for controller in loggersByKey.values {
                 controller.enable()
             }
@@ -166,8 +197,8 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
 
     /// Disable logging and automatic flushing.
     public func disable() {
-        enabled = false
         lock.execute {
+            enabled = false
             for controller in loggersByKey.values {
                 controller.disable()
             }
@@ -176,30 +207,22 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
 
     /// Flush all pending log entries to CloudWatch.
     public func flushLogs() async throws {
-        guard enabled else { return }
-        for logger in loggersByKey.values {
+        guard lock.execute({ enabled }) else { return }
+        let controllers = lock.execute { Array(loggersByKey.values) }
+        for logger in controllers {
             try await logger.flushLogs()
         }
     }
 
     /// Returns the underlying AWS CloudWatch Logs SDK client.
-    public func getCloudWatchLogsClient() throws -> AWSCloudWatchLogs.CloudWatchLogsClient {
-        guard let client = cloudWatchClient as? AWSCloudWatchLogs.CloudWatchLogsClient else {
-            throw CloudWatchError.configuration(
-                "CloudWatch Logs client is not the expected type",
-                "This is an internal error. Please file a bug report."
-            )
-        }
-        return client
+    public func getCloudWatchLogsClient() -> AWSCloudWatchLogs.CloudWatchLogsClient? {
+        return cloudWatchClient as? AWSCloudWatchLogs.CloudWatchLogsClient
     }
 
     // MARK: - Private
 
-    private func getOrCreateController(namespace: String, logLevel: LogLevel) -> CloudWatchLoggingSessionController {
-        let key = LoggerKey(namespace: namespace, logLevel: logLevel)
-        if let existing = loggersByKey[key] {
-            return existing
-        }
+    private func getOrCreateController(namespace: String) -> CloudWatchLoggingSessionController {
+        let key = LoggerKey(namespace: namespace)
         return lock.execute {
             if let existing = loggersByKey[key] {
                 return existing
@@ -208,7 +231,6 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
                 client: self.cloudWatchClient,
                 logFilter: self.logFilter,
                 namespace: namespace,
-                logLevel: logLevel,
                 logGroupName: self.logGroupName,
                 region: self.region,
                 localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
@@ -230,12 +252,15 @@ public final class AmplifyCloudWatchClient: AmplifyFoundation.LogSinkBehavior, @
         }
     }
 
+    /// Test support: the number of active per-namespace session controllers.
+    var controllerCount: Int { lock.execute { loggersByKey.count } }
+
     // MARK: - User Identity
 
     /// Set the current user identifier. Affects log stream naming and
     /// user-specific log level filtering. Pass `nil` on sign-out.
     public func setUserIdentifier(_ identifier: String?) {
-        userIdentifier = identifier
+        lock.execute { userIdentifier = identifier }
         updateSessionControllers()
     }
 

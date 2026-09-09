@@ -27,7 +27,6 @@ final class RotatingLoggerTests: XCTestCase {
         systemUnderTest = try RotatingLogger(
             directory: directory,
             namespace: "RotatingLoggerTests",
-            logLevel: .verbose,
             fileSizeLimitInBytes: fileSizeLimitInBytes
         )
         batches = []
@@ -52,7 +51,7 @@ final class RotatingLoggerTests: XCTestCase {
             try await systemUnderTest.record(level: .error, message: "")
         }
         try await systemUnderTest.synchronize()
-        XCTAssertEqual(batches.map { String(describing: $0) }, [
+        XCTAssertEqual(batches.compactMap { ($0 as? RotatingLogBatch)?.testFileName }, [
             "amplify.0.log"
         ])
     }

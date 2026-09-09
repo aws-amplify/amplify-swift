@@ -14,3 +14,10 @@ package protocol LogEntryRepresentable {
     var message: String { get }
     var millisecondsSince1970: Int { get }
 }
+
+package extension LogEntryRepresentable {
+    /// Derived from `created`; conformers need not implement it (avoids drift between implementations).
+    var millisecondsSince1970: Int {
+        Int((created.timeIntervalSince1970 * 1_000.0).rounded())
+    }
+}

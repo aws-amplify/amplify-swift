@@ -21,8 +21,8 @@ public struct LoggingConstraints: Sendable {
     }
 
     public let defaultLogLevel: LogLevel
-    public let namespaceLogLevel: [String: LogLevel]?
-    public let userLogLevel: [String: UserLogLevel]?
+    public let namespaceLogLevel: [String: LogLevel]
+    public let userLogLevel: [String: UserLogLevel]
 }
 
 @_spi(AmplifyExperimental)
