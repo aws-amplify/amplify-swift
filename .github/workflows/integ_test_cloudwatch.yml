@@ -23,6 +23,7 @@ jobs:
     name: CloudWatch Integration Tests
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         platform: [iOS, tvOS]
         exclude:
