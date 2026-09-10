@@ -9,6 +9,7 @@ import Amplify
 import Combine
 import CryptoKit
 import Foundation
+import InternalCloudWatchLogging
 
 /// Responsible for containg the logger of an individual **tag**  and **user session** (wheter logged in
 /// or not) pair.
