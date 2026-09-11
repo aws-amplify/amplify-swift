@@ -87,9 +87,43 @@ public extension GraphQLSelectionSet {
             let jsonData = try encoder.encode(jsonObject)
             let decodedDictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: Any]
             let optionalDictionary = decodedDictionary.mapValues { $0 as Any? }
-            self.init(snapshot: optionalDictionary)
+            let convertedDictionary = Self.convertFieldValues(
+                in: optionalDictionary, using: Self.selections
+            )
+            self.init(snapshot: convertedDictionary)
         } else {
             self.init(snapshot: [:])
+        }
+    }
+
+    private static func convertFieldValues(
+        in snapshot: Snapshot, using selections: [GraphQLSelection]
+    ) -> Snapshot {
+        var result = snapshot
+        for selection in selections {
+            guard let field = selection as? GraphQLField else { continue }
+            let key = field.responseKey
+            guard let value = result[key], let unwrapped = value else { continue }
+            result[key] = convertValue(unwrapped, for: field.type)
+        }
+        return result
+    }
+
+    private static func convertValue(_ value: Any, for outputType: GraphQLOutputType) -> Any? {
+        switch outputType {
+        case .scalar(let decodableType):
+            if type(of: value) == decodableType {
+                return value
+            }
+            return (try? decodableType.init(jsonValue: value)) ?? value
+        case .nonNull(let innerType):
+            return convertValue(value, for: innerType)
+        case .list(let innerType):
+            guard let array = value as? [Any] else { return value }
+            return array.map { convertValue($0, for: innerType) ?? $0 }
+        case .object(let selections):
+            guard let dict = value as? [String: Any] else { return value }
+            return convertFieldValues(in: dict.mapValues { $0 as Any? }, using: selections)
         }
     }
 }
