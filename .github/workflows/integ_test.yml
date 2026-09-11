@@ -34,6 +34,7 @@ jobs:
       geo: ${{ steps.sel.outputs.geo }}
       storage: ${{ steps.sel.outputs.storage }}
       logging: ${{ steps.sel.outputs.logging }}
+      cloudwatch: ${{ steps.sel.outputs.cloudwatch }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -124,6 +125,13 @@ jobs:
     uses: ./.github/workflows/integ_test_logging.yml
     secrets: inherit
 
+  cloudwatch-test:
+    name: CloudWatch Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.cloudwatch == 'true' }}
+    uses: ./.github/workflows/integ_test_cloudwatch.yml
+    secrets: inherit
+
   integ-pass-confirmation:
     name: Confirm Passing Integration Tests
     runs-on: ubuntu-latest
@@ -138,6 +146,7 @@ jobs:
       - geo-test
       - storage-test
       - logging-test
+      - cloudwatch-test
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:

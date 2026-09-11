@@ -106,6 +106,10 @@ class CloudWatchLoggingClientIntegrationTests: XCTestCase {
         loggingClient.emit(message: LogMessage(level: .warn, name: namespace, content: message, error: nil))
         loggingClient.emit(message: LogMessage(level: .info, name: namespace, content: message, error: nil))
 
+        // emit() persists asynchronously, so let the writes land before flushing. Otherwise a straggler
+        // write races the flush and is dropped when the batch's log file is deleted on completion,
+        // yielding an intermittent short count. Matches the settle delay used by the other tests here.
+        try await Task.sleep(seconds: 1)
         try await loggingClient.flushLogs()
         try await Task.sleep(seconds: 30)
 

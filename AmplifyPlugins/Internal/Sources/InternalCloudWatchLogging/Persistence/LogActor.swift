@@ -50,6 +50,23 @@ package actor LogActor {
         return try rotation.getAllLogs()
     }
 
+    /// Seals the active log file (when it has content) so that in-flight and subsequent writes are
+    /// routed to a fresh file, then returns every *sealed* log file — that is, all logs except the
+    /// active one. Flushing only sealed files avoids a race where a log written concurrently with a
+    /// flush lands in the active file and is then destroyed when that file is deleted on batch
+    /// completion. This mirrors the safe hand-off already used by the size-triggered rotation path.
+    package func sealLogsForFlush() throws -> [URL] {
+        let activePath = rotation.currentLogFile.fileURL.path
+        let activeSize = ((try? FileManager.default.attributesOfItem(atPath: activePath))?[.size] as? Int) ?? 0
+        if activeSize > 0 {
+            // Rotating reassigns currentLogFile; the willSet on the outgoing file synchronizes and
+            // closes it, so the sealed file is fully flushed to disk before we read it.
+            try rotation.rotate()
+        }
+        let active = rotation.currentLogFile.fileURL.standardizedFileURL
+        return try rotation.getAllLogs().filter { $0.standardizedFileURL != active }
+    }
+
     package func deleteLogs() throws {
         try rotation.reset()
         try synchronize()

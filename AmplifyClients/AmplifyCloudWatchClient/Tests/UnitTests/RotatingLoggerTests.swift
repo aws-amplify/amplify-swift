@@ -137,6 +137,69 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(logBatches.count, 2)
     }
 
+    /// Given: an entry in the active log file
+    /// When: a flush batch is sealed, another entry is written before the sealed batch is completed
+    ///       (its file deleted), and the sealed batch is then completed
+    /// Then: the entry written after the seal is not deleted with the sealed file — it survives to the
+    ///       next flush. Guards the seal-before-ship fix for the concurrent-write-during-flush race.
+    func testFlushDoesNotDropWritesArrivingBeforeBatchCompletion() async throws {
+        try await systemUnderTest.record(level: .error, message: "A")
+        try await systemUnderTest.synchronize()
+
+        let sealedBatches = try await systemUnderTest.getFlushableLogBatches()
+
+        // Written after the seal: with seal-before-ship this lands in the fresh active file, not the
+        // sealed one about to be deleted.
+        try await systemUnderTest.record(level: .error, message: "B")
+        try await systemUnderTest.synchronize()
+
+        var shipped: [String] = []
+        for batch in sealedBatches {
+            shipped.append(contentsOf: try batch.readEntries().map { $0.message })
+            try batch.complete()
+        }
+
+        let drained = try await performFlush()
+        XCTAssertEqual(shipped, ["A"], "The sealed batch should contain the pre-flush entry")
+        XCTAssertEqual(drained, ["B"], "An entry written after the seal must survive the flush")
+    }
+
+    /// Given: a seeded active log file
+    /// When: many entries are written concurrently with a flush
+    /// Then: every entry is accounted for across the flushes — none is dropped
+    func testConcurrentWritesDuringFlushAreNotDropped() async throws {
+        try await systemUnderTest.record(level: .error, message: "seed")
+        try await systemUnderTest.synchronize()
+
+        let messageCount = 10
+        async let writes: Void = {
+            for index in 0 ..< messageCount {
+                try await systemUnderTest.record(level: .error, message: "concurrent-\(index)")
+            }
+        }()
+        let shippedDuringFlush = try await performFlush()
+        try await writes
+        try await systemUnderTest.synchronize()
+        let shippedAfter = try await performFlush()
+
+        let all = Set(shippedDuringFlush + shippedAfter)
+        let expected = Set(["seed"] + (0 ..< messageCount).map { "concurrent-\($0)" })
+        XCTAssertEqual(all, expected, "No log entry written around a flush should be dropped")
+    }
+
+    /// Seals and ships the currently flushable batches the way the consumer does — read every entry,
+    /// then delete the batch file — and returns the shipped messages.
+    @discardableResult
+    private func performFlush() async throws -> [String] {
+        let batches = try await systemUnderTest.getFlushableLogBatches()
+        var messages: [String] = []
+        for batch in batches {
+            messages.append(contentsOf: try batch.readEntries().map { $0.message })
+            try batch.complete()
+        }
+        return messages
+    }
+
     private func logWith(level: LogLevel, message: String) async throws {
         switch level {
         case .error:

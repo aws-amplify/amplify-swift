@@ -52,6 +52,22 @@ final class RotatingLogger: @unchecked Sendable {
         }
     }
 
+    /// Returns the batches to ship on a flush. Seals the active file first so a log emitted
+    /// concurrently with the flush is not read and then deleted along with its batch; it stays in the
+    /// new active file for the next flush. Unlike `getLogBatches()`, this excludes the active file.
+    func getFlushableLogBatches() async throws -> [RotatingLogBatch] {
+        do {
+            let logs = try await logActor.sealLogsForFlush()
+            return logs.map { RotatingLogBatch(url: $0) }
+        } catch {
+            throw CloudWatchError.storage(
+                "Failed to retrieve log batches from local storage",
+                "This is an internal error. Please file a bug report.",
+                error
+            )
+        }
+    }
+
     func resetLogs() async throws {
         do {
             try await logActor.deleteLogs()
