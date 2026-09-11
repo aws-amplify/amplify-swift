@@ -183,8 +183,7 @@ final class RotatingLoggerTests: XCTestCase {
         let shippedAfter = try await performFlush()
 
         let all = Set(shippedDuringFlush + shippedAfter)
-        var expected: Set<String> = ["seed"]
-        for index in 0 ..< messageCount { expected.insert("concurrent-\(index)") }
+        let expected = Set(["seed"] + (0 ..< messageCount).map { "concurrent-\($0)" })
         XCTAssertEqual(all, expected, "No log entry written around a flush should be dropped")
     }
 
