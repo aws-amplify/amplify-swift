@@ -66,7 +66,13 @@ final class LocalSaveFailingStorageAdapter: MockSQLiteStorageEngineAdapter {
 class StorageEngineTestsSaveDoubleResume: XCTestCase {
 
     override func setUp() {
+        super.setUp()
         ModelRegistry.register(modelType: Post.self)
+    }
+
+    override func tearDown() {
+        ModelRegistry.reset()
+        super.tearDown()
     }
 
     private func makeStorageEngine(
@@ -113,8 +119,8 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
 
     /// - Given: a save whose transaction fails to close after the body ran
     /// - When: the model is saved through the async `DataStore.save` API
-    /// - Then: the save surfaces a single failure instead of resuming the continuation twice
-    func testSaveWithTransactionCloseFailureDoesNotDoubleResume() async throws {
+    /// - Then: the async API surfaces the failure instead of crashing with a continuation misuse
+    func testSaveWithTransactionCloseFailureSurfacesError() async throws {
         let plugin = makePlugin(makeStorageEngine(adapter: RollbackFailingStorageAdapter()))
         let post = Post(title: "repro-3716", content: "double resume", createdAt: .now())
 
@@ -126,9 +132,6 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
             caughtError = error
         }
         XCTAssertNotNil(caughtError, "Transaction close failure must surface as an error, not a crash")
-
-        // Let any erroneous second (async) completion fire; before the fix it crashed here.
-        try await Task.sleep(nanoseconds: 300_000_000)
     }
 
     /// - Given: a real SQLite store and a sync engine
@@ -206,14 +209,26 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
         XCTAssertEqual(all.count, 1, "saving the same model twice must not create a duplicate row")
     }
 
-    /// - Given: a save whose transaction fails to close
+    /// - Given: a save whose transaction fails to close, with a sync engine that spies on hand-off
     /// - When: saved through the completion-based StorageEngine API
-    /// - Then: completion is invoked exactly once (a symptom-suppressed fix would call it twice)
+    /// - Then: completion fires exactly once and the sync hand-off never runs. A symptom-suppressed
+    ///   fix would either resume completion twice (caught by `assertForOverFulfill`) or reach the
+    ///   hand-off (caught by the inverted `handoffAttempted` expectation).
     func testTransactionCloseFailureInvokesCompletionExactlyOnce() {
-        let storageEngine = makeStorageEngine(adapter: RollbackFailingStorageAdapter())
+        let syncEngine = MockRemoteSyncEngine()
+        syncEngine.syncing = true
+        let handoffAttempted = expectation(description: "sync hand-off must not run when the transaction fails to close")
+        handoffAttempted.isInverted = true
+        syncEngine.setCallbackOnSubmit { mutationEvent, completion in
+            handoffAttempted.fulfill()
+            completion(.success(mutationEvent))
+        }
+
+        let storageEngine = makeStorageEngine(adapter: RollbackFailingStorageAdapter(), syncEngine: syncEngine)
         let post = Post(title: "count-3716", content: "exactly once", createdAt: .now())
 
         let completed = expectation(description: "completion called")
+        completed.assertForOverFulfill = true
         let lock = NSLock()
         var invocations = 0
         var lastResult: DataStoreResult<Post>?
@@ -224,9 +239,7 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
             lock.unlock()
             completed.fulfill()
         }
-        wait(for: [completed], timeout: 2)
-        // Give any erroneous second invocation time to arrive before asserting the count.
-        Thread.sleep(forTimeInterval: 0.3)
+        wait(for: [completed, handoffAttempted], timeout: 1)
 
         XCTAssertEqual(invocations, 1, "completion must be invoked exactly once")
         guard case .failure = lastResult else {
