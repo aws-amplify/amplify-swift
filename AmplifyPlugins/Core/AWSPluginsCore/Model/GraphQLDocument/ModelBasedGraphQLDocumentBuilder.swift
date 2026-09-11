@@ -31,6 +31,22 @@ public struct ModelBasedGraphQLDocumentBuilder {
     }
 
     public init(modelSchema: ModelSchema, operationType: GraphQLOperationType, primaryKeysOnly: Bool = true) {
+        self.init(
+            modelSchema: modelSchema,
+            operationType: operationType,
+            primaryKeysOnly: primaryKeysOnly,
+            includeHasOneAssociations: true
+        )
+    }
+
+    /// Forwards `includeHasOneAssociations` to `GraphQLMutation` (API-category mutations set
+    /// it to `false`).
+    init(
+        modelSchema: ModelSchema,
+        operationType: GraphQLOperationType,
+        primaryKeysOnly: Bool,
+        includeHasOneAssociations: Bool
+    ) {
         self.modelSchema = modelSchema
         var primaryKeysOnly = primaryKeysOnly
         if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
@@ -41,7 +57,11 @@ public struct ModelBasedGraphQLDocumentBuilder {
         case .query:
             self.document = GraphQLQuery(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)
         case .mutation:
-            self.document = GraphQLMutation(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)
+            self.document = GraphQLMutation(
+                modelSchema: modelSchema,
+                primaryKeysOnly: primaryKeysOnly,
+                includeHasOneAssociations: includeHasOneAssociations
+            )
         case .subscription:
             self.document = GraphQLSubscription(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)
         }

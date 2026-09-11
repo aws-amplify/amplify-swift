@@ -36,13 +36,19 @@ public class SelectionSetField {
 
 extension SelectionSet {
 
-    /// Construct a `SelectionSet` with model fields
-    convenience init(fields: [ModelField], primaryKeysOnly: Bool = false) {
+    /// Construct a `SelectionSet` with model fields. For mutations, set `includeHasOneAssociations`
+    /// to `false` to select a `hasOne`'s foreign key instead of the nested object.
+    convenience init(fields: [ModelField], primaryKeysOnly: Bool = false, includeHasOneAssociations: Bool = true) {
         self.init(value: SelectionSetField(fieldType: .model))
-        withModelFields(fields, primaryKeysOnly: primaryKeysOnly)
+        withModelFields(fields, primaryKeysOnly: primaryKeysOnly, includeHasOneAssociations: includeHasOneAssociations)
     }
 
-    func withModelFields(_ fields: [ModelField], recursive: Bool = true, primaryKeysOnly: Bool) {
+    func withModelFields(
+        _ fields: [ModelField],
+        recursive: Bool = true,
+        primaryKeysOnly: Bool,
+        includeHasOneAssociations: Bool = true
+    ) {
         for field in fields {
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
@@ -51,7 +57,20 @@ extension SelectionSet {
             } else if field._isBelongsToOrHasOne,
                       let associatedModelName = field.associatedModelName,
                       let schema = ModelRegistry.modelSchema(from: associatedModelName) {
-                if recursive {
+                let isHasOne: Bool
+                if case .hasOne = field.association {
+                    isHasOne = true
+                } else {
+                    isHasOne = false
+                }
+                if !includeHasOneAssociations && isHasOne {
+                    // AppSync nulls a `hasOne`'s nested object on a mutation response; keep its FK instead.
+                    // https://github.com/aws-amplify/amplify-swift/issues/3913
+                    for targetName in field._associationTargetNames
+                        where !fields.contains(where: { $0.name == targetName }) {
+                        addChild(settingParentOf: .init(value: .init(name: targetName, fieldType: .value)))
+                    }
+                } else if recursive {
                     var recursive = recursive
                     if field._isBelongsToOrHasOne {
                         recursive = false
