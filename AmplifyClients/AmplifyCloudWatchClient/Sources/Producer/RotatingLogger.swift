@@ -41,7 +41,9 @@ final class RotatingLogger: @unchecked Sendable {
 
     func getLogBatches() async throws -> [RotatingLogBatch] {
         do {
-            let logs = try await logActor.getLogs()
+            // Seal the active file first so a log emitted concurrently with this flush is not read and
+            // then deleted along with its batch; it stays in the new active file for the next flush.
+            let logs = try await logActor.sealLogsForFlush()
             return logs.map { RotatingLogBatch(url: $0) }
         } catch {
             throw CloudWatchError.storage(
