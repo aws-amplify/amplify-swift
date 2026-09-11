@@ -7,19 +7,20 @@
 
 extension ScalarContainer: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.id == rhs.id
+        let firstGroup = lhs.id == rhs.id
                     && lhs.myInt == rhs.myInt
                     && lhs.myDouble == rhs.myDouble
                     && lhs.myBool == rhs.myBool
                     && lhs.myDate == rhs.myDate
                     && lhs.myTime == rhs.myTime
                     && lhs.myDateTime == rhs.myDateTime
-                    && lhs.myTimeStamp == rhs.myTimeStamp
+        let secondGroup = lhs.myTimeStamp == rhs.myTimeStamp
                     && lhs.myEmail == rhs.myEmail
                     && lhs.myJSON == rhs.myJSON
                     && lhs.myPhone == rhs.myPhone
                     && lhs.myURL == rhs.myURL
                     && lhs.myIPAddress == rhs.myIPAddress
+        return firstGroup && secondGroup
     }
 }
 

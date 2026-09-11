@@ -172,10 +172,13 @@ extension Statement: StatementModelConvertible {
     }
 
     private func associatedValues(from foreignKeyPath: [String], element: Element) -> [String] {
-        return [getValue(from: element, by: foreignKeyPath)]
+        let separator = ModelIdentifierFormat.Custom.separator.first!
+        let rawValues: [String] = [getValue(from: element, by: foreignKeyPath)]
             .compactMap { $0 }
             .map { String(describing: $0) }
-            .flatMap { $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) }
+        let splitValues: [Substring] = rawValues
+            .flatMap { $0.split(separator: separator) }
+        return splitValues
             .map { String($0).trimmingCharacters(in: .init(charactersIn: "\"")) }
     }
 
