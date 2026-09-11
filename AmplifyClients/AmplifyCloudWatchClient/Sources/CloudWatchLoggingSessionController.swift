@@ -145,7 +145,7 @@ final class CloudWatchLoggingSessionController: @unchecked Sendable {
         // Skip flushing while offline — every PutLogEvents would fail and (until the batch is retained)
         // waste retries. Matches the connectivity guard on the rotation subscription above.
         guard networkMonitor.isOnline else { return }
-        guard let logBatches = try await session?.logger.getLogBatches() else { return }
+        guard let logBatches = try await session?.logger.getFlushableLogBatches() else { return }
 
         for batch in logBatches {
             try await consumeLogBatch(batch)
