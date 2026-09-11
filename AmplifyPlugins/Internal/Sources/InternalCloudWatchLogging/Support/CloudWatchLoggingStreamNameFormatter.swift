@@ -19,8 +19,9 @@ import UIKit
 import AppKit
 #endif
 
-/// Responsible for creating pre-formatted CloudWatch stream names.
-struct CloudWatchLoggingStreamNameFormatter {
+/// Responsible for creating pre-formatted CloudWatch stream names. Shared by the v2 plugin and the
+/// standalone client.
+package struct CloudWatchLoggingStreamNameFormatter {
 
     let userIdentifier: String?
     var deviceIdentifier: String? {
@@ -37,18 +38,15 @@ struct CloudWatchLoggingStreamNameFormatter {
         }
     }
 
-    init(userIdentifier: String? = nil) {
+    package init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
     }
 
-    func formattedStreamName() async -> String {
+    package func formattedStreamName() async -> String {
         return await "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
 
-    // Add the missing deviceIdentifierFromBundle static method
     private static func deviceIdentifierFromBundle() -> String? {
-        // Use bundle identifier as a fallback device identifier
-        // This provides a consistent identifier per app installation
         return Bundle.main.bundleIdentifier
     }
 }

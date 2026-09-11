@@ -7,9 +7,10 @@
 
 import Amplify
 import Foundation
+import InternalCloudWatchLogging
 
 /// Represents an individual row in a log.
-struct LogEntry: Codable, Hashable {
+struct LogEntry: Codable, Hashable, LogEntryRepresentable {
 
     /// The timestamp representing the creation time of the log entry or event.
     let created: Date
@@ -47,10 +48,6 @@ struct LogEntry: Codable, Hashable {
         case .verbose: return "VERBOSE"
         case .none: return "NONE"
         }
-    }
-
-    var millisecondsSince1970: Int {
-        Int((created.timeIntervalSince1970 * 1_000.0).rounded())
     }
 
     init(category: String, namespace: String?, level: LogLevel, message: String, created: Date = Date()) {

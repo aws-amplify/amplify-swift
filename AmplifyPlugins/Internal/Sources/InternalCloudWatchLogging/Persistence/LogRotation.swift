@@ -8,32 +8,32 @@
 import Foundation
 
 /// Represents a directory that contains a set of log files that are part of a LogRotation.
-final class LogRotation {
+package final class LogRotation {
 
-    enum LogRotationError: Error {
+    package enum LogRotationError: Error {
         /// Represents the scenario when a caller attempts to initialize a
         /// `LogRotation` with an invalid file size limit (minimum is 1KB).
         case invalidFileSizeLimitInBytes(Int)
     }
 
-    static let minimumFileSizeLimitInBytes = 1_024 /* 1KB */
-    static let fileCountLimit: Int = 5
+    package static let minimumFileSizeLimitInBytes = 1_024 /* 1KB */
+    package static let fileCountLimit: Int = 5
 
     /// The name pattern of files managed by `LogRotation`.
     private static let filePattern = #"amplify[.]([0-9])[.]log"#
 
-    let directory: URL
+    package let directory: URL
 
-    let fileSizeLimitInBytes: UInt64
+    package let fileSizeLimitInBytes: UInt64
 
-    private(set) var currentLogFile: LogFile {
+    package private(set) var currentLogFile: LogFile {
         willSet {
             try? currentLogFile.synchronize()
             try? currentLogFile.close()
         }
     }
 
-    init(directory: URL, fileSizeLimitInBytes: Int) throws {
+    package init(directory: URL, fileSizeLimitInBytes: Int) throws {
         if fileSizeLimitInBytes < LogRotation.minimumFileSizeLimitInBytes {
             throw LogRotationError.invalidFileSizeLimitInBytes(fileSizeLimitInBytes)
         }
@@ -56,7 +56,7 @@ final class LogRotation {
     ///   has not been created, it is created and selected.
     /// 2. Any files containing less than half the limit are filtered, then the one with the oldest last modified date is selected.
     /// 3. If no files matching #1 are present, the file with the oldest last modified date is cleared and selected.
-    func rotate() throws {
+    package func rotate() throws {
         currentLogFile = try Self.selectNextLogFile(
             from: directory,
             fileCountLimit: Self.fileCountLimit,
@@ -64,11 +64,11 @@ final class LogRotation {
         )
     }
 
-    func getAllLogs() throws -> [URL] {
+    package func getAllLogs() throws -> [URL] {
         return try Self.listLogFiles(in: directory)
     }
 
-    func reset() throws {
+    package func reset() throws {
         let existingFiles = try Self.listLogFiles(in: directory)
         for file in existingFiles {
             try FileManager.default.removeItem(at: file)
@@ -118,7 +118,7 @@ final class LogRotation {
         )
     }
 
-    func ensureFileExists() throws {
+    package func ensureFileExists() throws {
         if !FileManager.default.fileExists(atPath: currentLogFile.fileURL.relativePath) {
             try rotate()
         }
