@@ -31,7 +31,21 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     }
 
     public init(modelSchema: ModelSchema, primaryKeysOnly: Bool) {
-        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields, primaryKeysOnly: primaryKeysOnly)
+        self.init(
+            modelSchema: modelSchema,
+            primaryKeysOnly: primaryKeysOnly,
+            includeHasOneAssociations: true
+        )
+    }
+
+    /// API-category mutations pass `includeHasOneAssociations: false` to select a `hasOne`'s
+    /// foreign key instead of the nested object; DataStore keeps the default (nested).
+    init(modelSchema: ModelSchema, primaryKeysOnly: Bool, includeHasOneAssociations: Bool) {
+        self.selectionSet = SelectionSet(
+            fields: modelSchema.graphQLFields,
+            primaryKeysOnly: primaryKeysOnly,
+            includeHasOneAssociations: includeHasOneAssociations
+        )
     }
 
     public var name: String = ""
