@@ -319,18 +319,19 @@ struct SigV4Signer {
 
         let amzCredential = "\(credential.accessKey)/\(credentialScope)"
 
-        let canonicalQueryString = query
+        let sessionTokenParam: String = credential.sessionToken
+            .map { "&X-Amz-Security-Token=\($0)" } ?? ""
+        let canonicalQueryString: String = query
         + "X-Amz-Algorithm=AWS4-HMAC-SHA256"
         + "&X-Amz-Credential=\(amzCredential)"
         + "&X-Amz-Date=\(timestamp)"
         + "&X-Amz-Expires=\(expires)"
         + "&X-Amz-SignedHeaders=\(signedHeaders)"
-        + (credential.sessionToken
-            .map { "&X-Amz-Security-Token=\($0)" } ?? "")
+        + sessionTokenParam
 
-        let sorted = canonicalQueryString.split(separator: "&")
-            .map {
-                String($0).split(separator: "=", maxSplits: 1)
+        let sorted: String = canonicalQueryString.split(separator: "&")
+            .map { (pair: Substring) -> String in
+                pair.split(separator: "=", maxSplits: 1)
                     .map(String.init)
                     .map(PercentEncoding.uri.encode)
                     .joined(separator: "=")
