@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.61.0 (2026-09-15)
+
+### Features
+
+- **cloudwatch**: add CloudWatch client (#4219)
+
+### Bug Fixes
+
+- **DataStore**: prevent crash in save() when the transaction fails to commit (#4335)
+- **cloudwatch**: enable client integration tests and fix log-flush data-loss race (#4337)
+- **storage**: serialize multipart upload state machine access to prevent thread-safety crashes (#4285)
+- **ci**: pass untrusted GitHub context via env to prevent workflow script injection (#4286)
+
 ## 2.60.2 (2026-09-01)
 
 ### Bug Fixes
