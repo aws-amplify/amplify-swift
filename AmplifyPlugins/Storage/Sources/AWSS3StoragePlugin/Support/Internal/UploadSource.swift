@@ -16,10 +16,10 @@ enum UploadSource {
         switch self {
         case .data(let data):
             let fileURL = try FileSystem.default.createTemporaryFile(data: data)
-            let size = fileSystem.getFileSize(fileURL: fileURL)
+            let size = try fileSystem.getFileSize(fileURL: fileURL)
             uploadFile = .init(fileURL: fileURL, temporaryFileCreated: true, size: size)
         case .local(let fileURL):
-            let size = fileSystem.getFileSize(fileURL: fileURL)
+            let size = try fileSystem.getFileSize(fileURL: fileURL)
             uploadFile = .init(fileURL: fileURL, temporaryFileCreated: false, size: size)
         }
         return uploadFile

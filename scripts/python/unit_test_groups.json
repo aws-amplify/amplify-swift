@@ -11,6 +11,7 @@
   "AmplifyFirehoseClient": { "targets": ["AmplifyFirehoseClient"], "flags": "Firehose_plugin_unit_test,unit_tests" },
   "AmplifyConnectClient": { "targets": ["AmplifyConnectClient"], "flags": "Connect_unit_test,unit_tests" },
   "AmplifyEventEnrichmentClient": { "targets": ["AmplifyEventEnrichmentClient"], "flags": "EventEnrichment_unit_test,unit_tests" },
+  "AmplifyCloudWatchClient": { "targets": ["AmplifyCloudWatchClient"], "flags": "CloudWatchClient_unit_test,unit_tests" },
   "AWSLocationGeoPlugin": { "targets": ["AWSLocationGeoPlugin"], "flags": "Geo_plugin_unit_test,unit_tests" },
   "AWSPredictionsPlugin": { "targets": ["AWSPredictionsPlugin"], "flags": "Predictions_plugin_unit_test,unit_tests" },
   "AWSPinpointAnalyticsPlugin": { "targets": ["AWSPinpointAnalyticsPlugin"], "flags": "Analytics_plugin_unit_test,unit_tests" },

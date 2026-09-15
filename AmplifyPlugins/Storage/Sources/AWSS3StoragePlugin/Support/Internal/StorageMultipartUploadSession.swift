@@ -116,10 +116,11 @@ class StorageMultipartUploadSession {
     }
 
     func restart() {
-        guard let uploadFile = multipartUpload.uploadFile,
-              let uploadId = multipartUpload.uploadId,
-              let partSize = multipartUpload.partSize,
-              let parts = multipartUpload.parts
+        let snapshot = serialQueue.sync { multipartUpload }
+        guard let uploadFile = snapshot.uploadFile,
+              let uploadId = snapshot.uploadId,
+              let partSize = snapshot.partSize,
+              let parts = snapshot.parts
         else {
             return
         }
@@ -127,7 +128,7 @@ class StorageMultipartUploadSession {
     }
 
     func createSubTask(partNumber: PartNumber) -> StorageTransferTask {
-        guard let uploadId = multipartUpload.uploadId else {
+        guard let uploadId = serialQueue.sync(execute: { multipartUpload.uploadId }) else {
             fatalError()
         }
         let transferType: StorageTransferType = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)
@@ -193,15 +194,24 @@ class StorageMultipartUploadSession {
     }
 
     var isPaused: Bool {
-        multipartUpload.isPaused
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
+            multipartUpload.isPaused
+        }
     }
 
     var isAborted: Bool {
-        multipartUpload.isAborted
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
+            multipartUpload.isAborted
+        }
     }
 
     var isCompleted: Bool {
-        multipartUpload.isCompleted
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
+            multipartUpload.isCompleted
+        }
     }
 
     func part(for number: PartNumber) -> StorageUploadPart? {
@@ -260,8 +270,10 @@ class StorageMultipartUploadSession {
 
     func fail(error: Error) {
         logger.debug("Multipart Upload Failure: \(error)")
-        logger.debug("Multipart Upload: \(multipartUpload)")
-        multipartUpload.fail(error: error)
+        serialQueue.sync {
+            logger.debug("Multipart Upload: \(multipartUpload)")
+            multipartUpload.fail(error: error)
+        }
         onEvent(.failed(StorageError(error: error)))
     }
 
@@ -269,16 +281,19 @@ class StorageMultipartUploadSession {
         logger.debug("\(#function): \(multipartUploadEvent)")
 
         do {
-            let wasPaused = multipartUpload.isPaused
+            let wasPaused: Bool
+            let snapshot: StorageMultipartUpload
 
-            try serialQueue.sync {
+            (wasPaused, snapshot) = try serialQueue.sync {
+                let wasPaused = multipartUpload.isPaused
                 try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
 
                 // update the transerTask with every state transition
                 transferTask.multipartUpload = multipartUpload
+                return (wasPaused, multipartUpload)
             }
 
-            switch multipartUpload {
+            switch snapshot {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
                 if wasPaused {
                     logger.debug("Resuming after being paused")
@@ -296,10 +311,11 @@ class StorageMultipartUploadSession {
                 cancelProgressStallTimer()
                 onEvent(.completed(()))
             case .aborting(_, let error):
-                cancelationError = error
+                serialQueue.sync { cancelationError = error }
                 cancelProgressStallTimer()
                 try abort()
             case .aborted(_, let error):
+                let cancelationError = serialQueue.sync { self.cancelationError }
                 onEvent(.failed(StorageError.unknown("Unable to upload", cancelationError ?? error)))
             case .failed(_, _, let error):
                 cancelProgressStallTimer()
@@ -307,7 +323,7 @@ class StorageMultipartUploadSession {
             default:
                 break
             }
-            logger.verbose("MultipartUpload State: \(multipartUpload)")
+            logger.verbose("MultipartUpload State: \(snapshot)")
         } catch {
             fail(error: error)
         }
@@ -318,19 +334,23 @@ class StorageMultipartUploadSession {
         logger.debug("\(#function): \(uploadPartEvent)")
 
         do {
-            if case .failed = multipartUpload {
-                logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
-                return
-            } else if case .paused = multipartUpload {
-                logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
-                return
-            }
-
-            try serialQueue.sync {
+            // Read state and transition under one lock; nil means the event was dropped (state was .failed/.paused).
+            let snapshot: StorageMultipartUpload? = try serialQueue.sync {
+                if case .failed = multipartUpload {
+                    logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
+                    return nil
+                }
+                if case .paused = multipartUpload {
+                    logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
+                    return nil
+                }
                 try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
                 // update the transferTask with every state transition
                 transferTask.multipartUpload = multipartUpload
+                return multipartUpload
             }
+
+            guard let snapshot else { return }
 
             switch uploadPartEvent {
             case .progressUpdated, .completed:
@@ -341,7 +361,7 @@ class StorageMultipartUploadSession {
 
             if uploadPartEvent.isCompleted {
                 // report progress
-                if case .parts(_, _, _, let parts) = multipartUpload {
+                if case .parts(_, _, _, let parts) = snapshot {
                     let progress = Progress.discreteProgress(totalUnitCount: Int64(parts.totalBytes))
                     progress.completedUnitCount = Int64(parts.bytesTransferred)
                     onEvent(.inProcess(progress))
@@ -352,27 +372,27 @@ class StorageMultipartUploadSession {
 
             if case .queued = uploadPartEvent {
                 return
-            } else if case .paused = multipartUpload {
+            } else if case .paused = snapshot {
                 logger.debug("Multipart Upload is paused and part cannot be completed")
                 return
-            } else if isCompletedEvent && multipartUpload.hasPendingParts {
-                if case .parts(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
+            } else if isCompletedEvent && snapshot.hasPendingParts {
+                if case .parts(let uploadId, let uploadFile, let partSize, let parts) = snapshot {
                     uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
                 } else {
-                    fatalError("Invalid state")
+                    throw Failure.invalidStateTransition
                 }
-            } else if partsCompleted {
+            } else if snapshot.partsCompleted {
                 do {
-                    try multipartUpload.validateForCompletion()
+                    try snapshot.validateForCompletion()
                 } catch {
                     fail(error: error)
                     return
                 }
 
-                if let uploadId = multipartUpload.uploadId {
+                if let uploadId = snapshot.uploadId {
                     try client.completeMultipartUpload(uploadId: uploadId)
                 } else {
-                    fatalError("Invalid state")
+                    throw Failure.invalidStateTransition
                 }
             } else if case .failed(let partNumber, let error) = uploadPartEvent {
                 retryPartUpload(partNumber: partNumber, error: error)
@@ -387,18 +407,24 @@ class StorageMultipartUploadSession {
             if transferTask.isBelowRetryLimit {
                 // increment retry count and move upload part back to pending
                 transferTask.incrementRetryCount()
-                if case .parts(let uploadId, let uploadFile, let partSize, var parts) = multipartUpload {
+
+                // Mutate state under the lock, then do the client call outside it to avoid holding the lock across async work.
+                let shouldTriggerReupload: Bool = try serialQueue.sync {
+                    guard case .parts(let uploadId, let uploadFile, let partSize, var parts) = multipartUpload else {
+                        throw Failure.invalidStateTransition
+                    }
                     let part = try parts.find(partNumber: partNumber)
                     let index = partNumber - 1
                     parts[index] = .pending(bytes: part.bytes)
                     multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
                     let remainingParts = parts.filter { $0.inProgress }
-                    if remainingParts.isEmpty {
-                        // If there are no remaining parts in progress, manually trigger the reupload
-                        try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: createSubTask(partNumber: partNumber))
-                    }
-                } else {
-                    fatalError("Invalid state")
+                    return remainingParts.isEmpty
+                }
+
+                if shouldTriggerReupload {
+                    // If there are no remaining parts in progress, manually trigger the reupload
+                    let snapshot = serialQueue.sync { multipartUpload }
+                    try client.uploadPart(partNumber: partNumber, multipartUpload: snapshot, subTask: createSubTask(partNumber: partNumber))
                 }
             } else {
                 throw Failure.partsUploadRetryLimitExceeded(underlyingError: error)
@@ -409,11 +435,10 @@ class StorageMultipartUploadSession {
     }
 
     private func abort() throws {
-        if let uploadId = multipartUpload.uploadId {
-            try client.abortMultipartUpload(uploadId: uploadId)
-        } else {
-            fatalError("Invalid state")
+        guard let uploadId = serialQueue.sync(execute: { multipartUpload.uploadId }) else {
+            throw Failure.invalidStateTransition
         }
+        try client.abortMultipartUpload(uploadId: uploadId)
     }
 
     private func cancelInProgressParts(parts: StorageUploadParts) {
@@ -475,9 +500,10 @@ class StorageMultipartUploadSession {
         }
 
         do {
+            let snapshot = serialQueue.sync { multipartUpload }
             let pendingPartNumbers = getPendingPartNumbers()
             logger.debug("Pending parts: \(pendingPartNumbers)")
-            logger.debug("Multipart Upload: \(multipartUpload)")
+            logger.debug("Multipart Upload: \(snapshot)")
             if pendingPartNumbers.isEmpty {
                 return
             }
@@ -497,7 +523,7 @@ class StorageMultipartUploadSession {
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
                     logger.debug("Uploading part: \(partNumber)")
-                    try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
+                    try client.uploadPart(partNumber: partNumber, multipartUpload: serialQueue.sync { multipartUpload }, subTask: subTask)
                 }
             }
         } catch {

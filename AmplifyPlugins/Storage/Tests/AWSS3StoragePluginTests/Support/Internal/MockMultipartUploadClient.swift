@@ -17,11 +17,18 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         case mockFailure
     }
 
+    private let counterLock = NSLock()
     var uploadPartCount = 0
     var completeMultipartUploadCount = 0
     var abortMultipartUploadCount = 0
     var errorCount = 0
     var taskIdentifier = 100
+
+    private func increment(_ keyPath: ReferenceWritableKeyPath<MockMultipartUploadClient, Int>) {
+        counterLock.lock()
+        defer { counterLock.unlock() }
+        self[keyPath: keyPath] += 1
+    }
 
     let uploadFile: UploadFile
     var session: StorageMultipartUploadSession?
@@ -63,10 +70,10 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         print("Upload Part \(partNumber)")
         guard let session else { throw Failure.sessionNotIntegrated }
 
-        uploadPartCount += 1
+        increment(\.uploadPartCount)
 
         defer {
-            taskIdentifier += 1
+            increment(\.taskIdentifier)
         }
 
         subTask.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier, state: .suspended)
@@ -96,7 +103,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     func completeMultipartUpload(uploadId: UploadID) throws {
         guard let session else { throw Failure.sessionNotIntegrated }
 
-        completeMultipartUploadCount += 1
+        increment(\.completeMultipartUploadCount)
 
         session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
         didCompleteMultipartUpload?(session, uploadId)
@@ -105,7 +112,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {
         guard let session else { throw Failure.sessionNotIntegrated }
 
-        abortMultipartUploadCount += 1
+        increment(\.abortMultipartUploadCount)
 
         session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
         didAbortMultipartUpload?(session, uploadId)

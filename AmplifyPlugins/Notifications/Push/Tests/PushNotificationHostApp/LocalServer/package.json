@@ -9,6 +9,6 @@
   "author": "Aws Amplify",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.22.0"
+    "express": "^5.2.1"
   }
 }
