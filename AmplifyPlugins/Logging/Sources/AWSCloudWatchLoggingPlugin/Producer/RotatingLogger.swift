@@ -8,6 +8,7 @@
 import Amplify
 @preconcurrency import Combine
 import Foundation
+import InternalCloudWatchLogging
 
 /// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
 ///   concurrently with reads.
@@ -58,7 +59,8 @@ final class RotatingLogger: @unchecked Sendable {
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         try await setupSubscription()
         let entry = LogEntry(category: category, namespace: namespace, level: level, message: message())
-        try await actor.record(entry)
+        let data = try LogEntryCodec().encode(entry: entry)
+        try await actor.record(data)
     }
 
     private func setupSubscription() async throws {

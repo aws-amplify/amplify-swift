@@ -6,6 +6,7 @@
 //
 
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 import Amplify
 import Network

@@ -10,6 +10,7 @@ import Amplify
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
+@testable import InternalCloudWatchLogging
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -52,7 +53,7 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(rotations, [])
 
         let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
-        try await systemUnderTest.record(entry)
+        try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
         try await systemUnderTest.synchronize()
 
         XCTAssertEqual(rotations, [])
@@ -73,7 +74,7 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
         let numberOfEntries = (fileSizeLimitInBytes / size) + 1
         let entries = (0 ..< numberOfEntries).map { LogEntry(category: "", namespace: nil, level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }
         for entry in entries {
-            try await systemUnderTest.record(entry)
+            try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
         }
         try await systemUnderTest.synchronize()
 
@@ -100,7 +101,7 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
     /// Then: the log file is emptied
     func testLogActorDeletesEntry() async throws {
         let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
-        try await systemUnderTest.record(entry)
+        try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
         try await systemUnderTest.synchronize()
 
         let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
@@ -124,7 +125,7 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
         let numberOfEntries = (fileSizeLimitInBytes / size) + 1
         let entries = (0 ..< numberOfEntries).map { LogEntry(category: "", namespace: nil, level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }
         for entry in entries {
-            try await systemUnderTest.record(entry)
+            try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
         }
         try await systemUnderTest.synchronize()
 
@@ -143,7 +144,7 @@ final class LogActorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(logs.count, 0)
 
         let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
-        try await systemUnderTest.record(entry)
+        try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
         try await systemUnderTest.synchronize()
 
         logs = try await systemUnderTest.getLogs()

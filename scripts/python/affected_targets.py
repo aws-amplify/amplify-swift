@@ -31,7 +31,10 @@ Fail-closed: a changed file that matches no TARGET at all (and no group path / i
 ALL groups — genuinely-unattributable changes are never silently skipped. Package.swift and
 Package.resolved are NOT among these: manifest/lockfile edits are always-ignored (see
 ALWAYS_IGNORE_NAMES), on the basis that the source changes using a new/changed target trigger their
-own groups.
+own groups. Integration-test host apps and Xcode project bundles (`HostApp/` and `.xcodeproj/`
+contents — see IGNORE_PATH_SUBSTRINGS) are likewise not fail-closed: they are integration-only, so
+they are attributed to their integ group by its path rule when covered and otherwise ignored, never
+SwiftPM/unit inputs.
 
 It also validates the group config: if any group references a target that is absent from the
 SwiftPM graph (a rename, a typo, or a not-yet-wired target), it exits non-zero rather than
@@ -81,6 +84,17 @@ ALWAYS_IGNORE_NAMES = ("LICENSE", "NOTICE", ".git-blame-ignore-revs", ".gitallow
 # above — manifest/lockfile edits are not change-gated.)
 IGNORE_SUFFIXES = (".yml", ".yaml")
 IGNORE_NAMES = ("Gemfile", "Gemfile.lock")
+# Integration-test host apps (`<Something>HostApp/` — the Xcode host app that runs a category's
+# integration tests, its `.xcodeproj` bundle, and the integration `.swift` sources inside it) and any
+# other stray `.xcodeproj` bundle. None of this is a SwiftPM-compiled source or a unit-test resource,
+# so a host-app edit can never change a unit-test outcome — unit runs are gated and host-app changes
+# drive integration only. This is checked when unowned and AFTER the group-path rule below, so a host
+# app that sits under an integration group's `paths` is still attributed to that integ group (e.g.
+# KinesisFirehoseClientHostApp via the path added to `kinesis_firehose`); this rule only keeps a
+# host-app edit from fanning out to every group via the fail-closed branch. A host app whose category
+# has no integration group at all (e.g. AmplifyConnectClient, which is not slated for integ CI) falls
+# through to here and correctly selects nothing.
+IGNORE_PATH_SUBSTRINGS = (".xcodeproj/", "HostApp/")
 IGNORE_PREFIXES = (
     "readme-images/",
     ".github/",
@@ -179,7 +193,8 @@ def main():
         elif any(f.startswith(p) for p in group_paths):
             continue  # attributed to a group by its path rule below
         elif (f.endswith(IGNORE_SUFFIXES) or f.startswith(IGNORE_PREFIXES)
-              or f.rsplit("/", 1)[-1] in IGNORE_NAMES):
+              or f.rsplit("/", 1)[-1] in IGNORE_NAMES
+              or any(s in f for s in IGNORE_PATH_SUBSTRINGS)):
             continue
         else:
             emit(groups.keys())
