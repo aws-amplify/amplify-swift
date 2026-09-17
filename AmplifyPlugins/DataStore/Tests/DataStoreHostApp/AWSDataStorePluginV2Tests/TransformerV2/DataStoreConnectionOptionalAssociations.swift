@@ -273,7 +273,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedComment = try await Amplify.DataStore.save(commentToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedComment
     }
 
@@ -301,7 +301,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedPost = try await Amplify.DataStore.save(postToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedPost
     }
 
@@ -341,7 +341,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedBlog = try await Amplify.DataStore.save(blogToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedBlog
     }
 

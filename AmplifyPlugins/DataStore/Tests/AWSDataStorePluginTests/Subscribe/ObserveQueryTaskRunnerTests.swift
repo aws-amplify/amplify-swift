@@ -619,14 +619,24 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         }
         await fulfillment(of: [firstSnapshot], timeout: 5)
 
+        // Send each mutation and wait for its resulting snapshot before sending the next.
+        // In the after-sync path every mutation produces its own snapshot, so sending all
+        // three in a burst can race the item-change subscription's attachment (the mock's
+        // `query` completes synchronously, so the first snapshot fires before the sink is
+        // attached) and collapse/drop snapshots. Serializing keeps each snapshot distinct
+        // and matches the pattern used by the other item-change tests in this file.
         let post = try createPost(id: "1", title: "title 1")
         dataStorePublisher.send(input: post)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
+
         let post2 = try createPost(id: "2", title: "title 2")
         dataStorePublisher.send(input: post2)
+        await fulfillment(of: [thirdSnapshot], timeout: 10)
+
         var updatedPost2 = try createPost(id: "2", title: "Does not match predicate")
         updatedPost2.mutationType = MutationEvent.MutationType.update.rawValue
         dataStorePublisher.send(input: updatedPost2)
-        await fulfillment(of: [secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
+        await fulfillment(of: [fourthSnapshot], timeout: 10)
     }
 
 

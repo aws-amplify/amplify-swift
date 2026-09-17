@@ -21,10 +21,14 @@ struct SignUpScreen: Screen {
 
     func enterFields(username: String, password: String) -> Self {
         let usernameField = app.textFields[Identifiers.usernameField]
+        // Wait for the field to render before tapping; tapping immediately races the
+        // screen load and fails with "No matches found".
+        XCTAssertTrue(usernameField.waitForExistence(timeout: 30), "Sign up username field not found")
         usernameField.tap()
         usernameField.typeText(username)
 
         let passwordField = app.secureTextFields[Identifiers.passwordField]
+        XCTAssertTrue(passwordField.waitForExistence(timeout: 30), "Sign up password field not found")
         passwordField.tap()
         passwordField.typeText(password)
         return self

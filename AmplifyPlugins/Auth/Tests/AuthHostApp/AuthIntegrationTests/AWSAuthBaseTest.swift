@@ -159,7 +159,12 @@ class AWSAuthBaseTest: XCTestCase {
 
         guard let subscription else { return }
 
-        await wait(name: "Subscription Connection Waiter", timeout: 5.0) {
+        // Wait for the subscription to actually connect before returning. This helper cancels
+        // and silently continues on timeout, so too short a budget lets the caller proceed to
+        // sign up before the OTP subscription is listening, and the `onCreateMfaInfo` event is
+        // missed — causing "Failed to retrieve the OTP code". Connecting emits early, so a
+        // larger timeout only helps the slow path and never delays the happy path.
+        await wait(name: "Subscription Connection Waiter", timeout: 30.0) {
             try await waitForSubscriptionConnection(subscription: subscription)
         }
 

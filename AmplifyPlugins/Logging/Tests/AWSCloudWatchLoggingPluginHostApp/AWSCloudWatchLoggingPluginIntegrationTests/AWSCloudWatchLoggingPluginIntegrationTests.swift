@@ -29,6 +29,12 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
+        // Remote logging constraints are cached in `UserDefaults.standard`, which survives
+        // `Amplify.reset()` and persists across test runs. A stale cached log level leaks in
+        // and filters out the messages these tests log (e.g. a cached `.error` default drops
+        // verbose/debug/info/warn), producing intermittent count mismatches. Clear the cache so
+        // each test deterministically uses the local configuration's constraints.
+        UserDefaults.standard.reset()
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
 
@@ -59,6 +65,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        // Avoid leaking cached remote logging constraints into subsequent tests/runs.
+        UserDefaults.standard.reset()
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
         let directory = documents.appendingPathComponent("amplify").appendingPathComponent("logging")
         let fileURLs = try FileManager.default.contentsOfDirectory(
