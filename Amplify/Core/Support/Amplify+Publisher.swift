@@ -33,17 +33,20 @@ public extension Amplify {
         ///
         /// - Parameter operation: The Task for which to create the Publisher.
         /// - Returns: The Publisher for the given Task.
-        public static func create<Success>(
+        public static func create<Success: Sendable>(
             _ operation: @escaping @Sendable () async throws -> Success
         ) -> AnyPublisher<Success, Error> {
             let task = Task(operation: operation)
             return Future { promise in
+                // `Future.Promise` is not `Sendable`, but Combine guarantees it is called
+                // at most once, so moving it into the task is safe.
+                let promise = UncheckedSendable(promise)
                 Task {
                     do {
                         let value = try await task.value
-                        promise(.success(value))
+                        promise.value(.success(value))
                     } catch {
-                        promise(.failure(error))
+                        promise.value(.failure(error))
                     }
                 }
             }
@@ -65,14 +68,17 @@ public extension Amplify {
         ///
         /// - Parameter operation: The Task for which to create the Publisher.
         /// - Returns: The Publisher for the given Task.
-        public static func create<Success>(
+        public static func create<Success: Sendable>(
             _ operation: @escaping @Sendable () async -> Success
         ) -> AnyPublisher<Success, Never> {
             let task = Task(operation: operation)
             return Future { promise in
+                // See the throwing overload above: `Future.Promise` is not `Sendable` but
+                // is called at most once.
+                let promise = UncheckedSendable(promise)
                 Task {
                     let value = await task.value
-                    promise(.success(value))
+                    promise.value(.success(value))
                 }
             }
             .handleEvents(receiveCancel: { task.cancel() })
@@ -97,11 +103,18 @@ public extension Amplify {
         ///
         /// - Parameter sequence: The AsyncSequence for which to create the Publisher.
         /// - Returns: The Publisher for the given AsyncSequence.
-        public static func create<Sequence: AsyncSequence>(
+        // `Sequence` is captured by the `onCancel` closure and its elements are sent
+        // through a Combine subject from inside a `Task`, so both the sequence and its
+        // element type must be `Sendable` in the Swift 6 language mode.
+        public static func create<Sequence: AsyncSequence & Sendable>(
             _ sequence: Sequence
-        ) -> AnyPublisher<Sequence.Element, Error> {
+        ) -> AnyPublisher<Sequence.Element, Error> where Sequence.Element: Sendable {
             let subject = PassthroughSubject<Sequence.Element, Error>()
+            // `PassthroughSubject` is not `Sendable`, but `send` is documented as safe to
+            // call from any thread, so it can be driven from the task below.
+            let boxedSubject = UncheckedSendable(subject)
             let task = Task {
+                let subject = boxedSubject.value
                 do {
                     // If the Task is cancelled, this will allow the onCancel closure to be called immediately.
                     // This is necessary to prevent continuing to wait until another value is received from

@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import CoreMLPredictionsPlugin
 
-class MockCoreMLVisionAdapter: CoreMLVisionBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+final class MockCoreMLVisionAdapter: CoreMLVisionBehavior, @unchecked Sendable {
     func detectLabels(_ imageURL: URL) -> Predictions.Identify.Labels.Result? {
         return nil
     }

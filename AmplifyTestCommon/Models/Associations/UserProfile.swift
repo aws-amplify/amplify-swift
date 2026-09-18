@@ -13,7 +13,8 @@ import Foundation
 // circular reference issues with structs and a
 // hasOne+belongsTo relationship
 // TODO: replace this with a struct when the above issue is solved.
-public class UserProfile: Model {
+// `@unchecked Sendable`: see `UserAccount`.
+public class UserProfile: Model, @unchecked Sendable {
 
     public let id: String
 

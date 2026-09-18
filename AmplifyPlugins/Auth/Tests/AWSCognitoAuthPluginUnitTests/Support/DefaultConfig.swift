@@ -124,8 +124,8 @@ enum Defaults {
     }
 
     static func makeDefaultCredentialStoreEnvironment(
-        amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
-        legacyStoreFactory: @escaping (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
+        amplifyStoreFactory: @escaping @Sendable () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
+        legacyStoreFactory: @escaping @Sendable (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
     ) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: makeDefaultAuthConfigData(),
@@ -139,8 +139,8 @@ enum Defaults {
 
     static func makeDefaultAuthEnvironment(
         authZEnvironment: BasicAuthorizationEnvironment? = nil,
-        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        identityPoolFactory: @escaping @Sendable () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping @Sendable () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
         hostedUIEnvironment: HostedUIEnvironment? = nil
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
@@ -180,8 +180,8 @@ enum Defaults {
 
     static func makeDefaultAuthStateMachine(
         initialState: AuthState? = nil,
-        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        identityPoolFactory: @escaping @Sendable () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping @Sendable () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
         hostedUIEnvironment: HostedUIEnvironment? = nil
     ) ->
     AuthStateMachine {
@@ -307,9 +307,10 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
     }
 }
 
-class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
+// `@unchecked Sendable`: test double driven by a single test at a time.
+final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sendable {
     let credentialsKey = "amplifyCredentials"
-    static var dict = AtomicDictionary<String, Data>()
+    static let dict = AtomicDictionary<String, Data>()
 
     func saveCredential(_ credential: AmplifyCredentials) throws {
         let value = (try? JSONEncoder().encode(credential)) ?? Data()

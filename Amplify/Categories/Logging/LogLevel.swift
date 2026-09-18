@@ -8,7 +8,8 @@
 /// Log levels are modeled as Ints to allow for easy comparison of levels
 ///
 public extension Amplify {
-    enum LogLevel: Int, Codable {
+    // Explicit `Sendable` because Swift does not infer it for public types.
+    enum LogLevel: Int, Codable, Sendable {
         case none
         case error
         case warn

@@ -8,10 +8,13 @@
 import AWSCognitoIdentityProvider
 import Foundation
 
-struct SignOutEvent: StateMachineEvent {
+/// - Note: `@unchecked Sendable`: `StateMachineEvent` requires `Sendable`, but `data` is `Any?`,
+///   which the compiler cannot verify. The value stored there is always a `Sendable` payload.
+struct SignOutEvent: StateMachineEvent, @unchecked Sendable {
     var data: Any?
 
-    enum EventType {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Sendable {
         case signOutGlobally(
             SignedInData,
             hostedUIError: AWSCognitoHostedUIError? = nil

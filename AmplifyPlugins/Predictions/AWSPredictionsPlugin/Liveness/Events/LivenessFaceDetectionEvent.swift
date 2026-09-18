@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct FaceDetection {
+public struct FaceDetection: Sendable {
     let boundingBox: FaceLivenessSession.BoundingBox
     let startTimestamp: UInt64
 

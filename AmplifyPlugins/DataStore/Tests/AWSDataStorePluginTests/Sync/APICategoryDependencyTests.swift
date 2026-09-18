@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 /// Tests Amplify behavior around DataStore's dependency on the API category
-class APICategoryDependencyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class APICategoryDependencyTests: XCTestCase, @unchecked Sendable {
 
     // Tests in this class will directly access the database to validate persistent queue behavior
     var storageAdapter: SQLiteStorageEngineAdapter!

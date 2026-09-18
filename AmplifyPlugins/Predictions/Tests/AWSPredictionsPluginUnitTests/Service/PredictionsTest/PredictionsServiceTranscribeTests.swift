@@ -10,7 +10,9 @@ import AWSTranscribeStreaming
 import XCTest
 @testable import AWSPredictionsPlugin
 
-class PredictionsServiceTranscribeTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PredictionsServiceTranscribeTests: XCTestCase, @unchecked Sendable {
     var predictionsService: AWSPredictionsService!
     let mockTranscribe = MockTranscribeBehavior()
     var audioFile: URL!

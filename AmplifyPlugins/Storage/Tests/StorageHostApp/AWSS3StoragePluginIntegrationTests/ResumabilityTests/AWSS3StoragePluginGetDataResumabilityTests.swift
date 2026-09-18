@@ -12,7 +12,9 @@ import Combine
 import XCTest
 
 // swiftlint:disable:next type_name
-class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     /// Given: A data object in storage
     /// When: Call the get API then pause

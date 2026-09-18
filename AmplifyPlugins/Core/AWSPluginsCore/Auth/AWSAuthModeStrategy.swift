@@ -201,7 +201,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
 
     /// A predicate used to sort Auth rules according to above priority rules
     /// Use provider priority to sort if rules have the same strategy
-    private static let comparator = { (rule1: AuthRule, rule2: AuthRule) -> Bool in
+    private static let comparator = { @Sendable (rule1: AuthRule, rule2: AuthRule) -> Bool in
         if let providerRule1 = rule1.provider,
            let providerRule2 = rule2.provider, rule1.allow == rule2.allow {
             return priorityOf(authRuleProvider: providerRule1) < priorityOf(authRuleProvider: providerRule2)

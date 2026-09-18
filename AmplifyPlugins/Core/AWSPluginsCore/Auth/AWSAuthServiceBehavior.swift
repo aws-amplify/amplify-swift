@@ -8,7 +8,9 @@
 import Amplify
 import Foundation
 
-public protocol AWSAuthServiceBehavior: AnyObject {
+/// - Note: `Sendable` because auth services are held by plugins (themselves `Sendable`) and reached
+///   from concurrent request paths.
+public protocol AWSAuthServiceBehavior: AnyObject, Sendable {
 
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>
 

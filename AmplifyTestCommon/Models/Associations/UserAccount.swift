@@ -13,7 +13,9 @@ import Foundation
 // circular reference issues with structs and a
 // hasOne+belongsTo relationship
 // TODO: replace this with a struct when the above issue is solved.
-public class UserAccount: Model {
+// `@unchecked Sendable`: `Model` is `Sendable`, and this test fixture is a class with `var`
+// properties. Driven from a single test at a time.
+public class UserAccount: Model, @unchecked Sendable {
 
     public let id: String
 

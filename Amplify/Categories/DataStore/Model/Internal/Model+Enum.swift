@@ -22,7 +22,9 @@ import Foundation
 /// ```
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public protocol EnumPersistable: Codable {
+/// - Note: `Sendable` because codegen'd enums stored on models conform to this, and `Model` is
+///   `Sendable`. Raw-value enums satisfy it without change.
+public protocol EnumPersistable: Codable, Sendable {
 
     var rawValue: String { get }
 

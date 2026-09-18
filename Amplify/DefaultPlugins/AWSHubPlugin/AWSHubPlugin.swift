@@ -49,6 +49,9 @@ public final class AWSHubPlugin: HubCategoryPlugin {
         dispatcher.dispatch(to: channel, payload: payload)
     }
 
+    // `@preconcurrency` to match the `HubCategoryBehavior` requirement it satisfies; keeps the
+    // actor-isolation softening for Swift 5 consumers of the `@Sendable` `HubListener`/`HubFilter`.
+    @preconcurrency
     public func listen(
         to channel: HubChannel,
         eventName: HubPayloadEventName,
@@ -58,6 +61,7 @@ public final class AWSHubPlugin: HubCategoryPlugin {
         return listen(to: channel, isIncluded: filter, listener: listener)
     }
 
+    @preconcurrency
     public func listen(
         to channel: HubChannel,
         isIncluded filter: HubFilter? = nil,

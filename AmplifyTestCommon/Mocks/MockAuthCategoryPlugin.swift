@@ -8,7 +8,10 @@
 import Amplify
 import Foundation
 
-class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin, @unchecked Sendable {
 
     func getCurrentUser() async throws -> any AuthUser {
         fatalError()
@@ -195,13 +198,17 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 }
 
-class MockSecondAuthCategoryPlugin: MockAuthCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondAuthCategoryPlugin: MockAuthCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondAuthCategoryPlugin"
     }
 }
 
-class MockAuthCategoryPluginWithoutKey: MockAuthCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockAuthCategoryPluginWithoutKey: MockAuthCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return ""
     }

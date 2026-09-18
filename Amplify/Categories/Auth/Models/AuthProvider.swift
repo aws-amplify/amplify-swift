@@ -13,7 +13,7 @@ import Foundation
 /// federate them to the auth plugin's underlying service. For example in the api
 /// `Amplify.Auth.signInWithWebUI(for:presentationAnchor:)` you can pass in a provider
 /// in the `for:` parameter which will directly show a authentication view for the passed in auth provider.
-public enum AuthProvider {
+public enum AuthProvider: Sendable {
 
     public typealias ProviderName = String
 

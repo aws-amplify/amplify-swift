@@ -7,8 +7,12 @@
 
 import Foundation
 
-public final class AtomicDictionary<Key: Hashable, Value> {
-    private let lock: NSLocking
+/// - Note: `@unchecked Sendable` because `value` is mutable but every access below is serialized by
+///   `lock`. `Key`/`Value` are deliberately unconstrained so existing callers keep working; as
+///   before, whether the *elements* are safe to use across domains remains the caller's concern.
+public final class AtomicDictionary<Key: Hashable, Value>: @unchecked Sendable {
+    // Concrete `NSLock` rather than the `any NSLocking` existential, which is not `Sendable`.
+    private let lock: NSLock
     private var value: [Key: Value]
 
     public init(initialValue: [Key: Value] = [Key: Value]()) {

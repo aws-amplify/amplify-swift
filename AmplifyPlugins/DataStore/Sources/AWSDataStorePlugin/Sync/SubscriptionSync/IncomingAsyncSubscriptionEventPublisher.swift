@@ -18,7 +18,9 @@ import Foundation
 /// At initialization, the Queue sets up subscriptions, via the provided `APICategoryGraphQLBehavior`, for each type
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
-final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
+/// - Note: `@unchecked Sendable`: mutable state is confined to the serial queue this publisher
+///   drives its subscription work on.
+final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable, @unchecked Sendable {
     typealias Payload = MutationSync<AnyModel>
     typealias Event = GraphQLSubscriptionEvent<Payload>
 

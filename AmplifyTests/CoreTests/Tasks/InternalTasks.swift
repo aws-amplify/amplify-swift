@@ -8,19 +8,28 @@
 import Amplify
 import Foundation
 
-public class MagicEightBallRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class MagicEightBallRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
+    public init(options: Options = .init(), total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay
     }
 }
 
-public class MagicEightBallTaskRunner: InternalTaskRunner, InternalTaskAsyncSequence, InternalTaskChannel, InternalTaskIdentifiable, InternalTaskHubInProcess {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+public class MagicEightBallTaskRunner: InternalTaskRunner, InternalTaskAsyncSequence, InternalTaskChannel, InternalTaskIdentifiable, InternalTaskHubInProcess, @unchecked Sendable {
     public typealias Request = MagicEightBallRequest
     public typealias InProcess = String
 
@@ -92,19 +101,28 @@ public struct MagicEightBallPlugin {
 
 }
 
-public class RandomEmojiRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class RandomEmojiRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
+    public init(options: Options = .init(), total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay
     }
 }
 
-public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, @unchecked Sendable {
     public typealias Request = RandomEmojiRequest
     public typealias InProcess = String
 

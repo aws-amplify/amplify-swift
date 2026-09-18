@@ -10,7 +10,10 @@ import Foundation
 
 /// Tuple-like type that holds a `Model` instance and its `MutationSyncMetadata`.
 /// THe sync metadata constains information about the model state in the backend.
-public struct MutationSync<ModelType: Model>: Decodable {
+// Explicit `Sendable` because Swift does not infer it for public types. Both stored
+// properties are already `Sendable`: `ModelType` via `Model`, and `MutationSyncMetadata` is a
+// value type.
+public struct MutationSync<ModelType: Model>: Decodable, Sendable {
 
     public let model: ModelType
     public let syncMetadata: MutationSyncMetadata

@@ -9,7 +9,10 @@ import Foundation
 
 import Amplify
 
-class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin, @unchecked Sendable {
     var key: String {
         return "MockHubCategoryPlugin"
     }
@@ -49,7 +52,9 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
     }
 }
 
-class MockSecondHubCategoryPlugin: MockHubCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondHubCategoryPlugin: MockHubCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondHubCategoryPlugin"
     }

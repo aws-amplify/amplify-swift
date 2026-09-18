@@ -10,7 +10,10 @@ import Amplify
 import Foundation
 
 /// Predictions plugin that uses CoreML service to get results.
-public final class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The three
+///   behavior properties are implicitly-unwrapped and assigned once in `configure(using:)` before
+///   any client call can reach them, so they are effectively immutable for the plugin lifetime.
+public final class CoreMLPredictionsPlugin: PredictionsCategoryPlugin, @unchecked Sendable {
 
     let coreMLPredictionsPluginKey = "CoreMLPredictionsPlugin"
 

@@ -13,7 +13,9 @@ import XCTest
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
-class EventRecorderTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class EventRecorderTests: XCTestCase, @unchecked Sendable {
     var recorder: AnalyticsEventRecording!
     var storage: MockAnalyticsEventStorage!
     var pinpointClient: MockPinpointClient!
@@ -41,9 +43,9 @@ class EventRecorderTests: XCTestCase {
     /// - When: instance is constructed
     /// - Then: storage initializatin is called followed by disk size check and dirty event removal
     func testRecorderInitilization() {
-        XCTAssertEqual(storage.initializeStorageCallCount, 1)
-        XCTAssertEqual(storage.deleteDirtyEventCallCount, 1)
-        XCTAssertEqual(storage.checkDiskSizeCallCount, 1)
+        XCTAssertEqual(storage.initializeStorageCallCount.get(), 1)
+        XCTAssertEqual(storage.deleteDirtyEventCallCount.get(), 1)
+        XCTAssertEqual(storage.checkDiskSizeCallCount.get(), 1)
     }
 
     /// - Given: a event recorder
@@ -54,7 +56,7 @@ class EventRecorderTests: XCTestCase {
         let event = PinpointEvent(id: "1", eventType: "eventType", eventDate: Date(), session: session)
 
         XCTAssertEqual(storage.events.count, 0)
-        XCTAssertEqual(storage.checkDiskSizeCallCount, 1)
+        XCTAssertEqual(storage.checkDiskSizeCallCount.get(), 1)
 
         do {
             try await recorder.save(event)
@@ -64,7 +66,7 @@ class EventRecorderTests: XCTestCase {
 
         XCTAssertEqual(storage.events.count, 1)
         XCTAssertEqual(event, storage.events[0])
-        XCTAssertEqual(storage.checkDiskSizeCallCount, 2)
+        XCTAssertEqual(storage.checkDiskSizeCallCount.get(), 2)
     }
 
     /// - Given: a event recorder with events saved in the local storage
@@ -92,7 +94,7 @@ class EventRecorderTests: XCTestCase {
         XCTAssertEqual(events.count, 2)
         XCTAssertEqual(pinpointClient.putEventsCount, 1)
         XCTAssertTrue(storage.events.isEmpty)
-        XCTAssertEqual(storage.deleteEventCallCount, 2)
+        XCTAssertEqual(storage.deleteEventCallCount.get(), 2)
     }
 
     /// - Given: a event recorder with events saved in the local storage with active and stopped sessions
@@ -142,7 +144,7 @@ class EventRecorderTests: XCTestCase {
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
             XCTAssertEqual(storage.events.count, 2)
-            XCTAssertEqual(storage.deleteEventCallCount, 0)
+            XCTAssertEqual(storage.deleteEventCallCount.get(), 0)
             XCTAssertEqual(storage.eventRetryDictionary.count, 0)
             XCTAssertEqual(storage.dirtyEventDictionary.count, 2)
             XCTAssertEqual(storage.dirtyEventDictionary["1"], 1)
@@ -166,7 +168,7 @@ class EventRecorderTests: XCTestCase {
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
             XCTAssertEqual(storage.events.count, 2)
-            XCTAssertEqual(storage.deleteEventCallCount, 0)
+            XCTAssertEqual(storage.deleteEventCallCount.get(), 0)
             XCTAssertEqual(storage.eventRetryDictionary.count, 2)
             XCTAssertEqual(storage.eventRetryDictionary["1"], 1)
             XCTAssertEqual(storage.eventRetryDictionary["2"], 1)
@@ -190,7 +192,7 @@ class EventRecorderTests: XCTestCase {
         } catch {
             XCTAssertEqual(pinpointClient.putEventsCount, 1)
             XCTAssertEqual(storage.events.count, 2)
-            XCTAssertEqual(storage.deleteEventCallCount, 0)
+            XCTAssertEqual(storage.deleteEventCallCount.get(), 0)
             XCTAssertEqual(storage.eventRetryDictionary.count, 0)
             XCTAssertEqual(storage.dirtyEventDictionary.count, 0)
         }
@@ -199,14 +201,16 @@ class EventRecorderTests: XCTestCase {
 
 private struct RetryableError: Error, ModeledError {
     static let typeName = "RetriableError"
-    static let fault = ErrorFault.client
+    // `nonisolated(unsafe)`: `ErrorFault` comes from the AWS SDK and is not declared `Sendable`.
+    nonisolated(unsafe) static let fault = ErrorFault.client
     static let isRetryable = true
     static let isThrottling = false
 }
 
 private struct NonRetryableError: Error, ModeledError {
     static let typeName = "RetriableError"
-    static let fault = ErrorFault.client
+    // `nonisolated(unsafe)`: `ErrorFault` comes from the AWS SDK and is not declared `Sendable`.
+    nonisolated(unsafe) static let fault = ErrorFault.client
     static let isRetryable = false
     static let isThrottling = false
 }

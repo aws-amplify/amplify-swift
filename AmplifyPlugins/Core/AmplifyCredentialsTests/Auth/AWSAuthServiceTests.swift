@@ -12,7 +12,9 @@ import AWSClientRuntime
 @testable import AWSPluginsCore
 @testable import InternalAmplifyCredentials
 
-class AWSAuthServiceTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAuthServiceTests: XCTestCase, @unchecked Sendable {
 
     var awsAuthService: AWSAuthServiceBehavior!
 

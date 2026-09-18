@@ -8,7 +8,8 @@
 import Foundation
 
 /// A simple struct that holds pagination information that can be applied queries.
-public struct QueryPaginationInput {
+// Explicit `Sendable`: Swift does not infer it for public types.
+public struct QueryPaginationInput: Sendable {
 
     /// The default page size.
     public static let defaultLimit: UInt = 100
