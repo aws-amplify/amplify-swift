@@ -34,6 +34,10 @@ open class AmplifyInProcessReportingOperation<
     var inProcessSubject: PassthroughSubject<InProcess, Never>!
 #endif
 
+    /// - Note: `@preconcurrency` so a Swift 5 consumer passing an actor-isolated
+    ///   `inProcessListener`/`resultListener` gets a warning rather than a hard error from the
+    ///   `@Sendable` closure types.
+    @preconcurrency
     public init(
         categoryType: CategoryType,
         eventName: HubPayloadEventName,

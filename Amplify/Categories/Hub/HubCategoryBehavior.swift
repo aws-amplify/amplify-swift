@@ -24,6 +24,11 @@ public protocol HubCategoryBehavior {
     /// - Parameter channel: The channel to listen for messages on
     /// - Parameter eventName: Only hub payloads with this event name will be dispatched to the listener
     /// - Parameter listener: The closure to invoke with the received message
+    ///
+    /// - Note: `@preconcurrency` so a Swift 5 consumer passing a listener that touches
+    ///   actor-isolated (e.g. `@MainActor`) state gets a warning rather than a hard error from
+    ///   the `@Sendable` `HubListener`.
+    @preconcurrency
     func listen(
         to channel: HubChannel,
         eventName: HubPayloadEventName,
@@ -36,6 +41,10 @@ public protocol HubCategoryBehavior {
     /// - Parameter filter: If specified, candidate messages will be passed to this closure prior to dispatching to
     ///             the `listener`. Only messages for which the filter returns `true` will be dispatched.
     /// - Parameter listener: The closure to invoke with the received message
+    ///
+    /// - Note: `@preconcurrency` for the same reason as the `eventName:` overload — the `@Sendable`
+    ///   `HubFilter`/`HubListener` would otherwise hard-error a Swift 5 consumer's actor-isolated closure.
+    @preconcurrency
     func listen(
         to channel: HubChannel,
         isIncluded filter: HubFilter?,
