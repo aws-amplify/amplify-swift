@@ -193,6 +193,13 @@ class AWSAuthBaseTest: XCTestCase {
                 print("Subscription terminated with error: \(error)")
             }
         }
+
+        // `.connected` (start_ack) can precede AppSync being ready to fan `onCreateMfaInfo` events
+        // out to this subscription. The OTP event is one-shot — if the caller signs up in that
+        // window it is missed and `otp(for:)` polls in vain, surfacing as "Failed to retrieve the
+        // OTP code". Give the server a brief moment to finish registering before returning to the
+        // caller (which signs up immediately). The data listener above is already running.
+        try? await Task.sleep(nanoseconds: 2_000_000_000)
     }
 
     /// Test that waits for the OTP code using XCTestExpectation

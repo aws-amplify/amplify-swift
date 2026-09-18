@@ -152,9 +152,15 @@ final class SessionManagerTests: XCTestCase {
         await manager.startSession()
         await manager.handleAppPaused()
 
-        try await Task.sleep(nanoseconds: 200_000_000) // 200ms
-
-        let state = await manager.state
+        // The paused -> stopped transition is driven by an internal timer (`sessionTimeout`).
+        // Poll for the terminal state instead of asserting once after a fixed delay, which races
+        // the timer's Task scheduling on a loaded CI runner and intermittently still reads `.paused`.
+        var state = await manager.state
+        let deadline = Date().addingTimeInterval(2)
+        while state != .stopped, Date() < deadline {
+            try await Task.sleep(nanoseconds: 20_000_000) // 20ms
+            state = await manager.state
+        }
         XCTAssertEqual(state, .stopped)
     }
 

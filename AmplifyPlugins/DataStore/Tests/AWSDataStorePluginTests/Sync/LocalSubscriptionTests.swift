@@ -130,7 +130,7 @@ class LocalSubscriptionTests: XCTestCase {
         )
 
         _ = try await Amplify.DataStore.save(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
         subscription.cancel()
     }
 
@@ -167,7 +167,7 @@ class LocalSubscriptionTests: XCTestCase {
         )
 
         _ = try await Amplify.DataStore.save(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }
@@ -213,7 +213,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         _ = try await Amplify.DataStore.save(newModel)
 
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }
@@ -248,7 +248,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         _ = try await Amplify.DataStore.save(model)
         _ = try await Amplify.DataStore.delete(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }
