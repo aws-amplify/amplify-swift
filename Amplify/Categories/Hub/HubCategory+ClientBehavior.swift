@@ -18,6 +18,10 @@ extension HubCategory: HubCategoryBehavior {
         plugin.dispatch(to: channel, payload: payload)
     }
 
+    // `@preconcurrency` on both overloads: this is the entry point `Amplify.Hub.listen(...)`
+    // resolves to, so it must carry the annotation for a Swift 5 consumer's actor-isolated
+    // listener to downgrade from error to warning against the `@Sendable` `HubListener`.
+    @preconcurrency
     public func listen(
         to channel: HubChannel,
         eventName: HubPayloadEventName,
@@ -26,6 +30,7 @@ extension HubCategory: HubCategoryBehavior {
         plugin.listen(to: channel, eventName: eventName, listener: listener)
     }
 
+    @preconcurrency
     public func listen(
         to channel: HubChannel,
         isIncluded filter: HubFilter? = nil,

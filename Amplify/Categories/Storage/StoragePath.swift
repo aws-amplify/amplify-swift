@@ -31,6 +31,9 @@ public extension StoragePath where Self == StringStoragePath {
 }
 
 public extension StoragePath where Self == IdentityIDStoragePath {
+    /// - Note: `@preconcurrency` so a Swift 5 consumer passing an actor-isolated resolver gets a
+    ///   warning rather than a hard error from the `@Sendable` `IdentityIDPathResolver`.
+    @preconcurrency
     static func fromIdentityID(_ identityIdPathResolver: @escaping IdentityIDPathResolver) -> Self {
         return IdentityIDStoragePath(resolve: identityIdPathResolver)
     }
