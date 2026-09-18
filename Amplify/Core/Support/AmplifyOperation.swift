@@ -97,6 +97,10 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     /// - Parameter eventName: The event name of this operation, used in HubPayload messages dispatched by the operation
     /// - Parameter request: The request used to generate this operation
     /// - Parameter resultListener: The optional listener for the OperationResults associated with the operation
+    ///
+    /// - Note: `@preconcurrency` so a Swift 5 consumer passing an actor-isolated `resultListener`
+    ///   gets a warning rather than a hard error from the `@Sendable` `ResultListener`.
+    @preconcurrency
     public init(
         categoryType: CategoryType,
         eventName: HubPayloadEventName,

@@ -16,6 +16,7 @@ public extension HubCategory {
     /// - Parameter operation: The operation to monitor for results
     /// - Parameter resultListener: The Operation-specific listener callback to be invoked when an OperationResult for
     ///   that operation is received.
+    @preconcurrency
     func listenForResult<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>(
         to operation: AmplifyOperation<Request, Success, Failure>,
         resultListener: @escaping AmplifyOperation<Request, Success, Failure>.ResultListener
@@ -30,6 +31,7 @@ public extension HubCategory {
     /// - Parameter operation: The progress reporting operation monitor for progress and results
     /// - Parameter inProcessListener: The ProgressListener callback to be invoked when the operation emits an
     ///   in-process value
+    @preconcurrency
     func listenForInProcess<Request: AmplifyOperationRequest, InProcess, Success, Failure: AmplifyError>(
         to operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>,
         inProcessListener: @escaping AmplifyInProcessReportingOperation<
