@@ -169,6 +169,80 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [disconnectExpectation, reconnectedExpectation], timeout: timeout, enforceOrder: true)
     }
 
+    func testLivenessPing_recyclesConnection_whenServerDoesNotRespondToPing() async throws {
+        var cancellables = Set<AnyCancellable>()
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        // Dead socket (no pong) for the first connection, healthy after: the client should
+        // detect the zombie, recycle, and reconnect.
+        actor DeadThenAlive {
+            private var calls = 0
+            func probe() -> Bool {
+                calls += 1
+                return calls > 2
+            }
+        }
+        let probe = DeadThenAlive()
+
+        let webSocketClient = WebSocketClient(
+            url: endpoint,
+            pingInterval: 0.3,
+            pingTimeout: 0.3,
+            isConnectionAlive: { _, _ in await probe.probe() }
+        )
+        await verifyConnected(webSocketClient, autoRetryOnConnectionFailure: true)
+
+        let disconnected = expectation(description: "Dead ping disconnects the socket")
+        let reconnected = expectation(description: "Client reconnects after recycling")
+        await webSocketClient.publisher.sink { event in
+            switch event {
+            case let .disconnected(closeCode, _) where closeCode == .abnormalClosure:
+                disconnected.fulfill()
+            case .connected:
+                reconnected.fulfill()
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
+
+        await fulfillment(of: [disconnected, reconnected], timeout: timeout, enforceOrder: true)
+    }
+
+    func testLivenessPing_doesNotRecycle_onSingleMiss() async throws {
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        // Anti-flap guard (not a #3976 regression test): one miss then healthy must not recycle.
+        actor MissOnce {
+            private var calls = 0
+            func probe() -> Bool {
+                calls += 1
+                return calls > 1
+            }
+        }
+        let missOnce = MissOnce()
+
+        let webSocketClient = WebSocketClient(
+            url: endpoint,
+            pingInterval: 0.3,
+            pingTimeout: 0.3,
+            isConnectionAlive: { _, _ in await missOnce.probe() }
+        )
+        await verifyConnected(webSocketClient)
+
+        // Allow several ping cycles to run (one miss, then healthy).
+        try await Task.sleep(seconds: 1.5)
+        let stillConnected = await webSocketClient.isConnected
+        XCTAssertTrue(stillConnected, "A single missed ping must not recycle a healthy connection")
+        await webSocketClient.disconnect()
+    }
+
     private func verifyConnected(
         _ webSocketClient: WebSocketClient,
         autoConnectOnNetworkStatusChange: Bool = false,
