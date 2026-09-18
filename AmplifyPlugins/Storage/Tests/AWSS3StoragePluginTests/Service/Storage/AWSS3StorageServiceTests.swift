@@ -389,7 +389,10 @@ class AWSS3StorageServiceTests: XCTestCase {
             }
         )
 
-        await fulfillment(of: [expectation], timeout: 1)
+        // The `.initiated` event is dispatched after asynchronous upload setup (pre-signed URL
+        // build, task creation); 1s is too tight under CI load and flakes. The callback is
+        // registered synchronously, so a larger budget only adds slack and never slows the pass.
+        await fulfillment(of: [expectation], timeout: 5)
     }
 }
 

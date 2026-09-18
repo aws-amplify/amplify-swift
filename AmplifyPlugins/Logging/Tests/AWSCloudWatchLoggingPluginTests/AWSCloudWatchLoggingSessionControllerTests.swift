@@ -23,17 +23,35 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     let category = "amplifytest"
     var unsubscribeToken: UnsubscribeToken?
 
+    override func setUp() async throws {
+        // Start from a clean, existing log directory. `LogRotation` selects its active file based
+        // on the files already present, so log files left over from a previous test/run (only
+        // `amplify.0.log` was deleted before) can cause the pre-written batch to be reused and
+        // truncated, leaving no failing batch for `flushLogs` to consume and making the test flaky.
+        // The directory must exist because the test writes `amplify.0.log` with
+        // `FileManager.createFile`, which does not create intermediate directories.
+        resetLogDirectory()
+    }
+
     override func tearDown() async throws {
         systemUnderTest = nil
         if let token = unsubscribeToken {
             Amplify.Hub.removeListener(token)
         }
-        let file = getLogFile()
-        do {
-            try FileManager.default.removeItem(atPath: file.path)
-        } catch {
+        // Remove the whole logging directory, not just `amplify.0.log`; the session under test
+        // rotates to additional files (e.g. `amplify.1.log`) that would otherwise leak between tests.
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let loggingDirectory = documents.appendingPathComponent("amplify").appendingPathComponent("logging")
+        try? FileManager.default.removeItem(at: loggingDirectory)
+    }
 
-        }
+    /// Removes any leftover log files and recreates the empty category directory the test writes into.
+    private func resetLogDirectory() {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let loggingDirectory = documents.appendingPathComponent("amplify").appendingPathComponent("logging")
+        try? FileManager.default.removeItem(at: loggingDirectory)
+        let categoryDirectory = getLogFile().deletingLastPathComponent()
+        try? FileManager.default.createDirectory(at: categoryDirectory, withIntermediateDirectories: true)
     }
 
     /// Given: an AWSCloudWatchLoggingSessionController
