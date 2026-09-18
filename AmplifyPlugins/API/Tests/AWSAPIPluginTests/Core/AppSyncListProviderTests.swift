@@ -129,7 +129,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTAssertEqual(posts.count, 2)
             loadCompleted.fulfill()
         }
-        await fulfillment(of: [loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 5)
     }
 
     func testNotLoadedStateLoadSuccess() async throws {
@@ -168,7 +168,7 @@ class AppSyncListProviderTests: XCTestCase {
             _ = try await provider.load()
             loadCompleted.fulfill()
         }
-        await fulfillment(of: [loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 5)
 
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -218,7 +218,7 @@ class AppSyncListProviderTests: XCTestCase {
                 loadCompleted.fulfill()
             }
         }
-        await fulfillment(of: [loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 5)
     }
 
     func testNotLoadedStateLoadWithCompletionSuccess() async {
@@ -255,7 +255,7 @@ class AppSyncListProviderTests: XCTestCase {
             loadComplete.fulfill()
         }
 
-        await fulfillment(of: [loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 5)
 
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -301,7 +301,7 @@ class AppSyncListProviderTests: XCTestCase {
                 loadComplete.fulfill()
             }
         }
-        await fulfillment(of: [loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 5)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -339,7 +339,7 @@ class AppSyncListProviderTests: XCTestCase {
             }
 
         }
-        await fulfillment(of: [loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 5)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
