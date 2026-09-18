@@ -1,12 +1,13 @@
 {
   "analytics":          { "targets": ["AWSPinpointAnalyticsPlugin"],          "paths": ["AmplifyPlugins/Analytics/"] },
-  "kinesis_firehose":   { "targets": ["AmplifyKinesisClient", "AmplifyFirehoseClient"], "paths": ["AmplifyClients/AmplifyKinesisClient/", "AmplifyClients/AmplifyFirehoseClient/"] },
+  "kinesis_firehose":   { "targets": ["AmplifyKinesisClient", "AmplifyFirehoseClient"], "paths": ["AmplifyClients/AmplifyKinesisClient/", "AmplifyClients/AmplifyFirehoseClient/", "AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/"] },
   "push_notifications": { "targets": ["AWSPinpointPushNotificationsPlugin"],   "paths": ["AmplifyPlugins/Notifications/"] },
   "predictions":        { "targets": ["AWSPredictionsPlugin"],                 "paths": ["AmplifyPlugins/Predictions/"] },
   "auth":               { "targets": ["AWSCognitoAuthPlugin"],                 "paths": ["AmplifyPlugins/Auth/"] },
   "geo":                { "targets": ["AWSLocationGeoPlugin"],                 "paths": ["AmplifyPlugins/Geo/"] },
   "storage":            { "targets": ["AWSS3StoragePlugin"],                   "paths": ["AmplifyPlugins/Storage/"] },
   "logging":            { "targets": ["AWSCloudWatchLoggingPlugin"],           "paths": ["AmplifyPlugins/Logging/"] },
+  "cloudwatch":         { "targets": ["AmplifyCloudWatchClient"],              "paths": ["AmplifyClients/AmplifyCloudWatchClient/"] },
   "api":                { "targets": ["AWSAPIPlugin"],                         "paths": ["AmplifyPlugins/API/"] },
   "datastore":          { "targets": ["AWSDataStorePlugin"],                   "paths": ["AmplifyPlugins/DataStore/"] }
 }

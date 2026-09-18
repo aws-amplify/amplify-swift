@@ -219,7 +219,17 @@ final class StorageEngine: StorageEngineBehavior {
             return
         }
 
+        // Invoke `completion` exactly once, always after the transaction has closed: doing it both
+        // inside the transaction body and in `catch` double-resumed the continuation.
+        // https://github.com/aws-amplify/amplify-swift/issues/3716
+        let saveResult: DataStoreResult<M>
+        var handoff: (model: M, syncEngine: RemoteSyncEngineBehavior)?
         do {
+            var localSaveResult: DataStoreResult<M> = .failure(.unknown(
+                "Save transaction did not run.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                nil
+            ))
             try storageAdapter.transaction {
                 let result = self.storageAdapter.save(
                     model,
@@ -227,17 +237,13 @@ final class StorageEngine: StorageEngineBehavior {
                     condition: condition,
                     eagerLoad: eagerLoad
                 )
-                guard modelSchema.isSyncable else {
-                    completion(result)
+                localSaveResult = result
+
+                guard modelSchema.isSyncable, case .success(let savedModel) = result else {
                     return
                 }
 
-                guard case .success(let savedModel) = result else {
-                    completion(result)
-                    return
-                }
-
-                guard let syncEngine else {
+                guard let syncEngine = self.syncEngine else {
                     let message = "No SyncEngine available to sync mutation event, rollback save."
                     self.log.verbose("\(#function) \(message) : \(savedModel)")
                     throw DataStoreError.internalOperation(
@@ -246,19 +252,28 @@ final class StorageEngine: StorageEngineBehavior {
                         nil
                     )
                 }
-                self.log.verbose("\(#function) syncing mutation for \(savedModel)")
-                self.syncMutation(
-                    of: savedModel,
-                    modelSchema: modelSchema,
-                    mutationType: mutationType,
-                    predicate: condition,
-                    syncEngine: syncEngine,
-                    completion: completion
-                )
+                handoff = (savedModel, syncEngine)
             }
+            saveResult = localSaveResult
         } catch {
             completion(.failure(causedBy: error))
+            return
         }
+
+        guard let handoff else {
+            completion(saveResult)
+            return
+        }
+
+        log.verbose("\(#function) syncing mutation for \(handoff.model)")
+        syncMutation(
+            of: handoff.model,
+            modelSchema: modelSchema,
+            mutationType: mutationType,
+            predicate: condition,
+            syncEngine: handoff.syncEngine,
+            completion: completion
+        )
     }
 
     func save<M: Model>(
