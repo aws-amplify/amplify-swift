@@ -20,7 +20,7 @@ on:
         description: 'The xcodebuild flags used when running the test. Unit tests must pass first-go, so no test-level retries.'
         required: false
         type: string
-        default: '-parallel-testing-enabled NO -test-repetition-relaunch-enabled YES'
+        default: '-parallel-testing-enabled NO'
       retry_tests:
         required: false
         type: boolean
