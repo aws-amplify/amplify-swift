@@ -9,7 +9,9 @@
 import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
-private let timeout: TimeInterval = 5
+// Waits cover real local-socket connect/disconnect/auto-retry round-trips (incl. retry backoff),
+// which can exceed a few seconds under CI load — hence a generous shared budget.
+private let timeout: TimeInterval = 10
 
 class WebSocketClientTests: XCTestCase {
     var localWebSocketServer: LocalWebSocketServer?

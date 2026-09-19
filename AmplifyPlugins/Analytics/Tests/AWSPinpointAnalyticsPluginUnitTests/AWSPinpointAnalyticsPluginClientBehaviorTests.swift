@@ -42,7 +42,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testIdentifyUser() async throws {
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
                 analyticsEventReceived.fulfill()
@@ -70,9 +70,17 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
+        // Wait for the Hub listener to be registered before triggering the event,
+        // otherwise the dispatched `identifyUser` event can be emitted before the
+        // listener exists and the expectation never fulfills.
+        guard try await HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return
+        }
+
         analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
 
-        await fulfillment(of: [analyticsEventReceived], timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 10)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
     }

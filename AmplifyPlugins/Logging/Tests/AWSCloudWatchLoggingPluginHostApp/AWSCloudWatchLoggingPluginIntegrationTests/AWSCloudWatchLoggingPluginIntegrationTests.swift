@@ -29,6 +29,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func setUp() async throws {
         continueAfterFailure = false
+        // Clear cached constraints; permissive ones are installed after configure (below).
+        UserDefaults.standard.reset()
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
 
@@ -50,6 +52,12 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
             }
 
             try await Task.sleep(seconds: 5)
+
+            // Force verbose so every logged level passes canLog, regardless of the deployed
+            // config default (.error for un-overridden categories) or remote-fetch timing.
+            UserDefaults.standard.setLocalLoggingConstraints(
+                loggingConstraints: LoggingConstraints(defaultLogLevel: .verbose)
+            )
         } catch {
             XCTFail("Failed to initialize and configure Amplify: \(error)")
         }
@@ -59,6 +67,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        // Avoid leaking cached remote logging constraints into subsequent tests/runs.
+        UserDefaults.standard.reset()
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
         let directory = documents.appendingPathComponent("amplify").appendingPathComponent("logging")
         let fileURLs = try FileManager.default.contentsOfDirectory(
@@ -97,6 +107,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         logger.debug(message)
         logger.warn(message)
         logger.info(message)
+        // Log writes are fire-and-forget; let them persist before flushing.
+        try await Task.sleep(seconds: 2)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
         guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
             XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
@@ -127,6 +139,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         Amplify.Logging.enable()
         logger.verbose(message)
+        // Log writes are fire-and-forget; let them persist before flushing.
+        try await Task.sleep(seconds: 2)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
         guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
             XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
@@ -260,7 +274,11 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         let startTime = endTime.addingTimeInterval(TimeInterval(-durationInMinutes * 60))
         var events = try await AWSCloudWatchClientHelper.getFilterLogEventCount(client: client, filterPattern: message, startTime: startTime, endTime: endTime, logGroupName: logGroupName)
 
-        if events?.count != expectedMessageCount && requestAttempt <= 5 {
+        // CloudWatch Logs GetLogEvents/FilterLogEvents is eventually consistent, and tvOS CI runners
+        // are the slowest lane, so a freshly-flushed message can take a while to become queryable.
+        // Re-flush and retry with a widening time window. (If this ever exhausts all attempts, treat
+        // it as a possible real flush regression, not just consistency lag, before raising further.)
+        if events?.count != expectedMessageCount && requestAttempt <= 8 {
             try await plugin.flushLogs()
             try await Task.sleep(seconds: 30)
             let attempted = requestAttempt + 1

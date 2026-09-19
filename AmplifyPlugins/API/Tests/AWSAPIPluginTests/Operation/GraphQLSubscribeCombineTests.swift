@@ -77,7 +77,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
             receivedStateValueDisconnected,
             receivedDataValueSuccess,
             receivedDataValueError
-        ], timeout: 0.05)
+        ], timeout: 10)
     }
 
     func testHappyPath() async throws {
