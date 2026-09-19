@@ -107,6 +107,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         logger.debug(message)
         logger.warn(message)
         logger.info(message)
+        // Log writes are fire-and-forget; let them persist before flushing.
+        try await Task.sleep(seconds: 2)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
         guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
             XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
@@ -137,6 +139,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         Amplify.Logging.enable()
         logger.verbose(message)
+        // Log writes are fire-and-forget; let them persist before flushing.
+        try await Task.sleep(seconds: 2)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
         guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
             XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")

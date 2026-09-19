@@ -128,8 +128,9 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         try await Amplify.DataStore.start()
 
-        // 10s is too tight for a live-backend sync start on slower platforms (tvOS/watchOS).
-        await fulfillment(of: [eventReceived], timeout: networkTimeout)
+        // 10s is too tight on slower platforms; cap well below networkTimeout so a sync-start
+        // outage fails fast per test instead of compounding into the 2h job limit.
+        await fulfillment(of: [eventReceived], timeout: 30)
     }
 
 }
