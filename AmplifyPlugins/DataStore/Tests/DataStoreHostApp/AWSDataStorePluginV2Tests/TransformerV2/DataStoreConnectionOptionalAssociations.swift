@@ -258,6 +258,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -286,6 +288,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -325,6 +329,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {

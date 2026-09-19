@@ -208,9 +208,12 @@ class AWSAuthBaseTest: XCTestCase {
         let expectation = XCTestExpectation(description: "Wait for OTP")
         expectation.expectedFulfillmentCount = 1
 
+        // Poll once per second up to 60s; OTP delivery latency (email/SMS -> Lambda -> AppSync)
+        // can exceed the previous 30s. Returns as soon as the code arrives.
+        let pollAttempts = 60
         let task = Task { () -> String? in
             var code: String?
-            for _ in 0 ..< 30 { // Poll for the code, max 30 times (once per second)
+            for _ in 0 ..< pollAttempts {
                 if let otp = usernameOTPDictionary[lowerCasedUsername] {
                     code = otp
                     expectation.fulfill() // Fulfill the expectation when the value is found
@@ -221,8 +224,7 @@ class AWSAuthBaseTest: XCTestCase {
             return code
         }
 
-        // Wait for expectation or timeout after 30 seconds
-        let result = await XCTWaiter.fulfillment(of: [expectation], timeout: 30)
+        let result = await XCTWaiter.fulfillment(of: [expectation], timeout: TimeInterval(pollAttempts))
 
         if result == .timedOut {
             // Task cancels if timed out

@@ -63,14 +63,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func tearDown() async throws {
         Self.logger.debug("tearDown")
-        invalidateCurrentSession()
+        await invalidateCurrentSession()
         await Amplify.reset()
         requestRecorder = nil
-        // `sleep` has been added here to get more consistent test runs.
-        // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
-        // However, it needs some time to properly clean up before creating and using a new session.
-        // The `sleep` helps avoid the error: "Task created in a session that has been invalidated"
-        try await Task.sleep(seconds: 1)
     }
 
     // MARK: Common Helper functions
@@ -238,21 +233,65 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         await fulfillment(of: [expectation], timeout: timeout)
     }
 
-    private func invalidateCurrentSession() {
+    /// Invalidates every storage service's background `URLSession` and awaits actual teardown before
+    /// the next test recreates one with the same fixed identifier ("Task created in a session that has
+    /// been invalidated"). Waits on the delegate's `StorageURLSessionDidBecomeInvalidNotification`.
+    private func invalidateCurrentSession() async {
         Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
             print("Unable to to cast to AWSS3StoragePlugin")
             return
         }
 
-        for serviceBehaviour in plugin.storageServicesByBucket.values {
-            guard let service = serviceBehaviour as? AWSS3StorageService else {
-                continue
+        let sessions = plugin.storageServicesByBucket.values
+            .compactMap { $0 as? AWSS3StorageService }
+            .map { service -> URLSession in
+                // Detach so invalidation doesn't trigger resetURLSession() and recreate the session.
+                if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
+                    delegate.storageService = nil
+                }
+                return service.urlSession
             }
-            if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
-                delegate.storageService = nil
+
+        await withTaskGroup(of: Void.self) { group in
+            for session in sessions {
+                group.addTask {
+                    await Self.awaitInvalidation(of: session, timeout: 10)
+                }
             }
-            service.urlSession.invalidateAndCancel()
+        }
+    }
+
+    /// Invalidates `session`, resuming when it becomes invalid or after `timeout`, whichever is first.
+    private static func awaitInvalidation(of session: URLSession, timeout: TimeInterval) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let lock = NSLock()
+            var didResume = false
+            var observer: NSObjectProtocol?
+
+            func finish() {
+                lock.lock()
+                let shouldResume = !didResume
+                didResume = true
+                lock.unlock()
+                guard shouldResume else { return }
+                if let observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
+                continuation.resume()
+            }
+
+            // Register before invalidating so the completion notification cannot be missed.
+            observer = NotificationCenter.default.addObserver(
+                forName: .StorageURLSessionDidBecomeInvalidNotification,
+                object: session,
+                queue: nil
+            ) { _ in finish() }
+
+            session.invalidateAndCancel()
+
+            // Fallback so teardown never hangs if the notification does not arrive.
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) { finish() }
         }
     }
 }
