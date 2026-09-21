@@ -7,6 +7,7 @@
 
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import Foundation
 @testable import AWSCognitoAuthPlugin
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
