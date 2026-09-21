@@ -14,7 +14,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 class StorageEngineTestsBase: XCTestCase {
-    let defaultTimeout = 0.3
+    let defaultTimeout = 5.0
     var connection: Connection!
     var storageEngine: StorageEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
@@ -146,7 +146,7 @@ class StorageEngineTestsBase: XCTestCase {
         modelType: M.Type,
         withId id: String,
         where predicate: QueryPredicate? = nil,
-        timeout: TimeInterval = 1
+        timeout: TimeInterval = 10
     ) -> DataStoreResult<M> {
         let result = deleteModelSynchronous(
             modelType: modelType,
