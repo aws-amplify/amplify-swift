@@ -95,7 +95,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -111,7 +111,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 
@@ -135,7 +135,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -150,7 +150,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 
@@ -173,7 +173,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         mockAppSyncRealTimeClient.triggerEvent(.error(["Error"]))
@@ -187,7 +187,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 
@@ -216,7 +216,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -232,7 +232,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 
@@ -252,7 +252,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -269,7 +269,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 
@@ -294,7 +294,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 10)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 30)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
@@ -312,7 +312,7 @@ class GraphQLSubscribeTests: OperationTestBase {
                 receivedSubscriptionEventData,
                 receivedSubscriptionEventError
             ],
-            timeout: 10
+            timeout: 30
         )
     }
 

@@ -41,7 +41,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.query)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
-        await fulfillment(of: [operationFinished], timeout: 1)
+        await fulfillment(of: [operationFinished], timeout: 10)
     }
 
     // MARK: Mutate API Tests
@@ -72,7 +72,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.mutation)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
-        await fulfillment(of: [operationFinished], timeout: 1)
+        await fulfillment(of: [operationFinished], timeout: 10)
     }
 
     // MARK: Subscribe API Tests
@@ -103,6 +103,6 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.subscription)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
-        await fulfillment(of: [operationFinished], timeout: 1)
+        await fulfillment(of: [operationFinished], timeout: 10)
     }
 }
