@@ -200,7 +200,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     /// Throws GetTokensFromRefreshTokenOutputError
     func getTokensFromRefreshToken(input: GetTokensFromRefreshTokenInput) async throws -> GetTokensFromRefreshTokenOutput {
-        return try await mockGetTokensFromRefreshTokenResponse!(input)
+        // Throw instead of force-unwrapping: an unmocked refresh-token call (fired conditionally by
+        // some tests) would otherwise crash the whole test process and take down every later test.
+        guard let mockGetTokensFromRefreshTokenResponse else {
+            throw NSError(domain: "MockIdentityProvider", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "mockGetTokensFromRefreshTokenResponse not set"])
+        }
+        return try await mockGetTokensFromRefreshTokenResponse(input)
     }
 
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutput {
