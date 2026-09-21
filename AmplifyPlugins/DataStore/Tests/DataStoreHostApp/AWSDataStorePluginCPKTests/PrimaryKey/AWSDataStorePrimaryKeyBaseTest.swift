@@ -26,8 +26,12 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     }
 
     override func tearDown() async throws {
+        // Stop and let in-flight sync unwind before reset clears the ModelRegistry; otherwise a
+        // late outgoing mutation crashes with "Could not retrieve schema for the model ...".
+        try? await Amplify.DataStore.stop()
         try await Amplify.DataStore.clear()
         requests = []
+        try? await Task.sleep(seconds: 1)
         await Amplify.reset()
     }
 
