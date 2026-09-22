@@ -11,7 +11,9 @@ import SmithyHTTPAPI
 import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class PinpointRequestsRegistryTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PinpointRequestsRegistryTests: XCTestCase, @unchecked Sendable {
     private var mockedHttpSdkClient: MockHttpClientEngine!
     private var pinpointConfiguration: PinpointClient.PinpointClientConfiguration!
 
@@ -92,7 +94,9 @@ private extension HTTPClient {
     }
 }
 
-private class MockHttpClientEngine: HTTPClient {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+private class MockHttpClientEngine: HTTPClient, @unchecked Sendable {
     var executeCount = 0
     var request: HTTPRequest?
 

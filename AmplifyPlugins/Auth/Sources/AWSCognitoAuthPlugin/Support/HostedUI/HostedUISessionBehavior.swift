@@ -9,7 +9,9 @@ import Amplify
 import AuthenticationServices
 import Foundation
 
-protocol HostedUISessionBehavior {
+/// - Note: `Sendable` for the same reason as `RandomStringBehavior`: the session is produced by a
+///   `@Sendable` factory on the HostedUI environment.
+protocol HostedUISessionBehavior: Sendable {
 
     func showHostedUI(
         url: URL,

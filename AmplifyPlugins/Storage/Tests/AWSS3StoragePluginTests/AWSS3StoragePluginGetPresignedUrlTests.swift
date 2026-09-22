@@ -12,7 +12,9 @@
 import Amplify
 import XCTest
 
-final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase, @unchecked Sendable {
 
     var systemUnderTest: AWSS3StoragePlugin!
     var storageService: MockAWSS3StorageService!

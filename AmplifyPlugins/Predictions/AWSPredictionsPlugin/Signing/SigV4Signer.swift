@@ -116,7 +116,8 @@ import Foundation
                                                                                                         │
      └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 */
-struct SigV4Signer {
+/// - Note: `Sendable` because the signer is captured by the liveness session's send path.
+struct SigV4Signer: Sendable {
     let credential: Credential
     // e.g. "rekognition"
     let serviceName: String
@@ -129,7 +130,9 @@ struct SigV4Signer {
     // previous signature (if it exists) to use
     // in subsequent signing requests as needed.
     let _storage = PreviousSignatureStorage()
-    final class PreviousSignatureStorage {
+    /// - Note: `@unchecked Sendable`: this is a one-slot cache written and read on the liveness
+    ///   session's own send path, which is serialized.
+    final class PreviousSignatureStorage: @unchecked Sendable {
         var previousSignature: String?
     }
 

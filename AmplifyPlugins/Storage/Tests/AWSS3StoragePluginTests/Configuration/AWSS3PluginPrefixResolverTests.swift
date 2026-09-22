@@ -22,7 +22,7 @@ extension Sequence<PrefixTestData> {
     }
 }
 
-struct PrefixTestData {
+struct PrefixTestData: Sendable {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let expectedPrefix: String
@@ -49,7 +49,9 @@ struct PrefixTestData {
     }
 }
 
-class AWSS3PluginPrefixResolverTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3PluginPrefixResolverTests: XCTestCase, @unchecked Sendable {
 
     func testPassthroughPrefixResolver() async throws {
         let prefixResolver = PassThroughPrefixResolver()

@@ -8,7 +8,9 @@
 import XCTest
 @testable import Amplify
 
-class NondeterminsticOperationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class NondeterminsticOperationTests: XCTestCase, @unchecked Sendable {
     enum TestError: Error {
         case error
     }
@@ -19,17 +21,17 @@ class NondeterminsticOperationTests: XCTestCase {
      */
     func test_withAllSucceedOperations_onlyFirstOneExecuted() async throws {
         let expectation1 = expectation(description: "opeartion 1 executed")
-        let operation1: () async throws -> Void  =  {
+        let operation1: @Sendable () async throws -> Void = {
             expectation1.fulfill()
         }
         let expectation2 = expectation(description: "opeartion 2 executed")
         expectation2.isInverted = true
-        let operation2: () async throws -> Void  =  {
+        let operation2: @Sendable () async throws -> Void = {
             expectation2.fulfill()
         }
         let expectation3 = expectation(description: "opeartion 3 executed")
         expectation3.isInverted = true
-        let operation3: () async throws -> Void  =  {
+        let operation3: @Sendable () async throws -> Void = {
             expectation3.fulfill()
         }
 
@@ -51,17 +53,17 @@ class NondeterminsticOperationTests: XCTestCase {
      */
     func test_withAllFailedOperations_throwsTotoalFailureAndAllOperationsAreExecuted() async throws {
         let expectation1 = expectation(description: "opeartion 1 executed")
-        let operation1: () async throws -> Void  =  {
+        let operation1: @Sendable () async throws -> Void = {
             expectation1.fulfill()
             throw TestError.error
         }
         let expectation2 = expectation(description: "opeartion 2 executed")
-        let operation2: () async throws -> Void  =  {
+        let operation2: @Sendable () async throws -> Void = {
             expectation2.fulfill()
             throw TestError.error
         }
         let expectation3 = expectation(description: "opeartion 3 executed")
-        let operation3: () async throws -> Void  =  {
+        let operation3: @Sendable () async throws -> Void = {
             expectation3.fulfill()
             throw TestError.error
         }
@@ -88,22 +90,22 @@ class NondeterminsticOperationTests: XCTestCase {
      */
     func test_withSomeSuccessOperations_AllOperationsUntilSuccessOperationAreExecuted() async throws {
         let expectation1 = expectation(description: "opeartion 1 executed")
-        let operation1: () async throws -> Void  =  {
+        let operation1: @Sendable () async throws -> Void = {
             expectation1.fulfill()
             throw TestError.error
         }
         let expectation2 = expectation(description: "opeartion 2 executed")
-        let operation2: () async throws -> Void  =  {
+        let operation2: @Sendable () async throws -> Void = {
             expectation2.fulfill()
             throw TestError.error
         }
         let expectation3 = expectation(description: "opeartion 3 executed")
-        let operation3: () async throws -> Void  =  {
+        let operation3: @Sendable () async throws -> Void = {
             expectation3.fulfill()
         }
         let expectation4 = expectation(description: "opeartion  executed")
         expectation4.isInverted = true
-        let operation4: () async throws -> Void  =  {
+        let operation4: @Sendable () async throws -> Void = {
             expectation4.fulfill()
             throw TestError.error
         }

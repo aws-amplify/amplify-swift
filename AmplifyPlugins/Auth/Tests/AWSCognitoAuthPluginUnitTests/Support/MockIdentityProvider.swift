@@ -11,82 +11,82 @@ import ClientRuntime
 
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
-    typealias MockSignUpResponse = (SignUpInput) async throws
+    typealias MockSignUpResponse = @Sendable (SignUpInput) async throws
     -> SignUpOutput
 
-    typealias MockRevokeTokenResponse = (RevokeTokenInput) async throws
+    typealias MockRevokeTokenResponse = @Sendable (RevokeTokenInput) async throws
     -> RevokeTokenOutput
 
-    typealias MockInitiateAuthResponse = (InitiateAuthInput) async throws
+    typealias MockInitiateAuthResponse = @Sendable (InitiateAuthInput) async throws
     -> InitiateAuthOutput
 
-    typealias MockGetTokensFromRefreshTokenResponse = (GetTokensFromRefreshTokenInput) async throws
+    typealias MockGetTokensFromRefreshTokenResponse = @Sendable (GetTokensFromRefreshTokenInput) async throws
     -> GetTokensFromRefreshTokenOutput
 
-    typealias MockConfirmSignUpResponse = (ConfirmSignUpInput) async throws
+    typealias MockConfirmSignUpResponse = @Sendable (ConfirmSignUpInput) async throws
     -> ConfirmSignUpOutput
 
-    typealias MockGlobalSignOutResponse = (GlobalSignOutInput) async throws
+    typealias MockGlobalSignOutResponse = @Sendable (GlobalSignOutInput) async throws
     -> GlobalSignOutOutput
 
-    typealias MockRespondToAuthChallengeResponse = (RespondToAuthChallengeInput) async throws
+    typealias MockRespondToAuthChallengeResponse = @Sendable (RespondToAuthChallengeInput) async throws
     -> RespondToAuthChallengeOutput
 
-    typealias MockGetUserAttributeVerificationCodeOutput = (GetUserAttributeVerificationCodeInput) async throws
+    typealias MockGetUserAttributeVerificationCodeOutput = @Sendable (GetUserAttributeVerificationCodeInput) async throws
     -> GetUserAttributeVerificationCodeOutput
 
-    typealias MockGetUserAttributesOutput = (GetUserInput) async throws
+    typealias MockGetUserAttributesOutput = @Sendable (GetUserInput) async throws
     -> GetUserOutput
 
-    typealias MockUpdateUserAttributesOutput = (UpdateUserAttributesInput) async throws
+    typealias MockUpdateUserAttributesOutput = @Sendable (UpdateUserAttributesInput) async throws
     -> UpdateUserAttributesOutput
 
-    typealias MockConfirmUserAttributeOutput = (VerifyUserAttributeInput) async throws
+    typealias MockConfirmUserAttributeOutput = @Sendable (VerifyUserAttributeInput) async throws
     -> VerifyUserAttributeOutput
 
-    typealias MockChangePasswordOutput = (ChangePasswordInput) async throws
+    typealias MockChangePasswordOutput = @Sendable (ChangePasswordInput) async throws
     -> ChangePasswordOutput
 
-    typealias MockResendConfirmationCodeOutput = (ResendConfirmationCodeInput) async throws
+    typealias MockResendConfirmationCodeOutput = @Sendable (ResendConfirmationCodeInput) async throws
     -> ResendConfirmationCodeOutput
 
-    typealias MockForgotPasswordOutput = (ForgotPasswordInput) async throws
+    typealias MockForgotPasswordOutput = @Sendable (ForgotPasswordInput) async throws
     -> ForgotPasswordOutput
 
-    typealias MockDeleteUserOutput = (DeleteUserInput) async throws
+    typealias MockDeleteUserOutput = @Sendable (DeleteUserInput) async throws
     -> DeleteUserOutput
 
-    typealias MockConfirmForgotPasswordOutput = (ConfirmForgotPasswordInput) async throws
+    typealias MockConfirmForgotPasswordOutput = @Sendable (ConfirmForgotPasswordInput) async throws
     -> ConfirmForgotPasswordOutput
 
-    typealias MockListDevicesOutput = (ListDevicesInput) async throws
+    typealias MockListDevicesOutput = @Sendable (ListDevicesInput) async throws
     -> ListDevicesOutput
 
-    typealias MockRememberDeviceResponse = (UpdateDeviceStatusInput) async throws
+    typealias MockRememberDeviceResponse = @Sendable (UpdateDeviceStatusInput) async throws
     -> UpdateDeviceStatusOutput
 
-    typealias MockForgetDeviceResponse = (ForgetDeviceInput) async throws
+    typealias MockForgetDeviceResponse = @Sendable (ForgetDeviceInput) async throws
     -> ForgetDeviceOutput
 
-    typealias MockConfirmDeviceResponse = (ConfirmDeviceInput) async throws
+    typealias MockConfirmDeviceResponse = @Sendable (ConfirmDeviceInput) async throws
     -> ConfirmDeviceOutput
 
-    typealias MockSetUserMFAPreferenceResponse = (SetUserMFAPreferenceInput) async throws
+    typealias MockSetUserMFAPreferenceResponse = @Sendable (SetUserMFAPreferenceInput) async throws
     -> SetUserMFAPreferenceOutput
 
-    typealias MockAssociateSoftwareTokenResponse = (AssociateSoftwareTokenInput) async throws
+    typealias MockAssociateSoftwareTokenResponse = @Sendable (AssociateSoftwareTokenInput) async throws
     -> AssociateSoftwareTokenOutput
 
-    typealias MockVerifySoftwareTokenResponse = (VerifySoftwareTokenInput) async throws
+    typealias MockVerifySoftwareTokenResponse = @Sendable (VerifySoftwareTokenInput) async throws
     -> VerifySoftwareTokenOutput
 
-    typealias MockListWebAuthnCredentialsResponse = (ListWebAuthnCredentialsInput) async throws -> ListWebAuthnCredentialsOutput
+    typealias MockListWebAuthnCredentialsResponse = @Sendable (ListWebAuthnCredentialsInput) async throws -> ListWebAuthnCredentialsOutput
 
-    typealias MockDeleteWebAuthnCredentialResponse = (DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
+    typealias MockDeleteWebAuthnCredentialResponse = @Sendable (DeleteWebAuthnCredentialInput) async throws -> DeleteWebAuthnCredentialOutput
 
-    typealias MockStartWebAuthnRegistrationResponse = (StartWebAuthnRegistrationInput) async throws -> StartWebAuthnRegistrationOutput
+    typealias MockStartWebAuthnRegistrationResponse = @Sendable (StartWebAuthnRegistrationInput) async throws -> StartWebAuthnRegistrationOutput
 
-    typealias MockCompletetWebAuthnRegistrationResponse = (CompleteWebAuthnRegistrationInput) async throws -> CompleteWebAuthnRegistrationOutput
+    typealias MockCompletetWebAuthnRegistrationResponse = @Sendable (CompleteWebAuthnRegistrationInput) async throws -> CompleteWebAuthnRegistrationOutput
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?

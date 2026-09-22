@@ -22,7 +22,9 @@ struct MockFirehoseCredentials: AmplifyFoundation.AWSCredentials {
     var secretAccessKey: String { "mock-secret-key" }
 }
 
-class AmplifyFirehoseClientResourceCleanupTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyFirehoseClientResourceCleanupTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the client is deallocated and the scheduler stops on deinit.
     ///

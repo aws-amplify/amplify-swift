@@ -10,7 +10,8 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthTaskHelper: DefaultLogger {
+/// - Note: `final` and `Sendable`: the helper only holds a state machine reference.
+final class AWSAuthTaskHelper: DefaultLogger, Sendable {
 
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper

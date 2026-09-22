@@ -8,7 +8,10 @@
 import Amplify
 import Combine
 
-class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin, @unchecked Sendable {
 
     var responders = [ResponderKeys: Any]()
 
@@ -27,7 +30,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func save<M: Model>(
         _ model: M,
         where condition: QueryPredicate? = nil,
-        completion: @escaping (DataStoreResult<M>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<M>) -> Void
     ) {
         notify("save")
 
@@ -54,7 +57,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func query<M: Model>(
         _ modelType: M.Type,
         byId id: String,
-        completion: @escaping (DataStoreResult<M?>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
     ) {
         notify("queryById")
 
@@ -78,7 +81,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func query<M: Model>(
         _ modelType: M.Type,
         byIdentifier id: String,
-        completion: @escaping (DataStoreResult<M?>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
     ) where M: ModelIdentifiable,
                                                                           M.IdentifierFormat == ModelIdentifierFormat.Default {
         notify("queryByIdentifier")
@@ -106,7 +109,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         where predicate: QueryPredicate?,
         sort sortInput: QuerySortInput?,
         paginate paginationInput: QueryPaginationInput?,
-        completion: @escaping (DataStoreResult<[M]>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<[M]>) -> Void
     ) {
         notify("queryByPredicate")
 
@@ -154,13 +157,15 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func query<M>(
         _ modelType: M.Type,
         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-        completion: @escaping (DataStoreResult<M?>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<M?>) -> Void
     ) where M: Model, M: ModelIdentifiable {
         notify("queryWithIdentifier")
 
+       // Hoisted so the task captures a `String` rather than the identifier value.
+       let identifierValue = id.stringValue
        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
            Task {
-               if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+               if let callback = responder.callback((modelType: modelType, id: identifierValue)) {
                    completion(callback)
                }
            }
@@ -180,7 +185,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         _ modelType: M.Type,
         withId id: String,
         where predicate: QueryPredicate? = nil,
-        completion: @escaping (DataStoreResult<Void>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<Void>) -> Void
     ) {
         notify("deleteById")
 
@@ -205,7 +210,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         _ modelType: M.Type,
         withIdentifier id: String,
         where predicate: QueryPredicate? = nil,
-        completion: @escaping (DataStoreResult<Void>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<Void>) -> Void
     ) where M: ModelIdentifiable,
                                                                              M.IdentifierFormat == ModelIdentifierFormat.Default {
         notify("deleteByIdentifier")
@@ -236,9 +241,11 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     ) where M: Model, M: ModelIdentifiable {
         notify("deleteByIdentifier")
 
+        // Hoisted so the task captures a `String` rather than the identifier value.
+        let identifierValue = id.stringValue
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
             Task {
-                if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+                if let callback = responder.callback((modelType: modelType, id: identifierValue)) {
                     completion(callback)
                 }
             }
@@ -256,7 +263,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func delete<M: Model>(
         _ modelType: M.Type,
         where predicate: QueryPredicate,
-        completion: @escaping (DataStoreResult<Void>) -> Void
+        completion: @escaping @Sendable (DataStoreResult<Void>) -> Void
     ) {
         notify("deleteModelTypeByPredicate")
 
@@ -385,31 +392,38 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         sort sortInput: QuerySortInput?
     ) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
 
-        let request = ObserveQueryRequest(options: [])
+        let request = ObserveQueryRequest()
         let taskRunner = MockObserveQueryTaskRunner<M>(request: request)
         return taskRunner.sequence
     }
 }
 
-class MockSecondDataStoreCategoryPlugin: MockDataStoreCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondDataStoreCategoryPlugin: MockDataStoreCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondDataStoreCategoryPlugin"
     }
 }
 
 
-class ObserveQueryRequest: AmplifyOperationRequest {
-    var options: Any
+// Mirrors the plugin's `ObserveQueryRequest`: `Options` must be `Sendable`, and options are unused.
+final class ObserveQueryRequest: AmplifyOperationRequest, Sendable {
+    struct Options: Sendable {
+        init() {}
+    }
 
-    typealias Options = Any
+    let options: Options
 
-    init(options: Any) {
+    init(options: Options = .init()) {
         self.options = options
     }
 
 }
 
-class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, @unchecked Sendable {
 
     typealias Request = ObserveQueryRequest
     typealias InProcess = DataStoreQuerySnapshot<M>

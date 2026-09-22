@@ -14,7 +14,9 @@ import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class AWSMutationDatabaseAdapterTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSMutationDatabaseAdapterTests: XCTestCase, @unchecked Sendable {
     var databaseAdapter: AWSMutationDatabaseAdapter!
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     let model1 = Post(title: "model1", content: "content1", createdAt: .now())

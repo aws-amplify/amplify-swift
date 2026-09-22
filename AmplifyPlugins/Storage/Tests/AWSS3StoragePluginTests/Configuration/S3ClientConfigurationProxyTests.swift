@@ -13,7 +13,9 @@ import XCTest
 
 @testable import AWSS3StoragePlugin
 
-final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class S3ClientConfigurationAccelerateTestCase: XCTestCase, @unchecked Sendable {
 
     /// Given: A base configuration that has a value for a property such as `accelerate`.
     /// When: An override is set through `withAccelerate(_:)`

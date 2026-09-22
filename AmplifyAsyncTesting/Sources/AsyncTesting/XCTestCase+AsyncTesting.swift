@@ -41,7 +41,9 @@ public extension XCTestCase {
     /// - Parameters:
     ///   - expectations: An array of async expectations that must be fulfilled.
     ///   - timeout: The number of seconds within which all expectations must be fulfilled.
-    @MainActor
+    // Not `@MainActor` for the same reason as `AsyncTesting.waitForExpectations`: this
+    // body never touches `self`, so main-actor isolation would only serve to push a
+    // non-Sendable `XCTestCase` across an isolation boundary.
     func waitForExpectations(
         _ expectations: [AsyncExpectation],
         timeout: Double = 1.0,
@@ -62,7 +64,7 @@ public extension XCTestCase {
     ///   - operation: operation to run
     /// - Returns: result of closure
     @discardableResult
-    func testTask<Success>(
+    func testTask<Success: Sendable>(
         timeout: Double = defaultTimeoutForAsyncExpectations,
         file: StaticString = #filePath,
         line: UInt = #line,
@@ -94,10 +96,10 @@ public extension XCTestCase {
     ///
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
-    internal func wait<T>(
+    internal func wait<T: Sendable>(
         with expectation: AsyncExpectation,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> T
+        action: @escaping @Sendable () async throws -> T
     ) async -> T? {
         let task = Task { () -> T? in
             defer {
@@ -128,10 +130,10 @@ public extension XCTestCase {
     ///
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
-    internal func wait<T>(
+    internal func wait<T: Sendable>(
         name: String,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> T
+        action: @escaping @Sendable () async throws -> T
     ) async -> T? {
         let expectation = asyncExpectation(description: name)
         return await wait(with: expectation, timeout: timeout, action: action)
@@ -153,7 +155,7 @@ public extension XCTestCase {
     internal func waitError(
         with expectation: AsyncExpectation,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> some Any
+        action: @escaping @Sendable () async throws -> some Any
     ) async -> Error? {
         let task = Task { () -> Error? in
             defer {
@@ -189,7 +191,7 @@ public extension XCTestCase {
     internal func waitError(
         name: String,
         timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-        action: @escaping () async throws -> some Any
+        action: @escaping @Sendable () async throws -> some Any
     ) async -> Error? {
         let expectation = asyncExpectation(description: name)
         return await waitError(with: expectation, timeout: timeout, action: action)

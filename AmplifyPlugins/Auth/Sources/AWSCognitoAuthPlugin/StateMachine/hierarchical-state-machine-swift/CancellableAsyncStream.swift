@@ -7,7 +7,9 @@
 
 import Combine
 
-class CancellableAsyncStream<Element>: AsyncSequence {
+/// - Note: `final` and `@unchecked Sendable`: both stored properties are `let`, but `AnyCancellable`
+///   is not declared `Sendable`. The stream is awaited from the auth tasks, which are `Sendable`.
+final class CancellableAsyncStream<Element: Sendable>: AsyncSequence, @unchecked Sendable {
 
     typealias AsyncIterator = AsyncStream<Element>.AsyncIterator
     private let asyncStream: AsyncStream<Element>

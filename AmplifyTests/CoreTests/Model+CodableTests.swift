@@ -9,7 +9,9 @@ import Amplify
 import AmplifyTestCommon
 import XCTest
 
-class ModelCodableTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelCodableTests: XCTestCase, @unchecked Sendable {
     let postJSONWithFractionalSeconds = """
     {"comments":[],"content":"content","createdAt":"1970-01-12T13:46:40.123Z","id":"post-1","title":"title"}
     """

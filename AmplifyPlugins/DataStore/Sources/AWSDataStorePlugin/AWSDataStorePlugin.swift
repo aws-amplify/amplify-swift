@@ -16,9 +16,12 @@ enum DataStoreState {
     case clear
 }
 
-public final class AWSDataStorePlugin: DataStoreCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`.
+///   `dataStorePublisher` and the other properties are established during `configure(using:)`
+///   before any client call can reach them.
+public final class AWSDataStorePlugin: DataStoreCategoryPlugin, @unchecked Sendable {
 
-    public var key: PluginKey = "awsDataStorePlugin"
+    public let key: PluginKey = "awsDataStorePlugin"
 
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?

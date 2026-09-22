@@ -7,16 +7,17 @@
 
 import Foundation
 
+/// - Note: `Sendable` because events are written to the liveness WebSocket from concurrent work.
 @_spi(PredictionsFaceLiveness)
-public struct LivenessEvent<T> {
+public struct LivenessEvent<T: Sendable>: Sendable {
     let payload: Data
     let eventKind: LivenessEventKind
     let eventTypeHeader: String
 }
 
 @_spi(PredictionsFaceLiveness)
-public enum LivenessEventKind {
-    public struct Server: RawRepresentable, Hashable {
+public enum LivenessEventKind: Sendable {
+    public struct Server: RawRepresentable, Hashable, Sendable {
         public var rawValue: String
 
         public init(rawValue: String) {
@@ -29,7 +30,7 @@ public enum LivenessEventKind {
     }
     case server(Server)
 
-    public struct Client: Equatable {
+    public struct Client: Equatable, Sendable {
         let id: UInt8
 
         public static let initialFaceDetected = Client(id: 0)
@@ -39,7 +40,7 @@ public enum LivenessEventKind {
     }
     case client(Client)
 
-    public struct Exception: RawRepresentable, Equatable {
+    public struct Exception: RawRepresentable, Equatable, Sendable {
         public var rawValue: String
 
         public init(rawValue: String) {

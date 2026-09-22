@@ -8,7 +8,9 @@
 import Amplify
 import AWSCognitoIdentityProvider
 
-protocol SignInResponseBehavior {
+/// - Note: `Sendable` because sign-in responses are carried on state machine events, which are
+///   `Sendable`.
+protocol SignInResponseBehavior: Sendable {
 
     /// The result returned by the server in response to the request to respond to the authentication challenge.
     var authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType? { get }

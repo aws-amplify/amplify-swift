@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AmplifyAuthCognitoPluginTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyAuthCognitoPluginTests: XCTestCase, @unchecked Sendable {
 
     let apiTimeout = 1.0
 

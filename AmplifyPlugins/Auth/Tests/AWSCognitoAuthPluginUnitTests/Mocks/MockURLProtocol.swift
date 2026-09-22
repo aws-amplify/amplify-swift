@@ -9,7 +9,8 @@ import Foundation
 
 class MockURLProtocol: URLProtocol {
 
-    static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data) )?
+    // `nonisolated(unsafe)`: a test sets this before exercising the protocol and clears it after.
+    nonisolated(unsafe) static var requestHandler: (@Sendable (URLRequest) throws -> (HTTPURLResponse, Data))?
 
     override class func canInit(with request: URLRequest) -> Bool {
         return true

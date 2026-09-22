@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSAPIPlugin
 
-class GraphQLOperationRequestUtilsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLOperationRequestUtilsTests: XCTestCase, @unchecked Sendable {
 
     let baseURL = URL(string: "https://someurl")!
     let testDocument = "testDocument"
