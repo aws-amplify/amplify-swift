@@ -32,7 +32,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",

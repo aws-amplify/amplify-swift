@@ -187,7 +187,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     func testRemovePostFromCommentAndBlogFromPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = try await saveBlog(),
               let post = try await savePost(withBlog: blog),
               let comment = try await saveComment(withPost: post) else {

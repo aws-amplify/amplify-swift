@@ -34,7 +34,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
     /// - Then: The model should be deleted finally and the sync events should be received in order
     func testDeleteModelWithCustomPrimaryKey() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 
         let createReceived = expectation(description: "Create notification received")

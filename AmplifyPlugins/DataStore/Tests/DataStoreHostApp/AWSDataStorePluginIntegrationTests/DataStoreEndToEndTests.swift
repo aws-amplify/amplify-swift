@@ -243,7 +243,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - the update with condition that matches existing data will be applied and returned.
     func testCreateThenMutateWithCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        // Wait for `.ready` (subscriptions established + sync queries done), not just `.syncStarted`,
+        // so the mutation round-trips instead of being saved before the engine can sync it.
+        try await startAmplifyAndWaitForReady()
         let post = Post.keys
         let date = Temporal.DateTime.now()
         let title = "This is a new post I created"
@@ -487,9 +489,17 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///
     func testClearStart() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         try await Amplify.DataStore.clear()
+        // Wait for the restarted engine to reach `.ready` before saving, otherwise the create's
+        // sync event is never delivered (same reason the initial wait uses ready, not syncStarted).
+        let readyAfterRestart = expectation(description: "DataStore ready after clear/start")
+        let readySink = Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
+            .sink { _ in readyAfterRestart.fulfill() }
         try await Amplify.DataStore.start()
+        await fulfillment(of: [readyAfterRestart], timeout: networkTimeout)
+        readySink.cancel()
         try await validateSavePost()
         try await validateSavePost()
     }
@@ -549,7 +559,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then: verify no mutaiton loss
     func testParallelMutations_whenWaitingForEventToProcess_noMutationLoss() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let parallelSize = 100
         let initExpectation = expectation(description: "expect MutationEventPublisher works fine")

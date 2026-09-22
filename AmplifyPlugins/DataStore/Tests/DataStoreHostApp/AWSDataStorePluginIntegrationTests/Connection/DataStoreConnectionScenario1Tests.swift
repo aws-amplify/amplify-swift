@@ -44,7 +44,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name1")
         let project = Project1(team: team)
         let syncedTeamReceived = expectation(description: "received team from sync path")
