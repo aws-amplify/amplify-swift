@@ -44,7 +44,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListPostEditorByPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
@@ -61,7 +61,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListPostEditorByUser() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -77,7 +77,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testGetPostThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -103,7 +103,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testGetUserThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -128,7 +128,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostWithSyncAndReadPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -159,7 +159,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdatePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         var post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -215,7 +215,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeletePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -272,7 +272,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeletePostCascadeToPostEditor() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")

@@ -42,7 +42,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostAndCommentSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post3aV2(title: "title")
         let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
         let syncedPostReceived = expectation(description: "received post from sync event")
@@ -80,7 +80,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSaveCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
@@ -107,7 +107,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         var comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
@@ -124,7 +124,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
@@ -140,7 +140,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
@@ -156,7 +156,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostWithSyncAndReadPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -188,7 +188,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdatePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         var post = Post3aV2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -250,7 +250,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeletePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
 
@@ -310,7 +310,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeletePostCascadeToComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3aV2(title: "title")
         let comment = Comment3aV2(content: "content", post3aV2CommentsId: post.id)
