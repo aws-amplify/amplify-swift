@@ -9,7 +9,9 @@ import CoreMLPredictionsPlugin
 import XCTest
 @testable import Amplify
 
-class AWSPredictionsPluginTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPredictionsPluginTestBase: XCTestCase, @unchecked Sendable {
     let region: JSONValue = "us-east-1"
     // 180 seconds to wait before network timeouts
     let networkTimeout = TimeInterval(180)

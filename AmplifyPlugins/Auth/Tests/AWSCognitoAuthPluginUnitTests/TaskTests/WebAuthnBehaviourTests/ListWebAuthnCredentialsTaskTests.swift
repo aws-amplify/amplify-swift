@@ -8,10 +8,13 @@
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
 import struct AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException
+import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class ListWebAuthnCredentialsTaskTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class ListWebAuthnCredentialsTaskTests: XCTestCase, @unchecked Sendable {
     private var task: ListWebAuthnCredentialsTask!
     private var identityProvider: MockIdentityProvider!
 
@@ -71,9 +74,10 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        var listWebAuthnCredentialsCallCount = 0
+        // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let listWebAuthnCredentialsCallCount = TestCounter()
         identityProvider.mockListWebAuthnCredentialsResponse = { _ in
-            listWebAuthnCredentialsCallCount += 1
+            listWebAuthnCredentialsCallCount.increment()
             return .init(
                 credentials: [
                     .init(
@@ -100,7 +104,7 @@ class ListWebAuthnCredentialsTaskTests: XCTestCase {
         let result = try await task.execute()
         let credentials = try XCTUnwrap(result.credentials)
         let nextToken = try XCTUnwrap(result.nextToken)
-        XCTAssertEqual(listWebAuthnCredentialsCallCount, 1)
+        XCTAssertEqual(listWebAuthnCredentialsCallCount.get(), 1)
         XCTAssertEqual(credentials.count, 2)
         XCTAssertEqual(nextToken, "nextToken")
         XCTAssertTrue(credentials.contains(where: { $0.credentialId == "credentialId1" }))

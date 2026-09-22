@@ -10,8 +10,9 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger {
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger, @unchecked Sendable {
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let request: AuthUpdateUserAttributeRequest
     private let authStateMachine: AuthStateMachine

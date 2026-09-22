@@ -24,7 +24,9 @@ open class APIAuthProviderFactory {
     }
 }
 
-public protocol AmplifyAuthTokenProvider {
+/// - Note: `Sendable` because `getLatestAuthToken` is passed as a `@Sendable` closure into the
+///   subscription interceptors.
+public protocol AmplifyAuthTokenProvider: Sendable {
     typealias AuthToken = String
 
     func getLatestAuthToken() async throws -> String

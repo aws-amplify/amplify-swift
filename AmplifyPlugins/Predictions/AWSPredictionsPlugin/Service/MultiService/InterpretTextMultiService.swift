@@ -7,7 +7,17 @@
 
 import Amplify
 
-class InterpretTextMultiService: MultiServiceBehavior {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `MultiServiceBehavior`.
+///
+///   Both service references are assigned only in `init` and never reassigned. They are `var` because
+///   `weak` requires it — Swift has no `weak let` — not because anything mutates them, so the assignment
+///   ordering the conformance relies on is structural: there is no setter to call out of order.
+///
+///   What the annotation does suppress is that `weak` lets the runtime zero either reference at any
+///   point, including between the `guard let` in one method and a read in another. Each accessor already
+///   re-checks for `nil` and throws `…ServiceUnavailable`, so a mid-flight teardown surfaces as that
+///   error rather than as a race.
+final class InterpretTextMultiService: MultiServiceBehavior, @unchecked Sendable {
     weak var coreMLService: CoreMLPredictionBehavior?
     weak var predictionsService: AWSPredictionsService?
     let textToInterpret: String

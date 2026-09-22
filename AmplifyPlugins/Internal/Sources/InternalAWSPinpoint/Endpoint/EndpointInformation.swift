@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-struct EndpointInformation {
+struct EndpointInformation: Sendable {
     typealias Platform = (name: String, version: String)
 
     let model: String
@@ -16,7 +16,8 @@ struct EndpointInformation {
     let platform: Platform
 }
 
-protocol EndpointInformationProvider {
+/// - Note: `Sendable` because the endpoint client awaits this from its own async setup path.
+protocol EndpointInformationProvider: Sendable {
     func endpointInfo() async -> EndpointInformation
 }
 

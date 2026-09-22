@@ -15,7 +15,9 @@ import Foundation
 import SQLite
 
 // swiftlint:disable type_body_length
-class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SQLiteStorageEngineAdapterJsonTests: XCTestCase, @unchecked Sendable {
 
     var connection: Connection!
     var storageEngine: StorageEngine!
@@ -199,7 +201,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         ] as [String: JSONValue]
         let model = DynamicModel(values: post)
 
-        func checkSavedPost(id: String) {
+        @Sendable func checkSavedPost(id: String) {
             storageAdapter.query(DynamicModel.self, modelSchema: ModelRegistry.modelSchema(from: "Post")!) {
                 switch $0 {
                 case .success(let posts):
@@ -302,7 +304,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     func testInsertPostAndThenUpdateItWithCondition() {
         let expectation = expectation(description: "it should insert and update a Post")
         let schema = ModelRegistry.modelSchema(from: "Post")!
-        func checkSavedPost(id: String) {
+        @Sendable func checkSavedPost(id: String) {
             storageAdapter.query(DynamicModel.self, modelSchema: schema) {
                 switch $0 {
                 case .success(let posts):
@@ -513,7 +515,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         var counter = 0
         let maxCount = 10
         let schema = ModelRegistry.modelSchema(from: "Post")!
-        var postsAdded: [String] = []
+        // Appended from a `@Sendable` completion and read from a nested one.
+        let postsAdded = AtomicValue<[String]>(initialValue: [])
         while counter < maxCount {
             let title = "\(titleX)\(counter)"
             let content = "\(contentX)\(counter)"
@@ -524,12 +527,14 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                 "createdAt": .string(createdAt)
             ] as [String: JSONValue]
             let model = DynamicModel(values: post)
+            // Snapshotted so the completion captures an immutable value rather than the loop variable.
+            let currentIndex = counter
 
             storageAdapter.save(model, modelSchema: schema) { insertResult in
                 switch insertResult {
                 case .success:
-                    postsAdded.append(model.id)
-                    if counter == maxCount - 1 {
+                    postsAdded.with { $0.append(model.id) }
+                    if currentIndex == maxCount - 1 {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(
                             DynamicModel.self,
@@ -539,7 +544,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()
-                                for postId in postsAdded {
+                                for postId in postsAdded.get() {
                                     self.checkIfPostIsDeleted(id: postId)
                                 }
                                 queryExpectation.fulfill()

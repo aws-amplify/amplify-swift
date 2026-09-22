@@ -21,7 +21,10 @@ import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import SmithyIdentity
 
-class AWSPredictionsService {
+/// - Note: `final` and `@unchecked Sendable`: the service wraps AWS SDK clients that are safe to
+///   share, and `analyzeText` races several of its own methods with `async let`, which requires the
+///   receiver to be `Sendable`.
+final class AWSPredictionsService: @unchecked Sendable {
     var identifier: String!
     var awsTranslate: TranslateClientProtocol!
     var awsRekognition: RekognitionClientProtocol!

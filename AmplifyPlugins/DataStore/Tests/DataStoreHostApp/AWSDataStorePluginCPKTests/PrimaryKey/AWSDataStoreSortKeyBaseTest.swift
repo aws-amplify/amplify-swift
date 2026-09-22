@@ -17,7 +17,9 @@ import AWSDataStorePlugin
 @testable import DataStoreHostApp
 #endif
 
-class AWSDataStoreSortKeyBaseTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStoreSortKeyBaseTest: XCTestCase, @unchecked Sendable {
     static let defaultConfigFile = "AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"
     override func setUp() async throws {
         continueAfterFailure = false

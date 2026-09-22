@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSAPIPlugin
 
 // swiftlint:disable:next type_name
-class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase, @unchecked Sendable {
 
     let graphQLAPI = "graphQLAPI"
     let graphQLAPI2 = "graphQLAPI2"

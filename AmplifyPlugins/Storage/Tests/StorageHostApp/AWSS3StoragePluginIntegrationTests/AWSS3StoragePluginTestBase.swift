@@ -14,7 +14,9 @@ import AWSCognitoAuthPlugin
 import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import AWSPluginsCore
 
-class AWSS3StoragePluginTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginTestBase: XCTestCase, @unchecked Sendable {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
 
     static let smallDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount)

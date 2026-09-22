@@ -79,9 +79,7 @@ public class AmplifyKinesisClient {
     private var _isEnabled = true
 
     private var isEnabledLocked: Bool {
-        isEnabledLock.lock()
-        defer { isEnabledLock.unlock() }
-        return _isEnabled
+        isEnabledLock.withLock { _isEnabled }
     }
 
     /// Configuration options for AmplifyKinesisClient
@@ -262,9 +260,7 @@ public class AmplifyKinesisClient {
     }
 
     private func setEnabled(_ value: Bool) {
-        isEnabledLock.lock()
-        _isEnabled = value
-        isEnabledLock.unlock()
+        isEnabledLock.withLock { _isEnabled = value }
     }
 
     /// Clears all cached records

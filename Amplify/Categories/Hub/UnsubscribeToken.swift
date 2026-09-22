@@ -10,7 +10,8 @@ import Foundation
 /// Convenience typealias defining a closure that can be used to unsubscribe a Hub listener. Although UnsubscribeToken
 /// conforms to Hashable, only the `id` property is considered for equality and hash value; `channel` is used only for
 /// routing an unsubscribe request to the correct HubChannel.
-public struct UnsubscribeToken {
+// Explicit `Sendable`: both members are value types.
+public struct UnsubscribeToken: Sendable {
     let channel: HubChannel
     let id: UUID
 

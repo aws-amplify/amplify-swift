@@ -11,7 +11,9 @@ import XCTest
 @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
-class AppSyncRealTimeClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
 
     func testSendRequestWithTimeout_withNoResponse_failedWithTimeOutError() async {
         let timeout = 1.0
