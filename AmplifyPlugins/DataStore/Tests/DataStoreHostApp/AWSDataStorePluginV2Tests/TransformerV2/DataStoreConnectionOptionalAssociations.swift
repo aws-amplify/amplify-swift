@@ -274,6 +274,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
                 break
             }
         }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
+        }
         let savedComment = try await Amplify.DataStore.save(commentToSave)
         await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedComment
@@ -303,6 +310,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             default:
                 break
             }
+        }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
         }
         let savedPost = try await Amplify.DataStore.save(postToSave)
         await fulfillment(of: [waitForSync], timeout: networkTimeout)
@@ -345,6 +359,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             default:
                 break
             }
+        }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
         }
         let savedBlog = try await Amplify.DataStore.save(blogToSave)
         await fulfillment(of: [waitForSync], timeout: networkTimeout)
