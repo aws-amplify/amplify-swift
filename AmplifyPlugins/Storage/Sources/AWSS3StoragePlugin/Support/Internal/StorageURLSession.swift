@@ -7,13 +7,15 @@
 
 import Foundation
 
-protocol StorageURLSession {
+/// - Note: `Sendable` because the session is held by the transfer machinery and reached from
+///   URLSession delegate callbacks.
+protocol StorageURLSession: Sendable {
     static var shared: StorageURLSession { get }
-    func getActiveTasks(resultHandler: @escaping (StorageSessionTasks) -> Void)
+    func getActiveTasks(resultHandler: @escaping @Sendable (StorageSessionTasks) -> Void)
 }
 
 extension URLSession: StorageURLSession {
-    func getActiveTasks(resultHandler: @escaping (StorageSessionTasks) -> Void) {
+    func getActiveTasks(resultHandler: @escaping @Sendable (StorageSessionTasks) -> Void) {
         getAllTasks { tasks in
             resultHandler(tasks)
         }

@@ -10,7 +10,11 @@ import Foundation
 // MARK: - Model
 
 /// All persistent models should conform to the Model protocol.
-public protocol Model: Codable {
+/// - Note: `Sendable` because models are carried between tasks throughout DataStore and API — the
+///   sync engine, the reconciliation queues, and the GraphQL layer all pass them across isolation
+///   boundaries. Codegen'd model types are structs of value-typed properties, so they satisfy this
+///   already; a hand-written conformance holding reference type state would need to be made safe.
+public protocol Model: Codable, Sendable {
     /// Alias of Model identifier (i.e. primary key)
     @available(*, deprecated, message: "Use ModelIdentifier")
     typealias Identifier = String

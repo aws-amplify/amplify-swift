@@ -10,7 +10,9 @@ import Amplify
 import XCTest
 @testable import CoreMLPredictionsPlugin
 
-class CoreMLPredictionsPluginTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CoreMLPredictionsPluginTestBase: XCTestCase, @unchecked Sendable {
     var coreMLPredictionsPlugin: CoreMLPredictionsPlugin!
     var naturalLanguageBehavior: MockCoreMLNaturalLanguageAdapter!
     var visionBehavior: MockCoreMLVisionAdapter!
@@ -21,7 +23,9 @@ class CoreMLPredictionsPluginTestBase: XCTestCase {
         coreMLPredictionsPlugin = CoreMLPredictionsPlugin()
         naturalLanguageBehavior = MockCoreMLNaturalLanguageAdapter()
         visionBehavior = MockCoreMLVisionAdapter()
-        speechBehavior = MockCoreMLSpeechAdapter(response: .init())
+        speechBehavior = MockCoreMLSpeechAdapter(
+            response: .init(formattedString: "", isFinal: true)
+        )
         queue = MockOperationQueue()
         coreMLPredictionsPlugin.configure(
             naturalLanguageBehavior: naturalLanguageBehavior,

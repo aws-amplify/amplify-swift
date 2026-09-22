@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSPredictionsPlugin
 
-final class SigningEncodingTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class SigningEncodingTestCase: XCTestCase, @unchecked Sendable {
     func url() throws -> URL {
         try XCTUnwrap(
             URL(string: "wss://streaming-rekognition.us-east-1.amazon.com/start-face-liveness-session-websocket")

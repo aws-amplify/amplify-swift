@@ -8,7 +8,10 @@
 import Amplify
 import Foundation
 
-class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
+// `@unchecked Sendable` because the category plugin protocols now require `Sendable` (see
+// `Plugin`), and a `Sendable` class may not inherit from a non-`NSObject` superclass. These are
+// test doubles driven from a single test at a time.
+class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin, @unchecked Sendable {
     func identify<Output>(_ request: Predictions.Identify.Request<Output>, in image: URL, options: Predictions.Identify.Options?) async throws -> Output {
         fatalError()
     }
@@ -34,7 +37,9 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
     }
 }
 
-class MockSecondPredictionsCategoryPlugin: MockPredictionsCategoryPlugin {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double.
+
+class MockSecondPredictionsCategoryPlugin: MockPredictionsCategoryPlugin, @unchecked Sendable {
     override var key: String {
         return "MockSecondPredictionsCategoryPlugin"
     }

@@ -8,7 +8,9 @@
 import XCTest
 @testable @_spi(AmplifyAPI) import AWSAPIPlugin
 
-class ArrayWithErrorElementExtensionTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ArrayWithErrorElementExtensionTests: XCTestCase, @unchecked Sendable {
 
     /**
      Given: errors with generic protocol type

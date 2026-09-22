@@ -7,8 +7,8 @@
 
 struct BasicSRPAuthEnvironment: SRPAuthEnvironment {
 
-    typealias SRPClientFactory = (String, String) throws -> SRPClientBehavior
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias SRPClientFactory = @Sendable (String, String) throws -> SRPClientBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     // Required
     let userPoolConfiguration: UserPoolConfigurationData
@@ -55,7 +55,7 @@ enum SRPCommonConfig {
 }
 
 protocol SRPAuthEnvironment: Environment {
-    typealias SRPClientFactory = (String, String) throws -> SRPClientBehavior
+    typealias SRPClientFactory = @Sendable (String, String) throws -> SRPClientBehavior
 
     var eventIDFactory: EventIDFactory { get }
     var srpClientFactory: SRPClientFactory { get }

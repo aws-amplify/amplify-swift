@@ -12,7 +12,9 @@ import Foundation
 import InternalAmplifyCredentials
 import SmithyIdentity
 
-public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
+/// - Note: `@unchecked Sendable` because `AWSAuthServiceBehavior` now requires `Sendable`. This is a
+///   test double whose mutable fields are set up by a single test before use.
+public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior, @unchecked Sendable {
 
     var interactions: [String] = []
     var getIdentityIdError: AuthError?

@@ -10,7 +10,9 @@ import Amplify
 import Foundation
 import InternalCloudWatchLogging
 
-final class RotatingLogger {
+/// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
+///   concurrently with reads.
+final class RotatingLogger: @unchecked Sendable {
 
     var logLevel: Amplify.LogLevel
 

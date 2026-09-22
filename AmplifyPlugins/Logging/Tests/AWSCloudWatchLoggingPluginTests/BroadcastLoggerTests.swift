@@ -9,7 +9,9 @@ import XCTest
 
 @testable import Amplify
 
-final class BroadcastLoggerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class BroadcastLoggerTests: XCTestCase, @unchecked Sendable {
 
     var systemUnderTest: BroadcastLogger!
     var mockLogger1: MockLogger!

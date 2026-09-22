@@ -15,7 +15,9 @@ import UIKit
 import AppKit
 #endif
 
-class ActivityTrackerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ActivityTrackerTests: XCTestCase, @unchecked Sendable {
     private var tracker: ActivityTracker!
     private var stateMachine: MockStateMachine!
     private var timeout: TimeInterval = 1
@@ -78,13 +80,18 @@ class ActivityTrackerTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
 
+    // `@MainActor` to match how these notifications actually arrive. `NotificationCenter` delivers
+    // synchronously on the posting thread, and the handler is main-actor-isolated because the platform
+    // posts the real notifications on the main thread. Posting from a background executor — as this test
+    // did before — trapped the main-actor check in the `@objc` thunk under the Swift 6 language mode.
+    @MainActor
     func testApplicationStateChanged_shouldReportProperEvent() async {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
 
-        await NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        await NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
-        await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
 
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))

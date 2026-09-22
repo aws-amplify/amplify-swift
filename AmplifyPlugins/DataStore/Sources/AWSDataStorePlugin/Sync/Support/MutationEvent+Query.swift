@@ -60,7 +60,8 @@ extension MutationEvent {
     private static func pendingMutationEvents(
         for modelIds: [(String, String)],
         storageAdapter: StorageEngineAdapter,
-        completion: @escaping DataStoreCallback<[MutationEvent]>
+        // `@Sendable` because the callback is invoked from the `Task` below.
+        completion: @escaping @Sendable DataStoreCallback<[MutationEvent]>
     ) {
         Task {
             let fields = MutationEvent.keys

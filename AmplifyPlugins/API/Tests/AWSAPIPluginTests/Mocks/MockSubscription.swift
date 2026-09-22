@@ -40,7 +40,11 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     }
 }
 
-class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Sendable {
 
     /// Tracks the subscription lifecycle so `waitFor*` drives and awaits the real emission instead of
     /// racing fixed sleeps. Lifecycle events are sent on demand from the `waitFor*` methods — never
@@ -148,7 +152,11 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
     }
 }
 
-class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor, @unchecked Sendable {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
         return event
     }

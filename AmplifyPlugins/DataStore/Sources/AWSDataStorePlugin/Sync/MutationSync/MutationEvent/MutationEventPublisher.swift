@@ -9,6 +9,6 @@ import Amplify
 import Combine
 
 /// Publishes mutation events to downstream subscribers for subsequent sync to the API.
-protocol MutationEventPublisher: AnyObject, AmplifyCancellable {
+protocol MutationEventPublisher: AnyObject, AmplifyCancellable, Sendable {
     var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
 }

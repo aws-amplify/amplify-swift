@@ -23,7 +23,8 @@ enum SyncEngineInitResult {
     case failure(DataStoreError)
 }
 
-protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {
+/// - Note: `Sendable` because the sync engine and the plugin hold this across task boundaries.
+protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior, Sendable {
 
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> { get }
 

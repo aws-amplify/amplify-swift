@@ -12,7 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
 
     func testCreateMutateDelete() throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin

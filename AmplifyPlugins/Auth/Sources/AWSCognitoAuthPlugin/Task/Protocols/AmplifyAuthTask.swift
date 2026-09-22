@@ -8,7 +8,9 @@
 import Amplify
 import Foundation
 
-protocol AmplifyAuthTask {
+/// - Note: `Sendable` because tasks are executed from detached tasks by the plugin's client
+///   behavior layer.
+protocol AmplifyAuthTask: Sendable {
 
     associatedtype Success
     associatedtype Request

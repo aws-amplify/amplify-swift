@@ -9,7 +9,8 @@ import Amplify
 import Combine
 
 /// Interface for saving and loading MutationEvents from storage
-final class AWSMutationDatabaseAdapter {
+/// - Note: `@unchecked Sendable`: the adapter is reached from the mutation queue's serialized flow.
+final class AWSMutationDatabaseAdapter: @unchecked Sendable {
     /// Possible outcomes of a "submit" based on inspecting the locally stored MutationEvents
     enum MutationDisposition {
         /// Drops the candidate without saving

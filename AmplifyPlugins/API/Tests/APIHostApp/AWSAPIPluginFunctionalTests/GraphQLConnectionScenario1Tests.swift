@@ -31,7 +31,9 @@ import XCTest
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 
  */
-class GraphQLConnectionScenario1Tests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLConnectionScenario1Tests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         do {

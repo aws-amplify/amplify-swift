@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSAPIPlugin
 
 // Decoder tests for ParentPost4V2 and ChildComment4V2
-class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCasesPostComment4V2 {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCasesPostComment4V2, @unchecked Sendable {
 
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()

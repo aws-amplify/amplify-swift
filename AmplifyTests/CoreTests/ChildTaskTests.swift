@@ -10,7 +10,9 @@ import XCTest
 @testable @preconcurrency import Amplify
 
 // These tests must be run with ThreadSanitizer enabled
-class ChildTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ChildTaskTests: XCTestCase, @unchecked Sendable {
     class Worker: Cancellable {
         var cancelCount = 0
         func cancel() {
