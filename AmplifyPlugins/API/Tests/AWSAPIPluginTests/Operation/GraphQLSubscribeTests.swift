@@ -75,8 +75,8 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(expecting: testJSON, collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
@@ -94,8 +94,8 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
         await collector.waitUntilComplete()
@@ -112,7 +112,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
         mockAppSyncRealTimeClient.triggerEvent(.error(["Error"]))
 
         await collector.waitUntilComplete()
@@ -133,8 +133,8 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
@@ -154,8 +154,8 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(expecting: testJSON, collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
@@ -179,8 +179,8 @@ class GraphQLSubscribeTests: OperationTestBase {
         let collector = EventCollector()
         subscribe(collector: collector)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.data(successfulTestData))
         mockAppSyncRealTimeClient.triggerEvent(.data(invalidTestData))
         mockAppSyncRealTimeClient.triggerEvent(.data(successfulTestData))

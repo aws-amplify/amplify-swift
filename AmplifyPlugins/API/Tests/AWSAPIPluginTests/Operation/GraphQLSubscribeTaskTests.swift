@@ -42,8 +42,8 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
@@ -61,8 +61,8 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         let events = await drained
@@ -79,7 +79,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error([AppSyncRealTimeRequest.Error.limitExceeded]))
 
         let events = await drained
@@ -97,7 +97,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         async let drained = drain(subscription)
 
         let unauthorizedError = GraphQLError(message: "", extensions: ["errorType": "Unauthorized"])
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error([unauthorizedError]))
 
         let events = await drained
@@ -121,7 +121,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error([URLError(URLError.Code(rawValue: 400))]))
 
         let events = await drained
@@ -142,8 +142,8 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
@@ -163,8 +163,8 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
@@ -188,8 +188,8 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let subscription = subscribe()
         async let drained = drain(subscription)
 
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(invalidTestData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))

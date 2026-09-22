@@ -42,25 +42,68 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
 
 class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
 
+    /// Tracks the subscription lifecycle so `waitFor*` drives and awaits the real emission instead of
+    /// racing fixed sleeps. Lifecycle events are sent on demand from the `waitFor*` methods — never
+    /// automatically on attach — so a test always sends `.subscribing`/`.subscribed` *after* it has
+    /// subscribed its consumer, which is what keeps `Amplify.Publisher.create`'s eager forwarding from
+    /// dropping `.connecting` before the Combine sink is attached.
+    private final class Lifecycle: @unchecked Sendable {
+        enum Phase { case attached, subscribing, subscribed, unsubscribed }
 
-    private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
+        private let lock = NSLock()
+        private var reached: Set<Phase> = []
+        private var waiters: [Phase: [CheckedContinuation<Void, Never>]] = [:]
+        private var claimedSends: Set<Phase> = []
 
-    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
-        defer {
+        func mark(_ phase: Phase) {
+            lock.lock()
+            reached.insert(phase)
+            let toResume = waiters.removeValue(forKey: phase) ?? []
+            lock.unlock()
+            toResume.forEach { $0.resume() }
+        }
 
-            Task {
-                try await Task.sleep(seconds: 0.25)
-                subject.send(.subscribing)
-                try await Task.sleep(seconds: 0.45)
-                subject.send(.subscribed)
+        func wait(for phase: Phase) async {
+            await withCheckedContinuation { continuation in
+                lock.lock()
+                if reached.contains(phase) {
+                    lock.unlock()
+                    continuation.resume()
+                } else {
+                    waiters[phase, default: []].append(continuation)
+                    lock.unlock()
+                }
             }
         }
-        return subject.eraseToAnyPublisher()
+
+        /// Returns `true` only for the first caller for `phase`, so each event is sent exactly once.
+        func claimSend(_ phase: Phase) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return claimedSends.insert(phase).inserted
+        }
+    }
+
+    private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
+    private let lifecycle = Lifecycle()
+
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        let lifecycle = lifecycle
+        // `.buffer` keeps demand on the subject so a send is never silently dropped when the
+        // subscriber hasn't yet requested demand; events are held and delivered FIFO. `receiveRequest`
+        // then signals readiness so the `waitFor*` methods only send once the operation's sink is
+        // attached. Together these make lifecycle delivery deterministic (no fixed-sleep slack).
+        return subject
+            .buffer(size: 1_024, prefetch: .keepFull, whenFull: .dropOldest)
+            .handleEvents(receiveRequest: { _ in
+                lifecycle.mark(.attached)
+            })
+            .eraseToAnyPublisher()
     }
 
     func unsubscribe(id: String) async throws {
-        try await Task.sleep(seconds: 0.45)
         subject.send(.unsubscribed)
+        lifecycle.mark(.unsubscribed)
     }
 
     func connect() async throws { }
@@ -71,18 +114,37 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
 
     func triggerEvent(_ event: AppSyncSubscriptionEvent) {
         subject.send(event)
+        if case .unsubscribed = event {
+            lifecycle.mark(.unsubscribed)
+        }
     }
 
-    static func waitForSubscirbing() async throws {
-        try await Task.sleep(seconds: 0.3)
+    func waitForSubscirbing() async throws {
+        await sendSubscribing()
     }
 
-    static func waitForSubscirbed() async throws {
-        try await Task.sleep(seconds: 0.5)
+    func waitForSubscirbed() async throws {
+        await sendSubscribing()
+        if lifecycle.claimSend(.subscribed) {
+            subject.send(.subscribed)
+            lifecycle.mark(.subscribed)
+        }
+        await lifecycle.wait(for: .subscribed)
     }
 
-    static func waitForUnsubscirbed() async throws {
-        try await Task.sleep(seconds: 0.5)
+    func waitForUnsubscirbed() async throws {
+        await lifecycle.wait(for: .unsubscribed)
+    }
+
+    /// Waits for the operation's sink to attach, then sends `.subscribing` exactly once and waits
+    /// until it has been emitted.
+    private func sendSubscribing() async {
+        await lifecycle.wait(for: .attached)
+        if lifecycle.claimSend(.subscribing) {
+            subject.send(.subscribing)
+            lifecycle.mark(.subscribing)
+        }
+        await lifecycle.wait(for: .subscribing)
     }
 }
 
