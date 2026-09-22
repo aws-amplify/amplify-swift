@@ -40,7 +40,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     func testDownloadDataOperationGetIdentityIdError() async throws {
@@ -69,7 +69,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     func testDownloadDataOperationDownloadData() async throws {
@@ -103,7 +103,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
@@ -138,7 +138,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await fulfillment(of: [inProcessInvoked, failInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
@@ -180,7 +180,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
             of: [inProcessInvoked, completeInvoked],
             timeout: 1
         )
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
@@ -212,7 +212,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     /// Given: Storage Download Data Operation
@@ -243,7 +243,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     /// Given: Storage Download Data Operation
@@ -274,7 +274,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     /// Given: Storage Download Data Operation
@@ -305,7 +305,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await fulfillment(of: [failedInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
     }
 
     /// Given: Storage Download Data Operation
@@ -343,7 +343,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
         mockStorageService.verifyDownload(serviceKey: "public/\(testKey)", fileURL: nil)
     }
 
@@ -383,11 +383,26 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        await assertOperationFinished(operation)
         mockStorageService.verifyDownload(serviceKey: "public/\(testIdentityId)/\(testKey)", fileURL: nil)
     }
 
     // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
+
+    /// `finish()` runs synchronously on the operation while its result callback is delivered
+    /// asynchronously via Hub, so `isFinished` can lag the callback by a scheduling hop. Poll it
+    /// (returning as soon as it flips) instead of reading it in the same tick the callback fired.
+    private func assertOperationFinished(
+        _ operation: Operation,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async {
+        for _ in 0 ..< 500 {
+            if operation.isFinished { return }
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTFail("Operation did not finish", file: file, line: line)
+    }
 }
 
 struct InvalidCustomStoragePath: StoragePath {
