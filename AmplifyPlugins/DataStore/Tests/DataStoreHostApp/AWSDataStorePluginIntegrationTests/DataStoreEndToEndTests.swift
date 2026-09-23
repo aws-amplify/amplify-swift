@@ -130,7 +130,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
 
     func testCreateMutateDelete() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        // Wait for `.ready` (not just `.syncStarted`): the create/update/delete round-trips below
+        // depend on the subscription being established, which isn't guaranteed at `.syncStarted`.
+        try await startAmplifyAndWaitForReady()
 
         let date = Temporal.DateTime.now()
 
