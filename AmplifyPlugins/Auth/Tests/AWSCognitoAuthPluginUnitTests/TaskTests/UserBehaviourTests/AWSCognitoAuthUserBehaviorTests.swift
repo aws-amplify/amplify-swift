@@ -17,6 +17,19 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
+            // The test tokens expire ~121s out — right at the token-refresh buffer — so any
+            // scheduling delay makes these operations refresh mid-flight. Mock the refresh so it
+            // succeeds deterministically instead of throwing "Service error" when it happens to fire.
+            mockGetTokensFromRefreshTokenResponse: { _ in
+                GetTokensFromRefreshTokenOutput(
+                    authenticationResult: .init(
+                        accessToken: "accessTokenNew",
+                        expiresIn: 3600,
+                        idToken: "idTokenNew",
+                        refreshToken: "refreshTokenNew"
+                    )
+                )
+            },
             mockGetUserAttributeVerificationCodeOutput: { _ in
                 GetUserAttributeVerificationCodeOutput()
             },
