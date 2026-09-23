@@ -13,7 +13,8 @@ import Foundation
 import SmithyIdentity
 
 // MARK: - UserDefaultsBehaviour
-protocol UserDefaultsBehaviour {
+/// - Note: `Sendable` because the endpoint client holds this and reads it from its async setup.
+protocol UserDefaultsBehaviour: Sendable {
     func save(_ value: UserDefaultsBehaviourValue?, forKey key: String)
     func removeObject(forKey key: String)
     func string(forKey key: String) -> String?
@@ -105,7 +106,9 @@ private struct PinpointContextStorage {
     let archiver: AmplifyArchiverBehaviour
 }
 
-class PinpointContext {
+/// - Note: `final` and `@unchecked Sendable`: the context is a long-lived container created once per
+///   app id, and it forwards work to the analytics/endpoint clients from detached tasks.
+final class PinpointContext: @unchecked Sendable {
     let endpointClient: EndpointClientBehaviour
     let sessionClient: SessionClientBehaviour
     let analyticsClient: AnalyticsClientBehaviour
@@ -160,7 +163,7 @@ class PinpointContext {
             userDefaults: userDefaults
         )
 
-        let sessionProvider: () -> PinpointSession = { [weak sessionClient] in
+        let sessionProvider: @Sendable () -> PinpointSession = { [weak sessionClient] in
             guard let sessionClient else {
                 fatalError("SessionClient was deallocated")
             }

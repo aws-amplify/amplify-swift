@@ -12,7 +12,9 @@ import AWSCognitoIdentity
 
 @testable import AWSCognitoAuthPlugin
 
-class FetchAuthAWSCredentialsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class FetchAuthAWSCredentialsTests: XCTestCase, @unchecked Sendable {
 
     func testNoEnvironment() async {
 

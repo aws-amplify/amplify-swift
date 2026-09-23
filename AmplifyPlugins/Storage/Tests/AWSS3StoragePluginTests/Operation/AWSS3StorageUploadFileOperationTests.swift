@@ -14,7 +14,9 @@ import XCTest
 
 import AWSS3
 
-class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase, @unchecked Sendable {
 
     func testUploadFileOperationValidationError() async {
         let options = StorageUploadFileRequest.Options(accessLevel: .protected)

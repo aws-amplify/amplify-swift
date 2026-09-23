@@ -34,6 +34,10 @@ open class AmplifyInProcessReportingOperation<
     var inProcessSubject: PassthroughSubject<InProcess, Never>!
 #endif
 
+    /// - Note: `@preconcurrency` so a Swift 5 consumer passing an actor-isolated
+    ///   `inProcessListener`/`resultListener` gets a warning rather than a hard error from the
+    ///   `@Sendable` closure types.
+    @preconcurrency
     public init(
         categoryType: CategoryType,
         eventName: HubPayloadEventName,
@@ -64,7 +68,9 @@ open class AmplifyInProcessReportingOperation<
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.forOperation(self)
 
-        var inProcessListenerToken: UnsubscribeToken!
+        // See `InternalTask+Hub`: the listener removes itself, so the token is held in an
+        // `AtomicValue` box rather than a `var` captured before assignment.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let inProcessHubListener: HubListener = { payload in
             if let inProcessData = payload.data as? InProcess {
                 inProcessListener(inProcessData)
@@ -72,15 +78,16 @@ open class AmplifyInProcessReportingOperation<
             }
             // Remove listener if we see a result come through
             if payload.data is OperationResult {
-                Amplify.Hub.removeListener(inProcessListenerToken)
+                if let token = tokenBox.get() { Amplify.Hub.removeListener(token) }
             }
         }
 
-        inProcessListenerToken = Amplify.Hub.listen(
+        let inProcessListenerToken = Amplify.Hub.listen(
             to: channel,
             isIncluded: filterById,
             listener: inProcessHubListener
         )
+        tokenBox.set(inProcessListenerToken)
 
         return inProcessListenerToken
     }
@@ -109,7 +116,7 @@ open class AmplifyInProcessReportingOperation<
 
 public extension AmplifyInProcessReportingOperation {
     /// Convenience typealias for the `inProcessListener` callback submitted during Operation creation
-    typealias InProcessListener = (InProcess) -> Void
+    typealias InProcessListener = @Sendable (InProcess) -> Void
 
     /// Dispatches an event to the hub. Internally, creates an
     /// `AmplifyOperationContext` object from the operation's `id`, and `request`

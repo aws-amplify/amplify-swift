@@ -22,7 +22,9 @@ protocol OutgoingMutationQueueBehavior: AnyObject {
     var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
-final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
+/// - Note: `@unchecked Sendable`: the queue's state transitions all run on its own serial
+///   `DispatchQueue`.
+final class OutgoingMutationQueue: OutgoingMutationQueueBehavior, @unchecked Sendable {
 
     private let stateMachine: StateMachine<State, Action>
     private var stateMachineSink: AnyCancellable?

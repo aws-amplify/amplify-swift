@@ -11,7 +11,9 @@ import AmplifyTestCommon
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class FatalTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class FatalTests: XCTestCase, @unchecked Sendable {
 
     func testFatalMustOverride() throws {
         try XCTAssertThrowFatalError { Fatal.mustOverride() }

@@ -15,7 +15,9 @@ import XCTest
 // session-expiry connection_error was swallowed, so connectionInit timed out and
 // connect() retried, opening a new connection on every retry.
 // https://github.com/aws-amplify/amplify-swift/issues/4007
-class AppSyncRealTimeClientReconnectTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test bodies are captured by the
+// `@Sendable` closures Combine's `sink` takes. XCTest runs one test at a time.
+class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
 
     private func makeClient(
         _ webSocketClient: MockWebSocketClient
@@ -79,16 +81,13 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         let webSocketClient = MockWebSocketClient()
         let client = makeClient(webSocketClient)
 
-        let lock = NSLock()
-        var connectionInitCount = 0
+        let connectionInitCount = AtomicValue(initialValue: 0)
         var cancellables = Set<AnyCancellable>()
         await webSocketClient.actionSubject
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("connection_init") else { return }
-                lock.lock()
-                connectionInitCount += 1
-                lock.unlock()
+                connectionInitCount.increment()
                 client.subject.send(.success(self.unauthorizedConnectionError))
             }
             .store(in: &cancellables)
@@ -105,9 +104,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         }
         await fulfillment(of: [failed], timeout: 3)
 
-        lock.lock()
-        let count = connectionInitCount
-        lock.unlock()
+        let count = connectionInitCount.get()
         XCTAssertEqual(count, 1, "connect() must not retry a non-recoverable auth error")
     }
 
@@ -183,16 +180,13 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
             appSyncRealTimeClient: client
         )
 
-        let lock = NSLock()
-        var startCount = 0
+        let startCount = AtomicValue(initialValue: 0)
         var cancellables = Set<AnyCancellable>()
         await webSocketClient.actionSubject
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("sub-4007") else { return }
-                lock.lock()
-                startCount += 1
-                lock.unlock()
+                startCount.increment()
                 client.subject.send(.success(.init(
                     id: "sub-4007",
                     payload: .object([
@@ -219,9 +213,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         // Simulate resume-on-reconnect: it must NOT send another start.
         try? await subscription.subscribe()
 
-        lock.lock()
-        let count = startCount
-        lock.unlock()
+        let count = startCount.get()
         XCTAssertEqual(count, 1, "a non-recoverable subscription failure must not be resubscribed")
     }
 
@@ -232,15 +224,12 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         let webSocketClient = MockWebSocketClient()
         let client = makeClient(webSocketClient)
 
-        let lock = NSLock()
-        var connectCount = 0
+        let connectCount = AtomicValue(initialValue: 0)
         var cancellables = Set<AnyCancellable>()
         await webSocketClient.actionSubject
             .sink { action in
                 guard case .connect = action else { return }
-                lock.lock()
-                connectCount += 1
-                lock.unlock()
+                connectCount.increment()
             }
             .store(in: &cancellables)
 
@@ -260,9 +249,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         await webSocketClient.subject.send(.connected)
         try await Task.sleep(nanoseconds: 300 * 1_000_000)
 
-        lock.lock()
-        let count = connectCount
-        lock.unlock()
+        let count = connectCount.get()
         XCTAssertEqual(count, 1, "overlapping reconnects must collapse to a single connect()")
     }
 
@@ -277,16 +264,13 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
             appSyncRealTimeClient: client
         )
 
-        let lock = NSLock()
-        var startCount = 0
+        let startCount = AtomicValue(initialValue: 0)
         var cancellables = Set<AnyCancellable>()
         await webSocketClient.actionSubject
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("sub-limit") else { return }
-                lock.lock()
-                startCount += 1
-                lock.unlock()
+                startCount.increment()
                 client.subject.send(.success(.init(
                     id: "sub-limit",
                     payload: .object([
@@ -313,9 +297,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase {
         // Resume-on-reconnect must send another start (not permanently terminated).
         try? await subscription.subscribe()
 
-        lock.lock()
-        let count = startCount
-        lock.unlock()
+        let count = startCount.get()
         XCTAssertEqual(count, 2, "a transient limitExceeded must be retried on resubscribe, not terminated")
     }
 }

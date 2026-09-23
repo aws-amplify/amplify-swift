@@ -11,17 +11,24 @@ import Combine
 #endif
 import Amplify
 
-public class FastOperationRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class FastOperationRequest: AmplifyOperationRequest, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let numbers: [Int]
 
-    public init(options: [AnyHashable: Any] = [:], numbers: [Int]) {
+    public init(options: Options = .init(), numbers: [Int]) {
         self.options = options
         self.numbers = numbers
     }
 }
 
-public struct FastOperationSuccess {
+public struct FastOperationSuccess: Sendable {
     public let value: Int
 
     public init(value: Int) {
@@ -67,7 +74,7 @@ public enum FastOperationError: AmplifyError {
 }
 
 public typealias FastOperationResult = Result<FastOperationSuccess, FastOperationError>
-public typealias FastOperationResultListener = (FastOperationResult) -> Void
+public typealias FastOperationResultListener = @Sendable (FastOperationResult) -> Void
 
 public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>

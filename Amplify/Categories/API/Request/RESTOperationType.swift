@@ -8,7 +8,7 @@
 import Foundation
 
 /// The type of API operation
-public enum RESTOperationType: String {
+public enum RESTOperationType: String, Sendable {
 
     /// GET operation
     case get = "GET"

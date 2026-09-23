@@ -13,9 +13,16 @@ import Foundation
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class MockModelReconciliationQueue: ModelReconciliationQueue {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. The only shared mutable
+// state is the static registry below, which is an `AtomicDictionary`.
 
-    static var mockModelReconciliationQueues: [String: MockModelReconciliationQueue] = [:]
+class MockModelReconciliationQueue: ModelReconciliationQueue, @unchecked Sendable {
+
+    /// `AtomicDictionary` rather than `nonisolated(unsafe) static var`: `init` registers each instance
+    /// here, and the reconciliation-queue factory builds one per model schema, so several inits can run
+    /// concurrently and mutate the same `Dictionary`. "XCTest runs one test at a time" does not cover
+    /// that, because the concurrency is within a single test.
+    static let mockModelReconciliationQueues = AtomicDictionary<String, MockModelReconciliationQueue>()
 
     private let modelSchema: ModelSchema
     let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
@@ -54,6 +61,6 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     static func reset() {
-        MockModelReconciliationQueue.mockModelReconciliationQueues = [:]
+        MockModelReconciliationQueue.mockModelReconciliationQueues.removeAll()
     }
 }

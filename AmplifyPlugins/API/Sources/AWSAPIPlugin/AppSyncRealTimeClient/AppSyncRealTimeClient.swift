@@ -50,7 +50,13 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// and connection-drop paths.
     private var isReconnecting = false
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
-    nonisolated let subject = PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>()
+    /// Backing store for ``subject``. `PassthroughSubject` is not `Sendable` but `send` is safe from
+    /// any thread, and this is `nonisolated` so it can be reached without hopping onto the actor.
+    private nonisolated let subjectBox = UncheckedSendable(PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never>())
+
+    nonisolated var subject: PassthroughSubject<Result<AppSyncRealTimeResponse, Error>, Never> {
+        subjectBox.value
+    }
 
     var isConnected: Bool {
         state.value == .connected
@@ -81,10 +87,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     deinit {
+        // Only the subject is touched here: a nonisolated `deinit` cannot reach actor-isolated state
+        // in Swift 6 mode, and clearing the cancellable sets was already redundant because releasing
+        // the actor's storage deinitializes each `AnyCancellable`, which cancels it.
         log.debug("Deinit AppSyncRealTimeClient")
         subject.send(completion: .finished)
-        cancellables = Set()
-        cancellablesBindToConnection = Set()
     }
 
     /**
@@ -250,16 +257,17 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     }
 
+    // Both closures are `@Sendable` so they do not inherit this actor's isolation. Combine calls them
+    // synchronously on whichever thread published the event, which would trip the isolation check at
+    // runtime if they were actor-isolated. Reaching actor-isolated members therefore needs an explicit
+    // hop — but `log` is `nonisolated`, so logging stays a direct synchronous call as before.
     private func subscribeToWebSocketEvent() async {
-        let cancellable = await webSocketClient.publisher.sink { [weak self] _ in
+        let cancellable = await webSocketClient.publisher.sink { @Sendable [weak self] _ in
             self?.log.debug("[AppSyncRealTimeClient] WebSocketClient terminated")
-        } receiveValue: { webSocketEvent in
-            Task { [weak self] in
-                let task = Task { [weak self] in
-                    await self?.onWebSocketEvent(webSocketEvent)
-                }
-                await self?.storeInCancellables(task.toAnyCancellable)
-            }
+        } receiveValue: { @Sendable [weak self] webSocketEvent in
+            guard let self else { return }
+            let task = Task { await self.onWebSocketEvent(webSocketEvent) }
+            Task { await self.storeInCancellables(task.toAnyCancellable) }
         }
         storeInCancellables(cancellable)
     }

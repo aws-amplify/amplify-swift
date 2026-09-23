@@ -11,7 +11,9 @@ import XCTest
 @testable import AmplifyTestCommon
 
 @available(iOS 13.0.0, *)
-class GestureRecognizerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GestureRecognizerTests: XCTestCase, @unchecked Sendable {
 
     /// Test if long press gesture recognizer is added to UIWindow
     ///

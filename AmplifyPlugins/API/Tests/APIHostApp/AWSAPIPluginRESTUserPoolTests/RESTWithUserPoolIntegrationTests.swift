@@ -17,7 +17,9 @@ import XCTest
 @testable import APIHostApp
 #endif
 
-class RESTWithUserPoolIntegrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RESTWithUserPoolIntegrationTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
 

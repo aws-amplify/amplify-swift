@@ -9,7 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthConfirmSignInRequest
     private let authStateMachine: AuthStateMachine

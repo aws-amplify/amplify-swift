@@ -15,7 +15,9 @@ final class BroadcastLogger {
     /// The default LogLevel used when no targets are available.
     ///
     /// - Tag: LogProxy.defaultLogLevel
-    var defaultLogLevel: Amplify.LogLevel = .error
+    // `let` rather than `var`: this is only ever read, so immutability is what lets
+    // `BroadcastLogger` satisfy the `Sendable` requirement on `Logger`.
+    let defaultLogLevel: Amplify.LogLevel = .error
 
     private let targets: [Logger]
 

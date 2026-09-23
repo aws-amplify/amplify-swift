@@ -18,11 +18,27 @@ public extension Notification.Name {
 import Foundation
 import Network
 
-public class AmplifyReachability {
-    public var allowsCellularConnection: Bool
+/// - Note: `@unchecked Sendable` because `startNotifier()` hands `self` to `NWPathMonitor`'s
+///   `pathUpdateHandler`, which is a `@Sendable` closure invoked on the monitor's own queue. The
+///   settable properties below are therefore genuinely shared, so `lock` guards them. Not `final`:
+///   this is public API, and `@unchecked Sendable` does not require it.
+public class AmplifyReachability: @unchecked Sendable {
+    private let lock = NSLock()
+
+    private var _allowsCellularConnection: Bool
+
+    public var allowsCellularConnection: Bool {
+        get { lock.withLock { _allowsCellularConnection } }
+        set { lock.withLock { _allowsCellularConnection = newValue } }
+    }
+
+    private var _notificationCenter: NotificationCenter = .default
 
     // The notification center on which "reachability changed" events are being posted
-    public var notificationCenter: NotificationCenter = .default
+    public var notificationCenter: NotificationCenter {
+        get { lock.withLock { _notificationCenter } }
+        set { lock.withLock { _notificationCenter = newValue } }
+    }
 
     public var connection: AmplifyReachability.Connection {
         guard networkReachability.currentPath.status != .unsatisfied else {
@@ -47,7 +63,7 @@ public class AmplifyReachability {
 
     private let networkReachability: NWPathMonitor
     private let notificationQueue: DispatchQueue
-    private var isRunningOnDevice: Bool = {
+    private let isRunningOnDevice: Bool = {
 #if targetEnvironment(simulator)
         return false
 #else
@@ -62,7 +78,7 @@ public class AmplifyReachability {
         targetQueue: DispatchQueue? = nil,
         notificationQueue: DispatchQueue = .main
     ) {
-        self.allowsCellularConnection = allowsCellularConnection
+        self._allowsCellularConnection = allowsCellularConnection
         self.networkReachability = networkReachability
         networkReachability.start(
             queue: DispatchQueue(

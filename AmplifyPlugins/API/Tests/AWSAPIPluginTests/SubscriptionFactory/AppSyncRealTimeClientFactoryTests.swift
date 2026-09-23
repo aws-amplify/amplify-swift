@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSAPIPlugin
 
-class AppSyncRealTimeClientFactoryTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AppSyncRealTimeClientFactoryTests: XCTestCase, @unchecked Sendable {
 
     func testAppSyncRealTimeEndpoint_withAWSAppSyncDomain_returnCorrectRealtimeDomain() {
         let appSyncEndpoint = URL(string: "https://abc.appsync-api.amazonaws.com/graphql")!

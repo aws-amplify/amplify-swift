@@ -229,21 +229,20 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
 
         let completed = expectation(description: "completion called")
         completed.assertForOverFulfill = true
-        let lock = NSLock()
-        var invocations = 0
-        var lastResult: DataStoreResult<Post>?
+        // `DataStoreCallback` is `@Sendable`, so the completion cannot capture mutable local vars.
+        // Route the shared state through `AtomicValue`, which is itself `Sendable`.
+        let invocations = AtomicValue(initialValue: 0)
+        let lastResult = AtomicValue<DataStoreResult<Post>?>(initialValue: nil)
         storageEngine.save(post, modelSchema: Post.schema) { result in
-            lock.lock()
-            invocations += 1
-            lastResult = result
-            lock.unlock()
+            _ = invocations.increment()
+            lastResult.set(result)
             completed.fulfill()
         }
         wait(for: [completed, handoffAttempted], timeout: 1)
 
-        XCTAssertEqual(invocations, 1, "completion must be invoked exactly once")
-        guard case .failure = lastResult else {
-            XCTFail("Expected a failure, got \(String(describing: lastResult))")
+        XCTAssertEqual(invocations.get(), 1, "completion must be invoked exactly once")
+        guard case .failure = lastResult.get() else {
+            XCTFail("Expected a failure, got \(String(describing: lastResult.get()))")
             return
         }
     }

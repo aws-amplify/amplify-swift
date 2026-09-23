@@ -10,7 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class StorageUploadPartSizeTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageUploadPartSizeTests: XCTestCase, @unchecked Sendable {
 
     func testUploadPartSizes() throws {
         XCTAssertGreaterThanOrEqual(StorageUploadPartSize.default.size, minimumPartSize)

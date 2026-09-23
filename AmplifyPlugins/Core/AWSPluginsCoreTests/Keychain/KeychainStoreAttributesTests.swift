@@ -9,7 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSPluginsCore
 
-class KeychainStoreAttributesTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class KeychainStoreAttributesTests: XCTestCase, @unchecked Sendable {
 
     var keychainStoreAttribute: KeychainStoreAttributes!
 

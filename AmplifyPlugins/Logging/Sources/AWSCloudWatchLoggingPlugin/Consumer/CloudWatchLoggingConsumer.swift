@@ -12,7 +12,10 @@ import AWSPluginsCore
 import Foundation
 import InternalCloudWatchLogging
 
-class CloudWatchLoggingConsumer {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `LogBatchConsumer`s `Sendable` requirement.
+///   `client` comes from the AWS SDK and is not declared `Sendable`; `logStreamName` is resolved
+///   once before the first flush.
+final class CloudWatchLoggingConsumer: @unchecked Sendable {
 
     private let client: CloudWatchLogsClientProtocol
     private let formatter: CloudWatchLoggingStreamNameFormatter

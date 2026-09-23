@@ -8,9 +8,11 @@
 import AWSPluginsCore
 import Foundation
 
-class AWSOIDCAuthProvider {
+/// - Note: `final` and `Sendable` so `getLatestAuthToken` can be passed as a `@Sendable` closure
+///   to `AuthTokenInterceptor`.
+final class AWSOIDCAuthProvider: Sendable {
 
-    var authService: AWSAuthServiceBehavior
+    let authService: AWSAuthServiceBehavior
 
     init(authService: AWSAuthServiceBehavior) {
         self.authService = authService

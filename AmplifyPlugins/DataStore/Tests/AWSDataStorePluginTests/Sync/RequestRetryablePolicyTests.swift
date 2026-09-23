@@ -9,7 +9,9 @@ import Foundation
 import XCTest
 @testable import AWSDataStorePlugin
 
-class RequestRetryablePolicyTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RequestRetryablePolicyTests: XCTestCase, @unchecked Sendable {
     var retryPolicy: RequestRetryablePolicy!
     let defaultTimeout = DispatchTimeInterval.seconds(60)
     override func setUp() {
