@@ -45,7 +45,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name1")
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -110,7 +110,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name1")
         let anotherTeam = Team1V2(name: "name1")
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
@@ -165,7 +165,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testCreateUpdateDeleteAndGetProjectReturnsNil() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         var project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -272,7 +272,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -354,7 +354,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteWithValidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -369,7 +369,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -394,7 +394,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testListProjectsByTeamID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
         _ = try await Amplify.DataStore.save(team)
