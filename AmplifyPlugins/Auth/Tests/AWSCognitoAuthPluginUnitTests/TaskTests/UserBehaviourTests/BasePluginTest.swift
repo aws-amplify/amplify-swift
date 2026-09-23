@@ -29,7 +29,9 @@ class BasePluginTest: XCTestCase, @unchecked Sendable {
     let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
-            expiration: Date(),
+            // Refreshed credentials must not be already-expired, or a session fetch that does refresh
+            // loops/fails; use the same common expiry as the session fixture.
+            expiration: Date().addingTimeInterval(AuthAWSCognitoCredentials.testExpiryInSeconds),
             secretKey: "secret",
             sessionToken: "session"
         )
