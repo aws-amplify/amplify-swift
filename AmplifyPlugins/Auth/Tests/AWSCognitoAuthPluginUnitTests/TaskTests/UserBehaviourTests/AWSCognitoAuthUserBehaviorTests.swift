@@ -24,7 +24,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                 GetTokensFromRefreshTokenOutput(
                     authenticationResult: .init(
                         accessToken: "accessTokenNew",
-                        expiresIn: 3600,
+                        expiresIn: 3_600,
                         idToken: "idTokenNew",
                         refreshToken: "refreshTokenNew"
                     )
