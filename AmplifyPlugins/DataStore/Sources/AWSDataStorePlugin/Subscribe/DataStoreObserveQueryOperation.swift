@@ -22,7 +22,6 @@ protocol DataStoreObserveQueryOperation {
 /// rather than `Any`.
 final class ObserveQueryRequest: AmplifyOperationRequest, Sendable {
     struct Options: Sendable {
-        init() {}
     }
 
     let options: Options
@@ -238,43 +237,43 @@ final class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner,
     /// make it so that the item no longer matches the predicate and requires to be removed from `currentItems`.
     /// This check is defered until `onItemChangedAfterSync` where the predicate is then used, and `currentItems` is
     /// accessed under the serial queue.
+    /// Attaches the item-change sinks. Runs synchronously on `serialQueue` — it is only invoked from
+    /// `startObserveQuery`, already on the queue — so the sinks are in place before `initialQuery()`
+    /// sends the first snapshot. Deferring attachment onto a separate `serialQueue.async` let changes
+    /// emitted between the first snapshot and the deferred attach be dropped.
     func subscribeToItemChanges() {
-        serialQueue.async { [weak self] in
-            guard let self else { return }
-
-            batchItemsChangedSink = dataStorePublisher.publisher
-                .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-                .filter(filterByModelName(mutationEvent:))
-                .filter(filterByPredicateMatch(mutationEvent:))
-                .handleEvents(receiveOutput: onItemChangeDuringSync(mutationEvent:) )
-                .collect(
-                    .byTimeOrCount(
-                        // on queue
-                        serialQueue,
-                        // collect over this timeframe
-                        itemsChangedPeriodicPublishTimeInSeconds,
-                        // If the `storageEngine` does sync from remote, the initial batch should
-                        // collect snapshots based on time / snapshots received.
-                        // If it doesn't, it should publish each snapshot without waiting.
-                        storageEngine.syncsFromRemote
+        batchItemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in !self.dispatchedModelSyncedEvent.get() }
+            .filter(filterByModelName(mutationEvent:))
+            .filter(filterByPredicateMatch(mutationEvent:))
+            .handleEvents(receiveOutput: onItemChangeDuringSync(mutationEvent:))
+            .collect(
+                .byTimeOrCount(
+                    // on queue
+                    serialQueue,
+                    // collect over this timeframe
+                    itemsChangedPeriodicPublishTimeInSeconds,
+                    // If the `storageEngine` does sync from remote, the initial batch should
+                    // collect snapshots based on time / snapshots received.
+                    // If it doesn't, it should publish each snapshot without waiting.
+                    storageEngine.syncsFromRemote
                         ? itemsChangedMaxSize
                         : 1
-                    )
                 )
-                .sink(
-                    receiveCompletion: onReceiveCompletion(completed:),
-                    receiveValue: onItemsChangeDuringSync(mutationEvents:)
-                )
+            )
+            .sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onItemsChangeDuringSync(mutationEvents:)
+            )
 
-            itemsChangedSink = dataStorePublisher.publisher
-                .filter { _ in self.dispatchedModelSyncedEvent.get() }
-                .filter(filterByModelName(mutationEvent:))
-                .receive(on: serialQueue)
-                .sink(
-                    receiveCompletion: onReceiveCompletion(completed:),
-                    receiveValue: onItemChangeAfterSync(mutationEvent:)
-                )
-        }
+        itemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in self.dispatchedModelSyncedEvent.get() }
+            .filter(filterByModelName(mutationEvent:))
+            .receive(on: serialQueue)
+            .sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onItemChangeAfterSync(mutationEvent:)
+            )
     }
 
     func subscribeToModelSyncedEvent() {
