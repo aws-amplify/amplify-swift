@@ -105,7 +105,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name1")
         let anotherTeam = Team1(name: "name1")
         var project = Project1(team: team)
@@ -148,7 +148,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1(name: "name")
         let project = Project1(team: team)
@@ -227,7 +227,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testDeleteWithValidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
@@ -241,7 +241,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
@@ -265,7 +265,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @uncheck
 
     func testListProjectsByTeamID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)

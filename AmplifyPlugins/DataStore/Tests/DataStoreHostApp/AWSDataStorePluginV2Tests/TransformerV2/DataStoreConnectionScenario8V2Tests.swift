@@ -54,7 +54,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testSaveRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let attendee = await saveAttendee(),
               let meeting = await saveMeeting(),
               let registration = await saveRegistration(meeting: meeting, attendee: attendee)
@@ -123,7 +123,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testUpdateRegistrationToAnotherAttendee() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let attendee = await saveAttendee(),
               let attendee2 = await saveAttendee(),
               let meeting = await saveMeeting(),
@@ -224,7 +224,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let attendee = await saveAttendee(),
               let meeting = await saveMeeting(),
               let registration = await saveRegistration(meeting: meeting, attendee: attendee)
@@ -318,7 +318,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteAttendeeShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let attendee = await saveAttendee(),
               let meeting = await saveMeeting(),
               let registration = await saveRegistration(meeting: meeting, attendee: attendee)
@@ -421,7 +421,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteMeetingShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let attendee = await saveAttendee(),
               let meeting = await saveMeeting(),
               let registration = await saveRegistration(meeting: meeting, attendee: attendee)

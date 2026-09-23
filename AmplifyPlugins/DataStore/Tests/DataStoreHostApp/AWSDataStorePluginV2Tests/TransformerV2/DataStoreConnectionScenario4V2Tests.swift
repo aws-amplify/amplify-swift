@@ -46,7 +46,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testCreateCommentAndGetCommentWithPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
 
@@ -64,7 +64,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testCreateCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
@@ -90,7 +90,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         var comment = Comment4V2(content: "content", post: post)
@@ -107,7 +107,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
@@ -122,7 +122,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
@@ -138,7 +138,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testSavePostWithSyncAndReadPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -170,7 +170,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testUpdatePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         var post = Post4V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -230,7 +230,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeletePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
 
@@ -288,7 +288,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testDeletePostCascadeToComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
