@@ -26,12 +26,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase, @unchecked S
     var unsubscribeToken: UnsubscribeToken?
 
     override func setUp() async throws {
-        // Start from a clean, existing log directory. `LogRotation` selects its active file based
-        // on the files already present, so log files left over from a previous test/run (only
-        // `amplify.0.log` was deleted before) can cause the pre-written batch to be reused and
-        // truncated, leaving no failing batch for `flushLogs` to consume and making the test flaky.
-        // The directory must exist because the test writes `amplify.0.log` with
-        // `FileManager.createFile`, which does not create intermediate directories.
+        // Remove prior log files, then recreate the directory required by `FileManager.createFile`.
         resetLogDirectory()
     }
 

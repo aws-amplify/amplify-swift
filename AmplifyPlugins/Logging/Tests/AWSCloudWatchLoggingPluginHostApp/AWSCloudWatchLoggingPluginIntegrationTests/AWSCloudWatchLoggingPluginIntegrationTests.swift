@@ -276,10 +276,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase, @unchecked Sendab
         let startTime = endTime.addingTimeInterval(TimeInterval(-durationInMinutes * 60))
         var events = try await AWSCloudWatchClientHelper.getFilterLogEventCount(client: client, filterPattern: message, startTime: startTime, endTime: endTime, logGroupName: logGroupName)
 
-        // CloudWatch Logs GetLogEvents/FilterLogEvents is eventually consistent, and tvOS CI runners
-        // are the slowest lane, so a freshly-flushed message can take a while to become queryable.
-        // Re-flush and retry with a widening time window. (If this ever exhausts all attempts, treat
-        // it as a possible real flush regression, not just consistency lag, before raising further.)
+        // Retry because freshly flushed CloudWatch Logs events are eventually consistent.
         if events?.count != expectedMessageCount && requestAttempt <= 8 {
             try await plugin.flushLogs()
             try await Task.sleep(seconds: 30)

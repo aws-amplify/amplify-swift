@@ -22,11 +22,7 @@ extension AWSAuthCognitoSession {
 }
 
 extension AuthAWSCognitoCredentials {
-    /// Common session-credential expiry for tests: comfortably beyond the refresh buffer
-    /// (`AmplifyCredentials.expiryBufferInSeconds`, 120s) so scheduling jitter can't push the mocked
-    /// session inside it and trigger a spurious credential refresh — which surfaced as a flaky
-    /// "Service error occurred" (e.g. testFetchMFAPreferenceWithInternalErrorException). The prior
-    /// `Date() + 121` sat 1s over the buffer.
+    /// Keeps test credentials beyond the 120s refresh buffer to prevent spurious refreshes.
     static let testExpiryInSeconds = AmplifyCredentials.expiryBufferInSeconds * 10
 
     static var testData: AuthAWSCognitoCredentials {
