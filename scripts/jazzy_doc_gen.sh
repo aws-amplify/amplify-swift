@@ -11,7 +11,7 @@ git config user.email $GITHUB_EMAIL
 git config user.name $GITHUB_USER
 
 cd $GITHUB_WORKSPACE
-bundle exec jazzy --swift-build-tool spm --build-tool-arguments -Xswiftc,-swift-version,-Xswiftc,5
+bundle exec jazzy --swift-build-tool spm
 ln -s ../readme-images docs
 git add docs
 git commit -m "chore: update API docs [skip ci]"
