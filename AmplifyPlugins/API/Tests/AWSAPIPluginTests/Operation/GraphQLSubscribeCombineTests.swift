@@ -30,7 +30,6 @@ class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
         private var errorCount = 0
         private var finished = false
         private var failed = false
-        private var continuation: CheckedContinuation<Void, Never>?
 
         func recordConnecting() { lock.withLock { connecting = true } }
         func recordConnected() { lock.withLock { connected = true } }
@@ -39,25 +38,22 @@ class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
         func recordError() { lock.withLock { errorCount += 1 } }
 
         func complete(failed: Bool) {
-            let resume: CheckedContinuation<Void, Never>?
-            lock.lock()
-            if failed { self.failed = true } else { finished = true }
-            resume = continuation
-            continuation = nil
-            lock.unlock()
-            resume?.resume()
+            lock.withLock { if failed { self.failed = true } else { finished = true } }
         }
 
-        func waitUntilComplete() async {
-            await withCheckedContinuation { cont in
-                lock.lock()
-                if finished || failed {
-                    lock.unlock()
-                    cont.resume()
-                } else {
-                    continuation = cont
-                    lock.unlock()
+        /// Bounded so a missing terminal event fails the test instead of hanging the shard.
+        func waitUntilComplete(
+            timeout: TimeInterval = 10,
+            file: StaticString = #filePath,
+            line: UInt = #line
+        ) async {
+            let deadline = Date().addingTimeInterval(timeout)
+            while !lock.withLock({ finished || failed }) {
+                if Date() >= deadline {
+                    XCTFail("Timed out waiting for subscription completion", file: file, line: line)
+                    return
                 }
+                try? await Task.sleep(nanoseconds: 5_000_000)
             }
         }
 

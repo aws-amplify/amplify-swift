@@ -40,53 +40,44 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     }
 }
 
-// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
-// by a single test at a time.
-
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`; driven by a single
+// test at a time.
 class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Sendable {
 
-    /// Tracks the subscription lifecycle so `waitFor*` drives and awaits the real emission instead of
-    /// racing fixed sleeps. Lifecycle events are sent on demand from the `waitFor*` methods — never
-    /// automatically on attach — so a test always sends `.subscribing`/`.subscribed` *after* it has
-    /// subscribed its consumer, which is what keeps `Amplify.Publisher.create`'s eager forwarding from
-    /// dropping `.connecting` before the Combine sink is attached.
+    /// Emits lifecycle events only after the consumer attaches, preventing eager forwarding from
+    /// dropping `.connecting`. Waits are bounded so a never-arriving phase fails the test rather
+    /// than hanging the shard.
     private final class Lifecycle: @unchecked Sendable {
         enum Phase { case attached, subscribing, subscribed, unsubscribed }
+        struct TimedOut: Error { let phase: Phase }
 
         private let lock = NSLock()
         private var reached: Set<Phase> = []
-        private var waiters: [Phase: [CheckedContinuation<Void, Never>]] = [:]
         private var claimedSends: Set<Phase> = []
 
         func mark(_ phase: Phase) {
-            lock.lock()
-            reached.insert(phase)
-            let toResume = waiters.removeValue(forKey: phase) ?? []
-            lock.unlock()
-            toResume.forEach { $0.resume() }
+            lock.withLock { _ = reached.insert(phase) }
         }
 
-        func wait(for phase: Phase) async {
-            await withCheckedContinuation { continuation in
-                lock.lock()
-                if reached.contains(phase) {
-                    lock.unlock()
-                    continuation.resume()
-                } else {
-                    waiters[phase, default: []].append(continuation)
-                    lock.unlock()
-                }
+        /// Waits until `phase` is reached, throwing `TimedOut` after `timeout` so a regression is a
+        /// bounded failure, not a hang.
+        func wait(for phase: Phase, timeout: TimeInterval) async throws {
+            let deadline = Date().addingTimeInterval(timeout)
+            while !lock.withLock({ reached.contains(phase) }) {
+                if Date() >= deadline { throw TimedOut(phase: phase) }
+                try? await Task.sleep(nanoseconds: 5_000_000)
             }
         }
 
         /// Returns `true` only for the first caller for `phase`, so each event is sent exactly once.
         func claimSend(_ phase: Phase) -> Bool {
-            lock.lock()
-            defer { lock.unlock() }
-            return claimedSends.insert(phase).inserted
+            lock.withLock { claimedSends.insert(phase).inserted }
         }
     }
+
+    /// Generous upper bound for lifecycle waits; the deterministic mock reaches each phase far sooner,
+    /// so this only bounds a genuine regression.
+    private static let waitTimeout: TimeInterval = 10
 
     private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
     private let lifecycle = Lifecycle()
@@ -124,31 +115,31 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Senda
     }
 
     func waitForSubscirbing() async throws {
-        await sendSubscribing()
+        try await sendSubscribing()
     }
 
     func waitForSubscirbed() async throws {
-        await sendSubscribing()
+        try await sendSubscribing()
         if lifecycle.claimSend(.subscribed) {
             subject.send(.subscribed)
             lifecycle.mark(.subscribed)
         }
-        await lifecycle.wait(for: .subscribed)
+        try await lifecycle.wait(for: .subscribed, timeout: Self.waitTimeout)
     }
 
     func waitForUnsubscirbed() async throws {
-        await lifecycle.wait(for: .unsubscribed)
+        try await lifecycle.wait(for: .unsubscribed, timeout: Self.waitTimeout)
     }
 
     /// Waits for the operation's sink to attach, then sends `.subscribing` exactly once and waits
     /// until it has been emitted.
-    private func sendSubscribing() async {
-        await lifecycle.wait(for: .attached)
+    private func sendSubscribing() async throws {
+        try await lifecycle.wait(for: .attached, timeout: Self.waitTimeout)
         if lifecycle.claimSend(.subscribing) {
             subject.send(.subscribing)
             lifecycle.mark(.subscribing)
         }
-        await lifecycle.wait(for: .subscribing)
+        try await lifecycle.wait(for: .subscribing, timeout: Self.waitTimeout)
     }
 }
 
