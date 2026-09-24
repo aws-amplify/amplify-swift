@@ -9,10 +9,5 @@ undocumented_text: ""
 hide_documentation_coverage: true
 sdk: iphone
 theme: apple
-build_tool_arguments:
-  - -Xswiftc
-  - -swift-version
-  - -Xswiftc
-  - "5"
 
 docset_icon: readme-images/amplify-icon.png
