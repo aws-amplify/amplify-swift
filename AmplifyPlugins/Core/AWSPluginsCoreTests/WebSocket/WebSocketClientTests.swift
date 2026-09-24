@@ -164,10 +164,12 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
                 disconnectExpectation.fulfill()
             case .connected:
                 reconnectedExpectation.fulfill()
-            default:
-                // A transient server failure can also surface a `.error`/data event around the
-                // disconnect; ignore it. The ordered disconnect->reconnect expectations gate the test.
+            case .error, .data:
+                // A transient server failure can surface a `.error`/`.data` event around the
+                // disconnect; ignore only those. The ordered disconnect->reconnect gates the test.
                 break
+            default:
+                XCTFail("No other type of event should be received")
             }
         }
         .store(in: &cancellables)
