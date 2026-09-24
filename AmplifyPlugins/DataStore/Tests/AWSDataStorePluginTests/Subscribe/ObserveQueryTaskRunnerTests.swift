@@ -621,12 +621,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase, @unchecked Sendable {
         }
         await fulfillment(of: [firstSnapshot], timeout: 5)
 
-        // Send each mutation and wait for its resulting snapshot before sending the next.
-        // In the after-sync path every mutation produces its own snapshot, so sending all
-        // three in a burst can race the item-change subscription's attachment (the mock's
-        // `query` completes synchronously, so the first snapshot fires before the sink is
-        // attached) and collapse/drop snapshots. Serializing keeps each snapshot distinct
-        // and matches the pattern used by the other item-change tests in this file.
+        // Send each mutation and wait for its snapshot before the next: in the after-sync path each
+        // mutation produces its own snapshot, so a burst can collapse/drop snapshots.
         let post = try createPost(id: "1", title: "title 1")
         dataStorePublisher.send(input: post)
         await fulfillment(of: [secondSnapshot], timeout: 10)

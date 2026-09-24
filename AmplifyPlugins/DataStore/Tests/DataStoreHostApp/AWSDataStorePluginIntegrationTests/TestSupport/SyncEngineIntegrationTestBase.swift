@@ -130,9 +130,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
 
         try await Amplify.DataStore.start()
 
-        // 10s is too tight on slower platforms; cap well below networkTimeout so a sync-start
-        // outage fails fast per test instead of compounding into the 2h job limit.
-        await fulfillment(of: [eventReceived], timeout: 30)
+        // `.ready` includes subscription setup and initial sync, so it needs the full network
+        // budget; `.syncStarted` is capped at 30s so a sync-start outage fails fast rather than
+        // compounding into the 2h job limit.
+        let timeout = eventName == HubPayload.EventName.DataStore.ready ? networkTimeout : 30
+        await fulfillment(of: [eventReceived], timeout: timeout)
     }
 
 }

@@ -59,11 +59,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase, @unchecked Sendable
         outboxMutationProcessed.assertForOverFulfill = false
         let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")
         let localEventReceived = expectation(description: "received mutation event with version nil")
-        // `DataStore.observe` can legitimately deliver more than one event at a given version
-        // (e.g. the local save followed by the remote reconciliation), so guard against
-        // over-fulfillment, consistent with the outbox expectations above. Without this a
-        // duplicate delivery raises an NSInternalInconsistencyException that crashes the test
-        // process and cascades into "DataStore not configured" failures in later tests.
+        // Allow duplicate local and remote reconciliation events without failing on over-fulfillment.
         localEventReceived.assertForOverFulfill = false
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
         remoteEventReceived.assertForOverFulfill = false
