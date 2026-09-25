@@ -16,8 +16,7 @@ class GraphQLSubscribeTests: OperationTestBase, @unchecked Sendable {
 
     var mockAppSyncRealTimeClient: MockAppSyncRealTimeClient!
 
-    /// Thread-safe collector for the subscribe callbacks. `waitUntilComplete()` resumes when the
-    /// completion listener fires, so tests await the terminal event deterministically (no timeout).
+    /// Thread-safely collects callback events until completion or the wait timeout.
     private final class EventCollector: @unchecked Sendable {
         private let lock = NSLock()
         private var connected = false

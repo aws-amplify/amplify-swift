@@ -226,10 +226,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase, @unchecked Sendable {
         return apiPlugin.subscribe(request: request)
     }
 
-    /// Consumes the subscription inline (no detached task/timeout) until it finishes or fails,
-    /// collecting the events so the caller can assert on them deterministically.
-    /// Races the drain against a deadline and cancels it on expiry, so a subscription that never
-    /// finishes or throws fails the test instead of keeping the scope alive indefinitely.
+    /// Drains the subscription, cancelling it on timeout so the drain and task group can finish.
     private func drain(
         _ subscription: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<JSONValue>>,
         timeout: TimeInterval = 20,
@@ -240,7 +237,14 @@ class GraphQLSubscribeTasksTests: OperationTestBase, @unchecked Sendable {
         let result: DrainedEvents? = await withTaskGroup(of: DrainedEvents?.self) { group in
             group.addTask { await work.value }
             group.addTask {
-                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                do {
+                    try await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                } catch {
+                    return nil
+                }
+                // Cancel before the group waits on the work child; cancelAll alone won't reach it.
+                work.cancel()
+                subscription.cancel()
                 return nil
             }
             let first = await group.next() ?? nil
@@ -248,8 +252,6 @@ class GraphQLSubscribeTasksTests: OperationTestBase, @unchecked Sendable {
             return first
         }
         guard let result else {
-            work.cancel()
-            subscription.cancel()
             XCTFail("Timed out draining subscription", file: file, line: line)
             return DrainedEvents()
         }

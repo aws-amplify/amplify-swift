@@ -44,9 +44,7 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
 // test at a time.
 class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Sendable {
 
-    /// Emits lifecycle events only after the consumer attaches, preventing eager forwarding from
-    /// dropping `.connecting`. Waits are bounded so a never-arriving phase fails the test rather
-    /// than hanging the shard.
+    /// Tracks lifecycle phases and bounds waits so missing phases fail instead of hanging.
     private final class Lifecycle: @unchecked Sendable {
         enum Phase { case attached, subscribing, subscribed, unsubscribed }
         struct TimedOut: Error { let phase: Phase }
@@ -84,10 +82,7 @@ class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol, @unchecked Senda
 
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         let lifecycle = lifecycle
-        // `.buffer` keeps demand on the subject so a send is never silently dropped when the
-        // subscriber hasn't yet requested demand; events are held and delivered FIFO. `receiveRequest`
-        // then signals readiness so the `waitFor*` methods only send once the operation's sink is
-        // attached. Together these make lifecycle delivery deterministic (no fixed-sleep slack).
+        // Buffer lifecycle events until the operation's sink requests demand.
         return subject
             .buffer(size: 1_024, prefetch: .keepFull, whenFull: .dropOldest)
             .handleEvents(receiveRequest: { _ in

@@ -235,9 +235,7 @@ class AWSS3StoragePluginTestBase: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [expectation], timeout: timeout)
     }
 
-    /// Invalidates every storage service's background `URLSession` and awaits actual teardown before
-    /// the next test recreates one with the same fixed identifier ("Task created in a session that has
-    /// been invalidated"). Waits on the delegate's `StorageURLSessionDidBecomeInvalidNotification`.
+    /// Invalidates all storage sessions and waits up to 10 seconds for delegate invalidation.
     private func invalidateCurrentSession() async {
         Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {

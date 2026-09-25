@@ -19,8 +19,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
     var sink: AnyCancellable?
     var mockAppSyncRealTimeClient: MockAppSyncRealTimeClient?
 
-    /// Thread-safe collector for the subscription sink. `waitUntilComplete()` resumes when the sink
-    /// receives completion, so tests await the terminal event deterministically (no timeout).
+    /// Thread-safely collects sink events until completion or the wait timeout.
     private final class EventCollector: @unchecked Sendable {
         private let lock = NSLock()
         private var connecting = false
