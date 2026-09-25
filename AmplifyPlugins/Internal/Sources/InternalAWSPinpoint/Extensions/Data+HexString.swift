@@ -13,12 +13,17 @@ extension Data {
             return nil
         }
 
-        let chars = hexString.map { $0 }
-        let bytes = stride(from: 0, to: chars.count, by: 2)
-            .map { String(chars[$0]) + String(chars[$0 + 1]) }
-            .compactMap { UInt8($0, radix: 16) }
+        let chars = Array(hexString)
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(chars.count / 2)
+        for i in stride(from: 0, to: chars.count, by: 2) {
+            guard let byte = UInt8(String(chars[i]) + String(chars[i + 1]), radix: 16) else {
+                return nil
+            }
+            bytes.append(byte)
+        }
 
-        guard !bytes.isEmpty, hexString.count / bytes.count == 2 else {
+        guard !bytes.isEmpty else {
             return nil
         }
 
