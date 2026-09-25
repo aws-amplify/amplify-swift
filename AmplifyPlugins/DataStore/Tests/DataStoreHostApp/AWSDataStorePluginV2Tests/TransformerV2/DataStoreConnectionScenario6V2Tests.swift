@@ -55,7 +55,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testGetBlogThenFetchPostsThenFetchComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = await saveBlog(name: "name"),
               let post1 = await savePost(title: "title", blog: blog),
               let _ = await savePost(title: "title", blog: blog),
@@ -104,7 +104,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testGetCommentThenFetchPostThenFetchBlog() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = await saveBlog(name: "name"),
               let post = await savePost(title: "title", blog: blog),
               let comment = await saveComment(post: post, content: "content")
@@ -139,7 +139,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testGetPostThenFetchBlogAndComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = await saveBlog(name: "name"),
               let post = await savePost(title: "title", blog: blog),
               let comment = await saveComment(post: post, content: "content")
@@ -192,7 +192,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
 
     func testSaveBlog() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = await saveBlog(name: "name") else {
             XCTFail("Could not create blog")
             return
@@ -229,12 +229,12 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
             return
         }
         XCTAssertEqual(queriedBlog.id, blog.id)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
     }
 
     func testSaveBlogPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         guard let blog = await saveBlog(name: "name"),
               let post1 = await savePost(title: "title", blog: blog),
@@ -299,12 +299,12 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
         }
         try await posts.fetch()
         XCTAssertEqual(posts.count, 2)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
     }
 
     func testSaveBlogPostComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         guard let blog = await saveBlog(name: "name"),
               let post = await savePost(title: "title", blog: blog),
@@ -381,12 +381,12 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
         XCTAssertTrue(comments.contains(where: { commentFetched -> Bool in
             commentFetched.id == comment.id
         }))
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
     }
 
     func testCascadeDeleteBlogDeletesPostAndComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = await saveBlog(name: "name"),
               let post = await savePost(title: "title", blog: blog),
               let comment = await saveComment(post: post, content: "content")
@@ -429,7 +429,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
             XCTFail("Listener not registered for hub")
             return
         }
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 3 // 3 models due to cascade delete behavior
@@ -465,7 +465,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase, @unc
         }
 
         _ = try await Amplify.DataStore.delete(blog)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
 
     }
 

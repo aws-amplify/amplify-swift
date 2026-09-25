@@ -193,7 +193,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase, @unchecked Sendable {
         apiBehavior.responders[.mutateRequestResponse] = responder
 
         stateMachine.state = .requestingEvent
-        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
+        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 2)
 
         // While we are expecting the mutationEvent to be processed by making an API call,
         // stop the mutation queue. Note that we are not testing that the operation

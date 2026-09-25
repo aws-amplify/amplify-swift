@@ -150,7 +150,9 @@ class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
             return try await taskGroup.reduce([AnyCancellable?]()) { $0 + [$1] }
         }
 
-        await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 2)
+        // Establishing all `numOfMaxSubscriptionCount` (200) subscriptions requires that many
+        // round-trips to the live AppSync backend; 2s is far too tight and flakes under load.
+        await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 30)
 
         let maxSubscriptionReachedError = expectation(description: "Should return max subscription reached error")
         maxSubscriptionReachedError.assertForOverFulfill = false

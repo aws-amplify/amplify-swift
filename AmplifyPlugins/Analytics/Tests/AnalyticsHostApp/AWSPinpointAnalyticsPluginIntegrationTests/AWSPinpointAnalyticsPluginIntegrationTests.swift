@@ -45,6 +45,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase, @unchecked Sendab
     }
 
     override func tearDown() async throws {
+        // Let any in-flight Pinpoint work (event submission / endpoint updates, which read
+        // credentials through Amplify.Auth) finish before `Amplify.reset()` tears down the Auth
+        // category. Otherwise a late task crashes with "Authentication category is not configured".
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         await Amplify.reset()
     }
 

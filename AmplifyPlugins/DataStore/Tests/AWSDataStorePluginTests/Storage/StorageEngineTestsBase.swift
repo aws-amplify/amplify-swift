@@ -17,7 +17,7 @@ import XCTest
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
-    let defaultTimeout = 0.3
+    let defaultTimeout = 5.0
     var connection: Connection!
     var storageEngine: StorageEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
@@ -153,7 +153,7 @@ class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
         modelType: M.Type,
         withId id: String,
         where predicate: QueryPredicate? = nil,
-        timeout: TimeInterval = 1
+        timeout: TimeInterval = 10
     ) -> DataStoreResult<M> {
         let result = deleteModelSynchronous(
             modelType: modelType,

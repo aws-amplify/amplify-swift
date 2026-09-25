@@ -152,27 +152,38 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     }
 
     private func bootDevice() async throws {
-        let request = LocalServer.boot(deviceIdentifier).urlRequest
-        let (_, response) = try await URLSession.shared.data(for: request)
-        XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to boot the device")
+        try await sendLocalServerRequest(LocalServer.boot(deviceIdentifier), description: "boot the device")
     }
 
     private func enrollBiometrics() async throws {
-        let request = LocalServer.enroll(deviceIdentifier).urlRequest
-        let (_, response) = try await URLSession.shared.data(for: request)
-        XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to enroll biometrics in the device")
+        try await sendLocalServerRequest(LocalServer.enroll(deviceIdentifier), description: "enroll biometrics in the device")
     }
 
     private func matchBiometrics() async throws {
-        let request = LocalServer.match(deviceIdentifier).urlRequest
-        let (_, response) = try await URLSession.shared.data(for: request)
-        XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to match biometrics in the device")
+        try await sendLocalServerRequest(LocalServer.match(deviceIdentifier), description: "match biometrics in the device")
     }
 
     private func uninstallApp() async throws {
-        let request = LocalServer.uninstall(deviceIdentifier).urlRequest
-        let (_, response) = try await URLSession.shared.data(for: request)
-        XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to uninstall the App")
+        try await sendLocalServerRequest(LocalServer.uninstall(deviceIdentifier), description: "uninstall the App")
+    }
+
+    // The local biometrics-control server can be briefly slow/unresponsive; retry instead of
+    // failing the whole test on a single -1001 timeout.
+    private func sendLocalServerRequest(_ server: LocalServer, description: String, attempts: Int = 3) async throws {
+        var request = server.urlRequest
+        request.timeoutInterval = 20
+        var lastError: Error?
+        for attempt in 1 ... attempts {
+            do {
+                let (_, response) = try await URLSession.shared.data(for: request)
+                XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to \(description)")
+                return
+            } catch {
+                lastError = error
+                if attempt < attempts { try? await Task.sleep(nanoseconds: 2_000_000_000) }
+            }
+        }
+        throw try XCTUnwrap(lastError)
     }
 
     @MainActor

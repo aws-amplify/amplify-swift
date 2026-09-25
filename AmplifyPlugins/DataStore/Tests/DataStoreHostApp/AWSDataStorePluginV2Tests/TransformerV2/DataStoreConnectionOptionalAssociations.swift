@@ -189,7 +189,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
 
     func testRemovePostFromCommentAndBlogFromPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         guard let blog = try await saveBlog(),
               let post = try await savePost(withBlog: blog),
               let comment = try await saveComment(withPost: post) else {
@@ -260,6 +260,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -274,8 +276,15 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
                 break
             }
         }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
+        }
         let savedComment = try await Amplify.DataStore.save(commentToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedComment
     }
 
@@ -288,6 +297,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -302,8 +313,15 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
                 break
             }
         }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
+        }
         let savedPost = try await Amplify.DataStore.save(postToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedPost
     }
 
@@ -327,6 +345,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
         }
 
         let waitForSync = expectation(description: "synced")
+        // syncReceived can arrive more than once before the listener is removed asynchronously.
+        waitForSync.assertForOverFulfill = false
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -342,8 +362,15 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase, 
                 break
             }
         }
+        // Ensure the listener is registered before saving, otherwise the synchronously-dispatched
+        // syncReceived event can fire before the listener exists and the wait never fulfills.
+        guard let token,
+              try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5) else {
+            XCTFail("Hub listener was not registered")
+            return nil
+        }
         let savedBlog = try await Amplify.DataStore.save(blogToSave)
-        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: networkTimeout)
         return savedBlog
     }
 

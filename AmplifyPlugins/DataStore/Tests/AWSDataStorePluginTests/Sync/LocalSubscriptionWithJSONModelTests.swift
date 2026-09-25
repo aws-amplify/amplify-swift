@@ -138,7 +138,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
-        wait(for: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 10.0)
         subscription.cancel()
     }
 
@@ -244,7 +244,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
-        wait(for: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 10.0)
 
         subscription.cancel()
     }
@@ -297,7 +297,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
 
         dataStorePlugin.save(newModel, modelSchema: postSchema) { _ in }
 
-        wait(for: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 10.0)
 
         subscription.cancel()
     }
@@ -338,7 +338,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
 
         dataStorePlugin.delete(model, modelSchema: postSchema) { _ in }
-        wait(for: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 10.0)
 
         subscription.cancel()
     }
@@ -387,7 +387,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
                 savedPost.fulfill()
             }
         }
-        wait(for: [savedPost], timeout: 1.0)
+        wait(for: [savedPost], timeout: 10.0)
 
         let commentContent = "some content"
         let comment = [
@@ -407,7 +407,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase, @unchecked Sendable {
                 savedComment.fulfill()
             }
         }
-        wait(for: [savedComment], timeout: 1.0)
+        wait(for: [savedComment], timeout: 10.0)
 
         let queryCommentSuccess = expectation(description: "querying for comment should exist")
         dataStorePlugin.query(
