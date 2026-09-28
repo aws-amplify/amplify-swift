@@ -27,7 +27,7 @@ api-dump-test/* @aws-amplify/amplify-ios-admins
 /scripts/m2/engine_paths.txt @aws-amplify/amplify-ios-admins
 /.github/workflows/auth_golden_fixture_lock.yml @aws-amplify/amplify-ios-admins
 
-# The Amplify-free engine's dependency gates (G6 final form and the engine privacy-manifest check)
+# The Amplify-free engine's dependency gates (its dependencies and privacy manifests)
 # require admin approval: weakening them would let an Amplify edge reach the client unnoticed.
 /scripts/m2/check_engine_deps.py @aws-amplify/amplify-ios-admins
 /scripts/m2/check_engine_privacy_manifest.py @aws-amplify/amplify-ios-admins
