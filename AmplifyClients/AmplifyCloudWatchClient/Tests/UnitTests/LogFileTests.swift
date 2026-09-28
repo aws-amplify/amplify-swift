@@ -34,9 +34,9 @@ final class LogFileTests: XCTestCase {
         sizeLimitInBytes = nil
     }
 
-    /// Given: a data
-    /// When: Log file writes to file
-    /// Then: the log file writes to disk if there is enough space
+    /// - Given: a data
+    /// - When: Log file writes to file
+    /// - Then: the log file writes to disk if there is enough space
     func testLogFileWriteToSpaceLimit() throws {
         let bytes = (0 ..< sizeLimitInBytes).map { _ in UInt8.random(in: 0 ..< 255) }
         let data = Data(bytes)
@@ -55,9 +55,9 @@ final class LogFileTests: XCTestCase {
         XCTAssertEqual(contents, data)
     }
 
-    /// Given: a data is written
-    /// When: there is not enough space to write
-    /// Then: the log writes data beyond the limit
+    /// - Given: a data is written
+    /// - When: there is not enough space to write
+    /// - Then: the log writes data beyond the limit
     func testLogFileWritesBeyondSpaceLimit() throws {
         let bytes = (0 ..< sizeLimitInBytes * 2).map { _ in UInt8.random(in: 0 ..< 255) }
         let data = Data(bytes)

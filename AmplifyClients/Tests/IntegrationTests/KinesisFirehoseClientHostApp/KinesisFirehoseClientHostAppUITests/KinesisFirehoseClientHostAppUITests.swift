@@ -22,6 +22,10 @@ final class KinesisFirehoseClientHostAppUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    /// - Given: the Kinesis/Firehose host app
+    /// - When: it is launched
+    /// - Then:
+    ///    - it launches; this template test makes no further assertion
     @MainActor
     func testExample() {
         // UI tests must launch the application that they test.
@@ -31,6 +35,10 @@ final class KinesisFirehoseClientHostAppUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
+    /// - Given: the Kinesis/Firehose host app
+    /// - When: it is launched repeatedly under `XCTApplicationLaunchMetric`
+    /// - Then:
+    ///    - the launch time is measured; there is no pass/fail baseline
     @MainActor
     func testLaunchPerformance() {
         // This measures how long it takes to launch your application.

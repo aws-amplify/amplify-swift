@@ -16,13 +16,12 @@ public class AWSAuthService: AWSAuthServiceBehavior, @unchecked Sendable {
     public init() {}
 
     /// Retrieves the identity identifier for this authentication session from Cognito.
+    ///
+    /// Throws the session's own `AuthError` when it has no identity ID, or `AuthError.invalidState` /
+    /// `AuthError.configuration` when the session cannot vend one at all.
     public func getIdentityID() async throws -> String {
         let session = try await Amplify.Auth.fetchAuthSession()
-        guard let identityID = (session as? AuthCognitoIdentityProvider)?.getIdentityId() else {
-            let error = AuthError.unknown(" Did not receive a valid response from fetchAuthSession for identityId.")
-            throw error
-        }
-        return try identityID.get()
+        return try session.resolveIdentityID()
     }
 
     // This algorithm was heavily based on the implementation here:
@@ -81,29 +80,11 @@ public class AWSAuthService: AWSAuthServiceBehavior, @unchecked Sendable {
     }
 
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
+    ///
+    /// Throws the session's own `AuthError` when it has no tokens, or `AuthError.invalidState` /
+    /// `AuthError.configuration` when the session cannot vend them at all.
     public func getUserPoolAccessToken() async throws -> String {
         let authSession = try await Amplify.Auth.fetchAuthSession()
-        guard let tokenResult = getTokenString(from: authSession) else {
-            let error = AuthError.unknown("Did not receive a valid response from fetchAuthSession for get token.")
-            throw error
-        }
-        switch tokenResult {
-        case .success(let token):
-            return token
-        case .failure(let error):
-            throw error
-        }
-    }
-
-    private func getTokenString(from authSession: AuthSession) -> Result<String, AuthError>? {
-        if let result = (authSession as? AuthCognitoTokensProvider)?.getCognitoTokens() {
-            switch result {
-            case .success(let tokens):
-                return .success(tokens.accessToken)
-            case .failure(let error):
-                return .failure(error)
-            }
-        }
-        return nil
+        return try authSession.resolveCognitoTokens().accessToken
     }
 }

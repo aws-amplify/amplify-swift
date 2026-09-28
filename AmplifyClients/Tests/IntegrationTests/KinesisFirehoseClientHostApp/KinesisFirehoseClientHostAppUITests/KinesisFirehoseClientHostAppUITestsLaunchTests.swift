@@ -17,6 +17,10 @@ final class KinesisFirehoseClientHostAppUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// - Given: the Kinesis/Firehose host app, run once for each UI configuration of the target
+    /// - When: it is launched
+    /// - Then:
+    ///    - a screenshot of the launch screen is attached to the result and kept
     @MainActor
     func testLaunch() {
         let app = XCUIApplication()

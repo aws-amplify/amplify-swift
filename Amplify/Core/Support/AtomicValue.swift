@@ -24,9 +24,8 @@ public final class AtomicValue<Value>: @unchecked Sendable {
     }
 
     public func set(_ newValue: Value) {
-        lock.execute {
-            value = newValue
-        }
+        // The replaced value is released after unlocking: its `deinit` may use this `AtomicValue` again.
+        _ = getAndSet(newValue)
     }
 
     /// Sets AtomicValue to `newValue` and returns the old value

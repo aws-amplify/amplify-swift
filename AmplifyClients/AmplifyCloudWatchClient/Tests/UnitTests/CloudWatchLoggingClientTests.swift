@@ -47,8 +47,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
 
     // MARK: - Initialization
 
-    /// Given: valid configuration options
-    ///
+    /// - Given: valid configuration options
     /// - When: AmplifyCloudWatchClient is initialized
     /// - Then: the client is enabled and has a unique sink ID
     ///
@@ -57,8 +56,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         XCTAssertTrue(systemUnderTest.id.hasPrefix("AmplifyCloudWatchLoggingSink-"))
     }
 
-    /// Given: valid configuration options
-    ///
+    /// - Given: valid configuration options
     /// - When: AmplifyCloudWatchClient is initialized
     /// - Then: getCloudWatchLogsClient returns a valid client
     ///
@@ -69,8 +67,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
 
     // MARK: - Enable / Disable
 
-    /// Given: an enabled client
-    ///
+    /// - Given: an enabled client
     /// - When: disable is called
     /// - Then: isEnabled returns false for all log levels
     ///
@@ -81,8 +78,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         XCTAssertFalse(systemUnderTest.isEnabled(for: .verbose))
     }
 
-    /// Given: a disabled client
-    ///
+    /// - Given: a disabled client
     /// - When: enable is called
     /// - Then: isEnabled returns true
     ///
@@ -95,8 +91,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
 
     // MARK: - LogSinkBehavior
 
-    /// Given: an enabled client
-    ///
+    /// - Given: an enabled client
     /// - When: isEnabled is called for various log levels
     /// - Then: it returns true for all levels (global enable, filtering is per-namespace)
     ///
@@ -108,8 +103,7 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         XCTAssertTrue(systemUnderTest.isEnabled(for: .verbose))
     }
 
-    /// Given: a disabled client
-    ///
+    /// - Given: a disabled client
     /// - When: isEnabled is called
     /// - Then: it returns false for all levels
     ///
@@ -121,9 +115,9 @@ final class CloudWatchLoggingClientTests: XCTestCase {
 
     // MARK: - Level keying / concurrency / teardown (injected client)
 
-    /// Given: an injected client
-    /// When: messages at several levels are emitted under one namespace
-    /// Then: they share a single controller — the level is not part of the key
+    /// - Given: an injected client
+    /// - When: messages at several levels are emitted under one namespace
+    /// - Then: they share a single controller — the level is not part of the key
     func testMultipleLevelsUnderOneNamespaceUseASingleController() {
         let client = makeClient(mockClient: MockCloudWatchLogsClient())
 
@@ -137,9 +131,9 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         XCTAssertEqual(client.controllerCount, 2)
     }
 
-    /// Given: an injected client
-    /// When: many emits and a flush run concurrently
-    /// Then: the run completes without a crash or data-race trap (exercises the client's locking)
+    /// - Given: an injected client
+    /// - When: many emits and a flush run concurrently
+    /// - Then: the run completes without a crash or data-race trap (exercises the client's locking)
     func testConcurrentEmitAndFlushDoNotCrash() async throws {
         let mockClient = MockCloudWatchLogsClient()
         let client = makeClient(mockClient: mockClient)
@@ -154,9 +148,9 @@ final class CloudWatchLoggingClientTests: XCTestCase {
         }
     }
 
-    /// Given: a client with an interval flush strategy (creates a repeating timer)
-    /// When: the last strong reference is released
-    /// Then: the client deallocates — no retained timer / network-monitor cycle
+    /// - Given: a client with an interval flush strategy (creates a repeating timer)
+    /// - When: the last strong reference is released
+    /// - Then: the client deallocates — no retained timer / network-monitor cycle
     func testClientDeallocatesWithoutRetainCycle() throws {
         weak var weakClient: AmplifyCloudWatchClient?
         func scope() {

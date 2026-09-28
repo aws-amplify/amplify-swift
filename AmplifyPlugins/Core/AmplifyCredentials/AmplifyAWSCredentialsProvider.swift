@@ -39,28 +39,23 @@ public class AmplifyAWSCredentialsProvider: AwsCommonRuntimeKit.CredentialsProvi
         return try await plugin.fetchAuthSession(options: nil)
     }
 
+    /// The current session's AWS credentials — the shared body of both entry points below.
+    ///
+    /// Every failure is an `AuthError` that says why: the session's own error when it has one
+    /// (expired, signed out without guest access, no identity pool, keychain unreadable), otherwise
+    /// `invalidState` or `configuration` derived from the session. See `AuthSession.resolveAWSCredentials()`.
+    static func fetchAWSCredentials() async throws -> AWSPluginsCore.AWSCredentials {
+        try await fetchAuthSession().resolveAWSCredentials()
+    }
+
     public func getCredentials() async throws -> AwsCommonRuntimeKit.Credentials {
-        let authSession = try await Self.fetchAuthSession()
-        if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
-            let credentials = try awsCredentialsProvider.getAWSCredentials().get()
-            return try credentials.toAWSSDKCredentials()
-        } else {
-            let error = AuthError.unknown("Auth session does not include AWS credentials information")
-            throw error
-        }
+        try await Self.fetchAWSCredentials().toAWSSDKCredentials()
     }
 }
 
 extension AmplifyAWSCredentialsProvider: AWSCredentialIdentityResolver {
     public func getIdentity(identityProperties: Smithy.Attributes? = nil) async throws -> AWSCredentialIdentity {
-        let authSession = try await Self.fetchAuthSession()
-        if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
-            let credentials = try awsCredentialsProvider.getAWSCredentials().get()
-            return try credentials.toAWSCredentialIdentity()
-        } else {
-            let error = AuthError.unknown("Auth session does not include AWS credentials information")
-            throw error
-        }
+        try await Self.fetchAWSCredentials().toAWSCredentialIdentity()
     }
 }
 
