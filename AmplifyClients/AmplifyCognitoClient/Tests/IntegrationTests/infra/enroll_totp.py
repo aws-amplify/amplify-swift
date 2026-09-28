@@ -33,7 +33,7 @@ import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from parity import redact, require_aws_profile  # noqa: E402  (parity.py's redaction and profile guard)
+from parity import redact  # noqa: E402  (the redaction parity.py prints AWS CLI errors through)
 
 REGION = os.environ["REGION"]
 POOL = os.environ["USER_POOL_ID"]
@@ -171,5 +171,4 @@ def enroll(tokens):
 
 
 if __name__ == "__main__":
-    require_aws_profile()
     main()

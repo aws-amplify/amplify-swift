@@ -290,14 +290,6 @@ def ensure_user_secret(key, length=24):
 
 # --- Guards -----------------------------------------------------------------------------------------
 
-def require_aws_profile():
-    """Exits unless AWS_PROFILE names the profile to use: as lib.sh's require_aws_profile, this script
-    never picks a profile itself."""
-    if not os.environ.get("AWS_PROFILE"):
-        sys.exit("error: set AWS_PROFILE to the profile of the sandbox account (see the integration README); "
-                 "these scripts never pick a profile themselves.")
-
-
 def require_cli_history_off():
     history = subprocess.run(["aws", "configure", "get", "cli_history"], capture_output=True, text=True).stdout
     if history.strip() == "enabled":
@@ -2154,5 +2146,4 @@ if __name__ == "__main__":
                 "teardown": teardown}
     if len(sys.argv) != 2 or sys.argv[1] not in commands:
         sys.exit(f"Usage: {sys.argv[0]} {'|'.join(commands)}")
-    require_aws_profile()
     commands[sys.argv[1]]()

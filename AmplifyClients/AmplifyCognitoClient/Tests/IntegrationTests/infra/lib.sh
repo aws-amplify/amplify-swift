@@ -32,17 +32,6 @@ redact() {
         -e 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/<email>/g'
 }
 
-# Exits unless AWS_PROFILE names the profile to use. The scripts never pick a profile themselves (no
-# default, no fallback to the CLI's default profile), so a run can only act on the account it was
-# explicitly pointed at. Call it first, before any AWS call.
-require_aws_profile() {
-    if [[ -z "${AWS_PROFILE:-}" ]]; then
-        echo "error: set AWS_PROFILE to the profile of the sandbox account (see the integration README);" \
-            "these scripts never pick a profile themselves." >&2
-        exit 1
-    fi
-}
-
 # Exits if AWS CLI history is on. With `cli_history = enabled`, the CLI records every call's
 # parameters and response in ~/.aws/cli/history/history.db, and the parameters these scripts pass
 # through --cli-input-json are passwords, tokens and carol's TOTP secret.

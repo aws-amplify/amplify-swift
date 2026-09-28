@@ -14,7 +14,6 @@ set -euo pipefail
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
-require_aws_profile
 STATE="$STATE_DIR/state.json"
 [[ -f "$STATE" ]] || { echo "No $STATE; nothing to tear down."; exit 0; }
 get() { python3 -c "import json,sys;print(json.load(open(sys.argv[1]))[sys.argv[2]])" "$STATE" "$1"; }

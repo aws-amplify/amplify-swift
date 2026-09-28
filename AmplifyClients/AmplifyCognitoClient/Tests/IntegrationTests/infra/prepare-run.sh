@@ -32,7 +32,6 @@ set -euo pipefail
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
-require_aws_profile
 
 STATE="$STATE_DIR/state.json"
 [[ -f "$STATE" ]] || { echo "No $STATE; run infra/provision.sh first." >&2; exit 1; }

@@ -33,7 +33,6 @@ REGION="${1:-${AWS_REGION:-us-west-2}}"
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
-require_aws_profile
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR"
 # stderr passes through redact (lib.sh), so an error cannot print an account, pool or client id.
