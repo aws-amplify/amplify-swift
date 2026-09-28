@@ -245,6 +245,16 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [connected], timeout: 10)
         return (eventReceived, subscription)
     }
+
+    /// Whether a subscription event is for another record, e.g. one created by a concurrent CI run sharing the backend.
+    func isFromAnotherRecord<M: Model>(_ result: GraphQLResponse<M>, expected model: M) -> Bool {
+        switch result {
+        case .success(let received), .failure(.partial(let received, _)):
+            return received.identifier != model.identifier
+        default:
+            return false
+        }
+    }
 }
 
 extension LazyReferenceIdentifier: Equatable {
