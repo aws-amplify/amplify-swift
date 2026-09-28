@@ -1,0 +1,94 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+
+package struct InitializeSignInFlow: Action {
+
+    package var identifier: String = "IntializeSignInFlow"
+
+    package let signInEventData: SignInEventData
+
+    package let autoSignIn: Bool
+
+    package func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let signInEvent = await createSignInEvent(from: environment)
+        logVerbose("\(#fileID) Sending event \(signInEvent.type)", environment: environment)
+        await dispatcher.send(signInEvent)
+    }
+
+    package func createSignInEvent(from environment: Environment) async -> SignInEvent {
+
+        guard let authEnvironment = environment as? AuthEnvironment,
+              authEnvironment.configuration.getUserPoolConfiguration() != nil
+        else {
+            let message = AuthPluginErrorConstants.configurationError
+            let event = SignInEvent(eventType: .throwAuthError(.configuration(message: message)))
+            return event
+        }
+
+        var deviceMetadata = DeviceMetadata.noData
+        if let username = signInEventData.username {
+            deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: username,
+                with: environment
+            )
+        }
+
+        let event: SignInEvent = switch signInEventData.signInMethod {
+
+        case .apiBased(let authflowType):
+            signInEvent(for: authflowType, with: deviceMetadata)
+        case .hostedUI(let hostedUIOptions):
+            .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
+        }
+
+        return event
+    }
+
+    package func signInEvent(
+        for authflow: EngineAuthFlowType,
+        with deviceMetadata: DeviceMetadata
+    ) -> SignInEvent {
+        switch authflow {
+        case .userSRP:
+            return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata, nil))
+        case .customWithoutSRP:
+            return .init(eventType: .initiateCustomSignIn(signInEventData, deviceMetadata))
+        case .customWithSRP:
+            return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
+        case .userPassword:
+            return .init(eventType: .initiateMigrateAuth(signInEventData, deviceMetadata, nil))
+        // Using `custom` here to keep the legacy behaviour from V1 intact,
+        // which is custom flow type will start with SRP_A flow.
+        case .custom:
+            return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
+        case .userAuth:
+            if autoSignIn {
+                return .init(eventType: .initiateAutoSignIn(signInEventData, deviceMetadata))
+            } else {
+                return .init(eventType: .initiateUserAuth(signInEventData, deviceMetadata))
+            }
+        }
+    }
+}
+
+extension InitializeSignInFlow: CustomDebugDictionaryConvertible {
+    package var debugDictionary: [String: Any] {
+        [
+            "identifier": identifier
+        ]
+    }
+}
+
+extension InitializeSignInFlow: CustomDebugStringConvertible {
+    package var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

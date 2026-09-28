@@ -12,6 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
+@testable import InternalAWSCognitoAuth
 
 class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 

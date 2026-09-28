@@ -53,7 +53,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///     }
     ///
     func testSuccessfulSignInWithCustomAuthSRP() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        let answer = try requireCustomChallengeAnswer()
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -69,8 +69,10 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         let option = AWSAuthSignInOptions(authFlowType: .customWithSRP)
         do {
             let result = try await Amplify.Auth.signIn(username: username, password: password, options: AuthSignInRequest.Options(pluginOptions: option))
-            if case .confirmSignInWithCustomChallenge(let additionalInfo) = result.nextStep {
-                confirmationCodeForValidation = additionalInfo?["code"] ?? ""
+            if case .confirmSignInWithCustomChallenge = result.nextStep {
+                confirmationCodeForValidation = answer
+            } else {
+                XCTFail("Expected a custom challenge, got \(result.nextStep)")
             }
         } catch {
             XCTFail("SignIn with invalid auth flow should not succeed")
@@ -118,7 +120,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///     }
     ///
     func testRuntimeAuthFlowSwitch() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        let answer = try requireCustomChallengeAnswer()
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -137,9 +139,15 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
                 password: password,
                 options: AuthSignInRequest.Options(pluginOptions: option)
             )
-            XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+            // The backend's define-auth-challenge trigger adds a CUSTOM_CHALLENGE after the password.
+            guard case .confirmSignInWithCustomChallenge = signInResult.nextStep else {
+                XCTFail("Expected a custom challenge after the password, got \(signInResult.nextStep)")
+                return
+            }
+            let confirmResult = try await Amplify.Auth.confirmSignIn(challengeResponse: answer)
+            XCTAssertTrue(confirmResult.isSignedIn, "SignIn should be complete")
         } catch {
-            XCTFail("Should successfully login")
+            XCTFail("Should successfully login: \(error)")
         }
 
         _ = await Amplify.Auth.signOut()
@@ -192,7 +200,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///        return event;
     ///    };
     func testSuccessfulSignInWithCustomAuth() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        let answer = try requireCustomChallengeAnswer()
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -208,8 +216,10 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
                 password: password,
                 options: AuthSignInRequest.Options(pluginOptions: option)
             )
-            if case .confirmSignInWithCustomChallenge(let additionalInfo) = signInResult.nextStep {
-                confirmationCodeForValidation = additionalInfo?["code"] ?? ""
+            if case .confirmSignInWithCustomChallenge = signInResult.nextStep {
+                confirmationCodeForValidation = answer
+            } else {
+                XCTFail("Expected a custom challenge, got \(signInResult.nextStep)")
             }
         } catch {
             XCTFail("SignIn with invalid auth flow should not succeed")
@@ -221,6 +231,16 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         } catch {
             XCTFail("Sign In confirmation failed")
         }
+    }
+
+
+    /// The answer the backend's create/verify-auth-challenge triggers expect, from the credentials file.
+    /// Backends without custom-auth triggers (and so without the key) skip these tests, as before.
+    private func requireCustomChallengeAnswer() throws -> String {
+        guard let customChallengeAnswer else {
+            throw XCTSkip("Needs a backend with custom-auth triggers and `custom_challenge_answer` in the credentials file")
+        }
+        return customChallengeAnswer
     }
 
 }

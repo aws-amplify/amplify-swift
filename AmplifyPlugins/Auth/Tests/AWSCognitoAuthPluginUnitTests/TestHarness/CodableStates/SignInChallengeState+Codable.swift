@@ -8,6 +8,7 @@
 import AWSCognitoIdentityProvider
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension SignInChallengeState: Codable {
     enum CodingKeys: String, CodingKey {

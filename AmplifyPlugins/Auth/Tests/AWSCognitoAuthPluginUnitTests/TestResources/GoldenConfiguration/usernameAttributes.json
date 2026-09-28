@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"namesclientid0123456789","poolId":"ca-central-1_names0001","region":"ca-central-1","signUpAttributes":[],"usernameAttributes":["PHONE_NUMBER","EMAIL"],"verificationMechanisms":[]}}

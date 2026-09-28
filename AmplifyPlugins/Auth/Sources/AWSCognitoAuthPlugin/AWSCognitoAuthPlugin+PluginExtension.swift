@@ -8,6 +8,7 @@
 import ClientRuntime
 import Foundation
 @_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
+import InternalAWSCognitoAuth
 
 public extension AWSCognitoAuthPlugin {
     @_spi(InternalAmplifyPluginExtension)

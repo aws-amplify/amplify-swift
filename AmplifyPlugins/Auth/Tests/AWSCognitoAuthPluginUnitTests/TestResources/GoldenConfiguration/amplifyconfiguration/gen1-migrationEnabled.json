@@ -1,0 +1,23 @@
+{
+  "UserAgent": "aws-amplify-cli/2.0",
+  "Version": "1.0",
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-west-2_gen1migr1",
+            "AppClientId": "gen1migrationclientid01234",
+            "Region": "us-west-2",
+            "MigrationEnabled": true
+          }
+        },
+        "Auth": {
+          "Default": {
+            "authenticationFlowType": "CUSTOM_AUTH"
+          }
+        }
+      }
+    }
+  }
+}

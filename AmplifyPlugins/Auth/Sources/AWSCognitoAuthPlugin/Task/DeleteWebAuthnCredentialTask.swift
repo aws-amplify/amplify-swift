@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class DeleteWebAuthnCredentialTask: AuthDeleteWebAuthnCredentialTask, DefaultLogger, @unchecked Sendable {
@@ -30,35 +31,26 @@ final class DeleteWebAuthnCredentialTask: AuthDeleteWebAuthnCredentialTask, Defa
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
+    /// The engine's `WebAuthnCredentialOperations.delete` does the work. It rethrows the token lookup's
+    /// `AuthError` unchanged and re-expresses every other error as an `EngineAuthError`, which
+    /// `AuthError(converting:)` bridges back to the `AuthError` this task has always thrown.
     func execute() async throws {
         do {
             await taskHelper.didStateMachineConfigured()
-            try await deleteWebAuthnCredential(
+            try await WebAuthnCredentialOperations.delete(
+                accessToken: { try await self.taskHelper.getAccessToken() },
                 credentialId: request.credentialId,
-                accessToken: taskHelper.getAccessToken(),
-                userPoolService: userPoolFactory()
+                userPool: userPoolFactory
             )
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             let webAuthnError = WebAuthnError.unknown(
-                message: "Unable to delete WebAuthn credential",
+                message: WebAuthnCredentialOperations.deleteFailureMessage,
                 error: error
             )
             throw webAuthnError.authError
         }
-    }
-
-    private func deleteWebAuthnCredential(
-        credentialId: String,
-        accessToken: String,
-        userPoolService: CognitoUserPoolBehavior
-    ) async throws {
-        _ = try await userPoolService.deleteWebAuthnCredential(
-            input: .init(
-                accessToken: accessToken,
-                credentialId: credentialId
-            )
-        )
     }
 }

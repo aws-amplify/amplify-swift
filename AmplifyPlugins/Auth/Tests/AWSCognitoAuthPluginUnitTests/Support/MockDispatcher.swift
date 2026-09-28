@@ -6,6 +6,7 @@
 //
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct MockDispatcher: EventDispatcher {
     // `@Sendable` because `EventDispatcher` is `Sendable` and dispatch happens from detached tasks.

@@ -10,6 +10,7 @@ import Foundation
 
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import InternalAWSCognitoAuth
 
 typealias ConfigureOperation = AmplifyOperation<
     AuthConfigureRequest,
@@ -40,12 +41,14 @@ class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
     }
 
     override func main() {
+        // Each path dispatches its result before finishing, so a finished operation has always
+        // reported its result.
         if isCancelled {
-            finish()
             dispatch(result: .failure(AuthError.configuration(
                 "Configuration operation was cancelled",
                 "", nil
             )))
+            finish()
             return
         }
 
@@ -59,8 +62,8 @@ class AuthConfigureOperation: ConfigureOperation, @unchecked Sendable {
             let stateSequences = await authStateMachine.listen()
             for await state in stateSequences {
                 if case .configured = state {
-                    finish()
                     dispatch(result: .success(()))
+                    finish()
                     break
                 }
             }

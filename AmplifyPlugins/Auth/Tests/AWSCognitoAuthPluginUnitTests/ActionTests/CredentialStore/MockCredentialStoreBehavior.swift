@@ -8,47 +8,56 @@
 import Foundation
 
 import AWSPluginsCore
+import InternalAmplifyKeychain
 @testable import AWSCognitoAuthPlugin
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
 
 // by a single test at a time.
 
-class MockKeychainStoreBehavior: KeychainStoreBehavior, @unchecked Sendable {
+class MockKeychainStoreBehavior: LegacyKeychainItemStoreDouble, @unchecked Sendable {
 
     typealias VoidHandler = () -> Void
 
     let data: String
     let removeAllHandler: VoidHandler?
+    /// Returns the error a read of the given key should throw, or `nil` to return `data`.
+    let readErrorForKey: ((String) -> Error?)?
+    /// The error `hasItems()` should throw, or `nil` to report whether `data` is non-empty.
+    let hasItemsError: Error?
 
     init(
         data: String,
-        removeAllHandler: VoidHandler? = nil
+        removeAllHandler: VoidHandler? = nil,
+        readErrorForKey: ((String) -> Error?)? = nil,
+        hasItemsError: Error? = nil
     ) {
         self.data = data
         self.removeAllHandler = removeAllHandler
+        self.readErrorForKey = readErrorForKey
+        self.hasItemsError = hasItemsError
     }
 
-    func _getString(_ key: String) throws -> String {
-        return data
-    }
-
-    func _getData(_ key: String) throws -> Data {
+    func getData(_ key: String) throws -> Data {
+        if let error = readErrorForKey?(key) {
+            throw error
+        }
         return Data(data.utf8)
     }
 
-    func _set(_ value: String, key: String) throws { }
+    func set(_ value: Data, key: String) throws { }
 
-    func _set(_ value: Data, key: String) throws { }
-
-    func _remove(_ key: String) throws {
+    func remove(_ key: String) throws {
     }
 
-    func _removeAll() throws {
+    func removeAll() throws {
         removeAllHandler?()
     }
 
-    func _hasItems() throws -> Bool {
+    func hasItems() throws -> Bool {
+        if let hasItemsError {
+            throw hasItemsError
+        }
         return !data.isEmpty
     }
 }

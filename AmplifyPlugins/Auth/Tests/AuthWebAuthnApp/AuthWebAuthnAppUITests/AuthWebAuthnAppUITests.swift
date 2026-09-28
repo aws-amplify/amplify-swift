@@ -48,6 +48,19 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
 
     @MainActor
     override func tearDown() async throws {
+        // A passkey sheet left open keeps its ceremony, and so the app, busy: close it first.
+        if springboard != nil {
+            for host in sheetHosts {
+                let close = host.buttons.matching(
+                    NSPredicate(format: "label IN %@", ["close", "Close", "Cancel"])
+                ).firstMatch
+                // Only a hittable one: tapping anything else fails the test here and would skip the
+                // user deletion and uninstall below.
+                if close.exists, close.isHittable {
+                    close.tap()
+                }
+            }
+        }
         deleteCurrentUser()
         app.terminate()
         username = nil
@@ -74,13 +87,7 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     @MainActor
     func testWebAuthnAPIs() async throws {
         // 1. Associate new WebAuthn Credential
-        let associateContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
-        let associateAttempt = await attempt {
-            associateButton.tap()
-            return associateContinueButton.waitForExistence(timeout: timeout)
-        }
-
-        guard associateAttempt else {
+        guard let associateContinueButton = await passkeySheetButton(after: associateButton) else {
             XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential: \(lastResult)")
             return
         }
@@ -108,21 +115,18 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
         }
 
         // 4. Sign in with WebAuthn
-        let signInContinueButton = springboard.otherElements["ASAuthorizationControllerContinueButton"]
-        let signInAttempt = await attempt {
-            signInButton.tap()
-            return signInContinueButton.waitForExistence(timeout: timeout)
-        }
-
-        guard signInAttempt else {
+        guard let signInContinueButton = await passkeySheetButton(after: signInButton) else {
             XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn: \(lastResult)")
             return
         }
 
         // If presented with additional credentials, choose the one for this user by tapping on it
-        let webAuthnCredentialButton = springboard.staticTexts[username]
-        if webAuthnCredentialButton.waitForExistence(timeout: 1) {
-            webAuthnCredentialButton.tap()
+        for host in sheetHosts {
+            let webAuthnCredentialButton = host.staticTexts[username]
+            if webAuthnCredentialButton.exists {
+                webAuthnCredentialButton.tap()
+                break
+            }
         }
 
         // Tap the "Continue" button
@@ -266,17 +270,78 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
         return element.waitForExistence(timeout: timeout ?? self.timeout)
     }
 
+    /// The processes that host the system passkey sheet: SpringBoard before iOS 26,
+    /// AuthenticationServicesUI on iOS 26.
     @MainActor
-    private func attempt(times: Int = 3, _ action: () async -> Bool) async -> Bool {
-        let result = await action()
-        if !result, times > 0 {
-            sleep(5)
-            return await attempt(times: times - 1, action)
+    private var sheetHosts: [XCUIApplication] {
+        [springboard, XCUIApplication(bundleIdentifier: "com.apple.AuthenticationServicesUI")]
+    }
+
+    /// Taps `button` and returns the passkey sheet's confirming button. On a freshly booted simulator
+    /// the first ceremony can fail before any sheet appears (the relying party's association is still
+    /// being fetched), so a failed ceremony is retried, up to 3 times. It taps again only once the
+    /// previous ceremony has reported its failure: tapping while a sheet is still coming up starts a
+    /// second ceremony, and the first one then never completes.
+    @MainActor
+    private func passkeySheetButton(after button: XCUIElement, attempts: Int = 3) async -> XCUIElement? {
+        for attempt in 1 ... attempts {
+            // The previous result (a failure, on a retry) stays up until the app starts the new action:
+            // wait for it to change, so it is not read as this attempt's failure.
+            let previousResult = lastResult
+            button.tap()
+            // Nothing to wait for when there was no result: the new one cannot be confused with it.
+            let deadline = Date().addingTimeInterval(previousResult.isEmpty ? 0 : 10)
+            while lastResult == previousResult, Date() < deadline {
+                pause()
+            }
+            if let sheetButton = passkeySheetButton() {
+                return sheetButton
+            }
+            guard attempt < attempts, lastResult.contains("failed") else {
+                return nil
+            }
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
         }
-        return result
+        return nil
+    }
+
+    /// The passkey sheet's confirming button, by the identifier this test used to query SpringBoard's
+    /// `otherElements` for, in any element type, else by its label ("Add Passkey" when saving one on
+    /// iOS 26). Waits up to 90 s, and returns nil early if the ceremony has already failed.
+    @MainActor
+    private func passkeySheetButton() -> XCUIElement? {
+        let deadline = Date().addingTimeInterval(90)
+        let byLabel = NSPredicate(format: "label IN %@", ["Continue", "Add Passkey", "Sign In", "Save Passkey"])
+        repeat {
+            if lastResult.contains("failed") {
+                return nil
+            }
+            for host in sheetHosts {
+                // Hittable, not merely present: a tap while the sheet is still sliding in is lost.
+                let byIdentifier = host.descendants(matching: .any)["ASAuthorizationControllerContinueButton"]
+                if byIdentifier.exists, byIdentifier.isHittable {
+                    return byIdentifier
+                }
+                let labelled = host.buttons.matching(byLabel).firstMatch
+                if labelled.exists, labelled.isHittable {
+                    return labelled
+                }
+            }
+            pause()
+        } while Date() < deadline
+        return nil
+    }
+
+    /// Half a second, letting the run loop turn (a blocking sleep gets the UI test runner killed). The
+    /// sheet's button can exist without being hittable yet, so the loops above must not spin on it.
+    @MainActor
+    private func pause() {
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "pause")], timeout: 0.5)
     }
 
     private var lastResult: String {
-        app.staticTexts["LastResult"].label
+        let result = app.staticTexts["LastResult"]
+        // SwiftUI drops an empty Text from the hierarchy: no element means the action is still running.
+        return result.exists ? result.label : ""
     }
 }

@@ -10,8 +10,10 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import Foundation
+import InternalAmplifyKeychain
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 enum Defaults {
 
@@ -119,13 +121,13 @@ enum Defaults {
         return MockAmplifyStore()
     }
 
-    static func makeLegacyStore(service: String) -> KeychainStoreBehavior {
+    static func makeLegacyStore(service: String) -> any KeychainItemStoreBehavior {
         return MockLegacyStore()
     }
 
     static func makeDefaultCredentialStoreEnvironment(
         amplifyStoreFactory: @escaping @Sendable () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
-        legacyStoreFactory: @escaping @Sendable (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
+        legacyStoreFactory: @escaping @Sendable (String) -> any KeychainItemStoreBehavior = makeLegacyStore(service: )
     ) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: makeDefaultAuthConfigData(),
@@ -133,7 +135,7 @@ enum Defaults {
                 amplifyCredentialStoreFactory: amplifyStoreFactory,
                 legacyKeychainStoreFactory: legacyStoreFactory
             ),
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
     }
 
@@ -172,7 +174,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
         Amplify.Logging.logLevel = .verbose
         return authEnv
@@ -219,7 +221,7 @@ enum Defaults {
     }
 
     static func makeAuthState(
-        tokens: AWSCognitoUserPoolTokens,
+        tokens: EngineUserPoolTokens,
         signedInDate: Date = Date(),
         signInMethod: SignInMethod = .apiBased(.userSRP)
     ) -> AuthState {
@@ -249,8 +251,8 @@ enum Defaults {
         accessToken: String = "",
         refreshToken: String = "XX",
         expiresIn: Int = 300
-    ) -> AWSCognitoUserPoolTokens {
-        AWSCognitoUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
+    ) -> EngineUserPoolTokens {
+        EngineUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
     }
 
 }
@@ -273,7 +275,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
                 let device = try mockAmplifyStore.retrieveASFDevice(for: username)
                 return .asfDeviceId(device, username)
             }
-        } catch KeychainStoreError.itemNotFound {
+        } catch EngineCredentialStoreError.itemNotFound {
             switch type {
             case .amplifyCredentials:
                 return .amplifyCredentials(.testData)
@@ -321,7 +323,7 @@ final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sen
         guard let data = Self.dict.getValue(forKey: credentialsKey),
               let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data))
         else {
-            throw KeychainStoreError.itemNotFound
+            throw EngineCredentialStoreError.itemNotFound
         }
         return cred
     }
@@ -330,7 +332,7 @@ final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sen
         Self.dict.removeValue(forKey: credentialsKey)
     }
 
-    func getKeychainStore() -> KeychainStoreBehavior {
+    func getKeychainStore() -> any KeychainItemStoreBehavior {
         return MockLegacyStore()
     }
 
@@ -343,7 +345,7 @@ final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sen
         guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data))
         else {
-            throw KeychainStoreError.itemNotFound
+            throw EngineCredentialStoreError.itemNotFound
         }
         return device
     }
@@ -362,7 +364,7 @@ final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sen
         guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(String.self, from: data))
         else {
-            throw KeychainStoreError.itemNotFound
+            throw EngineCredentialStoreError.itemNotFound
         }
         return device
     }
@@ -372,32 +374,24 @@ final class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, @unchecked Sen
     }
 }
 
-struct MockLegacyStore: KeychainStoreBehavior {
-    func _getString(_ key: String) throws -> String {
-        return ""
-    }
-
-    func _getData(_ key: String) throws -> Data {
+struct MockLegacyStore: LegacyKeychainItemStoreDouble {
+    func getData(_ key: String) throws -> Data {
         return Data()
     }
 
-    func _set(_ value: String, key: String) throws {
+    func set(_ value: Data, key: String) throws {
 
     }
 
-    func _set(_ value: Data, key: String) throws {
+    func remove(_ key: String) throws {
 
     }
 
-    func _remove(_ key: String) throws {
+    func removeAll() throws {
 
     }
 
-    func _removeAll() throws {
-
-    }
-
-    func _hasItems() throws -> Bool {
+    func hasItems() throws -> Bool {
         return false
     }
 

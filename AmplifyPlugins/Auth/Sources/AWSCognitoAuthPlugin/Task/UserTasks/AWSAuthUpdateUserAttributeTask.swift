@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, DefaultLogger, @unchecked Sendable {
@@ -35,9 +36,10 @@ final class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask, Default
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await updateUserAttribute(with: accessToken)
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }

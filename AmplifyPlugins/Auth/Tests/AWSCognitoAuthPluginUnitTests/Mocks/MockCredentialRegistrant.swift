@@ -10,6 +10,7 @@
 import Amplify
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 @available(iOS 17.4, macOS 13.5, *)
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven

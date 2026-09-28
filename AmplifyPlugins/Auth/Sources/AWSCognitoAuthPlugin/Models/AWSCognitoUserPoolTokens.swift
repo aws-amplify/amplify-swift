@@ -7,6 +7,7 @@
 
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
@@ -87,7 +88,7 @@ extension AWSCognitoUserPoolTokens: Equatable { }
 extension AWSCognitoUserPoolTokens: Codable { }
 
 extension AWSCognitoUserPoolTokens: CustomDebugDictionaryConvertible {
-    var debugDictionary: [String: Any] {
+    package var debugDictionary: [String: Any] {
         [
             "idToken": idToken.masked(interiorCount: 5),
             "accessToken": accessToken.masked(interiorCount: 5),

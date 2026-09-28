@@ -9,6 +9,7 @@ import Foundation
 
 import AWSCognitoIdentityProvider
 @testable @preconcurrency import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // MARK: - Test Data
 

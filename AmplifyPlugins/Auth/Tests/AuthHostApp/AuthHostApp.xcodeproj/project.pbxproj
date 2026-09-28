@@ -46,6 +46,9 @@
 		4834D7C128B0770800DD564B /* FederatedSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4834D7C028B0770800DD564B /* FederatedSessionTests.swift */; };
 		483B0D342A42BB1400A1196B /* TOTPSetupWhenUnauthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483B0D332A42BB1400A1196B /* TOTPSetupWhenUnauthenticatedTests.swift */; };
 		484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
+		5AFE00000000000000000011 /* RealKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AFE00000000000000000001 /* RealKeychain.swift */; };
+		5AFE00000000000000000012 /* ScopedWipeRealKeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AFE00000000000000000002 /* ScopedWipeRealKeychainTests.swift */; };
+		5AFE00000000000000000013 /* CredentialStoreTransitionRealKeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AFE00000000000000000003 /* CredentialStoreTransitionRealKeychainTests.swift */; };
 		484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */; };
 		484EDEB227F4FFBE000284B4 /* AuthEventIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */; };
 		485105AA2840513C002D6FC8 /* AuthUserAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485105A92840513C002D6FC8 /* AuthUserAttributesTests.swift */; };
@@ -203,6 +206,9 @@
 		4834D7C028B0770800DD564B /* FederatedSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FederatedSessionTests.swift; sourceTree = "<group>"; };
 		483B0D332A42BB1400A1196B /* TOTPSetupWhenUnauthenticatedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPSetupWhenUnauthenticatedTests.swift; sourceTree = "<group>"; };
 		484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreConfigurationTests.swift; sourceTree = "<group>"; };
+		5AFE00000000000000000001 /* RealKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealKeychain.swift; sourceTree = "<group>"; };
+		5AFE00000000000000000002 /* ScopedWipeRealKeychainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopedWipeRealKeychainTests.swift; sourceTree = "<group>"; };
+		5AFE00000000000000000003 /* CredentialStoreTransitionRealKeychainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreTransitionRealKeychainTests.swift; sourceTree = "<group>"; };
 		484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironmentHelper.swift; sourceTree = "<group>"; };
 		484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEventIntegrationTests.swift; sourceTree = "<group>"; };
 		485105A92840513C002D6FC8 /* AuthUserAttributesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthUserAttributesTests.swift; sourceTree = "<group>"; };
@@ -326,6 +332,9 @@
 			isa = PBXGroup;
 			children = (
 				484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */,
+				5AFE00000000000000000001 /* RealKeychain.swift */,
+				5AFE00000000000000000002 /* ScopedWipeRealKeychainTests.swift */,
+				5AFE00000000000000000003 /* CredentialStoreTransitionRealKeychainTests.swift */,
 			);
 			path = CredentialStore;
 			sourceTree = "<group>";
@@ -948,6 +957,9 @@
 				979D8A582CE283CA00E9B28F /* PasswordlessSignUpTests.swift in Sources */,
 				48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
+				5AFE00000000000000000011 /* RealKeychain.swift in Sources */,
+				5AFE00000000000000000012 /* ScopedWipeRealKeychainTests.swift in Sources */,
+				5AFE00000000000000000013 /* CredentialStoreTransitionRealKeychainTests.swift in Sources */,
 				9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */,
 				3ECC1FC593B6E582A1A88856 /* DeviceKeyPersistenceIntegrationTests.swift in Sources */,
 				681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */,

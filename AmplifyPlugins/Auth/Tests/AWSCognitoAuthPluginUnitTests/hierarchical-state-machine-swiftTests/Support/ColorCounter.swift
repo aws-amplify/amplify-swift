@@ -6,6 +6,7 @@
 //
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct ColorCounter: State {
     let color: Color
