@@ -1,0 +1,72 @@
+# Fails any change to the golden baselines of AWSCognitoAuthPlugin (stored format, error catalogue,
+# log transcript, keychain queries, configuration), or to this lock itself.
+# The baselines were captured once, before the Cognito engine moved out of the plugin, and gate every later
+# change. See scripts/m2/check_fixture_lock.sh.
+#
+# Runs on every PR and push (no paths filter), so it can be made a required check. It runs the base
+# branch's copy of the script when there is one, so a PR cannot weaken the check that judges it.
+#
+# A second job checks that scripts/m2/engine_paths.txt (the engine-destined file set of gate G8) matches
+# what scripts/m2/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.
+# Unlike the first job it runs the head's generator: its lists are a reviewed input that each move updates.
+# The job itself is locked with this workflow; the generator and engine_paths.txt are protected by
+# CODEOWNERS (admin approval) instead. A missing generator fails the job.
+
+name: Auth Golden Fixture Lock
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - release
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Golden baselines unchanged
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check the fixture lock
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          lock=scripts/m2/check_fixture_lock.sh
+          base=""
+          if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA^{commit}" 2> /dev/null; then
+            base="$BASE_SHA"
+          fi
+          # Prefer the base branch's copy of the lock; fall back to the head's on the branch that adds it.
+          runner=scripts/m2/.check_fixture_lock.run.sh
+          if [ -n "$base" ] && git cat-file -e "$base:$lock" 2> /dev/null; then
+            git show "$base:$lock" > "$runner"
+          elif [ -f "$lock" ]; then
+            cp "$lock" "$runner"
+          else
+            echo "No fixture lock on this branch."
+            exit 0
+          fi
+          bash "$runner" "$HEAD_SHA" $base
+
+  engine-paths:
+    name: G8 engine paths current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Check engine_paths.txt against its generator
+        run: |
+          if [ ! -f scripts/m2/gen_engine_paths.py ]; then
+            echo "error: scripts/m2/gen_engine_paths.py is missing; the G8 engine paths cannot be checked" >&2
+            exit 1
+          fi
+          python3 scripts/m2/gen_engine_paths.py --check

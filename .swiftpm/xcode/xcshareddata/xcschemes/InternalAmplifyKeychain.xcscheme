@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsCore"
-               BuildableName = "AWSPluginsCore"
-               BlueprintName = "AWSPluginsCore"
+               BlueprintIdentifier = "InternalAmplifyKeychain"
+               BuildableName = "InternalAmplifyKeychain"
+               BlueprintName = "InternalAmplifyKeychain"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSPluginsCore"
-            BuildableName = "AWSPluginsCore"
-            BlueprintName = "AWSPluginsCore"
+            BlueprintIdentifier = "InternalAmplifyKeychain"
+            BuildableName = "InternalAmplifyKeychain"
+            BlueprintName = "InternalAmplifyKeychain"
             ReferencedContainer = "container:">
          </BuildableReference>
       </CodeCoverageTargets>
@@ -43,19 +43,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsCoreTests"
-               BuildableName = "AWSPluginsCoreTests"
-               BlueprintName = "AWSPluginsCoreTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "InternalAmplifyCredentialsTests"
-               BuildableName = "InternalAmplifyCredentialsTests"
-               BlueprintName = "InternalAmplifyCredentialsTests"
+               BlueprintIdentifier = "InternalAmplifyKeychainTests"
+               BuildableName = "InternalAmplifyKeychainTests"
+               BlueprintName = "InternalAmplifyKeychainTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -81,9 +71,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSPluginsCore"
-            BuildableName = "AWSPluginsCore"
-            BlueprintName = "AWSPluginsCore"
+            BlueprintIdentifier = "InternalAmplifyKeychain"
+            BuildableName = "InternalAmplifyKeychain"
+            BlueprintName = "InternalAmplifyKeychain"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
