@@ -24,7 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [iOS, tvOS, watchOS]
+        # The AWSAPIPluginLazyLoadTests target does not support watchOS.
+        platform: [iOS, tvOS]
         exclude:
           - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
           - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}

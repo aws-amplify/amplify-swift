@@ -17,13 +17,27 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
 
     var amplifyConfig: AmplifyConfiguration!
 
+    /// Deletes for records created via `mutate`, so the shared backend stays small enough for filtered list scans.
+    private var createdModelCleanups: [@Sendable () async -> Void] = []
+
     override func setUp() {
         continueAfterFailure = false
     }
 
     override func tearDown() async throws {
+        await deleteCreatedModels()
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
+    }
+
+    private func deleteCreatedModels() async {
+        let cleanups = createdModelCleanups
+        createdModelCleanups.removeAll()
+        await withTaskGroup(of: Void.self) { group in
+            for cleanup in cleanups {
+                group.addTask { await cleanup() }
+            }
+        }
     }
 
     func setupConfig() {
@@ -70,6 +84,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             let graphQLResponse = try await Amplify.API.mutate(request: request)
             switch graphQLResponse {
             case .success(let model):
+                if request.document.hasPrefix("mutation Create") {
+                    // Errors ignored: the test may have already deleted it.
+                    createdModelCleanups.append { _ = try? await Amplify.API.mutate(request: .delete(model)) }
+                }
                 return model
             case .failure(let graphQLError):
                 XCTFail("Failed with error \(graphQLError)")
