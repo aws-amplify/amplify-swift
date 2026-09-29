@@ -16,7 +16,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class VerifyTOTPSetupTaskTests: BasePluginTest {
+class VerifyTOTPSetupTaskTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful verify TOTP  setup call
     ///

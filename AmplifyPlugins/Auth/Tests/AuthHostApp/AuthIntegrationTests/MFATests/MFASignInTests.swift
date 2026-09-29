@@ -9,7 +9,7 @@ import Amplify
 import AWSCognitoAuthPlugin
 import XCTest
 
-class MFASignInTests: AWSAuthBaseTest {
+class MFASignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()

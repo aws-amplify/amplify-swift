@@ -13,7 +13,7 @@ import XCTest
 /// This class contains integration tests for the sign-in functionality using various authentication flows.
 /// It tests the sign-in process with different preferred factors such as password, passwordSRP, email OTP, and SMS OTP.
 /// The tests ensure that the sign-in process completes successfully for valid users registered in the Cognito user pool.
-class PasswordlessSignInTests: AWSAuthBaseTest {
+class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
 
@@ -191,7 +191,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest {
         do {
             let pluginOptions = AWSAuthSignInOptions(
                 authFlowType: .userAuth)
-            var signInResult = try await Amplify.Auth.signIn(
+            let signInResult = try await Amplify.Auth.signIn(
                 username: username,
                 password: password,
                 options: .init(pluginOptions: pluginOptions)

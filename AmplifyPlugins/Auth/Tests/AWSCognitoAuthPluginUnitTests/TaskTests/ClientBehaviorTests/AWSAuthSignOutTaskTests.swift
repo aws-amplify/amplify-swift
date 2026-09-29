@@ -14,7 +14,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class AWSAuthSignOutTaskTests: BasePluginTest {
+class AWSAuthSignOutTaskTests: BasePluginTest, @unchecked Sendable {
 
     override var initialState: AuthState {
         AuthState.configured(

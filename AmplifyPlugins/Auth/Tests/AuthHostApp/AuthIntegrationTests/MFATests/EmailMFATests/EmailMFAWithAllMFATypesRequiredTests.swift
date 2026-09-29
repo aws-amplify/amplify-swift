@@ -22,7 +22,7 @@ import XCTest
 //     totp: true,
 //     email: true, (email has not been added to backend at the time of writing this test)
 //   },
-class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest {
+class EmailMFAWithAllMFATypesRequiredTests: AWSAuthBaseTest, @unchecked Sendable {
 
     // Sets up the test environment using Gen2 configuration and adds required plugins
     override func setUp() async throws {

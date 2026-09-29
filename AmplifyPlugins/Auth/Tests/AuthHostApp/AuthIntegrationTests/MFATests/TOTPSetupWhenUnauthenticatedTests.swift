@@ -9,7 +9,7 @@ import Amplify
 import AWSCognitoAuthPlugin
 import XCTest
 
-class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
+class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         // Use a custom configuration these tests

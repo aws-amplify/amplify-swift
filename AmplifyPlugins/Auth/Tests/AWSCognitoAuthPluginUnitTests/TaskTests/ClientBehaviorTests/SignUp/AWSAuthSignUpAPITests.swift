@@ -12,7 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSAuthSignUpAPITests: BasePluginTest {
+class AWSAuthSignUpAPITests: BasePluginTest, @unchecked Sendable {
 
     let options = AuthSignUpRequest.Options(userAttributes: [
         .init(.email, value: "random@random.com")

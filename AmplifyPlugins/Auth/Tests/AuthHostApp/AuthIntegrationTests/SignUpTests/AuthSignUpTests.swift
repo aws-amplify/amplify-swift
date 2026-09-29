@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthSignUpTests: AWSAuthBaseTest {
+class AuthSignUpTests: AWSAuthBaseTest, @unchecked Sendable {
 
     /// Test if user registration is successful.
     ///

@@ -19,7 +19,7 @@ import XCTest
 @testable @preconcurrency import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class AuthenticationProviderDeleteUserTests: BasePluginTest {
+class AuthenticationProviderDeleteUserTests: BasePluginTest, @unchecked Sendable {
 
     func testDeleteUserSuccess() async {
         mockIdentityProvider = MockIdentityProvider(

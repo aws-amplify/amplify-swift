@@ -9,7 +9,7 @@ import ClientRuntime
 import XCTest
 @testable import Amplify
 
-class AuthSignOutTests: AWSAuthBaseTest {
+class AuthSignOutTests: AWSAuthBaseTest, @unchecked Sendable {
     // Enable this to set the aws-sdk-swift log level during debugging.
     // This can only be called once per process.
     private static var setSDKLogLevelDebug = true

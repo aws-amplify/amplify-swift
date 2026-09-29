@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class UserBehaviorFetchAttributesTests: BasePluginTest {
+class UserBehaviorFetchAttributesTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful fetchUserAttributes call with .done as next step
     ///
