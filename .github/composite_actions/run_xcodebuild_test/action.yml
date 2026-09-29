@@ -42,10 +42,59 @@ inputs:
     required: false
     type: boolean
     default: false
+  uninstall_bundle_ids:
+    description: 'Space-separated bundle IDs to uninstall from the destination simulator before testing. Empty skips the step.'
+    required: false
+    type: string
+    default: ''
 
 runs:
   using: "composite"
   steps:
+    # Callers set this for a retry on the simulator the first attempt used. When the app is still
+    # installed, xcodebuild can launch the previous install while it installs the new one; the old
+    # bundle is then moved aside and deleted mid-run, and later tests fail reading their resources.
+    - name: Uninstall apps from the simulator for ${{ inputs.scheme }}
+      if: ${{ inputs.uninstall_bundle_ids != '' }}
+      shell: bash
+      env:
+        DESTINATION: ${{ inputs.destination }}
+        BUNDLE_IDS: ${{ inputs.uninstall_bundle_ids }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+      run: |
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+
+        # The destination names the simulator by id, or by name and OS.
+        udid=""; name=""; os=""
+        IFS=, read -ra parts <<< "$DESTINATION"
+        for part in "${parts[@]}"; do
+          case "$part" in
+            id=*) udid="${part#id=}" ;;
+            name=*) name="${part#name=}" ;;
+            OS=*) os="${part#OS=}" ;;
+          esac
+        done
+        if [ -z "$udid" ] && [ -n "$name" ]; then
+          runtime_suffix=""
+          if [ -n "$os" ] && [ "$os" != "latest" ]; then runtime_suffix="-${os//./-}"; fi
+          udid=$(xcrun simctl list devices available -j | jq -r --arg name "$name" --arg suffix "$runtime_suffix" \
+            '.devices | to_entries[] | select(.key | endswith($suffix)) | .value[] | select(.name == $name) | .udid' | head -n 1)
+        fi
+        if [ -z "$udid" ]; then
+          echo "::warning::No simulator found for '$DESTINATION'; nothing uninstalled."
+          exit 0
+        fi
+
+        xcrun simctl boot "$udid" 2>/dev/null || true
+        xcrun simctl bootstatus "$udid" -b || echo "::warning::Simulator $udid did not finish booting"
+        for bundle_id in $BUNDLE_IDS; do
+          if xcrun simctl uninstall "$udid" "$bundle_id"; then
+            echo "Uninstalled $bundle_id from $udid"
+          else
+            echo "::warning::Could not uninstall $bundle_id from $udid"
+          fi
+        done
+
     # Resolve dependencies as an explicit, separately bounded step.
     #
     # Left to xcodebuild, resolution happens silently inside the test invocation.

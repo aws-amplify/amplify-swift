@@ -1,0 +1,195 @@
+name: Integration Tests | Auth - Cognito Client
+on:
+  workflow_dispatch:
+    inputs:
+      integration-ios:
+        description: '📱 Client suite iOS'
+        required: true
+        default: true
+        type: boolean
+      plugin-interop-ios:
+        description: '🔁 Plugin interop iOS'
+        required: true
+        default: true
+        type: boolean
+      hostedui-ios:
+        description: '🌵 HostedUI iOS'
+        required: true
+        default: true
+        type: boolean
+      webauthn-ios:
+        description: '🔐 WebAuthn iOS'
+        required: true
+        default: true
+        type: boolean
+  workflow_call:
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  auth-client-integration-tests:
+    if: ${{ github.event.inputs.integration-ios != 'false' }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientIntegrationTests
+      platform: iOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      # About 30 minutes of test time, plus a cold build and the retry step.
+      timeout-minutes: 120
+      # The tests run inside the host app, so it is the only app to remove before the retry.
+      uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+    secrets: inherit
+
+  auth-client-plugin-interop-tests:
+    if: ${{ github.event.inputs.plugin-interop-ios != 'false' }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientPluginInteropTests
+      platform: iOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      timeout-minutes: 60
+      # The tests run inside the host app, so it is the only app to remove before the retry.
+      uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+    secrets: inherit
+
+  auth-client-ui-integration-test-iOS:
+    if: ${{ github.event.inputs.hostedui-ios != 'false' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # iOS 26: one ASWebAuthenticationSession per simulator
+        include:
+          - name: SignIn
+            test: CognitoClientUITests/HostedUISignInTests/testSignInSuccess
+          - name: SignInWithoutPresentationAnchor
+            test: CognitoClientUITests/HostedUISignInTests/testSignInWithoutPresentationAnchorSuccess
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: CognitoClientUITests
+      platform: iOS
+      project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp/
+      resource_subfolder: auth
+      timeout-minutes: 60
+      xcode_version: 'latest'
+      only_testing: ${{ matrix.test }}
+      job_name_suffix: ' | ${{ matrix.name }}'
+    secrets: inherit
+
+  auth-client-webauthn-integration-tests:
+    if: ${{ github.event.inputs.webauthn-ios != 'false' }}
+    name: iOS Tests | CognitoClientWebAuthnUITests
+    runs-on: macos-26
+    timeout-minutes: 60
+    environment: IntegrationTest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Get build parameters for iOS
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: iOS
+          xcode_version: 'latest'
+
+      - name: Install simulators if needed
+        uses: ./.github/composite_actions/install_simulators_if_needed
+        with:
+          xcode_version: ${{ steps.platform.outputs.xcode-version }}
+          platform: iOS
+
+      - name: Create the test configuration directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Download the Integration Test configurations
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: auth
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+          destination: ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Set up node
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
+        with:
+          node-version: 16.x
+
+      - name: Attempt to use the dependencies cache
+        id: dependencies-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ steps.platform.outputs.xcode-version }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-${{ steps.platform.outputs.xcode-version }}-
+
+      - name: Attempt to restore the build cache
+        id: build-cache
+        if: steps.dependencies-cache.outputs.cache-hit
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ${{ github.workspace }}/Build
+          key: Amplify-iOS-${{ steps.platform.outputs.xcode-version }}-CognitoClientWebAuthnUITests-build-cache-${{ hashFiles('Package.resolved') }}
+
+      # The plugin's simulator server: it enrolls and matches Face ID for the passkey sheet.
+      - name: Run Local Server
+        run: |
+          cd ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer
+          npm install
+          npm start &
+        shell: bash
+
+      # The time allowance fails a test that runs past 10 minutes (a passkey sheet that never appears or
+      # never dismisses) instead of letting it hang the job.
+      - name: Run iOS Integration Tests
+        id: run-tests
+        continue-on-error: true
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: CognitoClientWebAuthnUITests
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp
+          generate_coverage: false
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
+
+      - name: Retry iOS Integration Tests
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: CognitoClientWebAuthnUITests
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          project_path: ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/CognitoClientHostApp
+          generate_coverage: false
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
+          # The app (it signs as the plugin's WebAuthn app) and the UI-test runner the first attempt installed.
+          uninstall_bundle_ids: com.amazon.aws.amplify.swift.AuthWebAuthnApp com.aws.amplify.cognitoclient.CognitoClientWebAuthnUITests.xctrunner
+
+      - name: Save the build cache
+        if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
+        uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.build-cache.outputs.cache-primary-key }}

@@ -39,6 +39,11 @@ on:
         required: false
         type: string
         default: ''
+      uninstall_before_retry:
+        description: 'Space-separated bundle IDs to uninstall from the simulator before the retry. Empty keeps it as it is.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
     id-token: write
@@ -142,6 +147,7 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
+          uninstall_bundle_ids: ${{ inputs.uninstall_before_retry }}
           other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       - name: Save the build cache
