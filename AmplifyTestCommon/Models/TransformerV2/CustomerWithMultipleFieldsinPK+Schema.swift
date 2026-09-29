@@ -31,7 +31,8 @@ public extension CustomerWithMultipleFieldsinPK {
   static let schema = defineSchema { model in
     let customerWithMultipleFieldsinPK = CustomerWithMultipleFieldsinPK.keys
 
-    model.pluralName = "CustomerWithMultipleFieldsinPKs"
+    model.listPluralName = "CustomerWithMultipleFieldsinPKs"
+    model.syncPluralName = "CustomerWithMultipleFieldsinPKs"
 
     model.attributes(
       .index(fields: ["id", "dob", "date", "time", "phoneNumber", "priority", "height"], name: nil)

@@ -12,7 +12,7 @@ import XCTest
 
 public func XCTAssertThrowFatalError(
     _ expression: @escaping () -> Void,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) throws {
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))
@@ -30,7 +30,7 @@ public func XCTAssertThrowFatalError(
 
 public func XCTAssertNoThrowFatalError(
     _ expression: @escaping () -> Void,
-    file: StaticString = #file,
+    file: StaticString = #filePath,
     line: UInt = #line
 ) throws {
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))

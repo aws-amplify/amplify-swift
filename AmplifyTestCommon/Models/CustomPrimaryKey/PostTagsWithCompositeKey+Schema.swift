@@ -25,7 +25,8 @@ public extension PostTagsWithCompositeKey {
   static let schema = defineSchema { model in
     let postTagsWithCompositeKey = PostTagsWithCompositeKey.keys
 
-    model.pluralName = "PostTagsWithCompositeKeys"
+    model.listPluralName = "PostTagsWithCompositeKeys"
+    model.syncPluralName = "PostTagsWithCompositeKeys"
 
     model.attributes(
       .index(fields: ["postWithTagsCompositeKeyID", "postWithTagsCompositeKeytitle"], name: "byPostWithTagsCompositeKey"),

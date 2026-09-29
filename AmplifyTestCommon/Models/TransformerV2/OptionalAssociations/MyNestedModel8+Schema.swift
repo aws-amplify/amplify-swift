@@ -23,7 +23,8 @@ public extension MyNestedModel8 {
   static let schema = defineSchema { model in
     let myNestedModel8 = MyNestedModel8.keys
 
-    model.pluralName = "MyNestedModel8s"
+    model.listPluralName = "MyNestedModel8s"
+    model.syncPluralName = "MyNestedModel8s"
 
     model.fields(
       .id(),
