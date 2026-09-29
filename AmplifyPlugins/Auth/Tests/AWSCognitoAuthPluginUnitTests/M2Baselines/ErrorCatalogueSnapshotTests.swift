@@ -126,7 +126,7 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
 
     /// Test that the error catalogue is unchanged
     ///
-    /// - Given: The committed catalogue
+    /// - Given: The committed catalogue, as the plugin builds it on this platform (`onThisPlatform(_:)`)
     /// - When:
     ///    - The catalogue is rebuilt from today's code
     /// - Then:
@@ -140,7 +140,7 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
             return
         }
         let committedData = try Data(contentsOf: Self.fileURL)
-        let committed = try JSONDecoder().decode(Catalogue.self, from: committedData)
+        let committed = try Self.onThisPlatform(JSONDecoder().decode(Catalogue.self, from: committedData))
         // The gate: equal as parsed JSON trees, with `reportBugToAWS` call sites compared by file name and
         // function only. Their module and line are reported below, not gated.
         XCTAssertTrue(
@@ -211,6 +211,59 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
             Range($0.range(at: 1), in: text).map { String(text[$0]) }
         }
         XCTAssertEqual(declared, Self.errorConstants.map(\.name), "rerun scripts/m2/gen_error_constants_list.py")
+    }
+
+    // MARK: The platform-dependent entry
+
+    struct PlatformAdjustmentError: Error, CustomStringConvertible {
+        let description: String
+    }
+
+    /// The committed catalogue as the plugin builds it on this platform.
+    ///
+    /// The catalogue was captured on macOS, and one entry depends on the platform:
+    /// `KeychainStoreError.recoverySuggestion`, and the engine's `EngineCredentialStoreError` copy of it, return
+    /// the Keychain Sharing guidance for `errSecMissingEntitlement` under `#if os(macOS)` only. Every other
+    /// platform takes the `#else` branch: the `shouldNotHappenReportBugToAWS()` text that the committed
+    /// `securityError-interactionNotAllowed` entry records. So off macOS the expected
+    /// `securityError-missingEntitlement` entry is the committed one with that text in place of the guidance, in
+    /// its recovery suggestion and in both debug descriptions, and with that text's call site. Both texts come
+    /// from the committed file, and every other entry is compared as committed.
+    static func onThisPlatform(_ committed: Catalogue) throws -> Catalogue {
+        #if os(macOS)
+        return committed
+        #else
+        let byInput = Dictionary(uniqueKeysWithValues: committed.conversions.map { ($0.input, $0) })
+        let entitlementInput = "KeychainStoreError/securityError-missingEntitlement"
+        let entitlement = try XCTUnwrap(byInput[entitlementInput])
+        let reportBug = try XCTUnwrap(byInput["KeychainStoreError/securityError-interactionNotAllowed"])
+        let guidance = entitlement.recoverySuggestion
+        func withoutGuidance(_ text: String) throws -> String {
+            guard text.contains(guidance) else {
+                throw PlatformAdjustmentError(description: "\(entitlementInput) no longer embeds its macOS guidance")
+            }
+            return text.replacingOccurrences(of: guidance, with: reportBug.recoverySuggestion)
+        }
+        let adjusted = try Entry(
+            input: entitlement.input,
+            authErrorCase: entitlement.authErrorCase,
+            field: entitlement.field,
+            errorDescription: entitlement.errorDescription,
+            recoverySuggestion: withoutGuidance(entitlement.recoverySuggestion),
+            debugDescription: withoutGuidance(entitlement.debugDescription),
+            keychainStoreErrorDebugDescription: entitlement.keychainStoreErrorDebugDescription.map(withoutGuidance),
+            underlyingErrorType: entitlement.underlyingErrorType,
+            underlyingErrorCase: entitlement.underlyingErrorCase,
+            reportBugLocations: reportBug.reportBugLocations
+        )
+        return Catalogue(
+            note: committed.note,
+            conversions: committed.conversions.map { $0.input == entitlementInput ? adjusted : $0 },
+            notInvoked: committed.notInvoked,
+            awsCognitoAuthErrorDescriptions: committed.awsCognitoAuthErrorDescriptions,
+            errorConstants: committed.errorConstants
+        )
+        #endif
     }
 
     // MARK: Building the catalogue
