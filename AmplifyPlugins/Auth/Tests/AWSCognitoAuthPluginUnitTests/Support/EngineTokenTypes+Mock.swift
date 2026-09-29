@@ -72,7 +72,7 @@ extension EngineAWSCredentials {
             accessKeyId: "accessKey",
             secretAccessKey: "secretAccessKey",
             sessionToken: "sessionToken",
-            expiration: Date() + 121
+            expiration: Date().addingTimeInterval(AuthAWSCognitoCredentials.testExpiryInSeconds)
         )
     }
 
