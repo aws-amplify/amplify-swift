@@ -10,7 +10,8 @@ import Foundation
 /// Defines the type of a `Model` field.
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelFieldType: Sendable {
+public enum ModelFieldType: @unchecked Sendable {
+    // `@unchecked`: `embedded` and `embeddedCollection` carry `Codable.Type` metatypes, which can't be checked.
 
     case string
     case int
