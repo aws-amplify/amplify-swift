@@ -64,7 +64,8 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the normalised log transcript of every scenario is unchanged
     ///
-    /// - Given: A capturing logging plugin, and the recorded transcript
+    /// - Given: A capturing logging plugin, and the recorded transcript, as the plugin logs it on this platform
+    ///   (`onThisPlatform(_:)`)
     /// - When:
     ///    - Each of the seven scenarios runs against a plugin with mocked services
     /// - Then:
@@ -91,7 +92,7 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
             try GoldenFiles.write(currentData, to: Self.fileURL)
             return
         }
-        let recorded = try JSONDecoder().decode(Transcript.self, from: Data(contentsOf: Self.fileURL))
+        let recorded = try Self.onThisPlatform(JSONDecoder().decode(Transcript.self, from: Data(contentsOf: Self.fileURL)))
         XCTAssertEqual(Set(current.scenarios.keys), Set(recorded.scenarios.keys))
         for (name, lines) in recorded.scenarios.sorted(by: { $0.key < $1.key }) {
             let now = current.scenarios[name] ?? []
@@ -106,6 +107,35 @@ final class LogTranscriptSnapshotTests: XCTestCase, @unchecked Sendable {
             \(extra.map { "  \($0)" }.joined(separator: "\n"))
             """)
         }
+    }
+
+    /// The recorded transcript as the plugin logs it on this platform.
+    ///
+    /// The transcript was recorded on macOS. `KeychainStoreError.recoverySuggestion`, and the engine's
+    /// `EngineCredentialStoreError` copy of it, report a security error other than a missing entitlement from
+    /// their `#if os(macOS)` branch, whose `shouldNotHappenReportBugToAWS()` call is at line 78. Every other
+    /// platform reports every security error from the `#else` branch, whose call is at line 88. Scenario 6 logs
+    /// that text, so off macOS its recorded call site reads line 88. Nothing else changes.
+    static func onThisPlatform(_ recorded: Transcript) -> Transcript {
+        #if os(macOS)
+        return recorded
+        #else
+        let callSite = "file: AWSPluginsCore/KeychainStoreError.swift\nfunction: recoverySuggestion\nline: "
+        return Transcript(
+            note: recorded.note,
+            scenarios: recorded.scenarios.mapValues { lines in
+                lines.map { line in
+                    CapturingLoggingPlugin.Line(
+                        shape: line.shape,
+                        category: line.category,
+                        namespace: line.namespace,
+                        level: line.level,
+                        message: line.message.replacingOccurrences(of: callSite + "78", with: callSite + "88")
+                    )
+                }.sorted()
+            }
+        )
+        #endif
     }
 
     /// Test that the public `AuthFlowType` decoder still logs what scenario 7 recorded
