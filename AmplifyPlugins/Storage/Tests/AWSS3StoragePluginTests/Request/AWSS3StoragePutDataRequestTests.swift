@@ -120,7 +120,6 @@ class AWSS3StorageUploadDataRequestTests: XCTestCase, @unchecked Sendable {
     func testValidateWithStoragePath() {
         let path = StringStoragePath(resolve: {_ in "my/path"})
         let options = StorageUploadDataRequest.Options(
-            accessLevel: .protected,
             metadata: testMetadata,
             contentType: testContentType,
             pluginOptions: testPluginOptions

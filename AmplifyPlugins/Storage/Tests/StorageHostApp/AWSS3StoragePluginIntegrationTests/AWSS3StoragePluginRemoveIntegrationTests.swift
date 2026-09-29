@@ -35,7 +35,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.count(where: { $0.key == uniqueStringPath }), 1)
+        XCTAssertEqual(firstListResult.items.count(where: { $0.path == uniqueStringPath }), 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -43,7 +43,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.count(where: { $0.key == uniqueStringPath }), 0)
+        XCTAssertEqual(secondListResult.items.count(where: { $0.path == uniqueStringPath }), 0)
 
     }
 
@@ -72,7 +72,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.count(where: { $0.key == uniqueStringPath }), 1)
+        XCTAssertEqual(firstListResult.items.count(where: { $0.path == uniqueStringPath }), 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -80,7 +80,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.count(where: { $0.key == uniqueStringPath }), 0)
+        XCTAssertEqual(secondListResult.items.count(where: { $0.path == uniqueStringPath }), 0)
 
     }
 
@@ -109,7 +109,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let firstListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(firstListResult.items.count(where: { $0.key == uniqueStringPath }), 1)
+        XCTAssertEqual(firstListResult.items.count(where: { $0.path == uniqueStringPath }), 1)
 
         // Validate
         _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath))
@@ -117,7 +117,7 @@ class AWSS3StoragePluginRemoveIntegrationTests: AWSS3StoragePluginTestBase, @unc
         let secondListResult = try await Amplify.Storage.list(path: .fromString(uniqueStringPath))
 
         // Validate the item was uploaded.
-        XCTAssertEqual(secondListResult.items.count(where: { $0.key == uniqueStringPath }), 0)
+        XCTAssertEqual(secondListResult.items.count(where: { $0.path == uniqueStringPath }), 0)
 
     }
 

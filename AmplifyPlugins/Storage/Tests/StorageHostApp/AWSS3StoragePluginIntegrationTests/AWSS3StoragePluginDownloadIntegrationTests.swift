@@ -47,7 +47,7 @@ class AWSS3StoragePluginDownloadIntegrationTests: AWSS3StoragePluginTestBase, @u
             XCTFail("Failed to read file that has been downloaded to")
         }
         removeIfExists(fileURL)
-        _ = try await Amplify.Storage.remove(key: key)
+        _ = try await Amplify.Storage.remove(path: .fromString("public/\(key)"))
     }
 
     func removeIfExists(_ fileURL: URL) {

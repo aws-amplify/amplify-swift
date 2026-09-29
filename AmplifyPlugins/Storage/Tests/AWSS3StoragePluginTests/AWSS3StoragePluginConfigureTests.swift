@@ -9,7 +9,7 @@ import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
+class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests, @unchecked Sendable {
 
     // MARK: Plugin Key test
     func testPluginKey() {
