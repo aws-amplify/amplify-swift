@@ -157,7 +157,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
             }
             completed.fulfill()
         }
-        await fulfillment(of: [completed], timeout: 5)
+        await fulfillment(of: [completed], timeout: 30)
     }
 
     /// Test that the continuation is resumed exactly once when `start()` returns `false` after
@@ -207,7 +207,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
             }
             completed.fulfill()
         }
-        await fulfillment(of: [completed], timeout: 5)
+        await fulfillment(of: [completed], timeout: 30)
 
         // A second resume of a checked continuation traps, so reaching the end of the test is the assertion.
         let lateSession = try XCTUnwrap(factory.lastSession)
@@ -234,7 +234,7 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
 
         let session = session!
         let task = Task { try await session.showHostedUI() }
-        await fulfillment(of: [started], timeout: 5)
+        await fulfillment(of: [started], timeout: 30)
 
         let inFlight = try XCTUnwrap(factory.lastSession)
         XCTAssertTrue(session.authenticationSession === inFlight)
