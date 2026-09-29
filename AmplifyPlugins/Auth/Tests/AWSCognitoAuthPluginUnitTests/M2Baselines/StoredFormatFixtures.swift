@@ -257,6 +257,17 @@ enum StoredFormatFixtures {
         name.hasSuffix("userAuth-webAuthn")
     }
 
+    /// Whether this platform and OS version have `AuthFactorType.webAuthn`, so the fixtures that
+    /// `isPlatformDependent(_:)` names can be built and decoded here.
+    static var hasPlatformDependentTypes: Bool {
+        #if os(iOS) || os(macOS) || os(visionOS)
+        if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
+            return true
+        }
+        #endif
+        return false
+    }
+
     /// What a flow decodes back to. `.custom` encodes as `CUSTOM_AUTH_WITH_SRP`, which decodes as
     /// `.customWithSRP` (`AuthFlowType.swift:55-56`).
     @available(*, deprecated, message: "Mentions the deprecated AuthFlowType.custom, on purpose")

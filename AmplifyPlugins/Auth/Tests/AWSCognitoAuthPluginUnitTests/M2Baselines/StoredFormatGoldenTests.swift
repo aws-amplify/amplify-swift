@@ -223,6 +223,8 @@ final class StoredFormatGoldenTests: XCTestCase {
     ///    - Each is run on every committed fixture that matches its prefix
     /// - Then:
     ///    - None throws, and each matches at least one fixture
+    ///    - Where `AuthFactorType.webAuthn` does not exist (tvOS, watchOS), the fixtures that hold it
+    ///      (`StoredFormatFixtures.isPlatformDependent(_:)`) are rejected instead, as the plugin rejects them there
     ///
     func testForkCrossDecoding() throws {
         let names = try Self.loadManifest().fixtures.map(\.name)
@@ -232,7 +234,14 @@ final class StoredFormatGoldenTests: XCTestCase {
             }
             XCTAssertFalse(matching.isEmpty, "no fixture matches \(decoder.fixturePrefix)")
             for name in matching {
-                XCTAssertNoThrow(try decoder.check(Self.fixtureData(name)), name)
+                let fixture = try Self.fixtureData(name)
+                if StoredFormatFixtures.isPlatformDependent(name), !StoredFormatFixtures.hasPlatformDependentTypes {
+                    XCTAssertThrowsError(try decoder.check(fixture), "\(name) decodes without AuthFactorType.webAuthn") { error in
+                        XCTAssertTrue(error is DecodingError, "\(name): \(error)")
+                    }
+                } else {
+                    XCTAssertNoThrow(try decoder.check(fixture), name)
+                }
             }
         }
     }
