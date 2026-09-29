@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 /// The stored-format gate: every stored value decodes to the same thing, and is written as the same JSON
 /// tree.
@@ -224,7 +225,8 @@ final class StoredFormatGoldenTests: XCTestCase {
     /// - Then:
     ///    - None throws, and each matches at least one fixture
     ///    - Where `AuthFactorType.webAuthn` does not exist (tvOS, watchOS), the fixtures that hold it
-    ///      (`StoredFormatFixtures.isPlatformDependent(_:)`) are rejected instead, as the plugin rejects them there
+    ///      (`StoredFormatFixtures.isPlatformDependent(_:)`) are rejected instead, as the plugin rejects them there:
+    ///      the public type and the engine's `EngineAuthFlowType` each throw a `DecodingError`
     ///
     func testForkCrossDecoding() throws {
         let names = try Self.loadManifest().fixtures.map(\.name)
@@ -238,6 +240,20 @@ final class StoredFormatGoldenTests: XCTestCase {
                 if StoredFormatFixtures.isPlatformDependent(name), !StoredFormatFixtures.hasPlatformDependentTypes {
                     XCTAssertThrowsError(try decoder.check(fixture), "\(name) decodes without AuthFactorType.webAuthn") { error in
                         XCTAssertTrue(error is DecodingError, "\(name): \(error)")
+                    }
+                    // `check` stops at the public type's decode, so the fork, which the plugin persists and
+                    // decodes, is checked on its own: every persisted flow type in the fixture is rejected too.
+                    let flowTypes = try decoder.fixturePrefix == "authFlowType-"
+                        ? [fixture]
+                        : ForkCrossCheck.subvalues(in: fixture, of: .flowType)
+                    XCTAssertFalse(flowTypes.isEmpty, "\(name): no persisted authFlowType in the fixture")
+                    for flowType in flowTypes {
+                        XCTAssertThrowsError(
+                            try StoredFormatFixture.productionDecode(EngineAuthFlowType.self, flowType),
+                            "\(name): EngineAuthFlowType decodes without AuthFactorType.webAuthn"
+                        ) { error in
+                            XCTAssertTrue(error is DecodingError, "\(name): \(error)")
+                        }
                     }
                 } else {
                     XCTAssertNoThrow(try decoder.check(fixture), name)
