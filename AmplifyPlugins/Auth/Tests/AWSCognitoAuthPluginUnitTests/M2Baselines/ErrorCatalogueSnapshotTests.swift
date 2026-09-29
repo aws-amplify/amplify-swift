@@ -219,6 +219,11 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
         let description: String
     }
 
+    /// The line of `KeychainStoreError.recoverySuggestion`'s `#else` branch, whose
+    /// `shouldNotHappenReportBugToAWS()` call reports every security error off macOS. The engine copy embeds the
+    /// same line (`EngineCredentialStoreError.recoverySuggestion`).
+    static let offMacOSReportBugLine = 88
+
     /// The committed catalogue as the plugin builds it on this platform.
     ///
     /// The catalogue was captured on macOS, and one entry depends on the platform:
@@ -227,8 +232,9 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
     /// platform takes the `#else` branch: the `shouldNotHappenReportBugToAWS()` text that the committed
     /// `securityError-interactionNotAllowed` entry records. So off macOS the expected
     /// `securityError-missingEntitlement` entry is the committed one with that text in place of the guidance, in
-    /// its recovery suggestion and in both debug descriptions, and with that text's call site. Both texts come
-    /// from the committed file, and every other entry is compared as committed.
+    /// its recovery suggestion and in both debug descriptions. Its call site is that entry's file and function, at
+    /// the `#else` branch's line (`offMacOSReportBugLine`), which is where the text comes from off macOS. Both
+    /// texts come from the committed file, and every other entry is compared as committed.
     static func onThisPlatform(_ committed: Catalogue) throws -> Catalogue {
         #if os(macOS)
         return committed
@@ -254,7 +260,9 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
             keychainStoreErrorDebugDescription: entitlement.keychainStoreErrorDebugDescription.map(withoutGuidance),
             underlyingErrorType: entitlement.underlyingErrorType,
             underlyingErrorCase: entitlement.underlyingErrorCase,
-            reportBugLocations: reportBug.reportBugLocations
+            reportBugLocations: reportBug.reportBugLocations?.map {
+                Location(file: $0.file, function: $0.function, line: offMacOSReportBugLine)
+            }
         )
         return Catalogue(
             note: committed.note,
