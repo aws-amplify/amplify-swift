@@ -14,49 +14,97 @@ import XCTest
 final class ChallengeTests: ClientIntegrationTestCase {
 
     private var configuration: AuthClientConfiguration!
-    private var users: SandboxUsers!
 
     override func setUp() async throws {
         try await super.setUp()
         configuration = try IntegrationTestEnvironment.configuration()
-        users = try IntegrationTestEnvironment.users()
     }
 
     /// A user created by an administrator sets a new password to finish signing in (CH-1;
     /// the plugin's `testNewPasswordRequired`, which runs when its credentials file lists FORCE_CHANGE_PASSWORD
-    /// users, as on the sandbox).
+    /// users).
     ///
-    /// - Given: dave, in `FORCE_CHANGE_PASSWORD` with his temporary password (`prepare-run.sh`)
+    /// The user is the first of the default credentials file's `new_password_required_usernames` still in
+    /// `FORCE_CHANGE_PASSWORD`, as the plugin's test takes it: each is used once, and another run against the
+    /// same backend (the plugin's suite, or this one) may take one at any time.
+    /// - A candidate whose temporary password is refused (`.notAuthorized`) is skipped if Cognito no longer
+    ///   holds it in `FORCE_CHANGE_PASSWORD` (used up); if it still does, the temporary password is wrong and
+    ///   the test fails saying so.
+    /// - A candidate whose new password is refused (`.notAuthorized`, or `.challengeExpired`: Cognito's
+    ///   "Invalid session for the user") is skipped only if it then refuses the temporary password too:
+    ///   another run finished its challenge first. Otherwise the error is rethrown.
+    /// - The test fails when none is left. Each attempt has its own state-stream subscription, so an earlier
+    ///   attempt's states cannot satisfy a later one's wait.
+    /// As the plugin's test does, the confirmation also sets an email, which a backend whose new-password
+    /// challenge requires it needs and any other accepts.
+    ///
+    /// - Given: the new-password users and their temporary password, from the credentials file
     /// - When:
-    ///    - he signs in with the temporary password
-    ///    - he confirms with his new password
+    ///    - the first one still in `FORCE_CHANGE_PASSWORD` signs in with the temporary password
+    ///    - and confirms with a new password of this run's
     /// - Then:
     ///    - the sign-in returns `.confirmSignInWithNewPassword`, the state is `.awaitingChallenge` with
     ///      that step, and the state stream published it
-    ///    - the confirmation returns `.done`, and the state is `.signedIn(dave)`
+    ///    - the confirmation returns `.done`, and the state is `.signedIn` as that user
     ///
     func testNewPasswordRequiredChallenge() async throws {
-        let sessionId = try makeSessionID("dave")
+        let (candidates, temporary) = try IntegrationTestEnvironment.credentials().requireNewPasswordUsers()
+        let raw = try SandboxPools.pool(.standard)
+        let sessionId = try makeSessionID("new-password")
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-        let states = StreamRecorder(client.listenToSessionStateChanges())
 
-        let result = try await client.signIn(username: users.dave.username, password: users.dave.password)
+        for username in candidates {
+            let states = StreamRecorder(client.listenToSessionStateChanges())
+            let result: AuthClientSignInResult
+            do {
+                result = try await client.signIn(username: username, password: temporary.value)
+            } catch let error as AuthClientError where error.kind == .notAuthorized {
+                guard await !PerRunUsers.stillAwaitsANewPassword(username, on: raw) else {
+                    return XCTFail(PerRunUsers.wrongTemporaryPassword)
+                }
+                // Used up, by an earlier run or by one running now.
+                continue
+            }
 
-        XCTAssertTrue(result.nextStep.isNewPassword, result.nextStep.caseName)
-        let pending = await client.currentSessionState()
-        XCTAssertTrue(pending.pendingStep?.isNewPassword == true, pending.redactedDescription)
-        try await states.waitUntil("the state stream to publish the new-password step") {
-            $0.contains { $0.pendingStep?.isNewPassword == true }
+            XCTAssertTrue(result.nextStep.isNewPassword, result.nextStep.caseName)
+            guard result.nextStep.isNewPassword else {
+                return
+            }
+            let pending = await client.currentSessionState()
+            XCTAssertTrue(pending.pendingStep?.isNewPassword == true, pending.redactedDescription)
+            try await states.waitUntil("the state stream to publish the new-password step") {
+                $0.contains { $0.pendingStep?.isNewPassword == true }
+            }
+
+            let newPassword = SandboxSignUp.freshPassword()
+            PerRunUsers.newPasswordAttempt = TestUser(username: username, password: newPassword)
+            let confirmed: AuthClientSignInResult
+            do {
+                confirmed = try await client.confirmSignIn(
+                    challengeResponse: newPassword,
+                    options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "\(username)@\(SandboxSignUp.emailDomain)")])
+                )
+            } catch let error as AuthClientError where [.notAuthorized, .challengeExpired].contains(error.kind) {
+                // Possibly another run set this user's password between the sign-in and the answer: only if
+                // the user now refuses the temporary password.
+                guard try await PerRunUsers.refusesTemporaryPassword(username, temporary, on: raw) else {
+                    throw error
+                }
+                continue
+            }
+
+            XCTAssertStep(confirmed.nextStep, .done)
+            let user = try await client.getCurrentUser()
+            XCTAssertTrue(user.username.lowercased() == username.lowercased(), "signed in as another user")
+            let signedIn = await client.currentSessionState()
+            XCTAssertState(signedIn, .signedIn(user))
+            return
         }
-
-        PerRunUsers.daveNewPasswordAttempted = true
-        let confirmed = try await client.confirmSignIn(challengeResponse: users.daveNewPassword.password)
-
-        XCTAssertStep(confirmed.nextStep, .done)
-        let user = try await client.getCurrentUser()
-        XCTAssertEqual(user.username, "dave")
-        let signedIn = await client.currentSessionState()
-        XCTAssertState(signedIn, .signedIn(user))
+        XCTFail("""
+        None of the \(candidates.count) new-password users in \(IntegrationTestEnvironment.credentialsResource).json \
+        is still in FORCE_CHANGE_PASSWORD: each is used once, so the backend must reset them (or list new ones) \
+        before the next run.
+        """)
     }
 
     /// A TOTP-enrolled user answers the MFA challenge with a code (CH-2).

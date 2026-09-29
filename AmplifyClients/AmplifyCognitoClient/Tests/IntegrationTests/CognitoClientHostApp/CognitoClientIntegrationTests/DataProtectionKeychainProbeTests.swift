@@ -548,9 +548,9 @@ private struct ProbeAccounts {
     let expectedV1Parses: Set<String>
 
     static func make() -> ProbeAccounts {
-        let state = try? IntegrationTestEnvironment.state()
-        let userPoolId = state?.userPoolId ?? "us-west-2_PROBE0000"
-        let identityPoolId = state?.identityPoolId ?? "us-west-2:00000000-0000-0000-0000-000000000000"
+        let configuration = try? IntegrationTestEnvironment.configuration()
+        let userPoolId = configuration?.userPool?.poolId ?? "us-west-2_PROBE0000"
+        let identityPoolId = configuration?.identityPool?.poolId ?? "us-west-2:00000000-0000-0000-0000-000000000000"
         let work = SessionID.namedForProbe("work")
 
         let userPoolOnly = PoolNamespace.userPool(userPoolId)

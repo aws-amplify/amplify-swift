@@ -29,19 +29,24 @@ import XCTest
 /// group does not see it. The plugin's access-group migrations have no client counterpart, so they are
 /// not ported.
 ///
-/// The identity-only identity pool R-IP2 (P-6′) comes from `identity-only-amplify_outputs.json`, read raw:
-/// Gen2 outputs require `auth.user_pool_id` (the plugin's `AmplifyOutputsData.Auth` requires it too), so
-/// its configurations are built with the programmatic initializer, as an app with an identity pool only
-/// would build them.
+/// **Pools.** `standard` is the default backend's outputs: its user pool (R-UP here) and its identity pool
+/// (R-IP), which federates it. The identity-only role (R-IP2 in CS-1) is R-IP alone, derived from the same
+/// outputs without the user pool (`IntegrationTestEnvironment.identityOnlyAuthSection()`). CS-2 and CS-3
+/// refresh a session carried to a new namespace, which leaves its device record behind, so they run on a
+/// role whose pool does not track devices (`untrackedFederatedRole()`: its user pool R-UP′, its identity pool
+/// R-IP′); CS-3's R-IP2 is a second identity pool, with guest access, that does not federate R-UP′
+/// (`secondIdentityPool(besides:)`: another backend's, or the credentials file's `second_identity_pool_id`).
+/// The access-group rows use `standard`. Gen2 outputs require
+/// `auth.user_pool_id` (the plugin's `AmplifyOutputsData.Auth` requires it too), so identity-pool-only
+/// configurations are built with the programmatic initializer, as an app with an identity pool only would
+/// build them. `alice` and `bob` are fresh users each test signs up (`makeSignInUser()`).
 final class StorageConfigurationTests: ClientIntegrationTestCase {
 
-    private var users: SandboxUsers!
-    /// R-UP and R-IP: the base sandbox outputs.
+    /// The default backend's outputs: R-UP and R-IP.
     private var standard: AuthClientConfiguration!
 
     override func setUp() async throws {
         try await super.setUp()
-        users = try IntegrationTestEnvironment.users()
         standard = try IntegrationTestEnvironment.configuration()
     }
 
@@ -94,9 +99,13 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// its identity is fetched on first use (CS-2; the plugin's
     /// `testCredentialsMigratedOnNotSupportedConfigurationChange`).
     ///
-    /// - Given: alice signed in over R-UP alone, then every handle dropped
+    /// Run on a role whose user pool does not track devices (`untrackedFederatedRole()`, R-UP′ and R-IP′ here):
+    /// device records stay in the namespace that wrote them, so on a pool that tracks devices the carried
+    /// session's refresh would be refused for want of the device key.
+    ///
+    /// - Given: alice signed in over R-UP′ alone, then every handle dropped
     /// - When:
-    ///    - the configuration gains R-IP (the base sandbox outputs), and a client over the same session ID,
+    ///    - the configuration gains R-IP′ (the role's outputs), and a client over the same session ID,
     ///      the recorder installed, reads its state, then fetches its session
     /// - Then:
     ///    - the state is `.signedIn(alice)` with no request: the restore carried the record offline
@@ -106,14 +115,16 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///    - the old record is kept, as the plugin keeps it: the user-pool-only namespace still holds it (read raw)
     ///
     func testAddingAnIdentityPoolKeepsTheUserPoolSession() async throws {
-        let userPoolOnly = try AuthClientConfiguration(userPool: standard.userPool)
-        let sessionId = try tracked("alice-add-ip", in: [userPoolOnly, standard])
-        let alice = try await signIn(users.alice, on: sessionId, over: userPoolOnly)
+        let role = try IntegrationTestEnvironment.untrackedFederatedRole()
+        let federated = try IntegrationTestEnvironment.configuration(role)
+        let userPoolOnly = try AuthClientConfiguration(userPool: federated.userPool)
+        let sessionId = try tracked("alice-add-ip", in: [userPoolOnly, federated])
+        let alice = try await signIn(makeFreshUser(on: role).testUser, on: sessionId, over: userPoolOnly)
 
         let recorder = RecordingHTTPClient()
         do {
             let client = try AmplifyCognitoClient(
-                configuration: standard,
+                configuration: federated,
                 options: .init(sessionId: sessionId, configureUserPoolClient: recorder.configureUserPoolClient)
             )
             let state = await client.currentSessionState()
@@ -137,10 +148,13 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     /// A changed identity pool never sees the old guest record, nor a signed-in session's identity
     /// (CS-3; the plugin's `testCredentialsMigratedOnNotSupportedIdentityPoolConfigurationChange`).
     ///
-    /// - Given: a session made a guest over R-IP2 alone, and alice signed in on another session over R-UP +
-    ///   R-IP with her identity ID noted, both released
+    /// Run, as CS-2, on a role whose user pool does not track devices (R-UP′ and R-IP′), with a second
+    /// identity pool (R-IP2) that does not federate it.
+    ///
+    /// - Given: a session made a guest over R-IP2 alone, and alice signed in on another session over R-UP′ +
+    ///   R-IP′ with her identity ID noted, both released
     /// - When:
-    ///    - the guest session is read over R-IP alone, and alice's over R-UP + R-IP2 (only the identity pool
+    ///    - the guest session is read over R-IP′ alone, and alice's over R-UP′ + R-IP2 (only the identity pool
     ///      changed)
     /// - Then:
     ///    - both configurations are a different namespace from the one that wrote the record (the key embeds
@@ -150,22 +164,27 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///      `.signedOut`, its provider throws `.notSignedIn`, no row is listed, and its first fetch acquires a
     ///      new identity
     ///    - user pool beside a changed identity pool: alice is carried, `.signedIn(alice)` with no request, and
-    ///      her token provider returns her access token. Only the tokens are carried, never R-IP's identity
+    ///      her token provider returns her access token. Only the tokens are carried, never R-IP′'s identity
     ///      (where the plugin's `:138` branch copies it): the carried record holds `userPoolOnly` credentials,
     ///      the old record is kept, and her session's fetch never reports that identity. R-IP2 does not
-    ///      federate R-UP, so the identity fetch fails: her tokens and sub still succeed, and a second fetch
+    ///      federate R-UP′, so the identity fetch fails: her tokens and sub still succeed, and a second fetch
     ///      makes no request (the failure is not retried on every call)
     ///
     func testChangedIdentityPoolDoesNotSeeTheOldGuestRecord() async throws {
-        let identityOnly = try Self.identityOnlyConfiguration()
-        let otherIdentityOnly = try AuthClientConfiguration(identityPool: standard.identityPool)
-        let otherIdentityPool = try AuthClientConfiguration(userPool: standard.userPool, identityPool: identityOnly.identityPool)
+        let role = try IntegrationTestEnvironment.untrackedFederatedRole()
+        let federated = try IntegrationTestEnvironment.configuration(role)
+        let identityOnly = try AuthClientConfiguration(
+            identityPool: IntegrationTestEnvironment.secondIdentityPool(besides: federated.identityPool?.poolId)
+        )
+        let otherIdentityOnly = try AuthClientConfiguration(identityPool: federated.identityPool)
+        let otherIdentityPool = try AuthClientConfiguration(userPool: federated.userPool, identityPool: identityOnly.identityPool)
         XCTAssertFalse(identityOnly.poolNamespace == otherIdentityOnly.poolNamespace, "identity pool only")
-        XCTAssertFalse(standard.poolNamespace == otherIdentityPool.poolNamespace, "user pool and identity pool")
+        XCTAssertFalse(federated.poolNamespace == otherIdentityPool.poolNamespace, "user pool and identity pool")
         let guestId = try tracked("guest-change-ip", in: [identityOnly, otherIdentityOnly])
-        let aliceId = try tracked("alice-change-ip", in: [standard, otherIdentityPool])
+        let aliceId = try tracked("alice-change-ip", in: [federated, otherIdentityPool])
         let original = try await guest(guestId, over: identityOnly)
-        let (alice, aliceIdentity) = try await signInWithIdentity(users.alice, on: aliceId, over: standard)
+        let aliceCredentials = try await makeFreshUser(on: role).testUser
+        let (alice, aliceIdentity) = try await signInWithIdentity(aliceCredentials, on: aliceId, over: federated)
 
         try await assertSignedOutWithNoRow(guestId, over: otherIdentityOnly, "after the identity pool changed")
         let oldStore = SessionRecordStore(namespace: SessionStorageNamespace(pools: identityOnly.poolNamespace, accessGroup: nil))
@@ -187,8 +206,11 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
             XCTAssertState(state, .signedIn(alice), "the user pool session is carried forward")
             XCTAssertEqual(recorder.operations, [], "restoring makes no request")
             let token = try await client.userPoolTokenProvider.accessToken()
-            XCTAssertEqual(try IntegrationTestEnvironment.jwtClaims(token)["username"] as? String, "alice")
-            try Self.assertCarriedTokensOnly(aliceId, under: otherIdentityPool, keptUnder: standard)
+            XCTAssertTrue(
+                try IntegrationTestEnvironment.jwtClaims(token)["username"] as? String == aliceCredentials.username,
+                "the carried token is alice's"
+            )
+            try Self.assertCarriedTokensOnly(aliceId, under: otherIdentityPool, keptUnder: federated)
 
             let first = try await client.fetchAuthSession()
             recorder.reset()
@@ -240,13 +262,14 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///    - the default group still lists it for alice
     ///
     func testSessionInTheDefaultGroupIsNotVisibleFromTheSharedGroup() async throws {
+        let aliceCredentials = try await makeSignInUser()
         let sessionId = try makeSessionID("alice-default-group")
-        _ = try await signIn(users.alice, on: sessionId, over: standard)
+        _ = try await signIn(aliceCredentials, on: sessionId, over: standard)
 
         try await assertSignedOutWithNoRow(sessionId, over: standard, accessGroup: IntegrationTestEnvironment.sharedAccessGroup(), "from the shared group")
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard)
-        XCTAssertEqual(listed.first { $0.sessionId == sessionId }?.username, "alice", "the default group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == aliceCredentials.username, "the default group keeps it")
     }
 
     /// A session in the shared access group is not visible from the default group (CS-5; the
@@ -260,14 +283,15 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///    - the shared group still lists it for bob
     ///
     func testSessionInTheSharedGroupIsNotVisibleFromTheDefaultGroup() async throws {
+        let bob = try await makeSignInUser()
         let shared = try IntegrationTestEnvironment.sharedAccessGroup()
         let sessionId = try makeSessionID("bob-shared-group", accessGroup: shared)
-        _ = try await signIn(users.bob, on: sessionId, over: standard, accessGroup: shared)
+        _ = try await signIn(bob, on: sessionId, over: standard, accessGroup: shared)
 
         try await assertSignedOutWithNoRow(sessionId, over: standard, "from the default group")
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard, accessGroup: shared)
-        XCTAssertEqual(listed.first { $0.sessionId == sessionId }?.username, "bob", "the shared group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == bob.username, "the shared group keeps it")
     }
 
     /// A session in one shared access group is not visible from another (CS-6; the plugin's
@@ -281,9 +305,10 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
     ///    - `…Shared` still lists it for bob
     ///
     func testSessionInOneSharedGroupIsNotVisibleFromAnother() async throws {
+        let bob = try await makeSignInUser()
         let shared = try IntegrationTestEnvironment.sharedAccessGroup()
         let sessionId = try makeSessionID("bob-shared-to-shared2", accessGroup: shared)
-        _ = try await signIn(users.bob, on: sessionId, over: standard, accessGroup: shared)
+        _ = try await signIn(bob, on: sessionId, over: standard, accessGroup: shared)
 
         try await assertSignedOutWithNoRow(
             sessionId,
@@ -293,16 +318,16 @@ final class StorageConfigurationTests: ClientIntegrationTestCase {
         )
 
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: standard, accessGroup: shared)
-        XCTAssertEqual(listed.first { $0.sessionId == sessionId }?.username, "bob", "the shared group keeps it")
+        XCTAssertTrue(listed.first { $0.sessionId == sessionId }?.username == bob.username, "the shared group keeps it")
     }
 
     // MARK: - Helpers
 
-    /// R-IP2 alone, from the identity-only outputs file (P-6′).
+    /// The identity-only role alone (P-6′): the default backend's identity pool, without its user pool.
     private static func identityOnlyConfiguration() throws -> AuthClientConfiguration {
-        let auth = try IntegrationTestEnvironment.outputsAuthSection(SandboxPool.identityOnlyOutputsResource)
+        let auth = try IntegrationTestEnvironment.identityOnlyAuthSection()
         guard let poolId = auth["identity_pool_id"] as? String, let region = auth["aws_region"] as? String else {
-            throw HarnessError.malformedFixture("\(SandboxPool.identityOnlyOutputsResource).json has no identity pool or region.")
+            throw HarnessError.malformedFixture("The default outputs have no identity pool or region.")
         }
         return try AuthClientConfiguration(identityPool: .init(
             poolId: poolId,

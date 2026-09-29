@@ -9,6 +9,18 @@
 this sandbox's parity backends, from the state provision.sh leaves in ~/.amplify-cognito-client-integ.
 
     plugin-configs.py            write every file (backing up any file not written by this script)
+    plugin-configs.py --dir DIR  write every file into DIR instead (created if missing), with no manifest and
+                                 no backups: for a directory of its own, such as the one the client suites'
+                                 host app reads through COGNITO_CLIENT_INTEG_DIR. Refuses
+                                 ~/.aws-amplify/amplify-ios/testconfiguration and every directory inside it,
+                                 whatever AWS_AMPLIFY_TESTCONFIGURATION_DIR says, and every directory inside
+                                 the configured one; the configured directory itself, when it is another,
+                                 behaves as without --dir
+    plugin-configs.py --dir DIR --ci-shape
+                                 the same files in the shape the plugin's CI files have (CI_SHAPE below): a
+                                 `data` block only on the backends that capture codes, and the credentials
+                                 files with only the keys the plugin's suites read on CI. Only into a
+                                 directory of its own
     plugin-configs.py --refresh  rewrite only the files it wrote that are still as written (after a key
                                  rotation, say); does nothing if it has written none (prepare-run.sh)
     plugin-configs.py --forget NAME  drop NAME from the manifest and leave the file there as it is (for a
@@ -40,7 +52,19 @@ Suite -> file -> sandbox backend:
         AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs          webauthn (P-10)
 
 The `data` section is the code sink's AppSync API with its read-only API key, which the plugin's
-`onCreateMfaInfo` subscription (AWSAuthBaseTest.subscribeToOTPCreation) uses through AWSAPIPlugin.
+`onCreateMfaInfo` subscription (AWSAuthBaseTest.subscribeToOTPCreation) uses through AWSAPIPlugin. Every
+outputs file carries it, since every sandbox pool's custom senders publish there: the plugin's suites
+read it only where they add AWSAPIPlugin, and the client suites read each pool's codes through its own
+file's block. The default backend's credentials file also names the identity-only pool (P-6')
+as `second_identity_pool_id`: a guest identity pool that federates none of the set's user pools, which
+the client's CS-3 needs and the plugin's suites never read.
+The CI shape (--ci-shape) is what the plugin's CI backends provide, from their READMEs and the plugin's
+tests: only the passwordless and the two email-MFA backends deploy custom senders and an MfaInfo API
+(PasswordlessTests/README.md, MFATests/EmailMFATests/README.md) and have suites that subscribe to it; the
+others' READMEs deploy none. The default credentials file carries only `test_email_1` and `password`, the
+keys the plugin's suites read on main (AWSAuthBaseTest), where the custom-auth and new-password tests skip
+("Need custom resource"): no `custom_challenge_answer`, no `new_password_required_*`, and no
+`second_identity_pool_id`, which only this sandbox adds.
 Nothing here calls AWS, and nothing printed names an identifier or a secret.
 """
 
@@ -133,6 +157,32 @@ def credentials(email, password, **extra):
     return dict({"test_email_1": email, "password": password}, **extra)
 
 
+# The outputs files whose backends capture codes on CI, so the only ones with a `data` block in the CI shape.
+CI_CODE_CAPTURING = (
+    "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json",
+    "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
+    "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json",
+)
+# The only keys of the credentials files the plugin's suites read on CI.
+CI_CREDENTIAL_KEYS = ("test_email_1", "password")
+# The client harness's own directory must never be the developer's own plugin configuration.
+OWNER_TESTCONFIGURATION_DIR = os.path.expanduser("~/.aws-amplify/amplify-ios/testconfiguration")
+
+
+def ci_shape(files):
+    """`files` as the plugin's CI files are: `data` only on CI_CODE_CAPTURING, and credentials files with
+    only CI_CREDENTIAL_KEYS."""
+    shaped = {}
+    for name, document in files.items():
+        document = json.loads(json.dumps(document))
+        if name.endswith("-amplify_outputs.json") and name not in CI_CODE_CAPTURING:
+            document.pop("data", None)
+        if name.endswith("-credentials.json"):
+            document = {k: v for k, v in document.items() if k in CI_CREDENTIAL_KEYS}
+        shaped[name] = document
+    return shaped
+
+
 def build():
     state = load(os.path.join(STATE_DIR, "state.json"))
     users = load(os.path.join(STATE_DIR, "users.json"))
@@ -144,10 +194,13 @@ def build():
         if not users.get(key):
             sys.exit(f"{key} is missing from users.json; run infra/provision.sh and infra/prepare-run.sh.")
     data = lambda document: with_data(document, region, parity["codeSinkUrl"], users["codeSinkApiKey"])
+    identity_only = outputs("identity-only")["auth"].get("identity_pool_id") or sys.exit(
+        "identity-only-amplify_outputs.json has no identity pool; run infra/provision.sh.")
 
     # The default pool's `plugin` client: `client` with user-existence errors on (LEGACY).
     default = with_identity_pool(outputs("default"), identity_pool_id)
     default["auth"]["user_pool_client_id"] = parity["pools"]["default"]["clients"]["plugin"]
+    default = data(default)
     mfa_required = outputs("mfa-req-totp-sms")
     # An RFC 2606 address: the suites only store it as the email attribute (no mail is sent, the custom
     # email sender takes every code). Derived, not random, so a rewrite with nothing changed is identical.
@@ -172,20 +225,21 @@ def build():
         "AWSCognitoAuthPluginIntegrationTests-credentials.json": credentials(
             main_email, "", custom_challenge_answer=users["customChallengeAnswer"],
             new_password_required_usernames=",".join(f"ccit-plugin-new-password-{i}" for i in (1, 2, 3)),
-            new_password_required_temporary_password=users["pluginNewPasswordTemporary"]),
+            new_password_required_temporary_password=users["pluginNewPasswordTemporary"],
+            second_identity_pool_id=identity_only),
         "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json": gen1(mfa_required["auth"]),
-        "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json": mfa_required,
+        "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json": data(mfa_required),
         "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json": data(outputs("passwordless")),
         "AWSCognitoEmailMFARequiredTests-amplify_outputs.json": data(outputs("mfa-req-email")),
         "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json": data(outputs("mfa-req-all")),
-        "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json": outputs("email-alias"),
+        "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json": data(outputs("email-alias")),
         "AWSCognitoAuthPluginDeviceAliasTests-credentials.json":
             credentials(DEVICE_ALIAS_EMAIL, users["pluginDeviceAliasPassword"]),
         "AWSAmplifyStressTests-amplifyconfiguration.json": gen1(default["auth"], identity_pool_id),
         "AWSAmplifyStressTests-credentials.json": credentials(main_email, ""),
         "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json": hosted_gen1,
-        "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json": hosted,
-        "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json": outputs("webauthn"),
+        "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json": data(hosted),
+        "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json": data(outputs("webauthn")),
     }
 
 
@@ -251,6 +305,39 @@ def back_up(path, name):
     return {"path": target, "sha256": sha256(data)}
 
 
+def serialized(name, document):
+    """What a file holds: the credentials files carry only what the suites read (an empty password means
+    "not set")."""
+    if name.endswith("-credentials.json"):
+        document = {k: v for k, v in document.items() if v}
+    return (json.dumps(document, indent=2, sort_keys=True) + "\n").encode()
+
+
+def write_into(directory, ci=False):
+    """Writes every file into `directory`, a directory of the caller's own: no manifest and no backups, since
+    nothing there is anyone else's. Only the file names this script writes are touched. With `ci`, in the
+    shape the plugin's CI files have (`ci_shape`)."""
+    target = os.path.realpath(directory)
+    default = os.path.realpath(TARGET_DIR)
+    owner = os.path.realpath(OWNER_TESTCONFIGURATION_DIR)
+    if target == owner or target.startswith(owner + os.sep):
+        sys.exit("--dir must not be ~/.aws-amplify/amplify-ios/testconfiguration or inside it; run without "
+                 "--dir to write there, with its manifest and backups.")
+    if target.startswith(default + os.sep):
+        sys.exit("--dir must not be inside the plugin's testconfiguration directory.")
+    if target == default:
+        if ci:
+            sys.exit("--ci-shape writes only into a directory of its own.")
+        write_all()
+        return
+    files = ci_shape(build()) if ci else build()
+    os.makedirs(target, mode=0o700, exist_ok=True)
+    for name, document in files.items():
+        write_private(os.path.join(target, name), serialized(name, document))
+    print(f"{len(files)} file(s) written; build the client host app with COGNITO_CLIENT_INTEG_DIR set to that "
+          f"directory to use them.")
+
+
 def write_all(refresh=False):
     """Writes every file. With `refresh`, only rewrites the files it wrote before that are still exactly
     as written, and leaves everything else (missing, replaced, edited) alone."""
@@ -262,10 +349,7 @@ def write_all(refresh=False):
     os.makedirs(TARGET_DIR, exist_ok=True)
     rewritten = 0
     for name, document in files.items():
-        # The credentials files carry only what the suites read; an empty password means "not set".
-        if name.endswith("-credentials.json"):
-            document = {k: v for k, v in document.items() if v}
-        data = (json.dumps(document, indent=2, sort_keys=True) + "\n").encode()
+        data = serialized(name, document)
         path = os.path.join(TARGET_DIR, name)
         if refresh:
             current = None
@@ -367,7 +451,11 @@ if __name__ == "__main__":
             remove_all()
         elif sys.argv[1:] == ["--refresh"]:
             write_all(refresh=True)
+        elif len(sys.argv) == 3 and sys.argv[1] == "--dir":
+            write_into(sys.argv[2])
+        elif len(sys.argv) == 4 and sys.argv[1] == "--dir" and sys.argv[3] == "--ci-shape":
+            write_into(sys.argv[2], ci=True)
         elif not sys.argv[1:]:
             write_all()
         else:
-            sys.exit(f"Usage: {sys.argv[0]} [--refresh | --remove | --forget NAME]")
+            sys.exit(f"Usage: {sys.argv[0]} [--dir DIR [--ci-shape] | --refresh | --remove | --forget NAME]")

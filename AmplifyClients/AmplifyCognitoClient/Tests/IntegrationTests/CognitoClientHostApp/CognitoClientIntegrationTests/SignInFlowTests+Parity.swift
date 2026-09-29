@@ -78,7 +78,7 @@ extension SignInFlowTests {
     ///    - the sign-in's `InitiateAuth` and `RespondToAuthChallenge` both carry exactly that metadata
     ///
     func testSignInWithSignInOptions() async throws {
-        let alice = try IntegrationTestEnvironment.users().alice
+        let alice = try await makeSignInUser()
         let recorder = RecordingHTTPClient()
         let client = try makeClient("alice-metadata", configureUserPoolClient: recorder.configureUserPoolClient)
         let metadata = ["mySignInData": "myvalue"]
@@ -91,7 +91,7 @@ extension SignInFlowTests {
 
         XCTAssertStep(result.nextStep, .done)
         let user = try await client.getCurrentUser()
-        XCTAssertEqual(user.username, "alice")
+        XCTAssertTrue(user.username == alice.username, "signed in as another user")
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
         let signIn = Array(recorder.requests.prefix(2))
@@ -101,10 +101,11 @@ extension SignInFlowTests {
         }
     }
 
-    /// An unknown user is refused as `.notAuthorized`, because the app client prevents user-existence
-    /// errors (SI-6; the plugin's `testSignInWithInvalidUser`).
+    /// An unknown user is refused as `.notAuthorized` where the app client prevents user-existence errors,
+    /// or as `.service(.userNotFound)` where it does not (SI-6; the plugin's
+    /// `testSignInWithInvalidUser`, which accepts either).
     ///
-    /// - Given: a client on a fresh session, and a username no pool holds (R-UP is admin-create-only)
+    /// - Given: a client on a fresh session, and a username no test signs up
     /// - When:
     ///    - it signs in with that username
     /// - Then:
@@ -131,7 +132,7 @@ extension SignInFlowTests {
     /// A sign-in and a session fetch on the same session, at the same time, both succeed (SI-7;
     /// the plugin's `testSignInWithFetchAuthSession`, with its 60-second limit).
     ///
-    /// - Given: a client on a fresh session over R-UP and R-IP (guests allowed)
+    /// - Given: a client on a fresh session over the default backend, whose identity pool allows guests
     /// - When:
     ///    - `fetchAuthSession()` and alice's `signIn` run concurrently, each in its own task, awaited for at
     ///      most 60 s
@@ -143,7 +144,7 @@ extension SignInFlowTests {
     ///    - a fetch afterwards returns alice's tokens, an identity and credentials
     ///
     func testSignInWithFetchAuthSession() async throws {
-        let alice = try IntegrationTestEnvironment.users().alice
+        let alice = try await makeSignInUser()
         let client = try makeClient("alice-fetch")
 
         let fetchCall = ConcurrentCalls("the racing fetch", count: 1) { _ in try await client.fetchAuthSession() }
@@ -156,7 +157,7 @@ extension SignInFlowTests {
 
         XCTAssertStep(result.nextStep, .done)
         let user = try await client.getCurrentUser()
-        XCTAssertEqual(user.username, "alice")
+        XCTAssertTrue(user.username == alice.username, "signed in as another user")
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
         XCTAssertNoThrow(try fetched.identityIdResult.get(), "the racing fetch has an identity")

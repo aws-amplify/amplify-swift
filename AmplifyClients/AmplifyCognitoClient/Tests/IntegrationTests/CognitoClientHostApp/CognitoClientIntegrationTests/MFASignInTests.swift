@@ -12,6 +12,10 @@ import XCTest
 /// U-DEF through the client. The user sets MFA up through the client, signs out, and signs in again
 /// through the client's `signIn` / `confirmSignIn`. Where the plugin stops at the SMS step because it
 /// cannot read the message, these confirm with the code the custom SMS sender captured.
+///
+/// MF-3 and MF-5 read no code and run on U-DEF, as the plugin's do. MF-4 and MF-6 read an SMS code, so they
+/// run on U-PL (`passwordless`): the plugin backend with the same MFA settings (optional, TOTP and SMS)
+/// whose outputs name a code API; the default backend's name none.
 final class MFASignInTests: ClientMFATestCase {
 
     /// MF-3: sign-in with TOTP MFA.
@@ -40,7 +44,8 @@ final class MFASignInTests: ClientMFATestCase {
 
     /// MF-4: sign-in with SMS MFA.
     ///
-    /// - Given: a fresh user with a phone number, who enabled SMS MFA through the client and signed out
+    /// - Given: a fresh user with a phone number on U-PL, who enabled SMS MFA through the client and signed
+    ///   out
     /// - When:
     ///    - the user signs in, then confirms with the code the custom SMS sender captured
     /// - Then:
@@ -48,7 +53,7 @@ final class MFASignInTests: ClientMFATestCase {
     ///      confirmation is `.done`
     ///
     func testSignInWithSMSMFA() async throws {
-        let (client, user) = try await signedInFreshUser("mf-4", withPhoneNumber: true)
+        let (client, user) = try await signedInFreshUser("mf-4", on: .passwordless, withPhoneNumber: true)
         try await client.updateMFAPreference(sms: .enabled, totp: nil)
         try await client.signOut()
         let sink = try CodeSink()
@@ -100,7 +105,7 @@ final class MFASignInTests: ClientMFATestCase {
 
     /// MF-6: choosing SMS when both types are enabled.
     ///
-    /// - Given: as MF-5
+    /// - Given: as MF-5, on U-PL
     /// - When:
     ///    - the user signs in, selects `SMS_MFA`, then confirms with the code the custom SMS sender captured
     /// - Then:
@@ -108,7 +113,7 @@ final class MFASignInTests: ClientMFATestCase {
     ///      destination; the confirmation is `.done`
     ///
     func testSelectMFATypeWithSMSWhileSigningIn() async throws {
-        let (client, user) = try await signedInFreshUser("mf-6", withPhoneNumber: true)
+        let (client, user) = try await signedInFreshUser("mf-6", on: .passwordless, withPhoneNumber: true)
         try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: .enabled, totp: .enabled)
         try await client.signOut()

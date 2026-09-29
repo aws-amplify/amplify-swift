@@ -39,7 +39,11 @@ Resources, all tagged purpose=amplify-cognito-client-integ and recorded under "p
           account's SNS is in the SMS sandbox
     P-13  identity pool …_plugin (guest on) and its two permissionless roles, federating the default
           pool's `plugin` and `hostedui-plugin` clients: the plugin's default backend has an identity
-          pool (AuthIntegrationTests, AuthStressTests), which the base sandbox's R-IP is not
+          pool (AuthIntegrationTests, AuthStressTests), which the base sandbox's R-IP is not. It also
+          federates the passwordless pool's `client`, and passwordless-amplify_outputs.json names it, as
+          the plugin's Gen2 passwordless backend names its own (PasswordlessTests/README.md, defineAuth):
+          the client suites' CS-2 and CS-3 need a pool that tracks no devices, with a guest identity
+          pool that federates it
     P-14  the plugin's DeviceAliasTokenRefreshIntegrationTests user on email-alias (pre-created, as its
           doc comment asks), with the password users.json keeps as pluginDeviceAliasPassword; and the
           single-use FORCE_CHANGE_PASSWORD users of AuthSRPSignInTests.testNewPasswordRequired on default,
@@ -104,7 +108,10 @@ PLUGIN_CONFIRM_POOLS = ("passwordless",)
 # Pools where a bare UUID username is a plugin test user (EmailMFAWithAllMFATypesRequiredTests).
 PLUGIN_UUID_USERNAME_POOLS = ("mfa-req-all",)
 PLUGIN_IDENTITY_POOL = f"{NAME.replace('-', '_')}_plugin"
-PLUGIN_IDENTITY_CLIENTS = ("plugin", "hostedui-plugin")
+# P-13's providers: (pool key, app client key).
+PLUGIN_IDENTITY_CLIENTS = (("default", "plugin"), ("default", "hostedui-plugin"), ("passwordless", "client"))
+# The outputs files that name P-13 (the default pool's are the plugin-configs.py files, which add it there).
+PLUGIN_IDENTITY_OUTPUTS = ("passwordless",)
 PLUGIN_DEVICE_ALIAS_EMAIL = "ccit-plugin-device-alias@example.com"
 # AuthSRPSignInTests.testNewPasswordRequired: single-use FORCE_CHANGE_PASSWORD users on default, one per
 # iteration (CI runs with -test-iterations 3), reset by every prepare-run.sh.
@@ -1537,16 +1544,31 @@ def plugin_pool_ids(parity, keys):
 
 
 def plugin_identity_providers(parity):
-    record = parity["pools"]["default"]
-    provider = f"cognito-idp.{REGION}.amazonaws.com/{record['userPoolId']}"
-    return [{"ProviderName": provider, "ClientId": record["clients"][c], "ServerSideTokenCheck": False}
-            for c in PLUGIN_IDENTITY_CLIENTS]
+    providers = []
+    for pool_key, client_key in PLUGIN_IDENTITY_CLIENTS:
+        record = parity["pools"][pool_key]
+        providers.append({"ProviderName": f"cognito-idp.{REGION}.amazonaws.com/{record['userPoolId']}",
+                          "ClientId": record["clients"][client_key], "ServerSideTokenCheck": False})
+    return providers
+
+
+def name_plugin_identity_pool_in_outputs(parity):
+    """Adds P-13, with guest access, to the outputs of the pools it federates besides the default one
+    (PLUGIN_IDENTITY_OUTPUTS). The pool loop rewrites those files without it, so this runs after it."""
+    for name in PLUGIN_IDENTITY_OUTPUTS:
+        with open(outputs_path(name)) as f:
+            document = json.load(f)
+        document["auth"]["identity_pool_id"] = parity["pluginIdentityPoolId"]
+        document["auth"]["unauthenticated_identities_enabled"] = True
+        write_outputs(name, document)
+    say(f"Named the plugin identity pool in {', '.join(PLUGIN_IDENTITY_OUTPUTS)}-amplify_outputs.json")
 
 
 def ensure_plugin_identity_pool(parity):
     """The plugin's default backend federates its user pool into an identity pool with guest access
     (AuthIntegrationTests/README.md, AuthStressTests/README.md). Tagged, guest on, the default pool's
-    `plugin` and `hostedui-plugin` clients as providers, and roles that grant nothing."""
+    `plugin` and `hostedui-plugin` clients and the passwordless pool's `client` as providers, and roles
+    that grant nothing."""
     desired = plugin_identity_providers(parity)
     pool_id = parity.get("pluginIdentityPoolId")
     if pool_id and aws_or_none("cognito-identity", "describe-identity-pool", "--identity-pool-id", pool_id) is None:
@@ -1716,6 +1738,7 @@ def provision():
     # P-13.
     run_step("Plugin identity pool", ensure_plugin_identity_pool, parity)
     save_parity(parity)
+    run_step("Plugin identity pool in the outputs", name_plugin_identity_pool_in_outputs, parity)
     say("Parity resources done")
 
 

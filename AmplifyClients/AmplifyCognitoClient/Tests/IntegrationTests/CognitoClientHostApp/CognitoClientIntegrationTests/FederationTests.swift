@@ -8,14 +8,15 @@
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 import XCTest
 
-/// Federation against the sandbox's identity pool (R-IP). The sandbox has no external
-/// identity provider, so only the rejection is reachable, as in the plugin's `FederatedSessionTests`.
+/// Federation against the default backend's identity pool (R-IP). It has no external
+/// identity provider (a made-up token is refused either way), so only the rejection is reachable, as in the
+/// plugin's `FederatedSessionTests`.
 final class FederationTests: ClientIntegrationTestCase {
 
     /// FE-1, the plugin's `FederatedSessionTests.testUnsuccessfulFederation`: a token the identity pool cannot
     /// accept is rejected, and the session is left as it was.
     ///
-    /// - Given: a signed-out session on the base sandbox configuration (R-UP + R-IP)
+    /// - Given: a signed-out session on the main configuration (the default backend's user pool and R-IP)
     /// - When:
     ///    - it federates a made-up Facebook token (R-IP has no Facebook provider)
     /// - Then:

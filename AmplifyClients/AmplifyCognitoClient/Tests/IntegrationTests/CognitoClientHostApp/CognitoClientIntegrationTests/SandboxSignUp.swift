@@ -23,9 +23,13 @@ import Foundation
 /// - the email is `<username>@example.com` (RFC 2606). On `email-alias` the email is the username;
 /// - the phone number is fictional: `+1 555` and seven random digits.
 ///
-/// No message is ever delivered: the pools' custom senders hand every code to the code sink. Delete each
+/// A pool with no pre-sign-up trigger (the plugin's passwordless backend) leaves every sign-up unconfirmed:
+/// a user the test wants confirmed is then confirmed with its sign-up code, so the rest of the test sees
+/// the same user either way.
+///
+/// No message is ever delivered: the pools' custom senders hand every code to the code API. Delete each
 /// user when the test ends (`XCTestCase.deleteAtTeardown(_:)`, or `ClientIntegrationTestCase.makeFreshUser`,
-/// which does it for you); `prepare-run.sh` removes any left over after 24 hours (P-12).
+/// which does it for you); the sandbox's `prepare-run.sh` removes any left over after 24 hours (P-12).
 enum SandboxSignUp {
 
     /// What a fresh user signs up with.
@@ -57,8 +61,8 @@ enum SandboxSignUp {
         }
     }
 
-    /// Signs a fresh user up on `pool` with the raw SDK, and checks the pre-sign-up trigger treated it as
-    /// asked: confirmed straight away, or left for the confirm step.
+    /// Signs a fresh user up on `pool` with the raw SDK, and checks it is as asked: confirmed (by the
+    /// pre-sign-up trigger, or else with its sign-up code), or left for the confirm step.
     static func signUp(on pool: SandboxPool, _ options: Options = Options()) async throws -> FreshUser {
         try await signUp(on: SandboxPools.pool(pool), options)
     }
@@ -81,6 +85,8 @@ enum SandboxSignUp {
         for (name, value) in options.attributes.sorted(by: { $0.key < $1.key }) {
             attributes.append(.init(name: name, value: value))
         }
+        // Listening before the sign-up: its code, or any later one, is published once, when it is sent.
+        await CodeSink.prepare(pool.pool)
         let signedUpAt = Date()
         let output = try await pool.client.signUp(input: SignUpInput(
             clientId: pool.clientId,
@@ -91,13 +97,13 @@ enum SandboxSignUp {
         guard let userSub = output.userSub else {
             throw HarnessError.malformedFixture("SignUp returned no user sub.")
         }
-        guard output.userConfirmed == !options.needsConfirmation else {
+        if output.userConfirmed, options.needsConfirmation {
             throw HarnessError.malformedFixture("""
-            \(pool.pool)'s pre-sign-up trigger \(output.userConfirmed ? "confirmed" : "did not confirm") \
-            \(identity.username). Is the trigger attached as templated (infra/parity.py verify)?
+            \(pool.pool.rawValue) confirmed a sign-up this test needs unconfirmed: the backend needs a \
+            pre-sign-up trigger that leaves `\(confirmPrefix)` users for the confirm step.
             """)
         }
-        return FreshUser(
+        let user = FreshUser(
             pool: pool.pool,
             username: username,
             password: password,
@@ -107,6 +113,11 @@ enum SandboxSignUp {
             isConfirmed: output.userConfirmed,
             signedUpAt: signedUpAt
         )
+        if !output.userConfirmed, !options.needsConfirmation {
+            // No pre-sign-up trigger confirmed it (the plugin's passwordless backend has none).
+            try await confirm(user, sentSince: signedUpAt, on: pool, sink: CodeSink())
+        }
+        return user
     }
 
     /// Confirms an unconfirmed user with the sign-up code from the code sink, sent at or after `since`.

@@ -25,13 +25,6 @@ final class StressTests: ClientIntegrationTestCase {
     /// The plugin's `AuthStressBaseTest.networkTimeout`.
     private static let networkTimeout: TimeInterval = 5
 
-    private var users: SandboxUsers!
-
-    override func setUp() async throws {
-        try await super.setUp()
-        users = try IntegrationTestEnvironment.users()
-    }
-
     /// 50 concurrent fetches of a signed-in session return it, with no refresh (ST-2; the
     /// plugin's `testMultipleFetchAuthSessionAfterSignIn`).
     ///
@@ -44,8 +37,9 @@ final class StressTests: ClientIntegrationTestCase {
     ///
     func testMultipleFetchAuthSessionAfterSignIn() async throws {
         let recorder = RecordingHTTPClient()
+        let alice = try await makeSignInUser()
         let client = try makeClient("stress-fetch", configureUserPoolClient: recorder.configureUserPoolClient)
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         recorder.reset()
 
         let sessions = try await concurrently(Self.concurrencyLimit, timeout: Self.networkTimeout) { _ in try await client.fetchAuthSession() }
@@ -72,8 +66,9 @@ final class StressTests: ClientIntegrationTestCase {
     ///
     func testMultipleFetchAuthSessionWithRandomForceRefresh() async throws {
         let recorder = RecordingHTTPClient()
+        let alice = try await makeSignInUser()
         let client = try makeClient("stress-force", configureUserPoolClient: recorder.configureUserPoolClient)
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         let before = try await fingerprint(client.fetchAuthSession().userPoolTokensResult.get().accessToken)
         recorder.reset()
         let forced = Self.concurrencyLimit / 2
@@ -99,7 +94,7 @@ final class StressTests: ClientIntegrationTestCase {
     /// 50 concurrent fetches of a signed-out session make it one guest (ST-4; the plugin's
     /// `testMultipleFetchAuthSessionWhenSignedOut`).
     ///
-    /// - Given: a fresh session, never signed in, over R-IP (guests allowed)
+    /// - Given: a fresh session, never signed in, over the default backend (its identity pool allows guests)
     /// - When:
     ///    - 50 concurrent `fetchAuthSession()` calls
     /// - Then:
@@ -137,8 +132,9 @@ final class StressTests: ClientIntegrationTestCase {
     ///
     func testMultipleGetCurrentUser() async throws {
         let recorder = RecordingHTTPClient()
+        let alice = try await makeSignInUser()
         let client = try makeClient("stress-user", configureUserPoolClient: recorder.configureUserPoolClient)
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         let idToken = try await client.fetchAuthSession().userPoolTokensResult.get().idToken
         let sub = try XCTUnwrap(IntegrationTestEnvironment.jwtClaims(idToken)["sub"] as? String)
         recorder.reset()
@@ -147,7 +143,7 @@ final class StressTests: ClientIntegrationTestCase {
 
         XCTAssertEqual(found.count, Self.concurrencyLimit)
         for (index, user) in found.enumerated() {
-            XCTAssertEqual(user.username, "alice", "call \(index)")
+            XCTAssertTrue(user.username == alice.username, "call \(index) returns alice")
             XCTAssertTrue(user.userId == sub, "call \(index) returns alice's sub")
         }
         XCTAssertEqual(recorder.operations, [], "getCurrentUser reads the saved session")

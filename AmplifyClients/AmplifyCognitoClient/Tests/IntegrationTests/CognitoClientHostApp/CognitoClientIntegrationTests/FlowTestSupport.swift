@@ -7,6 +7,7 @@
 
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 @_spi(AmplifyExperimental) import AmplifyFoundation
+import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import CryptoKit
 import Foundation
@@ -288,28 +289,23 @@ extension AuthSessionState {
     }
 }
 
-/// The identity pool's two roles, by name, from `state.json`. Only names are compared, and a failing
-/// comparison prints neither side, so no account identifier reaches a log.
-struct SandboxRoles {
+/// The main configuration's identity pool's two roles, by name, learned independently of the client under
+/// test: the raw SDK takes guest credentials (`GetId`, `GetCredentialsForIdentity` with no logins) and a
+/// fresh user's credentials (the same with its id token from a raw sign-in), and STS names the role each
+/// assumes. No AWS credentials are needed, and no role is named in the configuration. Learned once per
+/// process. Only names are compared, and a failing comparison prints neither side, so no account
+/// identifier reaches a log.
+struct SandboxRoles: Sendable {
     let authenticatedRoleName: String
     let unauthenticatedRoleName: String
 
-    private struct Fields: Decodable {
-        let authRoleArn: String
-        let unauthRoleArn: String
+    init() async throws {
+        self = try await RoleCache.shared.roles()
     }
 
-    init() throws {
-        let fields = try JSONDecoder().decode(
-            Fields.self,
-            from: IntegrationTestEnvironment.data(forResource: IntegrationTestEnvironment.stateResource)
-        )
-        guard let authenticated = fields.authRoleArn.split(separator: "/").last,
-              let unauthenticated = fields.unauthRoleArn.split(separator: "/").last else {
-            throw HarnessError.malformedFixture("state.json's role ARNs have no role name.")
-        }
-        self.authenticatedRoleName = String(authenticated)
-        self.unauthenticatedRoleName = String(unauthenticated)
+    fileprivate init(authenticatedRoleName: String, unauthenticatedRoleName: String) {
+        self.authenticatedRoleName = authenticatedRoleName
+        self.unauthenticatedRoleName = unauthenticatedRoleName
     }
 
     /// Which of the two roles `provider`'s credentials assume, through STS `GetCallerIdentity`.
@@ -328,26 +324,111 @@ struct SandboxRoles {
     }
 }
 
-/// A plain user pool SDK client for the sandbox pool, independent of the client under test, to check
-/// what Cognito thinks of a token the client held.
+/// Learns `SandboxRoles` once per process (`SandboxRoles.init()`).
+private actor RoleCache {
+
+    static let shared = RoleCache()
+
+    private var cached: SandboxRoles?
+
+    func roles() async throws -> SandboxRoles {
+        if let cached {
+            return cached
+        }
+        let learned = try await Self.learn()
+        cached = learned
+        return learned
+    }
+
+    private static func learn() async throws -> SandboxRoles {
+        let configuration = try IntegrationTestEnvironment.configuration()
+        guard let identityPool = configuration.identityPool, let userPool = configuration.userPool else {
+            throw HarnessError.malformedFixture("\(IntegrationTestEnvironment.outputsResource).json has no identity pool or no user pool.")
+        }
+        let identity = try await CognitoIdentityClient(
+            config: CognitoIdentityClient.CognitoIdentityClientConfiguration(region: identityPool.region)
+        )
+        let guestId = try await identity.getId(input: GetIdInput(identityPoolId: identityPool.poolId)).identityId
+        let guest = try await identity.getCredentialsForIdentity(input: GetCredentialsForIdentityInput(identityId: guestId))
+        let unauthenticated = try await roleName(guest.credentials, region: identityPool.region)
+
+        let user = try await SandboxSignUp.signUp(on: .standard)
+        let authenticated: String
+        do {
+            let tokens = try await SandboxPools.pool(.standard).signIn(user)
+            let idToken = try XCTUnwrap(tokens.idToken, "the raw sign-in returned no id token")
+            let logins = ["cognito-idp.\(userPool.region).amazonaws.com/\(userPool.poolId)": idToken]
+            let userId = try await identity.getId(input: GetIdInput(identityPoolId: identityPool.poolId, logins: logins)).identityId
+            let signedIn = try await identity.getCredentialsForIdentity(input: GetCredentialsForIdentityInput(
+                identityId: userId,
+                logins: logins
+            ))
+            authenticated = try await roleName(signedIn.credentials, region: identityPool.region)
+        } catch {
+            _ = try? await SandboxUserCleanup.delete(user)
+            throw error
+        }
+        try await SandboxUserCleanup.delete(user)
+        guard authenticated != unauthenticated else {
+            throw HarnessError.malformedFixture("The identity pool's guests and users assume the same role.")
+        }
+        return SandboxRoles(authenticatedRoleName: authenticated, unauthenticatedRoleName: unauthenticated)
+    }
+
+    /// The role `credentials` assume, through STS `GetCallerIdentity`.
+    private static func roleName(_ credentials: CognitoIdentityClientTypes.Credentials?, region: String) async throws -> String {
+        guard let accessKeyId = credentials?.accessKeyId, let secretKey = credentials?.secretKey,
+              let sessionToken = credentials?.sessionToken, let expiration = credentials?.expiration else {
+            throw HarnessError.malformedFixture("GetCredentialsForIdentity returned incomplete credentials.")
+        }
+        let provider = FixedCredentialsProvider(credentials: FixedCredentials(
+            accessKeyId: accessKeyId,
+            secretAccessKey: secretKey,
+            sessionToken: sessionToken,
+            expiration: expiration
+        ))
+        let arn = try await CallerIdentity.of(provider, region: region).arn
+        return try XCTUnwrap(arn.flatMap(CallerIdentity.roleName(of:)), "not an assumed-role ARN")
+    }
+
+    private struct FixedCredentials: AWSTemporaryCredentials {
+        let accessKeyId: String
+        let secretAccessKey: String
+        let sessionToken: String
+        let expiration: Date
+    }
+
+    private struct FixedCredentialsProvider: AWSCredentialsProvider {
+        let credentials: FixedCredentials
+
+        func resolve() async throws -> AWSCredentials {
+            credentials
+        }
+    }
+}
+
+/// A plain user pool SDK client for the main configuration's user pool and app client, independent of the
+/// client under test, to check what Cognito thinks of a token the client held.
 struct RawUserPool: Sendable {
     let userPool: CognitoIdentityProviderClient
     let appClientId: String
 
     init() throws {
-        try IntegrationTestEnvironment.requireProvisioned()
-        let state = try IntegrationTestEnvironment.state()
+        let pool = try XCTUnwrap(IntegrationTestEnvironment.configuration().userPool)
         self.userPool = try CognitoIdentityProviderClient(
-            config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: state.region)
+            config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: pool.region)
         )
-        self.appClientId = state.appClientId
+        self.appClientId = pool.appClientId
     }
 
-    /// What `GetTokensFromRefreshToken` answers for `refreshToken`: a new access token, or the error.
-    func refresh(_ refreshToken: String) async -> Result<String, Error> {
+    /// What `GetTokensFromRefreshToken` answers for `refreshToken`: a new access token, or the error. On a
+    /// pool that tracks devices, Cognito refuses a refresh without the session's device key: pass the
+    /// access token's `device_key` (`deviceKey(of:)`).
+    func refresh(_ refreshToken: String, deviceKey: String? = nil) async -> Result<String, Error> {
         do {
             let output = try await userPool.getTokensFromRefreshToken(input: GetTokensFromRefreshTokenInput(
                 clientId: appClientId,
+                deviceKey: deviceKey,
                 refreshToken: refreshToken
             ))
             guard let accessToken = output.authenticationResult?.accessToken else {
@@ -359,60 +440,32 @@ struct RawUserPool: Sendable {
         }
     }
 
+    /// The device key an access token names (`device_key`), or nil on a pool that tracks no devices.
+    static func deviceKey(of accessToken: String) -> String? {
+        (try? IntegrationTestEnvironment.jwtClaims(accessToken))?["device_key"] as? String
+    }
+
     /// Revokes `refreshToken`, as a test's cleanup when the client under test did not.
     func revoke(_ refreshToken: String) async throws {
         _ = try await userPool.revokeToken(input: RevokeTokenInput(clientId: appClientId, token: refreshToken))
     }
 }
 
-/// U-DEF (`SandboxPool.standard`) with an identity pool: the default pool through its `plugin` app client,
-/// federated into the plugin suites' identity pool (P-13, guest on, permissionless roles), which is the
-/// only identity pool in the sandbox that accepts U-DEF's tokens. For tests whose user must be a fresh one
-/// (`SandboxSignUp` on `.standard`) and that also need AWS credentials. Read-only: P-13 is provisioned by
-/// `infra/parity.py` with the plugin suites' resources, and nothing here changes it.
+/// U-DEF (`SandboxPool.standard`) with an identity pool: the plugin's default backend's outputs, whose
+/// identity pool (guest on) federates its user pool. For tests whose user must be a fresh one
+/// (`SandboxSignUp` on `.standard`) and that also need AWS credentials.
 enum FederatedStandardPool {
 
-    private struct Fields: Decodable {
-        struct Parity: Decodable {
-            struct Pool: Decodable {
-                let clients: [String: String]?
-            }
-
-            let pools: [String: Pool]
-            let pluginIdentityPoolId: String?
-        }
-
-        let parity: Parity?
-    }
-
-    /// The client configuration: U-DEF's outputs, with the `plugin` app client and P-13's identity pool.
+    /// The client configuration: the default backend's outputs, which must name an identity pool.
     static func configuration() throws -> AuthClientConfiguration {
-        let standard = try XCTUnwrap(IntegrationTestEnvironment.configuration(.standard).userPool)
-        let fields = try JSONDecoder().decode(
-            Fields.self,
-            from: IntegrationTestEnvironment.data(forResource: IntegrationTestEnvironment.stateResource)
-        )
-        guard let identityPoolId = fields.parity?.pluginIdentityPoolId,
-              let pluginClientId = fields.parity?.pools[SandboxPool.standard.stateKey]?.clients?["plugin"] else {
+        let configuration = try IntegrationTestEnvironment.configuration(.standard)
+        guard configuration.identityPool != nil else {
             throw HarnessError.malformedFixture("""
-            state.json has no plugin identity pool (P-13) or no default-pool plugin client. Re-run \
-            infra/provision.sh with the plugin suites' parity resources, then rebuild.
+            \(IntegrationTestEnvironment.outputsResource).json has no identity pool: the default backend \
+            needs one that federates its user pool, with guest access.
             """)
         }
-        return try AuthClientConfiguration(
-            userPool: .init(
-                poolId: standard.poolId,
-                appClientId: pluginClientId,
-                region: standard.region,
-                passwordPolicy: standard.passwordPolicy,
-                usernameAttributes: standard.usernameAttributes,
-                standardRequiredAttributes: standard.standardRequiredAttributes,
-                verificationMechanisms: standard.verificationMechanisms,
-                mfaEnforcement: standard.mfaEnforcement,
-                mfaMethods: standard.mfaMethods
-            ),
-            identityPool: .init(poolId: identityPoolId, region: standard.region, unauthenticatedIdentitiesEnabled: true)
-        )
+        return configuration
     }
 }
 
@@ -478,21 +531,59 @@ enum KeychainSnapshot {
     }
 }
 
-/// Whether this run has already used up `dave`.
+/// The new-password user this run used up, if any.
 ///
-/// `prepare-run.sh` resets dave (P-3) to `FORCE_CHANGE_PASSWORD` before every run, and CH-1 then answers
-/// his new-password challenge. Only an administrator call (`AdminCreateUser`, `AdminSetUserPassword`) puts
-/// a user in that state, which the test bundle cannot make, so CH-1 cannot use a fresh user the way the
-/// delete-user and global sign-out tests do. `SandboxProvisioningTests` runs after `ChallengeTests` in the
-/// default order. Once CH-1 has *attempted* the new password (set before the call, so a confirmation that
-/// changed the password but then failed still counts), it accepts dave in either state.
+/// Only an administrator call (`AdminCreateUser`, `AdminSetUserPassword`) puts a user in
+/// `FORCE_CHANGE_PASSWORD`, which the test bundle cannot make, so CH-1 cannot use a fresh user the way the
+/// delete-user and global sign-out tests do. It takes the first user of the default credentials file's
+/// `new_password_required_usernames` still in that state, as the plugin's `testNewPasswordRequired` does,
+/// and sets a new password of its own. Each user is used once; another run (the plugin's suite, or this
+/// suite, against the same backend) may take one at any time, so every reader moves on to the next.
+/// `SandboxProvisioningTests` runs after `ChallengeTests` in the default order: once CH-1 has *attempted* a
+/// new password (recorded before the call, so a confirmation that changed the password but then failed
+/// still counts), it checks that user in either state.
 enum PerRunUsers {
-    private static let lock = NSLock()
-    private nonisolated(unsafe) static var daveAttempted = false
 
-    /// Whether this run's challenge test has tried to set dave's new password.
-    static var daveNewPasswordAttempted: Bool {
-        get { lock.withLock { daveAttempted } }
-        set { lock.withLock { daveAttempted = newValue } }
+    /// The failure when a new-password user refuses the credentials file's temporary password while Cognito
+    /// still holds it in `FORCE_CHANGE_PASSWORD`: the temporary password is wrong, not the user used up.
+    static let wrongTemporaryPassword = """
+    A new-password user in \(IntegrationTestEnvironment.credentialsResource).json refuses \
+    new_password_required_temporary_password although it still waits for a new password: the temporary \
+    password in the credentials file is wrong.
+    """
+
+    /// Whether Cognito still holds `username` in `FORCE_CHANGE_PASSWORD`, asked without changing it:
+    /// `ForgotPassword` refuses such a user with `NotAuthorizedException` (its password cannot be reset in
+    /// that state), and answers a user who has set a password otherwise (a code sent, or no verified
+    /// address to send one to). Asked only about a user whose temporary password was just refused.
+    static func stillAwaitsANewPassword(_ username: String, on pool: SandboxPoolClient) async -> Bool {
+        do {
+            _ = try await pool.client.forgotPassword(input: ForgotPasswordInput(clientId: pool.clientId, username: username))
+            return false
+        } catch is AWSCognitoIdentityProvider.NotAuthorizedException {
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /// Whether `username` now refuses the temporary password, with a raw sign-in that answers no challenge:
+    /// the proof that another run took the user.
+    static func refusesTemporaryPassword(_ username: String, _ temporary: SandboxSecret, on pool: SandboxPoolClient) async throws -> Bool {
+        do {
+            _ = try await pool.passwordSignIn(TestUser(username: username, password: temporary.value))
+            return false
+        } catch is AWSCognitoIdentityProvider.NotAuthorizedException {
+            return true
+        }
+    }
+
+    private static let lock = NSLock()
+    private nonisolated(unsafe) static var attempt: TestUser?
+
+    /// The user this run's challenge test tried to set a new password for, with that new password.
+    static var newPasswordAttempt: TestUser? {
+        get { lock.withLock { attempt } }
+        set { lock.withLock { attempt = newValue } }
     }
 }

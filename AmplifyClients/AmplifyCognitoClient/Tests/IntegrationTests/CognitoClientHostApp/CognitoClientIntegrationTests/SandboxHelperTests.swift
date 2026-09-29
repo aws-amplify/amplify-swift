@@ -56,13 +56,14 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         }
     }
 
-    /// Every parity pool auto-confirms a fresh user, and the admin-free cleanup deletes it (P-5b, P-6).
+    /// Every parity pool confirms a fresh user, and the admin-free cleanup deletes it (P-5b, P-6).
     ///
     /// - Given: Each pool that has its own users, and its pre-sign-up trigger
     /// - When:
     ///    - A fresh user signs up, then `SandboxUserCleanup.delete` runs, twice
     /// - Then:
-    ///    - The sign-up is confirmed (`SandboxSignUp` checks it)
+    ///    - The sign-up is confirmed (`SandboxSignUp` checks it): by the pre-sign-up trigger, or, on a pool
+    ///      without one (the plugin's passwordless backend), with its sign-up code
     ///    - The first delete signs in as the user, answering the pool's MFA (setup, email or TOTP) where
     ///      required, and deletes it; the second is a no-op
     ///    - The user can no longer sign in
@@ -83,7 +84,8 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
 
     /// A `ccit-confirm-` user stays unconfirmed, and sign-up and resent codes reach the sink (P-5c).
     ///
-    /// - Given: The default pool, and a fresh user whose name the pre-sign-up trigger leaves unconfirmed
+    /// - Given: The passwordless pool (whose outputs name a code API), and a fresh user it leaves
+    ///   unconfirmed
     /// - When:
     ///    - It signs up; the test reads the sign-up code, then resends and reads the new code with
     ///      `code(for:_:sentBy:)`, and confirms with that one
@@ -92,10 +94,10 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///      raw sign-in then returns tokens
     ///
     func testSignUpAndResentCodesReachTheSinkAndConfirm() async throws {
-        let pool = try SandboxPools.pool(.standard)
+        let pool = try SandboxPools.pool(.passwordless)
         let sink = try CodeSink()
         let since = Date()
-        let user = try await makeFreshUser(on: .standard, .init(needsConfirmation: true))
+        let user = try await makeFreshUser(on: .passwordless, .init(needsConfirmation: true))
         XCTAssertFalse(user.isConfirmed)
         _ = try await sink.signUpCode(for: user, since: since)
 
@@ -170,10 +172,9 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         XCTAssertNotNil(signIn.authenticationResult?.accessToken)
     }
 
-    /// Attribute verification codes reach the sink, for an update and for a resend (U-DEF).
+    /// Attribute verification codes reach the sink, for an update and for a resend (U-PL).
     ///
-    /// - Given: A fresh, signed-in user on the default pool, which updates attributes without waiting
-    ///   for verification
+    /// - Given: A fresh, signed-in user on the passwordless pool (whose outputs name a code API)
     /// - When:
     ///    - It changes its email to another `@example.com` address and verifies it with the code, then
     ///      asks for a verification code again and verifies with that one
@@ -181,9 +182,9 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///    - Both codes arrive and `VerifyUserAttribute` accepts each
     ///
     func testAttributeVerificationCodesReachTheSink() async throws {
-        let pool = try SandboxPools.pool(.standard)
+        let pool = try SandboxPools.pool(.passwordless)
         let sink = try CodeSink()
-        let user = try await makeFreshUser(on: .standard)
+        let user = try await makeFreshUser(on: .passwordless)
         let signedIn = try await pool.signIn(user, sink: sink)
         let accessToken = try XCTUnwrap(signedIn.accessToken)
         let since = Date()
@@ -212,10 +213,11 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         ))
     }
 
-    /// Email and SMS MFA codes reach the sink, and the raw sign-in answers them (U-REQ-E, U-REQ-TS).
+    /// Email and SMS MFA codes reach the sink, and the raw sign-in answers them (U-REQ-E, U-REQ-ALL).
     ///
-    /// - Given: A fresh user on the email-MFA-required pool, and one with a fictional number on the
-    ///   TOTP-and-SMS-required pool
+    /// - Given: A fresh user on the email-MFA-required pool, and one with a fictional number and no email
+    ///   on the all-types-required pool (the MFA-required pool with TOTP and SMS whose outputs name a code
+    ///   API), where SMS is then its one MFA type
     /// - When:
     ///    - Each signs in with its password: first by hand, reading the code with `mfaCode`, then
     ///      through `SandboxPoolClient.signIn`
@@ -238,8 +240,8 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         )
         XCTAssertNotNil(result.authenticationResult?.accessToken)
 
-        let smsPool = try SandboxPools.pool(.mfaRequiredTOTPSMS)
-        let smsUser = try await makeFreshUser(on: .mfaRequiredTOTPSMS, .init(withPhoneNumber: true))
+        let smsPool = try SandboxPools.pool(.mfaRequiredAll)
+        let smsUser = try await makeFreshUser(on: .mfaRequiredAll, .init(withEmail: false, withPhoneNumber: true))
         let tokens = try await smsPool.signIn(smsUser, sink: sink)
         XCTAssertNotNil(tokens.accessToken)
         XCTAssertNil(smsUser.totpSecret, "The SMS user was made to set up TOTP instead")
@@ -329,17 +331,18 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         try await assertCannotSignIn(user, on: pool)
     }
 
-    /// Cleanup confirms an unconfirmed user with a resent code, then deletes it (U-DEF).
+    /// Cleanup confirms an unconfirmed user with a resent code, then deletes it (U-PL).
     ///
-    /// - Given: A fresh `ccit-confirm-` user on the default pool, never confirmed
+    /// - Given: A fresh `ccit-confirm-` user on the passwordless pool (whose outputs name a code API),
+    ///   never confirmed
     /// - When:
     ///    - `SandboxUserCleanup.delete` runs
     /// - Then:
     ///    - It deletes the user, which can then not sign in (rather than being unconfirmed)
     ///
     func testCleanupConfirmsAndDeletesAnUnconfirmedUser() async throws {
-        let pool = try SandboxPools.pool(.standard)
-        let user = try await makeFreshUser(on: .standard, .init(needsConfirmation: true))
+        let pool = try SandboxPools.pool(.passwordless)
+        let user = try await makeFreshUser(on: .passwordless, .init(needsConfirmation: true))
 
         let outcome = try await SandboxUserCleanup.delete(user)
         XCTAssertEqual(outcome, .deleted)
@@ -350,12 +353,12 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     /// Sessions on several pools are cleaned up, each with its own pool's configuration
     /// (`makeClient(_:pool:)`, `SessionCleanup.cleanUp(_:)`, which tearDown runs).
     ///
-    /// - Given: A client over a session on R-UP and one over a session on the passwordless pool, each
+    /// - Given: A client over a session on the main configuration and one over a session on the passwordless pool, each
     ///   read once and dropped
     /// - When:
     ///    - `SessionCleanup.cleanUp` runs for both sessions
     /// - Then:
-    ///    - The parity client was built from the passwordless pool's configuration, not R-UP's
+    ///    - The parity client was built from the passwordless pool's configuration, not the main one
     ///    - Neither session is live, and neither has a row
     ///
     func testSessionsOnSeveralPoolsAreCleanedUpWithTheirOwnPool() async throws {

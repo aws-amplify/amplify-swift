@@ -21,9 +21,10 @@ import XCTest
 /// writes, which land on the plugin's own key again, are never read. No other session ever reads the
 /// plugin's record.
 ///
-/// Signs `alice` in through the plugin against the sandbox. Tokens, subs and pool identifiers are
-/// compared with booleans and never printed; keychain rows are described by role (`plugin`, `own`),
-/// never by account name, because account names carry the pool identifiers.
+/// Signs `alice`, a fresh user each test signs up, in through the plugin against the default backend.
+/// Tokens, subs and pool identifiers are compared with booleans and never printed; keychain rows are
+/// described by role (`plugin`, `own`), never by account name, because account names carry the pool
+/// identifiers.
 final class PluginAdoptionTests: XCTestCase {
 
     private var configuration: AuthClientConfiguration!
@@ -33,6 +34,8 @@ final class PluginAdoptionTests: XCTestCase {
     private var ownAccount = ""
     /// Named sessions a test created, purged at teardown.
     private var namedSessions: [SessionID] = []
+    /// The test's own user (alice), signed up in `setUp` and deleted at teardown.
+    private var alice: InteropUser!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -46,12 +49,13 @@ final class PluginAdoptionTests: XCTestCase {
         // A run that stopped early may have left either record; this test must start from neither.
         try await AmplifyCognitoClient.purgeStoredSession(sessionId: .default, configuration: configuration)
         XCTAssertEqual(records(), "plugin: absent, own: absent", "setUp left a record")
+        alice = try await InteropEnvironment.signUpFreshUser()
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
         try Amplify.configure(with: .data(InteropEnvironment.data(forResource: InteropEnvironment.outputsResource)))
     }
 
     /// Signs the plugin out first (which revokes its refresh token), then purges every session the test
-    /// touched, whatever failed. Signs out only when Auth is configured: a throwing `setUp` leaves it
+    /// touched, whatever failed, and deletes the test's user. Signs out only when Auth is configured: a throwing `setUp` leaves it
     /// unconfigured, and an unconfigured `Amplify.Auth` aborts the process.
     ///
     /// Each session is purged on its own, even if waiting for another's release, or its own, failed: a
@@ -76,14 +80,17 @@ final class PluginAdoptionTests: XCTestCase {
             }
             XCTAssertEqual(records(), "plugin: absent, own: absent", "tearDown left a record")
         }
+        if let alice {
+            await InteropEnvironment.deleteFreshUser(alice)
+        }
         namedSessions = []
         try await super.tearDown()
     }
 
     /// AD-1. `.default` adopts the plugin's record at its first load only; later plugin writes are ignored.
     ///
-    /// - Given: the plugin configured from the sandbox outputs and `alice` signed in through it, so the
-    ///   plugin's record exists and `.default` has no record of its own
+    /// - Given: the plugin configured from the default backend's outputs and `alice` (a fresh user of the
+    ///   test's own) signed in through it, so the plugin's record exists and `.default` has no record of its own
     /// - When:
     ///    - a client on `.default` is created, with a request recorder on its user pool client, and reads
     ///      its state and both providers
@@ -102,7 +109,7 @@ final class PluginAdoptionTests: XCTestCase {
     ///    - the same holds after the plugin's sign-out and second sign-in
     ///
     func testDefaultAdoptsThePluginRecordOnFirstLoadOnly() async throws {
-        let signIn = try await Amplify.Auth.signIn(username: "alice", password: InteropEnvironment.password(for: "alice"))
+        let signIn = try await Amplify.Auth.signIn(username: alice.username, password: alice.password)
         XCTAssertTrue(signIn.isSignedIn, "alice did not sign in through the plugin")
         let pluginToken = try await pluginAccessToken()
         XCTAssertEqual(records(), "plugin: present, own: absent", "the plugin's sign-in")
@@ -143,7 +150,7 @@ final class PluginAdoptionTests: XCTestCase {
         let marker = try XCTUnwrap(row(pluginAccount), "the plugin's sign-out left no record")
         XCTAssertTrue(PluginRecordSummary.isSignedOutMarker(marker), "the plugin's sign-out did not write its signed-out marker")
         XCTAssertTrue(row(ownAccount) == ownRecord, "the plugin's sign-out changed `.default`'s record")
-        let again = try await Amplify.Auth.signIn(username: "alice", password: InteropEnvironment.password(for: "alice"))
+        let again = try await Amplify.Auth.signIn(username: alice.username, password: alice.password)
         XCTAssertTrue(again.isSignedIn, "alice did not sign in through the plugin again")
         let signedInAgain = try await pluginAccessToken()
         XCTAssertTrue(signedInAgain != adopted, "the plugin's second sign-in reused a token")
@@ -165,7 +172,7 @@ final class PluginAdoptionTests: XCTestCase {
     ///      read through from the plugin's record
     ///
     func testNamedSessionNeverReadsThePluginRecord() async throws {
-        let signIn = try await Amplify.Auth.signIn(username: "alice", password: InteropEnvironment.password(for: "alice"))
+        let signIn = try await Amplify.Auth.signIn(username: alice.username, password: alice.password)
         XCTAssertTrue(signIn.isSignedIn, "alice did not sign in through the plugin")
         let pluginRecord = try XCTUnwrap(row(pluginAccount), "the plugin wrote no record")
         let sessionId = try SessionID.named("ad2-\(UUID().uuidString.prefix(8).lowercased())")
@@ -198,7 +205,7 @@ final class PluginAdoptionTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         XCTAssertFalse(listed.contains { $0.sessionId == sessionId }, "the named session is listed")
         let defaultRow = listed.first { $0.sessionId == .default }
-        XCTAssertEqual(defaultRow?.username, "alice", "`.default` is not listed as alice from the plugin's record")
+        XCTAssertTrue(defaultRow?.username == alice.username, "`.default` is not listed as alice from the plugin's record")
     }
 
     // MARK: - Helpers
@@ -243,7 +250,7 @@ final class PluginAdoptionTests: XCTestCase {
             XCTFail("`.default` is not signed in", file: file, line: line)
             return
         }
-        XCTAssertEqual(user.username, "alice", file: file, line: line)
+        XCTAssertTrue(user.username == alice.username, "`.default` is signed in as another user", file: file, line: line)
     }
 
     /// The plugin's current access token, optionally after a forced refresh. Never printed.

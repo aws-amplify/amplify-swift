@@ -19,11 +19,13 @@ extension SignInFlowTests {
     ///    - bob signs in with `authFlowType: .userPassword`
     /// - Then:
     ///    - the result is `.done` and the state is `.signedIn(bob)`
-    ///    - the user pool saw exactly one request, `InitiateAuth` with `AuthFlow` `USER_PASSWORD_AUTH`
+    ///    - the sign-in sent exactly one request, `InitiateAuth` with `AuthFlow` `USER_PASSWORD_AUTH`, and
+    ///      then, as the pool's device tracking (`SandboxPool.tracksDevices`: the default backend tracks
+    ///      devices) requires, exactly the new device's `ConfirmDevice`, or nothing on a pool that tracks none
     ///
     func testUserPasswordAuthSignInForBob() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let bob = try IntegrationTestEnvironment.users().bob
+        let bob = try await makeSignInUser()
         let sessionId = try makeSessionID("bob")
         let recorder = RecordingHTTPClient()
         let client = try AmplifyCognitoClient(
@@ -39,10 +41,11 @@ extension SignInFlowTests {
 
         XCTAssertStep(result.nextStep, .done)
         let user = try await client.getCurrentUser()
-        XCTAssertEqual(user.username, "bob")
+        XCTAssertTrue(user.username == bob.username, "signed in as another user")
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedIn(user))
-        XCTAssertEqual(recorder.operations, ["InitiateAuth"])
+        let expected = SandboxPool.standard.tracksDevices ? ["InitiateAuth", "ConfirmDevice"] : ["InitiateAuth"]
+        XCTAssertEqual(recorder.operations, expected)
         XCTAssertEqual(recorder.requests.first?.authFlow, "USER_PASSWORD_AUTH")
     }
 
@@ -58,7 +61,7 @@ extension SignInFlowTests {
     ///
     func testWrongPasswordFailsWithoutWritingARecord() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let alice = try IntegrationTestEnvironment.users().alice
+        let alice = try await makeSignInUser()
         let sessionId = try makeSessionID("alice-wrong")
         let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
         let wrongPassword = "Wrong-\(UUID().uuidString)"
@@ -88,17 +91,18 @@ extension SignInFlowTests {
     ///
     func testSignInIsRefusedPerSessionNotPerProcess() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let users = try IntegrationTestEnvironment.users()
+        let aliceUser = try await makeSignInUser()
+        let bobUser = try await makeSignInUser()
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let aliceClient = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: aliceId))
         let bobClient = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: bobId))
-        _ = try await aliceClient.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await aliceClient.signIn(username: aliceUser.username, password: aliceUser.password)
         let alice = try await aliceClient.getCurrentUser()
 
-        async let bobSignIn = bobClient.signIn(username: users.bob.username, password: users.bob.password)
+        async let bobSignIn = bobClient.signIn(username: bobUser.username, password: bobUser.password)
         let refusal = await Expect.authClientError("a second sign-in on a signed-in session") {
-            try await aliceClient.signIn(username: users.alice.username, password: users.alice.password)
+            try await aliceClient.signIn(username: aliceUser.username, password: aliceUser.password)
         }
         let bobResult = try await bobSignIn
 
@@ -111,7 +115,7 @@ extension SignInFlowTests {
         XCTAssertState(aliceState, .signedIn(alice))
         XCTAssertStep(bobResult.nextStep, .done)
         let bob = try await bobClient.getCurrentUser()
-        XCTAssertEqual(bob.username, "bob")
+        XCTAssertTrue(bob.username == bobUser.username, "B signed in as another user")
         let bobState = await bobClient.currentSessionState()
         XCTAssertState(bobState, .signedIn(bob))
     }

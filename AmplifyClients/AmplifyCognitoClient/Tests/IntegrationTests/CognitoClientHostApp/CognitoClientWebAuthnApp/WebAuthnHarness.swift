@@ -46,14 +46,15 @@ protocol WebAuthnHarnessDriver: AnyObject {
 @MainActor
 enum WebAuthnHarness {
 
-    /// The WebAuthn parity pool (U-WA)'s outputs file, copied into the app bundle at build time from
-    /// `~/.amplify-cognito-client-integ` (the "Copy sandbox configuration" phase). Its WebAuthn relying
-    /// party is the domain in `CognitoClientWebAuthnApp.entitlements` (infra/parity.py, P-10).
-    static let outputsResource = "webauthn-amplify_outputs"
+    /// The plugin's WebAuthn backend's outputs file (U-WA), copied into the app bundle at build time from
+    /// `$COGNITO_CLIENT_INTEG_DIR` (default `~/.aws-amplify/amplify-ios/testconfiguration`, the "Copy test
+    /// configuration" phase). Its WebAuthn relying party is the domain in `CognitoClientWebAuthnApp.entitlements`
+    /// (on the sandbox, infra/parity.py, P-10).
+    static let outputsResource = "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
 
     static func configuration() throws -> AuthClientConfiguration {
         guard Bundle.main.url(forResource: outputsResource, withExtension: "json") != nil else {
-            throw HarnessAppError("\(outputsResource).json is not in the app bundle. Run infra/provision.sh, then rebuild.")
+            throw HarnessAppError("\(outputsResource).json is not in the app bundle: it is copied from $COGNITO_CLIENT_INTEG_DIR at build time.")
         }
         return try AuthClientConfiguration(from: outputsResource, bundle: .main)
     }

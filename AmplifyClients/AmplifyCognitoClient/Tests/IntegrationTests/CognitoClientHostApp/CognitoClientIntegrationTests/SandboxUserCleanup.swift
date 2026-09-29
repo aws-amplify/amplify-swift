@@ -10,6 +10,7 @@
 // CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
 // AmplifyCognitoClient, AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
 
+@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 import AWSCognitoIdentityProvider
 import Foundation
 import XCTest
@@ -19,8 +20,11 @@ import XCTest
 ///
 /// The sign-in answers every challenge a fresh user can meet (`SandboxPoolClient.signIn(_:sink:)`),
 /// so it works on the MFA-required pools and for users who enrolled TOTP. A user still unconfirmed is
-/// confirmed first with a resent code from the code sink. Deleting a user also invalidates every token
-/// it holds. `prepare-run.sh` removes whatever a crashed run leaves behind (P-12).
+/// confirmed first with a resent code from the code API. On an app client that offers no password flow
+/// (the hosted-UI backend's), the user signs in through another role's app client on the same user pool
+/// (on the sandbox, the hosted-UI client is on the default pool), or else with SRP through the client, on
+/// a session of its own, and deletes itself with `deleteUser()`. Deleting a user also invalidates every
+/// token it holds. The sandbox's `prepare-run.sh` removes whatever a crashed run leaves behind (P-12).
 enum SandboxUserCleanup {
 
     enum Outcome: Equatable, Sendable {
@@ -30,6 +34,12 @@ enum SandboxUserCleanup {
         /// refuses its credentials (existence errors are prevented, so a deleted user reads as a wrong
         /// password; so does a password change the test did not record, which leaves the user to P-12).
         case alreadyGone
+        /// The user could not be deleted from this process: its app client offers no password flow, no
+        /// other role's client is on its pool, and the process has no keychain for the client's SRP
+        /// sign-in (a UI-test runner). It is left for the backend's cleanup of old test users, and the
+        /// reason is logged without the user's name, as `.alreadyGone` leaves an unrecorded password
+        /// change to that cleanup: neither fails the test, whose assertions have passed.
+        case left
     }
 
     /// Deletes `user` through its own session. Calling it again is a no-op.
@@ -45,6 +55,10 @@ enum SandboxUserCleanup {
         let tokens: CognitoIdentityProviderClientTypes.AuthenticationResultType
         do {
             tokens = try await signIn(user, on: pool, sink: sink)
+        } catch is InvalidParameterException {
+            // The app client offers no USER_PASSWORD_AUTH flow (the hosted-UI backend's): Cognito refuses
+            // the flow itself with InvalidParameterException, before looking at the user.
+            return try await deleteWithoutAPasswordFlow(user, on: pool, sink: sink)
         } catch is NotAuthorizedException {
             user.recordDeleted()
             return .alreadyGone
@@ -57,6 +71,81 @@ enum SandboxUserCleanup {
         }
         _ = try await pool.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
         user.recordDeleted()
+        return .deleted
+    }
+
+    /// For a user whose app client offers no password flow: a raw sign-in through another role's app client
+    /// on the same user pool, if there is one, else `deleteThroughClient`. A process with no keychain for
+    /// the client (a UI-test runner) leaves the user (`.left`).
+    private static func deleteWithoutAPasswordFlow(
+        _ user: FreshUser,
+        on pool: SandboxPoolClient,
+        sink: CodeSink?
+    ) async throws -> Outcome {
+        let poolId = pool.configuration.userPool?.poolId
+        for other in SandboxPools.userPools where other != user.pool {
+            guard let sibling = try? SandboxPools.pool(other), sibling.configuration.userPool?.poolId == poolId else {
+                continue
+            }
+            let tokens: CognitoIdentityProviderClientTypes.AuthenticationResultType
+            do {
+                tokens = try await sibling.signIn(user, sink: sink)
+            } catch is NotAuthorizedException {
+                user.recordDeleted()
+                return .alreadyGone
+            } catch is UserNotFoundException {
+                user.recordDeleted()
+                return .alreadyGone
+            }
+            guard let accessToken = tokens.accessToken else {
+                throw HarnessError.malformedFixture("\(user)'s sign-in returned no access token.")
+            }
+            _ = try await sibling.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
+            user.recordDeleted()
+            return .deleted
+        }
+        do {
+            return try await deleteThroughClient(user, on: pool)
+        } catch let error as AuthClientError {
+            guard case .storageUnavailable = error.kind else {
+                throw error
+            }
+            print("""
+            [SandboxUserCleanup] left a \(user.pool.rawValue) user for the backend's cleanup of old test users: its \
+            app client offers no password flow, no other role's app client is on its pool, and this process has no \
+            keychain for the client's SRP sign-in.
+            """)
+            return .left
+        }
+    }
+
+    /// Signs `user` in with SRP through the client, on a session used for nothing else, deletes the user
+    /// with `deleteUser()`, and purges the session. For an app client with no password flow.
+    private static func deleteThroughClient(_ user: FreshUser, on pool: SandboxPoolClient) async throws -> Outcome {
+        let sessionId = try IntegrationTestEnvironment.uniqueSessionID("cleanup")
+        let client = try AmplifyCognitoClient(configuration: pool.configuration, options: .init(sessionId: sessionId))
+        func purge() async {
+            try? await AmplifyCognitoClient.purgeStoredSession(sessionId: sessionId, configuration: pool.configuration)
+        }
+        do {
+            let result = try await client.signIn(username: user.username, password: user.password ?? "")
+            guard case .done = result.nextStep else {
+                await purge()
+                throw HarnessError.malformedFixture("\(user)'s cleanup sign-in stopped at a challenge.")
+            }
+        } catch let error as AuthClientError where [.notAuthorized, .service(.userNotFound)].contains(error.kind) {
+            await purge()
+            user.recordDeleted()
+            return .alreadyGone
+        }
+        do {
+            try await client.deleteUser()
+        } catch {
+            await purge()
+            throw error
+        }
+        user.recordDeleted()
+        await purge()
         return .deleted
     }
 

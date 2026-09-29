@@ -13,23 +13,25 @@ import XCTest
 ///
 /// Mint every session ID through `makeSessionID(_:accessGroup:)`. `tearDown` then signs each one out
 /// with `signOutStoredSession`, which revokes its refresh token, purges its row, and waits until the
-/// registry holds no live session for any of them. Each test is therefore independent, and the sandbox
-/// users are left holding no valid refresh token. Hold clients in locals, not in properties: a client
-/// the test case still holds keeps its session live and makes `tearDown` time out.
+/// registry holds no live session for any of them. Each test is therefore independent: its users are its
+/// own (`makeFreshUser(on:_:)`, `makeSignInUser()`), deleted after its sessions. Hold clients in locals, not
+/// in properties: a client the test case still holds keeps its session live and makes `tearDown` time out.
 class ClientIntegrationTestCase: XCTestCase {
 
     private var createdSessions: [CreatedSession] = []
     private var freshUsers: [FreshUser] = []
 
-    /// A unique session ID (`<tag>-<8 hex>`), cleaned up in `tearDown`. Pass the parity `pool` the
-    /// session signs in to (nil is the base sandbox pool, R-UP), so its sign-out revokes against that pool.
+    /// A unique session ID (`<tag>-<8 hex>`), cleaned up in `tearDown`. Pass the `pool` the session signs
+    /// in to (nil is the main configuration, the default backend's), so its sign-out revokes against that
+    /// pool.
     func makeSessionID(_ tag: String, pool: SandboxPool? = nil, accessGroup: String? = nil) throws -> SessionID {
         let sessionId = try IntegrationTestEnvironment.uniqueSessionID(tag)
         createdSessions.append(CreatedSession(sessionId: sessionId, accessGroup: accessGroup, pool: pool))
         return sessionId
     }
 
-    /// A client over a new session on `pool` (nil is R-UP), cleaned up in `tearDown`. Hold it in a local.
+    /// A client over a new session on `pool` (nil is the main configuration), cleaned up in `tearDown`.
+    /// Hold it in a local.
     func makeClient(
         _ tag: String,
         pool: SandboxPool? = nil,
@@ -50,6 +52,12 @@ class ClientIntegrationTestCase: XCTestCase {
         let user = try await SandboxSignUp.signUp(on: pool, options)
         freshUsers.append(user)
         return user
+    }
+
+    /// A fresh user on the main configuration's pool with a password and no MFA, as a `TestUser`, deleted
+    /// in `tearDown`: the user a sign-in test signs in, never one another run could be using.
+    func makeSignInUser() async throws -> TestUser {
+        try await makeFreshUser(on: .standard).testUser
     }
 
     override func tearDown() async throws {
@@ -84,7 +92,7 @@ class ClientIntegrationTestCase: XCTestCase {
 struct CreatedSession: Sendable {
     let sessionId: SessionID
     let accessGroup: String?
-    /// The parity pool the session signs in to; nil is the base sandbox pool (R-UP).
+    /// The pool the session signs in to; nil is the main configuration.
     var pool: SandboxPool?
 }
 
@@ -94,7 +102,7 @@ enum SessionCleanup {
     static let cleanupTimeout: TimeInterval = 60
 
     /// Cleans up sessions that may belong to different pools: one `cleanUp(_:configuration:)` per pool,
-    /// with that pool's configuration (R-UP's for `pool == nil`), in the order the pools first appear.
+    /// with that pool's configuration (the main one for `pool == nil`), in the order the pools first appear.
     /// Best effort across pools too; the first error is rethrown at the end.
     static func cleanUp(_ sessions: [CreatedSession]) async throws {
         var pools: [SandboxPool?] = []

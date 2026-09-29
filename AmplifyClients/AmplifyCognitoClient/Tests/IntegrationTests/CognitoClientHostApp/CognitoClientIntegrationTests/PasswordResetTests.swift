@@ -9,7 +9,9 @@
 import XCTest
 
 /// The plugin's `AuthResetPasswordTests` and `AuthConfirmResetPasswordTests`, through the client
-/// (RP-1 and RP-2), on `default`, whose app client prevents user-existence errors.
+/// (RP-1 and RP-2), on `default`. Each accepts both answers the plugin's tests do: an app
+/// client that prevents user-existence errors gets simulated answers, one that does not (`LEGACY`) gets
+/// `userNotFound`.
 /// Both plugin tests are named `testUserNotFoundResetPassword`; in one suite here, RP-2 is
 /// `testUserNotFoundConfirmResetPassword`.
 ///

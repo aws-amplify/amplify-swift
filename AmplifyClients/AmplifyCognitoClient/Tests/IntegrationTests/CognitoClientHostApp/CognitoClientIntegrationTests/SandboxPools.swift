@@ -20,15 +20,15 @@ import Foundation
 /// `SandboxPools.pool(.standard)` gives the pool's `AuthClientConfiguration` (for the client under
 /// test) and a plain SDK client on the same public app client (for setup, raw checks and cleanup).
 /// Every call is unauthenticated or authorized by a user's own tokens, so no AWS credentials are
-/// needed. The build phase copies every `<pool>-amplify_outputs.json` into the bundle.
+/// needed. The build phase copies every role's plugin outputs file into the bundle.
 enum SandboxPools {
 
-    /// The pools with their own users: every case but `hostedUI`, which is a second app client on
-    /// `standard`.
+    /// The pools whose users the helpers sign up and clean up with a raw password sign-in: every case but
+    /// `hostedUI`, whose app client offers no password flow (on the sandbox, a second app client on
+    /// `standard`).
     static let userPools: [SandboxPool] = SandboxPool.allCases.filter { $0 != .hostedUI }
 
-    /// The fixtures of `pool`. Fails (never skips) when the pool's outputs file or the parity section of
-    /// `state.json` is missing.
+    /// The fixtures of `pool`. Fails (never skips) when the pool's outputs file is missing.
     static func pool(_ pool: SandboxPool) throws -> SandboxPoolClient {
         try SandboxPoolClient(pool)
     }
@@ -53,6 +53,21 @@ extension SandboxPool {
     var tracksDevices: Bool {
         ![.passwordless, .webAuthn].contains(self)
     }
+
+    /// The features, by the names the tests require them by, that the outputs file shows the pool lacks:
+    /// `email-mfa` and `sms-mfa` without `EMAIL` or `SMS` in `mfa_methods`. What the outputs do not
+    /// describe (the first factors, WebAuthn) is taken as live, and a test that needs it fails at Cognito.
+    func missingFeatures() throws -> [String] {
+        let methods = try IntegrationTestEnvironment.outputsAuthSection(self)["mfa_methods"] as? [String] ?? []
+        var missing: [String] = []
+        if !methods.contains("EMAIL") {
+            missing.append("email-mfa")
+        }
+        if !methods.contains("SMS") {
+            missing.append("sms-mfa")
+        }
+        return missing
+    }
 }
 
 /// One parity pool: the configuration the client under test loads, and a plain SDK client on the same
@@ -65,7 +80,7 @@ struct SandboxPoolClient: Sendable {
     let client: CognitoIdentityProviderClient
     /// The public app client every call goes through.
     let clientId: String
-    /// What `state.json` lists as pending for the pool.
+    /// The features a test may need that the pool's outputs show it lacks (`SandboxPool.missingFeatures()`).
     let pending: [String]
 
     init(_ pool: SandboxPool) throws {
@@ -73,27 +88,20 @@ struct SandboxPoolClient: Sendable {
         guard let userPool = configuration.userPool else {
             throw HarnessError.malformedFixture("\(pool.outputsResource).json has no user pool.")
         }
-        guard let parity = try IntegrationTestEnvironment.state().parity else {
-            throw HarnessError.malformedFixture("""
-            state.json has no parity section. Run infra/provision.sh (it runs infra/parity.py), then rebuild.
-            """)
-        }
         self.pool = pool
         self.configuration = configuration
         self.clientId = userPool.appClientId
         self.client = try CognitoIdentityProviderClient(
             config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: userPool.region)
         )
-        self.pending = parity.pending(pool)
+        self.pending = try pool.missingFeatures()
     }
 
-    /// Fails (never skips) when `state.json` lists `feature` as pending for the pool, pointing at the
-    /// provisioning step that enables it.
+    /// Fails (never skips) when the pool's outputs show it lacks `feature`, naming what the backend needs.
     func requireLive(_ feature: String) throws {
         guard !pending.contains(feature) else {
             throw HarnessError.malformedFixture("""
-            \(pool) has \(feature) pending in state.json. Re-run infra/provision.sh (see the README's \
-            "Plugin-parity resources" for what enables it), then rebuild.
+            \(pool.outputsResource).json shows no \(feature): the backend needs it enabled for this test.
             """)
         }
     }

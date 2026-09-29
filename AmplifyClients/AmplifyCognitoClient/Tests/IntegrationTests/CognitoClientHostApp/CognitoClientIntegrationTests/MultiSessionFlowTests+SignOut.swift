@@ -24,7 +24,7 @@ extension MultiSessionFlowTests {
     ///
     func testSignOutOfOneSessionLeavesTheOther() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let users = try IntegrationTestEnvironment.users()
+        let users = try XCTUnwrap(self.users)
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let aliceEvents: StreamRecorder<AuthEvent>
@@ -47,7 +47,10 @@ extension MultiSessionFlowTests {
             XCTAssertState(bobState, .signedIn(bobUser))
             let refreshed = try await bob.fetchAuthSession(options: .init(forceRefresh: true))
             let accessToken = try refreshed.userPoolTokensResult.get().accessToken
-            XCTAssertEqual(try IntegrationTestEnvironment.jwtClaims(accessToken)["username"] as? String, "bob")
+            XCTAssertTrue(
+                try IntegrationTestEnvironment.jwtClaims(accessToken)["username"] as? String == users.bob.username,
+                "B's refreshed token names another user"
+            )
         }
 
         // Both handles are gone, so both streams finish and hold every event they delivered.

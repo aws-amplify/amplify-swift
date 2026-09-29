@@ -269,7 +269,7 @@
 				CC000000000000000000000F /* Sources */,
 				CC0000000000000000000010 /* Frameworks */,
 				CC0000000000000000000011 /* Resources */,
-				CC0000000000000000000012 /* Copy sandbox configuration */,
+				CC0000000000000000000012 /* Copy test configuration */,
 			);
 			buildRules = (
 			);
@@ -299,7 +299,7 @@
 				CC0000000000000000000043 /* Sources */,
 				CC0000000000000000000044 /* Frameworks */,
 				CC0000000000000000000045 /* Resources */,
-				CC0000000000000000000046 /* Copy sandbox configuration */,
+				CC0000000000000000000046 /* Copy test configuration */,
 			);
 			buildRules = (
 			);
@@ -326,7 +326,7 @@
 				CC00000000000000000000AA /* Sources */,
 				CC00000000000000000000AB /* Frameworks */,
 				CC00000000000000000000AC /* Resources */,
-				CC00000000000000000000AD /* Copy sandbox configuration */,
+				CC00000000000000000000AD /* Copy test configuration */,
 			);
 			buildRules = (
 			);
@@ -376,7 +376,7 @@
 				CC00000000000000000000E6 /* Sources */,
 				CC00000000000000000000E7 /* Frameworks */,
 				CC00000000000000000000E8 /* Resources */,
-				CC00000000000000000000E9 /* Copy sandbox configuration */,
+				CC00000000000000000000E9 /* Copy test configuration */,
 			);
 			buildRules = (
 			);
@@ -400,7 +400,7 @@
 				CC00000000000000000000EA /* Sources */,
 				CC00000000000000000000EB /* Frameworks */,
 				CC00000000000000000000EC /* Resources */,
-				CC00000000000000000000ED /* Copy sandbox configuration */,
+				CC00000000000000000000ED /* Copy test configuration */,
 			);
 			buildRules = (
 			);
@@ -539,7 +539,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		CC0000000000000000000012 /* Copy sandbox configuration */ = {
+		CC0000000000000000000012 /* Copy test configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -549,16 +549,16 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy sandbox configuration";
+			name = "Copy test configuration";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copies the sandbox fixtures infra/provision.sh wrote into the test bundle. They live only in\n# DerivedData; nothing account-specific is committed.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.amplify-cognito-client-integ}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n\n# Clear any earlier copy first, so a removed sandbox cannot leave stale fixtures behind.\nrm -f \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\nrm -f \"$DEST\"/*-amplify_outputs.json\n# The WebAuthn app's entitlements (committed, not account-specific), so a test can read the relying party.\ncp \"${SRCROOT}/CognitoClientWebAuthnApp.entitlements\" \"$DEST/\" || { echo \"error: CognitoClientWebAuthnApp.entitlements could not be copied into the test bundle\"; exit 1; }\n\nif [ ! -f \"$SRC/amplify_outputs.json\" ]; then\n    echo \"warning: $SRC/amplify_outputs.json not found; the sandbox tests will fail. Run infra/provision.sh.\"\n    exit 0\nfi\ncp \"$SRC/amplify_outputs.json\" \"$DEST/amplify_outputs.json\"\nif [ -f \"$SRC/state.json\" ]; then cp \"$SRC/state.json\" \"$DEST/cognito-client-integ-state.json\"; fi\nif [ -f \"$SRC/users.json\" ]; then cp \"$SRC/users.json\" \"$DEST/cognito-client-integ-users.json\"; fi\n\n# The plugin-parity pools (infra/parity.py): one <pool>-amplify_outputs.json per pool, loaded by name\n# with IntegrationTestEnvironment.configuration(_:).\nfor f in \"$SRC\"/*-amplify_outputs.json; do\n    if [ -f \"$f\" ]; then cp \"$f\" \"$DEST/\"; fi\ndone\n";
+			shellScript = "# Copies the plugin's integration-test configuration (every role's outputs file and the default credentials file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json \\\n    AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json \\\n    AWSCognitoEmailMFARequiredTests-amplify_outputs.json \\\n    AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json \\\n    AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json \\\n    AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginIntegrationTests-credentials.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n# The WebAuthn app's entitlements (committed, not account-specific), so a test can read the relying party.\ncp \"${SRCROOT}/CognitoClientWebAuthnApp.entitlements\" \"$DEST/\" || { echo \"error: CognitoClientWebAuthnApp.entitlements could not be copied into the test bundle\"; exit 1; }\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
 		};
-		CC0000000000000000000046 /* Copy sandbox configuration */ = {
+		CC0000000000000000000046 /* Copy test configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -568,16 +568,16 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy sandbox configuration";
+			name = "Copy test configuration";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copies the sandbox fixtures infra/provision.sh wrote into the test bundle. They live only in\n# DerivedData; nothing account-specific is committed.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.amplify-cognito-client-integ}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n\n# Clear any earlier copy first, so a removed sandbox cannot leave stale fixtures behind.\nrm -f \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\nrm -f \"$DEST\"/*-amplify_outputs.json\n\nif [ ! -f \"$SRC/amplify_outputs.json\" ]; then\n    echo \"warning: $SRC/amplify_outputs.json not found; the sandbox tests will fail. Run infra/provision.sh.\"\n    exit 0\nfi\ncp \"$SRC/amplify_outputs.json\" \"$DEST/amplify_outputs.json\"\nif [ -f \"$SRC/state.json\" ]; then cp \"$SRC/state.json\" \"$DEST/cognito-client-integ-state.json\"; fi\nif [ -f \"$SRC/users.json\" ]; then cp \"$SRC/users.json\" \"$DEST/cognito-client-integ-users.json\"; fi\n\n# The plugin-parity pools (infra/parity.py): one <pool>-amplify_outputs.json per pool, loaded by name\n# with IntegrationTestEnvironment.configuration(_:).\nfor f in \"$SRC\"/*-amplify_outputs.json; do\n    if [ -f \"$f\" ]; then cp \"$f\" \"$DEST/\"; fi\ndone\n";
+			shellScript = "# Copies the plugin's integration-test configuration (the default backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
 		};
-		CC00000000000000000000AD /* Copy sandbox configuration */ = {
+		CC00000000000000000000AD /* Copy test configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -587,16 +587,16 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy sandbox configuration";
+			name = "Copy test configuration";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copies the WebAuthn parity pool (U-WA)'s outputs file, which infra/provision.sh wrote, into the app. It lives only in\n# DerivedData; nothing account-specific is committed.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.amplify-cognito-client-integ}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nrm -f \"$DEST/webauthn-amplify_outputs.json\"\nif [ ! -f \"$SRC/webauthn-amplify_outputs.json\" ]; then\n    echo \"warning: $SRC/webauthn-amplify_outputs.json not found; the WebAuthn UI tests will fail. Run infra/provision.sh.\"\n    exit 0\nfi\ncp \"$SRC/webauthn-amplify_outputs.json\" \"$DEST/\"\n";
+			shellScript = "# Copies the plugin's integration-test configuration (the WebAuthn backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
 		};
-		CC00000000000000000000E9 /* Copy sandbox configuration */ = {
+		CC00000000000000000000E9 /* Copy test configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -606,16 +606,16 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy sandbox configuration";
+			name = "Copy test configuration";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copies the hosted-UI app client's outputs file (P-7), which infra/provision.sh wrote, into the app. It lives only in\n# DerivedData; nothing account-specific is committed.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.amplify-cognito-client-integ}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nrm -f \"$DEST/hosted-ui-amplify_outputs.json\"\nif [ ! -f \"$SRC/hosted-ui-amplify_outputs.json\" ]; then\n    echo \"warning: $SRC/hosted-ui-amplify_outputs.json not found; the hosted-UI UI tests will fail. Run infra/provision.sh.\"\n    exit 0\nfi\ncp \"$SRC/hosted-ui-amplify_outputs.json\" \"$DEST/\"\n";
+			shellScript = "# Copies the plugin's integration-test configuration (the hosted-UI backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
 		};
-		CC00000000000000000000ED /* Copy sandbox configuration */ = {
+		CC00000000000000000000ED /* Copy test configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -625,14 +625,14 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy sandbox configuration";
+			name = "Copy test configuration";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copies the sandbox fixtures infra/provision.sh wrote into the test bundle. They live only in\n# DerivedData; nothing account-specific is committed.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.amplify-cognito-client-integ}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n\n# Clear any earlier copy first, so a removed sandbox cannot leave stale fixtures behind.\nrm -f \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\nrm -f \"$DEST\"/*-amplify_outputs.json\n\nif [ ! -f \"$SRC/amplify_outputs.json\" ]; then\n    echo \"warning: $SRC/amplify_outputs.json not found; the sandbox tests will fail. Run infra/provision.sh.\"\n    exit 0\nfi\ncp \"$SRC/amplify_outputs.json\" \"$DEST/amplify_outputs.json\"\nif [ -f \"$SRC/state.json\" ]; then cp \"$SRC/state.json\" \"$DEST/cognito-client-integ-state.json\"; fi\nif [ -f \"$SRC/users.json\" ]; then cp \"$SRC/users.json\" \"$DEST/cognito-client-integ-users.json\"; fi\n\n# The plugin-parity pools (infra/parity.py): one <pool>-amplify_outputs.json per pool, loaded by name\n# with IntegrationTestEnvironment.configuration(_:).\nfor f in \"$SRC\"/*-amplify_outputs.json; do\n    if [ -f \"$f\" ]; then cp \"$f\" \"$DEST/\"; fi\ndone\n";
+			shellScript = "# Copies the plugin's integration-test configuration (every role's outputs file and the default credentials file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json \\\n    AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json \\\n    AWSCognitoEmailMFARequiredTests-amplify_outputs.json \\\n    AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json \\\n    AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json \\\n    AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginIntegrationTests-credentials.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

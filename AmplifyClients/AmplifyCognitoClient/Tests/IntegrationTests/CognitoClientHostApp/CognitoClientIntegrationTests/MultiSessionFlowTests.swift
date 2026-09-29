@@ -12,18 +12,19 @@ import Security
 import XCTest
 
 /// The multi-session flows this harness exists for, over the live engine: MS-1, MS-3,
-/// MS-4 and MS-5 (MS-2 and MS-6 are in the `+SignOut` and `+SameUser` extensions). Each runs against
-/// `alice` and `bob` from
-/// `IntegrationTestEnvironment.users()`, on the real keychain and the sandbox.
+/// MS-4 and MS-5 (MS-2 and MS-6 are in the `+SignOut` and `+SameUser` extensions). Each runs against `alice` and `bob`, two fresh users the test
+/// signs up on the default backend, on the real keychain.
 final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
     private var configuration: AuthClientConfiguration!
-    private var users: SandboxUsers!
+    /// This test's own two users: fresh ones on the default backend (`makeSignInUser()`), never users
+    /// another run shares.
+    var users: (alice: TestUser, bob: TestUser)!
 
     override func setUp() async throws {
         try await super.setUp()
         configuration = try IntegrationTestEnvironment.configuration()
-        users = try IntegrationTestEnvironment.users()
+        users = try await (makeSignInUser(), makeSignInUser())
     }
 
     private func account(_ sessionId: SessionID) -> String {
@@ -59,8 +60,8 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(bobResult.nextStep, .done)
         let aliceUser = try await alice.getCurrentUser()
         let bobUser = try await bob.getCurrentUser()
-        XCTAssertEqual(aliceUser.username, "alice")
-        XCTAssertEqual(bobUser.username, "bob")
+        XCTAssertTrue(aliceUser.username == aliceUserRecord.username, "alice's session names another user")
+        XCTAssertTrue(bobUser.username == bobUserRecord.username, "bob's session names another user")
         XCTAssertTrue(aliceUser.userId != bobUser.userId, "alice's and bob's subs should differ")
 
         let accounts = try IntegrationTestEnvironment.rawKeychainAccounts()
@@ -97,7 +98,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     ///    - then alice signs in again and signs out with `purgeStoredSession: true`
     /// - Then:
     ///    - after the first sign-out, `storedSessions(includingSignedOut: true)` still lists alice's ID, with
-    ///      `kind == .signedOut` and `username == "alice"`; the default listing hides it; bob still resolves
+    ///      `kind == .signedOut` and alice's username; the default listing hides it; bob still resolves
     ///      credentials
     ///    - after the purge, the row is gone from both listings, and the raw keychain has no account for it
     ///
@@ -117,7 +118,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let withSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let aliceRow = try XCTUnwrap(withSignedOut.first { $0.sessionId == aliceId })
         XCTAssertEqual(aliceRow.kind, SessionKind.signedOut)
-        XCTAssertEqual(aliceRow.username, "alice")
+        XCTAssertTrue(aliceRow.username == users.alice.username, "the signed-out row names alice")
         let withoutSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         XCTAssertFalse(withoutSignedOut.contains { $0.sessionId == aliceId }, "a signed-out row is hidden by default")
         _ = try await bob.credentialsProvider.resolve()
@@ -175,9 +176,9 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
 
         XCTAssertEqual(recorder.requests, [], "listing sessions makes no network call")
         let byId = Dictionary(uniqueKeysWithValues: stored.map { ($0.sessionId, $0) })
-        XCTAssertEqual(byId[aliceId]?.username, "alice")
+        XCTAssertTrue(byId[aliceId]?.username == users.alice.username, "alice's row names another user")
         XCTAssertEqual(byId[aliceId]?.label, "Work")
-        XCTAssertEqual(byId[bobId]?.username, "bob")
+        XCTAssertTrue(byId[bobId]?.username == users.bob.username, "bob's row names another user")
         XCTAssertNil(byId[bobId]?.label)
         let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
             guard let parsed = SessionRecordKey.parse(account), parsed.kind == .session,
@@ -222,8 +223,8 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     /// - Then:
     ///    - each provider resolves its own session's credentials (the same access key ID as its session),
     ///      and alice's and bob's differ; their identity-pool identities differ
-    ///    - both sign as the authenticated role (STS names the role, not the identity, so the identities are
-    ///      compared through the sessions)
+    ///    - both sign as the authenticated role, the one a raw sign-in's credentials assume (STS names the
+    ///      role, not the identity, so the identities are compared through the sessions)
     ///    - after bob signs out, alice's provider still resolves, and bob's throws `notSignedIn` rather
     ///      than falling back to guest
     ///
@@ -249,10 +250,10 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         let aliceIdentity = try aliceSession.identityIdResult.get()
         let bobIdentity = try bobSession.identityIdResult.get()
         XCTAssertTrue(aliceIdentity != bobIdentity, "alice's and bob's identities should differ")
+        let roles = try await SandboxRoles()
         for client in [alice, bob] {
-            let identity = try await CallerIdentity.of(client.credentialsProvider, region: region)
-            let role = try XCTUnwrap(CallerIdentity.roleName(of: try XCTUnwrap(identity.arn)))
-            XCTAssertTrue(role.hasSuffix("-authenticated"), "a signed-in session signs as the authenticated role")
+            let role = try await roles.role(of: client.credentialsProvider, region: region)
+            XCTAssertEqual(role, .authenticated, "a signed-in session signs as the authenticated role")
         }
 
         _ = try await bob.signOut()

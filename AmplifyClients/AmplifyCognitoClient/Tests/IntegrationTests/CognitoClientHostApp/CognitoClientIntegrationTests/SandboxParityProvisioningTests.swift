@@ -21,20 +21,21 @@ import XCTest
 /// through `SandboxUserCleanup`, which answers each pool's MFA, so a user whose sign-in stopped at an MFA
 /// challenge is deleted too. `prepare-run.sh` removes any left over after 24 hours (P-12). No assertion prints an identifier or a secret.
 ///
-/// Features `state.json` lists as pending for a pool (the SES identity not yet verified, no SMS
-/// configuration) are checked in their pending form, so the suite stays green until the manual step is
-/// done and then checks the complete pool.
+/// A feature a pool's outputs show it lacks (no `EMAIL` or `SMS` in its `mfa_methods`) fails the test that
+/// needs it, with a message naming the file (`requireLive`); a check that only observes a feature (the
+/// choice-based sign-in's offered factors) checks the form the outputs describe.
 final class SandboxParityProvisioningTests: XCTestCase {
 
     /// Every parity outputs file loads, and each names its own pool.
     ///
-    /// - Given: The `<pool>-amplify_outputs.json` files `parity.py` wrote, copied into the bundle
+    /// - Given: The plugin's outputs file for each role, copied into the bundle
     /// - When:
-    ///    - Each is loaded with `AuthClientConfiguration(from:bundle:)`, and the identity-only file is read raw
+    ///    - Each is loaded with `AuthClientConfiguration(from:bundle:)`, and the identity-only role is derived
     /// - Then:
-    ///    - Each has a user pool; the seven parity pools are distinct from each other and from R-UP, and the
-    ///      hosted-UI file names the default pool with a different app client
-    ///    - The identity-only file has an identity pool with guest access and no user pool
+    ///    - Each has a user pool; the seven roles with users of their own are seven distinct pools, and the
+    ///      hosted-UI file names a different app client from the default one, on the default pool (the
+    ///      sandbox's set) or on a pool of its own (a backend of its own), never another role's
+    ///    - The identity-only role has an identity pool with guest access and no user pool
     ///
     func testEveryParityOutputsFileLoads() throws {
         var poolIds: [SandboxPool: String] = [:]
@@ -44,13 +45,16 @@ final class SandboxParityProvisioningTests: XCTestCase {
             poolIds[pool] = userPool.poolId
             clientIds[pool] = userPool.appClientId
         }
-        let state = try IntegrationTestEnvironment.state()
-        let distinctPools = Set(poolIds.filter { $0.key != .hostedUI }.values).union([state.userPoolId])
-        XCTAssertEqual(distinctPools.count, 8, "The seven parity pools and R-UP are not distinct")
-        XCTAssertTrue(poolIds[.hostedUI] == poolIds[.standard], "hosted-ui is not on the default pool")
+        let rolePools = poolIds.filter { $0.key != .hostedUI }
+        XCTAssertEqual(Set(rolePools.values).count, 7, "The seven roles' pools are not distinct")
+        let hostedPool = try XCTUnwrap(poolIds[.hostedUI])
+        XCTAssertTrue(
+            hostedPool == poolIds[.standard] || !rolePools.values.contains(hostedPool),
+            "hosted-ui is on another role's pool"
+        )
         XCTAssertFalse(clientIds[.hostedUI] == clientIds[.standard], "hosted-ui reuses the default client")
 
-        let identityOnly = try IntegrationTestEnvironment.outputsAuthSection(SandboxPool.identityOnlyOutputsResource)
+        let identityOnly = try IntegrationTestEnvironment.identityOnlyAuthSection()
         XCTAssertNil(identityOnly["user_pool_id"])
         XCTAssertFalse((identityOnly["identity_pool_id"] as? String ?? "").isEmpty)
         XCTAssertEqual(identityOnly["unauthenticated_identities_enabled"] as? Bool, true)
@@ -101,7 +105,8 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// Custom auth without SRP completes with the stored answer (define/create/verify triggers, P-5b).
     ///
-    /// - Given: A fresh, auto-confirmed user on the default pool, and `customChallengeAnswer`
+    /// - Given: A fresh, auto-confirmed user on the default pool, and the credentials file's
+    ///   `custom_challenge_answer`
     /// - When:
     ///    - It starts `CUSTOM_AUTH` with its username only, and answers the challenge
     /// - Then:
@@ -111,7 +116,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let pool = try ParityPool(.standard)
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, deletingAtTeardownOf: self)
-        let answer = try IntegrationTestEnvironment.users().customChallengeAnswer
+        let answer = try IntegrationTestEnvironment.credentials().requireCustomChallengeAnswer()
 
         let start = try await pool.client.initiateAuth(input: InitiateAuthInput(
             authFlow: .customAuth,
@@ -131,23 +136,25 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// A sign-up confirmation code reaches the code sink and confirms the user (P-5a, P-5c).
     ///
-    /// - Given: The default pool, whose custom email sender decrypts codes with the KMS key and
-    ///   publishes them to the AppSync code sink
+    /// - Given: The passwordless pool (U-PL), whose custom email sender decrypts codes with the KMS key and
+    ///   publishes them to the code API its outputs name, and which leaves the sign-up to confirm: the
+    ///   plugin's passwordless backend has no pre-sign-up trigger, and the sandbox's leaves `ccit-confirm-`
+    ///   users unconfirmed
     /// - When:
     ///    - A fresh `ccit-confirm-…` user (not auto-confirmed) signs up with an `@example.com` address
-    ///    - The test reads the newest code for the username from the sink over HTTPS
+    ///    - The test reads the newest code for the username from the code API
     /// - Then:
     ///    - The sign-up is unconfirmed, a code arrives, and `ConfirmSignUp` accepts it
     ///
     func testSignUpCodeReachesTheCodeSinkAndConfirms() async throws {
-        let pool = try ParityPool(.standard)
+        let pool = try ParityPool(.passwordless)
         let sink = try CodeSink()
         let user = ParityPool.freshUser(needsConfirmation: true)
         let since = Date()
 
         let signUp = try await pool.signUp(user, deletingAtTeardownOf: self)
         XCTAssertFalse(signUp.userConfirmed)
-        let code = try await sink.code(for: user.username, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
 
         _ = try await pool.client.confirmSignUp(input: ConfirmSignUpInput(
             clientId: pool.clientId,
@@ -165,8 +172,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - When:
     ///    - It starts `USER_AUTH` with its username only
     /// - Then:
-    ///    - Cognito answers `SELECT_CHALLENGE`, offering `PASSWORD`, plus `EMAIL_OTP` and `SMS_OTP` unless
-    ///      state.json lists them as pending
+    ///    - Cognito answers `SELECT_CHALLENGE`, offering `PASSWORD`, plus `EMAIL_OTP` and `SMS_OTP`
     ///
     func testPasswordlessPoolOffersChoiceBasedSignIn() async throws {
         let pool = try ParityPool(.passwordless)
@@ -181,13 +187,8 @@ final class SandboxParityProvisioningTests: XCTestCase {
         XCTAssertEqual(start.challengeName, .selectChallenge)
         let offered = Set((start.availableChallenges ?? []).map(\.rawValue))
         XCTAssertTrue(offered.contains("PASSWORD"), "Offered \(offered.sorted())")
-        let pending = pool.pending
-        if !pending.contains("email-otp") {
-            XCTAssertTrue(offered.contains("EMAIL_OTP"), "Offered \(offered.sorted())")
-        }
-        if !pending.contains("sms-otp") {
-            XCTAssertTrue(offered.contains("SMS_OTP"), "Offered \(offered.sorted())")
-        }
+        XCTAssertTrue(offered.contains("EMAIL_OTP"), "Offered \(offered.sorted())")
+        XCTAssertTrue(offered.contains("SMS_OTP"), "Offered \(offered.sorted())")
     }
 
     /// The WebAuthn pool starts a passkey registration for the harness's relying party (U-WA, P-10).
@@ -249,9 +250,8 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - When:
     ///    - It signs in with `USER_PASSWORD_AUTH`
     /// - Then:
-    ///    - It is challenged (`MFA_SETUP`, or an email or SMS code when those factors are live), unless
-    ///      state.json lists the pool's required MFA as pending, when it gets tokens
-    ///    - A challenge that sends a code has delivered it to the code sink before the test ends. Waiting
+    ///    - It is challenged (`MFA_SETUP`, or an email or SMS code when those factors are live)
+    ///    - A challenge that sends a code has delivered it to the code API before the test ends. Waiting
     ///      for it is also what lets the teardown delete the user: its sign-in answers the challenge with
     ///      the first code that was not in the sink before it started, which must not be this one
     ///
@@ -265,19 +265,14 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
             let signIn = try await pool.passwordSignIn(user)
             pool.deleteAtTeardown(signIn.authenticationResult, of: self)
-            if pool.pending.contains("mfa-on") {
-                XCTAssertNil(signIn.challengeName, "\(kind)")
-                XCTAssertNotNil(signIn.authenticationResult, "\(kind)")
-            } else {
-                let challenge = try XCTUnwrap(signIn.challengeName, "\(kind) issued tokens without MFA")
-                XCTAssertTrue(
-                    [.mfaSetup, .emailOtp, .smsMfa, .selectMfaType].contains(challenge),
-                    "\(kind) challenged with \(challenge)"
-                )
-                XCTAssertNil(signIn.authenticationResult, "\(kind)")
-                if [.emailOtp, .smsMfa].contains(challenge) {
-                    _ = try await sink.code(for: user.username, since: since)
-                }
+            let challenge = try XCTUnwrap(signIn.challengeName, "\(kind) issued tokens without MFA")
+            XCTAssertTrue(
+                [.mfaSetup, .emailOtp, .smsMfa, .selectMfaType].contains(challenge),
+                "\(kind) challenged with \(challenge)"
+            )
+            XCTAssertNil(signIn.authenticationResult, "\(kind)")
+            if [.emailOtp, .smsMfa].contains(challenge) {
+                _ = try await sink.code(for: user.username, on: kind, since: since)
             }
         }
     }
@@ -288,7 +283,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///   fresh user whose `@example.com` address the pre-sign-up trigger verified
     /// - When:
     ///    - The user signs in with `USER_PASSWORD_AUTH`
-    ///    - The test reads the newest code for the username from the sink, and answers with it
+    ///    - The test reads the newest code for the username from the code API, and answers with it
     /// - Then:
     ///    - The sign-in is challenged with `EMAIL_OTP`, and the captured code returns tokens
     ///
@@ -302,7 +297,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
         let start = try await pool.passwordSignIn(user)
         XCTAssertEqual(start.challengeName, .emailOtp)
-        let code = try await sink.code(for: user.username, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .emailOtp,
             challengeResponses: ["USERNAME": user.username, "EMAIL_OTP_CODE": code],
@@ -336,7 +331,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             clientId: pool.clientId
         ))
         XCTAssertEqual(start.challengeName, .emailOtp)
-        let code = try await sink.code(for: user.username, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .emailOtp,
             challengeResponses: ["USERNAME": user.username, "EMAIL_OTP_CODE": code],
@@ -347,18 +342,19 @@ final class SandboxParityProvisioningTests: XCTestCase {
         XCTAssertNotNil(result.authenticationResult?.accessToken)
     }
 
-    /// An SMS MFA code reaches the code sink and completes a required-MFA sign-in (U-REQ-TS, P-9).
+    /// An SMS MFA code reaches the code sink and completes a required-MFA sign-in (U-REQ-ALL, P-9).
     ///
-    /// - Given: The TOTP-and-SMS MFA-required pool, with the SNS caller role and the custom SMS sender, and
-    ///   a fresh user whose fictional `+1 555` number the pre-sign-up trigger verified
+    /// - Given: The all-types MFA-required pool (TOTP, SMS and email; the MFA-required pool closest to
+    ///   U-REQ-TS whose outputs name a code API), with the SNS caller role and the custom SMS sender, and a
+    ///   fresh user whose fictional `+1 555` number the pre-sign-up trigger verified
     /// - When:
     ///    - The user signs in with `USER_PASSWORD_AUTH`, choosing SMS if Cognito asks which factor
-    ///    - The test reads the newest code for the username from the sink, and answers with it
+    ///    - The test reads the newest code for the username from the code API, and answers with it
     /// - Then:
     ///    - The sign-in is challenged with `SMS_MFA`, and the captured code returns tokens
     ///
     func testSMSMFACodeReachesTheCodeSinkAndCompletesSignIn() async throws {
-        let pool = try ParityPool(.mfaRequiredTOTPSMS)
+        let pool = try ParityPool(.mfaRequiredAll)
         try pool.requireLive("sms-mfa")
         let sink = try CodeSink()
         let user = ParityPool.freshUser()
@@ -379,7 +375,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             session = selected.session
         }
         XCTAssertEqual(challengeName, .smsMfa)
-        let code = try await sink.code(for: user.username, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .smsMfa,
             challengeResponses: ["USERNAME": user.username, "SMS_MFA_CODE": code],
@@ -413,7 +409,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             clientId: pool.clientId
         ))
         XCTAssertEqual(start.challengeName, .smsOtp)
-        let code = try await sink.code(for: user.username, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .smsOtp,
             challengeResponses: ["USERNAME": user.username, "SMS_OTP_CODE": code],
@@ -457,15 +453,25 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///
     /// - Given: The hosted-UI outputs file, with its `oauth` block
     /// - When:
-    ///    - The test requests `/login` on the domain with the client, the code grant and the callback
+    ///    - The test requests `/login` on the domain with the client, the code grant and the file's callback
     /// - Then:
-    ///    - The block lists the callback and sign-out URIs the host app uses, and the page answers HTTP 200
+    ///    - The block lists one callback and one sign-out URI, each in a URL scheme the hosted-UI host app
+    ///      registers (`CognitoClientHostedUIApp-Info.plist`: the plugin's `myapp`, and `cognitoclienthostapp`),
+    ///      and the page answers HTTP 200
     ///
     func testHostedUIDomainServesTheLoginPage() async throws {
-        let auth = try IntegrationTestEnvironment.outputsAuthSection(SandboxPool.hostedUI.outputsResource)
+        let auth = try IntegrationTestEnvironment.outputsAuthSection(SandboxPool.hostedUI)
         let oauth = try XCTUnwrap(auth["oauth"] as? [String: Any])
-        XCTAssertEqual(oauth["redirect_sign_in_uri"] as? [String], ["cognitoclienthostapp://signin/"])
-        XCTAssertEqual(oauth["redirect_sign_out_uri"] as? [String], ["cognitoclienthostapp://signout/"])
+        let signIn = try XCTUnwrap((oauth["redirect_sign_in_uri"] as? [String])?.first)
+        let signOut = try XCTUnwrap((oauth["redirect_sign_out_uri"] as? [String])?.first)
+        XCTAssertEqual((oauth["redirect_sign_in_uri"] as? [String])?.count, 1)
+        XCTAssertEqual((oauth["redirect_sign_out_uri"] as? [String])?.count, 1)
+        for uri in [signIn, signOut] {
+            XCTAssertTrue(
+                ["myapp", "cognitoclienthostapp"].contains(URL(string: uri)?.scheme ?? ""),
+                "the hosted-UI app does not register the redirect's scheme"
+            )
+        }
         XCTAssertEqual(oauth["response_type"] as? String, "code")
         let domain = try XCTUnwrap(oauth["domain"] as? String)
         let clientId = try XCTUnwrap(auth["user_pool_client_id"] as? String)
@@ -478,7 +484,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             URLQueryItem(name: "client_id", value: clientId),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: "openid"),
-            URLQueryItem(name: "redirect_uri", value: "cognitoclienthostapp://signin/")
+            URLQueryItem(name: "redirect_uri", value: signIn)
         ]
         let url = try XCTUnwrap(components.url)
         let response: URLResponse
@@ -496,14 +502,15 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// The identity-only identity pool vends guest credentials (P-6′).
     ///
-    /// - Given: The identity-only outputs file, with guest access and no user pool
+    /// - Given: The identity-only role (the default backend's identity pool, derived without its user pool),
+    ///   with guest access
     /// - When:
     ///    - The test calls `GetId` and `GetCredentialsForIdentity` without logins
     /// - Then:
     ///    - It gets an identity and complete, unexpired AWS credentials
     ///
     func testIdentityOnlyPoolVendsGuestCredentials() async throws {
-        let auth = try IntegrationTestEnvironment.outputsAuthSection(SandboxPool.identityOnlyOutputsResource)
+        let auth = try IntegrationTestEnvironment.identityOnlyAuthSection()
         let region = try XCTUnwrap(auth["aws_region"] as? String)
         let identityPoolId = try XCTUnwrap(auth["identity_pool_id"] as? String)
         let client = try await CognitoIdentityClient(
@@ -564,9 +571,6 @@ private struct ParityPool {
     let kind: SandboxPool
     let client: CognitoIdentityProviderClient
     let clientId: String
-    /// What `state.json` lists as pending for the pool.
-    let pending: [String]
-
     init(_ kind: SandboxPool) throws {
         let userPool = try XCTUnwrap(IntegrationTestEnvironment.configuration(kind).userPool)
         self.kind = kind
@@ -574,19 +578,11 @@ private struct ParityPool {
         self.client = try CognitoIdentityProviderClient(
             config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: userPool.region)
         )
-        let parity = try XCTUnwrap(IntegrationTestEnvironment.state().parity, "state.json has no parity section")
-        self.pending = parity.pending(kind)
     }
 
-    /// Fails (never skips) when `state.json` lists `feature` as pending for the pool, pointing at the
-    /// provisioning step that enables it.
+    /// Fails (never skips) when the pool's outputs show it lacks `feature` (`SandboxPoolClient.requireLive`).
     func requireLive(_ feature: String) throws {
-        guard !pending.contains(feature) else {
-            throw HarnessError.malformedFixture("""
-            \(kind) has \(feature) pending in state.json. Re-run infra/provision.sh (see the README's \
-            "Plugin-parity resources" for what enables it), then rebuild.
-            """)
-        }
+        try SandboxPoolClient(kind).requireLive(feature)
     }
 
     /// A user no test or earlier run has used: `ccit-<12 hex>`, or `ccit-confirm-<12 hex>` for one the
@@ -619,9 +615,10 @@ private struct ParityPool {
 
     /// Signs `user` up, and, once Cognito has created it, registers its deletion as a teardown block of
     /// `testCase` (`SandboxUserCleanup.delete`: the user signs in, answering the pool's MFA from the code
-    /// sink or an enrolled TOTP secret, and deletes itself). Registered at sign-up, not once the test holds
+    /// API or an enrolled TOTP secret, and deletes itself). Registered at sign-up, not once the test holds
     /// tokens, so a user the test never signs in to completion (an MFA challenge it only observes, a
-    /// sign-in it never makes, a failed assertion) is deleted too.
+    /// sign-in it never makes, a failed assertion) is deleted too. The pool's code subscription is started
+    /// first, so the codes this user is sent are seen.
     func signUp(
         _ user: TestUser,
         email: String,
@@ -632,6 +629,8 @@ private struct ParityPool {
         if let phoneNumber {
             attributes.append(CognitoIdentityProviderClientTypes.AttributeType(name: "phone_number", value: phoneNumber))
         }
+        await CodeSink.prepare(kind)
+        let signedUpAt = Date()
         let output = try await client.signUp(input: SignUpInput(
             clientId: clientId,
             password: user.password,
@@ -639,15 +638,23 @@ private struct ParityPool {
             username: user.username
         ))
         if let userSub = output.userSub {
-            testCase.deleteAtTeardown(FreshUser(
+            let fresh = FreshUser(
                 pool: kind,
                 username: user.username,
                 password: user.password,
                 email: email,
                 phoneNumber: phoneNumber,
                 userSub: userSub,
-                isConfirmed: output.userConfirmed
-            ))
+                isConfirmed: output.userConfirmed,
+                signedUpAt: signedUpAt
+            )
+            testCase.deleteAtTeardown(fresh)
+            // A pool with no pre-sign-up trigger (the plugin's passwordless backend) leaves every sign-up
+            // unconfirmed: confirm a user the test did not ask to leave unconfirmed, as `SandboxSignUp` does.
+            // The returned output is Cognito's, so a test checking the trigger still sees what it did.
+            if !output.userConfirmed, !user.username.hasPrefix(SandboxSignUp.confirmPrefix) {
+                try await SandboxSignUp.confirm(fresh, sentSince: signedUpAt, on: SandboxPools.pool(kind), sink: CodeSink())
+            }
         }
         return output
     }

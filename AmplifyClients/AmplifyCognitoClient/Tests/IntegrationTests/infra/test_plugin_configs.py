@@ -62,6 +62,9 @@ class PluginConfigsTests(unittest.TestCase):
         for name in POOLS:
             with open(os.path.join(self.state, f"{name}-amplify_outputs.json"), "w") as f:
                 json.dump(fake_outputs(name), f)
+        with open(os.path.join(self.state, "identity-only-amplify_outputs.json"), "w") as f:
+            json.dump({"version": "1.4", "auth": {"aws_region": "xx-test-1", "identity_pool_id": "xx-test-1:guest-only",
+                                                  "unauthenticated_identities_enabled": True}}, f)
         os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
         os.environ["AWS_AMPLIFY_TESTCONFIGURATION_DIR"] = self.target
         spec = importlib.util.spec_from_file_location("plugin_configs", os.path.join(INFRA, "plugin-configs.py"))
@@ -295,6 +298,108 @@ class PluginConfigsTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 with self.pc.exclusive():
                     pass
+
+    def test_dir_writes_every_file_there_and_nothing_else(self):
+        other = os.path.join(self.root, "client-harness")
+        self.quiet(lambda: self.pc.write_into(other))
+        written = sorted(os.listdir(other))
+        self.assertEqual(written, sorted(self.pc.build()))
+        for name in written:
+            self.assertEqual(os.stat(os.path.join(other, name)).st_mode & 0o777, 0o600, name)
+        # No manifest, no backups, and the default directory untouched.
+        self.assertFalse(os.path.exists(os.path.join(self.state, "plugin-configs-manifest.json")))
+        self.assertFalse(os.path.exists(os.path.join(self.state, "plugin-configs-backup")))
+        self.assertEqual(os.listdir(self.target), [])
+        self.assertEqual(os.stat(other).st_mode & 0o777, 0o700)
+
+    def test_dir_overwrites_only_its_own_names(self):
+        other = os.path.join(self.root, "client-harness")
+        os.makedirs(other)
+        with open(os.path.join(other, "unrelated.json"), "w") as f:
+            f.write("kept")
+        self.quiet(lambda: self.pc.write_into(other))
+        self.quiet(lambda: self.pc.write_into(other))
+        with open(os.path.join(other, "unrelated.json")) as f:
+            self.assertEqual(f.read(), "kept")
+        self.assertEqual(len(os.listdir(other)), len(self.pc.build()) + 1)
+
+    def test_dir_naming_the_default_directory_keeps_the_manifest_and_backups(self):
+        self.put(OWNER_FILE, "owner April file")
+        self.quiet(lambda: self.pc.write_into(self.target))
+        self.assertIn(OWNER_FILE, self.manifest()["backups"])
+        self.quiet(self.pc.remove_all)
+        self.assertEqual(self.read(OWNER_FILE), "owner April file")
+
+    def test_dir_inside_the_default_directory_is_refused(self):
+        with self.assertRaises(SystemExit):
+            self.quiet(lambda: self.pc.write_into(os.path.join(self.target, "nested")))
+        self.assertEqual(os.listdir(self.target), [])
+
+    def test_every_outputs_file_has_the_code_sink_and_the_credentials_name_a_second_identity_pool(self):
+        other = os.path.join(self.root, "client-harness")
+        self.quiet(lambda: self.pc.write_into(other))
+        outputs = [n for n in os.listdir(other) if n.endswith("-amplify_outputs.json")]
+        self.assertEqual(len(outputs), 8)
+        for name in outputs:
+            with open(os.path.join(other, name)) as f:
+                data = json.load(f)["data"]
+            self.assertEqual((data["url"], data["api_key"]), ("https://example.invalid/graphql", "key-1"), name)
+        with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-credentials.json")) as f:
+            credentials = json.load(f)
+        self.assertEqual(credentials["second_identity_pool_id"], "xx-test-1:guest-only")
+        with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json")) as f:
+            self.assertNotEqual(json.load(f)["auth"]["identity_pool_id"], credentials["second_identity_pool_id"])
+
+    def test_dir_refuses_the_owner_directory_whatever_the_configured_one(self):
+        # The configured directory is this test's temporary one, yet the developer's own directory, by its
+        # literal path, and any directory inside it are refused before anything is read or written.
+        owner = os.path.expanduser("~/.aws-amplify/amplify-ios/testconfiguration")
+        nested = os.path.join(owner, "ccit-test-never-created")
+        for directory in (owner, nested, owner + "/"):
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory))
+            with self.assertRaises(SystemExit):
+                self.quiet(lambda: self.pc.write_into(directory, ci=True))
+        self.assertFalse(os.path.exists(nested))
+        self.assertEqual(os.listdir(self.target), [])
+
+    def test_ci_shape_is_refused_for_the_configured_directory(self):
+        with self.assertRaises(SystemExit):
+            self.quiet(lambda: self.pc.write_into(self.target, ci=True))
+        self.assertEqual(os.listdir(self.target), [])
+
+    def test_ci_shape_has_data_only_on_the_code_capturing_backends(self):
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        self.assertEqual(sorted(os.listdir(other)), sorted(self.pc.build()))
+        with_data = set()
+        for name in os.listdir(other):
+            if name.endswith("-amplify_outputs.json"):
+                with open(os.path.join(other, name)) as f:
+                    if "data" in json.load(f):
+                        with_data.add(name)
+        self.assertEqual(with_data, set(self.pc.CI_CODE_CAPTURING))
+        self.assertEqual(with_data, {"AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json",
+                                     "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
+                                     "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json"})
+
+    def test_ci_shape_credentials_carry_only_the_keys_ci_has(self):
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        for name in [n for n in os.listdir(other) if n.endswith("-credentials.json")]:
+            with open(os.path.join(other, name)) as f:
+                keys = set(json.load(f))
+            self.assertTrue(keys <= {"test_email_1", "password"}, f"{name}: {sorted(keys)}")
+        with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-credentials.json")) as f:
+            self.assertEqual(set(json.load(f)), {"test_email_1"})
+
+    def test_full_shape_keeps_the_sandbox_extras(self):
+        other = os.path.join(self.root, "full-shape")
+        self.quiet(lambda: self.pc.write_into(other))
+        with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-credentials.json")) as f:
+            keys = set(json.load(f))
+        self.assertEqual(keys, {"test_email_1", "custom_challenge_answer", "new_password_required_usernames",
+                                "new_password_required_temporary_password", "second_identity_pool_id"})
 
     def test_refresh_says_to_rebuild_only_when_it_rewrote(self):
         self.quiet(self.pc.write_all)

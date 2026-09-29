@@ -12,6 +12,11 @@ import XCTest
 /// `default`: attribute updates need no verification first (`AttributesRequireVerificationBeforeUpdate`
 /// is empty), and the custom senders put every code in the sink. The plugin's test names are kept.
 ///
+/// AT-5 and AT-6 read a code and hold under either update setting, so they run on U-PL (`passwordless`),
+/// whose outputs name a code API. AT-2 reads a code too, but also checks the email is updated before it is
+/// verified, which only a backend with empty `AttributesRequireVerificationBeforeUpdate` shows: that is the
+/// default backend, as the plugin's README sets it, so AT-2 stays there and needs a code API on it.
+///
 /// Every user is a fresh `ccit-` user signed in through the client, and deleted at teardown. No test prints
 /// a username, email, password or code: the checks on them are boolean.
 final class UserAttributesTests: ClientIntegrationTestCase {
@@ -125,7 +130,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     /// A new code can be sent for an updated email, and it is the one that verifies it (AT-5; the plugin's
     /// test stops at the send).
     ///
-    /// - Given: a fresh user, signed in, whose email was updated (which sent a first code)
+    /// - Given: a fresh user on U-PL, signed in, whose email was updated (which sent a first code)
     /// - When:
     ///    - the client sends a verification code for `email`, with client metadata
     ///    - then confirms `email` with the new code
@@ -133,7 +138,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     ///    - the code goes to the email, a new code reaches the sink, and it verifies the email
     ///
     func testSuccessfulSendVerificationCodeWithUpdatedEmail() async throws {
-        let (client, user) = try await makeSignedInFreshUser("at-5")
+        let (client, user) = try await makeSignedInFreshUser("at-5", on: .passwordless)
         let sink = try CodeSink()
         _ = try await sink.code(for: user, .attributeVerification) {
             try await client.update(userAttribute: .init(.email, value: SandboxSignUp.identity().email))
@@ -154,14 +159,14 @@ final class UserAttributesTests: ClientIntegrationTestCase {
 
     /// A verification code can be sent for the signed-up email (AT-6).
     ///
-    /// - Given: a fresh user with an email, signed in
+    /// - Given: a fresh user with an email on U-PL, signed in
     /// - When:
     ///    - the client sends a verification code for `email`, with client metadata
     /// - Then:
     ///    - the code goes to the email, and reaches the sink
     ///
     func testSuccessfulSendVerificationCode() async throws {
-        let (client, user) = try await makeSignedInFreshUser("at-6")
+        let (client, user) = try await makeSignedInFreshUser("at-6", on: .passwordless)
         let sink = try CodeSink()
 
         let (details, code) = try await sink.code(for: user, .attributeVerification) {

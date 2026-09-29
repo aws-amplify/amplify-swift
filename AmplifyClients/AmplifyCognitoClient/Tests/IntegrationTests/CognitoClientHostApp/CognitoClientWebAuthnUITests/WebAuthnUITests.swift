@@ -17,8 +17,9 @@ import XCTest
 ///  - WA-1 `testWebAuthnAPIs` (compiled with `COGNITO_CLIENT_WEBAUTHN_API`, which
 ///    `CognitoClientWebAuthn.xcconfig` turns on): the client's WebAuthn API.
 ///
-/// Needs: the sandbox (`infra/provision.sh`, which provisions the WebAuthn pool, U-WA, with `WEB_AUTHN` and the
-/// relying party, P-10), and the plugin's simulator server running on the host (`SimulatorServer`).
+/// Needs: the plugin's WebAuthn backend (`AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json`; on the
+/// sandbox, U-WA, with `WEB_AUTHN` and the relying party, P-10), and the plugin's simulator server running on
+/// the host (`SimulatorServer`).
 final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     private let timeout = TimeInterval(30)
     private var app: XCUIApplication!

@@ -9,8 +9,8 @@
 @_spi(AmplifyExperimental) import AmplifyFoundation
 import XCTest
 
-/// A session with no user, over R-IP's guest access: the plugin's `SignedOutAuthSessionTests` that the
-/// base suites do not already cover.
+/// A session with no user, over the guest access of the default backend's identity pool (R-IP): the plugin's
+/// `SignedOutAuthSessionTests` that the base suites do not already cover.
 ///
 /// The recorder sees only user pool requests; the identity client has no configure hook.
 /// An identity pool issues a new identity for every unauthenticated `GetId`, and new credentials for every

@@ -11,19 +11,21 @@ import Security
 import XCTest
 
 /// A signed-in session's `fetchAuthSession()` over the live engine: the plugin's `SignedInAuthSessionTests`
-/// and its expired-session cases (SE-5), on R-UP and R-IP with alice.
+/// and its expired-session cases (SE-5), on the default backend with alice, a fresh user each test signs up
+/// (`makeSignInUser()`).
 final class SessionTests: ClientIntegrationTestCase {
 
     /// The plugin's `AWSAuthBaseTest.networkTimeout`.
     private static let networkTimeout: TimeInterval = 5
 
     private var configuration: AuthClientConfiguration!
-    private var users: SandboxUsers!
+    /// This test's own user.
+    private var alice: TestUser!
 
     override func setUp() async throws {
         try await super.setUp()
         configuration = try IntegrationTestEnvironment.configuration()
-        users = try IntegrationTestEnvironment.users()
+        alice = try await makeSignInUser()
     }
 
     /// A signed-in session has user pool tokens, an identity and AWS credentials (SE-1; the
@@ -39,7 +41,7 @@ final class SessionTests: ClientIntegrationTestCase {
     ///
     func testFetchAuthSessionAfterSignIn() async throws {
         let client = try makeClient("alice")
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         let user = try await client.getCurrentUser()
 
         let session = try await client.fetchAuthSession()
@@ -47,7 +49,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let tokens = try session.userPoolTokensResult.get()
         let claims = try IntegrationTestEnvironment.jwtClaims(tokens.idToken)
         XCTAssertTrue(claims["sub"] as? String == user.userId, "the id token is the session user's")
-        XCTAssertEqual(claims["cognito:username"] as? String, "alice")
+        XCTAssertTrue(claims["cognito:username"] as? String == alice.username, "the id token names alice")
         XCTAssertTrue(try session.userSubResult.get() == user.userId, "the session's sub is the user's")
         XCTAssertFalse(try session.identityIdResult.get().isEmpty)
         let credentials = try session.awsCredentialsResult.get()
@@ -75,7 +77,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let refreshToken: String
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-            _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+            _ = try await client.signIn(username: alice.username, password: alice.password)
             refreshToken = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
         }
         addTeardownBlock { try await raw.revoke(refreshToken) }
@@ -132,7 +134,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let user: AuthClientUser
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-            _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+            _ = try await client.signIn(username: alice.username, password: alice.password)
             user = try await client.getCurrentUser()
             refreshToken = try await client.fetchAuthSession().userPoolTokensResult.get().refreshToken
         }
@@ -218,7 +220,7 @@ final class SessionTests: ClientIntegrationTestCase {
     func testRepeatedFetchesServeTheCachedSession() async throws {
         let recorder = RecordingHTTPClient()
         let client = try makeClient("alice-cached", configureUserPoolClient: recorder.configureUserPoolClient)
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         let first = try await client.fetchAuthSession()
         let firstToken = try fingerprint(first.userPoolTokensResult.get().accessToken)
         let firstIdentity = try first.identityIdResult.get()
@@ -238,7 +240,8 @@ final class SessionTests: ClientIntegrationTestCase {
     /// Concurrent fetches across a sign-out all return a coherent session (SE-4; the plugin's
     /// `testMultipleParallelSuccessfulSessionFetch`, with its 100 and 50 fetches and its 5-second limit).
     ///
-    /// - Given: alice signed in on a session over R-UP and R-IP (guests allowed), and her identity ID
+    /// - Given: alice signed in on a session over the default backend (its identity pool allows guests), and
+    ///   her identity ID
     /// - When:
     ///    - 100 fetches start, each in its own task (every sixth yields first), and `signOut()` runs among
     ///      them; once it returns, 50 more fetches start
@@ -254,7 +257,7 @@ final class SessionTests: ClientIntegrationTestCase {
     ///
     func testConcurrentFetchesAcrossASignOut() async throws {
         let client = try makeClient("alice-parallel")
-        _ = try await client.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await client.signIn(username: alice.username, password: alice.password)
         let user = try await client.getCurrentUser()
         let aliceIdentity = try await client.fetchAuthSession().identityIdResult.get()
 

@@ -30,7 +30,7 @@ final class SigningTests: ClientIntegrationTestCase {
     /// A guest session's credentials provider signs an AppSync request (SG-1; the plugin's
     /// `testSignAppSyncRequest`).
     ///
-    /// - Given: a fresh session made a guest by `fetchAuthSession()`, over R-IP
+    /// - Given: a fresh session made a guest by `fetchAuthSession()`, over the default backend's identity pool
     /// - When:
     ///    - the plugin test's request (`GET graphql.com?param=value`) is signed for `appsync` in
     ///      `us-east-1` with the SDK's `AWSSigV4Signer`, its identity resolved through
@@ -93,7 +93,8 @@ final class SigningTests: ClientIntegrationTestCase {
         let text = String(decoding: body, as: UTF8.self)
         let arn = text.range(of: "<Arn>[^<]*</Arn>", options: .regularExpression).map { String(text[$0].dropFirst(5).dropLast(6)) }
         let role = try XCTUnwrap(arn.flatMap(CallerIdentity.roleName(of:)), "STS returned no assumed-role ARN")
-        XCTAssertTrue(role == (try SandboxRoles()).unauthenticatedRoleName, "the signed request answered as another role")
+        let roles = try await SandboxRoles()
+        XCTAssertTrue(role == roles.unauthenticatedRoleName, "the signed request answered as another role")
     }
 
     /// `GET https://<host>/?<query>`, SigV4-signed with the plugin signer's configuration and the provider's

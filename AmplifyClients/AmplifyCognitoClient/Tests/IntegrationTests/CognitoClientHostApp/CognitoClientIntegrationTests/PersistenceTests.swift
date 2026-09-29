@@ -14,12 +14,10 @@ import XCTest
 final class PersistenceTests: ClientIntegrationTestCase {
 
     private var configuration: AuthClientConfiguration!
-    private var users: SandboxUsers!
 
     override func setUp() async throws {
         try await super.setUp()
         configuration = try IntegrationTestEnvironment.configuration()
-        users = try IntegrationTestEnvironment.users()
     }
 
     /// A session whose storage cannot be read is `.unavailable`, never `.signedOut`, and nothing is sent
@@ -36,9 +34,10 @@ final class PersistenceTests: ClientIntegrationTestCase {
     ///    - alice's session is untouched: still signed in, and its tokens still resolve
     ///
     func testStorageUnavailableIsNotSignedOut() async throws {
+        let aliceCredentials = try await makeSignInUser()
         let aliceId = try makeSessionID("alice")
         let alice = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: aliceId))
-        _ = try await alice.signIn(username: users.alice.username, password: users.alice.password)
+        _ = try await alice.signIn(username: aliceCredentials.username, password: aliceCredentials.password)
         let aliceUser = try await alice.getCurrentUser()
         let notEntitled = try IntegrationTestEnvironment.defaultAccessGroup()
             .replacingOccurrences(of: "CognitoClientHostApp", with: "NotEntitled")
@@ -65,7 +64,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
             }
             XCTAssertEqual(providerError?.caseName, "storageUnavailable(denied)")
             let signInError = await Expect.authClientError("signing in over unreadable storage") {
-                try await denied.signIn(username: users.alice.username, password: users.alice.password)
+                try await denied.signIn(username: aliceCredentials.username, password: aliceCredentials.password)
             }
             XCTAssertEqual(signInError?.kind, .storageUnavailable(.denied))
             XCTAssertEqual(recorder.operations, [], "nothing is sent for a session whose storage cannot be read")
@@ -89,6 +88,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
     ///    - the new client reads `.signedIn(bob)` without a request, and a forced refresh succeeds
     ///
     func testSharedAccessGroupSessionIsScopedToItsGroup() async throws {
+        let bobCredentials = try await makeSignInUser()
         let shared = try IntegrationTestEnvironment.sharedAccessGroup()
         let sessionId = try makeSessionID("bob-shared", accessGroup: shared)
         let bob: AuthClientUser
@@ -97,7 +97,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
                 configuration: configuration,
                 options: .init(sessionId: sessionId, accessGroup: shared)
             )
-            _ = try await client.signIn(username: users.bob.username, password: users.bob.password)
+            _ = try await client.signIn(username: bobCredentials.username, password: bobCredentials.password)
             bob = try await client.getCurrentUser()
         }
         try await SessionCleanup.waitUntilReleased([sessionId])
@@ -105,7 +105,7 @@ final class PersistenceTests: ClientIntegrationTestCase {
         let sharedListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, accessGroup: shared)
         let defaultListing = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
 
-        XCTAssertEqual(sharedListing.first { $0.sessionId == sessionId }?.username, "bob")
+        XCTAssertTrue(sharedListing.first { $0.sessionId == sessionId }?.username == bob.username, "the shared listing names bob")
         XCTAssertFalse(defaultListing.contains { $0.sessionId == sessionId }, "the default group does not list a shared-group session")
 
         let recorder = RecordingHTTPClient()

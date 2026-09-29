@@ -48,8 +48,12 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     /// stops at the step, having no access to the SMS; the client also confirms, with the code sink's
     /// copy.
     ///
-    /// - Given: a fresh user with a (fictional) phone number on U-REQ-TS, whose SMS codes the code sink
-    ///   captures
+    /// It reads the SMS code, so it runs on U-REQ-ALL (MFA required with TOTP, SMS and email), the
+    /// MFA-required backend closest to U-REQ-TS whose outputs name a code API; U-REQ-TS's name none. The user
+    /// has no email, so SMS is its one MFA type there as on U-REQ-TS.
+    ///
+    /// - Given: a fresh user with a (fictional) phone number and no email on U-REQ-ALL, whose SMS codes the
+    ///   code sink captures
     /// - When:
     ///    - the user signs in with the password
     ///    - and confirms with the SMS code
@@ -58,9 +62,9 @@ final class RequiredMFATests: ClientIntegrationTestCase {
     ///    - the confirmation returns `.done`, and the session is signed in as the user
     ///
     func testSMSMFANextStepDuringSignIn() async throws {
-        try SandboxPools.pool(.mfaRequiredTOTPSMS).requireLive("sms-mfa")
-        let user = try await makeFreshUser(on: .mfaRequiredTOTPSMS, .init(withPhoneNumber: true))
-        let client = try makeClient("mf-14", pool: .mfaRequiredTOTPSMS)
+        try SandboxPools.pool(.mfaRequiredAll).requireLive("sms-mfa")
+        let user = try await makeFreshUser(on: .mfaRequiredAll, .init(withEmail: false, withPhoneNumber: true))
+        let client = try makeClient("mf-14", pool: .mfaRequiredAll)
 
         let (result, code) = try await CodeSink().code(for: user, .mfa) {
             try await client.signIn(username: user.username, password: user.password)

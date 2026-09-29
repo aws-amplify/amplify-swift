@@ -14,12 +14,10 @@ import XCTest
 final class RefreshTests: ClientIntegrationTestCase {
 
     private var configuration: AuthClientConfiguration!
-    private var users: SandboxUsers!
 
     override func setUp() async throws {
         try await super.setUp()
         configuration = try IntegrationTestEnvironment.configuration()
-        users = try IntegrationTestEnvironment.users()
     }
 
     /// Concurrent forced refreshes on one session make one network refresh, and each session has its
@@ -38,6 +36,8 @@ final class RefreshTests: ClientIntegrationTestCase {
     ///    - B's refreshes all return one new token of bob's, different from A's
     ///
     func testConcurrentForcedRefreshesMakeOneNetworkRefresh() async throws {
+        let aliceUser = try await makeSignInUser()
+        let bobUser = try await makeSignInUser()
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let aliceRecorder = RecordingHTTPClient()
@@ -50,8 +50,8 @@ final class RefreshTests: ClientIntegrationTestCase {
             configuration: configuration,
             options: .init(sessionId: bobId, configureUserPoolClient: bobRecorder.configureUserPoolClient)
         )
-        _ = try await alice.signIn(username: users.alice.username, password: users.alice.password)
-        _ = try await bob.signIn(username: users.bob.username, password: users.bob.password)
+        _ = try await alice.signIn(username: aliceUser.username, password: aliceUser.password)
+        _ = try await bob.signIn(username: bobUser.username, password: bobUser.password)
         let aliceBefore = try await alice.userPoolTokenProvider.accessToken()
         let bobBefore = try await bob.userPoolTokenProvider.accessToken()
         aliceRecorder.reset()
@@ -92,8 +92,8 @@ final class RefreshTests: ClientIntegrationTestCase {
         XCTAssertTrue(aliceProvided.isSubset(of: [aliceBefore, aliceAfter]), "a provider call returned a third token")
         let aliceLater = try await alice.userPoolTokenProvider.accessToken()
         XCTAssertTrue(aliceLater == aliceAfter, "the provider serves the refreshed token")
-        XCTAssertEqual(try IntegrationTestEnvironment.jwtClaims(aliceAfter)["username"] as? String, "alice")
-        XCTAssertEqual(try IntegrationTestEnvironment.jwtClaims(bobAfter)["username"] as? String, "bob")
+        XCTAssertTrue(try IntegrationTestEnvironment.jwtClaims(aliceAfter)["username"] as? String == aliceUser.username, "A's token")
+        XCTAssertTrue(try IntegrationTestEnvironment.jwtClaims(bobAfter)["username"] as? String == bobUser.username, "B's token")
     }
 
     /// A global sign-out on one session expires the same user's other session at its next refresh
@@ -119,9 +119,9 @@ final class RefreshTests: ClientIntegrationTestCase {
     func testGlobalSignOutElsewhereExpiresTheSiblingSession() async throws {
         let poolConfiguration = try FederatedStandardPool.configuration()
         let fresh = try await makeFreshUser(on: .standard).testUser
-        // Not minted through makeSessionID, whose cleanup reads U-DEF's outputs, a different namespace
-        // (no identity pool). Teardown blocks run before tearDown, so these are signed out and purged
-        // before the fresh user is deleted.
+        // Not minted through makeSessionID, so the cleanup names the configuration these sessions use.
+        // Teardown blocks run before tearDown, so these are signed out and purged before the fresh user is
+        // deleted.
         let sessionA = try IntegrationTestEnvironment.uniqueSessionID("fresh-a")
         let sessionB = try IntegrationTestEnvironment.uniqueSessionID("fresh-b")
         addTeardownBlock {

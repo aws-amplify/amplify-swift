@@ -24,7 +24,7 @@ extension MultiSessionFlowTests {
     ///
     func testSameUserInTwoSessionsIsTwoIndependentSessions() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let alice = try IntegrationTestEnvironment.users().alice
+        let alice = try XCTUnwrap(users).alice
         let aId = try makeSessionID("alice-a")
         let bId = try makeSessionID("alice-b")
         let a = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: aId))
@@ -35,7 +35,7 @@ extension MultiSessionFlowTests {
         let bTokens = try await b.fetchAuthSession().userPoolTokensResult.get()
         XCTAssertTrue(aTokens.refreshToken != bTokens.refreshToken, "each sign-in holds its own refresh token")
         let bUser = try await b.getCurrentUser()
-        XCTAssertEqual(bUser.username, "alice")
+        XCTAssertTrue(bUser.username == alice.username, "B names another user")
 
         let signOut = try await a.signOut()
 

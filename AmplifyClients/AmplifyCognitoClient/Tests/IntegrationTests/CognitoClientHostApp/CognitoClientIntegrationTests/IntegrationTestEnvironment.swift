@@ -14,51 +14,54 @@
 import Foundation
 import Security
 
-/// The sandbox fixtures, as copied into this test bundle at build time, and the helpers the suites share.
+/// The test configuration, as copied into this test bundle at build time, and the helpers the suites share.
 ///
-/// Nothing account-specific is committed. The target's "Copy sandbox configuration" build phase
-/// copies `amplify_outputs.json`, `state.json` and `users.json` from
-/// `$COGNITO_CLIENT_INTEG_DIR` (default `~/.amplify-cognito-client-integ`, which
-/// `infra/provision.sh` writes) into the built `.xctest` bundle — the same build-time copy
-/// `AuthHostApp` uses for `~/.aws-amplify/amplify-ios/testconfiguration/`. The copy lives only in
-/// DerivedData.
+/// The suites read the AWSCognitoAuthPlugin integration suites' own configuration files, by the plugin's
+/// names: the files CI downloads into `~/.aws-amplify/amplify-ios/testconfiguration/`
+/// (`.github/composite_actions/download_test_configuration`, `resource_subfolder: auth`), or that
+/// `infra/plugin-configs.py --dir <dir>` writes from the sandbox for a local run. The target's "Copy test
+/// configuration" build phase copies them from `$COGNITO_CLIENT_INTEG_DIR` (default
+/// `~/.aws-amplify/amplify-ios/testconfiguration`) into the built `.xctest` bundle, the same build-time copy
+/// `AuthHostApp` makes. A missing file is named in a build warning, and every test that needs it fails
+/// with a message naming it. The copy lives only in DerivedData; nothing account-specific is committed.
+///
+/// Each client role is one of the plugin's files (`SandboxPool.outputsResource`); the identity-only role is
+/// derived from the default backend's outputs without its user pool (`identityOnlyAuthSection()`). No
+/// user or secret is seeded: suites sign their own users up, read codes through each file's `data` API
+/// (`CodeSink`), and take the rest from the default backend's credentials file (`credentials()`).
 enum IntegrationTestEnvironment {
 
-    /// The resource name `AuthClientConfiguration(from:bundle:)` is given, exactly as an app would.
-    static let outputsResource = "amplify_outputs"
-    static let stateResource = "cognito-client-integ-state"
-    static let usersResource = "cognito-client-integ-users"
+    /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
+    /// `AuthClientConfiguration(from:bundle:)` is given, exactly as an app would.
+    static let outputsResource = SandboxPool.standard.outputsResource
+    /// The default backend's credentials file: its custom-auth answer, its new-password users and the
+    /// second identity pool.
+    static let credentialsResource = "AWSCognitoAuthPluginIntegrationTests-credentials"
 
     static var bundle: Bundle {
         Bundle(for: BundleToken.self)
     }
 
-    /// Whether `provision.sh` output was present when the bundle was built.
+    /// Whether the plugin's default outputs file was present when the bundle was built.
     static var isProvisioned: Bool {
         bundle.url(forResource: outputsResource, withExtension: "json") != nil
     }
 
-    /// Fails (never skips) when the sandbox fixtures are missing.
+    /// Fails (never skips) when the test configuration is missing.
     static func requireProvisioned() throws {
         guard isProvisioned else {
             throw HarnessError.missingFixture("\(outputsResource).json")
         }
     }
 
-    /// The resource ids `provision.sh` recorded — an independent source to check the parsed
-    /// configuration against.
-    static func state() throws -> SandboxState {
-        try JSONDecoder().decode(SandboxState.self, from: data(forResource: stateResource))
-    }
-
-    /// The client configuration loaded from the provisioned outputs, exactly as an app loads it.
+    /// The main client configuration, loaded from the default backend's outputs exactly as an app loads
+    /// them.
     static func configuration() throws -> AuthClientConfiguration {
-        try requireProvisioned()
-        return try AuthClientConfiguration(from: outputsResource, bundle: bundle)
+        try configuration(.standard)
     }
 
-    /// The client configuration of one plugin-parity pool (P-6), loaded from
-    /// `<pool>-amplify_outputs.json` exactly as an app loads its outputs file.
+    /// The client configuration of one role, loaded from its plugin outputs file exactly as an app loads
+    /// its outputs file.
     static func configuration(_ pool: SandboxPool) throws -> AuthClientConfiguration {
         try requireProvisioned()
         guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil else {
@@ -67,23 +70,114 @@ enum IntegrationTestEnvironment {
         return try AuthClientConfiguration(from: pool.outputsResource, bundle: bundle)
     }
 
-    /// The raw `auth` section of an outputs file, for what `AuthClientConfiguration` does not parse:
-    /// the `oauth` block, and the identity-only file, which has no user pool.
+    /// The raw `auth` section of an outputs file, for what `AuthClientConfiguration` does not parse, such
+    /// as the `oauth` block.
     static func outputsAuthSection(_ resource: String) throws -> [String: Any] {
-        let object = try JSONSerialization.jsonObject(with: data(forResource: resource))
-        guard let auth = (object as? [String: Any])?["auth"] as? [String: Any] else {
+        guard let auth = try outputsDocument(resource)["auth"] as? [String: Any] else {
             throw HarnessError.malformedFixture("\(resource).json has no auth section.")
         }
         return auth
     }
 
-    /// The provisioned users and carol's TOTP secret.
-    static func users() throws -> SandboxUsers {
-        let object = try JSONSerialization.jsonObject(with: data(forResource: usersResource))
-        guard let fields = object as? [String: String] else {
-            throw HarnessError.malformedFixture("\(usersResource).json is not an object of strings.")
+    /// The raw `auth` section of a role's outputs file.
+    static func outputsAuthSection(_ pool: SandboxPool) throws -> [String: Any] {
+        try outputsAuthSection(pool.outputsResource)
+    }
+
+    /// The identity-only role (P-6′): the default backend's identity pool, guest access and region, and no
+    /// user pool. The plugin's file set has no identity-only backend, so it is derived; Gen2 outputs
+    /// require a user pool, so it is read raw (and built with the programmatic initializer by the suites
+    /// that need a configuration).
+    static func identityOnlyAuthSection() throws -> [String: Any] {
+        let auth = try outputsAuthSection(.standard)
+        guard auth["identity_pool_id"] is String else {
+            throw HarnessError.malformedFixture("""
+            \(outputsResource).json has no identity pool: the default backend needs one, with guest access.
+            """)
         }
-        return try SandboxUsers(fields: fields)
+        return auth.filter { ["aws_region", "identity_pool_id", "unauthenticated_identities_enabled"].contains($0.key) }
+    }
+
+    /// A second identity pool with guest access, other than `identityPoolId` (default: the default
+    /// backend's), for the configuration-change rows (CS-3): another backend's identity pool from the
+    /// plugin's file set, which federates none of the first one's user pool, or, where none has one (the
+    /// sandbox's set), the default credentials file's `second_identity_pool_id`.
+    static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AuthClientConfiguration.IdentityPool {
+        let firstPool = try identityPoolId ?? identityOnlyAuthSection()["identity_pool_id"] as? String
+        for pool in SandboxPool.allCases {
+            guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil,
+                  let auth = try? outputsAuthSection(pool),
+                  let poolId = auth["identity_pool_id"] as? String, poolId != firstPool,
+                  auth["unauthenticated_identities_enabled"] as? Bool == true,
+                  let region = auth["aws_region"] as? String else {
+                continue
+            }
+            return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+        }
+        guard let poolId = try credentials().secondIdentityPoolId, poolId != firstPool,
+              let region = poolId.split(separator: ":").first.map(String.init) else {
+            throw HarnessError.malformedFixture("""
+            No second identity pool: no other outputs file has a guest identity pool, and \
+            \(credentialsResource).json has no second_identity_pool_id.
+            """)
+        }
+        return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
+    }
+
+    /// A role whose user pool does not track devices and whose outputs name an identity pool with guest
+    /// access, for the configuration-change rows that refresh a carried session (CS-2, CS-3). Device
+    /// records are kept per pool namespace, as the plugin keeps them, so a session carried to a new
+    /// namespace leaves its device record behind, and a pool that tracks devices (the default backend)
+    /// refuses its refresh without the device key.
+    static func untrackedFederatedRole() throws -> SandboxPool {
+        for pool in SandboxPool.allCases where !pool.tracksDevices {
+            guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil,
+                  let identityPool = try? configuration(pool).identityPool,
+                  identityPool.unauthenticatedIdentitiesEnabled == true else {
+                continue
+            }
+            return pool
+        }
+        throw HarnessError.malformedFixture("""
+        No role without device tracking names an identity pool: this test needs the passwordless or WebAuthn \
+        backend's outputs to name an identity pool that federates its user pool, with guest access. A session \
+        carried to a new pool namespace leaves its device record behind, and the default backend, which tracks \
+        devices, refuses its refresh without the device key.
+        """)
+    }
+
+    /// The `data` API a role's codes are published to (the plugin's MfaInfo API), from its outputs file.
+    static func codeSinkAPI(_ pool: SandboxPool) throws -> CodeSinkAPI {
+        guard let data = try outputsDocument(pool.outputsResource)["data"] as? [String: Any],
+              let url = (data["url"] as? String).flatMap(URL.init(string:)),
+              let apiKey = data["api_key"] as? String, !apiKey.isEmpty else {
+            throw HarnessError.malformedFixture("""
+            \(pool.outputsResource).json has no data block with a url and an api_key: this test reads a code \
+            Cognito sent a \(pool.rawValue) user, so the backend must publish its codes to the plugin's MfaInfo \
+            API (custom email and SMS senders) and name it in its outputs, as the passwordless backend does.
+            """)
+        }
+        return CodeSinkAPI(url: url, apiKey: SandboxSecret(apiKey))
+    }
+
+    /// The default backend's credentials file. Absent keys are nil or empty; `PluginCredentials` fails with
+    /// the missing key's name when a test needs it.
+    static func credentials() throws -> PluginCredentials {
+        guard bundle.url(forResource: credentialsResource, withExtension: "json") != nil else {
+            throw HarnessError.missingFixture("\(credentialsResource).json")
+        }
+        let object = try JSONSerialization.jsonObject(with: data(forResource: credentialsResource))
+        guard let fields = object as? [String: String] else {
+            throw HarnessError.malformedFixture("\(credentialsResource).json is not an object of strings.")
+        }
+        return PluginCredentials(fields: fields)
+    }
+
+    private static func outputsDocument(_ resource: String) throws -> [String: Any] {
+        guard let document = try JSONSerialization.jsonObject(with: data(forResource: resource)) as? [String: Any] else {
+            throw HarnessError.malformedFixture("\(resource).json is not a JSON object.")
+        }
+        return document
     }
 
     // MARK: - Session IDs
@@ -204,119 +298,111 @@ enum IntegrationTestEnvironment {
     private final class BundleToken {}
 }
 
-/// `state.json` as written by `infra/provision.sh`.
-struct SandboxState: Decodable, Sendable {
-    let region: String
-    let userPoolId: String
-    let appClientId: String
-    let identityPoolId: String
-    /// The plugin-parity resources `infra/parity.py` recorded; nil before it ran.
-    let parity: ParityState?
+/// A role's code API: the outputs' `data` block (`url`, `api_key`).
+struct CodeSinkAPI: Sendable {
+    let url: URL
+    /// Sent as `x-api-key`. Never printed.
+    let apiKey: SandboxSecret
 }
 
-/// The `parity` section of `state.json`. Only what the tests read.
-struct ParityState: Decodable, Sendable {
-    struct Pool: Decodable, Sendable {
-        /// The template features left off until a manual step is done, e.g. `email-mfa` until the SES
-        /// identity is verified, or `sms-mfa` while there is no SMS configuration. Empty when complete.
-        let pending: [String]?
-    }
-
-    let pools: [String: Pool]
-    /// The code sink's AppSync GraphQL endpoint (P-5c). Its API key is `users.json` `codeSinkApiKey`.
-    let codeSinkUrl: String
-
-    func pending(_ pool: SandboxPool) -> [String] {
-        pools[pool.stateKey]?.pending ?? []
-    }
-}
-
-/// The plugin-parity backends (P-6), each with its own
-/// `<rawValue>-amplify_outputs.json`, the plugin's file naming.
+/// The client's roles, each read from the plugin integration suites' outputs file for it.
 enum SandboxPool: String, CaseIterable, Sendable {
     /// U-DEF, the plugin's default backend: self sign-up with auto-confirm, custom auth, MFA optional,
-    /// device tracking.
+    /// device tracking, and an identity pool with guest access. Also the main configuration.
     case standard = "default"
-    /// U-DEF's hosted-UI app client (P-7). Its outputs file has the `oauth` block.
+    /// The plugin's hosted-UI backend. Its outputs file has the `oauth` block.
     case hostedUI = "hosted-ui"
     /// U-PL: choice-based sign-in (USER_AUTH).
     case passwordless
-    /// U-REQ-TS: MFA required, TOTP (and SMS once configured).
+    /// U-REQ-TS: MFA required, TOTP and SMS.
     case mfaRequiredTOTPSMS = "mfa-req-totp-sms"
-    /// U-REQ-E: MFA required with email and SMS, once SES and SMS are configured.
+    /// U-REQ-E: MFA required with email and SMS.
     case mfaRequiredEmail = "mfa-req-email"
-    /// U-REQ-ALL: MFA required, TOTP (plus SMS and email once configured).
+    /// U-REQ-ALL: MFA required, TOTP, SMS and email.
     case mfaRequiredAll = "mfa-req-all"
     /// U-ALIAS: email as the username, device tracking, 5-minute tokens.
     case emailAlias = "email-alias"
     /// U-WA: the plugin's WebAuthn backend, `WEB_AUTHN` with the plugin's relying party (P-10).
     case webAuthn = "webauthn"
 
-    /// The bundle resource name, without `.json`.
+    /// Whether the harness reads this role's codes from its plugin file's `data` block: the plugin backends
+    /// that capture every email and SMS code (passwordless and the two email-MFA ones). Tests that read a
+    /// code run on one of these, unless no such backend has the setting they assert on (README, "Which
+    /// backend a code-reading test runs on"); those require the `data` block of their own role's file.
+    var capturesCodes: Bool {
+        [.passwordless, .mfaRequiredEmail, .mfaRequiredAll].contains(self)
+    }
+
+    /// The bundle resource name, without `.json`: the plugin's file for the role.
     var outputsResource: String {
-        "\(rawValue)-amplify_outputs"
-    }
-
-    /// The pool's key in `state.json`'s `parity.pools`.
-    var stateKey: String {
-        self == .hostedUI ? SandboxPool.standard.rawValue : rawValue
-    }
-
-    /// The identity-only identity pool's outputs file (P-6′). It has no user pool, which
-    /// `AuthClientConfiguration(from:)` does not accept yet; read it with `outputsAuthSection(_:)`.
-    static let identityOnlyOutputsResource = "identity-only-amplify_outputs"
-}
-
-/// `users.json` as written by `infra/provision.sh`: every user's password, and carol's TOTP secret.
-///
-/// `prepare-run.sh` keeps the values stable, so a `test-without-building` re-run sees the same ones.
-struct SandboxUsers: Sendable {
-    /// Confirmed, permanent passwords, no MFA preference.
-    let alice: TestUser
-    let bob: TestUser
-    /// Confirmed, TOTP enrolled and preferred (P-2).
-    let carol: TestUser
-    let carolTOTPSecret: TOTPSecret
-    /// Reset to `FORCE_CHANGE_PASSWORD` with `password` before every run (P-3). The challenge test
-    /// sets `newPassword`.
-    let dave: TestUser
-    let daveNewPassword: TestUser
-    /// Recreated before every run (P-4), because the delete-user test deletes her.
-    let erin: TestUser
-    /// The code sink's AppSync API key (P-5c), sent as `x-api-key`.
-    let codeSinkAPIKey: SandboxSecret
-    /// The answer the custom-auth triggers accept (P-5b).
-    let customChallengeAnswer: SandboxSecret
-
-    /// Every key `users.json` must hold.
-    static let requiredKeys = [
-        "alice", "bob", "carol", "carolTotpSecret", "codeSinkApiKey", "customChallengeAnswer",
-        "daveNew", "daveTemporary", "erin"
-    ]
-
-    init(fields: [String: String]) throws {
-        func value(_ key: String) throws -> String {
-            guard let value = fields[key], !value.isEmpty else {
-                throw HarnessError.malformedFixture("""
-                users.json has no \(key). Re-run infra/provision.sh (it adds missing users and keeps \
-                existing passwords), then rebuild.
-                """)
-            }
-            return value
+        switch self {
+        case .standard: "AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
+        case .hostedUI: "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs"
+        case .passwordless: "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs"
+        case .mfaRequiredTOTPSMS: "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs"
+        case .mfaRequiredEmail: "AWSCognitoEmailMFARequiredTests-amplify_outputs"
+        case .mfaRequiredAll: "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs"
+        case .emailAlias: "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs"
+        case .webAuthn: "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
         }
-        self.alice = try TestUser(username: "alice", password: value("alice"))
-        self.bob = try TestUser(username: "bob", password: value("bob"))
-        self.carol = try TestUser(username: "carol", password: value("carol"))
-        self.carolTOTPSecret = try TOTPSecret(value("carolTotpSecret"))
-        self.dave = try TestUser(username: "dave", password: value("daveTemporary"))
-        self.daveNewPassword = try TestUser(username: "dave", password: value("daveNew"))
-        self.erin = try TestUser(username: "erin", password: value("erin"))
-        self.codeSinkAPIKey = try SandboxSecret(value("codeSinkApiKey"))
-        self.customChallengeAnswer = try SandboxSecret(value("customChallengeAnswer"))
     }
 }
 
-/// A provisioned user. The password is deliberately excluded from every textual representation,
+/// The default backend's credentials file (`AWSCognitoAuthPluginIntegrationTests-credentials.json`), with the
+/// keys the plugin's suites read and the client suites share: the fixtures only an administrator can make.
+struct PluginCredentials: Sendable {
+    /// `custom_challenge_answer`: the answer the backend's custom-auth triggers accept, as the plugin's
+    /// `AuthCustomSignInTests` read it.
+    let customChallengeAnswer: SandboxSecret?
+    /// `new_password_required_usernames`, comma-separated: users in `FORCE_CHANGE_PASSWORD`, each usable once,
+    /// as the plugin's `AuthSRPSignInTests.testNewPasswordRequired` reads them.
+    let newPasswordRequiredUsernames: [String]
+    /// `new_password_required_temporary_password`: their temporary password.
+    let newPasswordRequiredTemporaryPassword: SandboxSecret?
+    /// `second_identity_pool_id`: see `IntegrationTestEnvironment.secondIdentityPool()`.
+    let secondIdentityPoolId: String?
+
+    init(fields: [String: String]) {
+        func value(_ key: String) -> String? {
+            fields[key].flatMap { $0.isEmpty ? nil : $0 }
+        }
+        self.customChallengeAnswer = value("custom_challenge_answer").map(SandboxSecret.init)
+        self.newPasswordRequiredUsernames = (value("new_password_required_usernames") ?? "")
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        self.newPasswordRequiredTemporaryPassword = value("new_password_required_temporary_password").map(SandboxSecret.init)
+        self.secondIdentityPoolId = value("second_identity_pool_id")
+    }
+
+    /// The custom-auth answer; fails (never skips) without it.
+    func requireCustomChallengeAnswer() throws -> SandboxSecret {
+        guard let customChallengeAnswer else {
+            throw HarnessError.malformedFixture(Self.missing("custom_challenge_answer", "custom-auth triggers that accept it"))
+        }
+        return customChallengeAnswer
+    }
+
+    /// The new-password users and their temporary password; fails (never skips) without them.
+    func requireNewPasswordUsers() throws -> (usernames: [String], temporaryPassword: SandboxSecret) {
+        guard !newPasswordRequiredUsernames.isEmpty, let newPasswordRequiredTemporaryPassword else {
+            throw HarnessError.malformedFixture(Self.missing(
+                "new_password_required_usernames and new_password_required_temporary_password",
+                "users an administrator created in FORCE_CHANGE_PASSWORD with that temporary password"
+            ))
+        }
+        return (newPasswordRequiredUsernames, newPasswordRequiredTemporaryPassword)
+    }
+
+    private static func missing(_ keys: String, _ backend: String) -> String {
+        """
+        \(IntegrationTestEnvironment.credentialsResource).json has no \(keys): the default backend needs \
+        \(backend), as the plugin's own suite does.
+        """
+    }
+}
+
+/// A user and its password. The password is deliberately excluded from every textual representation,
 /// so an assertion failure or a log line cannot leak it.
 struct TestUser: Sendable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     let username: String
@@ -364,9 +450,10 @@ enum HarnessError: Error, CustomStringConvertible {
         switch self {
         case .missingFixture(let name):
             return """
-            \(name) is not in the test bundle. Run \
-            AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/provision.sh, then rebuild: \
-            the build phase copies it from $COGNITO_CLIENT_INTEG_DIR (default ~/.amplify-cognito-client-integ).
+            \(name) is not in the test bundle. The build phase copies the plugin's test configuration from \
+            $COGNITO_CLIENT_INTEG_DIR (default ~/.aws-amplify/amplify-ios/testconfiguration, where CI \
+            downloads it). For a local run, write it with infra/plugin-configs.py --dir <dir>, then rebuild \
+            with COGNITO_CLIENT_INTEG_DIR=<dir>.
             """
         case .malformedFixture(let message):
             return message

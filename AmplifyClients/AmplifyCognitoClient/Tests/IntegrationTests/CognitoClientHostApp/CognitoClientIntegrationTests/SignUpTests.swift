@@ -96,20 +96,22 @@ final class SignUpTests: ClientSignUpTestCase {
 
     // MARK: AuthConfirmSignUpTests
 
-    /// Confirming a user who does not exist fails with a code error, never `userNotFound`: the pool's app
-    /// client prevents user-existence errors (SU-5). Cognito answers `ExpiredCodeException` today. The plugin's
-    /// `AuthConfirmSignUpTests` accepts `userNotFound` or `codeMismatch`; with existence errors prevented, this one accepts the two code errors.
+    /// Confirming a user who does not exist fails (SU-5): with a code error where the pool's app client
+    /// prevents user-existence errors (Cognito answers `ExpiredCodeException` today), or with `userNotFound`
+    /// where it does not (`LEGACY`, the plugin's default backend's client). The plugin's
+    /// `AuthConfirmSignUpTests` accepts `userNotFound` or `codeMismatch`; this one accepts either setting's
+    /// answers.
     ///
     /// - Given: a username never registered on `default`
     /// - When:
     ///    - the client confirms it with a code
     /// - Then:
-    ///    - it throws `.service` with `codeMismatch` or `codeExpired`
+    ///    - it throws `.service` with `codeMismatch` or `codeExpired`, or `userNotFound`
     ///
     func testUserNotFoundConfirmSignUp() async throws {
         let client = try makeClient("su-5", pool: .standard)
 
-        await assertService([.codeMismatch, .codeExpired]) {
+        await assertService([.codeMismatch, .codeExpired, .userNotFound]) {
             try await client.confirmSignUp(for: SandboxSignUp.identity().username, confirmationCode: "232323")
         }
     }
@@ -134,23 +136,29 @@ final class SignUpTests: ClientSignUpTestCase {
 
     // MARK: AuthResendSignUpCodeTests
 
-    /// Resending the code of a user who does not exist answers a simulated email delivery: the pool
-    /// prevents existence errors and verifies email (SU-7, the plugin's Gen2 expectation).
+    /// Resending the code of a user who does not exist answers a simulated email delivery where the pool's
+    /// app client prevents existence errors and the pool verifies email (SU-7, the plugin's Gen2
+    /// expectation), or `userNotFound` or `limitExceeded` where it does not (`LEGACY`), which the plugin's
+    /// `AuthResendSignUpCodeTests` accepts too.
     ///
     /// - Given: a username never registered on `default`
     /// - When:
     ///    - the client resends its sign-up code
     /// - Then:
-    ///    - the destination is an email, and one `ResendConfirmationCode` was sent
+    ///    - the destination is an email, or the error is `.service` with `userNotFound` or `limitExceeded`
+    ///    - one `ResendConfirmationCode` was sent
     ///
     func testUserNotFoundResendSignUpCode() async throws {
         let recorder = RecordingHTTPClient()
         let client = try makeClient("su-7", pool: .standard, configureUserPoolClient: recorder.configureUserPoolClient)
 
-        let details = try await client.resendSignUpCode(for: SandboxSignUp.identity().username)
-
-        guard case .email = details.destination else {
-            return XCTFail("expected an email destination")
+        do {
+            let details = try await client.resendSignUpCode(for: SandboxSignUp.identity().username)
+            guard case .email = details.destination else {
+                return XCTFail("expected an email destination")
+            }
+        } catch AuthClientError.service(let code?, _, _, _) where [.userNotFound, .limitExceeded].contains(code) {
+            // User-existence errors are on.
         }
         XCTAssertEqual(recorder.operations, ["ResendConfirmationCode"])
     }
@@ -262,20 +270,21 @@ final class SignUpTests: ClientSignUpTestCase {
 
     // MARK: PasswordlessConfirmSignUpTests
 
-    /// Confirming a user who does not exist fails with a code error, never `userNotFound`: the pool's app
-    /// client prevents user-existence errors (SU-12). Cognito answers `ExpiredCodeException` today. The plugin's
-    /// `PasswordlessConfirmSignUpTests` accepts `userNotFound`, `codeMismatch` or `codeExpired`; with existence errors prevented, this one accepts the two code errors.
+    /// Confirming a user who does not exist fails (SU-12): with a code error where the pool's app client
+    /// prevents user-existence errors (Cognito answers `ExpiredCodeException` today), or with `userNotFound`
+    /// where it does not. The plugin's `PasswordlessConfirmSignUpTests` accepts `userNotFound`,
+    /// `codeMismatch` or `codeExpired`, and so does this one.
     ///
     /// - Given: a username never registered on `passwordless`
     /// - When:
     ///    - the client confirms it with a code
     /// - Then:
-    ///    - it throws `.service` with `codeMismatch` or `codeExpired`
+    ///    - it throws `.service` with `codeMismatch` or `codeExpired`, or `userNotFound`
     ///
     func testFailurePasswordlessConfirmSignUpUserNotFound() async throws {
         let client = try makeClient("su-12", pool: .passwordless)
 
-        await assertService([.codeMismatch, .codeExpired]) {
+        await assertService([.codeMismatch, .codeExpired, .userNotFound]) {
             try await client.confirmSignUp(for: SandboxSignUp.identity().username, confirmationCode: "123456")
         }
     }

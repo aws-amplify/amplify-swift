@@ -12,16 +12,17 @@ import UIKit
 @MainActor
 enum HostedUIHarness {
 
-    /// The hosted-UI app client's outputs file (P-7: the `default` pool, its `…-hostedui` client and the
-    /// `oauth` block), copied into the app bundle at build time from `~/.amplify-cognito-client-integ` (the
-    /// "Copy sandbox configuration" phase).
-    static let outputsResource = "hosted-ui-amplify_outputs"
+    /// The plugin's hosted-UI backend's outputs file, with its `oauth` block (on the sandbox, P-7: the
+    /// `default` pool and its `…-hostedui-plugin` client, redirecting to `myapp://`), copied into the app
+    /// bundle at build time from `$COGNITO_CLIENT_INTEG_DIR` (default `~/.aws-amplify/amplify-ios/testconfiguration`,
+    /// the "Copy test configuration" phase).
+    static let outputsResource = "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs"
 
     /// The client on the default session, as an app with one user would use it.
     static func makeClient() -> Result<AmplifyCognitoClient, HarnessAppError> {
         guard Bundle.main.url(forResource: outputsResource, withExtension: "json") != nil else {
             return .failure(HarnessAppError(
-                "\(outputsResource).json is not in the app bundle. Run infra/provision.sh, then rebuild."
+                "\(outputsResource).json is not in the app bundle: it is copied from $COGNITO_CLIENT_INTEG_DIR at build time."
             ))
         }
         do {

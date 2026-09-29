@@ -8,7 +8,8 @@
 """Self-tests for parity.py's self sign-up rules: preflight and verify refuse a missing pool or one whose
 self sign-up differs from its template, and provision never re-enables it without the explicit opt-in; and
 the reset of the plugin's new-password users tolerates an overlapping run; and the WebAuthn harness's committed
-relying party and app ID are found, and provision never switches a live WebAuthn pool off.
+relying party and app ID are found, and provision never switches a live WebAuthn pool off; and the plugin
+identity pool (P-13) federates the passwordless pool, and the passwordless outputs name it.
 
     python3 infra/test_parity.py
 
@@ -549,6 +550,101 @@ class WebAuthnHarnessIdentityTests(unittest.TestCase):
         self.assertIn("the gap", str(refused.exception.code))
         pending = {"pools": {"webauthn": {"userPoolId": "p", "pending": ["web-authn"]}}}
         self.assertEqual(self.parity.webauthn_relying_party_or_refuse(pending), (None, "the gap"))
+
+
+class PluginIdentityPoolTests(unittest.TestCase):
+    """P-13: its providers (the default pool's plugin and hosted-UI clients, and the passwordless pool's
+    client), the update that adds a missing one after a tag check, and the passwordless outputs that name
+    it. Over a scripted Cognito Identity: no AWS call is made."""
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.parity.REGION = "xx-test-1"
+        self.parity.say = lambda message: None
+        self.record = {"pools": {
+            "default": {"userPoolId": "xx-test-1_default", "clients": {"client": "c-client", "plugin": "c-plugin",
+                                                                        "hostedui": "c-hosted",
+                                                                        "hostedui-plugin": "c-hosted-plugin"}},
+            "passwordless": {"userPoolId": "xx-test-1_passwordless", "clients": {"client": "c-passwordless"}},
+            "webauthn": {"userPoolId": "xx-test-1_webauthn", "clients": {"client": "c-webauthn"}}},
+            "pluginIdentityPoolId": "xx-test-1:plugin"}
+        self.calls = []
+        self.current_providers = []
+        self.parity.aws = self.fake_aws
+        self.parity.aws_or_none = lambda *args, **kwargs: {}
+        self.parity.require_identity_pool_tag = lambda pool_id, label: self.calls.append(("tag-check", pool_id))
+        self.parity.ensure_permissionless_role = lambda suffix, trust: f"arn:role/{suffix}"
+        self.parity.run_with_iam_retry = lambda function: function()
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def fake_aws(self, *args, stdin=None, **kwargs):
+        operation = args[1]
+        self.calls.append((operation, stdin))
+        if operation == "describe-identity-pool":
+            return {"AllowUnauthenticatedIdentities": True, "CognitoIdentityProviders": self.current_providers}
+        return {}
+
+    def operations(self):
+        return [name for name, _ in self.calls]
+
+    def test_providers_are_the_default_plugin_clients_and_the_passwordless_client(self):
+        providers = self.parity.plugin_identity_providers(self.record)
+        self.assertEqual(
+            sorted((p["ProviderName"], p["ClientId"]) for p in providers),
+            [("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_default", "c-hosted-plugin"),
+             ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_default", "c-plugin"),
+             ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_passwordless", "c-passwordless")])
+        self.assertTrue(all(p["ServerSideTokenCheck"] is False for p in providers))
+
+    def test_a_pool_without_the_passwordless_provider_is_updated_after_a_tag_check(self):
+        self.current_providers = [p for p in self.parity.plugin_identity_providers(self.record)
+                                  if "passwordless" not in p["ProviderName"]]
+        self.parity.ensure_plugin_identity_pool(self.record)
+        update = [stdin for name, stdin in self.calls if name == "update-identity-pool"]
+        self.assertEqual(len(update), 1)
+        self.assertEqual(update[0]["CognitoIdentityProviders"], self.parity.plugin_identity_providers(self.record))
+        index = self.operations().index("update-identity-pool")
+        self.assertEqual(self.operations()[index - 1], "tag-check")
+
+    def test_a_pool_with_every_provider_is_not_updated(self):
+        self.current_providers = list(reversed(self.parity.plugin_identity_providers(self.record)))
+        self.parity.ensure_plugin_identity_pool(self.record)
+        self.assertNotIn("update-identity-pool", self.operations())
+
+    def test_the_passwordless_outputs_name_the_plugin_identity_pool_and_keep_the_rest(self):
+        document = {"version": "1.4", "auth": {"user_pool_id": "xx-test-1_passwordless",
+                                               "unauthenticated_identities_enabled": False}}
+        other = {"version": "1.4", "auth": {"user_pool_id": "xx-test-1_default"}}
+        self.parity.write_outputs("passwordless", document)
+        self.parity.write_outputs("default", other)
+
+        self.parity.name_plugin_identity_pool_in_outputs(self.record)
+
+        with open(self.parity.outputs_path("passwordless")) as f:
+            written = json.load(f)
+        self.assertEqual(written["auth"], {"user_pool_id": "xx-test-1_passwordless",
+                                           "identity_pool_id": "xx-test-1:plugin",
+                                           "unauthenticated_identities_enabled": True})
+        self.assertEqual(written["version"], "1.4")
+        self.assertEqual(os.stat(self.parity.outputs_path("passwordless")).st_mode & 0o777, 0o600)
+        with open(self.parity.outputs_path("default")) as f:
+            self.assertEqual(json.load(f), other)
+
+    def test_naming_twice_writes_the_same_file(self):
+        self.parity.write_outputs("passwordless", {"version": "1.4", "auth": {"user_pool_id": "p"}})
+        self.parity.name_plugin_identity_pool_in_outputs(self.record)
+        with open(self.parity.outputs_path("passwordless")) as f:
+            first = f.read()
+        self.parity.name_plugin_identity_pool_in_outputs(self.record)
+        with open(self.parity.outputs_path("passwordless")) as f:
+            self.assertEqual(f.read(), first)
 
 
 if __name__ == "__main__":

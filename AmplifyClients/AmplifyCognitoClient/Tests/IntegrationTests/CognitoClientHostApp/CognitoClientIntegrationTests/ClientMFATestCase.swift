@@ -19,14 +19,17 @@ import XCTest
 /// values.
 class ClientMFATestCase: ClientIntegrationTestCase {
 
-    /// A fresh user on U-DEF (`default`), signed in through a new client on its own session. Hold the
-    /// client in a local; `tearDown` signs the session out, then deletes the user.
+    /// A fresh user on `pool` (U-DEF, `default`, unless a test reads a code: then U-PL, `passwordless`, the
+    /// backend with the same MFA settings, optional with TOTP and SMS, whose outputs name a code API),
+    /// signed in through a new client on its own session. Hold the client in a local; `tearDown` signs the
+    /// session out, then deletes the user.
     func signedInFreshUser(
         _ tag: String,
+        on pool: SandboxPool = .standard,
         withPhoneNumber: Bool = false
     ) async throws -> (client: AmplifyCognitoClient, user: FreshUser) {
-        let user = try await makeFreshUser(on: .standard, .init(withPhoneNumber: withPhoneNumber))
-        let client = try makeClient(tag, pool: .standard)
+        let user = try await makeFreshUser(on: pool, .init(withPhoneNumber: withPhoneNumber))
+        let client = try makeClient(tag, pool: pool)
         let result = try await client.signIn(username: user.username, password: XCTUnwrap(user.password))
         guard case .done = result.nextStep else {
             throw HarnessError.malformedFixture("The fresh user's sign-in stopped at \(Self.name(of: result.nextStep)).")

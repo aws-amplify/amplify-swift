@@ -9,13 +9,13 @@
 import AWSCognitoIdentity
 import XCTest
 
-/// Proves the harness can reach the sandbox from inside the simulator, before the client can sign
+/// Proves the harness can reach the backend from inside the simulator, before the client can sign
 /// in. Talks to Cognito through the AWS SDK directly; credentials are asserted on, never printed.
 final class CognitoBackendSmokeTests: XCTestCase {
 
-    /// The sandbox identity pool vends guest credentials to this harness.
+    /// The default backend's identity pool vends guest credentials to this harness.
     ///
-    /// - Given: The identity pool from the provisioned `amplify_outputs.json`, which allows
+    /// - Given: The identity pool from the default backend's outputs, which allows
     ///   unauthenticated identities
     /// - When:
     ///    - `GetId` is called with no logins, then `GetCredentialsForIdentity` for that identity
@@ -50,38 +50,34 @@ final class CognitoBackendSmokeTests: XCTestCase {
         XCTAssertGreaterThan(expiration, Date())
     }
 
-    /// Every provisioned user, and carol's TOTP secret, reach the test bundle.
+    /// Every fixture the client suites cannot make themselves reaches the test bundle: nothing is seeded,
+    /// so these are the backend's only prerequisites beyond its settings.
     ///
-    /// - Given: The sandbox's `users.json`, copied into the test bundle
+    /// - Given: The plugin's test configuration, copied into the test bundle
     /// - When:
-    ///    - It is decoded
+    ///    - Every role's outputs file and the default backend's credentials file are decoded
     /// - Then:
-    ///    - It holds every key the client suites use: passwords for `alice`, `bob`, `carol` and `erin`,
-    ///      `dave`'s temporary and new passwords, `carol`'s TOTP secret, and the parity secrets (the code
-    ///      sink's API key and the custom-challenge answer), each non-empty. Other keys — such as the ones
-    ///      the plugin suites' provisioning adds — are allowed
-    ///    - `dave`'s two passwords differ, so the new-password challenge really changes his password
+    ///    - Each role's outputs file loads, and each role the harness reads codes from
+    ///      (`SandboxPool.capturesCodes`: passwordless and the two email-MFA backends, the plugin backends
+    ///      that capture them) names a code API (`data`, with a URL and an API key). The other roles' files
+    ///      need none: a test that reads a code there requires it itself, and fails naming the file
+    ///    - The credentials file holds the keys the client suites use, each non-empty: the custom-challenge
+    ///      answer (`custom_challenge_answer`), at least one new-password user
+    ///      (`new_password_required_usernames`) and their temporary password
+    ///      (`new_password_required_temporary_password`). Other keys, such as the plugin suites', are allowed
     ///
     func testProvisionedUsersAreAvailable() throws {
         try IntegrationTestEnvironment.requireProvisioned()
-        let url = try XCTUnwrap(IntegrationTestEnvironment.bundle.url(
-            forResource: IntegrationTestEnvironment.usersResource,
-            withExtension: "json"
-        ))
-        let fields = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: String])
-        let missing = Set(SandboxUsers.requiredKeys).subtracting(fields.keys)
-        XCTAssertTrue(missing.isEmpty, "users.json is missing \(missing.sorted())")
-
-        let users = try IntegrationTestEnvironment.users()
-        let passwords = [users.alice, users.bob, users.carol, users.dave, users.daveNewPassword, users.erin]
-        XCTAssertEqual(passwords.map(\.username), ["alice", "bob", "carol", "dave", "dave", "erin"])
-        for user in passwords {
-            XCTAssertFalse(user.password.isEmpty, "\(user) has an empty password")
+        for pool in SandboxPool.allCases {
+            XCTAssertNoThrow(try IntegrationTestEnvironment.configuration(pool), "\(pool.outputsResource).json")
         }
-        XCTAssertFalse(users.carolTOTPSecret.base32.isEmpty, "carol has no TOTP secret")
-        XCTAssertFalse(users.codeSinkAPIKey.value.isEmpty, "No code sink API key")
-        XCTAssertFalse(users.customChallengeAnswer.value.isEmpty, "No custom-challenge answer")
-        // Not XCTAssertNotEqual: its failure message would print both passwords.
-        XCTAssertFalse(users.dave.password == users.daveNewPassword.password, "dave's temporary and new passwords are the same")
+        for pool in SandboxPool.allCases where pool.capturesCodes {
+            XCTAssertNoThrow(try IntegrationTestEnvironment.codeSinkAPI(pool), "\(pool.outputsResource).json has no code API")
+        }
+
+        let credentials = try IntegrationTestEnvironment.credentials()
+        XCTAssertFalse(credentials.customChallengeAnswer?.value.isEmpty ?? true, "No custom-challenge answer")
+        XCTAssertFalse(credentials.newPasswordRequiredUsernames.isEmpty, "No new-password users")
+        XCTAssertFalse(credentials.newPasswordRequiredTemporaryPassword?.value.isEmpty ?? true, "No temporary password")
     }
 }

@@ -11,6 +11,10 @@ import XCTest
 /// Parity MF-7 … MF-12: the plugin's `MFAPreferenceTests`, with their
 /// names and steps, on U-DEF through the client. Users that need SMS get a fictional `+1 555` number; the
 /// custom SMS sender means no message is ever sent.
+///
+/// MF-10 and MF-12 leave their user with SMS preferred, so the teardown's sign-in is challenged `SMS_MFA`
+/// and reads the SMS code: they run on U-PL (`passwordless`), the plugin backend with the same MFA settings
+/// (optional, TOTP and SMS) whose outputs name a code API. The others run on U-DEF, as the plugin's do.
 final class MFAPreferenceTests: ClientMFATestCase {
 
     private func assertPreference(
@@ -93,7 +97,7 @@ final class MFAPreferenceTests: ClientMFATestCase {
 
     /// MF-10: SMS and TOTP together.
     ///
-    /// - Given: a fresh user with a phone number, signed in through the client, who enrolls TOTP
+    /// - Given: a fresh user with a phone number on U-PL, signed in through the client, who enrolls TOTP
     /// - When:
     ///    - both enabled; SMS preferred; SMS not preferred with TOTP preferred; SMS disabled; SMS preferred
     ///      again, fetching after each
@@ -102,7 +106,7 @@ final class MFAPreferenceTests: ClientMFATestCase {
     ///      `[.sms, .totp]`/`.sms` (preferring SMS takes the preference from TOTP)
     ///
     func testFetchAndUpdateMFAPreferenceForSMSAndTOTP() async throws {
-        let (client, user) = try await signedInFreshUser("mf-10", withPhoneNumber: true)
+        let (client, user) = try await signedInFreshUser("mf-10", on: .passwordless, withPhoneNumber: true)
         try await assertPreference(client, enabled: nil, preferred: nil, "a new user")
         try await enrollTOTP(client, user)
 
@@ -146,14 +150,14 @@ final class MFAPreferenceTests: ClientMFATestCase {
 
     /// MF-12: `.enabled` keeps the preferred type preferred.
     ///
-    /// - Given: a fresh user with a phone number, signed in through the client, who enrolls TOTP
+    /// - Given: a fresh user with a phone number on U-PL, signed in through the client, who enrolls TOTP
     /// - When:
     ///    - SMS preferred with TOTP enabled; then both updated to `.enabled`
     /// - Then:
     ///    - both fetches read `[.sms, .totp]`/`.sms`
     ///
     func testFetchAndUpdateMFAPreferenceForAlreadyPreferredMethod() async throws {
-        let (client, user) = try await signedInFreshUser("mf-12", withPhoneNumber: true)
+        let (client, user) = try await signedInFreshUser("mf-12", on: .passwordless, withPhoneNumber: true)
         try await assertPreference(client, enabled: nil, preferred: nil, "a new user")
         try await enrollTOTP(client, user)
 

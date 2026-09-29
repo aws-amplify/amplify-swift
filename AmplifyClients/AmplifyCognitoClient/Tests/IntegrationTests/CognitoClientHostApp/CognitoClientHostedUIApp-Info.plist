@@ -9,6 +9,7 @@
 			<string>com.aws.amplify.cognitoclient.CognitoClientHostedUIApp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>myapp</string>
 				<string>cognitoclienthostapp</string>
 			</array>
 		</dict>

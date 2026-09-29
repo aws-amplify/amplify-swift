@@ -24,8 +24,8 @@ import XCTest
 /// query matches every entitled group. This asserts what the simulator keychain does, end to end,
 /// with a real plugin session.
 ///
-/// Signs `alice` in through the plugin against the sandbox, so it needs the provisioned fixtures and
-/// the network. It uses the plugin's real services and its `UserDefaults` access-group record, which
+/// Signs `alice`, a fresh user the test signs up, in through the plugin against the default backend, so
+/// it needs the test configuration and the network. It uses the plugin's real services and its `UserDefaults` access-group record, which
 /// are cleared before and after the test.
 final class AccessGroupRemovalRealKeychainTests: XCTestCase {
 
@@ -35,6 +35,8 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
 
     private var sharedGroup = ""
     private var configuration: AuthClientConfiguration?
+    /// The test's own user, deleted at teardown.
+    private var alice: InteropUser?
 
     override func setUp() async throws {
         try await super.setUp()
@@ -58,6 +60,9 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
             _ = await Amplify.Auth.signOut()
         }
         await Amplify.reset()
+        if let alice {
+            await InteropEnvironment.deleteFreshUser(alice)
+        }
         resetPluginState()
         try await super.tearDown()
     }
@@ -83,8 +88,10 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         let configuration = try XCTUnwrap(configuration)
         let sessionAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
 
+        let alice = try await InteropEnvironment.signUpFreshUser()
+        self.alice = alice
         try await configurePlugin(accessGroup: AccessGroup(name: sharedGroup, migrateKeychainItemsOfUserSession: true))
-        let signIn = try await Amplify.Auth.signIn(username: "alice", password: InteropEnvironment.password(for: "alice"))
+        let signIn = try await Amplify.Auth.signIn(username: alice.username, password: alice.password)
         XCTAssertTrue(signIn.isSignedIn, "alice did not sign in through the plugin: \(signIn.nextStep)")
         let before = rows()
         RealKeychain.report(self, "signed in with group S: \(before)")
@@ -115,7 +122,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration)
         let defaultRow = listed.first { $0.sessionId == .default }
         RealKeychain.report(self, "the client lists \(listed)")
-        XCTAssertEqual(defaultRow?.username, "alice", "the client's listing is \(listed)")
+        XCTAssertTrue(defaultRow?.username == alice.username, "the client's listing is \(listed)")
         XCTAssertEqual(defaultRow?.kind, .userPoolAndIdentityPool, "the client's listing is \(listed)")
     }
 

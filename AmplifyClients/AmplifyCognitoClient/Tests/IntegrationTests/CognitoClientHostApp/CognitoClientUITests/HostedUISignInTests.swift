@@ -11,8 +11,10 @@ import XCTest
 
 /// The plugin's `AuthHostedUIAppUITests/HostedUISignInTests`, for the client.
 ///
-/// Both tests drive `CognitoClientHostedUIApp` through the hosted UI of the sandbox's `default` pool (P-7),
-/// with a fresh user each, and differ only in the window the app passes to `signInWithWebUI`:
+/// Both tests drive `CognitoClientHostedUIApp` through the hosted UI of the plugin's hosted-UI backend
+/// (`AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json`; on the sandbox, the `default` pool's
+/// P-7 domain), with a fresh user each on that backend, and differ only in the window the app passes to
+/// `signInWithWebUI`:
 ///  - HU-1 `testSignInSuccess`: the view's window, as the plugin's test passes its scene's window.
 ///  - HU-2 `testSignInWithoutPresentationAnchorSuccess`: a window the app looks up itself, the key
 ///    window of the foreground scene, which is the lookup the plugin's anchor-less call does internally. The
@@ -70,14 +72,14 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
 
     /// HU-1. The plugin's `testSignInSuccess`: a hosted-UI sign-in over the view's window.
     ///
-    /// - Given: The `default` pool's hosted UI (P-7) and a fresh, confirmed user created through the API
+    /// - Given: The hosted-UI backend's hosted UI and a fresh, confirmed user created on it through the API
     ///   (`SandboxSignUp`, deleted at teardown)
     /// - When:
     ///    - The app calls `signInWithWebUI(presentationAnchor:)` with its view's window and a private session,
     ///      and the user's name and password are pasted into the hosted UI's form
     /// - Then:
-    ///    - The browser returns to the app (`cognitoclienthostapp://signin/`), the session is signed in and
-    ///      `getCurrentUser` names the user
+    ///    - The browser returns to the app (the outputs' sign-in redirect, the plugin's `myapp://`), the
+    ///      session is signed in and `getCurrentUser` names the user
     ///    - `signOut(presentationAnchor:)` completes without showing a browser, and leaves the session
     ///      signed out
     ///
@@ -108,7 +110,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
         guard app.staticTexts["SessionState"].label == "Signed out" else {
             throw UIStepFailure("The app is not signed out at the start: \(lastResult)")
         }
-        let user = try await signUpFreshUser(on: .standard)
+        let user = try await signUpFreshUser(on: .hostedUI)
         // Registered after the user's deletion, so it runs first: a session still signed in is signed out
         // (revoking its tokens) before the user deletes itself.
         addTeardownBlock { @MainActor [weak self] in

@@ -28,7 +28,7 @@ final class UserAgentTests: ClientIntegrationTestCase {
     ///
     func testEveryCognitoRequestCarriesTheAmplifyUserAgent() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let alice = try IntegrationTestEnvironment.users().alice
+        let alice = try await makeSignInUser()
         let sessionId = try makeSessionID("alice")
         let recorder = RecordingHTTPClient()
         let client = try AmplifyCognitoClient(
