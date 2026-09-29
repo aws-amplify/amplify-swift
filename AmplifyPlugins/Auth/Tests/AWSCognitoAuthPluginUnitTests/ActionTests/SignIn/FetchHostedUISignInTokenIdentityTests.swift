@@ -33,7 +33,8 @@ class FetchHostedUISignInTokenIdentityTests: XCTestCase, @unchecked Sendable {
         try super.setUpWithError()
         // `MockURLProtocol` answers the token exchange. On watchOS the session does not route the request
         // through the configuration's `protocolClasses`: it goes to the network, and fails there with
-        // NSURLErrorCannotFindHost.
+        // NSURLErrorCannotFindHost. The skip drops no product coverage: the hosted UI is not offered on watchOS,
+        // where `signInWithWebUI` does not exist (`#if os(iOS) || os(macOS) || os(visionOS)`).
         #if os(watchOS)
         throw XCTSkip("MockURLProtocol cannot answer URLSession requests on watchOS")
         #endif
