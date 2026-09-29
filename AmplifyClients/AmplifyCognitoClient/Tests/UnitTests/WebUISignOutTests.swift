@@ -139,6 +139,9 @@ final class WebUISignOutTests: XCTestCase {
     ///    - the logout page is presented, under the sheet the session holds once the passkey sheet has closed;
     ///      the result is `.complete`, not `.partial` with `browserBusy`, and the session is signed out
     func testASignOutClosesTheSessionsOwnPasskeySheetAndShowsTheLogout() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -184,6 +187,9 @@ final class WebUISignOutTests: XCTestCase {
     ///    - the registration throws `passkeyRegistrationEnded()`: "cancelled by a sign-out, purge or deletion of
     ///      this session", "if the session is still signed in, register the passkey again"
     func testAClosedLogoutPageLeavesTheStoppedRegistrationsErrorTrue() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
         let payload = HostedUIFixtures.hostedUIPayload()
         try harness.signIn(work, payload)
         let client = try client(work)
@@ -228,6 +234,9 @@ final class WebUISignOutTests: XCTestCase {
     ///      engine was told `.skip`, and the session is signed out
     ///    - once the sheet finally closes, the lock is free
     func testALogoutPageWhosePasskeySheetNeverClosesIsSkippedAsBusy() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
         harness.sheetLock = SystemSheetLock(sleep: { _ in })
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
@@ -269,6 +278,9 @@ final class WebUISignOutTests: XCTestCase {
     ///      queued behind the other session, and the session is signed out
     ///    - the stopped registration reports `passkeyRegistrationEnded()` and never shows its sheet
     func testAStoppedRegistrationDoesNotMakeThePageWaitForAnotherSessionsSheet() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
         harness.sheetLock = SystemSheetLock(sleep: { _ in XCTFail("the logout page queued behind another session") })
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
@@ -321,6 +333,9 @@ final class WebUISignOutTests: XCTestCase {
     ///      `.present`, the session signed out
     ///    - the registration never shows its sheet, and reports `passkeyRegistrationEnded()`
     func testALeaseNotYetAttachedIsStoppedSoThePageShows() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
         let seamHeld = Gate(isOpen: true)
         let seamRelease = Gate()
         let firstGrant = TestBox(true)
