@@ -219,7 +219,7 @@ public final actor WebSocketClient: NSObject {
 
         connection?.resume()
 
-        // Detect a silently-dead socket (e.g. same-network TCP route swap) and recycle it.
+        // Monitor for a silently dead socket, such as after a same-network TCP route swap.
         startPingMonitor()
     }
 
@@ -279,7 +279,12 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
     ) {
         log.debug("[WebSocketClient] Websocket disconnected")
         subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
-        Task { await stopPingMonitor() }
+        // Only tear down the monitor if this close is for the current socket. A late close from a
+        // superseded socket must not cancel the replacement socket's monitor.
+        Task { [weak self] in
+            guard let self, await webSocketTask === connection else { return }
+            await stopPingMonitor()
+        }
     }
 
     public nonisolated func urlSession(
@@ -405,7 +410,7 @@ extension WebSocketClient {
 
 // MARK: - liveness ping monitor
 extension WebSocketClient {
-    /// Periodically probes the connection and recycles a dead socket via the existing retry path (not via `NWPathMonitor` events).
+    /// Probes the connection and closes a dead socket so automatic retry can reconnect it when enabled.
     private func startPingMonitor() {
         pingMonitorTask?.cancel()
         pingMonitorTask = Task { [weak self] in
@@ -430,7 +435,7 @@ extension WebSocketClient {
         pingMonitorTask = nil
     }
 
-    /// Closes the socket after `maxMissedPings` consecutive failed probes.
+    /// Closes the socket after `maxMissedPings` consecutive failed probes so automatic retry can reconnect it when enabled.
     private func performLivenessCheck() async {
         guard let connection, connection.state == .running else { return }
 
