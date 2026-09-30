@@ -169,6 +169,11 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [disconnectExpectation, reconnectedExpectation], timeout: timeout, enforceOrder: true)
     }
 
+    /// Verifies that repeated probe failures recycle the socket and it reconnects.
+    ///
+    /// - Given: A probe that fails twice and then succeeds, with auto-retry enabled
+    /// - When: The liveness monitor runs
+    /// - Then: The socket closes with `.abnormalClosure` and then reconnects, in that order
     func testLivenessPing_recyclesConnection_whenServerDoesNotRespondToPing() async throws {
         var cancellables = Set<AnyCancellable>()
         guard let endpoint = try localWebSocketServer?.start() else {
@@ -176,8 +181,8 @@ class WebSocketClientTests: XCTestCase {
             return
         }
 
-        // Dead socket (no pong) for the first connection, healthy after: the client should
-        // detect the zombie, recycle, and reconnect.
+        // Synthetic probe: fails the first two checks, then succeeds. The local server stays up;
+        // no real pong is suppressed.
         actor DeadThenAlive {
             private var calls = 0
             func probe() -> Bool {
@@ -212,13 +217,18 @@ class WebSocketClientTests: XCTestCase {
         await fulfillment(of: [disconnected, reconnected], timeout: timeout, enforceOrder: true)
     }
 
+    /// Verifies that a single failed probe does not recycle the connection (anti-flap guard).
+    ///
+    /// - Given: A probe that fails once and then succeeds
+    /// - When: Several liveness cycles run
+    /// - Then: The original connection remains active
     func testLivenessPing_doesNotRecycle_onSingleMiss() async throws {
         guard let endpoint = try localWebSocketServer?.start() else {
             XCTFail("Local WebSocket server failed to start")
             return
         }
 
-        // Anti-flap guard (not a #3976 regression test): one miss then healthy must not recycle.
+        // Synthetic probe: fails once, then succeeds.
         actor MissOnce {
             private var calls = 0
             func probe() -> Bool {

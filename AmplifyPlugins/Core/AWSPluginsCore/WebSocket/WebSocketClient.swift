@@ -48,15 +48,15 @@ public final actor WebSocketClient: NSObject {
     /// A flag indicating whether to automatically retry on connection failure
     private var autoRetryOnConnectionFailure: Bool
 
-    /// Interval between client-initiated liveness pings. A ping is sent this often while connected.
+    /// Interval between liveness probes while the socket is running.
     private let pingInterval: TimeInterval
-    /// How long to wait for a pong before treating the connection as dead.
+    /// Timeout passed to the liveness probe.
     private let pingTimeout: TimeInterval
-    /// Number of consecutive missed pings required before recycling the connection.
+    /// Number of consecutive failed probes required before closing the connection.
     private let maxMissedPings: Int
-    /// Liveness probe for a connection; overridable in tests. Defaults to a ping/pong within the timeout.
+    /// Liveness probe for a connection; overridable in tests. Defaults to a WebSocket ping/pong.
     private let isConnectionAlive: @Sendable (URLSessionWebSocketTask, TimeInterval) async -> Bool
-    /// Count of consecutive missed pings for the current connection.
+    /// Count of consecutive failed probes for the current connection.
     private var missedPingCount: Int = 0
     /// The task running the periodic liveness-ping loop for the current connection.
     private var pingMonitorTask: Task<Void, Never>?
@@ -79,10 +79,10 @@ public final actor WebSocketClient: NSObject {
         - protocols: WebSocket subprotocols, for header `Sec-WebSocket-Protocol`
         - interceptor: An optional interceptor for additional info before establishing the connection
         - networkMonitor: Provides network status notifications
-        - pingInterval: How often to send a client-initiated liveness ping while connected
-        - pingTimeout: How long to wait for a pong before counting the ping as missed
-        - maxMissedPings: Consecutive missed pings that trigger a reconnect
-        - isConnectionAlive: Liveness probe; defaults to a WebSocket ping/pong. Injectable for tests
+        - pingInterval: How often to run the liveness probe while the socket is running
+        - pingTimeout: Timeout passed to the liveness probe
+        - maxMissedPings: Consecutive failed probes before closing the socket with `.abnormalClosure`
+        - isConnectionAlive: Probe used to test the socket; defaults to WebSocket ping/pong
      */
     public init(
         url: URL,
@@ -264,6 +264,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
     ) {
         log.debug("[WebSocketClient] Websocket disconnected")
         subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
+        Task { await stopPingMonitor() }
     }
 
     public nonisolated func urlSession(
@@ -389,17 +390,22 @@ extension WebSocketClient {
 
 // MARK: - liveness ping monitor
 extension WebSocketClient {
-    /// Periodically pings the connection and recycles a dead socket via the existing retry path (not via `NWPathMonitor` events).
+    /// Periodically probes the connection and recycles a dead socket via the existing retry path (not via `NWPathMonitor` events).
     private func startPingMonitor() {
         pingMonitorTask?.cancel()
         pingMonitorTask = Task { [weak self] in
             while !Task.isCancelled {
-                guard let interval = self?.pingInterval else { return }
-                try? await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+                guard let self, await connection?.state == .running else { return }
+                let nanoseconds = pingInterval * 1_000_000_000
+                guard nanoseconds.isFinite,
+                      nanoseconds >= 1,
+                      nanoseconds <= Double(UInt64.max)
+                else { return }
+                try? await Task.sleep(nanoseconds: UInt64(nanoseconds))
                 if Task.isCancelled {
                     return
                 }
-                await self?.performLivenessCheck()
+                await performLivenessCheck()
             }
         }
     }
@@ -409,11 +415,13 @@ extension WebSocketClient {
         pingMonitorTask = nil
     }
 
-    /// Recycles the connection after `maxMissedPings` consecutive missed pongs (one slow pong won't).
+    /// Closes the socket after `maxMissedPings` consecutive failed probes.
     private func performLivenessCheck() async {
         guard let connection, connection.state == .running else { return }
 
         let isAlive = await isConnectionAlive(connection, pingTimeout)
+        // Discard the result if the socket was replaced or the monitor cancelled while probing.
+        guard !Task.isCancelled, connection === self.connection else { return }
         if isAlive {
             missedPingCount = 0
             return
