@@ -28,14 +28,17 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// Every parity outputs file loads, and each names its own pool.
     ///
-    /// - Given: The plugin's outputs file for each role, copied into the bundle
+    /// - Given: The plugin's outputs file for each role (or the Gen2 translation of its Gen1 file), copied into
+    ///   the bundle
     /// - When:
     ///    - Each is loaded with `AuthClientConfiguration(from:bundle:)`, and the identity-only role is derived
     /// - Then:
     ///    - Each has a user pool; the seven roles with users of their own are seven distinct pools, and the
     ///      hosted-UI file names a different app client from the default one, on the default pool (the
     ///      sandbox's set) or on a pool of its own (a backend of its own), never another role's
-    ///    - The identity-only role has an identity pool with guest access and no user pool
+    ///    - The identity-only role has an identity pool and no user pool, and its guest access is on, or not
+    ///      stated where the default backend is a Gen1 file, which has no such key (whether guests get
+    ///      credentials is `testIdentityOnlyPoolVendsGuestCredentials`' check)
     ///
     func testEveryParityOutputsFileLoads() throws {
         var poolIds: [SandboxPool: String] = [:]
@@ -57,7 +60,12 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let identityOnly = try IntegrationTestEnvironment.identityOnlyAuthSection()
         XCTAssertNil(identityOnly["user_pool_id"])
         XCTAssertFalse((identityOnly["identity_pool_id"] as? String ?? "").isEmpty)
-        XCTAssertEqual(identityOnly["unauthenticated_identities_enabled"] as? Bool, true)
+        let guestAccess = identityOnly["unauthenticated_identities_enabled"] as? Bool
+        if case .gen2 = PluginTestConfiguration.source(SandboxPool.standard.outputsResource, in: IntegrationTestEnvironment.bundle) {
+            XCTAssertEqual(guestAccess, true)
+        } else {
+            XCTAssertNil(guestAccess, "a Gen1 file states no guest access")
+        }
     }
 
     /// The default pool auto-confirms a sign-up (pre-sign-up trigger) and tracks devices (U-DEF, P-5b).

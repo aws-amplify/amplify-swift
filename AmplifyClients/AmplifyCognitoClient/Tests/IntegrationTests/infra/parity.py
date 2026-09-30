@@ -113,9 +113,12 @@ PLUGIN_IDENTITY_CLIENTS = (("default", "plugin"), ("default", "hostedui-plugin")
 # The outputs files that name P-13 (the default pool's are the plugin-configs.py files, which add it there).
 PLUGIN_IDENTITY_OUTPUTS = ("passwordless",)
 PLUGIN_DEVICE_ALIAS_EMAIL = "ccit-plugin-device-alias@example.com"
-# AuthSRPSignInTests.testNewPasswordRequired: single-use FORCE_CHANGE_PASSWORD users on default, one per
-# iteration (CI runs with -test-iterations 3), reset by every prepare-run.sh.
-PLUGIN_NEW_PASSWORD_USERS = tuple(f"ccit-plugin-new-password-{i}" for i in (1, 2, 3))
+# Single-use FORCE_CHANGE_PASSWORD users on default, reset by every prepare-run.sh. Every run that reaches one
+# uses one up: the plugin's AuthSRPSignInTests.testNewPasswordRequired, in its Gen1 and its Gen2 suite (one more
+# per retry iteration: CI runs with -test-iterations 3), and the client suites' CH-1. Three were used up by one
+# round of the three; eight leave room for overlapping rounds and retries between two resets.
+PLUGIN_NEW_PASSWORD_USER_COUNT = 8
+PLUGIN_NEW_PASSWORD_USERS = tuple(f"ccit-plugin-new-password-{i}" for i in range(1, PLUGIN_NEW_PASSWORD_USER_COUNT + 1))
 LAMBDA_RUNTIME = "nodejs22.x"
 FUNCTIONS = {
     # name suffix: (handler, role suffix, source, environment keys)

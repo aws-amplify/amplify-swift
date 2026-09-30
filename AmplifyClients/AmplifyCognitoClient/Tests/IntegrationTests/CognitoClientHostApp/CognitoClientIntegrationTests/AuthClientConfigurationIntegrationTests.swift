@@ -16,7 +16,7 @@ final class AuthClientConfigurationIntegrationTests: XCTestCase {
     /// The default backend's outputs file loads through the public initializer.
     ///
     /// - Given: The plugin's default outputs file (`AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json`),
-    ///   copied into the test bundle
+    ///   copied into the test bundle, or the Gen2 translation of its Gen1 file where only that was copied
     /// - When:
     ///    - `AuthClientConfiguration(from:bundle:)` loads it by that resource name
     /// - Then:
@@ -29,7 +29,7 @@ final class AuthClientConfigurationIntegrationTests: XCTestCase {
 
         let configuration = try AuthClientConfiguration(
             from: IntegrationTestEnvironment.outputsResource,
-            bundle: IntegrationTestEnvironment.bundle
+            bundle: IntegrationTestEnvironment.outputsBundle(.standard)
         )
 
         let userPool = try XCTUnwrap(configuration.userPool)
@@ -67,7 +67,7 @@ final class AuthClientConfigurationIntegrationTests: XCTestCase {
         let state = try RawOutputs()
         let configuration = try AuthClientConfiguration(
             from: IntegrationTestEnvironment.outputsResource,
-            bundle: IntegrationTestEnvironment.bundle
+            bundle: IntegrationTestEnvironment.outputsBundle(.standard)
         )
         let namespace = configuration.poolNamespace
 
@@ -94,7 +94,7 @@ private struct RawOutputs {
     let identityPoolId: String
 
     init() throws {
-        let auth = try IntegrationTestEnvironment.outputsAuthSection(IntegrationTestEnvironment.outputsResource)
+        let auth = try IntegrationTestEnvironment.outputsAuthSection(.standard)
         func value(_ key: String) throws -> String {
             try XCTUnwrap(auth[key] as? String, "\(IntegrationTestEnvironment.outputsResource).json has no \(key)")
         }

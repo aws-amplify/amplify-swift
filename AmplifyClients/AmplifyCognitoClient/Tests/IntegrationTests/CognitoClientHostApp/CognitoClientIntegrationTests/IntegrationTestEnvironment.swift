@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the five other
-// shared sandbox helpers (IntegrationTestEnvironment, SandboxPools, SandboxSignUp, SandboxUserCleanup,
-// CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
+// Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the six other
+// shared sandbox helpers (IntegrationTestEnvironment, PluginTestConfiguration, SandboxPools, SandboxSignUp,
+// SandboxUserCleanup, CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
 // AmplifyCognitoClient, AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
 
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
@@ -25,10 +25,13 @@ import Security
 /// `AuthHostApp` makes. A missing file is named in a build warning, and every test that needs it fails
 /// with a message naming it. The copy lives only in DerivedData; nothing account-specific is committed.
 ///
-/// Each client role is one of the plugin's files (`SandboxPool.outputsResource`); the identity-only role is
-/// derived from the default backend's outputs without its user pool (`identityOnlyAuthSection()`). No
-/// user or secret is seeded: suites sign their own users up, read codes through each file's `data` API
-/// (`CodeSink`), and take the rest from the default backend's credentials file (`credentials()`).
+/// Each client role is one of the plugin's files (`SandboxPool.outputsResource`): its Gen2 outputs file, or,
+/// where the plugin's CI has only the Gen1 file for that backend (`SandboxPool.gen1Resource`), that file
+/// translated into the equivalent Gen2 outputs (`PluginTestConfiguration`). The client itself reads Gen2
+/// only. The identity-only role is derived from the default backend's outputs without its user pool
+/// (`identityOnlyAuthSection()`). No user or secret is seeded: suites sign their own users up, read codes
+/// through each file's `data` API (`CodeSink`), and take the rest from the default backend's credentials file
+/// (`credentials()`), which the plugin's CI does not provide.
 enum IntegrationTestEnvironment {
 
     /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
@@ -42,16 +45,41 @@ enum IntegrationTestEnvironment {
         Bundle(for: BundleToken.self)
     }
 
-    /// Whether the plugin's default outputs file was present when the bundle was built.
+    /// Whether the plugin's default outputs file, or its Gen1 file, was present when the bundle was built.
     static var isProvisioned: Bool {
-        bundle.url(forResource: outputsResource, withExtension: "json") != nil
+        hasOutputs(.standard)
     }
 
     /// Fails (never skips) when the test configuration is missing.
     static func requireProvisioned() throws {
         guard isProvisioned else {
-            throw HarnessError.missingFixture("\(outputsResource).json")
+            throw HarnessError.missingFixture(SandboxPool.standard.fixtureName)
         }
+    }
+
+    /// Whether a role's outputs file, or the plugin's Gen1 file for its backend, is in the bundle.
+    static func hasOutputs(_ pool: SandboxPool) -> Bool {
+        if bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil {
+            return true
+        }
+        return pool.gen1Resource.map { bundle.url(forResource: $0, withExtension: "json") != nil } ?? false
+    }
+
+    /// The bundle to load a role's Gen2 outputs from, by its `outputsResource` name: the test bundle, or,
+    /// when only the plugin's Gen1 file for the backend is there, a directory holding its Gen2 translation.
+    static func outputsBundle(_ pool: SandboxPool) throws -> Bundle {
+        guard hasOutputs(pool) else {
+            throw HarnessError.missingFixture(pool.fixtureName)
+        }
+        return try PluginTestConfiguration.outputsBundle(pool.outputsResource, in: bundle)
+    }
+
+    /// A role's Gen2 outputs document, the one `outputsBundle(_:)` holds.
+    static func outputsData(_ pool: SandboxPool) throws -> Data {
+        guard hasOutputs(pool) else {
+            throw HarnessError.missingFixture(pool.fixtureName)
+        }
+        return try PluginTestConfiguration.outputsData(pool.outputsResource, in: bundle)
     }
 
     /// The main client configuration, loaded from the default backend's outputs exactly as an app loads
@@ -60,28 +88,20 @@ enum IntegrationTestEnvironment {
         try configuration(.standard)
     }
 
-    /// The client configuration of one role, loaded from its plugin outputs file exactly as an app loads
-    /// its outputs file.
+    /// The client configuration of one role, loaded from its plugin outputs file (or the Gen2 translation of
+    /// the plugin's Gen1 file) exactly as an app loads its outputs file.
     static func configuration(_ pool: SandboxPool) throws -> AuthClientConfiguration {
         try requireProvisioned()
-        guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil else {
-            throw HarnessError.missingFixture("\(pool.outputsResource).json")
-        }
-        return try AuthClientConfiguration(from: pool.outputsResource, bundle: bundle)
+        return try AuthClientConfiguration(from: pool.outputsResource, bundle: outputsBundle(pool))
     }
 
-    /// The raw `auth` section of an outputs file, for what `AuthClientConfiguration` does not parse, such
+    /// The raw `auth` section of a role's outputs, for what `AuthClientConfiguration` does not parse, such
     /// as the `oauth` block.
-    static func outputsAuthSection(_ resource: String) throws -> [String: Any] {
-        guard let auth = try outputsDocument(resource)["auth"] as? [String: Any] else {
-            throw HarnessError.malformedFixture("\(resource).json has no auth section.")
+    static func outputsAuthSection(_ pool: SandboxPool) throws -> [String: Any] {
+        guard let auth = try outputsDocument(pool)["auth"] as? [String: Any] else {
+            throw HarnessError.malformedFixture("\(pool.sourceName) has no auth section.")
         }
         return auth
-    }
-
-    /// The raw `auth` section of a role's outputs file.
-    static func outputsAuthSection(_ pool: SandboxPool) throws -> [String: Any] {
-        try outputsAuthSection(pool.outputsResource)
     }
 
     /// The identity-only role (P-6′): the default backend's identity pool, guest access and region, and no
@@ -105,7 +125,7 @@ enum IntegrationTestEnvironment {
     static func secondIdentityPool(besides identityPoolId: String? = nil) throws -> AuthClientConfiguration.IdentityPool {
         let firstPool = try identityPoolId ?? identityOnlyAuthSection()["identity_pool_id"] as? String
         for pool in SandboxPool.allCases {
-            guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil,
+            guard hasOutputs(pool),
                   let auth = try? outputsAuthSection(pool),
                   let poolId = auth["identity_pool_id"] as? String, poolId != firstPool,
                   auth["unauthenticated_identities_enabled"] as? Bool == true,
@@ -114,11 +134,13 @@ enum IntegrationTestEnvironment {
             }
             return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
         }
-        guard let poolId = try credentials().secondIdentityPoolId, poolId != firstPool,
+        let credentials = try credentials()
+        guard let poolId = credentials.secondIdentityPoolId, poolId != firstPool,
               let region = poolId.split(separator: ":").first.map(String.init) else {
             throw HarnessError.malformedFixture("""
-            No second identity pool: no other outputs file has a guest identity pool, and \
-            \(credentialsResource).json has no second_identity_pool_id.
+            No second identity pool: no other outputs file has an identity pool with guest access stated, and \
+            \(credentialsResource).json \(credentials.isPresent ? "has no" : "is not in the test bundle, so there is no") \
+            second_identity_pool_id.
             """)
         }
         return .init(poolId: poolId, region: region, unauthenticatedIdentitiesEnabled: true)
@@ -131,7 +153,7 @@ enum IntegrationTestEnvironment {
     /// refuses its refresh without the device key.
     static func untrackedFederatedRole() throws -> SandboxPool {
         for pool in SandboxPool.allCases where !pool.tracksDevices {
-            guard bundle.url(forResource: pool.outputsResource, withExtension: "json") != nil,
+            guard hasOutputs(pool),
                   let identityPool = try? configuration(pool).identityPool,
                   identityPool.unauthenticatedIdentitiesEnabled == true else {
                 continue
@@ -148,11 +170,11 @@ enum IntegrationTestEnvironment {
 
     /// The `data` API a role's codes are published to (the plugin's MfaInfo API), from its outputs file.
     static func codeSinkAPI(_ pool: SandboxPool) throws -> CodeSinkAPI {
-        guard let data = try outputsDocument(pool.outputsResource)["data"] as? [String: Any],
+        guard let data = try outputsDocument(pool)["data"] as? [String: Any],
               let url = (data["url"] as? String).flatMap(URL.init(string:)),
               let apiKey = data["api_key"] as? String, !apiKey.isEmpty else {
             throw HarnessError.malformedFixture("""
-            \(pool.outputsResource).json has no data block with a url and an api_key: this test reads a code \
+            \(pool.sourceName) has no data block with a url and an api_key: this test reads a code \
             Cognito sent a \(pool.rawValue) user, so the backend must publish its codes to the plugin's MfaInfo \
             API (custom email and SMS senders) and name it in its outputs, as the passwordless backend does.
             """)
@@ -160,22 +182,24 @@ enum IntegrationTestEnvironment {
         return CodeSinkAPI(url: url, apiKey: SandboxSecret(apiKey))
     }
 
-    /// The default backend's credentials file. Absent keys are nil or empty; `PluginCredentials` fails with
-    /// the missing key's name when a test needs it.
+    /// The default backend's credentials file. Absent keys are nil or empty, and an absent file has none, as
+    /// the plugin's `AWSAuthBaseTest` reads it (the plugin's CI provides no credentials file); a test that
+    /// needs a key fails naming the file and the key (`PluginCredentials.requireCustomChallengeAnswer()`,
+    /// `requireNewPasswordUsers()`).
     static func credentials() throws -> PluginCredentials {
         guard bundle.url(forResource: credentialsResource, withExtension: "json") != nil else {
-            throw HarnessError.missingFixture("\(credentialsResource).json")
+            return PluginCredentials(fields: [:], isPresent: false)
         }
         let object = try JSONSerialization.jsonObject(with: data(forResource: credentialsResource))
         guard let fields = object as? [String: String] else {
             throw HarnessError.malformedFixture("\(credentialsResource).json is not an object of strings.")
         }
-        return PluginCredentials(fields: fields)
+        return PluginCredentials(fields: fields, isPresent: true)
     }
 
-    private static func outputsDocument(_ resource: String) throws -> [String: Any] {
-        guard let document = try JSONSerialization.jsonObject(with: data(forResource: resource)) as? [String: Any] else {
-            throw HarnessError.malformedFixture("\(resource).json is not a JSON object.")
+    private static func outputsDocument(_ pool: SandboxPool) throws -> [String: Any] {
+        guard let document = try JSONSerialization.jsonObject(with: outputsData(pool)) as? [String: Any] else {
+            throw HarnessError.malformedFixture("\(pool.sourceName) is not a JSON object.")
         }
         return document
     }
@@ -333,7 +357,34 @@ enum SandboxPool: String, CaseIterable, Sendable {
         [.passwordless, .mfaRequiredEmail, .mfaRequiredAll].contains(self)
     }
 
-    /// The bundle resource name, without `.json`: the plugin's file for the role.
+    /// The plugin's Gen1 file for the role's backend, without `.json`, where the plugin has one. It is read,
+    /// and translated to Gen2, only when `outputsResource` is absent, as on the plugin's CI, which provides
+    /// these backends as Gen1 files only.
+    var gen1Resource: String? {
+        switch self {
+        case .standard, .hostedUI, .mfaRequiredTOTPSMS: PluginTestConfiguration.gen1Resource(for: outputsResource)
+        case .passwordless, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn: nil
+        }
+    }
+
+    /// The file the role's outputs are read from, for a message about their contents: the Gen2 file, or the
+    /// plugin's Gen1 file, marked as translated.
+    var sourceName: String {
+        if case .gen1(let gen1) = PluginTestConfiguration.source(outputsResource, in: IntegrationTestEnvironment.bundle) {
+            return "\(gen1).json (translated to Gen2)"
+        }
+        return "\(outputsResource).json"
+    }
+
+    /// The file a missing-fixture message names: the Gen2 file, and the Gen1 one where the plugin has it.
+    var fixtureName: String {
+        guard let gen1Resource else {
+            return "\(outputsResource).json"
+        }
+        return "\(outputsResource).json (or its Gen1 \(gen1Resource).json)"
+    }
+
+    /// The bundle resource name, without `.json`: the plugin's Gen2 file for the role.
     var outputsResource: String {
         switch self {
         case .standard: "AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
@@ -361,8 +412,11 @@ struct PluginCredentials: Sendable {
     let newPasswordRequiredTemporaryPassword: SandboxSecret?
     /// `second_identity_pool_id`: see `IntegrationTestEnvironment.secondIdentityPool()`.
     let secondIdentityPoolId: String?
+    /// Whether the file was in the test bundle at all. The plugin's CI provides none.
+    let isPresent: Bool
 
-    init(fields: [String: String]) {
+    init(fields: [String: String], isPresent: Bool) {
+        self.isPresent = isPresent
         func value(_ key: String) -> String? {
             fields[key].flatMap { $0.isEmpty ? nil : $0 }
         }
@@ -378,7 +432,7 @@ struct PluginCredentials: Sendable {
     /// The custom-auth answer; fails (never skips) without it.
     func requireCustomChallengeAnswer() throws -> SandboxSecret {
         guard let customChallengeAnswer else {
-            throw HarnessError.malformedFixture(Self.missing("custom_challenge_answer", "custom-auth triggers that accept it"))
+            throw HarnessError.malformedFixture(missing("custom_challenge_answer", "custom-auth triggers that accept it"))
         }
         return customChallengeAnswer
     }
@@ -386,7 +440,7 @@ struct PluginCredentials: Sendable {
     /// The new-password users and their temporary password; fails (never skips) without them.
     func requireNewPasswordUsers() throws -> (usernames: [String], temporaryPassword: SandboxSecret) {
         guard !newPasswordRequiredUsernames.isEmpty, let newPasswordRequiredTemporaryPassword else {
-            throw HarnessError.malformedFixture(Self.missing(
+            throw HarnessError.malformedFixture(missing(
                 "new_password_required_usernames and new_password_required_temporary_password",
                 "users an administrator created in FORCE_CHANGE_PASSWORD with that temporary password"
             ))
@@ -394,11 +448,18 @@ struct PluginCredentials: Sendable {
         return (newPasswordRequiredUsernames, newPasswordRequiredTemporaryPassword)
     }
 
-    private static func missing(_ keys: String, _ backend: String) -> String {
-        """
-        \(IntegrationTestEnvironment.credentialsResource).json has no \(keys): the default backend needs \
-        \(backend), as the plugin's own suite does.
-        """
+    /// Where the plugin's suite skips its equivalent test without the key, the client's fails, naming the file
+    /// and the key.
+    private func missing(_ keys: String, _ backend: String) -> String {
+        let file = "\(IntegrationTestEnvironment.credentialsResource).json"
+        guard isPresent else {
+            return """
+            \(file) is not in the test bundle, so there is no \(keys): the default backend needs \(backend), \
+            named in that file. The plugin's CI test configuration has no credentials file (its own suite skips \
+            these tests without it); a local run gets one from infra/plugin-configs.py --dir.
+            """
+        }
+        return "\(file) has no \(keys): the default backend needs \(backend), as the plugin's own suite does."
     }
 }
 

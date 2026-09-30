@@ -17,9 +17,9 @@ this sandbox's parity backends, from the state provision.sh leaves in ~/.amplify
                                  the configured one; the configured directory itself, when it is another,
                                  behaves as without --dir
     plugin-configs.py --dir DIR --ci-shape
-                                 the same files in the shape the plugin's CI files have (CI_SHAPE below): a
-                                 `data` block only on the backends that capture codes, and the credentials
-                                 files with only the keys the plugin's suites read on CI. Only into a
+                                 the file set the plugin's CI downloads (CI_FILES below), from the same
+                                 backends: its nine names, Gen1 where CI has Gen1 files, a `data` block only on
+                                 the backends that capture codes, and no credentials file. Only into a
                                  directory of its own
     plugin-configs.py --refresh  rewrite only the files it wrote that are still as written (after a key
                                  rotation, say); does nothing if it has written none (prepare-run.sh)
@@ -58,13 +58,14 @@ read it only where they add AWSAPIPlugin, and the client suites read each pool's
 file's block. The default backend's credentials file also names the identity-only pool (P-6')
 as `second_identity_pool_id`: a guest identity pool that federates none of the set's user pools, which
 the client's CS-3 needs and the plugin's suites never read.
-The CI shape (--ci-shape) is what the plugin's CI backends provide, from their READMEs and the plugin's
-tests: only the passwordless and the two email-MFA backends deploy custom senders and an MfaInfo API
-(PasswordlessTests/README.md, MFATests/EmailMFATests/README.md) and have suites that subscribe to it; the
-others' READMEs deploy none. The default credentials file carries only `test_email_1` and `password`, the
-keys the plugin's suites read on main (AWSAuthBaseTest), where the custom-auth and new-password tests skip
-("Need custom resource"): no `custom_challenge_answer`, no `new_password_required_*`, and no
-`second_identity_pool_id`, which only this sandbox adds.
+The CI shape (--ci-shape) is the file set the plugin's CI downloads (download_test_configuration,
+resource_subfolder: auth), as a CI run listed it: nine files. The default, MFA-required, hosted-UI and stress
+backends are Gen1 amplifyconfiguration.json files only, in the shape gen1() writes for the plugin's Gen1
+suites (the stress one under CI's name, AWSAuthStressTests-); the other five are Gen2 outputs. Only the
+passwordless and the two email-MFA backends deploy custom senders and an MfaInfo API
+(PasswordlessTests/README.md, MFATests/EmailMFATests/README.md) and have suites that subscribe to it, so only
+their outputs carry a `data` block. There is no credentials file at all: the plugin's AWSAuthBaseTest then
+uses a random email and password, and its custom-auth and new-password tests skip.
 Nothing here calls AWS, and nothing printed names an identifier or a secret.
 """
 
@@ -72,6 +73,7 @@ import contextlib
 import datetime
 import fcntl
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -86,6 +88,19 @@ LOCK = os.path.join(STATE_DIR, "plugin-configs.lock")
 BACKUP_DIR = os.path.join(STATE_DIR, "plugin-configs-backup")
 DEVICE_ALIAS_EMAIL = "ccit-plugin-device-alias@example.com"
 HOSTED_UI_REDIRECT = "myapp://"
+
+
+def _parity():
+    """parity.py, loaded by its path, from wherever this script is run or loaded. Loading it calls no AWS."""
+    spec = importlib.util.spec_from_file_location("parity", os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                                         "parity.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+# The single-use FORCE_CHANGE_PASSWORD users prepare-run.sh resets, as parity.py defines them.
+NEW_PASSWORD_USERS = _parity().PLUGIN_NEW_PASSWORD_USERS
 
 
 def load(path):
@@ -163,22 +178,36 @@ CI_CODE_CAPTURING = (
     "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
     "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json",
 )
-# The only keys of the credentials files the plugin's suites read on CI.
-CI_CREDENTIAL_KEYS = ("test_email_1", "password")
+# The plugin's CI file set, by CI's names, each from the file build() writes for the same backend in the same
+# format. No credentials file: CI has none.
+CI_FILES = {
+    "AWSAuthStressTests-amplifyconfiguration.json": "AWSAmplifyStressTests-amplifyconfiguration.json",
+    "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json":
+        "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json",
+    "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json": "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json",
+    "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json":
+        "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json",
+    "AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json":
+        "AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json",
+    "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json":
+        "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json",
+    "AWSCognitoEmailMFARequiredTests-amplify_outputs.json": "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
+    "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json":
+        "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json",
+    "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json": "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json",
+}
 # The client harness's own directory must never be the developer's own plugin configuration.
 OWNER_TESTCONFIGURATION_DIR = os.path.expanduser("~/.aws-amplify/amplify-ios/testconfiguration")
 
 
 def ci_shape(files):
-    """`files` as the plugin's CI files are: `data` only on CI_CODE_CAPTURING, and credentials files with
-    only CI_CREDENTIAL_KEYS."""
+    """The plugin's CI file set (CI_FILES) from `files`, what build() returns: `data` only on
+    CI_CODE_CAPTURING, and nothing else."""
     shaped = {}
-    for name, document in files.items():
-        document = json.loads(json.dumps(document))
+    for name, source in CI_FILES.items():
+        document = json.loads(json.dumps(files[source]))
         if name.endswith("-amplify_outputs.json") and name not in CI_CODE_CAPTURING:
             document.pop("data", None)
-        if name.endswith("-credentials.json"):
-            document = {k: v for k, v in document.items() if k in CI_CREDENTIAL_KEYS}
         shaped[name] = document
     return shaped
 
@@ -224,7 +253,7 @@ def build():
         # any default-pool user without a password: the file stays mode 600, outside git.
         "AWSCognitoAuthPluginIntegrationTests-credentials.json": credentials(
             main_email, "", custom_challenge_answer=users["customChallengeAnswer"],
-            new_password_required_usernames=",".join(f"ccit-plugin-new-password-{i}" for i in (1, 2, 3)),
+            new_password_required_usernames=",".join(NEW_PASSWORD_USERS),
             new_password_required_temporary_password=users["pluginNewPasswordTemporary"],
             second_identity_pool_id=identity_only),
         "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json": gen1(mfa_required["auth"]),
@@ -330,10 +359,17 @@ def write_into(directory, ci=False):
             sys.exit("--ci-shape writes only into a directory of its own.")
         write_all()
         return
-    files = ci_shape(build()) if ci else build()
+    full = build()
+    files = ci_shape(full) if ci else full
     os.makedirs(target, mode=0o700, exist_ok=True)
     for name, document in files.items():
         write_private(os.path.join(target, name), serialized(name, document))
+    # The CI shape is exactly CI's file set: a file of the full set left from an earlier write would make it
+    # something CI never has. Only names this script writes are removed.
+    for name in sorted(set(full) - set(files)) if ci else []:
+        path = os.path.join(target, name)
+        if os.path.exists(path):
+            os.unlink(path)
     print(f"{len(files)} file(s) written; build the client host app with COGNITO_CLIENT_INTEG_DIR set to that "
           f"directory to use them.")
 

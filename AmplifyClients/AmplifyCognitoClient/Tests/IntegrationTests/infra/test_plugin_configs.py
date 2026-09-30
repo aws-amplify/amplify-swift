@@ -368,10 +368,44 @@ class PluginConfigsTests(unittest.TestCase):
             self.quiet(lambda: self.pc.write_into(self.target, ci=True))
         self.assertEqual(os.listdir(self.target), [])
 
+    def test_ci_shape_is_exactly_the_file_set_ci_downloads(self):
+        other = os.path.join(self.root, "ci-shape")
+        # A full set written there first: the CI shape must not keep any of it.
+        self.quiet(lambda: self.pc.write_into(other))
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        self.assertEqual(sorted(os.listdir(other)), [
+            "AWSAuthStressTests-amplifyconfiguration.json",
+            "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json",
+            "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json",
+            "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json",
+            "AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json",
+            "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json",
+            "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
+            "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json",
+            "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json",
+        ])
+
+    def test_ci_shape_gen1_files_are_the_plugin_gen1_suites_files(self):
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        full = self.pc.build()
+        for name in [n for n in os.listdir(other) if n.endswith("-amplifyconfiguration.json")]:
+            with open(os.path.join(other, name)) as f:
+                document = json.load(f)
+            self.assertIn("awsCognitoAuthPlugin", document["auth"]["plugins"], name)
+            self.assertNotIn("data", document, name)
+            self.assertEqual(document, full[self.pc.CI_FILES[name]], name)
+        with open(os.path.join(other, "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json")) as f:
+            oauth = json.load(f)["auth"]["plugins"]["awsCognitoAuthPlugin"]["Auth"]["Default"]["OAuth"]
+        self.assertEqual((oauth["AppClientId"], oauth["SignInRedirectURI"]), ("client-hosted", "myapp://"))
+        with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json")) as f:
+            plugin = json.load(f)["auth"]["plugins"]["awsCognitoAuthPlugin"]
+        self.assertEqual(plugin["CognitoUserPool"]["Default"]["AppClientId"], "client-plugin")
+        self.assertEqual(plugin["CredentialsProvider"]["CognitoIdentity"]["Default"]["PoolId"], "xx-test-1:identity")
+
     def test_ci_shape_has_data_only_on_the_code_capturing_backends(self):
         other = os.path.join(self.root, "ci-shape")
         self.quiet(lambda: self.pc.write_into(other, ci=True))
-        self.assertEqual(sorted(os.listdir(other)), sorted(self.pc.build()))
         with_data = set()
         for name in os.listdir(other):
             if name.endswith("-amplify_outputs.json"):
@@ -383,15 +417,21 @@ class PluginConfigsTests(unittest.TestCase):
                                      "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
                                      "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json"})
 
-    def test_ci_shape_credentials_carry_only_the_keys_ci_has(self):
+    def test_ci_shape_has_no_credentials_file(self):
         other = os.path.join(self.root, "ci-shape")
         self.quiet(lambda: self.pc.write_into(other, ci=True))
-        for name in [n for n in os.listdir(other) if n.endswith("-credentials.json")]:
-            with open(os.path.join(other, name)) as f:
-                keys = set(json.load(f))
-            self.assertTrue(keys <= {"test_email_1", "password"}, f"{name}: {sorted(keys)}")
+        self.assertEqual([n for n in os.listdir(other) if n.endswith("-credentials.json")], [])
+
+    def test_credentials_name_every_new_password_user_prepare_run_resets(self):
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(parity)
+        other = os.path.join(self.root, "full-shape")
+        self.quiet(lambda: self.pc.write_into(other))
         with open(os.path.join(other, "AWSCognitoAuthPluginIntegrationTests-credentials.json")) as f:
-            self.assertEqual(set(json.load(f)), {"test_email_1"})
+            usernames = json.load(f)["new_password_required_usernames"].split(",")
+        self.assertEqual(tuple(usernames), parity.PLUGIN_NEW_PASSWORD_USERS)
+        self.assertEqual(len(usernames), 8)
 
     def test_full_shape_keeps_the_sandbox_extras(self):
         other = os.path.join(self.root, "full-shape")

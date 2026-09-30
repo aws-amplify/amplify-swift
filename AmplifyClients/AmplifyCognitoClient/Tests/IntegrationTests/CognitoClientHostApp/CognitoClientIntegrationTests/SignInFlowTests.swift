@@ -234,7 +234,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
         // The sign-in client goes out of scope at the end of this call, so no handle keeps the session live.
         let stored = try await signInAndDrop(sessionId, as: alice)
         try await SessionCleanup.waitUntilReleased([sessionId])
-        let changed = try Self.withUnrelatedSections(IntegrationTestEnvironment.data(forResource: IntegrationTestEnvironment.outputsResource))
+        let changed = try Self.withUnrelatedSections(IntegrationTestEnvironment.outputsData(.standard))
 
         try await assertRestores(sessionId, as: stored, user: alice, through: changed)
         try await SessionCleanup.waitUntilReleased([sessionId])

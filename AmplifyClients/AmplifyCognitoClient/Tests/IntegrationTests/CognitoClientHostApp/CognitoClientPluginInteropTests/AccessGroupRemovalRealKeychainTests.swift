@@ -44,7 +44,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         sharedGroup = try RealKeychain.sharedGroup(defaultGroup: RealKeychain.defaultGroup())
         configuration = try AuthClientConfiguration(
             from: InteropEnvironment.outputsResource,
-            bundle: InteropEnvironment.bundle
+            bundle: InteropEnvironment.outputsBundle()
         )
         resetPluginState()
     }
@@ -132,7 +132,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         try Amplify.add(plugin: AWSCognitoAuthPlugin(
             secureStoragePreferences: AWSCognitoSecureStoragePreferences(accessGroup: accessGroup)
         ))
-        try Amplify.configure(with: .data(InteropEnvironment.data(forResource: InteropEnvironment.outputsResource)))
+        try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
     }
 
     /// Both services' accounts and groups, never their data: the session record holds real tokens. The

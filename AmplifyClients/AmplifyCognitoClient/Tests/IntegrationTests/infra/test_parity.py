@@ -311,6 +311,14 @@ class NewPasswordUserResetTests(unittest.TestCase):
             if name in ("admin-delete-user", "admin-create-user", "admin-set-user-password"):
                 self.assertEqual(self.operations()[index - 1], "tag-check", f"{name} without a tag check first")
 
+    def test_there_are_eight_distinct_test_users(self):
+        """Given: the users prepare-run.sh resets. Then: eight distinct ccit- test users, 1 to 8 in order: one
+        round of the plugin's Gen1 and Gen2 suites and the client's CH-1 takes three, and retries more."""
+        users = self.parity.PLUGIN_NEW_PASSWORD_USERS
+        self.assertEqual(self.parity.PLUGIN_NEW_PASSWORD_USER_COUNT, 8)
+        self.assertEqual(users, tuple(f"ccit-plugin-new-password-{i}" for i in range(1, 9)))
+        self.assertEqual(len(set(users)), 8)
+
     def test_missing_user_is_created(self):
         """Given: no such user. When: reset. Then: it is created with the temporary password, nothing else."""
         self.reset()

@@ -61,7 +61,7 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
         try InteropEnvironment.requireProvisioned()
         clientConfiguration = try AuthClientConfiguration(
             from: InteropEnvironment.outputsResource,
-            bundle: InteropEnvironment.bundle
+            bundle: InteropEnvironment.outputsBundle()
         )
         resetPluginState()
     }

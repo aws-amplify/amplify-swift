@@ -113,20 +113,17 @@ enum RealKeychain {
         )
     }
 
-    /// The identifiers in every outputs file the "Copy sandbox configuration" phase put in the bundle,
-    /// longest first, so an id that contains another is replaced whole.
+    /// The identifiers in every role's outputs the "Copy test configuration" phase put in the bundle (a Gen1
+    /// file through its Gen2 translation), longest first, so an id that contains another is replaced whole.
     private static let sandboxIdentifiers: [(String, String)] = {
         let fields = [
             ("user_pool_id", "<userPool>"),
             ("identity_pool_id", "<identityPool>"),
             ("user_pool_client_id", "<appClient>")
         ]
-        let urls = IntegrationTestEnvironment.bundle.urls(forResourcesWithExtension: "json", subdirectory: nil) ?? []
         var identifiers: [(String, String)] = []
-        for url in urls where url.deletingPathExtension().lastPathComponent.hasSuffix("amplify_outputs") {
-            guard let data = try? Data(contentsOf: url),
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let auth = json["auth"] as? [String: Any] else {
+        for pool in SandboxPool.allCases where IntegrationTestEnvironment.hasOutputs(pool) {
+            guard let auth = try? IntegrationTestEnvironment.outputsAuthSection(pool) else {
                 continue
             }
             for (field, placeholder) in fields {

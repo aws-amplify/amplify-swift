@@ -42,7 +42,7 @@ final class PluginAdoptionTests: XCTestCase {
         try InteropEnvironment.requireProvisioned()
         configuration = try AuthClientConfiguration(
             from: InteropEnvironment.outputsResource,
-            bundle: InteropEnvironment.bundle
+            bundle: InteropEnvironment.outputsBundle()
         )
         pluginAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
         ownAccount = SessionRecordKey.account(for: .default, in: configuration.poolNamespace, kind: .session)
@@ -51,7 +51,7 @@ final class PluginAdoptionTests: XCTestCase {
         XCTAssertEqual(records(), "plugin: absent, own: absent", "setUp left a record")
         alice = try await InteropEnvironment.signUpFreshUser()
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
-        try Amplify.configure(with: .data(InteropEnvironment.data(forResource: InteropEnvironment.outputsResource)))
+        try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
     }
 
     /// Signs the plugin out first (which revokes its refresh token), then purges every session the test

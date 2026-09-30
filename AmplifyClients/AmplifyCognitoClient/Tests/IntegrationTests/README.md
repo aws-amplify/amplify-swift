@@ -5,7 +5,8 @@ suites read the plugin's test configuration, by the plugin's file names: in CI, 
 `.github/composite_actions/download_test_configuration` (`resource_subfolder: auth`) puts in
 `~/.aws-amplify/amplify-ios/testconfiguration/`; locally, the same file set, written from this directory's
 **sandbox** (below) by `infra/plugin-configs.py --dir`. Nothing account-specific is committed, no user or secret is
-seeded, and no test needs AWS credentials.
+seeded, and no test needs AWS credentials. The client reads Gen2 `amplify_outputs` only; where the plugin's CI has
+only a Gen1 file for a backend, the harness translates it to Gen2 before the client reads it ("Gen1 files", below).
 
 ## Test configuration: the plugin's file set
 
@@ -15,12 +16,12 @@ does. So CI needs no switch. A missing file is named in a build warning, and eve
 message naming it; nothing skips. The sandbox's `state.json`, `users.json` and `<role>-amplify_outputs.json` are
 no longer read: the plugin's file set replaces them (the former "sandbox mode" is retired).
 
-| Client role (`SandboxPool`) | Plugin file it reads | On the sandbox (`plugin-configs.py`) |
+| Client role (`SandboxPool`) | Plugin file it reads (without it, the Gen1 file) | On the sandbox (`plugin-configs.py`) |
 |---|---|---|
-| `.standard` (`default`), also the main configuration (`configuration()`) | `AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json` | U-DEF through its `plugin` app client (user-existence errors on, `LEGACY`), with P-13's identity pool |
-| `.hostedUI` | `AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json` | U-DEF's `hostedui-plugin` client, redirects `myapp://` |
+| `.standard` (`default`), also the main configuration (`configuration()`) | `AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json` (`…-amplifyconfiguration.json`) | U-DEF through its `plugin` app client (user-existence errors on, `LEGACY`), with P-13's identity pool |
+| `.hostedUI` | `AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json` (`…-amplifyconfiguration.json`) | U-DEF's `hostedui-plugin` client, redirects `myapp://` |
 | `.passwordless` | `AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json` | U-PL |
-| `.mfaRequiredTOTPSMS` | `AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json` | U-REQ-TS |
+| `.mfaRequiredTOTPSMS` | `AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json` (`…-amplifyconfiguration.json`) | U-REQ-TS |
 | `.mfaRequiredEmail` | `AWSCognitoEmailMFARequiredTests-amplify_outputs.json` | U-REQ-E |
 | `.mfaRequiredAll` | `AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json` | U-REQ-ALL |
 | `.emailAlias` | `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json` | U-ALIAS |
@@ -28,11 +29,49 @@ no longer read: the plugin's file set replaces them (the former "sandbox mode" i
 | identity-only (derived) | the default file's identity pool, guest flag and region, without its user pool (`identityOnlyAuthSection()`) | P-13 |
 | CS-3's second identity pool (derived) | the first other outputs file whose identity pool differs from the default's and allows guests, else the default credentials file's `second_identity_pool_id` (`secondIdentityPool()`) | P-6′, named in the credentials file |
 | each role's codes | that role's own file's `data` block (`url`, `api_key`), the plugin's MfaInfo API | the code sink, in every file |
-| custom auth, new-password users | `AWSCognitoAuthPluginIntegrationTests-credentials.json`: `custom_challenge_answer`, `new_password_required_usernames`, `new_password_required_temporary_password`, as the plugin's `AWSAuthBaseTest` reads them | P-5b's answer, P-14's users |
+| custom auth, new-password users | `AWSCognitoAuthPluginIntegrationTests-credentials.json`: `custom_challenge_answer`, `new_password_required_usernames`, `new_password_required_temporary_password`, as the plugin's `AWSAuthBaseTest` reads them. An absent file is read as empty, as the plugin reads it; a test that needs a key fails naming the file and the key | P-5b's answer; the eight `ccit-plugin-new-password-` users on `default` |
 
-`CognitoClientIntegrationTests` and `CognitoClientUITests` copy the eight outputs files and the default credentials
-file, `CognitoClientPluginInteropTests` the default outputs, `CognitoClientHostedUIApp` the hosted-UI outputs and
-`CognitoClientWebAuthnApp` the WebAuthn outputs.
+`CognitoClientIntegrationTests` and `CognitoClientUITests` copy the eight outputs files (for the three roles above
+with a Gen1 name, the Gen1 file where the Gen2 one is absent) and the default credentials file,
+`CognitoClientPluginInteropTests` the default outputs, `CognitoClientHostedUIApp` the hosted-UI outputs (each, or its
+Gen1 file) and `CognitoClientWebAuthnApp` the WebAuthn outputs. The build warning names, for each role with neither,
+both files.
+
+### Gen1 files
+
+The plugin's CI provides the default, MFA-required and hosted-UI backends as Gen1 `amplifyconfiguration.json` files
+only. The client is Gen2 only and refuses them. So the harness (`PluginTestConfiguration.swift`, shared by the client
+suites, the interop suite, the UI tests and the hosted-UI app) reads a role's Gen2 file when it is there, and
+otherwise translates the plugin's Gen1 file for the same backend into the equivalent Gen2 outputs, writes it under the
+Gen2 name into a directory of its own, and hands the client that directory as the bundle. The client then loads it
+with `AuthClientConfiguration(from:bundle:)`, as an app loads its outputs file; the interop suite configures the
+plugin with the same translation. The mapping follows where the plugin's `ConfigurationHelper` reads each value in
+Gen1 and, for the settings the plugin reads only from Gen2, the Amplify CLI's `Auth.Default` keys:
+
+| Gen2 `auth` key | Gen1 source | Without it in Gen1 |
+|---|---|---|
+| `aws_region`, `user_pool_id`, `user_pool_client_id` | `CognitoUserPool.Default`: `Region`, `PoolId`, `AppClientId` | required |
+| `identity_pool_id` | `CredentialsProvider.CognitoIdentity.Default`, only with both `PoolId` and `Region`, as the plugin requires | no identity pool |
+| `unauthenticated_identities_enabled` | none | not stated: the plugin reads no guest flag, and asks for guest credentials whenever it has an identity pool |
+| `oauth` | `Auth.Default.OAuth`, only with all of `WebDomain`, `Scopes`, `AppClientId`, `SignInRedirectURI` and `SignOutRedirectURI`, as the plugin requires; a scope that is not a string becomes `""`, as for the plugin; each redirect URI as the one the plugin uses | no hosted UI |
+| `oauth.identity_providers` | `Auth.Default.socialProviders` (`AMAZON` and `APPLE` renamed `LOGIN_WITH_AMAZON` and `SIGN_IN_WITH_APPLE`) | `[]` |
+| `oauth.response_type` | none | `code`: the plugin's Gen1 hosted UI always uses the code grant |
+| `password_policy` | carried from the CLI's `Auth.Default.passwordProtectionSettings` (`passwordPolicyMinLength`, a number or a numeric string, and `passwordPolicyCharacters`) | none, as the plugin's Gen1 path |
+| `username_attributes`, `standard_required_attributes`, `user_verification_types` | carried from the CLI's `Auth.Default.usernameAttributes`, `signupAttributes`, `verificationMechanisms`, lower-cased | `[]`, as the plugin's Gen1 path |
+| `mfa_configuration` | carried from the CLI's `Auth.Default.mfaConfiguration` (`OFF`, `OPTIONAL`, `ON` become `NONE`, `OPTIONAL`, `REQUIRED`; any other value is refused) | not stated |
+| `mfa_methods` | carried from the CLI's `Auth.Default.mfaTypes` | `[]` |
+| `data` (the code API) | the first GraphQL API of `api.plugins.awsAPIPlugin`; other API types are skipped | no code API |
+
+The rows "carried from the CLI's" keys are ones the plugin's Gen1 path does not read, and nothing in the client acts
+on them either: the client only exposes them on its configuration. The harness reads `mfa_methods`, to name an MFA
+type a role's backend lacks.
+
+Gen2 has no key for `PinpointAppId`, so it is not carried. What Gen2 cannot express is refused with the Gen1 file's
+name rather than dropped: an `AppClientSecret` on the user pool or on the hosted UI (the plugin sends the latter with
+its token exchange), a custom `Endpoint`, an OAuth `AppClientId` other than the user pool's, an identity pool in
+another region, and an `authenticationFlowType` other than `USER_SRP_AUTH` or `MigrationEnabled: true`, both of which
+change the plugin's default flow (the client's sign-ins default to SRP, as with Gen2 outputs).
+`PluginTestConfigurationTests` checks the mapping, the defaults and the refusals offline.
 
 **Codes** (sign-up, reset, attribute verification, MFA, OTP) come from each role's own `data` API, as the plugin's
 `AWSAuthBaseTest.subscribeToOTPCreation` and `listMfaInfo` take them: `CodeSink` subscribes to `onCreateMfaInfo`
@@ -72,8 +111,19 @@ rm -rf "$DIR"
 
 Set `COGNITO_CLIENT_INTEG_DIR` on the build only: the `infra/` scripts read the same variable as the sandbox's
 state directory. Rebuild (`build-for-testing`) after writing the file set again, for example after `prepare-run.sh`
-rotated the code sink's API key. Each run of CH-1 uses up one of the sandbox's three new-password users, so without
-`prepare-run.sh` three consecutive runs pass, as in CI, where nothing resets them.
+rotated the code sink's API key. The sandbox has eight single-use new-password users (`ccit-plugin-new-password-1` to `-8` on `default`, reset to `FORCE_CHANGE_PASSWORD` by `prepare-run.sh`), and every run that
+reaches one uses one up: the client suites' CH-1, and the plugin's `testNewPasswordRequired` in its Gen1 and its
+Gen2 suite, once more for each retry iteration. So between two `prepare-run.sh`, eight such runs in all, client
+and plugin together, find a user, and a ninth fails CH-1 with none left; one round of the plugin's two suites and
+the client suite takes three. CI has no credentials file, so there CH-1 fails naming it instead.
+
+**CI's file set.** `infra/plugin-configs.py --dir "$DIR" --ci-shape` writes, from the same sandbox backends, exactly
+the nine files the plugin's CI downloads, by CI's names and in CI's formats: Gen1 `amplifyconfiguration.json` for the
+default, MFA-required, hosted-UI and stress backends (`AWSAuthStressTests-amplifyconfiguration.json`), in the shape
+it writes for the plugin's own Gen1 suites; Gen2 outputs for the passwordless, the two email-MFA, the device-alias
+and the WebAuthn backends, with a `data` block only on the first three; and no credentials file. Build with it to
+see locally what CI will run: the tests that fail are the ones "Running in CI" lists. It writes only into a
+directory of its own, and removes from it any file of the full set.
 
 ### Which backend a code-reading test runs on
 
@@ -112,8 +162,9 @@ rest need what no plugin file provides today:
 | Backend (file) | Must provide | Tests that need it | Evidence |
 |---|---|---|---|
 | default (`AWSCognitoAuthPluginIntegrationTests-*`) | Custom email senders publishing every code to an MfaInfo API, and that API as a `data` block in the outputs | the code-reading tests no code-capturing backend fits (above): AT-2, RP-3, the sandbox's reset-code check | `AuthIntegrationTests/README.md` deploys no senders and no API; only the passwordless and email-MFA suites add `AWSAPIPlugin` and subscribe |
-| default | Custom-auth triggers: define `SRP_A → PASSWORD_VERIFIER → CUSTOM_CHALLENGE` and `CUSTOM_CHALLENGE` alone, create publishing `challenge: fixed-answer`, verify accepting the credentials file's `custom_challenge_answer` | CA-1…3, the sandbox check's custom auth | the plugin's `AuthCustomSignInTests` skip without `custom_challenge_answer`; on `main` they skip outright ("Need custom resource") |
-| default | `new_password_required_usernames` and `new_password_required_temporary_password` in the credentials file, users reset to `FORCE_CHANGE_PASSWORD` often enough for every concurrent run | CH-1, P-3 | the plugin's `testNewPasswordRequired` skips without them |
+| default | Custom-auth triggers: define `SRP_A → PASSWORD_VERIFIER → CUSTOM_CHALLENGE` and `CUSTOM_CHALLENGE` alone, create publishing `challenge: fixed-answer`, verify accepting the credentials file's `custom_challenge_answer` | CA-1…3, the sandbox check's custom auth | the plugin's `AuthCustomSignInTests` skip without `custom_challenge_answer`; on `main` they skip outright ("Need custom resource"); CI has no credentials file at all |
+| default | `new_password_required_usernames` and `new_password_required_temporary_password` in the credentials file, users reset to `FORCE_CHANGE_PASSWORD` often enough for every concurrent run | CH-1, P-3 | the plugin's `testNewPasswordRequired` skips without them; CI has no credentials file |
+| default | The credentials file itself, `AWSCognitoAuthPluginIntegrationTests-credentials.json`, with the three keys above | the fixture check (`CognitoBackendSmokeTests.testProvisionedUsersAreAvailable`) | CI downloads no `-credentials.json`; the plugin's `AWSAuthBaseTest` then uses a random email and password |
 | default | A pre-sign-up trigger that auto-verifies email (not only auto-confirms) and refuses usernames that are not test users | RP-3 (a verified email), the sandbox check of the trigger | the README's handler only sets `autoConfirmUser` |
 | default | `ALLOW_USER_PASSWORD_AUTH` and `ALLOW_CUSTOM_AUTH` on the app client; token revocation on; refresh-token rotation off; device tracking always remembered; attribute updates without verification; MFA optional with TOTP and SMS; an identity pool with guest access | SI-2 and the raw helpers; SO-1, SO-2; MS-6; DV-*, CA-2; AT-2; MF-*; CR-*, GU-*, SE-*, ST-* | README (Gen2): device tracking, attribute updates, MFA and guest access as listed; `AuthUsernamePasswordSignInTests` signs in with `USER_PASSWORD_AUTH`; flows, revocation and rotation are Gen2 defaults, not stated |
 | passwordless | Phone numbers verified at sign-up (a pre-sign-up trigger that auto-verifies them), if Cognito sends SMS codes only to verified numbers | PL-7, PL-9, PL-13, PL-21…23, MF-4, MF-6, MF-10, MF-12, the sandbox check's `SMS_OTP` | `PasswordlessTests/README.md` deploys no pre-sign-up trigger; the WebAuthn README does |
@@ -153,7 +204,7 @@ exits with an error without it: none of them picks a profile, or falls back to t
 | `erin` | Deleted and recreated with her stored password | `prepare-run.sh`, every run |
 
 **The client suites no longer sign any of these in**: they read only the plugin's file set, sign up their own
-users, and take CH-1's user from the plugin's new-password users (P-14). The users, R-UP and R-IP stay for the
+users, and take CH-1's user from the sandbox's new-password users (`ccit-plugin-new-password-`, on `default`). The users, R-UP and R-IP stay for the
 scripts' checks. `provision.sh` runs `prepare-run.sh` once at the end; after that, `prepare-run.sh` is optional
 before a run (it resets the new-password users and rotates the code sink's key). It never touches `alice`, `bob` or
 `carol`, and it keeps every password stable. No script prints a secret or passes one to the AWS CLI as an argument.
@@ -300,8 +351,9 @@ in the sheet's list, which is why the test picks this run's user by name.
 `CognitoClientUITests` is the client's copy of the plugin's `AuthHostedUIAppUITests/HostedUISignInTests`,
 in its own host app, `CognitoClientHostedUIApp` (links the client only). The app
 signs in with `signInWithWebUI(presentationAnchor:)` on the plugin's hosted-UI backend
-(`AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json`, copied into the app at build time; on the
-sandbox, the `default` pool's `hostedui-plugin` client, P-7), registers the plugin's `myapp` URL scheme its
+(`AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json`, copied into the app at build time, or on CI
+its Gen1 file, which the app translates to Gen2; on the sandbox, the `default` pool's `hostedui-plugin` client,
+P-7), registers the plugin's `myapp` URL scheme its
 redirect URIs use (and its own `cognitoclienthostapp`), and signs out with `signOut(presentationAnchor:)`.
 
 | Test | Plugin test | What differs |
@@ -310,7 +362,7 @@ redirect URIs use (and its own `cognitoclienthostapp`), and signs out with `sign
 | HU-2 `HostedUISignInTests/testSignInWithoutPresentationAnchorSuccess` | `testSignInWithoutPresentationAnchorSuccess` | the app looks the window up itself (the foreground scene's key window), where the plugin's anchor-less call does it internally; the client's anchor is not optional |
 
 Each test signs a fresh user up on the hosted-UI backend through the API (`SandboxSignUp`, in the test process;
-the UI-test target compiles the six sandbox helpers from `CognitoClientIntegrationTests/`, and its build phase
+the UI-test target compiles the seven sandbox helpers from `CognitoClientIntegrationTests/`, and its build phase
 copies the same files), pastes its name and password into the hosted UI's form, checks that the session is
 signed in and that `getCurrentUser` names the user, then signs out, checking no browser is shown. A teardown block
 signs a session still signed in out, then the user deletes itself (`SandboxUserCleanup`, through the client's SRP
@@ -435,7 +487,8 @@ does, so keychain I/O cannot pin the one cooperative thread.
 
 | Helper | What it gives a test |
 |---|---|
-| `IntegrationTestEnvironment` | The plugin's file set: the main configuration (`configuration()`, the default backend's), a role's configuration by name (`configuration(_: SandboxPool)`, e.g. `.standard`, `.passwordless`, `.emailAlias`, each read from its plugin file), the raw `auth` section of an outputs file (`outputsAuthSection(_:)`, for `oauth`), the derived identity-only role (`identityOnlyAuthSection()`) and second identity pool (`secondIdentityPool()`), a role's code API (`codeSinkAPI(_:)`, its `data` block), the default credentials file (`credentials()`: `requireCustomChallengeAnswer()`, `requireNewPasswordUsers()`), `uniqueSessionID(_:)` (`<tag>-<8 hex>`), `defaultAccessGroup()`, `sharedAccessGroup()` and `secondSharedAccessGroup()`, `rawKeychainAccounts(service:accessGroup:)`, `jwtClaims(_:)` |
+| `IntegrationTestEnvironment` | The plugin's file set: the main configuration (`configuration()`, the default backend's), a role's configuration by name (`configuration(_: SandboxPool)`, e.g. `.standard`, `.passwordless`, `.emailAlias`, each read from its plugin file, or its Gen1 file translated), a role's outputs as the client reads them (`hasOutputs(_:)`, `outputsBundle(_:)`, `outputsData(_:)`), the raw `auth` section of a role's outputs (`outputsAuthSection(_:)`, for `oauth`), the derived identity-only role (`identityOnlyAuthSection()`) and second identity pool (`secondIdentityPool()`), a role's code API (`codeSinkAPI(_:)`, its `data` block), the default credentials file (`credentials()`, empty when absent: `requireCustomChallengeAnswer()`, `requireNewPasswordUsers()`), `uniqueSessionID(_:)` (`<tag>-<8 hex>`), `defaultAccessGroup()`, `sharedAccessGroup()` and `secondSharedAccessGroup()`, `rawKeychainAccounts(service:accessGroup:)`, `jwtClaims(_:)` |
+| `PluginTestConfiguration` | A plugin outputs resource as the client reads it: the Gen2 file, or the Gen2 translation of the plugin's Gen1 file for the same backend (`Gen1TestConfiguration`, "Gen1 files" above), in a bundle of its own. Foundation only; also compiled into the interop suite, the UI tests and the hosted-UI app |
 | `CodeSink` | `code(for:on:since:timeout:)`: the newest code the custom senders published for a user of a role, from that role's `data` API: an `onCreateMfaInfo` subscription (`CodeSink.prepare(_:)`, which `SandboxSignUp` calls before every sign-up) and both `listMfaInfo` forms, polled once a second (60 s by default, as the plugin's `otp(for:)`). For a `FreshUser`: `code(for:_:since:)` with a `Kind` (`.signUp`, `.resetPassword`, `.attributeVerification`, `.mfa`, `.otp`) or the typed `signUpCode`, `resetPasswordCode`, `attributeVerificationCode`, `mfaCode`, `otpCode`; and `code(for:_:sentBy:)` / `snapshot(for:)` + `code(for:_:after:)`, which return only a code sent after the snapshot (use them for a resend or any second code) |
 | `SandboxPools` | `SandboxPools.pool(_:)`: a role's `configuration` for the client under test and a raw SDK `client` on its public app client (no AWS credentials): `passwordSignIn`, `userAuthSignIn`, `respond(to:_:session:)`, `signIn(_:sink:)` (to tokens, answering TOTP, email/SMS MFA and OTP, MFA selection and MFA setup), `enrollTOTP(_:accessToken:)`, `requireLive(_:)` (fails when the role's outputs show no `EMAIL` or `SMS` MFA) |
 | `SandboxSignUp` | `signUp(on:_:)`: a fresh `ccit-` user (`@example.com`, optional fictional `+1555` number, optional passwordless), confirmed (by the pool's pre-sign-up trigger, or else with its sign-up code) or, with `needsConfirmation`, `ccit-confirm-` and unconfirmed; `confirm(_:sentSince:on:sink:)`; the identity helpers. Returns a `FreshUser`, which redacts its password, TOTP secret and sub, records later changes (`recordPassword`, `recordTOTPSecret`, `recordDeleted`) and knows the sink's key (`sinkUsername`, the generated username on `email-alias`) |
@@ -464,6 +517,7 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `SandboxParityProvisioningTests` | Each role's backend, through the SDK or HTTPS directly: every outputs file loads (seven distinct pools; the hosted-UI client on the default pool or on one of its own); `default` auto-confirms and tracks devices; custom auth completes with the stored answer; a `ccit-confirm-` sign-up code reaches the code sink and confirms; email MFA and SMS MFA codes (`mfa-req-email`, `mfa-req-totp-sms`) and `EMAIL_OTP` and `SMS_OTP` codes (`passwordless`) reach the sink and complete sign-in; `passwordless` offers choice-based sign-in; the MFA-required pools challenge a fresh user; `email-alias` signs in by email with 5-minute tokens; the hosted-UI login page answers; the identity-only role vends guest credentials; the third keychain group works |
 | `SandboxProvisioningTests` | The users the suites need are in the state they need, checked through the SDK directly: a fresh user with no MFA preference is not challenged; a fresh user who enrolled TOTP through the client is challenged for TOTP and a fresh code completes it; the first of the new-password users still in `FORCE_CHANGE_PASSWORD` must set a new password (or, once `ChallengeTests` has set one in this run, that user's new password signs in: only an administrator call can reset one, so CH-1 cannot use a fresh user); a fresh user signs in with its password |
 | `HarnessHelperTests` | The shared helpers, including the recorder installed through the real client's escape hatch |
+| `PluginTestConfigurationTests` | The Gen1 translation, offline, over made-up documents: every mapped key reaches the client's configuration, absent keys get the plugin's Gen1 values, values the plugin tolerates are read as it reads them (an identity pool without a region, a non-string scope, an incomplete hosted UI, each MFA mode, a string minimum length, a REST API), what Gen2 cannot carry is refused with the file's name, and the Gen2 file wins over the Gen1 one |
 | `SandboxHelperTests` | The multi-pool helpers against every role's backend: every pool confirms a fresh user and cleanup deletes it (answering each pool's MFA); sign-up, resent, reset-password, attribute-verification, MFA and OTP codes reach the sink; `email-alias` codes are found by the generated username; TOTP-enrolled and unconfirmed users are cleaned up; sessions on several pools are cleaned up with their own pool |
 | `WebAuthnCredentialsIntegrationTests` | WebAuthn credential listing and deletion, headless, on the WebAuthn pool (U-WA): a fresh user with no passkey lists an empty page (default size and size 1); deleting a credential Cognito never issued is `.service(.resourceNotFound)` and leaves the session signed in; page sizes 0 and 21 are refused with `.validation(field: "pageSize")` and send nothing; a signed-out session is `.notSignedIn` with no request. Requests are checked with `RecordingHTTPClient`. No passkey is registered, so no simulator sheet is needed |
 | `PasswordlessSignInTests` | PL-1 … PL-23, the plugin's `PasswordlessSignInTests` with its method names: choice-based sign-in (`USER_AUTH`) on `passwordless` (U-PL: `PASSWORD`, `PASSWORD_SRP`, `EMAIL_OTP`, `SMS_OTP`). Each preferred first factor signs in (PL-1, PL-2, PL-6, PL-7) or reaches its one-time-code step with the code in the sink (PL-12, PL-13); with no preference, the first-factor selection and each choice (PL-3, PL-5, PL-8 … PL-10); wrong passwords (PL-4, PL-14 … PL-17; in `USER_AUTH` a wrong password ends the attempt); right and wrong email and SMS codes, a wrong code keeping the step pending (PL-18 … PL-23). PL-11, `testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`: `userAuth(preferredFirstFactor: .webAuthn)` through the anchored overload gets `.continueSignInWithFirstFactorSelection` without `.webAuthn` after one `InitiateAuth` `USER_AUTH` and no challenge answer, since U-PL offers no `WEB_AUTHN`; no sheet is shown, so no simulator server is needed. Each test signs up its own user with a password, an `@example.com` email and a fictional `+1555` number; codes come from the sink. Requests are checked with `RecordingHTTPClient.answered` |
@@ -523,3 +577,35 @@ It runs from `integ_test.yml`: on pull requests to `main` when the client, its h
 shared internals, `AmplifyFoundation`, `AmplifyFoundationBridge` or the WebAuthn LocalServer change (the
 `auth_client` group in `scripts/python/integ_test_groups.json`), and on every push to `main`. Once the workflow is on
 the default branch, it can also be started by hand from the Actions tab, with a toggle per suite.
+
+### CI's test configuration
+
+The plugin's `auth` test configuration is nine files, and no credentials file:
+
+| File | Format | Role |
+|---|---|---|
+| `AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json` | Gen1 | `.standard`, translated ("Gen1 files") |
+| `AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json` | Gen1 | `.mfaRequiredTOTPSMS`, translated |
+| `AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json` | Gen1 | `.hostedUI`, translated |
+| `AWSAuthStressTests-amplifyconfiguration.json` | Gen1 | none (the plugin's stress backend) |
+| `AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json` | Gen2 | `.passwordless` |
+| `AWSCognitoEmailMFARequiredTests-amplify_outputs.json` | Gen2 | `.mfaRequiredEmail` |
+| `AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json` | Gen2 | `.mfaRequiredAll` |
+| `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json` | Gen2 | `.emailAlias` |
+| `AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json` | Gen2 | `.webAuthn` |
+
+`plugin-configs.py --ci-shape` writes the same set from the sandbox ("Running locally", above). Against it, on
+2026-09-30 (the translation and harness as they are now), `CognitoClientIntegrationTests` passed 226
+of 238 tests, and `CognitoClientPluginInteropTests` (7/7), HU-1 and HU-2 (1/1 each) passed through the translated
+Gen1 files. The 12 that failed each failed with a message naming what is missing:
+
+| Missing | Tests |
+|---|---|
+| `AWSCognitoAuthPluginIntegrationTests-credentials.json` (the custom-auth answer, the new-password users) | CA-1…3 (`CustomAuthTests`: `testSuccessfulSignInWithCustomAuthSRP`, `testRuntimeAuthFlowSwitch`, `testSuccessfulSignInWithCustomAuth`), CH-1 `testNewPasswordRequiredChallenge`, P-3 `testForceChangePasswordUserIsAskedForANewPassword`, `SandboxParityProvisioningTests.testCustomAuthCompletesWithTheStoredAnswer`, `CognitoBackendSmokeTests.testProvisionedUsersAreAvailable` |
+| a code API on the default backend (`AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`, translated, names none) | AT-2 `testSuccessfulUpdateEmailAttribute`, RP-3 `testSuccessfulResetPasswordEndToEnd`, `SandboxHelperTests.testResetPasswordCodeReachesTheSink` |
+| a code API on the device-alias backend | `SandboxHelperTests.testEmailAliasCodesAreFoundByTheGeneratedUsername` |
+| a second identity pool with guest access stated (and no credentials file to name one) | CS-3 `testChangedIdentityPoolDoesNotSeeTheOldGuestRecord`: on the sandbox the Gen2 files name no identity pool but the default's; the plugin's Gen2 backends each create their own, so on CI it may pass |
+
+On CI the plugin's own backends replace the sandbox's, so a test can also fail on a backend setting the table in
+"What the plugin's CI backends must provide" lists. The interop suite, HU-1, HU-2, WA-0 and WA-1 need nothing CI's
+file set lacks. Each `CognitoClientUITests` job runs one test, and fails when that test fails.

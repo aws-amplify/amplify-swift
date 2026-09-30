@@ -15,18 +15,22 @@ enum HostedUIHarness {
     /// The plugin's hosted-UI backend's outputs file, with its `oauth` block (on the sandbox, P-7: the
     /// `default` pool and its `…-hostedui-plugin` client, redirecting to `myapp://`), copied into the app
     /// bundle at build time from `$COGNITO_CLIENT_INTEG_DIR` (default `~/.aws-amplify/amplify-ios/testconfiguration`,
-    /// the "Copy test configuration" phase).
+    /// the "Copy test configuration" phase). Where only the plugin's Gen1 file for the backend was copied (as
+    /// on the plugin's CI), the client is given its Gen2 translation under this name (`PluginTestConfiguration`).
     static let outputsResource = "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs"
 
     /// The client on the default session, as an app with one user would use it.
     static func makeClient() -> Result<AmplifyCognitoClient, HarnessAppError> {
-        guard Bundle.main.url(forResource: outputsResource, withExtension: "json") != nil else {
+        guard PluginTestConfiguration.isPresent(outputsResource, in: .main) else {
             return .failure(HarnessAppError(
-                "\(outputsResource).json is not in the app bundle: it is copied from $COGNITO_CLIENT_INTEG_DIR at build time."
+                "\(PluginTestConfigurationError(missing: outputsResource).description) It is copied from $COGNITO_CLIENT_INTEG_DIR at build time."
             ))
         }
         do {
-            return try .success(AmplifyCognitoClient(from: outputsResource, bundle: .main))
+            return try .success(AmplifyCognitoClient(
+                from: outputsResource,
+                bundle: PluginTestConfiguration.outputsBundle(outputsResource, in: .main)
+            ))
         } catch {
             return .failure(HarnessAppError("Could not configure the client: \(error)"))
         }

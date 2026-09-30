@@ -27,7 +27,7 @@ final class CognitoBackendSmokeTests: XCTestCase {
         try IntegrationTestEnvironment.requireProvisioned()
         let configuration = try AuthClientConfiguration(
             from: IntegrationTestEnvironment.outputsResource,
-            bundle: IntegrationTestEnvironment.bundle
+            bundle: IntegrationTestEnvironment.outputsBundle(.standard)
         )
         let identityPool = try XCTUnwrap(configuration.identityPool)
         let client = try await CognitoIdentityClient(
@@ -57,25 +57,27 @@ final class CognitoBackendSmokeTests: XCTestCase {
     /// - When:
     ///    - Every role's outputs file and the default backend's credentials file are decoded
     /// - Then:
-    ///    - Each role's outputs file loads, and each role the harness reads codes from
-    ///      (`SandboxPool.capturesCodes`: passwordless and the two email-MFA backends, the plugin backends
-    ///      that capture them) names a code API (`data`, with a URL and an API key). The other roles' files
-    ///      need none: a test that reads a code there requires it itself, and fails naming the file
-    ///    - The credentials file holds the keys the client suites use, each non-empty: the custom-challenge
-    ///      answer (`custom_challenge_answer`), at least one new-password user
+    ///    - Each role's outputs file (or, where only that is there, the Gen2 translation of the plugin's Gen1
+    ///      file) loads, and each role the harness reads codes from (`SandboxPool.capturesCodes`: passwordless
+    ///      and the two email-MFA backends, the plugin backends that capture them) names a code API (`data`,
+    ///      with a URL and an API key). The other roles' files need none: a test that reads a code there
+    ///      requires it itself, and fails naming the file
+    ///    - The credentials file is in the bundle and holds the keys the client suites use, each non-empty: the
+    ///      custom-challenge answer (`custom_challenge_answer`), at least one new-password user
     ///      (`new_password_required_usernames`) and their temporary password
     ///      (`new_password_required_temporary_password`). Other keys, such as the plugin suites', are allowed
     ///
     func testProvisionedUsersAreAvailable() throws {
         try IntegrationTestEnvironment.requireProvisioned()
         for pool in SandboxPool.allCases {
-            XCTAssertNoThrow(try IntegrationTestEnvironment.configuration(pool), "\(pool.outputsResource).json")
+            XCTAssertNoThrow(try IntegrationTestEnvironment.configuration(pool), pool.fixtureName)
         }
         for pool in SandboxPool.allCases where pool.capturesCodes {
             XCTAssertNoThrow(try IntegrationTestEnvironment.codeSinkAPI(pool), "\(pool.outputsResource).json has no code API")
         }
 
         let credentials = try IntegrationTestEnvironment.credentials()
+        XCTAssertTrue(credentials.isPresent, "\(IntegrationTestEnvironment.credentialsResource).json is not in the test bundle")
         XCTAssertFalse(credentials.customChallengeAnswer?.value.isEmpty ?? true, "No custom-challenge answer")
         XCTAssertFalse(credentials.newPasswordRequiredUsernames.isEmpty, "No new-password users")
         XCTAssertFalse(credentials.newPasswordRequiredTemporaryPassword?.value.isEmpty ?? true, "No temporary password")

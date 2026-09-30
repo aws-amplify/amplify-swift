@@ -31,13 +31,13 @@ final class PluginRecordLocationTests: XCTestCase {
         try InteropEnvironment.requireProvisioned()
         let configuration = try AuthClientConfiguration(
             from: InteropEnvironment.outputsResource,
-            bundle: InteropEnvironment.bundle
+            bundle: InteropEnvironment.outputsBundle()
         )
         legacyAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
         try InteropEnvironment.deleteSessionAccount(legacyAccount)
         XCTAssertFalse(try InteropEnvironment.sessionAccounts().contains(legacyAccount), "setUp left \(RealKeychain.redact(legacyAccount))")
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
-        try Amplify.configure(with: .data(InteropEnvironment.data(forResource: InteropEnvironment.outputsResource)))
+        try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
     }
 
     /// Removes the plugin's record first, whatever failed, then signs out only when Auth is configured:
@@ -95,7 +95,9 @@ final class PluginRecordLocationTests: XCTestCase {
 /// The interop target's test configuration, as in `CognitoClientIntegrationTests`' `IntegrationTestEnvironment`:
 /// the plugin's default backend's outputs file, which the "Copy test configuration" build phase copies from
 /// `$COGNITO_CLIENT_INTEG_DIR` (default `~/.aws-amplify/amplify-ios/testconfiguration`, where CI downloads it),
-/// and the fresh users the tests sign in.
+/// and the fresh users the tests sign in. Where only the plugin's Gen1 file for that backend was copied (as on
+/// the plugin's CI), its Gen2 translation (`PluginTestConfiguration`) is what both the client and the plugin are
+/// configured with, so both see the same pools.
 enum InteropEnvironment {
     static let outputsResource = "AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
 
@@ -103,10 +105,23 @@ enum InteropEnvironment {
         Bundle(for: BundleToken.self)
     }
 
+    /// The bundle to load `outputsResource` from: the test bundle, or the Gen2 translation of the Gen1 file.
+    static func outputsBundle() throws -> Bundle {
+        try requireProvisioned()
+        return try PluginTestConfiguration.outputsBundle(outputsResource, in: bundle)
+    }
+
+    /// The Gen2 outputs document `outputsBundle()` holds, for `Amplify.configure(with: .data(_:))`.
+    static func outputsData() throws -> Data {
+        try requireProvisioned()
+        return try PluginTestConfiguration.outputsData(outputsResource, in: bundle)
+    }
+
     static func requireProvisioned() throws {
-        guard bundle.url(forResource: outputsResource, withExtension: "json") != nil else {
+        guard PluginTestConfiguration.isPresent(outputsResource, in: bundle) else {
             throw InteropError("""
-            \(outputsResource).json is not in the test bundle. The build phase copies the plugin's test \
+            \(outputsResource).json (or its Gen1 \(PluginTestConfiguration.gen1Resource(for: outputsResource) ?? "")\
+            .json) is not in the test bundle. The build phase copies the plugin's test \
             configuration from $COGNITO_CLIENT_INTEG_DIR (default ~/.aws-amplify/amplify-ios/testconfiguration, \
             where CI downloads it). For a local run, write it with \
             AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/plugin-configs.py --dir <dir>, then \
@@ -122,7 +137,7 @@ enum InteropEnvironment {
     static func signUpFreshUser() async throws -> InteropUser {
         let hex = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(12).lowercased()
         let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!")
-        let configuration = try AuthClientConfiguration(from: outputsResource, bundle: bundle)
+        let configuration = try AuthClientConfiguration(from: outputsResource, bundle: outputsBundle())
         let sessionId = try SessionID.named("interop-signup-\(hex.prefix(8))")
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
@@ -144,7 +159,7 @@ enum InteropEnvironment {
     /// else and calls `deleteUser()`, and the session is purged. Best effort, for teardown: a user already
     /// gone is fine. Never touches the plugin's record.
     static func deleteFreshUser(_ user: InteropUser) async {
-        guard let configuration = try? AuthClientConfiguration(from: outputsResource, bundle: bundle),
+        guard let configuration = try? AuthClientConfiguration(from: outputsResource, bundle: outputsBundle()),
               let sessionId = try? SessionID.named("interop-cleanup-\(UUID().uuidString.prefix(8).lowercased())") else {
             return
         }
@@ -158,13 +173,6 @@ enum InteropEnvironment {
         }
         try? await waitUntilReleased(sessionId)
         try? await AmplifyCognitoClient.purgeStoredSession(sessionId: sessionId, configuration: configuration)
-    }
-
-    static func data(forResource resource: String) throws -> Data {
-        guard let url = bundle.url(forResource: resource, withExtension: "json") else {
-            throw InteropError("\(resource).json is not in the test bundle.")
-        }
-        return try Data(contentsOf: url)
     }
 
     /// Deletes `account` from the session service, in every entitled group. Absent is fine.

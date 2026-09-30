@@ -86,7 +86,7 @@ struct SandboxPoolClient: Sendable {
     init(_ pool: SandboxPool) throws {
         let configuration = try IntegrationTestEnvironment.configuration(pool)
         guard let userPool = configuration.userPool else {
-            throw HarnessError.malformedFixture("\(pool.outputsResource).json has no user pool.")
+            throw HarnessError.malformedFixture("\(pool.sourceName) has no user pool.")
         }
         self.pool = pool
         self.configuration = configuration
@@ -101,7 +101,7 @@ struct SandboxPoolClient: Sendable {
     func requireLive(_ feature: String) throws {
         guard !pending.contains(feature) else {
             throw HarnessError.malformedFixture("""
-            \(pool.outputsResource).json shows no \(feature): the backend needs it enabled for this test.
+            \(pool.sourceName) shows no \(feature): the backend needs it enabled for this test.
             """)
         }
     }
