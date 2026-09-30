@@ -66,7 +66,7 @@ struct SignInScreen: Screen {
         focusAndType(usernameField, username)
         // Route the password field through the same consent-clearing poll as the username
         // field; a late consent sheet can otherwise hide it past `focusAndType`'s plain wait.
-        let passwordField = waitForWebTextField(app.webViews.secureTextFields["Password"])
+        let passwordField = waitForWebTextField([app.webViews.secureTextFields["Password"]])
         focusAndType(passwordField, password)
 
         app.webViews.buttons["submit"].tap()
