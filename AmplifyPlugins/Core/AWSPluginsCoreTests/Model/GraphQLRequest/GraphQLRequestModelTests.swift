@@ -72,7 +72,7 @@ class GraphQLRequestModelTest: XCTestCase, @unchecked Sendable {
     func testQueryByIdGraphQLRequest() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: "id")]))
         let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.get(Post.self, byId: "id", authMode: .amazonCognitoUserPools)
@@ -89,7 +89,7 @@ class GraphQLRequestModelTest: XCTestCase, @unchecked Sendable {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
-        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: nil)))
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 

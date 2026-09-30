@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 
-@_implementationOnly import AmplifyAsyncTesting
+import AmplifyAsyncTesting
 @testable import Amplify
 @testable import AmplifyTestCommon
 

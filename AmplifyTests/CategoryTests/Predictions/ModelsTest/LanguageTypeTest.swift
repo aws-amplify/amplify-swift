@@ -26,6 +26,6 @@ class LanguageTypeTest: XCTestCase, @unchecked Sendable {
     func testConverToLocale() {
         let language = Predictions.Language.afrikaans
         let locale = Locale(identifier: language.code)
-        XCTAssertEqual(locale.languageCode, "af")
+        XCTAssertEqual((locale as NSLocale).languageCode, "af")
     }
 }

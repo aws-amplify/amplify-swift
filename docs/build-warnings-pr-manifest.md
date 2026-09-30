@@ -1,9 +1,9 @@
 # Build warnings — stacked PR manifest
 
 Integration branch: `chore/build-warnings`. Each slice below is a PR into that branch. The draft PR from
-`chore/build-warnings` to `main` stays open for the whole effort. PR-triggered builds, unit tests and integration
-tests only run for PRs into `main`, so the draft PR runs the full matrix after every slice merge. It lands on
-`main` as a merge commit, which keeps each slice's commit in the history.
+`chore/build-warnings` to `main` (#4351) stays open for the whole effort. PR-triggered builds, unit tests and
+integration tests only run for PRs into `main`, so the draft PR runs the full matrix after every slice merge. It
+lands on `main` as a merge commit, which keeps each slice's commit in the history.
 
 ## Baseline
 
@@ -46,9 +46,11 @@ touch separate directories and can proceed in parallel once slice 1 is merged.
   Storage API, legacy token initializers, `AuthFlowType.custom` and `.id()`. Accepted warnings are left as they are:
   no `@available(*, deprecated)` wrappers or other suppression.
 - **`@unchecked Sendable`.** Used on public types whose stored properties can't be proven `Sendable` (for example
-  `[String: Any]` or metatypes), with a one-line reason at the declaration. Not used on `open` classes, because every
-  subclass would then have to restate the conformance (for example `APIAuthProviderFactory`). Not used to paper over
-  unsynchronized mutable state either; those types get a lock (for example `AmplifyReachability`).
+  `[String: Any]` or metatypes), and on non-`final` public classes whose stored properties are all `Sendable` `let`s
+  (the compiler only checks `final` classes). Each has a one-line reason at the declaration. Not used on `open`
+  classes, because every subclass would then have to restate the conformance (for example `APIAuthProviderFactory`).
+  Not used to paper over unsynchronized mutable state either; those types get a lock (for example
+  `AmplifyReachability`).
 - **Test models.** `model.pluralName = "X"` becomes `model.listPluralName = "X"` plus `model.syncPluralName = "X"`.
   This is behavior-identical, because `pluralName` is only the fallback for both. Models are not regenerated: most
   schemas are stale or the models are hand-edited, and the generated `AmplifyModels.swift` changes the version
