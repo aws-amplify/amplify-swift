@@ -13,9 +13,11 @@ import XCTest
 /// is empty), and the custom senders put every code in the sink. The plugin's test names are kept.
 ///
 /// AT-5 and AT-6 read a code and hold under either update setting, so they run on U-PL (`passwordless`),
-/// whose outputs name a code API. AT-2 reads a code too, but also checks the email is updated before it is
-/// verified, which only a backend with empty `AttributesRequireVerificationBeforeUpdate` shows: that is the
-/// default backend, as the plugin's README sets it, so AT-2 stays there and needs a code API on it.
+/// whose outputs name a code API. AT-2 checks the email is updated before it is verified, which only a
+/// backend with empty `AttributesRequireVerificationBeforeUpdate` shows: that is the default backend, as the
+/// plugin's README sets it, so AT-2 stays there. As the plugin's test, it reads no code; its second half,
+/// the code verifying the updated email (`testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, not counted),
+/// needs a code API on the default backend.
 ///
 /// Every user is a fresh `ccit-` user signed in through the client, and deleted at teardown. No test prints
 /// a username, email, password or code: the checks on them are boolean.
@@ -41,19 +43,48 @@ final class UserAttributesTests: ClientIntegrationTestCase {
         XCTAssertTrue(email.value == user.email, "the email attribute is the signed-up email")
     }
 
-    /// Updating the email sends a code to the new address, and the update is applied at once (AT-2). The
-    /// code then verifies the new email (the plugin's test stops at the update).
+    /// Updating the email sends a code to the new address, and the update is applied at once (AT-2), as
+    /// far as the plugin's test goes: it stops at the update, and reads no code.
     ///
     /// - Given: a fresh user with an email, signed in
     /// - When:
     ///    - the client updates `email` to a new address, with client metadata
-    ///    - then confirms it with the code the sink received
     /// - Then:
     ///    - the update is not complete: `.confirmAttributeWithCode` for `email`, by email
-    ///    - fetching returns the new email; after the confirmation, `email_verified` is `true`
+    ///    - fetching returns the new email, before it is verified
     ///
     func testSuccessfulUpdateEmailAttribute() async throws {
-        let (client, user) = try await makeSignedInFreshUser("at-2")
+        let (client, _) = try await makeSignedInFreshUser("at-2")
+        let updatedEmail = SandboxSignUp.identity().email
+
+        let result = try await client.update(
+            userAttribute: .init(.email, value: updatedEmail),
+            options: .init(clientMetadata: metadata)
+        )
+
+        XCTAssertFalse(result.isUpdated)
+        assertCodeSentToTheEmail(result.nextStep)
+        let updated = try await client.fetchUserAttributes()
+        XCTAssertTrue(updated.first { $0.key == .email }?.value == updatedEmail, "the email is the updated one")
+    }
+
+    /// The code sent for an updated email verifies it (AT-2's second half, not counted: the plugin's test
+    /// stops at the update). On the default backend, where the update is applied before it is verified.
+    ///
+    /// It reads the code Cognito sends to the new address, so it needs a code API on the default backend.
+    /// The plugin's CI file for it names none (its README deploys no custom senders), and there it fails
+    /// naming the file.
+    ///
+    /// - Given: a fresh user with an email, signed in, on the default backend
+    /// - When:
+    ///    - the client updates `email` to a new address, with client metadata
+    ///    - then confirms it with the first code the sink received after the update
+    /// - Then:
+    ///    - fetching returns the new email before the confirmation; after it, `email_verified` is `true`
+    ///
+    func testUpdatedEmailIsVerifiedWithTheCodeSentToIt() async throws {
+        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard)
+        let (client, user) = try await makeSignedInFreshUser("at-2-verify")
         let sink = try CodeSink()
         let updatedEmail = SandboxSignUp.identity().email
 
@@ -65,7 +96,6 @@ final class UserAttributesTests: ClientIntegrationTestCase {
         }
 
         XCTAssertFalse(result.isUpdated)
-        assertCodeSentToTheEmail(result.nextStep)
         let updated = try await client.fetchUserAttributes()
         XCTAssertTrue(updated.first { $0.key == .email }?.value == updatedEmail, "the email is the updated one")
         try await client.confirm(userAttribute: .email, confirmationCode: code)

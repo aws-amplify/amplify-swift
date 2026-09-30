@@ -16,6 +16,12 @@ import XCTest
 /// must find it there. Each test signs up its own user, so no other device of the user is ever listed;
 /// the assertions still identify this session's device by its access token's `device_key` claim, as the
 /// plugin suite does on its shared user.
+///
+/// A fresh user must be confirmed: by the backend's pre-sign-up trigger, or with its sign-up code from the
+/// code API its outputs name. Without either, every test fails naming the file
+/// (`SandboxSignUp.requireCodeAPIToConfirm`). The plugin's suite reads no code: it signs in one
+/// pre-created user from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which the plugin's CI
+/// does not download, and it is only in the `AuthGen2IntegrationTests` target, which no CI workflow runs.
 final class DeviceAliasTests: DeviceTestCase {
 
     /// A fresh email-username user, signed in with SRP by email on a new session.

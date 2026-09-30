@@ -1,5 +1,5 @@
 {
-  "comment": "U-REQ-E, the plugin's email-MFA-required backend (MFATests/EmailMFATests/README.md): username sign-in, MFA required with EMAIL and SMS, account recovery none, custom senders, pre-sign-up, device tracking always. Email MFA needs the verified SES identity (P-8).",
+  "comment": "U-REQ-E, the plugin's email-MFA-required backend (MFATests/EmailMFATests/README.md): username sign-in, MFA required with EMAIL and SMS, account recovery none, custom senders, pre-sign-up, device tracking always. Email MFA needs the verified SES identity (P-8). `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH.",
   "userPool": {
     "UserPoolTier": "ESSENTIALS",
     "DeletionProtection": "INACTIVE",
@@ -42,6 +42,11 @@
   "appClients": {
     "client": {
       "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED"
+    },
+    "ci": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
       "EnableTokenRevocation": true,
       "PreventUserExistenceErrors": "ENABLED"
     }

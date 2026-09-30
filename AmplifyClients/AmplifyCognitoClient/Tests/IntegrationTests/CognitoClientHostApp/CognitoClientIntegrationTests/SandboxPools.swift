@@ -8,10 +8,22 @@
 // Shared with CognitoClientUITests (the hosted-UI UI tests), which compiles this file and the five other
 // shared sandbox helpers (IntegrationTestEnvironment, SandboxPools, SandboxSignUp, SandboxUserCleanup,
 // CodeSink, TOTP) and nothing else from this folder. Keep it self-contained: it may use only those files,
-// AmplifyCognitoClient, AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
+// AmplifyCognitoClient (and AmplifySRP and AmplifyBigInteger, which its product builds),
+// AWSCognitoIdentityProvider, Foundation, Security, CryptoKit and XCTest.
+//
+// AmplifySRP and AmplifyBigInteger are imported, not linked by name: Package.swift makes no product of them
+// (one would publish internal modules), so a target can only reach them through a product whose closure
+// holds them. AmplifyCognitoClient's does (AmplifyCognitoClient -> InternalAWSCognitoAuth -> AmplifySRP ->
+// AmplifyBigInteger): SwiftPM builds and links both into every target that links the product, and Xcode
+// puts their modules beside it, as for InternalAmplifyKeychain, which KeychainModuleRealKeychainTests imports
+// the same way. Should the client stop depending on them, the build fails at these imports; nothing can
+// fail at run time instead. Only their public API is used.
 
 @_spi(AmplifyExperimental) import AmplifyCognitoClient
+import AmplifyBigInteger
+import AmplifySRP
 import AWSCognitoIdentityProvider
+import CryptoKit
 import Foundation
 
 /// The multi-pool fixtures: one entry point per plugin-parity pool
@@ -55,12 +67,21 @@ extension SandboxPool {
     }
 
     /// The features, by the names the tests require them by, that the outputs file shows the pool lacks:
-    /// `email-mfa` and `sms-mfa` without `EMAIL` or `SMS` in `mfa_methods`. What the outputs do not
-    /// describe (the first factors, WebAuthn) is taken as live, and a test that needs it fails at Cognito.
+    /// `sms-mfa` without `SMS` in `mfa_methods`, and, on the sandbox's file set, `email-mfa` without
+    /// `EMAIL`. What the outputs do not describe (the first factors, WebAuthn, and email MFA elsewhere) is
+    /// taken as live, and a test that needs it fails at Cognito.
+    ///
+    /// `EMAIL` is read only where the file is the sandbox's (`IntegrationTestEnvironment.isSandbox`): its
+    /// `mfa_methods` are written from the pool template after `parity.py`'s `degrade()`, so they list `EMAIL`
+    /// exactly when email MFA is live, and a sandbox without a usable SES identity fails the email-MFA tests
+    /// naming the file. The plugin's two email-MFA backends turn email MFA on outside `defineAuth`
+    /// (`MFATests/EmailMFATests/README.md`: `multifactor` names `sms`, and `totp` on the all-types one), so
+    /// their outputs list `SMS` (and `TOTP`) and no `EMAIL`, and the plugin's email-MFA suites, which read no
+    /// `mfa_methods`, pass on them: there email MFA is taken as live.
     func missingFeatures() throws -> [String] {
         let methods = try IntegrationTestEnvironment.outputsAuthSection(self)["mfa_methods"] as? [String] ?? []
         var missing: [String] = []
-        if !methods.contains("EMAIL") {
+        if IntegrationTestEnvironment.isSandbox(self), !methods.contains("EMAIL") {
             missing.append("email-mfa")
         }
         if !methods.contains("SMS") {
@@ -108,18 +129,53 @@ struct SandboxPoolClient: Sendable {
 
     // MARK: - Raw sign-in
 
-    /// `USER_PASSWORD_AUTH` with the user's current password. The answer may be a challenge.
-    func passwordSignIn(_ user: TestUser) async throws -> InitiateAuthOutput {
-        try await client.initiateAuth(input: InitiateAuthInput(
-            authFlow: .userPasswordAuth,
-            authParameters: ["USERNAME": user.username, "PASSWORD": user.password],
-            clientId: clientId
-        ))
+    /// A password sign-in with the user's current password: `USER_PASSWORD_AUTH`, or, where the app client
+    /// offers no such flow (the plugin's MFA-required, email-MFA and device-alias backends), SRP
+    /// (`srpSignIn(_:)`), the plugin's and the client's default flow. The answer may be a challenge.
+    func passwordSignIn(_ user: TestUser) async throws -> RawSignInStep {
+        do {
+            return try await RawSignInStep(client.initiateAuth(input: InitiateAuthInput(
+                authFlow: .userPasswordAuth,
+                authParameters: ["USERNAME": user.username, "PASSWORD": user.password],
+                clientId: clientId
+            )))
+        } catch let error as InvalidParameterException where error.message?.contains("USER_PASSWORD_AUTH") == true {
+            // "USER_PASSWORD_AUTH flow not enabled for this client": Cognito refuses the flow itself,
+            // before it looks at the user.
+            return try await srpSignIn(user)
+        }
     }
 
-    /// `USER_PASSWORD_AUTH` for a fresh user, with its current password.
-    func passwordSignIn(_ user: FreshUser) async throws -> InitiateAuthOutput {
+    /// A password sign-in for a fresh user, with its current password (`passwordSignIn(_:)`).
+    func passwordSignIn(_ user: FreshUser) async throws -> RawSignInStep {
         try await passwordSignIn(user.testUser)
+    }
+
+    /// `USER_SRP_AUTH` with the user's current password: the `PASSWORD_VERIFIER` challenge is answered with
+    /// the SRP-6a proof (`RawSRP`), and what follows it (tokens, or an MFA challenge) is returned. No device
+    /// key is sent, so device tracking adds no challenge. A wrong password or a deleted user fails the
+    /// answer as `USER_PASSWORD_AUTH` fails (`NotAuthorizedException`, or `UserNotFoundException` where
+    /// existence errors are on), and an unconfirmed user with `UserNotConfirmedException`.
+    func srpSignIn(_ user: TestUser) async throws -> RawSignInStep {
+        guard let poolId = configuration.userPool?.poolId else {
+            throw HarnessError.malformedFixture("\(pool.sourceName) has no user pool.")
+        }
+        let srp = try RawSRP()
+        let start = try await client.initiateAuth(input: InitiateAuthInput(
+            authFlow: .userSrpAuth,
+            authParameters: ["USERNAME": user.username, "SRP_A": srp.publicAHex],
+            clientId: clientId
+        ))
+        guard start.challengeName == .passwordVerifier else {
+            return RawSignInStep(start)
+        }
+        let responses = try srp.passwordVerifierResponses(
+            start.challengeParameters ?? [:],
+            username: user.username,
+            password: user.password,
+            poolId: poolId
+        )
+        return try await RawSignInStep(respond(to: .passwordVerifier, responses, session: start.session))
     }
 
     /// Choice-based sign-in (`USER_AUTH`), optionally with a preferred first factor such as `EMAIL_OTP`.
@@ -279,5 +335,125 @@ struct SandboxPoolClient: Sendable {
             return []
         }
         return values
+    }
+}
+
+/// Where a raw password sign-in stands after its first step (`SandboxPoolClient.passwordSignIn(_:)`):
+/// `InitiateAuth` for `USER_PASSWORD_AUTH`, or the `PASSWORD_VERIFIER` answer for SRP. Tokens, or the
+/// next challenge with its parameters and session.
+struct RawSignInStep: Sendable {
+    let authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType?
+    let challengeName: CognitoIdentityProviderClientTypes.ChallengeNameType?
+    let challengeParameters: [String: String]?
+    let session: String?
+
+    init(_ output: InitiateAuthOutput) {
+        self.authenticationResult = output.authenticationResult
+        self.challengeName = output.challengeName
+        self.challengeParameters = output.challengeParameters
+        self.session = output.session
+    }
+
+    init(_ output: RespondToAuthChallengeOutput) {
+        self.authenticationResult = output.authenticationResult
+        self.challengeName = output.challengeName
+        self.challengeParameters = output.challengeParameters
+        self.session = output.session
+    }
+}
+
+/// The client side of Cognito's SRP-6a sign-in, for the raw SDK helpers: the same computation as the
+/// shared engine's `VerifyPasswordSRP` (RFC 5054's 3072-bit group, `g = 2`), over the public `AmplifySRP`
+/// primitives. It holds the ephemeral private value for one sign-in and never prints it or the password.
+struct RawSRP {
+    /// RFC 5054, appendix A, the 3072-bit group, as the engine's `SRPCommonConfig`.
+    private static let nHex =
+        "FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B2" +
+        "2514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7E" +
+        "C6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45" +
+        "B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F3562085" +
+        "52BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180" +
+        "E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898" +
+        "FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575" +
+        "D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06" +
+        "D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA" +
+        "074E5AB3143DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF"
+
+    private let common: SRPCommonState
+    private let state: SRPClientState
+
+    init() throws {
+        guard let prime = AmplifyBigInt(Self.nHex, radix: 16), let generator = AmplifyBigInt("2", radix: 16) else {
+            throw HarnessError.malformedFixture("The SRP group does not parse.")
+        }
+        self.common = SRPCommonState(prime: prime, generator: generator)
+        self.state = SRPClientState(commonState: common)
+    }
+
+    /// `SRP_A`, the client's public value, in hex.
+    var publicAHex: String {
+        state.publicA.asString(radix: 16)
+    }
+
+    /// The `PASSWORD_VERIFIER` answer: `USERNAME`, `PASSWORD_CLAIM_SECRET_BLOCK`, `PASSWORD_CLAIM_SIGNATURE`
+    /// and `TIMESTAMP`, from the challenge's `SALT`, `SRP_B`, `SECRET_BLOCK` and `USER_ID_FOR_SRP`.
+    func passwordVerifierResponses(
+        _ parameters: [String: String],
+        username: String,
+        password: String,
+        poolId: String
+    ) throws -> [String: String] {
+        guard let saltHex = parameters["SALT"], let salt = AmplifyBigInt(saltHex, radix: 16),
+              let serverBHex = parameters["SRP_B"], let serverB = AmplifyBigInt(serverBHex, radix: 16),
+              let secretBlockString = parameters["SECRET_BLOCK"],
+              let secretBlock = Data(base64Encoded: secretBlockString) else {
+            throw HarnessError.malformedFixture("PASSWORD_VERIFIER came without a usable SALT, SRP_B or SECRET_BLOCK.")
+        }
+        guard serverB % common.prime != AmplifyBigInt(0) else {
+            throw HarnessError.malformedFixture("PASSWORD_VERIFIER came with an illegal SRP_B.")
+        }
+        let userIdForSRP = parameters["USER_ID_FOR_SRP"] ?? username
+        // The pool id without its region prefix, as Cognito hashes it into x and the signature.
+        let poolName = poolId.split(separator: "_", maxSplits: 1).last.map(String.init) ?? poolId
+        let sharedSecret = SRPClientState.calculateSessionKey(
+            username: "\(poolName)\(userIdForSRP)",
+            password: password,
+            publicClientKey: state.publicA,
+            privateClientKey: state.privateA,
+            publicServerKey: serverB,
+            salt: salt,
+            commonState: common
+        )
+        let u = SRPClientState.calculcateU(
+            publicClientKey: AmplifyBigIntHelper.getSignedData(num: state.publicA),
+            publicServerKey: AmplifyBigIntHelper.getSignedData(num: serverB)
+        )
+        let key = HMACKeyDerivationFunction.generateDerivedKey(
+            keyingMaterial: Data(AmplifyBigIntHelper.getSignedData(num: sharedSecret)),
+            salt: Data(AmplifyBigIntHelper.getSignedData(num: u)),
+            info: "Caldera Derived Key",
+            outputLength: 16
+        )
+        let timestamp = Self.timestamp(Date())
+        var hmac = HMAC<SHA256>(key: SymmetricKey(data: key))
+        hmac.update(data: Data(poolName.utf8))
+        hmac.update(data: Data(userIdForSRP.utf8))
+        hmac.update(data: secretBlock)
+        hmac.update(data: Data(timestamp.utf8))
+        return [
+            "USERNAME": parameters["USERNAME"] ?? username,
+            "PASSWORD_CLAIM_SECRET_BLOCK": secretBlockString,
+            "PASSWORD_CLAIM_SIGNATURE": Data(hmac.finalize()).base64EncodedString(),
+            "TIMESTAMP": timestamp
+        ]
+    }
+
+    /// Cognito's SRP timestamp, `EEE MMM d HH:mm:ss 'UTC' yyyy` in UTC and the POSIX locale.
+    private static func timestamp(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "EEE MMM d HH:mm:ss 'UTC' yyyy"
+        return formatter.string(from: date)
     }
 }

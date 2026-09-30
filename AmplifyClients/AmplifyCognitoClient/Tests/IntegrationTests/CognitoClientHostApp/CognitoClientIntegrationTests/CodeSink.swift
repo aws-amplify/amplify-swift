@@ -141,7 +141,7 @@ struct CodeSink: Sendable {
     }
 
     /// Runs `action`, which makes Cognito send a `kind` code to `user`, and returns its result with the
-    /// first code seen after the action started that was not seen before it.
+    /// first code sent after the action started: one not seen before it (`code(for:_:after:)`).
     ///
     /// Unlike `since`, this tells a resent code from the one before it even within the clock-skew
     /// allowance, so it suits a resend, or a wrong-code-then-right-code flow that asks for a new code.
@@ -156,6 +156,18 @@ struct CodeSink: Sendable {
         return try await (result, code(for: user, kind, after: before, timeout: timeout))
     }
 
+    /// `code(for:_:sentBy:)` for a user the test signed up by hand, by its username on `pool`.
+    func code<Result>(
+        for username: String,
+        on pool: SandboxPool,
+        timeout: TimeInterval = CodeSink.defaultTimeout,
+        sentBy action: () async throws -> Result
+    ) async throws -> (result: Result, code: String) {
+        let before = try await snapshot(for: username, on: pool)
+        let result = try await action()
+        return try await (result, code(for: username, on: pool, after: before, timeout: timeout))
+    }
+
     /// The codes seen for a user at one moment, to tell the codes sent after it from those before.
     struct Snapshot: Sendable {
         fileprivate let fingerprints: Set<String>
@@ -165,37 +177,75 @@ struct CodeSink: Sendable {
     /// `code(for:_:after:timeout:)`. A role whose outputs have no `data` block has nothing to see: the
     /// snapshot is empty, and only a wait for a code fails.
     func snapshot(for user: FreshUser) async throws -> Snapshot {
-        guard let api = try? IntegrationTestEnvironment.codeSinkAPI(user.pool) else {
+        try await snapshot(for: user.sinkUsername, on: user.pool)
+    }
+
+    /// What has been seen for `username` on `pool` now (`snapshot(for:)`, for a user the test signed up
+    /// by hand).
+    func snapshot(for username: String, on pool: SandboxPool) async throws -> Snapshot {
+        guard let api = try? IntegrationTestEnvironment.codeSinkAPI(pool) else {
             return Snapshot(fingerprints: [])
         }
         await CodeFeed.shared.subscribe(api)
-        return try await Snapshot(fingerprints: Set(codes(for: user.sinkUsername, api: api).map(\.fingerprint)))
+        return try await Snapshot(fingerprints: Set(codes(for: username, api: api).map(\.fingerprint)))
     }
 
-    /// The newest unexpired `kind` code for `user` that was not in `snapshot`, polled once a second for
-    /// up to `timeout` seconds.
+    /// The first unexpired `kind` code for `user` sent after `snapshot`: the first one a poll (once a second,
+    /// for up to `timeout` seconds) finds that was not in it. Were two to arrive within one poll, the newer
+    /// is returned; a test waits for each code before asking for the next.
     func code(
         for user: FreshUser,
         _ kind: Kind,
         after snapshot: Snapshot,
         timeout: TimeInterval = CodeSink.defaultTimeout
     ) async throws -> String {
-        let api = try IntegrationTestEnvironment.codeSinkAPI(user.pool)
+        try await code(
+            for: user.sinkUsername,
+            on: user.pool,
+            after: snapshot,
+            timeout: timeout,
+            describing: "a new \(kind.rawValue) code for a fresh user on \(user.pool.rawValue)"
+        )
+    }
+
+    /// The first unexpired code for `username` on `pool` sent after `snapshot` (`code(for:_:after:)`, for a
+    /// user the test signed up by hand). Unlike `code(for:on:since:)`, it never returns a code sent
+    /// before the snapshot, such as the sign-up code of a pool that left the user to confirm.
+    func code(
+        for username: String,
+        on pool: SandboxPool,
+        after snapshot: Snapshot,
+        timeout: TimeInterval = CodeSink.defaultTimeout
+    ) async throws -> String {
+        try await code(
+            for: username,
+            on: pool,
+            after: snapshot,
+            timeout: timeout,
+            describing: "a new code for the user on \(pool.rawValue)"
+        )
+    }
+
+    private func code(
+        for username: String,
+        on pool: SandboxPool,
+        after snapshot: Snapshot,
+        timeout: TimeInterval,
+        describing what: String
+    ) async throws -> String {
+        let api = try IntegrationTestEnvironment.codeSinkAPI(pool)
         await CodeFeed.shared.subscribe(api)
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
             let now = Date()
-            if let entry = try await codes(for: user.sinkUsername, api: api).first(where: {
+            if let entry = try await codes(for: username, api: api).first(where: {
                 !snapshot.fingerprints.contains($0.fingerprint) && $0.expiresAt > now
             }) {
                 return entry.code
             }
             try await Task.sleep(nanoseconds: 1_000_000_000)
         } while Date() < deadline
-        throw HarnessError.timedOut("""
-        a new \(kind.rawValue) code for a fresh user on \(user.pool.rawValue) from the code API \
-        (\(await CodeFeed.shared.diagnostics(api)))
-        """)
+        throw HarnessError.timedOut("\(what) from the code API (\(await CodeFeed.shared.diagnostics(api)))")
     }
 
     /// A sign-up (or resent sign-up) code. See `code(for:_:since:timeout:)`.

@@ -19,12 +19,14 @@ import XCTest
 /// own raw sign-in, as the plugin's tests do with `deleteUser()`.
 ///
 /// The sign-in answers every challenge a fresh user can meet (`SandboxPoolClient.signIn(_:sink:)`),
-/// so it works on the MFA-required pools and for users who enrolled TOTP. A user still unconfirmed is
-/// confirmed first with a resent code from the code API. On an app client that offers no password flow
-/// (the hosted-UI backend's), the user signs in through another role's app client on the same user pool
-/// (on the sandbox, the hosted-UI client is on the default pool), or else with SRP through the client, on
-/// a session of its own, and deletes itself with `deleteUser()`. Deleting a user also invalidates every
-/// token it holds. The sandbox's `prepare-run.sh` removes whatever a crashed run leaves behind (P-12).
+/// so it works on the MFA-required pools and for users who enrolled TOTP. It is a password sign-in, with
+/// SRP where the app client offers no `USER_PASSWORD_AUTH` (the plugin's Gen2 MFA-required and device-alias
+/// backends, and the hosted-UI clients). A user still unconfirmed is confirmed first with a resent code
+/// from the code API; on a backend with none, the cleanup fails naming the file, since the user cannot
+/// sign in. On an app client that offers neither flow, the user signs in through another role's app
+/// client on the same user pool, or else with SRP through the client, on a session of its own, and
+/// deletes itself with `deleteUser()`. Deleting a user also invalidates every token it holds. The
+/// sandbox's `prepare-run.sh` removes whatever a crashed run leaves behind (P-12).
 enum SandboxUserCleanup {
 
     enum Outcome: Equatable, Sendable {
@@ -50,29 +52,53 @@ enum SandboxUserCleanup {
         }
         let pool = try SandboxPools.pool(user.pool)
         if !user.isConfirmed {
+            guard (try? IntegrationTestEnvironment.codeSinkAPI(user.pool)) != nil else {
+                // Only a code confirms a user without an administrator; a user that cannot be confirmed
+                // cannot sign in to delete itself.
+                throw HarnessError.malformedFixture("""
+                \(user) is unconfirmed, and \(user.pool.sourceName) names no code API to confirm it with, so it \
+                cannot sign in to delete itself: it is left on the backend.
+                """)
+            }
             await confirmFirst(user, on: pool, sink: sink)
         }
-        let tokens: CognitoIdentityProviderClientTypes.AuthenticationResultType
-        do {
-            tokens = try await signIn(user, on: pool, sink: sink)
-        } catch is InvalidParameterException {
-            // The app client offers no USER_PASSWORD_AUTH flow (the hosted-UI backend's): Cognito refuses
-            // the flow itself with InvalidParameterException, before looking at the user.
-            return try await deleteWithoutAPasswordFlow(user, on: pool, sink: sink)
-        } catch is NotAuthorizedException {
+        var attempt = 0
+        while true {
+            attempt += 1
+            let tokens: CognitoIdentityProviderClientTypes.AuthenticationResultType
+            do {
+                tokens = try await signIn(user, on: pool, sink: sink)
+            } catch is InvalidParameterException {
+                // The app client offers neither USER_PASSWORD_AUTH nor SRP: Cognito refuses the flow itself
+                // with InvalidParameterException, before looking at the user.
+                return try await deleteWithoutAPasswordFlow(user, on: pool, sink: sink)
+            } catch is NotAuthorizedException {
+                user.recordDeleted()
+                return .alreadyGone
+            } catch is UserNotFoundException {
+                user.recordDeleted()
+                return .alreadyGone
+            }
+            guard let accessToken = tokens.accessToken else {
+                throw HarnessError.malformedFixture("\(user)'s sign-in returned no access token.")
+            }
+            do {
+                _ = try await pool.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
+            } catch let error as NotAuthorizedException
+                where attempt < revokedTokenAttempts && error.message?.contains("revoked") == true {
+                // "Access Token has been revoked": a global sign-out the test made a moment before also
+                // revokes a token issued within the same second or so (RF-3, once in three iterations on
+                // CI). A new sign-in a little later gets one that holds. Any other refusal is thrown.
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                continue
+            }
             user.recordDeleted()
-            return .alreadyGone
-        } catch is UserNotFoundException {
-            user.recordDeleted()
-            return .alreadyGone
+            return .deleted
         }
-        guard let accessToken = tokens.accessToken else {
-            throw HarnessError.malformedFixture("\(user)'s sign-in returned no access token.")
-        }
-        _ = try await pool.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
-        user.recordDeleted()
-        return .deleted
     }
+
+    /// How many sign-ins cleanup makes when `DeleteUser` finds the new access token already revoked.
+    private static let revokedTokenAttempts = 3
 
     /// For a user whose app client offers no password flow: a raw sign-in through another role's app client
     /// on the same user pool, if there is one, else `deleteThroughClient`. A process with no keychain for

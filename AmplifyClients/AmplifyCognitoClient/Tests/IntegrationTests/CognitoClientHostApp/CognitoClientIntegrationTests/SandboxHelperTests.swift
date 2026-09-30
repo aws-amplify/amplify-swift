@@ -64,21 +64,27 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     /// - Then:
     ///    - The sign-up is confirmed (`SandboxSignUp` checks it): by the pre-sign-up trigger, or, on a pool
     ///      without one (the plugin's passwordless backend), with its sign-up code
-    ///    - The first delete signs in as the user, answering the pool's MFA (setup, email or TOTP) where
-    ///      required, and deletes it; the second is a no-op
+    ///    - The first delete signs in as the user with its password (SRP where the app client offers no
+    ///      password flow), answering the pool's MFA (setup, email or TOTP) where required, and deletes it;
+    ///      the second is a no-op
     ///    - The user can no longer sign in
+    ///    - A pool that fails is reported by name, and the others are still checked
     ///
     func testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt() async throws {
         for kind in SandboxPools.userPools {
-            let pool = try SandboxPools.pool(kind)
-            let user = try await makeFreshUser(on: kind)
-            XCTAssertTrue(user.isConfirmed, "\(kind)")
+            do {
+                let pool = try SandboxPools.pool(kind)
+                let user = try await makeFreshUser(on: kind)
+                XCTAssertTrue(user.isConfirmed, "\(kind)")
 
-            let first = try await SandboxUserCleanup.delete(user)
-            XCTAssertEqual(first, .deleted, "\(kind)")
-            let second = try await SandboxUserCleanup.delete(user)
-            XCTAssertEqual(second, .alreadyGone, "\(kind)")
-            try await assertCannotSignIn(user, on: pool)
+                let first = try await SandboxUserCleanup.delete(user)
+                XCTAssertEqual(first, .deleted, "\(kind)")
+                let second = try await SandboxUserCleanup.delete(user)
+                XCTAssertEqual(second, .alreadyGone, "\(kind)")
+                try await assertCannotSignIn(user, on: pool)
+            } catch {
+                XCTFail("\(kind): \(error)")
+            }
         }
     }
 
@@ -119,7 +125,11 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
 
     /// On the email-alias pool, codes are found by the username Cognito generated (U-ALIAS, P-5c).
     ///
-    /// - Given: The email-alias pool, where the email is the username attribute, and a fresh
+    /// A sandbox check: it needs the sandbox's code API on the email-alias pool. The plugin's device-alias
+    /// backend has none (its suite signs in a pre-created user and reads no code), so on a file set that
+    /// is not the sandbox's (`IntegrationTestEnvironment.isSandbox`) it skips, saying so.
+    ///
+    /// - Given: The sandbox's email-alias pool, where the email is the username attribute, and a fresh
     ///   `ccit-confirm-…@example.com` user
     /// - When:
     ///    - It signs up by email; `SandboxSignUp.confirm` reads the code by `sinkUsername` and confirms;
@@ -129,6 +139,7 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///      token's `username` is that generated username, not the email
     ///
     func testEmailAliasCodesAreFoundByTheGeneratedUsername() async throws {
+        try IntegrationTestEnvironment.requireSandbox(.emailAlias, "a code API on the email-alias pool")
         let pool = try SandboxPools.pool(.emailAlias)
         let sink = try CodeSink()
         let since = Date()
@@ -145,13 +156,21 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
 
     /// A password-reset code reaches the sink, and cleanup uses the recorded new password (U-DEF).
     ///
-    /// - Given: A fresh, confirmed user on the default pool (recovery by verified email)
+    /// A sandbox check: it needs the sandbox's code API on the default pool and emails its pre-sign-up
+    /// trigger verifies. The plugin's default backend has neither (its trigger only confirms), so on a file
+    /// set that is not the sandbox's (`IntegrationTestEnvironment.isSandbox`) it skips, saying so.
+    ///
+    /// - Given: A fresh, confirmed user on the sandbox's default pool (recovery by verified email)
     /// - When:
     ///    - `ForgotPassword` runs; the test reads the code and confirms a new password, and records it
     /// - Then:
     ///    - The code resets the password: the new one signs in, and tearDown deletes the user with it
     ///
     func testResetPasswordCodeReachesTheSink() async throws {
+        try IntegrationTestEnvironment.requireSandbox(
+            .standard,
+            "a code API on the default pool and emails verified at sign-up"
+        )
         let pool = try SandboxPools.pool(.standard)
         let sink = try CodeSink()
         let user = try await makeFreshUser(on: .standard)
@@ -179,7 +198,9 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///    - It changes its email to another `@example.com` address and verifies it with the code, then
     ///      asks for a verification code again and verifies with that one
     /// - Then:
-    ///    - Both codes arrive and `VerifyUserAttribute` accepts each
+    ///    - Both codes arrive and `VerifyUserAttribute` accepts each. Each is the first code sent after
+    ///      its request: on a pool without a pre-sign-up trigger (the plugin's passwordless backend) the
+    ///      user was confirmed with a sign-up code moments before, which must not be taken for the first
     ///
     func testAttributeVerificationCodesReachTheSink() async throws {
         let pool = try SandboxPools.pool(.passwordless)
@@ -187,13 +208,13 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         let user = try await makeFreshUser(on: .passwordless)
         let signedIn = try await pool.signIn(user, sink: sink)
         let accessToken = try XCTUnwrap(signedIn.accessToken)
-        let since = Date()
 
-        _ = try await pool.client.updateUserAttributes(input: UpdateUserAttributesInput(
-            accessToken: accessToken,
-            userAttributes: [.init(name: "email", value: SandboxSignUp.identity().email)]
-        ))
-        let updateCode = try await sink.attributeVerificationCode(for: user, since: since)
+        let (_, updateCode) = try await sink.code(for: user, .attributeVerification) {
+            try await pool.client.updateUserAttributes(input: UpdateUserAttributesInput(
+                accessToken: accessToken,
+                userAttributes: [.init(name: "email", value: SandboxSignUp.identity().email)]
+            ))
+        }
         _ = try await pool.client.verifyUserAttribute(input: VerifyUserAttributeInput(
             accessToken: accessToken,
             attributeName: "email",
@@ -219,8 +240,9 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///   on the all-types-required pool (the MFA-required pool with TOTP and SMS whose outputs name a code
     ///   API), where SMS is then its one MFA type
     /// - When:
-    ///    - Each signs in with its password: first by hand, reading the code with `mfaCode`, then
-    ///      through `SandboxPoolClient.signIn`
+    ///    - Each signs in with its password (SRP where the app client offers no password flow, as on the
+    ///      plugin's MFA backends): first by hand, reading the first code sent after the sign-in started,
+    ///      then through `SandboxPoolClient.signIn`
     /// - Then:
     ///    - The email user is challenged `EMAIL_OTP` and the code returns tokens; the SMS user's raw
     ///      sign-in returns tokens (answering `SMS_MFA`, choosing it first if asked)
@@ -229,10 +251,10 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         let emailPool = try SandboxPools.pool(.mfaRequiredEmail)
         let sink = try CodeSink()
         let emailUser = try await makeFreshUser(on: .mfaRequiredEmail)
-        let since = Date()
-        let start = try await emailPool.passwordSignIn(emailUser)
+        let (start, code) = try await sink.code(for: emailUser, .mfa) {
+            try await emailPool.passwordSignIn(emailUser)
+        }
         XCTAssertEqual(start.challengeName, .emailOtp)
-        let code = try await sink.mfaCode(for: emailUser, since: since)
         let result = try await emailPool.respond(
             to: .emailOtp,
             ["USERNAME": emailUser.username, "EMAIL_OTP_CODE": code],
@@ -253,7 +275,8 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///   fictional number
     /// - When:
     ///    - The first signs in through `SandboxPoolClient.signIn` (`USER_AUTH`, `EMAIL_OTP`)
-    ///    - The second starts `USER_AUTH` preferring `SMS_OTP`, and answers with `otpCode`
+    ///    - The second starts `USER_AUTH` preferring `SMS_OTP`, and answers with the first code sent after
+    ///      the start (on a pool without a pre-sign-up trigger, its sign-up code came moments before)
     /// - Then:
     ///    - Both return tokens, and tearDown deletes the passwordless user through an OTP sign-in
     ///
@@ -266,10 +289,10 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
         XCTAssertNotNil(tokens.accessToken)
 
         let smsUser = try await makeFreshUser(on: .passwordless, .init(withPhoneNumber: true))
-        let since = Date()
-        let start = try await pool.userAuthSignIn(username: smsUser.username, preferredChallenge: "SMS_OTP")
+        let (start, code) = try await sink.code(for: smsUser, .otp) {
+            try await pool.userAuthSignIn(username: smsUser.username, preferredChallenge: "SMS_OTP")
+        }
         XCTAssertEqual(start.challengeName, .smsOtp)
-        let code = try await sink.otpCode(for: smsUser, since: since)
         let result = try await pool.respond(
             to: .smsOtp,
             ["USERNAME": smsUser.username, "SMS_OTP_CODE": code],

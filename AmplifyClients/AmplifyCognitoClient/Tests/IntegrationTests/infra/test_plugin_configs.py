@@ -32,9 +32,13 @@ class Crash(Exception):
     pass
 
 
+CI_CLIENT_POOLS = ["passwordless", "mfa-req-totp-sms", "mfa-req-email", "mfa-req-all", "email-alias"]
+
+
 def fake_outputs(name):
+    methods = ["SMS", "TOTP", "EMAIL"] if name in ("mfa-req-email", "mfa-req-all") else ["TOTP"]
     auth = {"aws_region": "xx-test-1", "user_pool_id": f"xx-test-1_{name}", "user_pool_client_id": f"client-{name}",
-            "mfa_configuration": "OPTIONAL", "mfa_methods": ["TOTP"], "username_attributes": [],
+            "mfa_configuration": "OPTIONAL", "mfa_methods": methods, "username_attributes": [],
             "user_verification_types": ["email"],
             "password_policy": {"min_length": 10, "require_lowercase": False, "require_uppercase": True,
                                 "require_numbers": True, "require_symbols": True},
@@ -54,9 +58,11 @@ class PluginConfigsTests(unittest.TestCase):
         os.makedirs(self.state)
         os.makedirs(self.target)
         with open(os.path.join(self.state, "state.json"), "w") as f:
+            pools = {"default": {"clients": {"plugin": "client-plugin", "hostedui-plugin": "client-hosted"}}}
+            pools.update({key: {"clients": {"client": f"client-{key}", "ci": f"ci-{key}"}} for key in CI_CLIENT_POOLS})
             json.dump({"region": "xx-test-1", "parity": {
                 "codeSinkUrl": "https://example.invalid/graphql", "pluginIdentityPoolId": "xx-test-1:identity",
-                "pools": {"default": {"clients": {"plugin": "client-plugin", "hostedui-plugin": "client-hosted"}}}}}, f)
+                "pools": pools}}, f)
         with open(os.path.join(self.state, "users.json"), "w") as f:
             json.dump({"codeSinkApiKey": "key-1", "pluginDeviceAliasPassword": "password", "customChallengeAnswer": "answer", "pluginNewPasswordTemporary": "temporary"}, f)
         for name in POOLS:
@@ -394,7 +400,12 @@ class PluginConfigsTests(unittest.TestCase):
                 document = json.load(f)
             self.assertIn("awsCognitoAuthPlugin", document["auth"]["plugins"], name)
             self.assertNotIn("data", document, name)
-            self.assertEqual(document, full[self.pc.CI_FILES[name]], name)
+            expected = json.loads(json.dumps(full[self.pc.CI_FILES[name]]))
+            if name in self.pc.CI_APP_CLIENTS:
+                # The only difference: the pool's `ci` app client, shaped as CI's.
+                expected["auth"]["plugins"]["awsCognitoAuthPlugin"]["CognitoUserPool"]["Default"]["AppClientId"] = \
+                    f"ci-{self.pc.CI_APP_CLIENTS[name]}"
+            self.assertEqual(document, expected, name)
         with open(os.path.join(other, "AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json")) as f:
             oauth = json.load(f)["auth"]["plugins"]["awsCognitoAuthPlugin"]["Auth"]["Default"]["OAuth"]
         self.assertEqual((oauth["AppClientId"], oauth["SignInRedirectURI"]), ("client-hosted", "myapp://"))
@@ -416,6 +427,61 @@ class PluginConfigsTests(unittest.TestCase):
         self.assertEqual(with_data, {"AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json",
                                      "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
                                      "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json"})
+
+    def test_ci_shape_email_mfa_files_list_no_email_mfa(self):
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        for name in os.listdir(other):
+            if name.endswith("-amplify_outputs.json"):
+                with open(os.path.join(other, name)) as f:
+                    methods = json.load(f)["auth"]["mfa_methods"]
+                self.assertEqual("EMAIL" in methods, False, name)
+        with open(os.path.join(other, "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json")) as f:
+            self.assertEqual(json.load(f)["auth"]["mfa_methods"], ["SMS", "TOTP"])
+        full = os.path.join(self.root, "full-shape")
+        self.quiet(lambda: self.pc.write_into(full))
+        with open(os.path.join(full, "AWSCognitoEmailMFARequiredTests-amplify_outputs.json")) as f:
+            self.assertIn("EMAIL", json.load(f)["auth"]["mfa_methods"])
+
+    def test_ci_shape_names_the_ci_app_clients(self):
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        self.assertEqual(set(self.pc.CI_APP_CLIENTS.values()), set(CI_CLIENT_POOLS))
+        for name in os.listdir(other):
+            with open(os.path.join(other, name)) as f:
+                document = json.load(f)
+            if name.endswith("-amplify_outputs.json"):
+                client = document["auth"]["user_pool_client_id"]
+            else:
+                client = document["auth"]["plugins"]["awsCognitoAuthPlugin"]["CognitoUserPool"]["Default"]["AppClientId"]
+            pool = self.pc.CI_APP_CLIENTS.get(name)
+            self.assertEqual(client.startswith("ci-"), pool is not None, name)
+            if pool:
+                self.assertEqual(client, f"ci-{pool}", name)
+
+    def test_ci_shape_needs_the_ci_app_clients(self):
+        with open(os.path.join(self.state, "state.json")) as f:
+            state = json.load(f)
+        del state["parity"]["pools"]["email-alias"]["clients"]["ci"]
+        with open(os.path.join(self.state, "state.json"), "w") as f:
+            json.dump(state, f)
+        other = os.path.join(self.root, "ci-shape")
+        with self.assertRaises(SystemExit):
+            self.quiet(lambda: self.pc.write_into(other, ci=True))
+
+    def test_only_the_full_set_is_marked_as_the_sandbox(self):
+        full = os.path.join(self.root, "full-shape")
+        self.quiet(lambda: self.pc.write_into(full))
+        for name in os.listdir(full):
+            with open(os.path.join(full, name)) as f:
+                document = json.load(f)
+            marked = document.get("custom") == {"amplify_cognito_client_integ": {"sandbox": True}}
+            self.assertEqual(marked, name.endswith("-amplify_outputs.json"), name)
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        for name in os.listdir(other):
+            with open(os.path.join(other, name)) as f:
+                self.assertNotIn("custom", json.load(f), name)
 
     def test_ci_shape_has_no_credentials_file(self):
         other = os.path.join(self.root, "ci-shape")

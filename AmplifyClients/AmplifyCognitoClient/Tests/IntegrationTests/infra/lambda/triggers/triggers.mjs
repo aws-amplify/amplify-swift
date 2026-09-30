@@ -29,6 +29,10 @@ const isPluginTestUser = (value, poolId) => PLUGIN_USER.test(value || "")
 // Pools whose plugin suites expect sign-up to stop at the confirm step (the plugin's passwordless
 // backend has no pre-sign-up trigger): a comma-separated list of pool ids, set by parity.py.
 const pluginConfirmPools = () => poolList("PLUGIN_CONFIRM_POOL_IDS");
+// App clients shaped as the plugin's CI backends' on pools whose CI backend confirms no sign-up (the
+// passwordless and device-alias ones): every sign-up through them is left unconfirmed, as on a pool with no
+// pre-sign-up trigger. A comma-separated list of client ids, set by parity.py (CI_SHAPE_UNCONFIRMED_POOLS).
+const ciShapeUnconfirmedClients = () => poolList("CI_SHAPE_UNCONFIRMED_CLIENT_IDS");
 
 // Pre sign-up: auto-confirms the user, and auto-verifies the email and phone number when given,
 // as the plugin's backends do. Usernames starting with `confirm-` (or `ccit-confirm-`) are left
@@ -49,6 +53,9 @@ export const preSignUp = async (event) => {
         return event;
     }
     if (plugin && pluginConfirmPools().includes(event.userPoolId)) {
+        return event;
+    }
+    if (ciShapeUnconfirmedClients().includes((event.callerContext || {}).clientId)) {
         return event;
     }
     event.response.autoConfirmUser = true;

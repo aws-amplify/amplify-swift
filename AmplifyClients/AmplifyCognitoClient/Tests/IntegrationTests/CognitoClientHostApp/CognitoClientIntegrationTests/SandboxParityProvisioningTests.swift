@@ -21,9 +21,15 @@ import XCTest
 /// through `SandboxUserCleanup`, which answers each pool's MFA, so a user whose sign-in stopped at an MFA
 /// challenge is deleted too. `prepare-run.sh` removes any left over after 24 hours (P-12). No assertion prints an identifier or a secret.
 ///
-/// A feature a pool's outputs show it lacks (no `EMAIL` or `SMS` in its `mfa_methods`) fails the test that
-/// needs it, with a message naming the file (`requireLive`); a check that only observes a feature (the
-/// choice-based sign-in's offered factors) checks the form the outputs describe.
+/// A feature a pool's outputs show it lacks (no `SMS` in its `mfa_methods`) fails the test that needs it,
+/// with a message naming the file (`requireLive`); a check that only observes a feature (the choice-based
+/// sign-in's offered factors) checks the form the outputs describe.
+///
+/// On the plugin's CI backends these check what those backends promise: password sign-ins fall back to
+/// SRP where an app client offers no `USER_PASSWORD_AUTH`, a user a pool leaves unconfirmed is confirmed
+/// with its code, and codes are the first sent after the request. What only the sandbox provisions (a
+/// trigger that refuses users who are not test users, say) is a sandbox check: it runs on the sandbox's file
+/// set (`IntegrationTestEnvironment.isSandbox`) and elsewhere skips, saying so.
 final class SandboxParityProvisioningTests: XCTestCase {
 
     /// Every parity outputs file loads, and each names its own pool.
@@ -72,7 +78,8 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///
     /// - Given: The default pool, whose pre-sign-up Lambda confirms every user not named `confirm-…`
     /// - When:
-    ///    - A fresh user signs up with an email, then signs in with `USER_PASSWORD_AUTH`
+    ///    - A fresh user signs up with an email, then signs in with its password (`USER_PASSWORD_AUTH`, which
+    ///      the default backend's app client offers, or SRP where a client does not: `ParityPool.passwordSignIn`)
     /// - Then:
     ///    - The sign-up is confirmed straight away
     ///    - The sign-in returns tokens and new-device metadata (device tracking is always on)
@@ -92,13 +99,22 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// The pre-sign-up trigger refuses a sign-up that is not a test user (P-5b).
     ///
-    /// - Given: The default pool, whose pre-sign-up Lambda accepts only `ccit-` and `confirm-` usernames
+    /// A sandbox check: the refusal is the sandbox's own safeguard. The plugin's default backend's trigger
+    /// only confirms (its README), so on a file set that is not the sandbox's
+    /// (`IntegrationTestEnvironment.isSandbox`) it skips, saying so, rather than sign such a user up there.
+    ///
+    /// - Given: The sandbox's default pool, whose pre-sign-up Lambda accepts only `ccit-` and `confirm-`
+    ///   usernames
     /// - When:
     ///    - A user named without either prefix signs up
     /// - Then:
     ///    - Cognito rejects it with `UserLambdaValidationException`, so no such user is created
     ///
     func testPreSignUpRefusesUsersThatAreNotTestUsers() async throws {
+        try IntegrationTestEnvironment.requireSandbox(
+            .standard,
+            "a pre-sign-up trigger that refuses users who are not test users"
+        )
         let pool = try ParityPool(.standard)
         let fresh = ParityPool.freshUser()
         let outsider = TestUser(username: "outsider-" + fresh.username.dropFirst("ccit-".count), password: fresh.password)
@@ -256,12 +272,14 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///
     /// - Given: A fresh, auto-confirmed user with no MFA set up, on each MFA-required pool
     /// - When:
-    ///    - It signs in with `USER_PASSWORD_AUTH`
+    ///    - It signs in with its password (`USER_PASSWORD_AUTH`, or SRP where the app client offers no
+    ///      password flow, as on the plugin's MFA-required backends)
     /// - Then:
     ///    - It is challenged (`MFA_SETUP`, or an email or SMS code when those factors are live)
-    ///    - A challenge that sends a code has delivered it to the code API before the test ends. Waiting
-    ///      for it is also what lets the teardown delete the user: its sign-in answers the challenge with
-    ///      the first code that was not in the sink before it started, which must not be this one
+    ///    - A challenge that sends a code has delivered it to the code API before the test ends: the first
+    ///      code sent after the sign-in started. Waiting for it is also what lets the teardown delete the
+    ///      user: its sign-in answers the challenge with the first code that was not in the sink before it
+    ///      started, which must not be this one
     ///
     func testMFARequiredPoolsChallengeAFreshUser() async throws {
         let sink = try CodeSink()
@@ -269,7 +287,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             let pool = try ParityPool(kind)
             let user = ParityPool.freshUser()
             _ = try await pool.signUp(user, deletingAtTeardownOf: self)
-            let since = Date()
+            let before = try await sink.snapshot(for: user.username, on: kind)
 
             let signIn = try await pool.passwordSignIn(user)
             pool.deleteAtTeardown(signIn.authenticationResult, of: self)
@@ -280,7 +298,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             )
             XCTAssertNil(signIn.authenticationResult, "\(kind)")
             if [.emailOtp, .smsMfa].contains(challenge) {
-                _ = try await sink.code(for: user.username, on: kind, since: since)
+                _ = try await sink.code(for: user.username, on: kind, after: before)
             }
         }
     }
@@ -290,8 +308,10 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - Given: The email-MFA-required pool, with DEVELOPER email and the custom email sender, and a
     ///   fresh user whose `@example.com` address the pre-sign-up trigger verified
     /// - When:
-    ///    - The user signs in with `USER_PASSWORD_AUTH`
-    ///    - The test reads the newest code for the username from the code API, and answers with it
+    ///    - The user signs in with its password (`USER_PASSWORD_AUTH`, or SRP where the app client offers
+    ///      no password flow, as on the plugin's email-MFA backends)
+    ///    - The test reads the first code for the username the code API received after the sign-in
+    ///      started, and answers with it
     /// - Then:
     ///    - The sign-in is challenged with `EMAIL_OTP`, and the captured code returns tokens
     ///
@@ -301,11 +321,11 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let sink = try CodeSink()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, deletingAtTeardownOf: self)
-        let since = Date()
 
-        let start = try await pool.passwordSignIn(user)
+        let (start, code) = try await sink.code(for: user.username, on: pool.kind) {
+            try await pool.passwordSignIn(user)
+        }
         XCTAssertEqual(start.challengeName, .emailOtp)
-        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .emailOtp,
             challengeResponses: ["USERNAME": user.username, "EMAIL_OTP_CODE": code],
@@ -321,7 +341,9 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - Given: The passwordless pool, with `EMAIL_OTP` allowed as a first factor, and a fresh user with
     ///   a verified `@example.com` address
     /// - When:
-    ///    - The user starts `USER_AUTH` preferring `EMAIL_OTP`, and answers with the code from the sink
+    ///    - The user starts `USER_AUTH` preferring `EMAIL_OTP`, and answers with the first code the sink
+    ///      received after the start (on a pool without a pre-sign-up trigger, such as the plugin's, the
+    ///      user was confirmed with a sign-up code moments before)
     /// - Then:
     ///    - The start is challenged with `EMAIL_OTP`, and the captured code returns tokens
     ///
@@ -331,15 +353,15 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let sink = try CodeSink()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, deletingAtTeardownOf: self)
-        let since = Date()
 
-        let start = try await pool.client.initiateAuth(input: InitiateAuthInput(
-            authFlow: .userAuth,
-            authParameters: ["USERNAME": user.username, "PREFERRED_CHALLENGE": "EMAIL_OTP"],
-            clientId: pool.clientId
-        ))
+        let (start, code) = try await sink.code(for: user.username, on: pool.kind) {
+            try await pool.client.initiateAuth(input: InitiateAuthInput(
+                authFlow: .userAuth,
+                authParameters: ["USERNAME": user.username, "PREFERRED_CHALLENGE": "EMAIL_OTP"],
+                clientId: pool.clientId
+            ))
+        }
         XCTAssertEqual(start.challengeName, .emailOtp)
-        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .emailOtp,
             challengeResponses: ["USERNAME": user.username, "EMAIL_OTP_CODE": code],
@@ -356,8 +378,11 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///   U-REQ-TS whose outputs name a code API), with the SNS caller role and the custom SMS sender, and a
     ///   fresh user whose fictional `+1 555` number the pre-sign-up trigger verified
     /// - When:
-    ///    - The user signs in with `USER_PASSWORD_AUTH`, choosing SMS if Cognito asks which factor
-    ///    - The test reads the newest code for the username from the code API, and answers with it
+    ///    - The user signs in with its password (`USER_PASSWORD_AUTH`, or SRP where the app client offers
+    ///      no password flow, as on the plugin's all-types backend), choosing SMS if Cognito asks which
+    ///      factor
+    ///    - The test reads the first code for the username the code API received after the sign-in
+    ///      started, and answers with it
     /// - Then:
     ///    - The sign-in is challenged with `SMS_MFA`, and the captured code returns tokens
     ///
@@ -367,7 +392,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let sink = try CodeSink()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, phoneNumber: ParityPool.fictionalPhoneNumber(), deletingAtTeardownOf: self)
-        let since = Date()
+        let before = try await sink.snapshot(for: user.username, on: pool.kind)
 
         let start = try await pool.passwordSignIn(user)
         var challengeName = start.challengeName
@@ -383,7 +408,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
             session = selected.session
         }
         XCTAssertEqual(challengeName, .smsMfa)
-        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
+        let code = try await sink.code(for: user.username, on: pool.kind, after: before)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .smsMfa,
             challengeResponses: ["USERNAME": user.username, "SMS_MFA_CODE": code],
@@ -399,7 +424,9 @@ final class SandboxParityProvisioningTests: XCTestCase {
     /// - Given: The passwordless pool, with `SMS_OTP` allowed as a first factor, and a fresh user with a
     ///   verified fictional `+1 555` number
     /// - When:
-    ///    - The user starts `USER_AUTH` preferring `SMS_OTP`, and answers with the code from the sink
+    ///    - The user starts `USER_AUTH` preferring `SMS_OTP`, and answers with the first code the sink
+    ///      received after the start (on a pool without a pre-sign-up trigger, such as the plugin's, the
+    ///      user was confirmed with a sign-up code moments before)
     /// - Then:
     ///    - The start is challenged with `SMS_OTP`, and the captured code returns tokens
     ///
@@ -409,15 +436,15 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let sink = try CodeSink()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, phoneNumber: ParityPool.fictionalPhoneNumber(), deletingAtTeardownOf: self)
-        let since = Date()
 
-        let start = try await pool.client.initiateAuth(input: InitiateAuthInput(
-            authFlow: .userAuth,
-            authParameters: ["USERNAME": user.username, "PREFERRED_CHALLENGE": "SMS_OTP"],
-            clientId: pool.clientId
-        ))
+        let (start, code) = try await sink.code(for: user.username, on: pool.kind) {
+            try await pool.client.initiateAuth(input: InitiateAuthInput(
+                authFlow: .userAuth,
+                authParameters: ["USERNAME": user.username, "PREFERRED_CHALLENGE": "SMS_OTP"],
+                clientId: pool.clientId
+            ))
+        }
         XCTAssertEqual(start.challengeName, .smsOtp)
-        let code = try await sink.code(for: user.username, on: pool.kind, since: since)
         let result = try await pool.client.respondToAuthChallenge(input: RespondToAuthChallengeInput(
             challengeName: .smsOtp,
             challengeResponses: ["USERNAME": user.username, "SMS_OTP_CODE": code],
@@ -432,9 +459,12 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///
     /// - Given: The email-alias pool (email is the username attribute)
     /// - When:
-    ///    - A fresh user signs up with an email as its username, then signs in with that email
+    ///    - A fresh user signs up with an email as its username, then signs in with that email and its
+    ///      password (SRP where the app client offers no password flow, as on the plugin's backend)
     /// - Then:
-    ///    - The sign-up is confirmed, the sign-in returns tokens and new-device metadata
+    ///    - The user is confirmed: on the sandbox by its pre-sign-up trigger (a sandbox check), elsewhere by
+    ///      that or with its sign-up code, as `ParityPool.signUp` confirms it
+    ///    - The sign-in returns tokens and new-device metadata
     ///    - The access token lives 300 seconds (299 allowed), and its username is not the email (Cognito generates it)
     ///
     func testEmailAliasPoolSignsInByEmailWithShortTokens() async throws {
@@ -443,7 +473,9 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let user = TestUser(username: fresh.email, password: fresh.password)
 
         let signUp = try await pool.signUp(user, email: fresh.email, deletingAtTeardownOf: self)
-        XCTAssertTrue(signUp.userConfirmed)
+        if IntegrationTestEnvironment.isSandbox(.emailAlias) {
+            XCTAssertTrue(signUp.userConfirmed, "the sandbox's pre-sign-up trigger did not confirm the sign-up")
+        }
         let signIn = try await pool.passwordSignIn(user)
         pool.deleteAtTeardown(signIn.authenticationResult, of: self)
 
@@ -637,6 +669,10 @@ private struct ParityPool {
         if let phoneNumber {
             attributes.append(CognitoIdentityProviderClientTypes.AttributeType(name: "phone_number", value: phoneNumber))
         }
+        if !user.username.hasPrefix(SandboxSignUp.confirmPrefix) {
+            // A role an earlier sign-up showed cannot confirm a fresh user gets no further one.
+            try SandboxSignUp.requireNotKnownUnconfirmable(kind)
+        }
         await CodeSink.prepare(kind)
         let signedUpAt = Date()
         let output = try await client.signUp(input: SignUpInput(
@@ -661,22 +697,21 @@ private struct ParityPool {
             // unconfirmed: confirm a user the test did not ask to leave unconfirmed, as `SandboxSignUp` does.
             // The returned output is Cognito's, so a test checking the trigger still sees what it did.
             if !output.userConfirmed, !user.username.hasPrefix(SandboxSignUp.confirmPrefix) {
+                try SandboxSignUp.requireCodeAPIToConfirm(kind)
                 try await SandboxSignUp.confirm(fresh, sentSince: signedUpAt, on: SandboxPools.pool(kind), sink: CodeSink())
             }
         }
         return output
     }
 
-    func passwordSignIn(_ user: (username: String, password: String, email: String)) async throws -> InitiateAuthOutput {
+    func passwordSignIn(_ user: (username: String, password: String, email: String)) async throws -> RawSignInStep {
         try await passwordSignIn(TestUser(username: user.username, password: user.password))
     }
 
-    func passwordSignIn(_ user: TestUser) async throws -> InitiateAuthOutput {
-        try await client.initiateAuth(input: InitiateAuthInput(
-            authFlow: .userPasswordAuth,
-            authParameters: ["USERNAME": user.username, "PASSWORD": user.password],
-            clientId: clientId
-        ))
+    /// A password sign-in: `USER_PASSWORD_AUTH`, or SRP where the app client offers no such flow (the
+    /// plugin's MFA-required, email-MFA and device-alias backends), as `SandboxPoolClient.passwordSignIn`.
+    func passwordSignIn(_ user: TestUser) async throws -> RawSignInStep {
+        try await SandboxPools.pool(kind).passwordSignIn(user)
     }
 
     /// If `result` carries an access token, registers the user's self-deletion with it as a teardown

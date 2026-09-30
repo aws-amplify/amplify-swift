@@ -43,7 +43,10 @@ Resources, all tagged purpose=amplify-cognito-client-integ and recorded under "p
           federates the passwordless pool's `client`, and passwordless-amplify_outputs.json names it, as
           the plugin's Gen2 passwordless backend names its own (PasswordlessTests/README.md, defineAuth):
           the client suites' CS-2 and CS-3 need a pool that tracks no devices, with a guest identity
-          pool that federates it
+          pool that federates it. And that pool's `ci` client, which the CI-shaped file names
+    CI    a `ci` app client on each pool in CI_SHAPE_CLIENT_POOLS (pools/*.json): the pool's `client` as the
+          plugin's CI backend has it, which plugin-configs.py --ci-shape names instead (no USER_PASSWORD_AUTH
+          where CI's has none; sign-ups through it left unconfirmed where CI's backend confirms none)
     P-14  the plugin's DeviceAliasTokenRefreshIntegrationTests user on email-alias (pre-created, as its
           doc comment asks), with the password users.json keeps as pluginDeviceAliasPassword; and the
           single-use FORCE_CHANGE_PASSWORD users of AuthSRPSignInTests.testNewPasswordRequired on default,
@@ -107,9 +110,20 @@ PLUGIN_BARE_UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}
 PLUGIN_CONFIRM_POOLS = ("passwordless",)
 # Pools where a bare UUID username is a plugin test user (EmailMFAWithAllMFATypesRequiredTests).
 PLUGIN_UUID_USERNAME_POOLS = ("mfa-req-all",)
+# The pools with a `ci` app client (pools/*.json), which the CI-shaped file set names instead of `client`
+# (plugin-configs.py --ci-shape, CI_APP_CLIENTS): shaped as the plugin's CI backend's client, so a local run
+# on the CI shape meets what CI's does. No USER_PASSWORD_AUTH on the MFA-required, email-MFA and device-alias
+# ones (CI's client-suite run: "USER_PASSWORD_AUTH flow not enabled for this client").
+CI_SHAPE_CLIENT_POOLS = ("passwordless", "mfa-req-totp-sms", "mfa-req-email", "mfa-req-all", "email-alias")
+# Of those, the pools whose plugin CI backend confirms no sign-up (the passwordless README deploys no
+# pre-sign-up trigger; CI's device-alias backend left a fresh sign-up unconfirmed): the pre-sign-up trigger
+# leaves every sign-up through their `ci` client unconfirmed (triggers.mjs, CI_SHAPE_UNCONFIRMED_CLIENT_IDS).
+CI_SHAPE_UNCONFIRMED_POOLS = ("passwordless", "email-alias")
 PLUGIN_IDENTITY_POOL = f"{NAME.replace('-', '_')}_plugin"
-# P-13's providers: (pool key, app client key).
-PLUGIN_IDENTITY_CLIENTS = (("default", "plugin"), ("default", "hostedui-plugin"), ("passwordless", "client"))
+# P-13's providers: (pool key, app client key). The passwordless `ci` client too, which the CI shape's
+# passwordless file names with P-13.
+PLUGIN_IDENTITY_CLIENTS = (("default", "plugin"), ("default", "hostedui-plugin"), ("passwordless", "client"),
+                           ("passwordless", "ci"))
 # The outputs files that name P-13 (the default pool's are the plugin-configs.py files, which add it there).
 PLUGIN_IDENTITY_OUTPUTS = ("passwordless",)
 PLUGIN_DEVICE_ALIAS_EMAIL = "ccit-plugin-device-alias@example.com"
@@ -123,7 +137,7 @@ LAMBDA_RUNTIME = "nodejs22.x"
 FUNCTIONS = {
     # name suffix: (handler, role suffix, source, environment keys)
     "pre-sign-up": ("triggers.preSignUp", "trigger-exec", "triggers",
-                    ["PLUGIN_CONFIRM_POOL_IDS", "PLUGIN_UUID_USERNAME_POOL_IDS"]),
+                    ["PLUGIN_CONFIRM_POOL_IDS", "PLUGIN_UUID_USERNAME_POOL_IDS", "CI_SHAPE_UNCONFIRMED_CLIENT_IDS"]),
     "define-auth-challenge": ("triggers.defineAuthChallenge", "trigger-exec", "triggers", []),
     "create-auth-challenge": ("triggers.createAuthChallenge", "trigger-exec", "triggers", ["CUSTOM_CHALLENGE_ANSWER_SHA256"]),
     "verify-auth-challenge": ("triggers.verifyAuthChallenge", "trigger-exec", "triggers", []),
@@ -1546,6 +1560,13 @@ def plugin_pool_ids(parity, keys):
                            if pools.get(k, {}).get("userPoolId")))
 
 
+def ci_shape_client_ids(parity, keys):
+    """The `ci` app clients of the pools `keys` that have one yet, comma-separated (CI_SHAPE_CLIENT_POOLS)."""
+    pools = parity.get("pools", {})
+    return ",".join(sorted(pools[k]["clients"]["ci"] for k in keys
+                           if pools.get(k, {}).get("clients", {}).get("ci")))
+
+
 def plugin_identity_providers(parity):
     providers = []
     for pool_key, client_key in PLUGIN_IDENTITY_CLIENTS:
@@ -1570,7 +1591,7 @@ def name_plugin_identity_pool_in_outputs(parity):
 def ensure_plugin_identity_pool(parity):
     """The plugin's default backend federates its user pool into an identity pool with guest access
     (AuthIntegrationTests/README.md, AuthStressTests/README.md). Tagged, guest on, the default pool's
-    `plugin` and `hostedui-plugin` clients and the passwordless pool's `client` as providers, and roles
+    `plugin` and `hostedui-plugin` clients and the passwordless pool's `client` and `ci` as providers, and roles
     that grant nothing."""
     desired = plugin_identity_providers(parity)
     pool_id = parity.get("pluginIdentityPoolId")
@@ -1661,7 +1682,8 @@ def provision():
     secrets_by_key = {"CUSTOM_CHALLENGE_ANSWER_SHA256": answer_sha256, "KMS_KEY_ARN": kms_key_arn,
                       "GRAPHQL_API_ENDPOINT": parity["codeSinkUrl"],
                       "PLUGIN_CONFIRM_POOL_IDS": plugin_pool_ids(parity, PLUGIN_CONFIRM_POOLS),
-                      "PLUGIN_UUID_USERNAME_POOL_IDS": plugin_pool_ids(parity, PLUGIN_UUID_USERNAME_POOLS)}
+                      "PLUGIN_UUID_USERNAME_POOL_IDS": plugin_pool_ids(parity, PLUGIN_UUID_USERNAME_POOLS),
+                      "CI_SHAPE_UNCONFIRMED_CLIENT_IDS": ci_shape_client_ids(parity, CI_SHAPE_UNCONFIRMED_POOLS)}
     code = {"triggers": build_triggers(), "custom-sender": build_custom_sender()}
     for suffix, (_, role_suffix, source, env_keys) in FUNCTIONS.items():
         run_step(f"Lambda {suffix}", ensure_function, suffix, code[source], role_arns[role_suffix],
@@ -1727,9 +1749,10 @@ def provision():
     run_step("Role sender-exec", ensure_role_with_policy, "sender-exec", trust, policy)
     run_step("Role cognito-sms", ensure_sms_role, parity, pool_ids)
     save_parity(parity)
-    # The pre-sign-up trigger learns the plugin pools' ids (a no-op unless one is new).
+    # The pre-sign-up trigger learns the plugin pools' ids and the CI-shaped clients (a no-op unless one is new).
     secrets_by_key["PLUGIN_CONFIRM_POOL_IDS"] = plugin_pool_ids(parity, PLUGIN_CONFIRM_POOLS)
     secrets_by_key["PLUGIN_UUID_USERNAME_POOL_IDS"] = plugin_pool_ids(parity, PLUGIN_UUID_USERNAME_POOLS)
+    secrets_by_key["CI_SHAPE_UNCONFIRMED_CLIENT_IDS"] = ci_shape_client_ids(parity, CI_SHAPE_UNCONFIRMED_POOLS)
     _, role_suffix, source, env_keys = FUNCTIONS["pre-sign-up"]
     run_step("Lambda pre-sign-up", ensure_function, "pre-sign-up", code[source], role_arns[role_suffix],
              {k: secrets_by_key[k] for k in env_keys})

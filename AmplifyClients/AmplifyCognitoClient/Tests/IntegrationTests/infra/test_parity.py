@@ -562,7 +562,7 @@ class WebAuthnHarnessIdentityTests(unittest.TestCase):
 
 class PluginIdentityPoolTests(unittest.TestCase):
     """P-13: its providers (the default pool's plugin and hosted-UI clients, and the passwordless pool's
-    client), the update that adds a missing one after a tag check, and the passwordless outputs that name
+    client and CI-shaped `ci` client), the update that adds a missing one after a tag check, and the passwordless outputs that name
     it. Over a scripted Cognito Identity: no AWS call is made."""
 
     def setUp(self):
@@ -577,7 +577,8 @@ class PluginIdentityPoolTests(unittest.TestCase):
             "default": {"userPoolId": "xx-test-1_default", "clients": {"client": "c-client", "plugin": "c-plugin",
                                                                         "hostedui": "c-hosted",
                                                                         "hostedui-plugin": "c-hosted-plugin"}},
-            "passwordless": {"userPoolId": "xx-test-1_passwordless", "clients": {"client": "c-passwordless"}},
+            "passwordless": {"userPoolId": "xx-test-1_passwordless", "clients": {"client": "c-passwordless",
+                                                                                  "ci": "c-passwordless-ci"}},
             "webauthn": {"userPoolId": "xx-test-1_webauthn", "clients": {"client": "c-webauthn"}}},
             "pluginIdentityPoolId": "xx-test-1:plugin"}
         self.calls = []
@@ -608,7 +609,8 @@ class PluginIdentityPoolTests(unittest.TestCase):
             sorted((p["ProviderName"], p["ClientId"]) for p in providers),
             [("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_default", "c-hosted-plugin"),
              ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_default", "c-plugin"),
-             ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_passwordless", "c-passwordless")])
+             ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_passwordless", "c-passwordless"),
+             ("cognito-idp.xx-test-1.amazonaws.com/xx-test-1_passwordless", "c-passwordless-ci")])
         self.assertTrue(all(p["ServerSideTokenCheck"] is False for p in providers))
 
     def test_a_pool_without_the_passwordless_provider_is_updated_after_a_tag_check(self):
@@ -653,6 +655,43 @@ class PluginIdentityPoolTests(unittest.TestCase):
         self.parity.name_plugin_identity_pool_in_outputs(self.record)
         with open(self.parity.outputs_path("passwordless")) as f:
             self.assertEqual(f.read(), first)
+
+
+class CIShapeClientTests(unittest.TestCase):
+    """The `ci` app clients plugin-configs.py --ci-shape names, and the pre-sign-up trigger's list of those
+    it leaves unconfirmed. Templates and state only: no AWS call is made."""
+
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+
+    def test_the_ci_clients_are_the_sandbox_clients_as_ci_has_them(self):
+        for key in self.parity.POOLS:
+            clients = self.parity.load_template(key)["appClients"]
+            self.assertEqual("ci" in clients, key in self.parity.CI_SHAPE_CLIENT_POOLS, key)
+            if "ci" not in clients:
+                continue
+            ci, client = clients["ci"], clients["client"]
+            flows = set(client["ExplicitAuthFlows"])
+            if key != "passwordless":
+                # CI's MFA-required, email-MFA and device-alias clients refuse USER_PASSWORD_AUTH.
+                flows.discard("ALLOW_USER_PASSWORD_AUTH")
+            self.assertEqual(set(ci["ExplicitAuthFlows"]), flows, key)
+            self.assertEqual({k: v for k, v in ci.items() if k != "ExplicitAuthFlows"},
+                             {k: v for k, v in client.items() if k != "ExplicitAuthFlows"}, key)
+
+    def test_the_unconfirmed_clients_are_the_recorded_ci_clients_of_those_pools(self):
+        self.assertTrue(set(self.parity.CI_SHAPE_UNCONFIRMED_POOLS) <= set(self.parity.CI_SHAPE_CLIENT_POOLS))
+        record = {"pools": {"passwordless": {"clients": {"client": "c-1", "ci": "ci-passwordless"}},
+                            "email-alias": {"clients": {"client": "c-2"}},
+                            "mfa-req-all": {"clients": {"client": "c-3", "ci": "ci-all"}}}}
+        self.assertEqual(self.parity.ci_shape_client_ids(record, self.parity.CI_SHAPE_UNCONFIRMED_POOLS),
+                         "ci-passwordless")
+        record["pools"]["email-alias"]["clients"]["ci"] = "ci-alias"
+        self.assertEqual(self.parity.ci_shape_client_ids(record, self.parity.CI_SHAPE_UNCONFIRMED_POOLS),
+                         "ci-alias,ci-passwordless")
+        self.assertIn("CI_SHAPE_UNCONFIRMED_CLIENT_IDS", self.parity.FUNCTIONS["pre-sign-up"][3])
 
 
 if __name__ == "__main__":

@@ -69,6 +69,9 @@ enum SandboxSignUp {
 
     /// Signs a fresh user up through an existing pool client.
     static func signUp(on pool: SandboxPoolClient, _ options: Options = Options()) async throws -> FreshUser {
+        if !options.needsConfirmation {
+            try requireNotKnownUnconfirmable(pool.pool)
+        }
         let identity = identity(needsConfirmation: options.needsConfirmation)
         let email = options.withEmail || pool.pool.usesEmailAsUsername ? identity.email : nil
         let phoneNumber = options.withPhoneNumber ? fictionalPhoneNumber() : nil
@@ -115,9 +118,61 @@ enum SandboxSignUp {
         )
         if !output.userConfirmed, !options.needsConfirmation {
             // No pre-sign-up trigger confirmed it (the plugin's passwordless backend has none).
+            try requireCodeAPIToConfirm(pool.pool)
             try await confirm(user, sentSince: signedUpAt, on: pool, sink: CodeSink())
         }
         return user
+    }
+
+    /// Fails, naming the file, when `pool` left a fresh sign-up unconfirmed and its outputs name no code
+    /// API to confirm it with: then no test can have a confirmed fresh user there (the plugin's
+    /// device-alias backend on CI, whose own suite signs in a pre-created user instead).
+    ///
+    /// The role is then remembered for the rest of the process (`requireNotKnownUnconfirmable(_:)`), so later
+    /// tests on it fail before signing another user up, rather than leave one more unconfirmed user on a
+    /// backend that is not this harness's.
+    static func requireCodeAPIToConfirm(_ pool: SandboxPool) throws {
+        guard (try? IntegrationTestEnvironment.codeSinkAPI(pool)) == nil else {
+            return
+        }
+        unconfirmableRoles.insert(pool)
+        throw HarnessError.malformedFixture("""
+        \(pool.sourceName): the backend left a fresh sign-up unconfirmed (no pre-sign-up trigger confirms it), \
+        and the file names no code API (a data block with a url and an api_key) to confirm it with its sign-up \
+        code. A test that needs a confirmed user on this backend needs one of the two.
+        """)
+    }
+
+    /// Fails, before any sign-up, on a role an earlier sign-up in this process showed cannot confirm a fresh
+    /// user (`requireCodeAPIToConfirm(_:)`), naming the file. Call it before signing up a user that must end
+    /// up confirmed.
+    static func requireNotKnownUnconfirmable(_ pool: SandboxPool) throws {
+        guard unconfirmableRoles.contains(pool) else {
+            return
+        }
+        throw HarnessError.malformedFixture("""
+        \(pool.sourceName): an earlier sign-up in this run came back unconfirmed, and the file names no code API \
+        to confirm it with, so no further user is signed up there. A test that needs a confirmed user on this \
+        backend needs a pre-sign-up trigger that confirms it, or a code API (a data block with a url and an \
+        api_key).
+        """)
+    }
+
+    /// The roles `requireCodeAPIToConfirm(_:)` found cannot confirm a fresh user, for this process.
+    private static let unconfirmableRoles = RoleSet()
+
+    /// A set of roles shared across the process's tests, behind a lock.
+    private final class RoleSet: @unchecked Sendable {
+        private let lock = NSLock()
+        private var roles: Set<SandboxPool> = []
+
+        func insert(_ role: SandboxPool) {
+            lock.withLock { _ = roles.insert(role) }
+        }
+
+        func contains(_ role: SandboxPool) -> Bool {
+            lock.withLock { roles.contains(role) }
+        }
     }
 
     /// Confirms an unconfirmed user with the sign-up code from the code sink, sent at or after `since`.

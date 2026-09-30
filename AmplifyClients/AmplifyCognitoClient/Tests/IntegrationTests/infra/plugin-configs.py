@@ -19,8 +19,9 @@ this sandbox's parity backends, from the state provision.sh leaves in ~/.amplify
     plugin-configs.py --dir DIR --ci-shape
                                  the file set the plugin's CI downloads (CI_FILES below), from the same
                                  backends: its nine names, Gen1 where CI has Gen1 files, a `data` block only on
-                                 the backends that capture codes, and no credentials file. Only into a
-                                 directory of its own
+                                 the backends that capture codes, no EMAIL in the email-MFA files' mfa_methods,
+                                 app clients shaped as CI's (CI_APP_CLIENTS), no sandbox marker, and no
+                                 credentials file. Only into a directory of its own
     plugin-configs.py --refresh  rewrite only the files it wrote that are still as written (after a key
                                  rotation, say); does nothing if it has written none (prepare-run.sh)
     plugin-configs.py --forget NAME  drop NAME from the manifest and leave the file there as it is (for a
@@ -65,7 +66,12 @@ suites (the stress one under CI's name, AWSAuthStressTests-); the other five are
 passwordless and the two email-MFA backends deploy custom senders and an MfaInfo API
 (PasswordlessTests/README.md, MFATests/EmailMFATests/README.md) and have suites that subscribe to it, so only
 their outputs carry a `data` block. There is no credentials file at all: the plugin's AWSAuthBaseTest then
-uses a random email and password, and its custom-auth and new-password tests skip.
+uses a random email and password, and its custom-auth and new-password tests skip. The two email-MFA backends
+turn email MFA on outside defineAuth, so their outputs list no EMAIL in mfa_methods (CI_EMAIL_MFA_UNLISTED).
+Where CI's backends' app clients or pre-sign-up triggers differ from the sandbox clients the full set names,
+the CI shape names each pool's `ci` app client instead (CI_APP_CLIENTS), which parity.py shapes as CI's.
+Every Gen2 file of the full set carries a `custom` block that marks it as the sandbox's (SANDBOX_MARKER), so
+the client suites' sandbox checks run only there; the CI shape, as CI's files, has none.
 Nothing here calls AWS, and nothing printed names an identifier or a secret.
 """
 
@@ -200,16 +206,60 @@ CI_FILES = {
 OWNER_TESTCONFIGURATION_DIR = os.path.expanduser("~/.aws-amplify/amplify-ios/testconfiguration")
 
 
-def ci_shape(files):
+# The CI files whose backends' app clients differ from the sandbox client the full set names, each with the
+# sandbox pool whose `ci` app client (parity.py CI_SHAPE_CLIENT_POOLS, pools/*.json) the CI shape names
+# instead. That client is shaped as CI's: no USER_PASSWORD_AUTH on the MFA-required, email-MFA and device-alias
+# backends ("USER_PASSWORD_AUTH flow not enabled for this client" in the client suites' CI run), and, through
+# it, no confirming pre-sign-up trigger on the passwordless and device-alias backends (the passwordless README
+# deploys none; CI's device-alias backend left a fresh sign-up unconfirmed).
+CI_APP_CLIENTS = {
+    "AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json": "mfa-req-totp-sms",
+    "AWSCognitoEmailMFARequiredTests-amplify_outputs.json": "mfa-req-email",
+    "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json": "mfa-req-all",
+    "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json": "email-alias",
+    "AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json": "passwordless",
+}
+# The CI files whose backends turn email MFA on outside defineAuth (MFATests/EmailMFATests/README.md:
+# `multifactor` names `sms`, and `totp` on the all-types one), so whose mfa_methods list no EMAIL.
+CI_EMAIL_MFA_UNLISTED = (
+    "AWSCognitoEmailMFARequiredTests-amplify_outputs.json",
+    "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json",
+)
+# What the full set's Gen2 files carry to say they are the sandbox's (the client harness's
+# IntegrationTestEnvironment.isSandbox): a check of what only the sandbox provisions runs there, and skips on
+# any other file set. CI's files have no such block, and the CI shape drops it.
+SANDBOX_MARKER = {"amplify_cognito_client_integ": {"sandbox": True}}
+
+
+def ci_shape(files, ci_clients):
     """The plugin's CI file set (CI_FILES) from `files`, what build() returns: `data` only on
-    CI_CODE_CAPTURING, and nothing else."""
+    CI_CODE_CAPTURING, no sandbox marker, no EMAIL in CI_EMAIL_MFA_UNLISTED's mfa_methods, and the `ci` app
+    client of CI_APP_CLIENTS' pools (`ci_clients`: pool key to client id)."""
     shaped = {}
     for name, source in CI_FILES.items():
         document = json.loads(json.dumps(files[source]))
-        if name.endswith("-amplify_outputs.json") and name not in CI_CODE_CAPTURING:
-            document.pop("data", None)
+        if name.endswith("-amplify_outputs.json"):
+            document.pop("custom", None)
+            if name not in CI_CODE_CAPTURING:
+                document.pop("data", None)
+            if name in CI_EMAIL_MFA_UNLISTED:
+                document["auth"]["mfa_methods"] = [m for m in document["auth"]["mfa_methods"] if m != "EMAIL"]
+        if name in CI_APP_CLIENTS:
+            client_id = ci_clients.get(CI_APP_CLIENTS[name]) or sys.exit(
+                f"No `ci` app client on {CI_APP_CLIENTS[name]} in state.json; run infra/provision.sh.")
+            if name.endswith("-amplify_outputs.json"):
+                document["auth"]["user_pool_client_id"] = client_id
+            else:
+                document["auth"]["plugins"]["awsCognitoAuthPlugin"]["CognitoUserPool"]["Default"]["AppClientId"] = \
+                    client_id
         shaped[name] = document
     return shaped
+
+
+def ci_app_clients():
+    """Each pool's `ci` app client in state.json, by pool key."""
+    pools = load(os.path.join(STATE_DIR, "state.json")).get("parity", {}).get("pools", {})
+    return {key: record["clients"]["ci"] for key, record in pools.items() if record.get("clients", {}).get("ci")}
 
 
 def build():
@@ -245,7 +295,7 @@ def build():
         "SignInRedirectURI": HOSTED_UI_REDIRECT, "SignOutRedirectURI": HOSTED_UI_REDIRECT,
         "Scopes": oauth["scopes"]})
 
-    return {
+    files = {
         "AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json": gen1(default["auth"], identity_pool_id),
         "AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json": default,
         # The default pool's custom-auth answer (AuthCustomSignInTests) and its single-use
@@ -270,6 +320,9 @@ def build():
         "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json": data(hosted),
         "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json": data(outputs("webauthn")),
     }
+    # Gen2 allows any `custom` block; the plugin and the client ignore it.
+    return {name: dict(document, custom=SANDBOX_MARKER) if name.endswith("-amplify_outputs.json") else document
+            for name, document in files.items()}
 
 
 def write_private(path, data):
@@ -360,7 +413,7 @@ def write_into(directory, ci=False):
         write_all()
         return
     full = build()
-    files = ci_shape(full) if ci else full
+    files = ci_shape(full, ci_app_clients()) if ci else full
     os.makedirs(target, mode=0o700, exist_ok=True)
     for name, document in files.items():
         write_private(os.path.join(target, name), serialized(name, document))

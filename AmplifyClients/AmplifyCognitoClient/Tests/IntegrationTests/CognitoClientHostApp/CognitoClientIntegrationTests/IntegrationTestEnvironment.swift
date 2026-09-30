@@ -13,6 +13,7 @@
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 import Foundation
 import Security
+import XCTest
 
 /// The test configuration, as copied into this test bundle at build time, and the helpers the suites share.
 ///
@@ -180,6 +181,41 @@ enum IntegrationTestEnvironment {
             """)
         }
         return CodeSinkAPI(url: url, apiKey: SandboxSecret(apiKey))
+    }
+
+    /// Whether a role's outputs are the sandbox's (`infra/plugin-configs.py --dir`), which marks each Gen2
+    /// file it writes with `custom.amplify_cognito_client_integ.sandbox: true`. The plugin's CI files, and
+    /// the CI shape `--ci-shape` writes, carry no such block, and a Gen1 file's translation has none.
+    ///
+    /// A sandbox check (a check of what only this sandbox provisions, which no plugin backend promises and
+    /// no plugin test uses, such as a pre-sign-up trigger that refuses users who are not test users) runs
+    /// only where this is true, and elsewhere skips, saying so (`requireSandbox(_:_:)`).
+    static func isSandbox(_ pool: SandboxPool) -> Bool {
+        guard hasOutputs(pool), let document = try? outputsDocument(pool),
+              let custom = document["custom"] as? [String: Any],
+              let marker = custom["amplify_cognito_client_integ"] as? [String: Any] else {
+            return false
+        }
+        return marker["sandbox"] as? Bool == true
+    }
+
+    /// Skips a sandbox check (`isSandbox(_:)`) on a backend that is not the sandbox's, naming the file and
+    /// what the check needs: it checks the sandbox's provisioning, which the plugin's backends do not have.
+    /// A set that looks like the sandbox's full set (it has the default credentials file, which the plugin's
+    /// CI and the CI shape do not) but carries no mark was written before the mark existed: the message says
+    /// to write it again.
+    static func requireSandbox(_ pool: SandboxPool, _ needs: String) throws {
+        guard isSandbox(pool) else {
+            let unmarkedFullSet = (try? credentials())?.isPresent == true
+            let rewrite = unmarkedFullSet
+                ? " This set has the default credentials file, as the sandbox's full set does: if it is one written "
+                + "before the mark existed, run infra/plugin-configs.py --dir again and rebuild."
+                : ""
+            throw XCTSkip("""
+            A sandbox check: \(pool.sourceName) is not the sandbox's (no custom.amplify_cognito_client_integ \
+            block), and this check needs \(needs), which only the sandbox provisions.\(rewrite)
+            """)
+        }
     }
 
     /// The default backend's credentials file. Absent keys are nil or empty, and an absent file has none, as
