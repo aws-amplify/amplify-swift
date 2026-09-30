@@ -24,7 +24,7 @@ extension MultiSessionFlowTests {
     ///
     func testSignOutOfOneSessionLeavesTheOther() async throws {
         let configuration = try IntegrationTestEnvironment.configuration()
-        let users = try XCTUnwrap(self.users)
+        let users = try XCTUnwrap(users)
         let aliceId = try makeSessionID("alice")
         let bobId = try makeSessionID("bob")
         let aliceEvents: StreamRecorder<AuthEvent>
