@@ -13,7 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class StorageEnginePublisherTests: StorageEngineTestsBase {
+class StorageEnginePublisherTests: StorageEngineTestsBase, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

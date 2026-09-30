@@ -11,7 +11,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class StorageAdapterMutationSyncTests: BaseDataStoreTests {
+class StorageAdapterMutationSyncTests: BaseDataStoreTests, @unchecked Sendable {
 
     /// - Given: a list of `Post` and `MutationSyncMetadata`
     /// - When:

@@ -186,7 +186,7 @@ class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
         storageEngine.delete(
             modelType,
             modelSchema: modelType.schema,
-            withId: id,
+            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
             condition: predicate,
             completion: { dResult in
             result.set(dResult)
@@ -210,7 +210,7 @@ class StorageEngineTestsBase: XCTestCase, @unchecked Sendable {
             storageEngine.delete(
                 modelType,
                 modelSchema: modelType.schema,
-                withId: id,
+                withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
                 condition: predicate
             ) { dResult in
                 continuation.resume(with: dResult)

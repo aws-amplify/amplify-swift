@@ -13,9 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
-
-// by a single test at a time.
+// `@unchecked Sendable`: test double driven by a single test at a time.
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendable {
     static let factory: InitialSyncOrchestratorFactory = {
@@ -29,7 +27,7 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator, @unchecked Sendab
     }
 
     typealias SyncOperationResult = Result<Void, DataStoreError>
-    typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
+    typealias SyncOperationResultHandler = @Sendable (SyncOperationResult) -> Void
 
     /// `AtomicValue` rather than `nonisolated(unsafe) static var`: this outlives an individual test, and
     /// the sync engine keeps a strong reference that can fire `sync(completion:)` during teardown — so a

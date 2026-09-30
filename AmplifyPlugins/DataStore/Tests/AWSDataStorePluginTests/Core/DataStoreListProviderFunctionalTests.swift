@@ -12,7 +12,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class DataStoreListProviderFunctionalTests: BaseDataStoreTests {
+class DataStoreListProviderFunctionalTests: BaseDataStoreTests, @unchecked Sendable {
 
     func testDataStoreListProviderWithAssociationDataShouldLoad() async throws {
         let postId = preparePost4DataForTest()

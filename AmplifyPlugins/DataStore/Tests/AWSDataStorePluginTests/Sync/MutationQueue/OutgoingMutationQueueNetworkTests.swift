@@ -9,7 +9,6 @@ import Combine
 import SQLite
 import XCTest
 
-@_implementationOnly import AmplifyAsyncTesting
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin

@@ -13,7 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, SharedTestCasesPostComment4V2 {
+final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, SharedTestCasesPostComment4V2, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()
