@@ -7,7 +7,7 @@
 
 import XCTest
 
-class HostedUISignInTests: UITestCase {
+class HostedUISignInTests: UITestCase, @unchecked Sendable {
 
     func testSignInSuccess() throws {
 

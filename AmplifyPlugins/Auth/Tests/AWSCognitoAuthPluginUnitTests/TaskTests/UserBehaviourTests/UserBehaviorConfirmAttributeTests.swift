@@ -11,7 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class UserBehaviorConfirmAttributeTests: BasePluginTest {
+class UserBehaviorConfirmAttributeTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful confirmUpdateUserAttributes call
     ///

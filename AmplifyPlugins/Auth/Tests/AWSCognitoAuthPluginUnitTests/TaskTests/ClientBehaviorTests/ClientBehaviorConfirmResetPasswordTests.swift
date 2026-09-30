@@ -15,7 +15,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
+class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

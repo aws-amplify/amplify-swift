@@ -13,7 +13,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class UserBehaviorChangePasswordTests: BasePluginTest {
+class UserBehaviorChangePasswordTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful changePassword call
     ///

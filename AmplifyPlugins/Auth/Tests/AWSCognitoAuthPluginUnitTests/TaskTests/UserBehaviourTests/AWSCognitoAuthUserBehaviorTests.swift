@@ -12,7 +12,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
+class AWSCognitoAuthUserBehaviorTests: BasePluginTest, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

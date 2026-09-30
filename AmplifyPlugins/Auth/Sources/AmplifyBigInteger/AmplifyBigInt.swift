@@ -91,7 +91,7 @@ public final class AmplifyBigInt {
             fatalError("Could not convert to string - \(conversionResult)")
         }
 
-        return String(cString: cString)
+        return cString.withUnsafeBufferPointer { String(cString: $0.baseAddress!) }
     }
 }
 
