@@ -47,7 +47,7 @@ class MockStorageTransferDatabase: StorageTransferDatabase, @unchecked Sendable 
         }
     }
 
-    func prepareForBackground(completion: (() -> Void)? = nil) {
+    func prepareForBackground(completion: (@Sendable () -> Void)? = nil) {
         // do nothing
         completion?()
     }

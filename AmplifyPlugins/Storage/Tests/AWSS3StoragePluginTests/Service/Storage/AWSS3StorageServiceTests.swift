@@ -420,7 +420,7 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy, @unchecked Senda
 
 private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked Sendable {
 
-    func prepareForBackground(completion: (() -> Void)?) {
+    func prepareForBackground(completion: (@Sendable () -> Void)?) {
         completion?()
     }
 
@@ -466,7 +466,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked S
     }
 }
 
-private class MockFileSystem: FileSystem {
+private class MockFileSystem: FileSystem, @unchecked Sendable {
     var moveFileError: Error?
     override func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
         if let moveFileError {

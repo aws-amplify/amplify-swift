@@ -189,15 +189,8 @@ class FileSystemTests: XCTestCase, @unchecked Sendable {
         }
         var offset: UInt64 = 0
         var step: ((Int) -> Void)?
-        let queue = DispatchQueue(label: "done-count-queue")
-
-        var rebuild: [String] = [] {
-            didSet {
-                if parts.count == rebuild.count {
-                    exp.fulfill()
-                }
-            }
-        }
+        let rebuild = AtomicValue<[String]>(initialValue: [])
+        exp.expectedFulfillmentCount = parts.count
 
         let createPartialFile = { (index: Int) in
             let part = parts[index]
@@ -216,9 +209,8 @@ class FileSystemTests: XCTestCase, @unchecked Sendable {
 
                     print("File Contents:\n\(fileContents)")
 
-                    queue.sync {
-                        rebuild.append(fileContents)
-                    }
+                    rebuild.append(fileContents)
+                    exp.fulfill()
                 } catch {
                     XCTFail("Failed to create partial file: \(error)")
                 }
@@ -238,9 +230,9 @@ class FileSystemTests: XCTestCase, @unchecked Sendable {
         wait(for: [exp], timeout: 5.0)
 
         XCTAssertGreaterThan(parts.count, 0)
-        XCTAssertGreaterThan(rebuild.count, 0)
-        XCTAssertEqual(parts.count, rebuild.count)
-        XCTAssertEqual(parts, rebuild.sorted())
+        XCTAssertGreaterThan(rebuild.get().count, 0)
+        XCTAssertEqual(parts.count, rebuild.get().count)
+        XCTAssertEqual(parts, rebuild.get().sorted())
     }
 
     func testRemovingDirectoryWithoutContents() throws {

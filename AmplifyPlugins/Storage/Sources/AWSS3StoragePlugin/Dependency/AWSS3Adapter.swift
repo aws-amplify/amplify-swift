@@ -21,9 +21,9 @@ import ClientRuntime
 ///   share, and it is reached from concurrent transfer work.
 class AWSS3Adapter: AWSS3Behavior, @unchecked Sendable {
     let awsS3: S3ClientProtocol
-    let config: S3Client.S3ClientConfiguration
+    let config: S3Client.S3ClientConfig
 
-    init(_ awsS3: S3ClientProtocol, config: S3Client.S3ClientConfiguration) {
+    init(_ awsS3: S3ClientProtocol, config: S3Client.S3ClientConfig) {
         self.awsS3 = awsS3
         self.config = config
     }

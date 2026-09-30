@@ -398,7 +398,7 @@ class StorageServiceSessionDelegateTests: XCTestCase, @unchecked Sendable {
     }
 }
 
-private class AWSS3StorageServiceMock: AWSS3StorageService {
+private class AWSS3StorageServiceMock: AWSS3StorageService, @unchecked Sendable {
     convenience init() throws {
         try self.init(
             authService: MockAWSAuthService(),
