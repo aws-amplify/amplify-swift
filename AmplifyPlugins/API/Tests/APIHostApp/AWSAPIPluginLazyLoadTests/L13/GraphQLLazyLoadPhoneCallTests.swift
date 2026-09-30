@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: PhoneCallModels())
@@ -58,8 +58,8 @@ final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
             queriedPhoneCall._callee,
             state: .notLoaded(identifiers: [.init(name: "id", value: callee.id)])
         )
-        let loadedCaller = try await queriedPhoneCall.caller
-        let loadedCallee = try await queriedPhoneCall.callee
+        _ = try await queriedPhoneCall.caller
+        _ = try await queriedPhoneCall.callee
         assertLazyReference(queriedPhoneCall._caller, state: .loaded(model: savedCaller))
         assertLazyReference(queriedPhoneCall._callee, state: .loaded(model: savedCallee))
 
@@ -140,7 +140,7 @@ final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
         let savedPhoneCall = try await mutate(.create(phoneCall))
         XCTAssertNil(savedPhoneCall.phoneCallTranscriptId)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
-        let savedTranscript = try await mutate(.create(transcript))
+        _ = try await mutate(.create(transcript))
 
         var queriedPhoneCall = try await query(for: savedPhoneCall)!
         queriedPhoneCall.setTranscript(transcript)

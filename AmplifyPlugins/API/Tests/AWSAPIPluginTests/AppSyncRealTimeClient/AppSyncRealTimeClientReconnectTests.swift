@@ -87,7 +87,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("connection_init") else { return }
-                connectionInitCount.increment()
+                _ = connectionInitCount.increment()
                 client.subject.send(.success(self.unauthorizedConnectionError))
             }
             .store(in: &cancellables)
@@ -186,7 +186,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("sub-4007") else { return }
-                startCount.increment()
+                _ = startCount.increment()
                 client.subject.send(.success(.init(
                     id: "sub-4007",
                     payload: .object([
@@ -229,7 +229,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
         await webSocketClient.actionSubject
             .sink { action in
                 guard case .connect = action else { return }
-                connectCount.increment()
+                _ = connectCount.increment()
             }
             .store(in: &cancellables)
 
@@ -251,6 +251,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
 
         let count = connectCount.get()
         XCTAssertEqual(count, 1, "overlapping reconnects must collapse to a single connect()")
+        withExtendedLifetime(client) {}
     }
 
     // A transient error (e.g. LimitExceededError throttling) must NOT permanently
@@ -270,7 +271,7 @@ class AppSyncRealTimeClientReconnectTests: XCTestCase, @unchecked Sendable {
             .sink { action in
                 guard case .write(let message) = action,
                       message.contains("sub-limit") else { return }
-                startCount.increment()
+                _ = startCount.increment()
                 client.subject.send(.success(.init(
                     id: "sub-limit",
                     payload: .object([

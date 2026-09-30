@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLCustomer9Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLCustomer9Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/secondary-index/
@@ -19,7 +19,7 @@ final class GraphQLCustomer9Tests: AWSAPIPluginGen2GraphQLBaseTest {
         let accountRepresentativeId = UUID().uuidString
         let name = "Rene"
         let customer = Customer(name: name, accountRepresentativeId: accountRepresentativeId)
-        let createdCustomer = try await Amplify.API.mutate(request: .create(customer))
+        _ = try await Amplify.API.mutate(request: .create(customer)).get()
 
         // Code Snippet Begins
         struct PaginatedList<ModelType: Model>: Decodable {
@@ -42,7 +42,7 @@ final class GraphQLCustomer9Tests: AWSAPIPluginGen2GraphQLBaseTest {
           }
         }
         """
-        var request = GraphQLRequest<PaginatedList<Customer>>(
+        let request = GraphQLRequest<PaginatedList<Customer>>(
             document: document,
             responseType: PaginatedList<Customer>.self,
             decodePath: operationName

@@ -98,7 +98,7 @@ class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
             of: AnyCancellable?.self,
             returning: [AnyCancellable?].self
         ) { taskGroup in
-            for index in 0 ..< concurrentFactor {
+            for _ in 0 ..< concurrentFactor {
                 let id = UUID().uuidString
                 taskGroup.addTask { [weak self] () -> AnyCancellable? in
                     guard let self else { return nil }
@@ -134,7 +134,7 @@ class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
             of: AnyCancellable?.self,
             returning: [AnyCancellable?].self
         ) { taskGroup in
-            for index in 0 ..< numOfMaxSubscriptionCount {
+            for _ in 0 ..< numOfMaxSubscriptionCount {
                 let id = UUID().uuidString
                 taskGroup.addTask { [weak self] () -> AnyCancellable? in
                     guard let self else { return nil }

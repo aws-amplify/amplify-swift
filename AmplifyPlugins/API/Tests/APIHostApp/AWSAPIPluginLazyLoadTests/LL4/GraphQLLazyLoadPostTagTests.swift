@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testLazyLoad() async throws {
         await setup(withModels: PostTagModels())
@@ -218,7 +218,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await mutate(.create(post))
+        _ = try await mutate(.create(post))
         let savedTag = try await mutate(.create(tag))
         let savedPostTag = try await mutate(.create(postTag))
 

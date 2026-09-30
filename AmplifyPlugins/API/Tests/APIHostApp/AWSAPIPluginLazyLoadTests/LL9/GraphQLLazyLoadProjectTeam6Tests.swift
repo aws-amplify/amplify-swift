@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
+class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
@@ -178,7 +178,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
         queriedProject.teamId = newTeam.teamId
         queriedProject.teamName = newTeam.name
         let savedProjectWithNewTeam = try await mutate(.update(queriedProject))
-        assertProject(queriedProject, hasTeam: savedNewTeam)
+        assertProject(savedProjectWithNewTeam, hasTeam: savedNewTeam)
     }
 
     func testDeleteTeam() async throws {
@@ -251,7 +251,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
 
         await fulfillment(of: [connected], timeout: 10)
 
-        let savedTeam = try await mutate(.create(team))
+        _ = try await mutate(.create(team))
         await fulfillment(of: [onCreatedTeam], timeout: 10)
         subscription.cancel()
     }
