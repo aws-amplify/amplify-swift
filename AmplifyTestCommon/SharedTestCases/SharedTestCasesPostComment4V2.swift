@@ -98,7 +98,8 @@ public extension LazyParentPost4V2 {
             rule(allow: .public, operations: [.create, .update, .delete, .read])
         ]
 
-        model.pluralName = "LazyParentPost4V2s"
+        model.listPluralName = "LazyParentPost4V2s"
+        model.syncPluralName = "LazyParentPost4V2s"
 
         model.fields(
             .id(),
@@ -192,7 +193,8 @@ public extension LazyChildComment4V2 {
             rule(allow: .public, operations: [.create, .update, .delete, .read])
         ]
 
-        model.pluralName = "LazyChildComment4V2s"
+        model.listPluralName = "LazyChildComment4V2s"
+        model.syncPluralName = "LazyChildComment4V2s"
 
         model.attributes(
             .index(fields: ["postID", "content"], name: "byPost4")
@@ -264,7 +266,8 @@ public extension ParentPost4V2 {
         rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "ParentPost4V2s"
+    model.listPluralName = "ParentPost4V2s"
+    model.syncPluralName = "ParentPost4V2s"
 
     model.fields(
         .id(),
@@ -331,7 +334,8 @@ public extension ChildComment4V2 {
         rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "ChildComment4V2s"
+    model.listPluralName = "ChildComment4V2s"
+    model.syncPluralName = "ChildComment4V2s"
 
     model.attributes(
       .index(fields: ["postID", "content"], name: "byPost4")

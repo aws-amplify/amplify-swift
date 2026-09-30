@@ -25,7 +25,8 @@ public extension Comment3aV2 {
   static let schema = defineSchema { model in
     let comment3aV2 = Comment3aV2.keys
 
-    model.pluralName = "Comment3aV2s"
+    model.listPluralName = "Comment3aV2s"
+    model.syncPluralName = "Comment3aV2s"
 
     model.fields(
       .id(),

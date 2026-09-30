@@ -25,7 +25,8 @@ public extension ModelCustomPkDefined {
   static let schema = defineSchema { model in
     let modelCompositePk = ModelCustomPkDefined.keys
 
-    model.pluralName = "ModelCustomPkDefined"
+    model.listPluralName = "ModelCustomPkDefined"
+    model.syncPluralName = "ModelCustomPkDefined"
 
     model.attributes(
         .primaryKey(fields: [modelCompositePk.id, modelCompositePk.dob]),

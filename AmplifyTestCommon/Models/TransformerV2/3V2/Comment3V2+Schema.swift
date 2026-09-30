@@ -29,7 +29,8 @@ public extension Comment3V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Comment3V2s"
+    model.listPluralName = "Comment3V2s"
+    model.syncPluralName = "Comment3V2s"
 
     model.attributes(
       .index(fields: ["postID", "content"], name: "byPost3")

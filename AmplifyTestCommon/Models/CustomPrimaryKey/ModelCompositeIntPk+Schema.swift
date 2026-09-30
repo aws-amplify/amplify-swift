@@ -24,7 +24,8 @@ public extension ModelCompositeIntPk {
   static let schema = defineSchema { model in
     let modelCompositeIntPk = ModelCompositeIntPk.keys
 
-    model.pluralName = "ModelCompositeIntPks"
+    model.listPluralName = "ModelCompositeIntPks"
+    model.syncPluralName = "ModelCompositeIntPks"
 
     model.attributes(
       .index(fields: ["id", "serial"], name: nil),
