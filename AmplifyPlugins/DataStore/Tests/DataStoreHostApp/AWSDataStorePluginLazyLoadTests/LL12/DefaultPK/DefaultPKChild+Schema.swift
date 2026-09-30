@@ -25,7 +25,8 @@ public extension DefaultPKChild {
   static let schema = defineSchema { model in
     let defaultPKChild = DefaultPKChild.keys
 
-    model.pluralName = "DefaultPKChildren"
+    model.listPluralName = "DefaultPKChildren"
+    model.syncPluralName = "DefaultPKChildren"
 
     model.attributes(
       .index(fields: ["id"], name: nil),

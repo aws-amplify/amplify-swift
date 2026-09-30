@@ -28,7 +28,8 @@ public extension TodoIAMPrivate {
       rule(allow: .private, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "TodoIAMPrivates"
+    model.listPluralName = "TodoIAMPrivates"
+    model.syncPluralName = "TodoIAMPrivates"
 
     model.fields(
       .id(),

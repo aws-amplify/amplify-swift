@@ -25,7 +25,8 @@ public extension HasOneParent {
   static let schema = defineSchema { model in
     let hasOneParent = HasOneParent.keys
 
-    model.pluralName = "HasOneParents"
+    model.listPluralName = "HasOneParents"
+    model.syncPluralName = "HasOneParents"
 
     model.attributes(
       .index(fields: ["id"], name: nil),

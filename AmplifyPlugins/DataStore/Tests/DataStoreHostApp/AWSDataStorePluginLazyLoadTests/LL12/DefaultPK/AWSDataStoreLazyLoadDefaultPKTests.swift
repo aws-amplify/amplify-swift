@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: DefaultPKModels())

@@ -29,7 +29,8 @@ public extension EnumTestModel {
   static let schema = defineSchema { model in
     let enumTestModel = EnumTestModel.keys
 
-    model.pluralName = "EnumTestModels"
+    model.listPluralName = "EnumTestModels"
+    model.syncPluralName = "EnumTestModels"
 
     model.attributes(
       .primaryKey(fields: [enumTestModel.id])

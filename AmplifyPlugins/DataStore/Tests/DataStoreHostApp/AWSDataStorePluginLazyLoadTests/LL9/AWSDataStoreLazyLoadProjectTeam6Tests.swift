@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: ProjectTeam6Models())
@@ -146,7 +146,7 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         queriedProject.teamId = newTeam.teamId
         queriedProject.teamName = newTeam.name
         let savedProjectWithNewTeam = try await updateAndWaitForSync(queriedProject)
-        assertProject(queriedProject, hasTeam: savedNewTeam)
+        assertProject(savedProjectWithNewTeam, hasTeam: savedNewTeam)
     }
 
     func testDeleteTeam() async throws {

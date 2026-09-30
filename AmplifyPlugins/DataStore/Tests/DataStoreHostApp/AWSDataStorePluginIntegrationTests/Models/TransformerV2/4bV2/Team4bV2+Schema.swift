@@ -25,7 +25,8 @@ public extension Team4bV2 {
   static let schema = defineSchema { model in
     let team4bV2 = Team4bV2.keys
 
-    model.pluralName = "Team4bV2s"
+    model.listPluralName = "Team4bV2s"
+    model.syncPluralName = "Team4bV2s"
 
     model.fields(
       .id(),

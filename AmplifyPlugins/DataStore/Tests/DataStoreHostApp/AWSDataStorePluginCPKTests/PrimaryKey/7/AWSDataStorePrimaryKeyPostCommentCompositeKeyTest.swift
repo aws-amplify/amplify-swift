@@ -26,7 +26,7 @@ import XCTest
  }
 
  */
-final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrimaryKeyBaseTest {
+final class AWSDataStorePrimaryKeyPostCommentCompositeKeyTest: AWSDataStorePrimaryKeyBaseTest, @unchecked Sendable {
 
     func testModelWithCompositePrimaryKeyAndAssociations() async throws {
         setup(withModels: CompositeKeyWithAssociations())
