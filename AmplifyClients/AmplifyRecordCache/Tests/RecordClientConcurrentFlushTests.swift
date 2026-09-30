@@ -9,7 +9,9 @@ import SQLite
 import XCTest
 @testable import AmplifyRecordCache
 
-class RecordClientConcurrentFlushTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class RecordClientConcurrentFlushTests: XCTestCase, @unchecked Sendable {
 
     private var storage: SQLiteRecordStorage!
     private var sender: SlowMockSender!
@@ -58,6 +60,9 @@ class RecordClientConcurrentFlushTests: XCTestCase {
         )
 
         // When: Two concurrent flushes
+        // Hoisted so the `async let`s capture the client rather than `self`, which is a non-Sendable
+        // `XCTestCase`.
+        let recordClient = recordClient!
         async let flush1 = recordClient.flush()
         // Small delay to ensure flush1 acquires the lock first
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms

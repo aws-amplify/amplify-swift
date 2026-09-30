@@ -7,7 +7,11 @@
 
 import Foundation
 
-package protocol LogBatchConsumer {
+/// Represents a general consumer for contents of a
+/// [LogFile](x-source-tag://LogFile)
+///
+/// - Note: `Sendable` because the consumer is invoked from a `Task` when flushing.
+package protocol LogBatchConsumer: Sendable {
 
     /// Processes the given [LogBatch](x-source-tag://LogBatch) and ensures to call
     /// [LogBatch.complete](x-source-tag://LogBatch.complete) on the given `batch` when

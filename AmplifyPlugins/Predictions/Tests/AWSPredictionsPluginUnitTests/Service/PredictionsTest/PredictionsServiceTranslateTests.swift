@@ -10,7 +10,9 @@ import AWSTranslate
 import XCTest
 @testable import AWSPredictionsPlugin
 
-class PredictionsServiceTranslateTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class PredictionsServiceTranslateTests: XCTestCase, @unchecked Sendable {
     var predictionsService: AWSPredictionsService!
     let mockTranslate = MockTranslateBehavior()
 

@@ -8,7 +8,9 @@
 import XCTest
 @testable @preconcurrency import AWSCognitoAuthPlugin
 
-class StateMachineListenerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StateMachineListenerTests: XCTestCase, @unchecked Sendable {
 
     var stateMachine: CounterStateMachine!
 
@@ -99,13 +101,14 @@ class StateMachineListenerTests: XCTestCase {
             let seq = await stateMachine.listen()
             await stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
             Task {
-                var count = 0
+                // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+                let count = TestCounter()
                 for await state in seq {
-                    if count == 0 {
-                        count += 1
+                    if count.get() == 0 {
+                        count.increment()
                         XCTAssertEqual(state.value, 10)
-                    } else if count == 1 {
-                        count += 1
+                    } else if count.get() == 1 {
+                        count.increment()
                         XCTAssertEqual(state.value, 11)
                     } else {
                         XCTAssertEqual(state.value, 12)

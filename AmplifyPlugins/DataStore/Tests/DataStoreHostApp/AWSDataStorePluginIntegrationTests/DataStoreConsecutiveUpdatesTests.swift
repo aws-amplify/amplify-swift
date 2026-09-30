@@ -17,7 +17,9 @@ import AWSPluginsCore
 
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length
-class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecked Sendable {
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Post.self)
@@ -32,7 +34,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",

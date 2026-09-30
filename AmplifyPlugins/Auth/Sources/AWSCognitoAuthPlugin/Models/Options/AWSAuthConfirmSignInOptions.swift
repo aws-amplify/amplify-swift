@@ -7,7 +7,9 @@
 
 import Amplify
 
-public struct AWSAuthConfirmSignInOptions {
+// Explicit `Sendable`: Swift does not infer it for public types, and options are carried into the
+// plugin's async confirm-sign-in path.
+public struct AWSAuthConfirmSignInOptions: Sendable {
 
     /// User attributes to be passed in when confirming a sign with NEW_PASSWORD_REQUIRED challenge
     public let userAttributes: [AuthUserAttribute]?

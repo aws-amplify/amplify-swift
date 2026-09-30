@@ -10,7 +10,9 @@ import AWSPluginsCore
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class ShowHostedUISignOutTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ShowHostedUISignOutTests: XCTestCase, @unchecked Sendable {
     private var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
     private var signOutRedirectURI: String!
 

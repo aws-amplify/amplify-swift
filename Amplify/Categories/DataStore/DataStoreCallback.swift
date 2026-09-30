@@ -31,4 +31,6 @@ public extension DataStoreResult {
 }
 
 /// Function type of every `DataStore` asynchronous API.
-public typealias DataStoreCallback<Result> = (DataStoreResult<Result>) -> Void
+/// - Note: `@Sendable` because every caller invokes this from asynchronous work — the storage
+///   engine, the sync engine, and the mutation queue all cross task boundaries before calling back.
+public typealias DataStoreCallback<Result> = @Sendable (DataStoreResult<Result>) -> Void

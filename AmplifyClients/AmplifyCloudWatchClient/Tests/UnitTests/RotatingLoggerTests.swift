@@ -172,9 +172,12 @@ final class RotatingLoggerTests: XCTestCase {
         try await systemUnderTest.synchronize()
 
         let messageCount = 10
+        // Capture the (Sendable) logger in a local so the concurrent task does not capture `self`,
+        // which is a non-Sendable XCTestCase and trips Swift 6's sending-self diagnostic.
+        let logger = systemUnderTest!
         async let writes: Void = {
             for index in 0 ..< messageCount {
-                try await systemUnderTest.record(level: .error, message: "concurrent-\(index)")
+                try await logger.record(level: .error, message: "concurrent-\(index)")
             }
         }()
         let shippedDuringFlush = try await performFlush()

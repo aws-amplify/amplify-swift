@@ -13,7 +13,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
     /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
-    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
+    func submit(mutationEvent: MutationEvent, completion: @escaping @Sendable (Result<MutationEvent, DataStoreError>) -> Void) {
         Task {
             log.verbose("\(#function): \(mutationEvent)")
 
@@ -35,7 +35,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     func resolveConflictsThenSave(
         mutationEvent: MutationEvent,
         storageAdapter: StorageEngineAdapter,
-        completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void
+        completion: @escaping @Sendable (Result<MutationEvent, DataStoreError>) -> Void
     ) {
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
@@ -138,11 +138,14 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         storageAdapter: StorageEngineAdapter,
         completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise
     ) {
+        // `Future.Promise` is not `Sendable`, but Combine calls it at most once, so it is moved into
+        // the task below through an unchecked box.
+        let completionPromise = UncheckedSendable(completionPromise)
         log.verbose("\(#function) disposition \(disposition)")
 
         switch disposition {
         case .dropCandidateWithError(let dataStoreError):
-            completionPromise(.failure(dataStoreError))
+            completionPromise.value(.failure(dataStoreError))
         case .dropCandidateAndDeleteLocal:
             Task {
                 do {
@@ -163,16 +166,16 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                         }
                         try await group.waitForAll()
                     }
-                    completionPromise(.success(candidate))
+                    completionPromise.value(.success(candidate))
                 } catch {
-                    completionPromise(.failure(causedBy: error))
+                    completionPromise.value(.failure(causedBy: error))
                 }
             }
         case .saveCandidate:
             save(
                 mutationEvent: candidate,
                 storageAdapter: storageAdapter,
-                completionPromise: completionPromise
+                completionPromise: completionPromise.value
             )
         case .replaceLocalWithCandidate:
             guard !localEvents.isEmpty, let eventToUpdate = localEvents.first else {
@@ -180,7 +183,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                 save(
                     mutationEvent: candidate,
                     storageAdapter: storageAdapter,
-                    completionPromise: completionPromise
+                    completionPromise: completionPromise.value
                 )
                 return
             }
@@ -202,7 +205,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             save(
                 mutationEvent: resolvedEvent,
                 storageAdapter: storageAdapter,
-                completionPromise: completionPromise
+                completionPromise: completionPromise.value
             )
         }
     }
@@ -232,9 +235,12 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise
     ) {
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
-        let nextEventPromise = nextEventPromise.getAndSet(nil)
+        // `Future.Promise` is not `Sendable`, but Combine calls it at most once, so both promises are
+        // moved into the save completion closure through unchecked boxes.
+        let completionPromise = UncheckedSendable(completionPromise)
+        let nextEventPromise = UncheckedSendable(nextEventPromise.getAndSet(nil))
         var eventToPersist = mutationEvent
-        if nextEventPromise != nil {
+        if nextEventPromise.value != nil {
             eventToPersist.inProcess = true
         }
 
@@ -245,16 +251,16 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                 // restore the `nextEventPromise` value when failed to save mutation event
                 // as nextEventPromise is expecting to hanlde error of querying unprocessed mutaiton events
                 // not the failure of saving mutaiton event operation
-                nextEventPromise.ifSome(self.nextEventPromise.set(_:))
+                nextEventPromise.value.ifSome(self.nextEventPromise.set(_:))
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                nextEventPromise.ifSome {
+                nextEventPromise.value.ifSome {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
                     $0(.success(savedMutationEvent))
                 }
             }
             self.log.verbose("\(#function): invoking completionPromise with \(result)")
-            completionPromise(result)
+            completionPromise.value(result)
         }
 
     }

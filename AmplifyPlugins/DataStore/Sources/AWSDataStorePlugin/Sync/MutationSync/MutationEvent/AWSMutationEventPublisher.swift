@@ -12,7 +12,9 @@ import Foundation
 /// Note: This publisher accepts only a single subscriber. It retains a weak reference to
 /// its MutationEventSource even after downstream subscribers have issued a `cancel()`,
 /// so that subsequent subscribers will still receive event notifications.
-final class AWSMutationEventPublisher: Publisher {
+/// - Note: `@unchecked Sendable` to satisfy `MutationEventPublisher`'s `Sendable` requirement.
+///   `subscription` is assigned once when the publisher is wired up.
+final class AWSMutationEventPublisher: Publisher, @unchecked Sendable {
     typealias Output = MutationEvent
     typealias Failure = DataStoreError
 

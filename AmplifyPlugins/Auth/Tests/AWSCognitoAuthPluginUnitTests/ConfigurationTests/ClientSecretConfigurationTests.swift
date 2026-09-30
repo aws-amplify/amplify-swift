@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class ClientSecretConfigurationTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
+///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+class ClientSecretConfigurationTests: XCTestCase, @unchecked Sendable {
 
     let networkTimeout = TimeInterval(2)
     var mockIdentityProvider: CognitoUserPoolBehavior!

@@ -13,7 +13,9 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageListObjectsTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageListObjectsTaskTests: XCTestCase, @unchecked Sendable {
 
     /// - Given: A configured Storage List Objects Task with mocked service
     /// - When: AWSS3StorageListObjectsTask value is invoked

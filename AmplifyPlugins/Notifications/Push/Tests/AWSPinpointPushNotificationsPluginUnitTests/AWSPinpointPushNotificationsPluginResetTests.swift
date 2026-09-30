@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSPinpointPushNotificationsPlugin
 
-class AWSPinpointPushNotificationsPluginResetTests: AWSPinpointPushNotificationsPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointPushNotificationsPluginResetTests: AWSPinpointPushNotificationsPluginTestBase, @unchecked Sendable {
     func testReset_shouldResetValues() async {
         let resettable = plugin as Resettable
         await resettable.reset()

@@ -13,7 +13,9 @@ import InternalAmplifyCredentials
 import SmithyHTTPAPI
 import XCTest
 
-class UserAgentSettingClientEngineTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class UserAgentSettingClientEngineTestCase: XCTestCase, @unchecked Sendable {
     let userAgentKey = "User-Agent"
 
     /// Given: A `UserAgentSettingClientEngine`.
@@ -91,7 +93,9 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     }
 }
 
-class MockTargetEngine: HTTPClient {
+/// - Note: `final` and `@unchecked Sendable`: `HTTPClient` is `Sendable`. Test double driven by a
+///   single test.
+final class MockTargetEngine: HTTPClient, @unchecked Sendable {
     var request: HTTPRequest?
 
     func send(

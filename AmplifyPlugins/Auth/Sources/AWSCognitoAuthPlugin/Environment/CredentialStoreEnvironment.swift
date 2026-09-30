@@ -15,8 +15,8 @@ struct CredentialEnvironment: Environment, LoggerProvider {
 }
 
 protocol CredentialStoreEnvironment: Environment {
-    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
-    typealias KeychainStoreFactory = (_ service: String) -> KeychainStoreBehavior
+    typealias AmplifyAuthCredentialStoreFactory = @Sendable () -> AmplifyAuthCredentialStoreBehavior
+    typealias KeychainStoreFactory = @Sendable (_ service: String) -> KeychainStoreBehavior
 
     var amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory { get }
     var legacyKeychainStoreFactory: KeychainStoreFactory { get }
@@ -25,8 +25,8 @@ protocol CredentialStoreEnvironment: Environment {
 
 struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
 
-    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
-    typealias KeychainStoreFactory = (_ service: String) -> KeychainStoreBehavior
+    typealias AmplifyAuthCredentialStoreFactory = @Sendable () -> AmplifyAuthCredentialStoreBehavior
+    typealias KeychainStoreFactory = @Sendable (_ service: String) -> KeychainStoreBehavior
 
     // Required
     let amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory

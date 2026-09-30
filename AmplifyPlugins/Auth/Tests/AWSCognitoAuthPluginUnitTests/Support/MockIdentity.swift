@@ -11,9 +11,9 @@ import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
 
-    typealias MockGetIdResponse = (GetIdInput) async throws -> GetIdOutput
+    typealias MockGetIdResponse = @Sendable (GetIdInput) async throws -> GetIdOutput
 
-    typealias MockGetCredentialsResponse = (GetCredentialsForIdentityInput) async throws
+    typealias MockGetCredentialsResponse = @Sendable (GetCredentialsForIdentityInput) async throws
     -> GetCredentialsForIdentityOutput
 
     let mockGetIdResponse: MockGetIdResponse?

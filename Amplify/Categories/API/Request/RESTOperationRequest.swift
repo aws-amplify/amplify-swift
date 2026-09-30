@@ -53,7 +53,7 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
 
 /// REST Operation Request options extension
 public extension RESTOperationRequest {
-    struct Options {
+    struct Options: Sendable {
 
         /// Empty initializer
         public init() { }

@@ -10,7 +10,9 @@ import UserNotifications
 import XCTest
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class MockRemoteNotifications: RemoteNotificationsBehaviour {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockRemoteNotifications: RemoteNotificationsBehaviour, @unchecked Sendable {
     var isRegisteredForRemoteNotifications: Bool = true
 
     var mockedRequestAuthorizationResult: Bool = true

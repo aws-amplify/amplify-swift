@@ -10,7 +10,11 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
-class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate, @unchecked Sendable {
 
     var preconditionCheckError: DataStoreError?
     var transactionError: DataStoreError?

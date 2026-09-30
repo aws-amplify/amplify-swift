@@ -12,15 +12,16 @@
 import Foundation
 
 // Supports Hub and Async API
-protocol AmplifyTaskGateway {
+/// - Note: `Sendable` because the Hub listeners built in the extensions below close over `self`.
+protocol AmplifyTaskGateway: Sendable {
     associatedtype Request: AmplifyOperationRequest
     associatedtype InProcess: Sendable
-    associatedtype Success
+    associatedtype Success: Sendable
     associatedtype Failure: AmplifyError
 
     typealias TaskResult = Result<Success, Failure>
-    typealias ResultListener = (TaskResult) -> Void
-    typealias InProcessListener = (InProcess) -> Void
+    typealias ResultListener = @Sendable (TaskResult) -> Void
+    typealias InProcessListener = @Sendable (InProcess) -> Void
 
     var id: UUID { get }
     var request: Request { get }
@@ -65,23 +66,25 @@ extension AmplifyTaskGateway {
         let channel = HubChannel(from: categoryType)
         let filterById = idFilter
 
-        var unsubscribe: (() -> Void)?
+        // The listener has to be able to remove itself, which means referencing a token that
+        // does not exist until it is registered. Holding it in an `AtomicValue` lets the closure
+        // capture an immutable box; capturing a `var` assigned afterwards is a reference to a
+        // mutable variable from concurrently-executing code, rejected in Swift 6 language mode.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let resultHubListener: HubListener = { payload in
             guard let result = payload.data as? TaskResult else {
                 return
             }
             resultListener(result)
             // Automatically unsubscribe when event is received
-            unsubscribe?()
+            if let token = tokenBox.get() { Amplify.Hub.removeListener(token) }
         }
         let token = Amplify.Hub.listen(
             to: channel,
             isIncluded: filterById,
             listener: resultHubListener
         )
-        unsubscribe = {
-            Amplify.Hub.removeListener(token)
-        }
+        tokenBox.set(token)
         return token
     }
 
@@ -89,7 +92,11 @@ extension AmplifyTaskGateway {
         let channel = HubChannel(from: categoryType)
         let filterById = idFilter
 
-        var unsubscribe: (() -> Void)?
+        // The listener has to be able to remove itself, which means referencing a token that
+        // does not exist until it is registered. Holding it in an `AtomicValue` lets the closure
+        // capture an immutable box; capturing a `var` assigned afterwards is a reference to a
+        // mutable variable from concurrently-executing code, rejected in Swift 6 language mode.
+        let tokenBox = AtomicValue<UnsubscribeToken?>(initialValue: nil)
         let inProcessHubListener: HubListener = { payload in
             if let inProcessData = payload.data as? InProcess {
                 inProcessListener(inProcessData)
@@ -98,7 +105,7 @@ extension AmplifyTaskGateway {
 
             // Remove listener if we see a result come through
             if payload.data is TaskResult {
-                unsubscribe?()
+                if let token = tokenBox.get() { Amplify.Hub.removeListener(token) }
             }
         }
         let token = Amplify.Hub.listen(
@@ -106,9 +113,7 @@ extension AmplifyTaskGateway {
             isIncluded: filterById,
             listener: inProcessHubListener
         )
-        unsubscribe = {
-            Amplify.Hub.removeListener(token)
-        }
+        tokenBox.set(token)
         return token
     }
 

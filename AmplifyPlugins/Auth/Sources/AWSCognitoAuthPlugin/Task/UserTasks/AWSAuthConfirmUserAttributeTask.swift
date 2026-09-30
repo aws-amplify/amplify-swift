@@ -11,8 +11,9 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 
-class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, DefaultLogger {
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, DefaultLogger, @unchecked Sendable {
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let request: AuthConfirmUserAttributeRequest
     private let authStateMachine: AuthStateMachine

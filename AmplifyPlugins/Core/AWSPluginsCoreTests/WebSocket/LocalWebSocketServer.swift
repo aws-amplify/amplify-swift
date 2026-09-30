@@ -8,7 +8,9 @@
 import Foundation
 import Network
 
-class LocalWebSocketServer {
+// `@unchecked Sendable`: the connection handler runs on the listener queue and appends to
+// `connections`; this is a single-test helper.
+final class LocalWebSocketServer: @unchecked Sendable {
     let portNumber = UInt16.random(in: 49_152 ..< 65_535)
     var connections = [NWConnection]()
 

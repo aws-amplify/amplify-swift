@@ -14,7 +14,9 @@ private struct EncodableStruct: Codable, Equatable {
     let number: Int
 }
 
-class AnyEncodableTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AnyEncodableTests: XCTestCase, @unchecked Sendable {
 
     /// - Given: a struct that comforms to `Encodable`
     /// - When:

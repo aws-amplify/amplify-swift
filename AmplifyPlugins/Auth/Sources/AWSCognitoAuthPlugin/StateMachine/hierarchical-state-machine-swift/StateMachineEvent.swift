@@ -9,7 +9,8 @@ import Foundation
 
 /// Inspired by CloudEvents spec
 /// - seealso: https://github.com/cloudevents/spec/blob/master/spec.md
-protocol StateMachineEvent {
+/// - Note: `Sendable` because events are sent into the actor-isolated `StateMachine.send`.
+protocol StateMachineEvent: Sendable {
     // MARK: - Required attributes
 
     /// Identifies the event. Producers MUST ensure that source + id is unique for each

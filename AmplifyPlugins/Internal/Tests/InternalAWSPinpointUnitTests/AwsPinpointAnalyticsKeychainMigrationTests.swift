@@ -11,7 +11,9 @@ import XCTest
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase, @unchecked Sendable {
     private let keychain = MockKeychainStore()
     private let archiver = AmplifyArchiver()
     private let userDefaults = UserDefaults.standard

@@ -17,7 +17,9 @@ import XCTest
  }
  */
 
-class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -77,7 +79,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: networkTimeout)
     }
 
     func testSaveModelWithoutExplicitContentAndSync() async throws {
@@ -130,7 +132,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: networkTimeout)
     }
 
     func saveTodo(content: String?) -> TodoWithDefaultValueV2? {
@@ -146,7 +148,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: networkTimeout)
         return result
     }
 }

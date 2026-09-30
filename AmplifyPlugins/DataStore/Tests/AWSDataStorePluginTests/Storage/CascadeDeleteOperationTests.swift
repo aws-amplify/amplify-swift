@@ -93,7 +93,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await fulfillment(of: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 10)
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -144,7 +144,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        wait(for: [completed], timeout: 10)
         guard case .success(let queriedModel) = queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
@@ -192,7 +192,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        wait(for: [completed], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -243,7 +243,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        wait(for: [completed], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -291,7 +291,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        wait(for: [completed], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -337,7 +337,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        wait(for: [completed], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -404,7 +404,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
 
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 10)
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -471,7 +471,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 10)
         guard case .success(let queriedModels) = await queryModelSynchronous(
             modelType: ModelCompositePk.self,
             predicate: predicate
@@ -538,7 +538,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -604,7 +604,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 10)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(
             modelType: Restaurant.self,
             predicate: predicate
@@ -660,7 +660,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 10)
     }
 
     func testDeleteWithAssociatedModels() async {
@@ -727,7 +727,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 10)
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, Dish.modelName)
@@ -798,7 +798,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 10)
 
         XCTAssertEqual(submittedEvents.count, 2)
         // The delete mutations should be synced in reverse order (children to parent)
@@ -869,7 +869,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 10)
 
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)

@@ -12,7 +12,9 @@ import XCTest
 
 import Combine
 
-class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase, @unchecked Sendable {
     func testConvertSpeechToText() async throws {
         let testBundle = Bundle(for: type(of: self))
         let url = try XCTUnwrap(testBundle.url(forResource: "audio", withExtension: "wav"))

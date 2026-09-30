@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginStorageBucketTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginStorageBucketTests: XCTestCase, @unchecked Sendable {
     private var storagePlugin: AWSS3StoragePlugin!
     private var defaultService: MockAWSS3StorageService!
     private var authService: MockAWSAuthService!

@@ -7,4 +7,6 @@
 
 /// A marker protocol to indicate the conforming type can be used as an
 /// Environment. Environments provide a way to access dependencies at runtime.
-protocol Environment { }
+/// - Note: `Sendable` because environments are captured by the actions the state machine runs in
+///   detached tasks.
+protocol Environment: Sendable { }

@@ -15,7 +15,9 @@ import ClientRuntime
 import XCTest
 
 // swiftlint:disable:next type_name
-class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase, @unchecked Sendable {
 
     var systemUnderTest: AWSS3StorageService!
     var authService: MockAWSAuthService!

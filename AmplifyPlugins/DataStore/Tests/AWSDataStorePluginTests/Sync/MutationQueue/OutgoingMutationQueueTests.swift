@@ -14,7 +14,9 @@ import XCTest
 @testable @preconcurrency import AWSPluginsCore
 @testable import AWSPluginsCore
 
-class OutgoingMutationQueueTests: SyncEngineTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class OutgoingMutationQueueTests: SyncEngineTestBase, @unchecked Sendable {
 
     /// - Given: A sync-configured DataStore
     /// - When:
@@ -199,19 +201,21 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         await fulfillment(of: [mutationEventSaved], timeout: 1.0)
 
-        var outboxStatusReceivedCurrentCount = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+
+        let outboxStatusReceivedCurrentCount = AtomicValue(initialValue: 0)
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
         let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
 
         let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
         let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
-            outboxStatusReceivedCurrentCount += 1
+            _ = outboxStatusReceivedCurrentCount.increment()
             guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
                 XCTFail("Failed to cast payload data as OutboxStatusEvent")
                 return
             }
 
-            switch outboxStatusReceivedCurrentCount {
+            switch outboxStatusReceivedCurrentCount.get() {
             case 1:
                 XCTAssertFalse(outboxStatusEvent.isEmpty)
                 outboxStatusOnStart.fulfill()

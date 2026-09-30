@@ -1,5 +1,50 @@
 # Changelog
 
+## 2.62.0 (2026-09-23)
+
+### Features
+
+- **core**: adopt the Swift 6 language mode
+- enable the Swift 6 language mode
+- **analytics**: Sendable across Pinpoint, Analytics, Geo and Push
+- **logging**: Sendable across the Logging plugin
+- **predictions**: Sendable across the Predictions plugin
+- **storage**: Sendable across the Storage plugin
+- **api**: Sendable across the API plugin
+- **datastore**: Sendable across the DataStore plugin
+- **auth**: Sendable across the rest of the Auth plugin
+- **auth**: Sendable across the Cognito state machine
+- **core**: Sendable across AWSPluginsCore
+- **core**: Sendable for remaining Amplify core files
+- **core**: Sendable for the built-in default plugins
+- **core**: Sendable for the remaining category models
+- **auth**: Sendable for Auth category models
+- **storage**: )!: tighten StoragePath.resolve to a Sendable closure
+- **storage**: )!: @Sendable progress listeners
+- **core**: )!: @Sendable Hub listeners and filters
+- **datastore**: )!: @Sendable DataStore callbacks
+- **datastore**: annotate the lazy-loading types
+- **datastore**: )!: require Sendable on Model
+- **core**: Sendable for core support and task types
+- **core**: )!: require Sendable on Plugin and Category
+
+### Bug Fixes
+
+- **core**: add @preconcurrency to @Sendable closure entry points for Swift 5 source compatibility (#4339)
+- resolve Swift 6 data-race errors in tests merged from main
+- **logging**: route the CloudWatch client's shared state through its lock
+- **core**: snapshot the user-agent platform mapping in one locked read
+- **api**: cancel NondeterminsticOperation under a single lock acquisition
+- **auth**: make the tvOS and watchOS presentation-anchor placeholder Sendable
+- **api**: serialize watchOS AmplifyReachability state
+- **core**: make DevMenu concurrency-safe
+- **api**: drop the needless actor hop when logging websocket termination
+- **api**: stop AppSyncRealTimeClient's sink from inheriting actor isolation
+- **analytics**: keep ActivityTracker registration synchronous
+- **core**: close the unconfigured-Auth crash window instead of documenting it
+- **core**: report an unconfigured Auth category instead of aborting
+- **core**: synchronize AmplifyAsyncSequence cancellation
+
 ## 2.61.0 (2026-09-15)
 
 ### Features

@@ -8,7 +8,9 @@
 import Foundation
 @testable import InternalAWSPinpoint
 
-class MockActivityTracker: ActivityTrackerBehaviour {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
     var backgroundTrackingTimeout: TimeInterval = 0
 
     var beginActivityTrackingCount = 0

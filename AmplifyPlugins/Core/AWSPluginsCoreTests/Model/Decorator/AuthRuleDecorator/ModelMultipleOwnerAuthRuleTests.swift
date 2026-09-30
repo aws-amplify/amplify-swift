@@ -65,7 +65,9 @@ public struct ModelMultipleOwner: Model {
  * and uncomment the other tests.
 */
 
-class ModelMultipleOwnerAuthRuleTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelMultipleOwnerAuthRuleTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() {
         ModelRegistry.register(modelType: ModelMultipleOwner.self)

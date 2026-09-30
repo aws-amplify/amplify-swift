@@ -8,7 +8,8 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate: Evaluable, Encodable {}
+/// - Note: `Sendable` because predicates are carried into the storage engine's async query paths.
+public protocol QueryPredicate: Evaluable, Encodable, Sendable {}
 
 public enum QueryPredicateGroupType: String, Encodable {
     case and
@@ -33,7 +34,18 @@ public enum QueryPredicateConstant: QueryPredicate, Encodable {
     }
 }
 
-public class QueryPredicateGroup: QueryPredicate, Encodable {
+/// - Note: `@unchecked Sendable`, and not `final`, so that anyone who subclassed this keeps compiling.
+///
+///   The conformance is a genuine assertion, not a checked fact. `and(_:)` and `or(_:)` mutate
+///   `predicates` **in place and return `self`** when the group type already matches, so two tasks
+///   composing onto the same group race on an array — and `predicates` is `public internal(set)`, so
+///   external code reads it directly and a lock here would not cover those reads without turning it into
+///   a computed property.
+///
+///   What makes this safe in practice is usage, not structure: a predicate is built up on one task and
+///   then handed to a query. Sharing a part-built group across tasks is unsupported, and nothing in the
+///   type enforces that. The exposure predates this annotation, which only stops the compiler asking.
+public class QueryPredicateGroup: QueryPredicate, Encodable, @unchecked Sendable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 
@@ -124,7 +136,9 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
 
 }
 
-public class QueryPredicateOperation: QueryPredicate, Encodable {
+/// - Note: `@unchecked Sendable` rather than `final`, for the same reason as ``QueryPredicateGroup``.
+///   Both stored properties are immutable.
+public class QueryPredicateOperation: QueryPredicate, Encodable, @unchecked Sendable {
 
     public let field: String
     public let `operator`: QueryOperator

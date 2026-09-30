@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct ModelPrimaryKey {
+public struct ModelPrimaryKey: Sendable {
     public var fields: [ModelField] = []
     private var fieldsLookup: Set<ModelFieldName> = []
 

@@ -51,7 +51,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
                         return
                     }
                     if mutationEvent.inProcess {
-                        log.verbose("The head of the MutationEvent queue was already inProcess (most likely interrupted process): \(mutationEvent)")
+                        self.log.verbose("The head of the MutationEvent queue was already inProcess (most likely interrupted process): \(mutationEvent)")
                         completion(.success(mutationEvent))
                     } else {
                         self.markInProcess(

@@ -5,7 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public final class AuthCategory: Category {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement that the category behavior
+///   protocol now carries.
+///
+///   Unchecked in the literal sense: `plugins` and `isConfigured` are plain mutable state with no lock.
+///   `add(plugin:)` cannot race a configured category — it throws once `isConfigured` is set — but
+///   `removePlugin(for:)` mutates `plugins` with no such guard and no lock, so it can race a concurrent
+///   read. That exposure predates this annotation; the annotation only stops the compiler from asking
+///   about it.
+public final class AuthCategory: Category, @unchecked Sendable {
 
     public let categoryType =  CategoryType.auth
 
@@ -41,6 +49,28 @@ public final class AuthCategory: Category {
     }
 
     var isConfigured = false
+
+    /// The configured plugin, or `nil` when this category has no plugin to serve a request.
+    ///
+    /// A non-trapping counterpart to ``plugin``. Reading ``plugin`` before configuration, or with no
+    /// plugin registered, trips a `preconditionFailure` and aborts the process. That is the right
+    /// behaviour for application code — it is a programmer error — but not for the AWS plugin modules,
+    /// which hold long-lived clients that can outlive `Amplify.reset()`. For those, a missing Auth
+    /// category is recoverable and should surface as a thrown error.
+    ///
+    /// Returning the plugin rather than a Boolean is what makes this safe to act on: the caller captures
+    /// the plugin once and invokes it directly, so a concurrent `Amplify.reset()` cannot land between a
+    /// check and a second read of `Amplify.Auth`. A Boolean flag would leave exactly that window open.
+    ///
+    /// More than one registered plugin still traps, deliberately — that is a genuine misconfiguration
+    /// rather than a state a client can be legitimately called in.
+    @_spi(InternalAmplifyConfiguration)
+    public var configuredPlugin: AuthCategoryPlugin? {
+        let registered = plugins
+        guard isConfigured, !registered.isEmpty else { return nil }
+        guard registered.count == 1 else { return plugin }
+        return registered.first?.value
+    }
 
     // MARK: - Plugin handling
 

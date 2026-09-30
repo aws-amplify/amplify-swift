@@ -12,7 +12,9 @@ import XCTest
 @testable import AWSPinpointPushNotificationsPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class ErrorPushNotificationsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ErrorPushNotificationsTests: XCTestCase, @unchecked Sendable {
     /// Given: A NSError error
     /// When: pushNotificationsError is invoked
     /// Then: An .unknown error is returned

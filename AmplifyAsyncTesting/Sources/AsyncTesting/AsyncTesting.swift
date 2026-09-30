@@ -22,7 +22,10 @@ public enum AsyncTesting {
         )
     }
 
-    @MainActor
+    // Deliberately not `@MainActor`: every expectation access below is an awaited
+    // call into the `AsyncExpectation` actor, so this needs no main-actor isolation.
+    // Requiring it would force callers to send a non-Sendable `XCTestCase` across an
+    // isolation boundary, which is an error in the Swift 6 language mode.
     public static func waitForExpectations(
         _ expectations: [AsyncExpectation],
         timeout: Double = 1.0,

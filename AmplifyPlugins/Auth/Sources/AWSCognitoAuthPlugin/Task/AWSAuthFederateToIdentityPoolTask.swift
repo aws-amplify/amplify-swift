@@ -17,7 +17,8 @@ public extension HubPayload.EventName.Auth {
     static let federateToIdentityPoolAPI = "Auth.federatedToIdentityPool"
 }
 
-public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+public final class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthFederateToIdentityPoolRequest
     private let authStateMachine: AuthStateMachine

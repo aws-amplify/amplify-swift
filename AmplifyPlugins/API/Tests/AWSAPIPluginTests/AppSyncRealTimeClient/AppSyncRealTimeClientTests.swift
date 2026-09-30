@@ -11,7 +11,9 @@ import XCTest
 @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
-class AppSyncRealTimeClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
 
     func testSendRequestWithTimeout_withNoResponse_failedWithTimeOutError() async {
         let timeout = 1.0
@@ -56,11 +58,17 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 XCTFail("Operation shouldn't fail with error \(error)")
             }
         }
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000)
-            appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
+        // `subject` is a PassthroughSubject with no buffering, so the response must be
+        // sent after `sendRequest` has subscribed. Task ordering is nondeterministic,
+        // so resend until the request resolves rather than racing a single fixed sleep.
+        let responseTask = Task {
+            while !Task.isCancelled {
+                appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
+                try await Task.sleep(nanoseconds: 10 * 1_000_000)
+            }
         }
         await fulfillment(of: [finishExpectation], timeout: timeout + 1)
+        responseTask.cancel()
     }
 
     func testSendRequestWithTimeout_withErrorResponse_transformLimitExceededError() async {
@@ -88,21 +96,27 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 limitExceededErrorExpectation.fulfill()
             }
         }
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000)
-            appSyncClient.subject.send(.success(.init(
-                id: id,
-                payload: .object([
-                    "errors": .array([
-                        .object([
-                            "errorType": "LimitExceededError"
+        // `subject` is a PassthroughSubject with no buffering, so the response must be
+        // sent after `sendRequest` has subscribed. Task ordering is nondeterministic,
+        // so resend until the request resolves rather than racing a single fixed sleep.
+        let responseTask = Task {
+            while !Task.isCancelled {
+                appSyncClient.subject.send(.success(.init(
+                    id: id,
+                    payload: .object([
+                        "errors": .array([
+                            .object([
+                                "errorType": "LimitExceededError"
+                            ])
                         ])
-                    ])
-                ]),
-                type: .error
-            )))
+                    ]),
+                    type: .error
+                )))
+                try await Task.sleep(nanoseconds: 10 * 1_000_000)
+            }
         }
         await fulfillment(of: [limitExceededErrorExpectation], timeout: timeout + 1)
+        responseTask.cancel()
     }
 
     func testSendRequestWithTimeout_withErrorResponse_transformMaxSubscriptionsReachedError() async {
@@ -131,23 +145,29 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
 
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000)
-            appSyncClient.subject.send(.success(.init(
-                id: id,
-                payload: .object([
-                    "errors": .array([
-                        .object([
-                            "errorType": "MaxSubscriptionsReachedError"
+        // `subject` is a PassthroughSubject with no buffering, so the response must be
+        // sent after `sendRequest` has subscribed. Task ordering is nondeterministic,
+        // so resend until the request resolves rather than racing a single fixed sleep.
+        let responseTask = Task {
+            while !Task.isCancelled {
+                appSyncClient.subject.send(.success(.init(
+                    id: id,
+                    payload: .object([
+                        "errors": .array([
+                            .object([
+                                "errorType": "MaxSubscriptionsReachedError"
+                            ])
                         ])
-                    ])
-                ]),
-                type: .error
-            )))
+                    ]),
+                    type: .error
+                )))
+                try await Task.sleep(nanoseconds: 10 * 1_000_000)
+            }
         }
         await fulfillment(of: [
             maxSubscriptionsReachedExpectation
         ], timeout: timeout + 1)
+        responseTask.cancel()
     }
 
     func testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow() async {
@@ -178,23 +198,30 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
         }
 
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000)
-            appSyncClient.subject.send(.success(.init(
-                id: id,
-                payload: .object([
-                    "errors": .array([
-                        .object([
-                            "errorType": "OtherError"
+        // `subject` is a PassthroughSubject with no buffering, so the response must be
+        // sent after `sendRequest` has subscribed. Task ordering is nondeterministic,
+        // so resend until the request resolves rather than racing a single fixed sleep.
+        // `.first()` cancels after the first matching response, so extra sends are ignored.
+        let responseTask = Task {
+            while !Task.isCancelled {
+                appSyncClient.subject.send(.success(.init(
+                    id: id,
+                    payload: .object([
+                        "errors": .array([
+                            .object([
+                                "errorType": "OtherError"
+                            ])
                         ])
-                    ])
-                ]),
-                type: .error
-            )))
+                    ]),
+                    type: .error
+                )))
+                try await Task.sleep(nanoseconds: 10 * 1_000_000)
+            }
         }
         await fulfillment(of: [
             triggerUnknownErrorExpectation
         ], timeout: timeout + 1)
+        responseTask.cancel()
     }
 
     func testConnect_AppSyncRealTimeClient_triggersWebSocketConnection() async throws {

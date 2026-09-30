@@ -15,7 +15,9 @@ import XCTest
 #endif
 
 // swiftlint:disable type_body_length
-class GraphQLModelBasedTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLModelBasedTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
 
@@ -323,7 +325,8 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         let post2 = Post(id: uuid2, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post2))
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live create -> subscription round-trip; networkTimeout (10s) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
     func testOnUpdatePostSubscriptionWithModel() async throws {
@@ -364,7 +367,8 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
 
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live update -> subscription round-trip; networkTimeout (10s) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
     func testOnDeletePostSubscriptionWithModel() async throws {
@@ -404,7 +408,8 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .delete(post))
 
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live delete -> subscription round-trip; networkTimeout (10s) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
     func testOnCreateCommentSubscriptionWithModel() async throws {
@@ -452,7 +457,8 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(comment))
         let comment2 = Comment(id: uuid2, content: "content", createdAt: .now(), post: post)
         _ = try await Amplify.API.mutate(request: .create(comment2))
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live create -> subscription round-trip; networkTimeout (10s) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
 

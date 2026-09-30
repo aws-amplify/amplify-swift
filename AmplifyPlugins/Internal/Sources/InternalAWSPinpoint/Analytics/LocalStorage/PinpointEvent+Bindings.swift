@@ -9,7 +9,8 @@ import Foundation
 import SQLite
 
 extension PinpointEvent {
-    private static let archiver: AmplifyArchiverBehaviour = AmplifyArchiver()
+    // `nonisolated(unsafe)`: the archiver is stateless; `AmplifyArchiverBehaviour` is not `Sendable`.
+    private nonisolated(unsafe) static let archiver: AmplifyArchiverBehaviour = AmplifyArchiver()
 
     /// Converts a Pinpoint Event to a collection of SQL Bindings for SQL insert statements
     /// - Parameters:

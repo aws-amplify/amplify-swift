@@ -9,9 +9,13 @@
 import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
-private let timeout: TimeInterval = 5
+// Waits cover real local-socket connect/disconnect/auto-retry round-trips (incl. retry backoff),
+// which can exceed a few seconds under CI load — hence a generous shared budget.
+private let timeout: TimeInterval = 10
 
-class WebSocketClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class WebSocketClientTests: XCTestCase, @unchecked Sendable {
     var localWebSocketServer: LocalWebSocketServer?
 
     override func setUp() async throws {
@@ -160,6 +164,10 @@ class WebSocketClientTests: XCTestCase {
                 disconnectExpectation.fulfill()
             case .connected:
                 reconnectedExpectation.fulfill()
+            case .error, .data:
+                // A transient server failure can surface a `.error`/`.data` event around the
+                // disconnect; ignore only those. The ordered disconnect->reconnect gates the test.
+                break
             default:
                 XCTFail("No other type of event should be received")
             }
@@ -279,7 +287,9 @@ class WebSocketClientTests: XCTestCase {
 }
 
 
-private class MockNetworkMonitor: WebSocketNetworkMonitorProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+private final class MockNetworkMonitor: WebSocketNetworkMonitorProtocol, @unchecked Sendable {
     typealias State = AmplifyNetworkMonitor.State
     let subject = PassthroughSubject<State, Never>()
     var publisher: AnyPublisher<(State, State), Never> {

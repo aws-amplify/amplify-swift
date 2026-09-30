@@ -30,7 +30,9 @@ import XCTest
 See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 */
 
-class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -43,7 +45,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostAndCommentSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post3V2(title: "title")
         let comment = Comment3V2(postID: post.id, content: "content")
         let syncedPostReceived = expectation(description: "received post from sync event")
@@ -72,7 +74,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await fulfillment(of: [syncedPostReceived, syncCommentReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncedPostReceived, syncCommentReceived], timeout: networkTimeout)
 
         let queriedComment = try await Amplify.DataStore.query(Comment3V2.self, byId: comment.id)
         XCTAssertEqual(queriedComment, comment)
@@ -80,7 +82,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSaveCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
         let comment = Comment3V2(postID: post.id, content: "content")
@@ -104,7 +106,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
         var comment = Comment3V2(postID: post.id, content: "content")
@@ -120,7 +122,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post3V2(title: "title")
         let comment = Comment3V2(postID: post.id, content: "content")
         _ = try await Amplify.DataStore.save(post)
@@ -134,7 +136,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
         let comment = Comment3V2(postID: post.id, content: "content")
@@ -149,7 +151,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostWithSyncAndReadPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -172,7 +174,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post3V2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -180,7 +182,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdatePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         var post = Post3V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -206,7 +208,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let updatedTitle = "updatedTitle"
         post.title = updatedTitle
@@ -230,12 +232,12 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             }
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
 
@@ -262,7 +264,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(
@@ -288,12 +290,12 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         _ = try await Amplify.DataStore.delete(post)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     func testDeletePostCascadeToComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post3V2(title: "title")
         let comment = Comment3V2(postID: post.id, content: "content")
@@ -329,7 +331,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
@@ -360,7 +362,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.delete(post)
         // TODO: Deleting the comment should not be necessary. Cascade delete is not working
         _ = try await Amplify.DataStore.delete(comment)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 }
 

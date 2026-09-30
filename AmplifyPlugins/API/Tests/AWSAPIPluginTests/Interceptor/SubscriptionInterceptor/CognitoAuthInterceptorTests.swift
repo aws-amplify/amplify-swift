@@ -10,7 +10,9 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
 
-class CognitoAuthInterceptorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CognitoAuthInterceptorTests: XCTestCase, @unchecked Sendable {
 
     func testInterceptConnection_withAuthTokenProvider_appendCorrectAuthHeader() async {
         let authTokenProvider = MockAuthTokenProvider()
@@ -77,14 +79,22 @@ class CognitoAuthInterceptorTests: XCTestCase {
     }
 }
 
-private class MockAuthTokenProvider: AmplifyAuthTokenProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockAuthTokenProvider: AmplifyAuthTokenProvider, @unchecked Sendable {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         return authToken
     }
 }
 
-private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockAuthTokenProviderFailed: AmplifyAuthTokenProvider, @unchecked Sendable {
     let authToken = UUID().uuidString
     func getLatestAuthToken() async throws -> String {
         throw "Intended"

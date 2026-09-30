@@ -11,7 +11,9 @@ import XCTest
 @testable import func AmplifyTestCommon.XCTAssertThrowFatalError
 @testable import AWSS3StoragePlugin
 
-class DefaultStorageMultipartUploadClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DefaultStorageMultipartUploadClientTests: XCTestCase, @unchecked Sendable {
     private var defaultClient: DefaultStorageMultipartUploadClient!
     private var serviceProxy: MockStorageServiceProxy!
     private var session: MockStorageMultipartUploadSession!
@@ -356,7 +358,11 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     }
 }
 
-private class MockStorageServiceProxy: StorageServiceProxy {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+private class MockStorageServiceProxy: StorageServiceProxy, @unchecked Sendable {
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior! = MockAWSS3PreSignedURLBuilder()
     var awsS3: AWSS3Behavior!
     var urlSession = URLSession.shared

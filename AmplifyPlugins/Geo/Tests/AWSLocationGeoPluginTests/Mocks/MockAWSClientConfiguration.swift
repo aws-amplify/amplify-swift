@@ -28,7 +28,9 @@ extension LocationClient.LocationClientConfiguration {
     }
 }
 
-class MockEndPointResolver: EndpointResolver {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+final class MockEndPointResolver: EndpointResolver, @unchecked Sendable {
     func resolve(params: AWSLocation.EndpointParams) throws -> SmithyHTTPAPI.Endpoint {
         return Endpoint(host: "MockHost")
     }

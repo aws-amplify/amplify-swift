@@ -8,7 +8,9 @@
 import AWSPluginsCore
 import XCTest
 
-class AWSAuthorizationTypeIteratorTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAuthorizationTypeIteratorTests: XCTestCase, @unchecked Sendable {
 
     func testEmptyIterator_hasNextValue_false() throws {
         var iterator = AWSAuthorizationTypeIterator(withValues: [])

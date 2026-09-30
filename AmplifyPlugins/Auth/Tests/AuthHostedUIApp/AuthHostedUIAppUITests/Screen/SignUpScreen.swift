@@ -21,10 +21,14 @@ struct SignUpScreen: Screen {
 
     func enterFields(username: String, password: String) -> Self {
         let usernameField = app.textFields[Identifiers.usernameField]
+        // Wait for the field to render before tapping; tapping immediately races the
+        // screen load and fails with "No matches found".
+        XCTAssertTrue(usernameField.waitForExistence(timeout: 30), "Sign up username field not found")
         usernameField.tap()
         usernameField.typeText(username)
 
         let passwordField = app.secureTextFields[Identifiers.passwordField]
+        XCTAssertTrue(passwordField.waitForExistence(timeout: 30), "Sign up password field not found")
         passwordField.tap()
         passwordField.typeText(password)
         return self
@@ -32,13 +36,20 @@ struct SignUpScreen: Screen {
 
     func tapSignUp() -> Self {
         let signUpButton = app.buttons[Identifiers.signUpButton]
+        // Wait for the button before tapping; an unhittable tap silently no-ops and signup never runs.
+        XCTAssertTrue(signUpButton.waitForExistence(timeout: 30), "Sign up button not found")
         signUpButton.tap()
         return self
     }
 
     func testSignUpSucceeded() -> Self {
         let successText = app.staticTexts[Identifiers.successLabel]
-        XCTAssertTrue(successText.waitForExistence(timeout: 60), "Signup operation failed")
+        if !successText.waitForExistence(timeout: 60) {
+            // Surface the app's error label so a failure says *why* instead of just "failed".
+            let errorText = app.staticTexts[Identifiers.errorLabel]
+            let detail = errorText.exists ? errorText.label : "no error label shown"
+            XCTFail("Signup operation failed: \(detail)")
+        }
         return self
     }
 

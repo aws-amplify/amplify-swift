@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class StorageListRequestTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageListRequestTests: XCTestCase, @unchecked Sendable {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testPath = "TestPath"

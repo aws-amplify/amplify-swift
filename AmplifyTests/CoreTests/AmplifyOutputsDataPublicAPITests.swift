@@ -13,7 +13,9 @@ import XCTest
 
 /// Tests that verify `AmplifyOutputsData` and all nested types are accessible
 /// without `@_spi(InternalAmplifyConfiguration)` — only standard `import Amplify` is needed.
-class AmplifyOutputsDataPublicAPITests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AmplifyOutputsDataPublicAPITests: XCTestCase, @unchecked Sendable {
 
     override func setUp() async throws {
         await Amplify.reset()

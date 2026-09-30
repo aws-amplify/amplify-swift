@@ -9,7 +9,9 @@
 @testable import InternalAmplifyCredentials
 import XCTest
 
-class FoundationClientEngineTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class FoundationClientEngineTests: XCTestCase, @unchecked Sendable {
 
     /// Given: A `FoundationClientEngine`.
     /// When: The engine is initialized.

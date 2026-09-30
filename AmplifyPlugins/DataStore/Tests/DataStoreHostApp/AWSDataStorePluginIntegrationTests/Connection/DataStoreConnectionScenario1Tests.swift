@@ -31,7 +31,9 @@ import XCTest
 
  */
 
-class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -44,7 +46,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name1")
         let project = Project1(team: team)
         let syncedTeamReceived = expectation(description: "received team from sync path")
@@ -103,7 +105,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name1")
         let anotherTeam = Team1(name: "name1")
         var project = Project1(team: team)
@@ -146,7 +148,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1(name: "name")
         let project = Project1(team: team)
@@ -225,7 +227,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteWithValidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
@@ -239,7 +241,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)
@@ -263,7 +265,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testListProjectsByTeamID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1(name: "name")
         let project = Project1(team: team)
         _ = try await Amplify.DataStore.save(team)

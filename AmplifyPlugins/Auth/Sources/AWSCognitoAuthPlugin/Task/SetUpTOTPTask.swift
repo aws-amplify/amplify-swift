@@ -11,9 +11,10 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 
-class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger, @unchecked Sendable {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory

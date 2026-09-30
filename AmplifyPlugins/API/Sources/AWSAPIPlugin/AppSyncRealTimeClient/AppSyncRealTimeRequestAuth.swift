@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AppSyncRealTimeRequestAuth {
+public enum AppSyncRealTimeRequestAuth: Sendable {
     private static let jsonEncoder = JSONEncoder()
     private static let jsonDecoder = JSONDecoder()
 
@@ -15,18 +15,18 @@ public enum AppSyncRealTimeRequestAuth {
     case apiKey(ApiKey)
     case iam(IAM)
 
-    public struct AuthToken {
+    public struct AuthToken: Sendable {
         let host: String
         let authToken: String
     }
 
-    public struct ApiKey {
+    public struct ApiKey: Sendable {
         let host: String
         let apiKey: String
         let amzDate: String
     }
 
-    public struct IAM {
+    public struct IAM: Sendable {
         let host: String
         let authToken: String
         let securityToken: String

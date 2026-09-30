@@ -11,7 +11,9 @@ import AmplifyTestCommon
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class AttemptTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AttemptTests: XCTestCase, @unchecked Sendable {
     let goodNumber = 42
     let badNumber = 13
 

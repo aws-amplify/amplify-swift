@@ -9,7 +9,9 @@ import Amplify
 import XCTest
 @testable import CoreMLPredictionsPlugin
 
-class MockCoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+final class MockCoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior, @unchecked Sendable {
 
     func detectDominantLanguage(for text: String) -> Predictions.Language? {
         return .italian

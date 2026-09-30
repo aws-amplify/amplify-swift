@@ -18,7 +18,9 @@ import XCTest
 
  */
 
-class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -94,7 +96,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: networkTimeout)
 
         /*
           This failed with "The variables input contains a field name \'id\' that is not defined for input object
@@ -115,7 +117,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 //                XCTFail("Failed \(error)")
 //            }
 //        }
-//        await fulfillment(of: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
+//        await fulfillment(of: [updateCompleted, updateReceived], timeout: networkTimeout)
 
         let deleteCompleted = expectation(description: "delete completed")
         Amplify.DataStore.delete(TodoCustomTimestampV2.self, withId: todo.id) { event in
@@ -126,7 +128,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteCompleted, deleteReceived], timeout: networkTimeout)
     }
 
     func saveTodo(content: String) -> TodoCustomTimestampV2? {
@@ -142,7 +144,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: networkTimeout)
         return result
     }
 }

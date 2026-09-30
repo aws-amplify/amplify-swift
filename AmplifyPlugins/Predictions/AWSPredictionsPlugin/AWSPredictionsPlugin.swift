@@ -9,7 +9,10 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-public final class AWSPredictionsPlugin: PredictionsCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`. The service and
+///   configuration properties are populated during `configure(using:)` before any client call can
+///   reach them.
+public final class AWSPredictionsPlugin: PredictionsCategoryPlugin, @unchecked Sendable {
     let awsPredictionsPluginKey = "awsPredictionsPlugin"
 
     /// An instance of the predictions  service

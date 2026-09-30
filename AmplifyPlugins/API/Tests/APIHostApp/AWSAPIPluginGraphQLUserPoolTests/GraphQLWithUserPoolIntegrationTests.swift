@@ -14,7 +14,9 @@ import XCTest
 @testable import APIHostApp
 
 // swiftlint:disable type_body_length
-class GraphQLWithUserPoolIntegrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLWithUserPoolIntegrationTests: XCTestCase, @unchecked Sendable {
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
 
     let username = "integTest\(UUID().uuidString)"

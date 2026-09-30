@@ -7,7 +7,8 @@
 
 import Amplify
 
-final class MockLogger {
+// `@unchecked Sendable`: `Logger` is now `Sendable`. Test double driven by a single test at a time.
+final class MockLogger: @unchecked Sendable {
     struct Entry: Equatable {
         var level: LogLevel
         var message: String

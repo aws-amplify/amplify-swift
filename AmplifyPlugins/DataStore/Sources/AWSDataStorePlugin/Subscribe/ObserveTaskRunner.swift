@@ -8,16 +8,26 @@
 import Amplify
 import Combine
 
-struct ObserveRequest: AmplifyOperationRequest {
-    typealias Options = Any
-    var options: Any
-    init(options: Any = []) {
+/// - Note: `@unchecked Sendable`: `Options` is `Any`, so the conformance cannot be checked.
+/// See `ObserveQueryRequest`: options are unused, so an empty `Sendable` type is used instead of
+/// `Any`, which cannot satisfy the `Sendable` requirement on `AmplifyOperationRequest.Options`.
+struct ObserveRequest: AmplifyOperationRequest, Sendable {
+    struct Options: Sendable {
+        init() {}
+    }
+
+    let options: Options
+
+    init(options: Options = .init()) {
         self.options = options
     }
 }
 
-class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
-    var request: ObserveRequest
+/// - Note: `final` and `@unchecked Sendable` to satisfy `InternalTaskRunner`'s `Sendable`
+///   requirement. `sink` and `context` are established once during `run()` and not mutated
+///   concurrently thereafter.
+final class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, @unchecked Sendable {
+    let request: ObserveRequest
 
     typealias Request = ObserveRequest
     typealias InProcess = MutationEvent

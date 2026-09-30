@@ -9,7 +9,9 @@
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase, @unchecked Sendable {
 
     let testServiceKey = "TestServiceKey"
     let testFileURL = URL(fileURLWithPath: "path")

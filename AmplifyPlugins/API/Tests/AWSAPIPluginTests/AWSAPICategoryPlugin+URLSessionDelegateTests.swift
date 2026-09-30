@@ -8,7 +8,9 @@
 import XCTest
 
 // swiftlint:disable:next type_name
-class AWSAPICategoryPluginURLSessionDelegateTests: AWSAPICategoryPluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSAPICategoryPluginURLSessionDelegateTests: AWSAPICategoryPluginTestBase, @unchecked Sendable {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
         // TODO implement code
     }

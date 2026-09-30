@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
-class SyncEngineFlutterIntegrationTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SyncEngineFlutterIntegrationTestBase: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 

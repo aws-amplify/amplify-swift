@@ -10,7 +10,9 @@ import XCTest
 @testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 
-final class AWSPinpointFactoryTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AWSPinpointFactoryTests: XCTestCase, @unchecked Sendable {
     private var appId: String {
         UUID().uuidString
     }

@@ -15,7 +15,9 @@ import Network
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 // swiftlint:disable:next type_name
-class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase, @unchecked Sendable {
 
     static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
     static let amplifyOutputs = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs"
@@ -43,6 +45,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        // Let any in-flight Pinpoint work (event submission / endpoint updates, which read
+        // credentials through Amplify.Auth) finish before `Amplify.reset()` tears down the Auth
+        // category. Otherwise a late task crashes with "Authentication category is not configured".
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         await Amplify.reset()
     }
 

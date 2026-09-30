@@ -10,6 +10,6 @@ import Foundation
 /// Central metadata for the Amplify Swift SDK.
 /// CI updates the `version` value during the release process.
 public enum AmplifyMetadata {
-    public static let version = "2.61.0"
+    public static let version = "2.62.0"
     public static let platformName = "amplify-swift"
 }

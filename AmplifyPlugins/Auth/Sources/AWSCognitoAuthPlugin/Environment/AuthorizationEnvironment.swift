@@ -9,7 +9,7 @@ import Foundation
 
 protocol AuthorizationEnvironment: Environment {
 
-    typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
+    typealias CognitoIdentityFactory = @Sendable () throws -> CognitoIdentityBehavior
     var identityPoolConfiguration: IdentityPoolConfigurationData { get }
     var cognitoIdentityFactory: CognitoIdentityFactory { get }
     var eventIDFactory: EventIDFactory { get }
@@ -18,7 +18,7 @@ protocol AuthorizationEnvironment: Environment {
 
 struct BasicAuthorizationEnvironment: AuthorizationEnvironment {
 
-    typealias CognitoIdentityFactory = () throws -> CognitoIdentityBehavior
+    typealias CognitoIdentityFactory = @Sendable () throws -> CognitoIdentityBehavior
 
     // Required
     let identityPoolConfiguration: IdentityPoolConfigurationData

@@ -15,12 +15,18 @@ protocol DataStoreObserveQueryOperation {
     func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
 
-class ObserveQueryRequest: AmplifyOperationRequest {
-    var options: Any
+/// - Note: `final` and `@unchecked Sendable`: `Options` is `Any`, so the conformance cannot be
+///   checked. Nothing mutates `options` after construction.
+/// `AmplifyOperationRequest.Options` must be `Sendable`, and this request has no options — every
+/// caller passes an empty literal and nothing ever reads it — so it uses a dedicated empty type
+/// rather than `Any`.
+final class ObserveQueryRequest: AmplifyOperationRequest, Sendable {
+    struct Options: Sendable {
+    }
 
-    typealias Options = Any
+    let options: Options
 
-    init(options: Any) {
+    init(options: Options = .init()) {
         self.options = options
     }
 }
@@ -39,10 +45,17 @@ class ObserveQueryRequest: AmplifyOperationRequest {
 ///
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
-class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `InternalTaskRunner`'s `Sendable`
+///   requirement. As the comment above states, the mutable properties are only touched from
+///   `serialQueue`.
+final class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner,
+    InternalTaskAsyncThrowingSequence,
+    InternalTaskThrowingChannel,
+    DataStoreObserveQueryOperation,
+    @unchecked Sendable {
     typealias Request = ObserveQueryRequest
     typealias InProcess = DataStoreQuerySnapshot<M>
-    var request: ObserveQueryRequest
+    let request: ObserveQueryRequest
     var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
 
     private let serialQueue = DispatchQueue(
@@ -77,7 +90,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var dataStoreStateSink: AnyCancellable?
 
     init(
-        request: ObserveQueryRequest = .init(options: []),
+        request: ObserveQueryRequest = .init(),
         context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
         modelType: M.Type,
         modelSchema: ModelSchema,
@@ -205,11 +218,11 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             completion: { queryResult in
                 switch queryResult {
                 case .success(let queriedModels):
-                    currentItems.set(sortedModels: queriedModels)
-                    subscribeToModelSyncedEvent()
-                    sendSnapshot()
+                    self.currentItems.set(sortedModels: queriedModels)
+                    self.subscribeToModelSyncedEvent()
+                    self.sendSnapshot()
                 case .failure(let error):
-                    fail(error)
+                    self.fail(error)
                     return
                 }
             }
@@ -224,43 +237,43 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     /// make it so that the item no longer matches the predicate and requires to be removed from `currentItems`.
     /// This check is defered until `onItemChangedAfterSync` where the predicate is then used, and `currentItems` is
     /// accessed under the serial queue.
+    /// Attaches the item-change sinks. Runs synchronously on `serialQueue` — it is only invoked from
+    /// `startObserveQuery`, already on the queue — so the sinks are in place before `initialQuery()`
+    /// sends the first snapshot. Deferring attachment onto a separate `serialQueue.async` let changes
+    /// emitted between the first snapshot and the deferred attach be dropped.
     func subscribeToItemChanges() {
-        serialQueue.async { [weak self] in
-            guard let self else { return }
-
-            batchItemsChangedSink = dataStorePublisher.publisher
-                .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-                .filter(filterByModelName(mutationEvent:))
-                .filter(filterByPredicateMatch(mutationEvent:))
-                .handleEvents(receiveOutput: onItemChangeDuringSync(mutationEvent:) )
-                .collect(
-                    .byTimeOrCount(
-                        // on queue
-                        serialQueue,
-                        // collect over this timeframe
-                        itemsChangedPeriodicPublishTimeInSeconds,
-                        // If the `storageEngine` does sync from remote, the initial batch should
-                        // collect snapshots based on time / snapshots received.
-                        // If it doesn't, it should publish each snapshot without waiting.
-                        storageEngine.syncsFromRemote
+        batchItemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in !self.dispatchedModelSyncedEvent.get() }
+            .filter(filterByModelName(mutationEvent:))
+            .filter(filterByPredicateMatch(mutationEvent:))
+            .handleEvents(receiveOutput: onItemChangeDuringSync(mutationEvent:))
+            .collect(
+                .byTimeOrCount(
+                    // on queue
+                    serialQueue,
+                    // collect over this timeframe
+                    itemsChangedPeriodicPublishTimeInSeconds,
+                    // If the `storageEngine` does sync from remote, the initial batch should
+                    // collect snapshots based on time / snapshots received.
+                    // If it doesn't, it should publish each snapshot without waiting.
+                    storageEngine.syncsFromRemote
                         ? itemsChangedMaxSize
                         : 1
-                    )
                 )
-                .sink(
-                    receiveCompletion: onReceiveCompletion(completed:),
-                    receiveValue: onItemsChangeDuringSync(mutationEvents:)
-                )
+            )
+            .sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onItemsChangeDuringSync(mutationEvents:)
+            )
 
-            itemsChangedSink = dataStorePublisher.publisher
-                .filter { _ in self.dispatchedModelSyncedEvent.get() }
-                .filter(filterByModelName(mutationEvent:))
-                .receive(on: serialQueue)
-                .sink(
-                    receiveCompletion: onReceiveCompletion(completed:),
-                    receiveValue: onItemChangeAfterSync(mutationEvent:)
-                )
-        }
+        itemsChangedSink = dataStorePublisher.publisher
+            .filter { _ in self.dispatchedModelSyncedEvent.get() }
+            .filter(filterByModelName(mutationEvent:))
+            .receive(on: serialQueue)
+            .sink(
+                receiveCompletion: onReceiveCompletion(completed:),
+                receiveValue: onItemChangeAfterSync(mutationEvent:)
+            )
     }
 
     func subscribeToModelSyncedEvent() {

@@ -8,7 +8,9 @@
 import Amplify
 import XCTest
 
-class JSONValueHolderTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class JSONValueHolderTest: XCTestCase, @unchecked Sendable {
 
     var jsonValueHodler = DynamicModel(values: [
         "id": 123,

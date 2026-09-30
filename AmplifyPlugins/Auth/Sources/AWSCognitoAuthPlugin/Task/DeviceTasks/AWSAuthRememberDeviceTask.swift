@@ -11,7 +11,8 @@ import AWSPluginsCore
 import ClientRuntime
 import Foundation
 
-class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthRememberDeviceTask: AuthRememberDeviceTask, DefaultLogger, @unchecked Sendable {
 
     private let request: AuthRememberDeviceRequest
     private let authStateMachine: AuthStateMachine

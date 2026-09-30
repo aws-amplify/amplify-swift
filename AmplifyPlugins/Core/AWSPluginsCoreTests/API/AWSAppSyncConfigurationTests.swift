@@ -9,7 +9,9 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-final class AWSAppSyncConfigurationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AWSAppSyncConfigurationTests: XCTestCase, @unchecked Sendable {
 
     func testSuccess() throws {
         let config = AmplifyOutputsData(data: .init(

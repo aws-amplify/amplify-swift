@@ -15,7 +15,9 @@ import SmithyHTTPAPI
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
-final class AWSS3StorageServiceListTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AWSS3StorageServiceListTests: XCTestCase, @unchecked Sendable {
 
     var systemUnderTest: AWSS3StorageService!
     var authService: MockAWSAuthService!

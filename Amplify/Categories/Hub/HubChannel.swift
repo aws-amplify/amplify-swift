@@ -8,7 +8,8 @@
 /// HubChannel represents the channels on which Amplify category messages will be dispatched. Apps can define their own
 /// channels for intra-app communication. Internally, Amplify uses the Hub for dispatching notifications about events
 /// associated with different categories.
-public enum HubChannel {
+// Explicit `Sendable`: Swift does not infer it for public types.
+public enum HubChannel: Sendable {
 
     case analytics
 

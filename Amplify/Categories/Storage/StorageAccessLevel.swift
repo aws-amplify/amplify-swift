@@ -12,7 +12,7 @@ import Foundation
 ///
 /// - Tag: StorageAccessLevel
 @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-public enum StorageAccessLevel: String {
+public enum StorageAccessLevel: String, Sendable {
 
     /// Objects can be read or written by any user without authentication
     ///

@@ -22,12 +22,15 @@ extension AWSAuthCognitoSession {
 }
 
 extension AuthAWSCognitoCredentials {
+    /// Keeps test credentials beyond the 120s refresh buffer to prevent spurious refreshes.
+    static let testExpiryInSeconds = AmplifyCredentials.expiryBufferInSeconds * 10
+
     static var testData: AuthAWSCognitoCredentials {
         AuthAWSCognitoCredentials(
             accessKeyId: "accessKey",
             secretAccessKey: "secretAccessKey",
             sessionToken: "sessionToken",
-            expiration: Date() + 121
+            expiration: Date().addingTimeInterval(testExpiryInSeconds)
         )
     }
 

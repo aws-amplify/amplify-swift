@@ -7,7 +7,8 @@
 
 import Foundation
 
-protocol LoginsMapProvider {
+/// - Note: `Sendable` because logins maps are carried on state machine states, which are `Sendable`.
+protocol LoginsMapProvider: Sendable {
 
     var loginsMap: [String: String] { get }
 }

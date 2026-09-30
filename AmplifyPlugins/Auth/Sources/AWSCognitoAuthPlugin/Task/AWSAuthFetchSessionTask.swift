@@ -9,7 +9,8 @@ import Amplify
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
-class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger, @unchecked Sendable {
     private let request: AuthFetchSessionRequest
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper

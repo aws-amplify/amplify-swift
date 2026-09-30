@@ -12,7 +12,7 @@ import Combine
 extension RemoteSyncEngine {
 
     /// States are descriptive, they say what is happening in the system right now
-    enum State {
+    enum State: Sendable {
         case notStarted
 
         case pausingSubscriptions

@@ -12,7 +12,9 @@ import XCTest
 @testable import AmplifyTestCommon
 
 // swiftlint:disable type_name
-class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase, @unchecked Sendable {
 
     override func setUp() {
         ModelRegistry.register(modelType: QPredGen.self)

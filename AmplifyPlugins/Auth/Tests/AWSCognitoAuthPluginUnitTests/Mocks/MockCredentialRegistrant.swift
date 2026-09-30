@@ -12,13 +12,16 @@ import Foundation
 @testable import AWSCognitoAuthPlugin
 
 @available(iOS 17.4, macOS 13.5, *)
-class MockCredentialRegistrant: CredentialRegistrantProtocol {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+// by a single test at a time.
+class MockCredentialRegistrant: CredentialRegistrantProtocol, @unchecked Sendable {
     var presentationAnchor: AuthUIPresentationAnchor?
 
     var mockedCreateResponse: Result<CredentialRegistrationPayload, Error>?
-    var createCallCount = 0
+    // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+    let createCallCount = TestCounter()
     func create(with options: CredentialCreationOptions) async throws -> CredentialRegistrationPayload {
-        createCallCount += 1
+        createCallCount.increment()
         if let mockedCreateResponse {
             return try mockedCreateResponse.get()
         }

@@ -10,7 +10,9 @@ import XCTest
 
 @available(iOS 13.0, macOS 12.0, tvOS 13.0, watchOS 9.0, *)
 @MainActor
-final class AmplifyEventEnrichmentClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+final class AmplifyEventEnrichmentClientTests: XCTestCase, @unchecked Sendable {
 
     /// Test that recording an event returns an enriched event with expected fields
     ///

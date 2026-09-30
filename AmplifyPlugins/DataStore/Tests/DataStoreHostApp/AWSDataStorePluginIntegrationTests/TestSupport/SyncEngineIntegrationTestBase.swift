@@ -15,7 +15,9 @@ import XCTest
 @testable import DataStoreHostApp
 #endif
 
-class SyncEngineIntegrationTestBase: DataStoreTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class SyncEngineIntegrationTestBase: DataStoreTestBase, @unchecked Sendable {
 
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
@@ -42,9 +44,14 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     override func tearDown() async throws {
         try await super.tearDown()
+        // Stop the sync engine and let any in-flight sync work unwind BEFORE `Amplify.reset()` nils
+        // the API plugin's `session`. Otherwise a late DataStore sync query/mutate reaches the
+        // force-unwrapped `session` and crashes with "Unexpectedly found nil while implicitly
+        // unwrapping an Optional value". (The prior settle sat after reset, where it did not help.)
+        try await stopDataStore()
         try await clearDataStore()
-        await Amplify.reset()
         try await Task.sleep(seconds: 1)
+        await Amplify.reset()
     }
 
     func setUp(
@@ -123,7 +130,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         try await Amplify.DataStore.start()
 
-        await fulfillment(of: [eventReceived], timeout: 10)
+        // `.ready` includes subscription setup and initial sync, so it needs the full network
+        // budget; `.syncStarted` is capped at 30s so a sync-start outage fails fast rather than
+        // compounding into the 2h job limit.
+        let timeout = eventName == HubPayload.EventName.DataStore.ready ? networkTimeout : 30
+        await fulfillment(of: [eventReceived], timeout: timeout)
     }
 
 }

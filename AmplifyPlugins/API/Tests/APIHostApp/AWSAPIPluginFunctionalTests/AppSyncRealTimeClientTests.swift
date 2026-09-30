@@ -12,7 +12,9 @@ import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 @testable import InternalAmplifyCredentials
 
-class AppSyncRealTimeClientTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AppSyncRealTimeClientTests: XCTestCase, @unchecked Sendable {
     let subscriptionRequest = """
     subscription MySubscription {
       onCreatePost {
@@ -148,7 +150,9 @@ class AppSyncRealTimeClientTests: XCTestCase {
             return try await taskGroup.reduce([AnyCancellable?]()) { $0 + [$1] }
         }
 
-        await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 2)
+        // Establishing all `numOfMaxSubscriptionCount` (200) subscriptions requires that many
+        // round-trips to the live AppSync backend; 2s is far too tight and flakes under load.
+        await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 30)
 
         let maxSubscriptionReachedError = expectation(description: "Should return max subscription reached error")
         maxSubscriptionReachedError.assertForOverFulfill = false

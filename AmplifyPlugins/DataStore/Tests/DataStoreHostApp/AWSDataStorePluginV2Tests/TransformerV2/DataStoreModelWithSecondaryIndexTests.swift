@@ -20,7 +20,9 @@ import XCTest
  }
  */
 
-class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -87,7 +89,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        await fulfillment(of: [getCustomerCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getCustomerCompleted, createReceived], timeout: networkTimeout)
 
         customer.name = updatedName
         let updateCompleted = expectation(description: "update completed")
@@ -100,7 +102,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateCompleted, updateReceived], timeout: networkTimeout)
 
         let deleteCompleted = expectation(description: "delete completed")
         Amplify.DataStore.delete(CustomerSecondaryIndexV2.self, withId: customer.id) { event in
@@ -111,7 +113,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteCompleted, deleteReceived], timeout: networkTimeout)
     }
 
     func saveCustomer(name: String, accountRepresentativeID: String) -> CustomerSecondaryIndexV2? {
@@ -127,7 +129,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: networkTimeout)
         return result
     }
 }

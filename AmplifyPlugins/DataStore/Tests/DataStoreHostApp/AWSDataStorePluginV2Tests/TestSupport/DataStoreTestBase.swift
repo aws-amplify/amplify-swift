@@ -9,7 +9,9 @@ import Amplify
 import Foundation
 import XCTest
 
-class DataStoreTestBase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreTestBase: XCTestCase, @unchecked Sendable {
     func saveModel<M: Model>(_ model: M) async throws -> M {
         return try await Amplify.DataStore.save(model)
     }

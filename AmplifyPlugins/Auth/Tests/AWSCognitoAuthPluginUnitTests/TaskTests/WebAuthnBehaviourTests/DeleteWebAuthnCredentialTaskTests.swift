@@ -8,10 +8,13 @@
 import enum Amplify.AuthError
 import enum AWSCognitoIdentity.CognitoIdentityClientTypes
 import struct AWSCognitoIdentityProvider.WebAuthnClientMismatchException
+import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class DeleteWebAuthnCredentialTaskTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
     private var task: DeleteWebAuthnCredentialTask!
     private var identityProvider: MockIdentityProvider!
 
@@ -71,14 +74,15 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase {
     }
 
     func testExecute_withSuccess_shouldSucceed() async throws {
-        var deleteWebAuthnCredentialCallCount = 0
+        // Counted from a `@Sendable` mock closure, so it cannot be a captured `var`.
+        let deleteWebAuthnCredentialCallCount = TestCounter()
         identityProvider.mockDeleteWebAuthnCredentialResponse = { _ in
-            deleteWebAuthnCredentialCallCount += 1
+            deleteWebAuthnCredentialCallCount.increment()
             return .init()
         }
 
         try await task.execute()
-        XCTAssertEqual(deleteWebAuthnCredentialCallCount, 1)
+        XCTAssertEqual(deleteWebAuthnCredentialCallCount.get(), 1)
     }
 
     func testExecute_withServiceError_shouldFailWithServiceError() async {

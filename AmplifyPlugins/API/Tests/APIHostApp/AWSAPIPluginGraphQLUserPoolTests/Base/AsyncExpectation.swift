@@ -179,13 +179,14 @@ public enum AsyncTesting {
         guard !expectations.isEmpty else { return }
 
         // check if all expectations are already satisfied and skip sleeping
-        var count = 0
+        // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+        let count = AtomicValue(initialValue: 0)
         for exp in expectations {
             if await exp.isFulfilled {
-                count += 1
+                _ = count.increment()
             }
         }
-        if count == expectations.count {
+        if count.get() == expectations.count {
             return
         }
 

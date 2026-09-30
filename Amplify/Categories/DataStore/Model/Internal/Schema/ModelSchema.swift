@@ -11,7 +11,7 @@ public typealias ModelFieldName = String
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelAttribute: Equatable {
+public enum ModelAttribute: Equatable, Sendable {
     /// Represents a database index, often used for frequent query optimizations.
     case index(fields: [ModelFieldName], name: String?)
 
@@ -30,14 +30,14 @@ public enum ModelAttribute: Equatable {
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelFieldAttribute {
+public enum ModelFieldAttribute: Sendable {
     @available(*, deprecated, message: "Use the primaryKey member of the schema")
     case primaryKey
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public struct ModelField {
+public struct ModelField: Sendable {
 
     public let name: ModelFieldName
     public let type: ModelFieldType
@@ -84,7 +84,7 @@ public typealias ModelName = String
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public struct ModelSchema {
+public struct ModelSchema: Sendable {
 
     public let name: String
 

@@ -11,26 +11,26 @@ import Foundation
 
 typealias AWSS3StorageServiceProvider = () throws -> AWSS3StorageServiceBehavior
 protocol AWSS3StorageServiceBehavior {
-    typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
+    typealias StorageServiceDownloadEventHandler = @Sendable (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
         StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
 
     // swiftlint:disable:next type_name
-    typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
+    typealias StorageServiceGetPreSignedURLEventHandler = @Sendable (StorageServiceGetPreSignedURLEvent) -> Void
     typealias StorageServiceGetPreSignedURLEvent = StorageEvent<Void, Void, URL, StorageError>
 
-    typealias StorageServiceDeleteEventHandler = (StorageServiceDeleteEvent) -> Void
+    typealias StorageServiceDeleteEventHandler = @Sendable (StorageServiceDeleteEvent) -> Void
     typealias StorageServiceDeleteEvent = StorageEvent<Void, Void, Void, StorageError>
 
-    typealias StorageServiceListEventHandler = (StorageServiceListEvent) -> Void
+    typealias StorageServiceListEventHandler = @Sendable (StorageServiceListEvent) -> Void
     typealias StorageServiceListEvent = StorageEvent<Void, Void, StorageListResult, StorageError>
 
-    typealias StorageServiceUploadEventHandler = (StorageServiceUploadEvent) -> Void
+    typealias StorageServiceUploadEventHandler = @Sendable (StorageServiceUploadEvent) -> Void
     typealias StorageServiceUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
     // swiftlint:disable:next type_name
-    typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
+    typealias StorageServiceMultiPartUploadEventHandler = @Sendable (StorageServiceMultiPartUploadEvent) -> Void
     typealias StorageServiceMultiPartUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 

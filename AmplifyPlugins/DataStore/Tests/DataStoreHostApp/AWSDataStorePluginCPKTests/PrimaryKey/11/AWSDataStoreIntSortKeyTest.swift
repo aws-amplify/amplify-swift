@@ -31,7 +31,9 @@ private struct TestModels: AmplifyModelRegistration {
     var version: String = "test"
 }
 
-class AWSDataStoreIntSortKeyTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStoreIntSortKeyTest: XCTestCase, @unchecked Sendable {
     let configFile = "testconfiguration/AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"
 
     override func setUp() async throws {
@@ -90,7 +92,8 @@ class AWSDataStoreIntSortKeyTest: XCTestCase {
             }.store(in: &requests)
 
         try await Amplify.DataStore.save(post)
-        await fulfillment(of: [postCreated], timeout: 5)
+        // Live save -> syncReceived round-trip; 5s is far too tight, use the same budget as `.ready`.
+        await fulfillment(of: [postCreated], timeout: 60)
     }
 
     func testQueryCreatedModel_withSortKeyInIntegerType_success() async throws {
@@ -108,7 +111,8 @@ class AWSDataStoreIntSortKeyTest: XCTestCase {
             }.store(in: &requests)
 
         try await Amplify.DataStore.save(post)
-        await fulfillment(of: [postCreated], timeout: 5)
+        // Live save -> syncReceived round-trip; 5s is far too tight, use the same budget as `.ready`.
+        await fulfillment(of: [postCreated], timeout: 60)
 
         let queryResult = try await Amplify.API.query(
             request: .get(

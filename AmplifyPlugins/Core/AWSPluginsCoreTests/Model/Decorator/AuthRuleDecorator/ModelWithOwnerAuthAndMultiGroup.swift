@@ -85,7 +85,9 @@ public struct OIDCMultiGroupPost: Model {
     }
 }
 
-class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
     override func setUp() {
         ModelRegistry.register(modelType: OIDCMultiGroupPost.self)
     }

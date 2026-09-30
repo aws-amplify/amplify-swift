@@ -10,7 +10,11 @@ import XCTest
 @_spi(InternalAWSPinpoint) @testable @preconcurrency import InternalAWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class AnalyticsClientTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` completion
+
+///   closures the production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+
+final class AnalyticsClientTests: XCTestCase, @unchecked Sendable {
     private var analyticsClient: AnalyticsClient!
     private var eventRecorder: MockEventRecorder!
     private var session: PinpointSession!

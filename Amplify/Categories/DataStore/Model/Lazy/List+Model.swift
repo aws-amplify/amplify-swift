@@ -14,7 +14,14 @@ import Foundation
 /// before returning the data to you. Consumers must be aware that multiple calls to the data source and then stored
 /// into this object will happen simultaneously if the object is used from different threads, thus not thread safe.
 /// Lazy loading is idempotent and will return the stored results on subsequent access.
-public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral, ModelListMarker {
+/// - Note: `@unchecked Sendable` because `Model` is `Sendable` and codegen'd models store `List`
+///   properties, so this has to be `Sendable` for them to compile.
+///
+///   Be aware this is an assertion, not a proof: `loadedState` is mutated on first load and is not
+///   synchronized, so two concurrent `load()` calls can both fetch. That race predates this
+///   migration; making it genuinely safe means putting the lazy-load transition behind a lock,
+///   which touches the `Collection` and `Codable` surface and is better done on its own.
+public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral, ModelListMarker, @unchecked Sendable {
     public typealias Index = Int
     public typealias Element = ModelType
 

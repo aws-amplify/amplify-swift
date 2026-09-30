@@ -11,7 +11,9 @@ import XCTest
 import AWSCognitoAuthPlugin
 @testable import Amplify
 
-class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     override func setUp() async throws {
         do {

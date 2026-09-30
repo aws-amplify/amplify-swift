@@ -12,7 +12,9 @@ import AWSPluginsCore
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
-class DataStoreHubEventTests: HubEventsIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreHubEventTests: HubEventsIntegrationTestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {

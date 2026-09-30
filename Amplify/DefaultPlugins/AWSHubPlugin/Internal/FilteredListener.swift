@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct FilteredListener {
+/// - Note: `Sendable` now that `HubFilter` and `HubListener` are `@Sendable`; listeners are held in
+///   an `AtomicDictionary` and invoked from the dispatch queue.
+struct FilteredListener: Sendable {
     /// A unique identifier for this listener
     let id: UUID
 

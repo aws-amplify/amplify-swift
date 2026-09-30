@@ -19,7 +19,9 @@ public enum Temporal {}
 /// The `TemporalSpec` protocol defines an [ISO-8601](https://www.iso.org/iso-8601-date-and-time-format.html)
 /// formatted Date value. Types that conform to this protocol are responsible for providing
 /// the parsing and formatting logic with the correct granularity.
-public protocol TemporalSpec {
+/// - Note: `Sendable` because `Temporal.Date`/`Time`/`DateTime` are value types stored on models,
+///   and `Model` is `Sendable`.
+public protocol TemporalSpec: Sendable {
     /// A static builder that return an instance that represent the current point in time.
     static func now() -> Self
 

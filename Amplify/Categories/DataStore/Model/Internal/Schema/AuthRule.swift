@@ -7,7 +7,7 @@
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public enum AuthStrategy {
+public enum AuthStrategy: Sendable {
     case owner
     case groups
     case `private`
@@ -17,7 +17,7 @@ public enum AuthStrategy {
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public enum ModelOperation {
+public enum ModelOperation: Sendable {
     case create
     case update
     case delete
@@ -26,7 +26,7 @@ public enum ModelOperation {
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public enum AuthRuleProvider {
+public enum AuthRuleProvider: Sendable {
     case apiKey
     case oidc
     case iam
@@ -40,7 +40,7 @@ public typealias AuthRules = [AuthRule]
 
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public struct AuthRule {
+public struct AuthRule: Sendable {
     public let allow: AuthStrategy
     public let ownerField: String?
     public let identityClaim: String?

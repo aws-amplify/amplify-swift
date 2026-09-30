@@ -13,7 +13,9 @@ import Foundation
 // which will fail with error:
 // <>
 
-public class Project4aV2: Model {
+// `@unchecked Sendable`: `Model` is `Sendable` and this test fixture is a class with `var`
+// properties. Driven from a single test at a time.
+public class Project4aV2: Model, @unchecked Sendable {
   public let id: String
   public var name: String?
   public var team: Team4aV2?

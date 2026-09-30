@@ -20,9 +20,10 @@ public extension HubPayload.EventName.Auth {
     static let updateMFAPreferenceAPI = "Auth.updateMFAPreferenceAPI"
 }
 
-class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger, @unchecked Sendable {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let smsPreference: MFAPreference?
     private let totpPreference: MFAPreference?

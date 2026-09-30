@@ -16,13 +16,14 @@ public class AWSPinpointFactory {
         let region: String
     }
 
-    private static var instances: AtomicDictionary<PinpointContextKey, PinpointContext> = [:]
+    private static let instances: AtomicDictionary<PinpointContextKey, PinpointContext> = [:]
 
     private init() {}
 
-    static var credentialIdentityResolver = AWSAuthService().getCredentialIdentityResolver()
+    // `nonisolated(unsafe)`: these two are overridden by tests before use and otherwise read-only.
+    nonisolated(unsafe) static var credentialIdentityResolver = AWSAuthService().getCredentialIdentityResolver()
 
-    static var provisioningProfileReader: ProvisioningProfileReader = .default
+    nonisolated(unsafe) static var provisioningProfileReader: ProvisioningProfileReader = .default
 
     public static func sharedPinpoint(
         appId: String,

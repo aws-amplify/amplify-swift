@@ -5,27 +5,42 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import os.log
 
-final class OSLogWrapper: Logger {
+/// - Note: `@unchecked Sendable` because `enabled` and `getLogLevel` are mutable — both are
+///   reassigned after construction by `AWSUnifiedLoggingPlugin` — but every access goes
+///   through `lock`. `Logger` is `Sendable`, and a logger is shared across concurrency
+///   domains by nature, so the state genuinely needs synchronizing rather than annotating away.
+final class OSLogWrapper: Logger, @unchecked Sendable {
     private let osLog: OSLog
 
-    var enabled: Bool = true
+    private let lock = NSLock()
+    private var _enabled: Bool = true
+    private var _getLogLevel: () -> LogLevel
 
-    var getLogLevel: () -> LogLevel
+    var enabled: Bool {
+        get { lock.withLock { _enabled } }
+        set { lock.withLock { _enabled = newValue } }
+    }
+
+    var getLogLevel: () -> LogLevel {
+        get { lock.withLock { _getLogLevel } }
+        set { lock.withLock { _getLogLevel = newValue } }
+    }
 
     var logLevel: LogLevel {
         get {
             getLogLevel()
         }
         set {
-            getLogLevel = { newValue }
+            lock.withLock { _getLogLevel = { newValue } }
         }
     }
 
     init(osLog: OSLog, getLogLevel: @escaping () -> LogLevel) {
         self.osLog = osLog
-        self.getLogLevel = getLogLevel
+        self._getLogLevel = getLogLevel
     }
 
     func error(_ message: @autoclosure () -> String) {

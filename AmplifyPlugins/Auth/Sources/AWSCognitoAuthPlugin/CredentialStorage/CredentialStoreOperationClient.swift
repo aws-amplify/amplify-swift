@@ -9,7 +9,9 @@ import Amplify
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
-protocol CredentialStoreStateBehavior {
+/// - Note: `Sendable` because the plugin holds this across task boundaries; the concrete client
+///   serializes all CRUD through a `TaskQueue`.
+protocol CredentialStoreStateBehavior: Sendable {
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData
     func storeData(data: CredentialStoreData) async throws
@@ -17,7 +19,7 @@ protocol CredentialStoreStateBehavior {
 
 }
 
-class CredentialStoreOperationClient: CredentialStoreStateBehavior {
+final class CredentialStoreOperationClient: CredentialStoreStateBehavior {
 
     private let credentialStoreStateMachine: CredentialStoreStateMachine
 

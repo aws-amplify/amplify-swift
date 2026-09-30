@@ -22,7 +22,8 @@ enum CredentialStoreDataType: Codable, Equatable {
 
 struct CredentialStoreEvent: StateMachineEvent {
 
-    enum EventType: Equatable {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Equatable, Sendable {
 
         case migrateLegacyCredentialStore
 

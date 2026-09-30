@@ -30,7 +30,9 @@ let dateNowPlus4day = dateNow.addingTimeInterval(60 * 60 * 4 * 24)
 // swiftlint:disable file_length
 // swiftlint:disable line_length
 // swiftlint:disable function_parameter_count
-class QueryPredicateGenerator: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class QueryPredicateGenerator: XCTestCase, @unchecked Sendable {
     func testBoolBool() throws {
         generate("Bool,Bool")
     }

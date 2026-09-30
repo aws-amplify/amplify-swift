@@ -8,7 +8,9 @@
 import Amplify
 import Foundation
 
-protocol MultiServiceBehavior: AnyObject {
+/// - Note: `Sendable` because the default implementations below race the two services in a task
+///   group, which sends `self` across an isolation boundary.
+protocol MultiServiceBehavior: AnyObject, Sendable {
     associatedtype ServiceResult
 
     /// Fetch the result from the offline service

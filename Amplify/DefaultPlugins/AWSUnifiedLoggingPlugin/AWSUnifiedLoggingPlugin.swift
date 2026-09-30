@@ -9,7 +9,13 @@ import Foundation
 import os.log
 
 /// A Logging category plugin that forwards calls to the OS's Unified Logging system
-public final class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
+/// - Note: `@unchecked Sendable` to satisfy the `Sendable` requirement on `Plugin`.
+///   `registeredLogs` is guarded, but inconsistently — `concurrencyQueue` on the caching and
+///   `reset` paths, `lock` in `enable()`/`disable()` — and `enabled` is not guarded at all.
+///   That predates the Swift 6 migration and is left as-is here rather than changed blind:
+///   `enabled` is read from inside `lock.execute`, so backing it with the same non-recursive
+///   lock would deadlock. Worth untangling separately.
+public final class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin, @unchecked Sendable {
 
     /// Convenience property. Each instance of `AWSUnifiedLoggingPlugin` has the same key
     public static var key: String {

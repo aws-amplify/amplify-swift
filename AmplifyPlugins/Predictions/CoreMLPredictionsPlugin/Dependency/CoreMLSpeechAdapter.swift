@@ -10,8 +10,12 @@
 import Amplify
 import Speech
 
-class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
-    func getTranscription(_ audioData: URL) async throws -> SFSpeechRecognitionResult {
+final class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
+    // Returns `CoreMLSpeechTranscription` rather than the `SFSpeechRecognitionResult` itself:
+    // that type is not `Sendable`, so resuming a continuation with one is an error in the Swift 6
+    // language mode. Reading the two fields callers need inside the result handler keeps the
+    // non-Sendable Apple type from crossing the boundary at all.
+    func getTranscription(_ audioData: URL) async throws -> CoreMLSpeechTranscription {
         let request = SFSpeechURLRecognitionRequest(url: audioData)
         request.requiresOnDeviceRecognition = true
         guard let recognizer = SFSpeechRecognizer() else {
@@ -23,7 +27,7 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
             )
         }
 
-        let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<SFSpeechRecognitionResult, Error>) in
+        let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<CoreMLSpeechTranscription, Error>) in
             recognizer.recognitionTask(
                 with: request,
                 resultHandler: { result, error in
@@ -44,7 +48,10 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
                         return
                     }
 
-                    continuation.resume(with: .success(result))
+                    continuation.resume(with: .success(.init(
+                        formattedString: result.bestTranscription.formattedString,
+                        isFinal: result.isFinal
+                    )))
 
                 }
             )

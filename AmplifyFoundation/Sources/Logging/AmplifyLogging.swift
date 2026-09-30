@@ -11,7 +11,11 @@ public final class AmplifyLogging {
 
     /// Synchronize access to the log sinks
     static let concurrencyQueue = DispatchQueue(label: "com.amplify.foundation.AmplifyLogging")
-    static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
+
+    /// Every read and write goes through `concurrencyQueue`, so access is already
+    /// serialized. `nonisolated(unsafe)` records that the safety is enforced by the
+    /// queue rather than by the compiler.
+    nonisolated(unsafe) static var registeredLogSinks: [String: any LogSinkBehavior] = [:]
 
     private init() {}
 

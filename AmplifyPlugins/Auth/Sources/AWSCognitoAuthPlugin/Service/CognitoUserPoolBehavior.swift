@@ -8,7 +8,9 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-protocol CognitoUserPoolBehavior {
+/// - Note: `Sendable` because the environment holding this factory is `Sendable` and actions reach
+///   the client from detached tasks.
+protocol CognitoUserPoolBehavior: Sendable {
 
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutput

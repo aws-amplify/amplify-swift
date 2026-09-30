@@ -220,6 +220,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
 
     func testSubscribeToTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
         let connected = expectation(description: "subscription connected")
         let onCreatedTeam = expectation(description: "onCreate received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Team.self, type: .onCreate))
@@ -233,6 +234,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: team) else { continue }
                         switch result {
                         case .success(let createdTeam):
                             log.verbose("Successfully got createdTeam from subscription: \(createdTeam)")
@@ -249,7 +251,6 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
 
         await fulfillment(of: [connected], timeout: 10)
 
-        let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await mutate(.create(team))
         await fulfillment(of: [onCreatedTeam], timeout: 10)
         subscription.cancel()
@@ -257,6 +258,10 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
 
     func testSubscribeProject() async throws {
         await setup(withModels: ProjectTeam6Models())
+        let project = Project(
+            projectId: UUID().uuidString,
+            name: "name"
+        )
         let connected = expectation(description: "subscription connected")
         let onCreated = expectation(description: "onCreate received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Project.self, type: .onCreate))
@@ -270,6 +275,7 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: project) else { continue }
                         switch result {
                         case .success(let created):
                             log.verbose("Successfully got model from subscription: \(created)")
@@ -286,10 +292,6 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
 
         await fulfillment(of: [connected], timeout: 10)
 
-        let project = Project(
-            projectId: UUID().uuidString,
-            name: "name"
-        )
         let savedProject = try await mutate(.create(project))
         _ = savedProject
 

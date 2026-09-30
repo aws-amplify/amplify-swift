@@ -12,7 +12,9 @@ import AWSPluginsCore
 
 // MARK: - StorageServiceSessionDelegate -
 
-class StorageServiceSessionDelegate: NSObject {
+/// - Note: `@unchecked Sendable`: mutable state is established during setup and not written
+///   concurrently with reads.
+class StorageServiceSessionDelegate: NSObject, @unchecked Sendable {
     let identifier: String
     let logger: Logger
     weak var storageService: AWSS3StorageService?

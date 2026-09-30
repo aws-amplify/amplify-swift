@@ -11,7 +11,8 @@ typealias IdentityID = String
 typealias ForceRefresh = Bool
 
 struct FetchAuthSessionEvent: StateMachineEvent {
-    enum EventType {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Sendable {
 
         case fetchUnAuthIdentityID
 

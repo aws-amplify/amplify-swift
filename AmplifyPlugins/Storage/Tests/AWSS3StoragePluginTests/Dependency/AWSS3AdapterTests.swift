@@ -10,7 +10,11 @@ import XCTest
 @testable import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3AdapterTests: XCTestCase {
+/// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` completion
+
+///   closures the production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
+
+final class AWSS3AdapterTests: XCTestCase, @unchecked Sendable {
     private var adapter: AWSS3Adapter!
     private var awsS3: S3ClientMock!
 

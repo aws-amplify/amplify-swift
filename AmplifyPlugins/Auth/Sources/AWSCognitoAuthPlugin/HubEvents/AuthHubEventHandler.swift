@@ -8,7 +8,9 @@
 import Amplify
 import AWSPluginsCore
 
-class AuthHubEventHandler: AuthHubEventBehavior {
+/// - Note: `final` and `@unchecked Sendable`: the handler is held by the plugin and its listener
+///   token state is set up once during configuration.
+final class AuthHubEventHandler: AuthHubEventBehavior, @unchecked Sendable {
 
     var lastSendEventName: HubPayloadEventName?
 

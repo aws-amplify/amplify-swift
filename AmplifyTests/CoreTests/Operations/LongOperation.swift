@@ -11,13 +11,20 @@ import Combine
 #endif
 import Amplify
 
-public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier {
-    public let options: [AnyHashable: Any]
+/// `Options` must be `Sendable` (see `AmplifyOperationRequest`), and `[AnyHashable: Any]` cannot be:
+/// `AnyHashable`'s `Sendable` conformance is explicitly unavailable. No call site passes options, so
+/// this uses a dedicated empty type instead.
+public final class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier, Sendable {
+    public struct Options: Sendable {
+        public init() {}
+    }
+
+    public let options: Options
     public let steps: Int
     public let delay: Double
     public let requestID: String
 
-    public init(options: [AnyHashable: Any] = [:], steps: Int, delay: Double) {
+    public init(options: Options = .init(), steps: Int, delay: Double) {
         self.options = options
         self.steps = steps
         self.delay = delay
@@ -25,7 +32,7 @@ public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier {
     }
 }
 
-public struct LongOperationSuccess {
+public struct LongOperationSuccess: Sendable {
     let id = UUID().uuidString
 }
 
@@ -67,8 +74,8 @@ public enum LongOperationError: AmplifyError {
 }
 
 public typealias LongOperationResult = Result<LongOperationSuccess, LongOperationError>
-public typealias LongOperationProgressListener = (Progress) -> Void
-public typealias LongOperationResultListener = (LongOperationResult) -> Void
+public typealias LongOperationProgressListener = @Sendable (Progress) -> Void
+public typealias LongOperationResultListener = @Sendable (LongOperationResult) -> Void
 
 public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError>, @unchecked Sendable {
     public typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
@@ -77,7 +84,9 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     public typealias ProgressPublisher = AnyPublisher<InProcess, Failure>
 #endif
 
-    var count = 0
+    // Counted from a `@Sendable` closure, so it cannot be a captured `var`.
+
+    let count = AtomicValue(initialValue: 0)
     var currentProgress: Progress!
 
     public init(
@@ -113,7 +122,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
 
         reportProgress()
 
-        if count < request.steps {
+        if count.get() < request.steps {
             DispatchQueue.global().asyncAfter(deadline: .now() + request.delay, execute: advance)
         } else {
             dispatch(result: .success(LongOperationSuccess()))
@@ -122,12 +131,12 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
     }
 
     private func advance() {
-        count += 1
+        _ = count.increment()
         work()
     }
 
     private func reportProgress() {
-        currentProgress.completedUnitCount = Int64(count)
+        currentProgress.completedUnitCount = Int64(count.get())
         dispatchInProcess(data: currentProgress)
     }
 }

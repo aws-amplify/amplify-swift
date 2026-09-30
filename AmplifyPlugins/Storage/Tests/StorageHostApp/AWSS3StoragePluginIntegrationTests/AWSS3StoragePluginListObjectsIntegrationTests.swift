@@ -16,7 +16,9 @@ import AWSS3
 import CryptoKit
 import XCTest
 
-class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     /// Given: Multiple data object which is uploaded to a public path
     /// When: `Amplify.Storage.list` is run

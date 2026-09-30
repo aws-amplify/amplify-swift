@@ -16,7 +16,9 @@ import XCTest
 @testable import APIHostApp
 #endif
 
-class GraphQLWithIAMIntegrationTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class GraphQLWithIAMIntegrationTests: XCTestCase, @unchecked Sendable {
 
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration"
 
@@ -180,7 +182,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         _ = try await createTodo(id: uuid, name: name)
         _ = try await createTodo(id: uuid2, name: name)
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live create -> subscription round-trip; 10s (networkTimeout) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
         subscription.cancel()
         await fulfillment(of: [disconnectedInvoked], timeout: TestCommonConstants.networkTimeout)
     }

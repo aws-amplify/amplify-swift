@@ -61,12 +61,35 @@ extension ApplicationState: DefaultLogger {
     }
 }
 
-protocol ActivityTrackerBehaviour: AnyObject {
+/// - Note: `Sendable` because the session client holding this is `Sendable`.
+protocol ActivityTrackerBehaviour: AnyObject, Sendable {
     var backgroundTrackingTimeout: TimeInterval { get set }
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void)
 }
 
-class ActivityTracker: ActivityTrackerBehaviour {
+/// - Note: `final` and `@unchecked Sendable` to satisfy `ActivityTrackerBehaviour`. The claim is only
+///   partly true, so to be precise about which parts:
+///
+///   - `backgroundTask` is only touched inside `beginBackgroundTracking()` / `stopBackgroundTracking()`,
+///     both `@MainActor`, and the `beginBackgroundTask` expiration handler inherits that isolation — so
+///     it is main-actor confined and the compiler enforces it.
+///   - `backgroundTimer` is touched by the same two methods, but `stopBackgroundTracking()` is also
+///     called from the `Timer.scheduledTimer` block, which is `@Sendable` and therefore nonisolated.
+///     Swift 6 only warns there because `NSTimer`'s block is imported preconcurrency, so this
+///     confinement rests on the run-loop convention, not on the compiler.
+///   - `backgroundTrackingTimeout` is **not** confined: the protocol requires it settable, and
+///     `SessionClient.startTrackingSessions` writes it from a nonisolated context.
+///   - `stateMachineSubscriberToken` is **not** confined: `beginActivityTracking(_:)` is nonisolated and
+///     `deinit` clears it.
+///   - `StateMachine.process` serializes on its own queue, but `subscribe`/`unsubscribe` touch the
+///     publisher without it, so "internally synchronized" is only true of `process`.
+///
+///   Do not read this as "written once at set-up". `AWSPinpointFactory` caches its `PinpointContext`
+///   forever, so an `Amplify.reset()` followed by reconfiguration calls `startTrackingSessions` again —
+///   writing the timeout a second time and replacing the subscriber token. That is the same cache that
+///   makes the credentials crash in `AmplifyAWSCredentialsProvider` reachable. Nothing here enforces
+///   single-assignment; the exposure predates this annotation, which only stops the compiler from asking.
+final class ActivityTracker: ActivityTrackerBehaviour, @unchecked Sendable {
 
 #if canImport(UIKit) && !os(watchOS)
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
@@ -81,7 +104,6 @@ class ActivityTracker: ActivityTrackerBehaviour {
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
-    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -92,7 +114,6 @@ class ActivityTracker: ActivityTrackerBehaviour {
 #endif
     }()
 
-    @MainActor
     private static let applicationWillMoveToForegoundNotification: Notification.Name = {
     #if canImport(WatchKit)
         WKExtension.applicationWillEnterForegroundNotification
@@ -103,8 +124,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    @MainActor
-    private static var applicationWillTerminateNotification: Notification.Name = {
+    private static let applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
         WKExtension.applicationWillResignActiveNotification
@@ -115,7 +135,10 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    @MainActor
+    // These three were `@MainActor` before the Swift 6 migration, which forced observer registration
+    // off `init` and made it asynchronous — breaking callers that post a notification immediately after
+    // constructing a tracker. The annotation turned out to be unnecessary: the platform notification
+    // *names* are plain constants, so reading them needs no isolation and registration stays synchronous.
     private static let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
@@ -143,13 +166,9 @@ class ActivityTracker: ActivityTrackerBehaviour {
     }
 
     deinit {
-        for notification in ActivityTracker.notifications {
-            NotificationCenter.default.removeObserver(
-                self,
-                name: notification,
-                object: nil
-            )
-        }
+        // Removes every observer registered for this object, which is equivalent to unregistering each
+        // name individually and keeps this nonisolated `deinit` from touching any of the type's state.
+        NotificationCenter.default.removeObserver(self)
         stateMachineSubscriberToken = nil
     }
 

@@ -12,7 +12,11 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior, @unchecked Sendable {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure = {}) {
         completion()
     }

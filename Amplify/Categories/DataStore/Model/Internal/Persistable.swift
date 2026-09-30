@@ -20,7 +20,10 @@ import Foundation
 /// - `Temporal.Time`
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public protocol Persistable: Encodable {}
+/// - Note: `Sendable` because persistable values are stored on models and carried inside query
+///   predicates, both of which cross task boundaries. The conforming standard-library and `Temporal`
+///   types are all value types.
+public protocol Persistable: Encodable, Sendable {}
 
 extension Bool: Persistable {}
 extension Double: Persistable {}

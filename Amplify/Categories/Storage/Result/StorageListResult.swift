@@ -11,7 +11,8 @@ import Foundation
 /// [StorageCategoryBehavior.list](x-source-tag://StorageCategoryBehavior.list)
 ///
 /// - Tag: StorageListResult
-public struct StorageListResult {
+// Explicit `Sendable`: Swift does not infer it for public types.
+public struct StorageListResult: Sendable {
 
     /// This is meant to be called by plugins implementing
     /// [StorageCategoryBehavior.list](x-source-tag://StorageCategoryBehavior.list).
@@ -52,7 +53,10 @@ public struct StorageListResult {
 public extension StorageListResult {
 
     /// - Tag: StorageListResultItem
-    struct Item {
+    /// - Note: `@unchecked Sendable` rather than `Sendable`: `pluginResults` is `Any?`, which cannot
+    ///   be checked. Narrowing that type would be source-breaking for plugins that pass results
+    ///   through, so the guarantee is left to whatever is put in it.
+    struct Item: @unchecked Sendable {
 
         /// The path of the object in storage.
         ///

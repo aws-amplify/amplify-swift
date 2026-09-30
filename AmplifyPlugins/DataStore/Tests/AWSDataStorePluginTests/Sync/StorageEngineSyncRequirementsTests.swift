@@ -11,7 +11,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class StorageEngineSyncRequirementsTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StorageEngineSyncRequirementsTests: XCTestCase, @unchecked Sendable {
 
     // MARK: - RequiresAuthPlugin tests
 
@@ -245,7 +247,11 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
 
     // MARK: - Helpers
 
-    class MockAPIAuthInformationPlugin: MockAPICategoryPlugin, AWSAPIAuthInformation {
+    // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+    // by a single test at a time.
+
+    class MockAPIAuthInformationPlugin: MockAPICategoryPlugin, AWSAPIAuthInformation, @unchecked Sendable {
 
         var authType: AWSAuthorizationType?
 

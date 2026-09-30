@@ -24,7 +24,9 @@ private struct TestModels: AmplifyModelRegistration {
     let version: String = "test"
 }
 
-class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSDataStoreCompositeSortKeyIdentifierTest: XCTestCase, @unchecked Sendable {
     let configFile = "testconfiguration/AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"
 
     override func setUp() async throws {

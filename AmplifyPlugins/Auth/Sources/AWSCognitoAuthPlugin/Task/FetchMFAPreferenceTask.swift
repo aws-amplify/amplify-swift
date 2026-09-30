@@ -20,9 +20,10 @@ public extension HubPayload.EventName.Auth {
     static let fetchMFAPreferenceAPI = "Auth.fetchMFAPreferenceAPI"
 }
 
-class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
+/// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
+final class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger, @unchecked Sendable {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+    typealias CognitoUserPoolFactory = @Sendable () throws -> CognitoUserPoolBehavior
 
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory

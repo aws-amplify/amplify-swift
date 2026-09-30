@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol AppSyncRequestInterceptor {
+protocol AppSyncRequestInterceptor: Sendable {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest
 }

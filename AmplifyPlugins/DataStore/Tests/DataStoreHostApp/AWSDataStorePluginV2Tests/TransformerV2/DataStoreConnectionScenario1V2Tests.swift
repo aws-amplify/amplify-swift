@@ -30,7 +30,9 @@ import XCTest
 
  */
 
-class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -43,7 +45,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name1")
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -69,7 +71,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         _ = try await Amplify.DataStore.save(team)
-        await fulfillment(of: [syncedTeamReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncedTeamReceived], timeout: networkTimeout)
 
         let syncProjectReceived = expectation(description: "received project from sync path")
         hubListener = Amplify.Hub.listen(
@@ -95,7 +97,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         _ = try await Amplify.DataStore.save(project)
-        await fulfillment(of: [syncProjectReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncProjectReceived], timeout: networkTimeout)
 
         let queriedProjectOptional = try await Amplify.DataStore.query(Project1V2.self, byId: project.id)
         guard let queriedProject = queriedProjectOptional else {
@@ -108,7 +110,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name1")
         let anotherTeam = Team1V2(name: "name1")
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
@@ -147,7 +149,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
         project.project1V2TeamId = anotherTeam.id
         _ = try await Amplify.DataStore.save(project)
-        await fulfillment(of: [syncUpdatedProjectReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncUpdatedProjectReceived], timeout: networkTimeout)
 
         let queriedProjectOptional = try await Amplify.DataStore.query(Project1V2.self, byId: project.id)
         XCTAssertNotNil(queriedProjectOptional)
@@ -163,7 +165,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testCreateUpdateDeleteAndGetProjectReturnsNil() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         var project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -200,7 +202,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
 
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
         let updateReceived = expectation(description: "received update project from sync path")
         hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -226,7 +228,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
         project.name = "updatedName"
         _ = try await Amplify.DataStore.save(project)
-        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
@@ -260,7 +262,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         _ = try await Amplify.DataStore.delete(team)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
         let queriedProject = try await Amplify.DataStore.query(Project1V2.self, byId: project.id)
         XCTAssertNil(queriedProject)
 
@@ -270,7 +272,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -308,7 +310,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
 
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
@@ -342,7 +344,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         _ = try await Amplify.DataStore.delete(team)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
         let queriedProject = try await Amplify.DataStore.query(Project1V2.self, byId: project.id)
         XCTAssertNil(queriedProject)
 
@@ -352,7 +354,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeleteWithValidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -367,7 +369,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
@@ -392,7 +394,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListProjectsByTeamID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let team = Team1V2(name: "name")
         let project = Project1V2(team: team, project1V2TeamId: team.id)
         _ = try await Amplify.DataStore.save(team)

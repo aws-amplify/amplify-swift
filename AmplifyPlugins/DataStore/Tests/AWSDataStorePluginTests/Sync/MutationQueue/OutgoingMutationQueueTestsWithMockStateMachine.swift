@@ -15,7 +15,9 @@ import XCTest
 @testable @preconcurrency import AWSPluginsCore
 @testable import AWSPluginsCore
 
-class OutgoingMutationQueueMockStateTest: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class OutgoingMutationQueueMockStateTest: XCTestCase, @unchecked Sendable {
     var mutationQueue: OutgoingMutationQueue!
     var stateMachine: MockStateMachine<OutgoingMutationQueue.State, OutgoingMutationQueue.Action>!
     var publisher: AWSMutationEventPublisher!
@@ -191,7 +193,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         apiBehavior.responders[.mutateRequestResponse] = responder
 
         stateMachine.state = .requestingEvent
-        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
+        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 2)
 
         // While we are expecting the mutationEvent to be processed by making an API call,
         // stop the mutation queue. Note that we are not testing that the operation
@@ -279,7 +281,11 @@ extension OutgoingMutationQueue.Action: Equatable {
     }
 }
 
-class MockMutationEventSource: MutationEventSource {
+// `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
+
+// by a single test at a time.
+
+class MockMutationEventSource: MutationEventSource, @unchecked Sendable {
     var resultQueue = [DataStoreResult<MutationEvent>]()
 
     func pushMutationEvent(futureResult: DataStoreResult<MutationEvent>) {

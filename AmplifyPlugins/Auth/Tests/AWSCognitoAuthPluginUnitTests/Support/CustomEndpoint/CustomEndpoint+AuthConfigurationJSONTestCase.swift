@@ -10,7 +10,9 @@ import Foundation
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class CustomEndpoint_AuthConfigurationJSONTestCase: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class CustomEndpoint_AuthConfigurationJSONTestCase: XCTestCase, @unchecked Sendable {
     /// Given: The `awsCognitoAuthPlugin` portion of an `amplifyconfiguration.json`
     /// When: The `Endpoint` value is present and valid.
     /// Then: The configuration should succeed with the expected `UserPoolConfigurationData().endpoint` output.

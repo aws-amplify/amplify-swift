@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// - Note: `Sendable` because the interceptor is stored on the `WebSocketClient` actor and awaited
+///   across suspension points while building a connection.
 @_spi(WebSocket)
-public protocol WebSocketInterceptor {
+public protocol WebSocketInterceptor: Sendable {
     func interceptConnection(url: URL) async -> URL
 
     func interceptConnection(request: URLRequest) async -> URLRequest

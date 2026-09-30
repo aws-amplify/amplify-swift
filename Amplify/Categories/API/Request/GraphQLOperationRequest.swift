@@ -6,7 +6,8 @@
 //
 
 /// GraphQL Operation Request
-public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
+/// - Note: `@unchecked Sendable`: `variables` is `[String: Any]?`, which the compiler cannot verify.
+public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest, @unchecked Sendable {
     /// The name of the API to perform the request against
     public let apiName: String?
 
@@ -17,6 +18,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     public let document: String
 
     /// The GraphQL variables used for the operation
+    // `[String: Any]?` cannot be `Sendable`-checked; the enclosing type is `@unchecked Sendable`.
     public let variables: [String: Any]?
 
     /// The type to decode to
@@ -55,7 +57,8 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
 
 // MARK: GraphQLOperationRequest + Options
 public extension GraphQLOperationRequest {
-    struct Options {
+    struct Options: @unchecked Sendable {
+        // See `GraphQLRequest.Options` for why this is unchecked.
         public let pluginOptions: Any?
 
         public init(pluginOptions: Any?) {

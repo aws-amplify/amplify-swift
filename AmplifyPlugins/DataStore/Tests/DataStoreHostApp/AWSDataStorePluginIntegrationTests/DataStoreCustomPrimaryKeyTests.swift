@@ -16,7 +16,9 @@ import AWSPluginsCore
 #endif
 
 // swiftlint:disable cyclomatic_complexity
-class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -34,7 +36,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
     /// - Then: The model should be deleted finally and the sync events should be received in order
     func testDeleteModelWithCustomPrimaryKey() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 
         let createReceived = expectation(description: "Create notification received")

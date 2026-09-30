@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-protocol CoreMLNaturalLanguageBehavior: AnyObject {
+protocol CoreMLNaturalLanguageBehavior: AnyObject, Sendable {
 
     /// Detect dominant language using coreml
     ///

@@ -44,8 +44,8 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
         }
         )
         let expectedDocument = """
-        query GetCompositePKParent($content: String!, $customId: ID!) {
-          getCompositePKParent(content: $content, customId: $customId) {
+        query GetCompositePKParent {
+          getCompositePKParent(content: "\(savedParent.content)", customId: "\(savedParent.customId)") {
             customId
             content
             createdAt

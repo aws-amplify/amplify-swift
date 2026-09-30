@@ -8,7 +8,9 @@
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class StateMachineTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class StateMachineTests: XCTestCase, @unchecked Sendable {
 
     func testDefaultState() async {
         let testMachine = CounterStateMachine.logging()
@@ -127,7 +129,7 @@ class StateMachineTests: XCTestCase {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
-        let executionCount = AtomicValue(initialValue: 0)
+        let executionCount = TestCounter()
         let action1 = BasicAction(identifier: "basic") { dispatcher, _ in
 
             action1WasExecuted.fulfill()

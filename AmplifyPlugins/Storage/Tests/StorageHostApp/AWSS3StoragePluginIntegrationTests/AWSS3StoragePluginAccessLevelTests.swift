@@ -10,7 +10,9 @@ import AWSPluginsCore
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase, @unchecked Sendable {
 
     struct StorageAccessLevelsTestRun {
         let label: String

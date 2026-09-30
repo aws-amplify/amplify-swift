@@ -11,7 +11,8 @@ import Foundation
 
 struct WebAuthnEvent: StateMachineEvent {
 
-    enum EventType: Equatable {
+    // `Sendable` because the enclosing event conforms to `StateMachineEvent`, which is `Sendable`.
+    enum EventType: Equatable, Sendable {
         case fetchCredentialOptions(Input)
         case assertCredentials(CredentialAssertionOptions, Input)
         case verifyCredentialsAndSignIn(String, Input)

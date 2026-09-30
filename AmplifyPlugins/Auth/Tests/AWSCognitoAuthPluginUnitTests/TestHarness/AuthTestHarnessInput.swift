@@ -14,7 +14,9 @@ import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-struct AuthTestHarnessInput {
+// `@unchecked Sendable`: captured by the `@Sendable` mock closures the harness installs. Test
+// fixture built once per case.
+struct AuthTestHarnessInput: @unchecked Sendable {
     let initialAuthState: AuthState
     let expectedAuthState: AuthState?
     let amplifyAPI: AmplifyAPI

@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-class ObserveQueryTaskRunnerTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class ObserveQueryTaskRunnerTests: XCTestCase, @unchecked Sendable {
     var storageEngine: MockStorageEngineBehavior!
     var dataStorePublisher: ModelSubcriptionBehavior!
     var dataStoreStateSubject = PassthroughSubject<DataStoreState, DataStoreError>()
@@ -619,14 +621,20 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         }
         await fulfillment(of: [firstSnapshot], timeout: 5)
 
+        // Send each mutation and wait for its snapshot before the next: in the after-sync path each
+        // mutation produces its own snapshot, so a burst can collapse/drop snapshots.
         let post = try createPost(id: "1", title: "title 1")
         dataStorePublisher.send(input: post)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
+
         let post2 = try createPost(id: "2", title: "title 2")
         dataStorePublisher.send(input: post2)
+        await fulfillment(of: [thirdSnapshot], timeout: 10)
+
         var updatedPost2 = try createPost(id: "2", title: "Does not match predicate")
         updatedPost2.mutationType = MutationEvent.MutationType.update.rawValue
         dataStorePublisher.send(input: updatedPost2)
-        await fulfillment(of: [secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
+        await fulfillment(of: [fourthSnapshot], timeout: 10)
     }
 
 

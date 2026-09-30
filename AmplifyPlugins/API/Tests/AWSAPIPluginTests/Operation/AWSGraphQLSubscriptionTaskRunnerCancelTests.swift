@@ -14,7 +14,9 @@ import XCTest
 @testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name
-class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase, @unchecked Sendable {
     var apiPlugin: AWSAPIPlugin!
     var authService: MockAWSAuthService!
     var pluginConfig: AWSAPICategoryPluginConfiguration!
@@ -68,8 +70,9 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
     }
 
     func testCancelSendsCompletion() async throws {
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
-            return MockAppSyncRealTimeClient()
+            return mockAppSyncRealTimeClient
         })
 
         await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
@@ -109,9 +112,11 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 receivedFailure.fulfill()
             }
         }
+        // Drive `.subscribing` once the consumer is iterating, so `.connecting` is delivered.
+        try await mockAppSyncRealTimeClient.waitForSubscirbing()
         await fulfillment(of: [receivedValueConnecting], timeout: 1)
         subscriptionEvents.cancel()
-        try await MockAppSyncRealTimeClient.waitForUnsubscirbed()
+        try await mockAppSyncRealTimeClient.waitForUnsubscirbed()
         await fulfillment(of: [receivedValueDisconnected, receivedCompletion, receivedFailure], timeout: 1)
     }
 
@@ -150,11 +155,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
         await fulfillment(of: [receivedValue, receivedFailure, receivedCompletion], timeout: 0.3)
     }
 
-    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
+    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async throws {
         let connectionCreation = expectation(description: "connection factory called")
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             connectionCreation.fulfill()
-            return MockAppSyncRealTimeClient()
+            return mockAppSyncRealTimeClient
         })
 
         await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
@@ -186,6 +192,8 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 receivedFailure.fulfill()
             }
         }
+        // Drive `.subscribing` once the consumer is iterating, so `.connecting` is delivered.
+        try await mockAppSyncRealTimeClient.waitForSubscirbing()
         await fulfillment(of: [receivedValue, connectionCreation], timeout: 5)
         subscriptionEvents.cancel()
         await fulfillment(of: [receivedFailure, receivedCompletion], timeout: 5)

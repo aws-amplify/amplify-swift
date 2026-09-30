@@ -32,7 +32,9 @@ type Comment3 @model
 See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 */
 
-class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -45,7 +47,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testSavePostAndCommentSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post3(title: "title")
         let comment = Comment3(postID: post.id, content: "content")
         let syncedPostReceived = expectation(description: "received post from sync event")
@@ -82,7 +84,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testSaveCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = try await savePost(title: "title")
         _ = try await saveComment(postID: post.id, content: "content")
@@ -103,7 +105,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = try await savePost(title: "title")
         var comment = try await saveComment(postID: post.id, content: "content")
@@ -116,7 +118,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = try await savePost(title: "title")
         let comment = try await saveComment(postID: post.id, content: "content")
         try await Amplify.DataStore.delete(comment)
@@ -129,7 +131,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = try await savePost(title: "title")
         _ = try await saveComment(postID: post.id, content: "content")
         let predicate = Comment3.keys.postID.eq(post.id)

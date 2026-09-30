@@ -76,7 +76,7 @@ public protocol AWSPinpointBehavior {
 }
 
 @_spi(InternalAWSPinpoint)
-public enum AWSPinpointSource: String {
+public enum AWSPinpointSource: String, Sendable {
     case analytics
     case pushNotifications
 }

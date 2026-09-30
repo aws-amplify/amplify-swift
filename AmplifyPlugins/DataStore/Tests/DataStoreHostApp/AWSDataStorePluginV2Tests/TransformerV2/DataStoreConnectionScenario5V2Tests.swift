@@ -30,7 +30,9 @@ import XCTest
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details.
  */
 
-class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
+// `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
+// `@Sendable` closures the API now takes. XCTest runs one test at a time.
+class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -44,7 +46,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListPostEditorByPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
@@ -61,7 +63,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testListPostEditorByUser() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -77,7 +79,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testGetPostThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -103,7 +105,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testGetUserThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
         let postEditor = PostEditor5V2(post5V2: post, user5V2: user)
@@ -128,7 +130,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testSavePostWithSyncAndReadPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -151,7 +153,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post5V2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -159,7 +161,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     func testUpdatePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         var post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -185,7 +187,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let updateReceived = expectation(description: "received updated post from sync event")
         let updatedTitle = "updatedTitle"
@@ -210,12 +212,12 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         }
 
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let createReceived = expectation(description: "received post from sync event")
@@ -241,7 +243,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(
@@ -267,12 +269,12 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     func testDeletePostCascadeToPostEditor() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let post = Post5V2(title: "title")
         let user = User5V2(username: "username")
@@ -316,7 +318,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(user)
         _ = try await Amplify.DataStore.save(postEditor)
-        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post, 1 postEditor
@@ -348,7 +350,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 }
 
