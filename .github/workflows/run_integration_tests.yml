@@ -150,6 +150,14 @@ jobs:
           uninstall_bundle_ids: ${{ inputs.uninstall_before_retry }}
           other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
+      # A failed test run must fail the job. A scoped run (only_testing) is not retried, and an unscoped one is
+      # retried once; the job fails when the last attempt failed, whatever `continue-on-error` let through.
+      - name: Fail when the ${{ inputs.platform }} Integration Tests failed
+        if: steps.run-tests.outcome == 'failure' && (inputs.only_testing != '' || steps.retry-tests.outcome != 'success')
+        run: |
+          echo "::error::The integration tests failed; see the test run step above."
+          exit 1
+
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
         uses: actions/cache/save@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
