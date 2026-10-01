@@ -113,6 +113,51 @@ final class HarnessHelperTests: ClientIntegrationTestCase {
         XCTAssertNotEqual(first, second)
     }
 
+    /// The code reader retires a `listMfaInfo` form only for a schema refusal before any form answered, and
+    /// never lets go of the form that answered (`ListMfaInfoForms`, offline).
+    ///
+    /// - Given: AppSync's untyped validation and type-mismatch errors, and typed transient ones
+    /// - When:
+    ///    - The errors are classified, and three APIs' forms are driven: the sandbox's (a transient error on
+    ///      `listMfaInfo(username:)` after it answered, then a validation error on the argument-less one), a
+    ///      plugin backend's (both forms refused by the schema), and one whose first form fails transiently
+    ///      before anything answered
+    /// - Then:
+    ///    - Only untyped errors are schema refusals
+    ///    - The sandbox's API keeps asking `listMfaInfo(username:)` alone; the plugin backend's asks nothing;
+    ///      the transient failure leaves both forms to be asked again
+    ///
+    func testListMfaInfoFormsRetireOnlyASchemaRefusalBeforeAnyAnswer() {
+        let validation: [String: Any] = ["message": "Validation error of type FieldUndefined: Field 'x' is undefined"]
+        let mismatch: [String: Any] = ["message": "Can't resolve value (/listMfaInfo) : type mismatch error"]
+        XCTAssertTrue(ListMfaInfoForms.isSchemaRefusal([validation]))
+        XCTAssertTrue(ListMfaInfoForms.isSchemaRefusal([validation, mismatch]))
+        for type in ["UnauthorizedException", "DynamoDB:ProvisionedThroughputExceededException", "InternalFailure"] {
+            XCTAssertFalse(ListMfaInfoForms.isSchemaRefusal([["errorType": type, "message": "m"]]), type)
+            XCTAssertFalse(ListMfaInfoForms.isSchemaRefusal([validation, ["errorType": type]]), type)
+        }
+        XCTAssertFalse(ListMfaInfoForms.isSchemaRefusal([]))
+
+        var sandbox = ListMfaInfoForms()
+        XCTAssertEqual(sandbox.toAsk, [true, false])
+        sandbox.answered(true)
+        sandbox.refused(true, byTheSchema: false)
+        sandbox.refused(true, byTheSchema: true)
+        sandbox.refused(false, byTheSchema: true)
+        sandbox.answered(false)
+        XCTAssertEqual(sandbox.toAsk, [true], "the form that answered is kept, whatever fails later")
+
+        var plugin = ListMfaInfoForms()
+        plugin.refused(true, byTheSchema: true)
+        XCTAssertEqual(plugin.toAsk, [false])
+        plugin.refused(false, byTheSchema: true)
+        XCTAssertEqual(plugin.toAsk, [], "a backend that answers neither form is read from the subscription alone")
+
+        var flaky = ListMfaInfoForms()
+        flaky.refused(true, byTheSchema: false)
+        XCTAssertEqual(flaky.toAsk, [true, false], "a transient failure retires nothing")
+    }
+
     /// `jwtClaims` decodes a base64url payload, including the characters base64url replaces.
     ///
     /// - Given: A three-segment token whose payload encodes to `-` and `_` and needs padding

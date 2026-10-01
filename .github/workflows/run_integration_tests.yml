@@ -44,6 +44,11 @@ on:
         required: false
         type: string
         default: ''
+      test_iterations:
+        description: 'The -test-iterations of an unscoped run and of its retry. Each iteration after a failure runs the whole suite again.'
+        required: false
+        type: number
+        default: 3
 
 permissions:
     id-token: write
@@ -129,7 +134,7 @@ jobs:
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
           # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
-          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES' }}
+          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || format('-test-iterations {0} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES', inputs.test_iterations) }}
 
       - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure' && inputs.only_testing == ''
@@ -148,7 +153,7 @@ jobs:
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
           uninstall_bundle_ids: ${{ inputs.uninstall_before_retry }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          other_flags: -test-iterations ${{ inputs.test_iterations }} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       # A failed test run must fail the job. A scoped run (only_testing) is not retried, and an unscoped one is
       # retried once; the job fails when the last attempt failed, whatever `continue-on-error` let through.

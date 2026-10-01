@@ -78,21 +78,37 @@ change the plugin's default flow (the client's sign-ins default to SRP, as with 
 
 **Codes** (sign-up, reset, attribute verification, MFA, OTP) come from each role's own `data` API, as the plugin's
 `AWSAuthBaseTest.subscribeToOTPCreation` and `listMfaInfo` take them: `CodeSink` subscribes to `onCreateMfaInfo`
-over AppSync's real-time WebSocket protocol before a user is signed up (`SandboxSignUp` calls
-`CodeSink.prepare(_:)`), and also queries `listMfaInfo`, in the sandbox's `listMfaInfo(username:)` form and the
-plugin backends' argument-less one. A backend that answers neither is read from the subscription alone. To prove
-that path locally, pass `TEST_RUNNER_COGNITO_CLIENT_INTEG_CODES_FROM=subscription` to `xcodebuild`: no query is
-made, and the log shows each subscription event.
+over AppSync's real-time WebSocket protocol before a user is signed up (every sign-up calls
+`CodeSink.prepare(_:)` first: `SandboxSignUp`, the parity checks' raw sign-up, and `ClientSignUpTestCase`'s
+sign-ups through the client), waits 2 seconds after the acknowledgement as the plugin does, and also queries
+`listMfaInfo`, in the sandbox's `listMfaInfo(username:)` form and the plugin backends' argument-less one, matching
+every row to the user by its username, lower-cased. Once a form has answered, only it is asked, whatever fails
+later. Until then, a form refused with untyped GraphQL errors only (AppSync's validation and type-mismatch
+errors: the schema has no such query or argument) is not asked again; a typed GraphQL error (authorization, a
+resolver error, throttling, an internal failure), an HTTP error or a transport error is asked again on the next
+poll (`ListMfaInfoForms`, checked offline by `HarnessHelperTests`). The plugin backends answer neither form:
+their argument-less `listMfaInfo` resolves a table scan into a list field (`PasswordlessTests/README.md`), so
+AppSync answers it with an untyped type mismatch, for the plugin's own query too. There, as for the plugin, codes
+come from the subscription alone, and a code sent before it was acknowledged is never seen: a timeout says when
+the subscription was acknowledged after the code was asked for. To run that way locally, set
+`TEST_RUNNER_COGNITO_CLIENT_INTEG_CODES_FROM=subscription` in `xcodebuild`'s environment (not as an argument): no
+query is made, and the log shows each subscription event.
 
 **Users.** Every test signs up its own users (`SandboxSignUp`, `makeFreshUser(on:_:)`, `makeSignInUser()`) and
 deletes them, so no test changes a user another run, job or suite could be using. The one exception is CH-1: only an
 administrator can put a user in `FORCE_CHANGE_PASSWORD`, so it takes the first of the credentials file's
 new-password users still in that state, as the plugin's `testNewPasswordRequired` does, and moves on to the next
 when another run (the plugin's suite, or a concurrent job) takes one first; it fails only when none is left. A pool
-with no pre-sign-up trigger (the plugin's passwordless backend) has each user confirmed with its sign-up code; one
-whose file also names no code API (the plugin's device-alias backend on CI) cannot have a confirmed fresh user, and
-every test that needs one fails naming the file (after the first such sign-up, before signing another user up, so
-the plugin's backend does not collect unconfirmed users). The harness's raw sign-ins (setup, raw checks, cleanup) use
+with no pre-sign-up trigger (the plugin's passwordless backend) has each user confirmed with its sign-up code. A role
+known up front to be unable to confirm a fresh user gets no sign-up at all: its file is not the sandbox's (no
+sandbox mark), it names no code API, and the plugin's setup for its backend promises no confirming pre-sign-up
+trigger (`SandboxPool.promisesConfirmingTrigger`: all but the passwordless and device-alias backends). That is the
+plugin's device-alias backend on CI. Every test that signs a user up there fails naming the file before `SignUp` is
+sent (`SandboxSignUp.requireNotKnownUnconfirmable(_:)`), so no confirmation email is sent (CI's account has a daily
+email limit, which the third iteration of the 2026-09-30 run reached) and no user is left that could be neither
+confirmed nor deleted. A role whose backend promises a trigger but leaves a sign-up unconfirmed anyway, with no code
+API, fails that test, and every later sign-up on the role in the process fails before signing a user up. The
+sandbox's set is unchanged: every file carries the mark. The harness's raw sign-ins (setup, raw checks, cleanup) use
 `USER_PASSWORD_AUTH`, or SRP where the app client offers no such flow: the plugin's MFA-required, email-MFA and
 device-alias backends on CI, and the hosted-UI clients.
 
@@ -187,7 +203,7 @@ beside the plugin's own jobs in the same run:
 | default | `new_password_required_usernames` and `new_password_required_temporary_password` in the credentials file, users reset to `FORCE_CHANGE_PASSWORD` often enough for every concurrent run | CH-1, P-3 | **missing**: no credentials file; the plugin's `testNewPasswordRequired` skipped |
 | default | The credentials file itself, `AWSCognitoAuthPluginIntegrationTests-credentials.json`, with the three keys above | the fixture check (`CognitoBackendSmokeTests.testProvisionedUsersAreAvailable`) | **missing**: CI downloads no `-credentials.json` |
 | default | A pre-sign-up trigger that auto-verifies email (not only auto-confirms) | RP-3 (a verified email) | **missing**: `ForgotPassword` answered "no registered/verified email or phone_number"; the README's handler only sets `autoConfirmUser` |
-| device alias (`AWSCognitoAuthPluginDeviceAliasTests-*`) | A way to confirm a fresh sign-up: a pre-sign-up trigger that confirms it, or custom senders and a `data` block to confirm it with its sign-up code; and 5-minute access and id tokens | DV-10…19, the parity check of the pool, and that pool in the every-pool cleanup check | **missing**: a fresh sign-up came back unconfirmed and the file names no `data` block. The plugin's `DeviceAliasTokenRefreshIntegrationTests` read no code (they sign in a user pre-created for them, from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which CI does not download) and run on no CI workflow (only the `AuthGen2IntegrationTests` target has them) |
+| device alias (`AWSCognitoAuthPluginDeviceAliasTests-*`) | A way to confirm a fresh sign-up: a pre-sign-up trigger that confirms it, or custom senders and a `data` block to confirm it with its sign-up code; and 5-minute access and id tokens | DV-10…19, the parity check of the pool, and that pool in the every-pool cleanup check | **missing**: a fresh sign-up came back unconfirmed and the file names no `data` block. Now no user is signed up there at all (the file is not the sandbox's, names no code API, and the plugin's setup promises no confirming trigger): on 2026-09-30 each iteration had signed up one more, sending a confirmation email each time, and the third reached the account's daily email limit (`LimitExceededException`). The plugin's `DeviceAliasTokenRefreshIntegrationTests` read no code (they sign in a user pre-created for them, from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which CI does not download) and run on no CI workflow (only the `AuthGen2IntegrationTests` target has them) |
 | default | `ALLOW_USER_PASSWORD_AUTH` and `ALLOW_CUSTOM_AUTH` on the app client; token revocation on; refresh-token rotation off; device tracking always remembered; attribute updates without verification; MFA optional with TOTP and SMS; an identity pool with guest access | SI-2; SO-1, SO-2; MS-6; DV-1…9, CA-2; AT-2; MF-*; CR-*, GU-*, SE-*, ST-* | provided: all passed |
 | passwordless | Every code captured and a `data` block; SMS codes to phone numbers set at sign-up | PL-*, SU-8…15, AS-*, MF-4, MF-6, MF-10, MF-12, AT-5, AT-6 | provided: all passed (the backend confirms no sign-up, so each user is confirmed with its sign-up code) |
 | both email-MFA backends | Email MFA on, every code captured and a `data` block | MF-18…23, CR-2 | provided: the plugin's `EmailMFARequiredTests` and `EmailMFAWithAllMFATypesRequiredTests` passed; the outputs list no `EMAIL` in `mfa_methods`, which the harness no longer reads |
@@ -514,12 +530,12 @@ does, so keychain I/O cannot pin the one cooperative thread.
 |---|---|
 | `IntegrationTestEnvironment` | The plugin's file set: the main configuration (`configuration()`, the default backend's), a role's configuration by name (`configuration(_: SandboxPool)`, e.g. `.standard`, `.passwordless`, `.emailAlias`, each read from its plugin file, or its Gen1 file translated), a role's outputs as the client reads them (`hasOutputs(_:)`, `outputsBundle(_:)`, `outputsData(_:)`), the raw `auth` section of a role's outputs (`outputsAuthSection(_:)`, for `oauth`), the derived identity-only role (`identityOnlyAuthSection()`) and second identity pool (`secondIdentityPool()`), a role's code API (`codeSinkAPI(_:)`, its `data` block), the default credentials file (`credentials()`, empty when absent: `requireCustomChallengeAnswer()`, `requireNewPasswordUsers()`), `uniqueSessionID(_:)` (`<tag>-<8 hex>`), `defaultAccessGroup()`, `sharedAccessGroup()` and `secondSharedAccessGroup()`, `rawKeychainAccounts(service:accessGroup:)`, `jwtClaims(_:)`, and `isSandbox(_:)` / `requireSandbox(_:_:)` for the sandbox checks ("Sandbox checks", above) |
 | `PluginTestConfiguration` | A plugin outputs resource as the client reads it: the Gen2 file, or the Gen2 translation of the plugin's Gen1 file for the same backend (`Gen1TestConfiguration`, "Gen1 files" above), in a bundle of its own. Foundation only; also compiled into the interop suite, the UI tests and the hosted-UI app |
-| `CodeSink` | `code(for:on:since:timeout:)`: the newest code the custom senders published for a user of a role, from that role's `data` API: an `onCreateMfaInfo` subscription (`CodeSink.prepare(_:)`, which `SandboxSignUp` calls before every sign-up) and both `listMfaInfo` forms, polled once a second (60 s by default, as the plugin's `otp(for:)`). For a `FreshUser`: `code(for:_:since:)` with a `Kind` (`.signUp`, `.resetPassword`, `.attributeVerification`, `.mfa`, `.otp`) or the typed `signUpCode`, `resetPasswordCode`, `attributeVerificationCode`, `mfaCode`, `otpCode`; and `code(for:_:sentBy:)` / `snapshot(for:)` + `code(for:_:after:)`, which return only a code sent after the snapshot (use them for a resend or any second code, and for any code after a sign-up a pool may have confirmed with a sign-up code); the same by a username and a role (`snapshot(for:on:)`, `code(for:on:after:)`, `code(for:on:sentBy:)`) for a user a check signed up by hand |
+| `CodeSink` | `code(for:on:since:timeout:)`: the newest code the custom senders published for a user of a role, from that role's `data` API: an `onCreateMfaInfo` subscription (`CodeSink.prepare(_:)`, which every sign-up calls first; one silent past AppSync's keep-alive timeout is replaced) and both `listMfaInfo` forms, each row matched to the user here, polled once a second (60 s by default, as the plugin's `otp(for:)`). For a `FreshUser`: `code(for:_:since:)` with a `Kind` (`.signUp`, `.resetPassword`, `.attributeVerification`, `.mfa`, `.otp`) or the typed `signUpCode`, `resetPasswordCode`, `attributeVerificationCode`, `mfaCode`, `otpCode`; and `code(for:_:sentBy:)` / `snapshot(for:)` + `code(for:_:after:)`, which return only a code sent after the snapshot (use them for a resend or any second code, and for any code after a sign-up a pool may have confirmed with a sign-up code); the same by a username and a role (`snapshot(for:on:)`, `code(for:on:after:)`, `code(for:on:sentBy:)`) for a user a check signed up by hand |
 | `SandboxPools` | `SandboxPools.pool(_:)`: a role's `configuration` for the client under test and a raw SDK `client` on its public app client (no AWS credentials): `passwordSignIn` (`USER_PASSWORD_AUTH`, or SRP, `srpSignIn`, where the app client offers no password flow; a `RawSignInStep`), `userAuthSignIn`, `respond(to:_:session:)`, `signIn(_:sink:)` (to tokens, answering TOTP, email/SMS MFA and OTP, MFA selection and MFA setup), `enrollTOTP(_:accessToken:)`, `requireLive(_:)` (fails when the role's outputs show no `SMS` MFA, or, on the sandbox's set, no `EMAIL` MFA; elsewhere email MFA is taken as live, "Gen1 files") |
-| `SandboxSignUp` | `signUp(on:_:)`: a fresh `ccit-` user (`@example.com`, optional fictional `+1555` number, optional passwordless), confirmed (by the pool's pre-sign-up trigger, or else with its sign-up code; without a code API it fails naming the file, `requireCodeAPIToConfirm(_:)`, and every later sign-up on that role in the process fails before signing a user up, `requireNotKnownUnconfirmable(_:)`) or, with `needsConfirmation`, `ccit-confirm-` and unconfirmed; `confirm(_:sentSince:on:sink:)`; the identity helpers. Returns a `FreshUser`, which redacts its password, TOTP secret and sub, records later changes (`recordPassword`, `recordTOTPSecret`, `recordDeleted`) and knows the sink's key (`sinkUsername`, the generated username on `email-alias`) |
+| `SandboxSignUp` | `signUp(on:_:)`: a fresh `ccit-` user (`@example.com`, optional fictional `+1555` number, optional passwordless), confirmed (by the pool's pre-sign-up trigger, or else with its sign-up code; without a code API it fails naming the file, `requireCodeAPIToConfirm(_:)`, and every later sign-up on that role in the process fails before signing a user up; on a role known up front to be unable to confirm one, `cannotConfirmUpFront(_:)`, every sign-up fails before `SignUp` is sent, `requireNotKnownUnconfirmable(_:)`) or, with `needsConfirmation`, `ccit-confirm-` and unconfirmed; `confirm(_:sentSince:on:sink:)`; the identity helpers. Returns a `FreshUser`, which redacts its password, TOTP secret and sub, records later changes (`recordPassword`, `recordTOTPSecret`, `recordDeleted`) and knows the sink's key (`sinkUsername`, the generated username on `email-alias`) |
 | `SandboxUserCleanup` | `delete(_:)`: the user deletes itself through its own raw sign-in (no admin call; SRP where the app client offers no password flow), confirming it first if needed (failing, naming the file, where no code API can), signing in again when a global sign-out revoked the new token, or, on an app client with neither flow, through another role's app client on the same pool, else the client's SRP sign-in and `deleteUser()`, else (a UI-test runner has no keychain for the client) leaves it, `.left`; `XCTestCase.deleteAtTeardown(_:)` and `signUpFreshUser(on:_:)` |
 | `ClientIntegrationTestCase` | The base class for suites that create sessions. Mint IDs with `makeSessionID(_:pool:)` or clients with `makeClient(_:pool:)`; `tearDown` signs each one out against its own pool with `signOutStoredSession`, purges it, and waits until the registry has released it, then deletes the users from `makeFreshUser(on:_:)` and `makeSignInUser()` (a fresh default-backend user as a `TestUser`: the suites' `alice` and `bob`) |
-| `ClientSignUpTestCase` | The base of `SignUpTests` and `AutoSignInTests`: `signUp(on:pool:needsConfirmation:withPassword:)` signs a fresh `ccit-` user up through the client under test and records it, `signUpAndConfirm(on:pool:)` also confirms it with the sink's code, and `tearDown` deletes every recorded user after the sessions are signed out; `assertValidation`, `assertService` and `assertReadyForAutoSignIn` |
+| `ClientSignUpTestCase` | The base of `SignUpTests` and `AutoSignInTests`: `signUp(on:pool:needsConfirmation:withPassword:)` signs a fresh `ccit-` user up through the client under test and records it (after `SandboxSignUp.requireNotKnownUnconfirmable(_:)` and `CodeSink.prepare(_:)`), `signUpAndConfirm(on:pool:)` also confirms it with the sink's code, and `tearDown` deletes every recorded user after the sessions are signed out; `assertValidation`, `assertService` and `assertReadyForAutoSignIn` |
 | `ClientMFATestCase` | The base of `TOTPSetupTests`, `MFASignInTests`, `MFAPreferenceTests` and `ChallengeResumeTests`: `signedInFreshUser(_:withPhoneNumber:)`, a fresh `default` user signed in through a new client, and `enrollTOTP(_:_:friendlyDeviceName:)`, TOTP enrolled through the client's own `setUpTOTP` / `verifyTOTPSetup` (the secret is recorded first, so cleanup can answer TOTP). Failure messages name step and error cases only |
 | `DeviceTestCase` (`DeviceTests/DeviceTestSupport.swift`) | The base of the three device suites: after the base class's teardown it removes each fresh user's device and advanced-security records from this device's keychain, which the client keeps per user and never removes itself. With it, `signInToDone`, `thisDeviceKey` (the access token's `device_key`), `forceRefresh`, `assertForgetsThisDevice` and `assertOnlyThisDevice`, which compare device keys as booleans |
 | `TOTP` | `code(secret:at:)`, RFC 6238, and `freshCode(secret:)`, which waits for the next 30-second step when the current one is spent (Cognito rejects a reused code) |
@@ -541,7 +557,7 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `CognitoBackendSmokeTests` | Guest `GetId` + `GetCredentialsForIdentity` against the default backend's identity pool, and the fixtures the suites cannot make: every role's outputs file and code API, and the credentials file's custom-auth answer and new-password users |
 | `SandboxParityProvisioningTests` | Each role's backend, through the SDK or HTTPS directly: every outputs file loads (seven distinct pools; the hosted-UI client on the default pool or on one of its own); `default` auto-confirms and tracks devices; custom auth completes with the stored answer; a `ccit-confirm-` sign-up code reaches the code sink and confirms; email MFA and SMS MFA codes (`mfa-req-email`, `mfa-req-totp-sms`) and `EMAIL_OTP` and `SMS_OTP` codes (`passwordless`) reach the sink and complete sign-in; `passwordless` offers choice-based sign-in; the MFA-required pools challenge a fresh user; `email-alias` signs in by email with 5-minute tokens; the hosted-UI login page answers; the identity-only role vends guest credentials; the third keychain group works. On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |
 | `SandboxProvisioningTests` | The users the suites need are in the state they need, checked through the SDK directly: a fresh user with no MFA preference is not challenged; a fresh user who enrolled TOTP through the client is challenged for TOTP and a fresh code completes it; the first of the new-password users still in `FORCE_CHANGE_PASSWORD` must set a new password (or, once `ChallengeTests` has set one in this run, that user's new password signs in: only an administrator call can reset one, so CH-1 cannot use a fresh user); a fresh user signs in with its password |
-| `HarnessHelperTests` | The shared helpers, including the recorder installed through the real client's escape hatch |
+| `HarnessHelperTests` | The shared helpers, including the recorder installed through the real client's escape hatch, and, offline, which `listMfaInfo` forms the code reader retires (`ListMfaInfoForms`) |
 | `PluginTestConfigurationTests` | The Gen1 translation, offline, over made-up documents: every mapped key reaches the client's configuration, absent keys get the plugin's Gen1 values, values the plugin tolerates are read as it reads them (an identity pool without a region, a non-string scope, an incomplete hosted UI, each MFA mode, a string minimum length, a REST API), what Gen2 cannot carry is refused with the file's name, and the Gen2 file wins over the Gen1 one |
 | `SandboxHelperTests` | The multi-pool helpers against every role's backend: every pool confirms a fresh user and cleanup deletes it (answering each pool's MFA); sign-up, resent, reset-password, attribute-verification, MFA and OTP codes reach the sink; `email-alias` codes are found by the generated username; TOTP-enrolled and unconfirmed users are cleaned up; sessions on several pools are cleaned up with their own pool. On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |
 | `WebAuthnCredentialsIntegrationTests` | WebAuthn credential listing and deletion, headless, on the WebAuthn pool (U-WA): a fresh user with no passkey lists an empty page (default size and size 1); deleting a credential Cognito never issued is `.service(.resourceNotFound)` and leaves the session signed in; page sizes 0 and 21 are refused with `.validation(field: "pageSize")` and send nothing; a signed-out session is `.notSignedIn` with no request. Requests are checked with `RecordingHTTPClient`. No passkey is registered, so no simulator sheet is needed |
@@ -603,6 +619,16 @@ shared internals, `AmplifyFoundation`, `AmplifyFoundationBridge` or the WebAuthn
 `auth_client` group in `scripts/python/integ_test_groups.json`), and on every push to `main`. Once the workflow is on
 the default branch, it can also be started by hand from the Actions tab, with a toggle per suite.
 
+**The client suite's time limit.** `run_integration_tests.yml` runs an unscoped suite with `-test-iterations`
+and `-retry-tests-on-failure`, then, if it failed, once more in its retry step. After a failure each iteration runs
+the whole suite again (239 tests, not only the failed ones), and the tests the next section lists fail in every
+one. The 2026-09-30 run (PR #4349 at `60be7cecd`, job 109998361889) took about 10 minutes from the checkout to the
+first test (a cold build), 30.0, 31.9 and 32.4 minutes for its three passes, and 4 minutes to set the retry step up
+(package resolution; no build), and was cancelled at its 120-minute limit 12 minutes into the retry's first pass,
+so it never reported. The client job now passes `test_iterations: 2` (an optional input of
+`run_integration_tests.yml`, 3 by default, so its other callers are unchanged) and `timeout-minutes: 180`: a failing
+job makes at most four passes, 10 + 2 × 33 + 4 + 2 × 33 = 146 minutes, and reports within its limit.
+
 ### CI's test configuration
 
 The plugin's `auth` test configuration is nine files, and no credentials file:
@@ -644,8 +670,36 @@ failing, as the plugin's do), and 22 failed, each naming what is missing:
 |---|---|
 | `AWSCognitoAuthPluginIntegrationTests-credentials.json` (the custom-auth answer, the new-password users) | CA-1…3 (`CustomAuthTests`: `testSuccessfulSignInWithCustomAuthSRP`, `testRuntimeAuthFlowSwitch`, `testSuccessfulSignInWithCustomAuth`), CH-1 `testNewPasswordRequiredChallenge`, P-3 `testForceChangePasswordUserIsAskedForANewPassword`, `SandboxParityProvisioningTests.testCustomAuthCompletesWithTheStoredAnswer`, `CognitoBackendSmokeTests.testProvisionedUsersAreAvailable` |
 | a code API on the default backend (`AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`, translated, names none), and for RP-3 an email verified at sign-up | AT-2's second half `testUpdatedEmailIsVerifiedWithTheCodeSentToIt`, RP-3 `testSuccessfulResetPasswordEndToEnd` |
-| a way to confirm a fresh device-alias user: a confirming pre-sign-up trigger, or a code API in `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json` | DV-10…19 (`DeviceAliasTests`, 10 tests), `SandboxParityProvisioningTests.testEmailAliasPoolSignsInByEmailWithShortTokens`, and the device-alias pool of `SandboxHelperTests.testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt` |
+| a way to confirm a fresh device-alias user: a confirming pre-sign-up trigger, or a code API in `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json` | DV-10…19 (`DeviceAliasTests`, 10 tests), `SandboxParityProvisioningTests.testEmailAliasPoolSignsInByEmailWithShortTokens`, and the device-alias pool of `SandboxHelperTests.testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt`, each before any sign-up ("Users", above) |
 | a second identity pool with guest access stated (and no credentials file to name one) | CS-3 `testChangedIdentityPoolDoesNotSeeTheOldGuestRecord`, on the CI shape only: the sandbox's Gen2 files name no identity pool but the default's, while on CI another Gen2 backend's identity pool serves, and CS-3 passed there |
+
+**On CI, 2026-09-30, with those fixes** (PR #4349 at `60be7cecd`, job 109998361889): the first three rows' 21
+tests failed in each of the three iterations, and two things more.
+
+- **AS-3** `testFailureMultipleAutoSignInWithSameSession` timed out waiting for its sign-up code in the second and
+  third iterations. Each iteration relaunches the test process, and AS-3 is its first sign-up. The client
+  sign-ups of `ClientSignUpTestCase` did not start the code subscription first, so it started only when the test
+  waited for the code, after a warm sender had published it (in the first iteration the sender was most likely
+  cold, and published it after the subscription was up). The plugin backend's `listMfaInfo` answers no form
+  ("Codes", above), so nothing else could find it. The sign-ups now prepare the subscription first, as
+  `SandboxSignUp` does. Locally, with
+  `TEST_RUNNER_COGNITO_CLIENT_INTEG_CODES_FROM=subscription` and `AutoSignInTests` alone, AS-3 failed the same way
+  before the fix and passed after it.
+- **The daily email limit.** In the third iteration every test that signs a user up on the device-alias backend
+  failed with `LimitExceededException` ("Exceeded daily email limit"), not with the message naming the file: each
+  iteration, and each run, had signed one more user up there to find it unconfirmed, and each sign-up sent
+  Cognito's own confirmation email. No user is signed up there now ("Users", above). Locally, a CI-shape run left
+  the number of users in the sandbox's email-alias pool unchanged, read before and after with `list-users`.
+
+The job then ran out of its 120 minutes in the retry step and reported nothing; it now has the time it needs
+("The client suite's time limit", above).
+
+With these two fixes, the CI shape again ran 239 tests: 214 passed, 3 skipped as sandbox checks, and the same 22
+failed, AS-3 passing; the full sandbox set passed 239 of 239, none skipped. With the code reader's form rules
+checked offline as well (`HarnessHelperTests`, 240 tests), the CI shape gave 215 passed, the same 3 skipped and the
+same 22 failed, with the email-alias pool's user count unchanged; the full set passed 239 of 240, none skipped,
+the one failure MS-4 (`testStoredSessionsListsEverySession`) meeting one unreadable Cognito response at sign-in,
+and `MultiSessionFlowTests` passed 6 of 6 when run again.
 
 So on CI, with the fixes, `CognitoClientIntegrationTests` should fail the first three rows' 21 tests, and nothing
 else. On the sandbox's full set, with the same fixes, it passed 239 of 239 in two runs, none skipped (a run between

@@ -69,9 +69,8 @@ enum SandboxSignUp {
 
     /// Signs a fresh user up through an existing pool client.
     static func signUp(on pool: SandboxPoolClient, _ options: Options = Options()) async throws -> FreshUser {
-        if !options.needsConfirmation {
-            try requireNotKnownUnconfirmable(pool.pool)
-        }
+        // Before any request: a role that cannot confirm a user gets no sign-up, so no message either.
+        try requireNotKnownUnconfirmable(pool.pool)
         let identity = identity(needsConfirmation: options.needsConfirmation)
         let email = options.withEmail || pool.pool.usesEmailAsUsername ? identity.email : nil
         let phoneNumber = options.withPhoneNumber ? fictionalPhoneNumber() : nil
@@ -125,8 +124,9 @@ enum SandboxSignUp {
     }
 
     /// Fails, naming the file, when `pool` left a fresh sign-up unconfirmed and its outputs name no code
-    /// API to confirm it with: then no test can have a confirmed fresh user there (the plugin's
-    /// device-alias backend on CI, whose own suite signs in a pre-created user instead).
+    /// API to confirm it with: then no test can have a confirmed fresh user there. A role known up front to
+    /// be so (`cannotConfirmUpFront(_:)`) never gets this far; this is for a backend that did not do what its
+    /// setup promises.
     ///
     /// The role is then remembered for the rest of the process (`requireNotKnownUnconfirmable(_:)`), so later
     /// tests on it fail before signing another user up, rather than leave one more unconfirmed user on a
@@ -143,10 +143,33 @@ enum SandboxSignUp {
         """)
     }
 
-    /// Fails, before any sign-up, on a role an earlier sign-up in this process showed cannot confirm a fresh
-    /// user (`requireCodeAPIToConfirm(_:)`), naming the file. Call it before signing up a user that must end
-    /// up confirmed.
+    /// Whether `pool` is known, before any sign-up, not to be able to confirm a fresh user: its file is not
+    /// the sandbox's (no sandbox mark, `IntegrationTestEnvironment.isSandbox`), it names no code API to
+    /// confirm one with its sign-up code, and the plugin's setup for its backend promises no pre-sign-up
+    /// trigger that confirms one (`SandboxPool.promisesConfirmingTrigger`). The plugin's device-alias backend
+    /// on CI is such a role: a user signed up there is left unconfirmed, and so can be neither signed in
+    /// nor deleted (the cleanup signs the user in to delete it), and each sign-up sends Cognito's own
+    /// confirmation email, which counts against the account's daily email limit.
+    static func cannotConfirmUpFront(_ pool: SandboxPool) -> Bool {
+        IntegrationTestEnvironment.hasOutputs(pool)
+            && !IntegrationTestEnvironment.isSandbox(pool)
+            && (try? IntegrationTestEnvironment.codeSinkAPI(pool)) == nil
+            && !pool.promisesConfirmingTrigger
+    }
+
+    /// Fails, naming the file, before any sign-up on a role that cannot confirm a fresh user: one known not
+    /// to up front (`cannotConfirmUpFront(_:)`), or one an earlier sign-up in this process showed cannot
+    /// (`requireCodeAPIToConfirm(_:)`). No `SignUp` is sent. Call it before every sign-up, one left for the
+    /// confirm step too: that user could not be confirmed or deleted either.
     static func requireNotKnownUnconfirmable(_ pool: SandboxPool) throws {
+        if cannotConfirmUpFront(pool) {
+            throw HarnessError.malformedFixture("""
+            \(pool.sourceName): the file names no code API (a data block with a url and an api_key) to confirm a \
+            fresh sign-up with its sign-up code, it is not the sandbox's, and the plugin's setup for this backend \
+            promises no pre-sign-up trigger that confirms one, so no user is signed up there (no SignUp is sent, \
+            and no email). A test that needs a fresh user on this backend needs one of the two.
+            """)
+        }
         guard unconfirmableRoles.contains(pool) else {
             return
         }

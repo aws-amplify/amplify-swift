@@ -91,6 +91,11 @@ enum SandboxUserCleanup {
                 // CI). A new sign-in a little later gets one that holds. Any other refusal is thrown.
                 try await Task.sleep(nanoseconds: 2_000_000_000)
                 continue
+            } catch is UserNotFoundException {
+                // The SDK retried a `DeleteUser` whose response was lost (`NSURLErrorNetworkConnectionLost`,
+                // seen once locally): the first attempt deleted the user, and the retry finds it gone.
+                user.recordDeleted()
+                return .deleted
             }
             user.recordDeleted()
             return .deleted
@@ -126,7 +131,11 @@ enum SandboxUserCleanup {
             guard let accessToken = tokens.accessToken else {
                 throw HarnessError.malformedFixture("\(user)'s sign-in returned no access token.")
             }
-            _ = try await sibling.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
+            do {
+                _ = try await sibling.client.deleteUser(input: DeleteUserInput(accessToken: accessToken))
+            } catch is UserNotFoundException {
+                // A retried `DeleteUser` whose first attempt deleted the user, as in `delete(_:sink:)`.
+            }
             user.recordDeleted()
             return .deleted
         }
@@ -166,6 +175,8 @@ enum SandboxUserCleanup {
         }
         do {
             try await client.deleteUser()
+        } catch let error as AuthClientError where error.kind == .service(.userNotFound) {
+            // A retried `DeleteUser` whose first attempt deleted the user, as in `delete(_:sink:)`.
         } catch {
             await purge()
             throw error

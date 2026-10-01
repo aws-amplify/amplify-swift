@@ -669,10 +669,8 @@ private struct ParityPool {
         if let phoneNumber {
             attributes.append(CognitoIdentityProviderClientTypes.AttributeType(name: "phone_number", value: phoneNumber))
         }
-        if !user.username.hasPrefix(SandboxSignUp.confirmPrefix) {
-            // A role an earlier sign-up showed cannot confirm a fresh user gets no further one.
-            try SandboxSignUp.requireNotKnownUnconfirmable(kind)
-        }
+        // Before any request: a role that cannot confirm a user gets no sign-up, so no message either.
+        try SandboxSignUp.requireNotKnownUnconfirmable(kind)
         await CodeSink.prepare(kind)
         let signedUpAt = Date()
         let output = try await client.signUp(input: SignUpInput(

@@ -66,6 +66,18 @@ extension SandboxPool {
         ![.passwordless, .webAuthn].contains(self)
     }
 
+    /// Whether the plugin's own setup for the role's backend promises a pre-sign-up trigger that confirms
+    /// every sign-up (`autoConfirmUser`): the default and MFA-required backends
+    /// (`AuthIntegrationTests/README.md`, whose hosted UI shares the default's setup and has its own in
+    /// `AuthHostedUIApp/README.md`), the two email-MFA ones (`MFATests/EmailMFATests/README.md`) and the
+    /// WebAuthn one (`AuthWebAuthnAppUITests/README.md`). The passwordless backend's setup
+    /// (`PasswordlessTests/README.md`) deploys no trigger, and the device-alias backend's none that is
+    /// written down; on the plugin's CI a fresh sign-up there comes back unconfirmed. On the sandbox every
+    /// pool's trigger (P-5b) confirms all but `ccit-confirm-` users, whatever this says.
+    var promisesConfirmingTrigger: Bool {
+        ![.passwordless, .emailAlias].contains(self)
+    }
+
     /// The features, by the names the tests require them by, that the outputs file shows the pool lacks:
     /// `sms-mfa` without `SMS` in `mfa_methods`, and, on the sandbox's file set, `email-mfa` without
     /// `EMAIL`. What the outputs do not describe (the first factors, WebAuthn, and email MFA elsewhere) is

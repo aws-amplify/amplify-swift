@@ -55,6 +55,10 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
 
     /// Signs a fresh user up through `client`, with an email, and records it in `users`. A
     /// `needsConfirmation` user is `ccit-confirm-`, which the pre-sign-up trigger leaves unconfirmed.
+    ///
+    /// As `SandboxSignUp`: it fails before any request on a role that cannot confirm a fresh user
+    /// (`SandboxSignUp.requireNotKnownUnconfirmable(_:)`), and it starts the role's code subscription before
+    /// the sign-up (`CodeSink.prepare(_:)`), which on a plugin backend is the only way to see its code.
     static func signUp(
         on client: AmplifyCognitoClient,
         pool: SandboxPool,
@@ -62,8 +66,11 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         withPassword: Bool = true,
         recordingIn users: SignedUpUsers
     ) async throws -> (result: AuthClientSignUpResult, user: FreshUser) {
+        try SandboxSignUp.requireNotKnownUnconfirmable(pool)
         let identity = SandboxSignUp.identity(needsConfirmation: needsConfirmation)
         let password = withPassword ? identity.password : nil
+        // Listening before the sign-up: its code is published once, when it is sent.
+        await CodeSink.prepare(pool)
         let signedUpAt = Date()
         let result = try await client.signUp(
             username: identity.username,

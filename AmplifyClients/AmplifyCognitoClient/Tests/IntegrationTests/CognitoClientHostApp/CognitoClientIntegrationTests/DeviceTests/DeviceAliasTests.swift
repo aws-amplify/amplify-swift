@@ -18,8 +18,10 @@ import XCTest
 /// plugin suite does on its shared user.
 ///
 /// A fresh user must be confirmed: by the backend's pre-sign-up trigger, or with its sign-up code from the
-/// code API its outputs name. Without either, every test fails naming the file
-/// (`SandboxSignUp.requireCodeAPIToConfirm`). The plugin's suite reads no code: it signs in one
+/// code API its outputs name. Where the file is not the sandbox's, names no code API and the plugin's setup
+/// promises no such trigger (the plugin's device-alias backend on CI), every test fails naming the file
+/// before any sign-up (`SandboxSignUp.requireNotKnownUnconfirmable`), so it sends no email and leaves no user
+/// it could not delete. The plugin's suite reads no code: it signs in one
 /// pre-created user from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which the plugin's CI
 /// does not download, and it is only in the `AuthGen2IntegrationTests` target, which no CI workflow runs.
 final class DeviceAliasTests: DeviceTestCase {

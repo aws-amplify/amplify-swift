@@ -19,10 +19,22 @@ import Foundation
 /// code with the `createMfaInfo` mutation to an AppSync API, which each outputs file names in its `data`
 /// block (URL and API key); nothing is ever delivered. As the plugin does, the harness subscribes to
 /// `onCreateMfaInfo` (AppSync's real-time WebSocket protocol, over `URLSessionWebSocketTask`) before a user
-/// can be sent a code, and also queries `listMfaInfo`, in both forms a backend may have: the sandbox's
-/// `listMfaInfo(username:)`, whose items carry a server-set `createdAt`, and the plugin backends'
-/// argument-less one. Usernames are compared lower-cased, as the plugin does. The key never appears in an
-/// error or a description.
+/// can be sent a code (`prepare(_:)`, before every sign-up), and also queries `listMfaInfo`, in both forms a
+/// backend may have: the sandbox's `listMfaInfo(username:)`, whose items carry a server-set `createdAt`, and
+/// the plugin backends' argument-less one. Every row is matched to the user here, by its username
+/// lower-cased, as the plugin does, whatever the form returned.
+///
+/// The subscription is what a plugin backend relies on: its argument-less `listMfaInfo` resolves a table
+/// scan into a list field, so AppSync answers it with a type-mismatch error and no rows
+/// (`PasswordlessTests/README.md`), for the plugin's `AWSAuthBaseTest` too. A code sent before the
+/// subscription is acknowledged is never seen there, which is why every sign-up prepares it first.
+///
+/// Until a form has answered, one the API refuses with untyped GraphQL errors only (AppSync's validation
+/// and type-mismatch errors, what a schema without that query or argument returns) is not asked again
+/// (`ListMfaInfoForms`). A typed GraphQL error (`UnauthorizedException`, a resolver error, throttling, an
+/// `InternalFailure`), an HTTP error or a transport error is transient: it is noted, and the form asked
+/// again on the next poll. Once a form has answered, only it is asked, whatever fails later. The key never
+/// appears in an error or a description.
 ///
 /// Each role's codes are read through its own file's API (`FreshUser.pool`): on CI every backend has its
 /// own. A role whose file has no `data` block fails the wait that needs a code, with a message naming the
@@ -33,8 +45,9 @@ struct CodeSink: Sendable {
 
     /// Starts listening for `pool`'s codes, if its outputs have a `data` block, and returns once the
     /// subscription is acknowledged (or could not be; the query still works then). Call it before the
-    /// request that makes Cognito send the first code: the subscription only sees codes created after it.
-    /// `SandboxSignUp` calls it before every sign-up.
+    /// request that makes Cognito send the first code: the subscription only sees codes created after it,
+    /// and on a plugin backend it is the only way to see one. Every sign-up calls it first: `SandboxSignUp`,
+    /// the parity checks' raw sign-up, and `ClientSignUpTestCase`'s sign-up through the client.
     static func prepare(_ pool: SandboxPool) async {
         guard let api = try? IntegrationTestEnvironment.codeSinkAPI(pool) else {
             return
@@ -75,7 +88,7 @@ struct CodeSink: Sendable {
             }
             try await Task.sleep(nanoseconds: 1_000_000_000)
         } while Date() < deadline
-        throw HarnessError.timedOut("\(what) from the code API (\(await CodeFeed.shared.diagnostics(api)))")
+        throw HarnessError.timedOut("\(what) from the code API (\(await CodeFeed.shared.diagnostics(api, requestedAt: since)))")
     }
 
     /// Every code seen for `username` through `api`, newest first: the subscription's, merged with one
@@ -171,6 +184,8 @@ struct CodeSink: Sendable {
     /// The codes seen for a user at one moment, to tell the codes sent after it from those before.
     struct Snapshot: Sendable {
         fileprivate let fingerprints: Set<String>
+        /// When it was taken: the code it is for is asked for after this, for a timeout's message.
+        fileprivate var takenAt = Date()
     }
 
     /// What has been seen for `user` now. Take it before the call that sends a code, then wait with
@@ -245,7 +260,7 @@ struct CodeSink: Sendable {
             }
             try await Task.sleep(nanoseconds: 1_000_000_000)
         } while Date() < deadline
-        throw HarnessError.timedOut("\(what) from the code API (\(await CodeFeed.shared.diagnostics(api)))")
+        throw HarnessError.timedOut("\(what) from the code API (\(await CodeFeed.shared.diagnostics(api, requestedAt: snapshot.takenAt)))")
     }
 
     /// A sign-up (or resent sign-up) code. See `code(for:_:since:timeout:)`.
@@ -286,10 +301,8 @@ private actor CodeFeed {
     /// Per API URL: per lower-cased username: per fingerprint, the entry first seen.
     private var seen: [URL: [String: [String: CodeSink.Entry]]] = [:]
     private var subscriptions: [URL: CodeSubscription] = [:]
-    /// Which `listMfaInfo` form each API answered: `true` for the sandbox's `listMfaInfo(username:)`.
-    private var takesUsername: [URL: Bool] = [:]
-    /// The APIs that refused both forms: their codes come from the subscription alone.
-    private var queryRefused: Set<URL> = []
+    /// Per API, which `listMfaInfo` forms to ask, from its answers so far.
+    private var forms: [URL: ListMfaInfoForms] = [:]
     /// `COGNITO_CLIENT_INTEG_CODES_FROM=subscription` in the test process's environment (with `xcodebuild`,
     /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CODES_FROM`): no query at all, as against a backend whose
     /// `listMfaInfo` cannot answer, so a local run proves the subscription alone delivers every code.
@@ -318,20 +331,24 @@ private actor CodeFeed {
         }
     }
 
-    /// One `listMfaInfo` query, merged into what has been seen. The sandbox's form first; a backend that
-    /// refuses it (the plugin's schema has no argument) is asked the argument-less form from then on, and
-    /// one that refuses both is not queried again. A failing query is noted, not thrown: the subscription
-    /// may still deliver the code.
+    /// One `listMfaInfo` query, merged into what has been seen, asked as the plugin's `queriedOTP(for:)` asks:
+    /// the sandbox's form first, then the argument-less one (the plugin backends' schema), until one answers
+    /// (`ListMfaInfoForms`). A failing query is noted, not thrown: the subscription may still deliver the
+    /// code.
     func query(_ api: CodeSinkAPI, username: String) async {
-        guard !queryRefused.contains(api.url), !Self.subscriptionOnly else {
+        guard !Self.subscriptionOnly else {
             return
         }
-        let forms = takesUsername[api.url].map { [$0] } ?? [true, false]
-        for withUsername in forms {
+        for withUsername in forms[api.url, default: ListMfaInfoForms()].toAsk {
+            let form = "listMfaInfo\(withUsername ? "(username:)" : "")"
             do {
                 let rows = try await Self.listMfaInfo(api, username: withUsername ? username : nil)
-                takesUsername[api.url] = withUsername
+                if forms[api.url, default: ListMfaInfoForms()].answering == nil {
+                    note(api.url, "\(form) answered")
+                }
+                forms[api.url, default: ListMfaInfoForms()].answered(withUsername)
                 for row in rows {
+                    // Matched here, whatever the form: the argument-less one returns every user's rows.
                     guard let rowUser = (row["username"] as? String)?.lowercased(), rowUser == username,
                           let code = row["code"] as? String,
                           let expiration = (row["expirationTime"] as? NSNumber)?.doubleValue else {
@@ -342,14 +359,11 @@ private actor CodeFeed {
                 }
                 return
             } catch let error as QueryRefused {
-                note(api.url, "listMfaInfo\(withUsername ? "(username:)" : "") refused: \(error.reason)")
+                forms[api.url, default: ListMfaInfoForms()].refused(withUsername, byTheSchema: error.byTheSchema)
+                note(api.url, "\(form) \(error.byTheSchema ? "refused" : "failed"): \(error.reason)")
             } catch {
-                note(api.url, "listMfaInfo failed: \(error)")
-                return
+                note(api.url, "\(form) failed: \(error)")
             }
-        }
-        if takesUsername[api.url] == nil {
-            queryRefused.insert(api.url)
         }
     }
 
@@ -366,6 +380,10 @@ private actor CodeFeed {
     }
 
     private func note(_ url: URL, _ event: String) {
+        // A poll repeats the same failure every second: keep one of a run of equal events.
+        guard events[url]?.last != event else {
+            return
+        }
         events[url, default: []].append(event)
         if Self.subscriptionOnly {
             // What the switch changed shows in the run's log. Events never name a code, key, URL or user.
@@ -373,14 +391,28 @@ private actor CodeFeed {
         }
     }
 
-    func diagnostics(_ api: CodeSinkAPI) -> String {
-        let recent = (events[api.url] ?? []).suffix(6)
+    /// What happened on `api`, for a timeout's message. With `requestedAt`, when the code was asked for: a
+    /// subscription acknowledged only after that cannot have seen the code, which is then said.
+    func diagnostics(_ api: CodeSinkAPI, requestedAt: Date? = nil) async -> String {
+        var recent = Array((events[api.url] ?? []).suffix(6))
+        if let requestedAt, let connectedAt = await subscriptions[api.url]?.connectedAt,
+           connectedAt > requestedAt.addingTimeInterval(1) {
+            let late = Int(connectedAt.timeIntervalSince(requestedAt).rounded())
+            recent.append("""
+            the subscription was acknowledged \(late) s after the code was asked for, so it cannot have seen a \
+            code sent before then: it was not prepared before the request (CodeSink.prepare), or it reconnected \
+            since
+            """)
+        }
         return recent.isEmpty ? "no subscription or query events" : recent.joined(separator: "; ")
     }
 
-    /// A query the API refused, by its error types only.
+    /// A query the API refused, by its error types and kinds only.
     struct QueryRefused: Error {
         let reason: String
+        /// Untyped GraphQL errors only (`ListMfaInfoForms.isSchemaRefusal(_:)`): the API's schema has no such
+        /// query or argument, or cannot answer it, and asking again cannot help.
+        let byTheSchema: Bool
     }
 
     private static func listMfaInfo(_ api: CodeSinkAPI, username: String?) async throws -> [[String: Any]] {
@@ -413,18 +445,78 @@ private actor CodeFeed {
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
         if let errors = json?["errors"] as? [[String: Any]], !errors.isEmpty {
-            throw QueryRefused(reason: "\(errors.count) errors \(errors.compactMap { $0["errorType"] as? String })")
+            throw QueryRefused(
+                reason: "\(errors.count) errors \(errors.map(kind))",
+                byTheSchema: ListMfaInfoForms.isSchemaRefusal(errors)
+            )
         }
         guard status == 200, let json else {
-            throw QueryRefused(reason: "HTTP \(status)")
+            throw QueryRefused(reason: "HTTP \(status)", byTheSchema: false)
         }
         return ((json["data"] as? [String: Any])?["listMfaInfo"] as? [[String: Any]]) ?? []
+    }
+
+    /// A GraphQL error by its type, or by the kind its message names (AppSync's validation and type-mismatch
+    /// errors carry no type), never by the message itself.
+    private static func kind(_ error: [String: Any]) -> String {
+        if let type = error["errorType"] as? String, !type.isEmpty {
+            return type
+        }
+        let message = error["message"] as? String ?? ""
+        if let range = message.range(of: #"Validation error of type [A-Za-z]+"#, options: .regularExpression) {
+            return String(message[range].dropFirst("Validation error of type ".count))
+        }
+        if message.contains("type mismatch") {
+            return "type mismatch"
+        }
+        return "untyped"
     }
 
     private static func parseTimestamp(_ text: String) -> Date? {
         let withFraction = ISO8601DateFormatter()
         withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return withFraction.date(from: text) ?? ISO8601DateFormatter().date(from: text)
+    }
+}
+
+/// Which `listMfaInfo` forms to ask one API (`true`: the sandbox's `listMfaInfo(username:)`; `false`: the
+/// plugin backends' argument-less one), from what it answered so far.
+///
+/// Both are asked, the sandbox's first, until one answers; from then on only that one, whatever fails
+/// later: a backend's schema does not change during a run. Until then, a form refused by the schema
+/// (`isSchemaRefusal(_:)`) is not asked again; any other failure leaves it to be asked on the next poll.
+struct ListMfaInfoForms: Sendable, Equatable {
+    /// The form that has answered, once one has.
+    private(set) var answering: Bool?
+    /// The forms the schema refused before any answered.
+    private(set) var refusedBySchema: Set<Bool> = []
+
+    /// The forms to ask now, in order.
+    var toAsk: [Bool] {
+        answering.map { [$0] } ?? [true, false].filter { !refusedBySchema.contains($0) }
+    }
+
+    /// `withUsername` answered. The first form to answer is kept.
+    mutating func answered(_ withUsername: Bool) {
+        if answering == nil {
+            answering = withUsername
+        }
+    }
+
+    /// `withUsername` failed. Recorded only when the schema refused it and no form has answered yet.
+    mutating func refused(_ withUsername: Bool, byTheSchema: Bool) {
+        guard byTheSchema, answering == nil else {
+            return
+        }
+        refusedBySchema.insert(withUsername)
+    }
+
+    /// Whether GraphQL `errors` say the schema cannot answer the query: there are some, and none carries an
+    /// `errorType`. AppSync's validation errors (no such field or argument) and type-mismatch errors (the
+    /// plugin backends' argument-less `listMfaInfo`) are untyped; an authorization, resolver, throttling or
+    /// internal error is typed, and transient.
+    static func isSchemaRefusal(_ errors: [[String: Any]]) -> Bool {
+        !errors.isEmpty && errors.allSatisfy { ($0["errorType"] as? String ?? "").isEmpty }
     }
 }
 
@@ -442,6 +534,13 @@ private actor CodeSubscription {
     private var socket: URLSessionWebSocketTask?
     private var connected = false
     private var connecting: Task<Void, Never>?
+    /// When the current subscription was acknowledged.
+    private(set) var connectedAt: Date?
+    /// When the socket last received anything, keep-alives included.
+    private var lastActivity = Date()
+    /// How long AppSync may go without a keep-alive (`connection_ack`'s `connectionTimeoutMs`; 5 minutes
+    /// unless it says otherwise). A socket quiet for longer is taken as dropped, and replaced.
+    private var keepAliveTimeout: TimeInterval = 300
 
     init(api: CodeSinkAPI, receive: @escaping Receive, note: @escaping Note) {
         self.api = api
@@ -449,8 +548,14 @@ private actor CodeSubscription {
         self.note = note
     }
 
-    /// Returns once the subscription is acknowledged, or once connecting failed or took over 20 seconds.
+    /// Returns once the subscription is acknowledged, or once connecting failed or took over 20 seconds. A
+    /// connection that has heard nothing, not even a keep-alive, for longer than AppSync's keep-alive timeout
+    /// is replaced first: a socket can go silent without its receive failing.
     func ensureConnected() async {
+        if connected, let socket, Date().timeIntervalSince(lastActivity) > keepAliveTimeout {
+            await note("subscription silent past its keep-alive timeout; reconnecting")
+            disconnected(socket)
+        }
         if connected {
             return
         }
@@ -474,7 +579,11 @@ private actor CodeSubscription {
         self.socket = socket
         do {
             try await send(["type": "connection_init"], on: socket)
-            try await awaitMessage("connection_ack", on: socket)
+            let ack = try await awaitMessage("connection_ack", on: socket)
+            if let timeout = ((ack["payload"] as? [String: Any])?["connectionTimeoutMs"] as? NSNumber)?.doubleValue,
+               timeout > 0 {
+                keepAliveTimeout = timeout / 1_000
+            }
             let subscriptionId = UUID().uuidString.lowercased()
             let request = try String(
                 data: JSONSerialization.data(withJSONObject: [
@@ -499,6 +608,8 @@ private actor CodeSubscription {
             return
         }
         connected = true
+        connectedAt = Date()
+        lastActivity = Date()
         await note("subscription connected")
         Task { await self.listen(on: socket) }
         // As the plugin's helper does: the acknowledgement can precede AppSync fanning events out to the
@@ -510,6 +621,9 @@ private actor CodeSubscription {
         while true {
             do {
                 let message = try await socket.receive()
+                if socket === self.socket {
+                    lastActivity = Date()
+                }
                 guard let object = Self.object(message) else {
                     continue
                 }
@@ -552,8 +666,9 @@ private actor CodeSubscription {
     }
 
     /// Waits for a message of `type`, skipping keep-alives, for up to 10 seconds: past that the socket is
-    /// cancelled, which ends the pending receive with an error.
-    private func awaitMessage(_ type: String, on socket: URLSessionWebSocketTask) async throws {
+    /// cancelled, which ends the pending receive with an error. Returns the message.
+    @discardableResult
+    private func awaitMessage(_ type: String, on socket: URLSessionWebSocketTask) async throws -> [String: Any] {
         let watchdog = Task {
             try? await Task.sleep(nanoseconds: 10_000_000_000)
             if !Task.isCancelled {
@@ -568,7 +683,7 @@ private actor CodeSubscription {
             }
             let received = object["type"] as? String
             if received == type {
-                return
+                return object
             }
             if received == "ka" {
                 continue
