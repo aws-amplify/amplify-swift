@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
 
     // Code Snippet for
@@ -110,7 +110,7 @@ final class GraphQLCartCustomer4Tests: AWSAPIPluginGen2GraphQLBaseTest {
             items: ["Tomato", "Ice", "Mint"],
             customer: createdCustomer
         )
-        var existingCart = try await Amplify.API.mutate(request: .create(cart)).get()
+        let existingCart = try await Amplify.API.mutate(request: .create(cart)).get()
 
         // Code Snippet Begins
         do {

@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLTodo16Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLTodo16Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/signed-in-user-data-access/#add-signed-in-user-authorization-rule

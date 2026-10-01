@@ -143,7 +143,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
                 XCTAssertEqual(identifiers, expectedIdentifiers)
             } else {
-                XCTFail("Should be not loaded with identifiers \(expectedIdentifiers)")
+                XCTFail("Should be not loaded with identifiers \(String(describing: expectedIdentifiers))")
             }
         case .loaded(let expectedModel):
             if case .loaded(let model) = lazyModel.modelProvider.getState() {
@@ -257,7 +257,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
     }
 }
 
-extension LazyReferenceIdentifier: Equatable {
+extension LazyReferenceIdentifier: @retroactive Equatable {
     public static func == (lhs: LazyReferenceIdentifier, rhs: LazyReferenceIdentifier) -> Bool {
         return lhs.name == rhs.name && lhs.value == rhs.value
     }

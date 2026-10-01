@@ -10,7 +10,7 @@ import XCTest
 
 @testable import Amplify
 
-final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/relationships/#create-a-has-many-relationship-between-records
@@ -26,7 +26,7 @@ final class GraphQLTeamMember3Tests: AWSAPIPluginGen2GraphQLBaseTest {
                 name: "Tim",
                 team: createdTeam
             ) // Directly pass in the team instance
-            let createdMember = try await Amplify.API.mutate(request: .create(member))
+            _ = try await Amplify.API.mutate(request: .create(member)).get()
         } catch {
             print("Create team or member failed", error)
 

@@ -29,7 +29,8 @@ public extension ListIntContainer {
   static let schema = defineSchema { model in
     let listIntContainer = ListIntContainer.keys
 
-    model.pluralName = "ListIntContainers"
+    model.listPluralName = "ListIntContainers"
+    model.syncPluralName = "ListIntContainers"
 
     model.fields(
       .id(),

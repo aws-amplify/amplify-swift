@@ -26,7 +26,8 @@ public extension Person {
   static let schema = defineSchema { model in
     let person = Person.keys
 
-    model.pluralName = "People"
+    model.listPluralName = "People"
+    model.syncPluralName = "People"
 
     model.attributes(
       .primaryKey(fields: [person.id])

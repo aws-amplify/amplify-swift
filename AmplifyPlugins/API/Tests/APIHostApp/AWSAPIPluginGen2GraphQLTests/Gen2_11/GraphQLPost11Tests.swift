@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/#configure-multiple-authorization-rules
@@ -30,7 +30,7 @@ final class GraphQLPost11Tests: AWSAPIPluginGen2GraphQLBaseTest {
         // Code Snippet begins
         do {
             let post = Post(title: "Hello World")
-            let createdTodo = try await Amplify.API.mutate(request: .create(
+            _ = try await Amplify.API.mutate(request: .create(
                 post,
                 authMode: .amazonCognitoUserPools
             )).get()

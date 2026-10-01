@@ -202,7 +202,7 @@ extension GraphQLConnectionScenario1Tests {
     }
 
     func testListProjectsAPISwift() async throws {
-        guard let projects = try await listProjectsAPISwift() else {
+        guard try await listProjectsAPISwift() != nil else {
             XCTFail("Could not list projects")
             return
         }

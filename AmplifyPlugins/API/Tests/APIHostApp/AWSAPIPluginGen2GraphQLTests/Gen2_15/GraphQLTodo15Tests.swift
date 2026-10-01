@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLTodo15Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/multi-user-data-access/#add-multi-user-authorization-rule

@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: HasOneParentChildModels())
@@ -39,14 +39,14 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
     func testHasOneParentChildUpdate() async throws {
         await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
-        let savedChild = try await mutate(.create(hasOneChild))
+        _ = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
         var savedParent = try await mutate(.create(hasOneParent))
 
         let newChild = HasOneChild()
-        let savedNewChild = try await mutate(.create(newChild))
+        _ = try await mutate(.create(newChild))
         savedParent.setChild(newChild)
-        var updatedParent = try await mutate(.update(savedParent))
+        let updatedParent = try await mutate(.update(savedParent))
 
         assertLazyReference(
             updatedParent._child,
@@ -64,7 +64,7 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
-        var savedParent = try await mutate(.create(hasOneParent))
+        let savedParent = try await mutate(.create(hasOneParent))
 
         try await mutate(.delete(savedParent))
         try await assertModelDoesNotExist(savedParent)
@@ -91,15 +91,15 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
             state: .loaded(model: loadedChild)
         )
 
-        let queriedChild = try await query(.get(HasOneChild.self, byId: savedChild.id))!
+        _ = try await query(.get(HasOneChild.self, byId: savedChild.id))!
     }
 
     func testHasOneParentChildList() async throws {
         await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
-        let savedChild = try await mutate(.create(hasOneChild))
+        _ = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
-        let savedParent = try await mutate(.create(hasOneParent))
+        _ = try await mutate(.create(hasOneParent))
 
         let queriedParents = try await listQuery(.list(
             HasOneParent.self,

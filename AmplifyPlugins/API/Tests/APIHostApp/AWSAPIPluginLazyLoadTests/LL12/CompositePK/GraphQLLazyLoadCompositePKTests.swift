@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: CompositePKModels())

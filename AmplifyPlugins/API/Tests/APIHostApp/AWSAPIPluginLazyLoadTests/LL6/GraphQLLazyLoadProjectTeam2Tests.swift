@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-class GraphQLLazyLoadProjectTeam2Tests: GraphQLLazyLoadBaseTest {
+class GraphQLLazyLoadProjectTeam2Tests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam2Models())

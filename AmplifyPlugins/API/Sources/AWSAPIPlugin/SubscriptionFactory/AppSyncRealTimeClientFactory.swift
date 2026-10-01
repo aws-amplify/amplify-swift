@@ -37,21 +37,34 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
 
     private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
 
-    func getAppSyncRealTimeClient(
+    nonisolated func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
         authService: AWSAuthCredentialsProviderBehavior,
         authType: AWSAuthorizationType? = nil,
         apiAuthProviderFactory: APIAuthProviderFactory
-    ) throws -> AppSyncRealTimeClientProtocol {
-        let apiName = endpointConfig.name
-
+    ) async throws -> AppSyncRealTimeClientProtocol {
+        // Built outside the actor so the non-`Sendable` endpoint config and auth provider factory never cross into it.
         let authInterceptor = try getInterceptor(
             for: getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
             authService: authService,
             apiAuthProviderFactory: apiAuthProviderFactory
         )
 
+        return await cachedClient(
+            apiName: endpointConfig.name,
+            authType: authType,
+            endpoint: endpoint,
+            authInterceptor: authInterceptor
+        )
+    }
+
+    private func cachedClient(
+        apiName: String,
+        authType: AWSAuthorizationType?,
+        endpoint: URL,
+        authInterceptor: AppSyncRequestInterceptor & WebSocketInterceptor
+    ) -> AppSyncRealTimeClientProtocol {
         // create or retrieve the connection provider. If creating, add interceptors onto the provider.
         if let appSyncClient = apiToClientCache[MapperCacheKey(apiName: apiName, authType: authType)] {
             return appSyncClient
@@ -76,7 +89,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         }
     }
 
-    private func getOrCreateAuthConfiguration(
+    private nonisolated func getOrCreateAuthConfiguration(
         from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         authType: AWSAuthorizationType?
     ) throws -> AWSAuthorizationConfiguration {
@@ -88,7 +101,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
         return endpointConfig.authorizationConfiguration
     }
 
-    private func getInterceptor(
+    private nonisolated func getInterceptor(
         for authorizationConfiguration: AWSAuthorizationConfiguration,
         authService: AWSAuthCredentialsProviderBehavior,
         apiAuthProviderFactory: APIAuthProviderFactory
@@ -190,7 +203,7 @@ extension AppSyncRealTimeClientFactory: Resettable {
     func reset() async {
         await withTaskGroup(of: Void.self) { taskGroup in
             self.apiToClientCache.values
-                .compactMap { $0 as? Resettable }
+                .compactMap { $0 as? any AppSyncRealTimeClientProtocol & Resettable }
                 .forEach { resettable in
                     taskGroup.addTask { await resettable.reset()}
                 }
