@@ -16,7 +16,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
+class SQLiteStorageEngineAdapterTests: BaseDataStoreTests, @unchecked Sendable {
 
     /// - Given: a list a `Post` instance
     /// - When:

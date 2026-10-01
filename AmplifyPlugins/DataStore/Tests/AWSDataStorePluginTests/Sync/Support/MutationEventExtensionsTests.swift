@@ -15,7 +15,7 @@ import XCTest
 @testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
-class MutationEventExtensionsTest: BaseDataStoreTests {
+class MutationEventExtensionsTest: BaseDataStoreTests, @unchecked Sendable {
 
     /// - Given: A pending mutation events queue with event containing `nil` version, a sent mutation
     ///         event model that matches the received mutation sync model. The received mutation sync has version 1.
