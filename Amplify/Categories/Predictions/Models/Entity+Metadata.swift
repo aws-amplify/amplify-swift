@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Predictions.Entity {
-    struct Metadata {
+    struct Metadata: Sendable {
         public let confidence: Double
         public let pose: Predictions.Pose
 

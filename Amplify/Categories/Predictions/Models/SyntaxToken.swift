@@ -8,7 +8,7 @@
 public extension Predictions {
     /// Describes syntactical information resulting from text interpretation as
     /// a result of interpret() API
-    struct SyntaxToken {
+    struct SyntaxToken: Sendable {
         public let tokenId: Int
         public let text: String
         public let range: Range<String.Index>

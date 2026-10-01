@@ -9,7 +9,7 @@ import Foundation
 
 public extension Predictions.PartOfSpeech {
     /// Part of speech identified in a text from interpret() API
-    struct DetectionResult {
+    struct DetectionResult: Sendable {
         public let partOfSpeech: Predictions.PartOfSpeech
         public let score: Float?
 

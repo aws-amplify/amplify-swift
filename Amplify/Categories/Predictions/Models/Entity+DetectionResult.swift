@@ -8,7 +8,7 @@
 public extension Predictions.Entity {
     /// Describes the result of interpret() API when the analyzed text
     /// contains a person/place
-    struct DetectionResult {
+    struct DetectionResult: Sendable {
         public let type: Predictions.Entity.Kind
         public let targetText: String
         public let score: Float?

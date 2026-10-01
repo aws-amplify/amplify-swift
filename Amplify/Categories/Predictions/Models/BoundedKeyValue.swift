@@ -11,7 +11,7 @@ public extension Predictions {
     /// Describes the data extracted as key-value pair in
     /// an image/document resulting from identify() API
     /// e.g The text "Name: John Doe" present in an image/document
-    struct BoundedKeyValue {
+    struct BoundedKeyValue: Sendable {
         public let key: String
         public let value: String
         public let isSelected: Bool

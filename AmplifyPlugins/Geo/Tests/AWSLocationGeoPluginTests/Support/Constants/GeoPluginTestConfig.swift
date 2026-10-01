@@ -62,7 +62,8 @@ enum GeoPluginTestConfig {
         (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON)
     )
 
-    static let geoPluginConfigAmplifyOutputs = AmplifyOutputsData(
+    // `nonisolated(unsafe)`: an immutable test constant; `AmplifyOutputsData` isn't `Sendable`.
+    nonisolated(unsafe) static let geoPluginConfigAmplifyOutputs = AmplifyOutputsData(
         geo: .init(
             awsRegion: regionName,
             maps: .init(items: [map: .init(style: style)], default: map),

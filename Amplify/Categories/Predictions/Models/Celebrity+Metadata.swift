@@ -9,7 +9,7 @@ import Foundation
 
 public extension Predictions.Celebrity {
     /// Celebrity metadata identified as a result of identify() API
-    struct Metadata {
+    struct Metadata: Sendable {
         public let name: String
         public let identifier: String
         public let urls: [URL]

@@ -8,7 +8,7 @@
 public extension Predictions.Identify.Text {
     /// Results are mapped to IdentifyTextResult when .plain is passed for .detectText in the type: field
     /// in identify() API
-    struct Result {
+    struct Result: Sendable {
         public let fullText: String?
         public let words: [Predictions.IdentifiedWord]?
         public let rawLineText: [String]?
