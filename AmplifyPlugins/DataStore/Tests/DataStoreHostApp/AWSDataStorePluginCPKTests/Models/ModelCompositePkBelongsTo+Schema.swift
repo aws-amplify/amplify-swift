@@ -26,7 +26,8 @@ public extension ModelCompositePkBelongsTo {
   static let schema = defineSchema { model in
     let modelCompositePkBelongsTo = ModelCompositePkBelongsTo.keys
 
-    model.pluralName = "ModelCompositePkBelongsTos"
+    model.listPluralName = "ModelCompositePkBelongsTos"
+    model.syncPluralName = "ModelCompositePkBelongsTos"
 
     model.attributes(
       .index(fields: ["id", "dob"], name: nil)

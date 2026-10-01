@@ -28,7 +28,8 @@ public extension Team1V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Team1V2s"
+    model.listPluralName = "Team1V2s"
+    model.syncPluralName = "Team1V2s"
 
     model.fields(
       .id(),

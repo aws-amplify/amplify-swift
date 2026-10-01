@@ -12,7 +12,7 @@ import XCTest
 @testable import DataStoreHostApp
 #endif
 
-class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
     let syncReceived = HubPayload.EventName.DataStore.syncReceived
     let syncStarted = HubPayload.EventName.DataStore.syncStarted
 

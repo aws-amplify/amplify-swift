@@ -12,12 +12,12 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest {
+final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testSavePost() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await createAndWaitForSync(post)
+        _ = try await createAndWaitForSync(post)
     }
 
     func testSaveComment() async throws {
@@ -30,8 +30,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
             post4CommentsPostId: post.postId,
             post4CommentsTitle: post.title
         )
-        let savedPost = try await createAndWaitForSync(post)
-        let savedComment = try await createAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        _ = try await createAndWaitForSync(comment)
     }
 
     func testLazyLoad() async throws {

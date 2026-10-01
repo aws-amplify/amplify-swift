@@ -24,7 +24,8 @@ public extension HasOneChild {
   static let schema = defineSchema { model in
     let hasOneChild = HasOneChild.keys
 
-    model.pluralName = "HasOneChildren"
+    model.listPluralName = "HasOneChildren"
+    model.syncPluralName = "HasOneChildren"
 
     model.attributes(
       .index(fields: ["id"], name: nil),

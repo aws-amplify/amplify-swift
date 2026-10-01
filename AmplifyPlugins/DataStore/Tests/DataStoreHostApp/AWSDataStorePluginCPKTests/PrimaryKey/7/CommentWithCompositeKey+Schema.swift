@@ -25,7 +25,8 @@ public extension CommentWithCompositeKey {
   static let schema = defineSchema { model in
     let commentWithCompositeKey = CommentWithCompositeKey.keys
 
-    model.pluralName = "CommentWithCompositeKeys"
+    model.listPluralName = "CommentWithCompositeKeys"
+    model.syncPluralName = "CommentWithCompositeKeys"
 
     model.attributes(
       .index(fields: ["id", "content"], name: nil),

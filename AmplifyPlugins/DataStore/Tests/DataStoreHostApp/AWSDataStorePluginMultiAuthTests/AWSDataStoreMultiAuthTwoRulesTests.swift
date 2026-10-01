@@ -13,7 +13,7 @@ import XCTest
 @testable import Amplify
 
 // swiftlint:disable file_length
-class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
     // MARK: - owner/private - UserPools & IAM
 
     /// Given: a user signed in with CognitoUserPools
@@ -717,7 +717,7 @@ extension AWSDataStoreMultiAuthTwoRulesTests {
 // MARK: - TestAuthProviderFactory
 class TestAuthProviderFactory: APIAuthProviderFactory {
 
-    class TestOIDCAuthProvider: AmplifyOIDCAuthProvider {
+    final class TestOIDCAuthProvider: AmplifyOIDCAuthProvider {
 
         func getLatestAuthToken() async throws -> String {
             throw DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users.")

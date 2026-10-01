@@ -25,7 +25,8 @@ public extension TagWithCompositeKey {
   static let schema = defineSchema { model in
     let tagWithCompositeKey = TagWithCompositeKey.keys
 
-    model.pluralName = "TagWithCompositeKeys"
+    model.listPluralName = "TagWithCompositeKeys"
+    model.syncPluralName = "TagWithCompositeKeys"
 
     model.attributes(
       .index(fields: ["id", "name"], name: nil),

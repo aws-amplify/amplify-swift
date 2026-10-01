@@ -26,7 +26,8 @@ public extension ModelCompositeMultiplePk {
   static let schema = defineSchema { model in
     let modelCompositeMultiplePk = ModelCompositeMultiplePk.keys
 
-    model.pluralName = "ModelCompositeMultiplePks"
+    model.listPluralName = "ModelCompositeMultiplePks"
+    model.syncPluralName = "ModelCompositeMultiplePks"
 
     model.attributes(
       .index(fields: ["id", "location", "name"], name: nil),

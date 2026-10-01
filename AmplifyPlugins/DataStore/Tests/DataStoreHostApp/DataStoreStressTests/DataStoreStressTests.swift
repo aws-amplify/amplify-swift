@@ -15,7 +15,7 @@ import Combine
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
-final class DataStoreStressTests: DataStoreStressBaseTest {
+final class DataStoreStressTests: DataStoreStressBaseTest, @unchecked Sendable {
 
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
