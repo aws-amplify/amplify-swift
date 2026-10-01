@@ -11,7 +11,7 @@ Review date: 2026-09-03
 
 NOTE: Swift is used throughout the design doc showcasing API changes and a per platform API doc can be created after an agreement on the design approach.
 
-> **The design in one paragraph.** Amplify auth is reachable only as a configured plugin behind a process-global (`Amplify.Auth`). This design proposes **`AmplifyCognitoClient`** - the **Auth Client** - a self-contained client you construct and hold, built the same way as the v3 clients already shipping. Because it is an ordinary object rather than a registry singleton, an app can hold **more than one**, which is what makes concurrent signed-in sessions possible. The Cognito protocol logic (SRP, MFA, device tracking, refresh, OAuth) is **not rewritten**.
+> **The design in one paragraph.** Amplify auth is reachable only as a configured plugin behind a process-global (`Amplify.Auth`). This design proposes **`AmplifyCognitoClient`** - the **Auth Client** - a self-contained client you construct and hold, built the same way as the standalone clients already shipping. Because it is an ordinary object rather than a registry singleton, an app can hold **more than one**, which is what makes concurrent signed-in sessions possible. The Cognito protocol logic (SRP, MFA, device tracking, refresh, OAuth) is **not rewritten**.
 
 ## Changes since the previous revision
 
@@ -96,25 +96,24 @@ Three words carry the design.
 
 Being clear about motivation matters, because it determines what "done" means.
 
-1. **Move auth off the plugin architecture** - the primary goal, and the one that puts this document in a series. Kinesis, Firehose, Connect, and EventEnrichment already ship as standalone clients that need no `Amplify.configure()` and no plugin registry; CloudWatch Logging and AppSync are in flight. Auth is the largest remaining category, and the one every other client needs for credentials.
+1. **Move auth off the plugin architecture** - the primary goal, and the one that puts this document in a series. Kinesis, Firehose, Connect, EventEnrichment and CloudWatch Logging already ship as standalone clients that need no `Amplify.configure()` and no plugin registry. Auth is the largest remaining category, and the one every other client needs for credentials.
 
 2. **Enable concurrent sessions** - a real goal, not a side effect. Session IDs, listing saved sessions, and per-instance events exist only for it.** The current plugin supports one session at a time.** A second sign-in is not merely unimplemented - it is deliberately refused, with a clear error and a recovery suggestion. In Swift the caller gets: `"There is already a user in signedIn state. SignOut the user first before calling signIn"` Android and Flutter refuse it too, equally deliberately.
 
 ## 2. What this design is not
 
-**Not a removal of the plugin.** The v3 goal is that clients supersede plugins over time, but this design deletes nothing: the auth plugin keeps working, and category consumers (API, Storage, DataStore) are unaffected. What it adds is the standalone Auth Client that new code, and the rest of the v3 client family, can build on.
+**Not a removal of the plugin.** This design deletes nothing: the auth plugin keeps working, and category consumers (API, Storage, DataStore) are unaffected. What it adds is the standalone Auth Client that new code, and the other standalone clients, can build on.
 
 ## 3. The Auth Client contract
 
-Standalone clients are the established Amplify pattern: self-contained libraries an app uses directly, with no `Amplify.configure()` and no plugin registry, depending only on the shared foundation packages. Four already ship this way and two more are in flight, and the Auth Client takes a specific lesson from each:
+Standalone clients are the established Amplify pattern: self-contained libraries an app uses directly, with no `Amplify.configure()` and no plugin registry, depending only on the shared foundation packages. Several already ship this way, and the Auth Client takes a specific lesson from each:
 
 | Client | What the Auth Client takes from it |
 |---|---|
 | **Kinesis**, **Firehose** | The construction shape: a `Configuration` value loadable from `amplify_outputs.json`, an `Options` struct with defaults, and a synchronous throwing `init`. |
 | **Connect** | The convenience overloads, and the proof that two instances of one client can coexist in a process. |
 | **EventEnrichment** | Actor-internals-with-a-plain-facade, and the naming conventions. |
-| **CloudWatch Logging** (in flight) | How to coexist with an existing plugin: extract the shared core into an internal module, leave the plugin working over it, ship the client behind an experimental flag. |
-| **AppSync** (in flight) | Taking auth at construction rather than reaching for a global - which is the shape the Auth Client has to satisfy from the other side. |
+| **CloudWatch Logging** | How to coexist with an existing plugin: extract the shared core into an internal module, leave the plugin working over it, ship the client behind an experimental flag. |
 
 Construction is therefore the family's shape, unchanged - precisely what the Kinesis and Firehose row above describes. The declaration itself is in **14.1**, with the rest of the API surface.
 
@@ -173,7 +172,7 @@ The design exists to serve these, and the rest of this section takes them one at
 The app holds two Auth Clients. Each signs in independently; both stay live; neither disturbs the other.
 
 ```swift
-// Ordinary construction. Same shape as every other v3 client.
+// Ordinary construction. Same shape as every other standalone client.
 let work = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .named("work")))
 let home = try AmplifyCognitoClient(configuration: config, options: .init(sessionId: .named("home")))
 
@@ -428,7 +427,7 @@ The tradeoff is worth stating explicitly, because it is the app's call and not o
 
 **Supported, and as of this revision the plugin does not run beside a client — it owns one and delegates to it.** The plugin retains its entire public surface, but internally holds an Auth Client for its own session and forwards to it, exposing an accessor so an app can retrieve that client. There is therefore **one** implementation underneath, and a plugin call site and a client call site can refer to the *same* session rather than two deliberately isolated stores. This replaces the earlier "they must not share a session ID" rule, which was a footgun: it required apps to keep two stores apart and gave no way to migrate gradually without dual state.
 
-What this buys is the real migration story: an app moves **call sites** one at a time instead of moving *storage* once. This is the bridge phase before full v3, and it is why §4.8's read-through mode and decision 1's interim step are framed the way they are.
+What this buys is the real migration story: an app moves **call sites** one at a time instead of moving *storage* once. This is the bridge phase, and it is why §4.8's read-through mode and decision 1's interim step are framed the way they are.
 
 **Scheduling consequence, worth stating explicitly:** a forward-compatible *reader* has to ship in the current plugin **before** the new client does. Otherwise no released plugin version can read the new record format, and the bridge has nothing to bridge from. Categories continue resolving through the global, so from the categories' point of view the setup is still single-user; extra sessions remain visible only to code the app wired explicitly.
 
@@ -1449,7 +1448,7 @@ Where we differ, deliberately: a structured encoding rather than a delimiter-joi
 
 ## Appendix C: investigation notes and evidence
 
-Verified against `amplify-swift`, `amplify-android`, and `amplify-flutter` at `origin/main` as of 2026-08-11, the in-flight CloudWatch Logging and AppSync client branches, and amplify-js PR #14875 (open, unmerged).
+Verified against `amplify-swift`, `amplify-android`, and `amplify-flutter` at `origin/main` as of 2026-08-11, the CloudWatch Logging client, and amplify-js PR #14875 (open, unmerged).
 
 **C.1 The refusal is deliberate, not missing.** The "already a user in signedIn state" error appears at three sites in the Swift plugin, with a recovery suggestion. Android and Flutter refuse equivalently. So this design relaxes a deliberate constraint; it does not fix a bug.
 
@@ -1465,7 +1464,6 @@ Verified against `amplify-swift`, `amplify-android`, and `amplify-flutter` at `o
 
 **C.7 CloudWatch Logging did not make the plugin an adapter.** The shared plumbing was extracted into an internal module; the plugin file is byte-identical to main and does not reference the client. The client takes identity via a `setUserIdentifier(_:)` setter and never touches `Amplify.Auth`. It ships behind an experimental SPI flag. This is the precedent Section 3 and decision 1 rest on.
 
-**C.8 AppSync takes auth at construction, but with two caveats.** It accepts closures for token-based modes and a resolver for IAM, never reaching for a global, which is the shape Section 7 needs. However its branch is an interface skeleton with unimplemented methods, and it accepts a raw AWS SDK credential type rather than the shared foundation protocol. **Auth should vend the foundation type** so the family stays consistent and callers are not forced to touch SDK types. Cited as intent, not as shipped precedent.
 
 **C.9 The plugin already tracks every in-flight state, privately.** The internal authentication and authorization state machines cover signing in, signing out, fetching a session (unauthenticated and user-pool), refreshing, storing credentials, and deleting a user, at finer granularity than `AuthSessionState` exposes and none of it public. The machine also already has an internal replay-on-subscribe stream. One caution for whoever implements the public stream: the machine suppresses no-op transitions using equality that ignores payloads, so consecutive distinct challenges can compare equal and not emit, and a public stream must derive equality on the projected type.
 
@@ -1499,7 +1497,7 @@ Verified against `amplify-swift`, `amplify-android`, and `amplify-flutter` at `o
 
 ## Appendix D: client-family conventions and construction reference
 
-### D.1 The checklist every v3 client satisfies
+### D.1 The checklist every standalone client satisfies
 
 Adopted here as-is. In the body only the two auth-specific points are called out: no `credentialsProvider` parameter, because auth produces one, and the CloudWatch-style coexistence with the plugin.
 
@@ -1548,7 +1546,7 @@ public init(configuration: AuthClientConfiguration,
 
 ### D.3 Document provenance
 
-This is a proposal built on work already shipped: the construction shape, packaging, and conventions are taken from the v3 clients already in the repository rather than invented for auth. It is part of the v3 client family - Kinesis, Firehose, Connect, and EventEnrichment shipped; CloudWatch Logging and AppSync in flight; auth is this document. The design itself is platform-agnostic; Swift is used as the worked example throughout. The body covers goals, use cases, and the API surface; the evidence, the alternative design, and the family conventions live in these appendices, which is what keeps the body short.
+This is a proposal built on work already shipped: the construction shape, packaging, and conventions are taken from the standalone clients already in the repository rather than invented for auth. It joins the standalone clients already shipped - Kinesis, Firehose, Connect, EventEnrichment and CloudWatch Logging. The design itself is platform-agnostic; Swift is used as the worked example throughout. The body covers goals, use cases, and the API surface; the evidence, the alternative design, and the family conventions live in these appendices, which is what keeps the body short.
 
 ## Appendix E: Android prerequisites, for later discussion
 
