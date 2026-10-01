@@ -278,11 +278,12 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
         reason: Data?
     ) {
         log.debug("[WebSocketClient] Websocket disconnected")
-        subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
-        // Only tear down the monitor if this close is for the current socket. A late close from a
-        // superseded socket must not cancel the replacement socket's monitor.
+        // Ignore the entire close event from a superseded socket. A late close from an old socket
+        // must not publish .disconnected (which would clear the replacement socket's subscriptions)
+        // or cancel the replacement socket's monitor.
         Task { [weak self] in
             guard let self, await webSocketTask === connection else { return }
+            subject.send(.disconnected(closeCode, reason.flatMap { String(data: $0, encoding: .utf8) }))
             await stopPingMonitor()
         }
     }

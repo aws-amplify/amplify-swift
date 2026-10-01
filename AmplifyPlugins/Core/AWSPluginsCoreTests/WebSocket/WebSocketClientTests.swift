@@ -261,6 +261,47 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         await webSocketClient.disconnect()
     }
 
+    /// Verifies that a close callback from a superseded socket is ignored.
+    ///
+    /// - Given: A connected client whose current socket differs from a stale socket task
+    /// - When: The close delegate fires for the stale socket
+    /// - Then: No `.disconnected` is published, so the active connection's subscriptions survive
+    func testLivenessPing_ignoresCloseFromSupersededSocket() async throws {
+        var cancellables = Set<AnyCancellable>()
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        let webSocketClient = WebSocketClient(url: endpoint)
+        await verifyConnected(webSocketClient)
+
+        // A task that was never the client's current connection stands in for a superseded socket.
+        let supersededTask = URLSession(configuration: .default)
+            .webSocketTask(with: URL(string: "ws://localhost")!)
+
+        let noDisconnect = expectation(description: "Superseded close must not publish .disconnected")
+        noDisconnect.isInverted = true
+        await webSocketClient.publisher.sink { event in
+            if case .disconnected = event {
+                noDisconnect.fulfill()
+            }
+        }
+        .store(in: &cancellables)
+
+        webSocketClient.urlSession(
+            URLSession(configuration: .default),
+            webSocketTask: supersededTask,
+            didCloseWith: .abnormalClosure,
+            reason: nil
+        )
+
+        await fulfillment(of: [noDisconnect], timeout: 1.0)
+        let stillConnected = await webSocketClient.isConnected
+        XCTAssertTrue(stillConnected, "A superseded socket close must not disconnect the active connection")
+        await webSocketClient.disconnect()
+    }
+
     private func verifyConnected(
         _ webSocketClient: WebSocketClient,
         autoConnectOnNetworkStatusChange: Bool = false,
