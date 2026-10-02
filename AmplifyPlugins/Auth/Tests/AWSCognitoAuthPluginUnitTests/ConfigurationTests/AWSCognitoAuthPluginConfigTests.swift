@@ -423,6 +423,8 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase, @unchecked Sendable {
     ///
     func testEmittingInternalConfigureAuthHubEvent() throws {
         let expectation = expectation(description: "conifguration should complete")
+        // Hub's Combine subjects outlive `Amplify.reset()`, so a configure from an earlier test can also arrive here.
+        expectation.assertForOverFulfill = false
         let subscription = Amplify.Hub.publisher(for: .auth).sink { payload in
 
             if payload.eventName == "InternalConfigureAuth" {
