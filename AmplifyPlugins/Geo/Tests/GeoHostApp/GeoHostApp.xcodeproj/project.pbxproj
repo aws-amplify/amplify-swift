@@ -472,6 +472,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		21F762D92BD6B3A10048845A /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -490,6 +491,7 @@
 		};
 		685778032A3CC0D8001CE5C1 /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -508,6 +510,7 @@
 		};
 		97914B8A295570E1002000EA /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -526,6 +529,7 @@
 		};
 		97DB82512823429C00FC2228 /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

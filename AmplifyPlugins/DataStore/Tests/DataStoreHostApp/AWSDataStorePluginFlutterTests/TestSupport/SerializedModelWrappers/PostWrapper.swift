@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AmplifyTestCommon
 import Foundation
 
 /**
@@ -42,7 +41,7 @@ class PostWrapper: NSCopying {
             "title": post.title,
             "content": post.content,
             "createdAt": post.createdAt.iso8601String,
-            "rating": post.rating
+            "rating": post.rating as Any
         ]
         self.model = try FlutterSerializedModel(id: post.id, map: FlutterDataStoreRequestUtils.getJSONValue(map))
     }

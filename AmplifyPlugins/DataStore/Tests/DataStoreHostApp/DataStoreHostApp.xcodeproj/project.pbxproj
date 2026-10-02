@@ -7,6 +7,59 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DB85C77905DCA82ABAC3397 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC27289C062000B32A39 /* TestConfigHelper.swift */; };
+		8DA968B93DF3B8A3E9B13DE7 /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDE289C06E300B32A39 /* Project1+Schema.swift */; };
+		A76442F489061E5ECE6E3851 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDD289C06E300B32A39 /* Project1.swift */; };
+		1FDCF99D5586AE7005EBF579 /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDC289C06E300B32A39 /* Team1+Schema.swift */; };
+		F7F1589D1D594EB18F9783B8 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDF289C06E300B32A39 /* Team1.swift */; };
+		5F4F5EADB36F5AF73E2AEF4F /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEC289C06E300B32A39 /* Project2+Schema.swift */; };
+		50260D776D6207E7B3AD3244 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEE289C06E300B32A39 /* Project2.swift */; };
+		C940ABA25E97A111EEB15C32 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEF289C06E300B32A39 /* Team2+Schema.swift */; };
+		2C945C91D6C2F6978C5A4CF8 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCED289C06E300B32A39 /* Team2.swift */; };
+		D6E5A171E3BD8655E91B1058 /* Comment3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE9289C06E300B32A39 /* Comment3+Schema.swift */; };
+		120F82A0401E5903758BCA70 /* Comment3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEA289C06E300B32A39 /* Comment3.swift */; };
+		74D20438DDCFD53A159BB125 /* Post3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE8289C06E300B32A39 /* Post3+Schema.swift */; };
+		21F7EE75800A15BEBF07DAB0 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE7289C06E300B32A39 /* Post3.swift */; };
+		A2E08525D05F9B830616C40E /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE4289C06E300B32A39 /* Comment4+Schema.swift */; };
+		369431B0F41F31F95D478BDF /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE5289C06E300B32A39 /* Comment4.swift */; };
+		49CE6394611970DF5D53992B /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE3289C06E300B32A39 /* Post4+Schema.swift */; };
+		9004045F62D1384D66E9D252 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE2289C06E300B32A39 /* Post4.swift */; };
+		1C9660104FBA955F9927A290 /* Post5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF5289C06E300B32A39 /* Post5+Schema.swift */; };
+		F55394758DAB73D0FA00EBD4 /* Post5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF6289C06E300B32A39 /* Post5.swift */; };
+		651A02C3340673470AB81923 /* PostEditor5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF3289C06E300B32A39 /* PostEditor5+Schema.swift */; };
+		02C91C43C5F15A1CE8D5234E /* PostEditor5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF1289C06E300B32A39 /* PostEditor5.swift */; };
+		473A0B63EDB2809BB6C088A9 /* User5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF4289C06E300B32A39 /* User5+Schema.swift */; };
+		496AB36526963679FC6638F5 /* User5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF2289C06E300B32A39 /* User5.swift */; };
+		63CF14E10245D8BD04300FB4 /* Blog6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDA289C06E300B32A39 /* Blog6+Schema.swift */; };
+		847CBC70F355971B4CBA03EB /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD5289C06E300B32A39 /* Blog6.swift */; };
+		28D1FFD1CD79D6C87710203A /* Comment6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD9289C06E300B32A39 /* Comment6+Schema.swift */; };
+		7052CDF67343051662AD58D8 /* Comment6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD7289C06E300B32A39 /* Comment6.swift */; };
+		D8D685EDE8FE2E362225825A /* Post6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD8289C06E300B32A39 /* Post6+Schema.swift */; };
+		564CD654B172AFED26FE7F0F /* Post6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD6289C06E300B32A39 /* Post6.swift */; };
+		81A027E4793E6BD4C89DEB07 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */; };
+		F3F9118AF5399D1F5A60FF4C /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD20289C06E300B32A39 /* Comment.swift */; };
+		A52487E810946359ED99793A /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF7289C06E300B32A39 /* CustomerOrder+Schema.swift */; };
+		58EB30BD33BA05A8F0CD9BBF /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC3289C06E300B32A39 /* CustomerOrder.swift */; };
+		7E659193F163D0890D3BCC2E /* DeprecatedTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2A289C06E200B32A39 /* DeprecatedTodo.swift */; };
+		113599C98E4197DA399D1F55 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC2289C06E300B32A39 /* Post+Schema.swift */; };
+		B0C3F4ED0551BFB67E029B81 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD2289C06E300B32A39 /* Post.swift */; };
+		B5F2EDD2DFCEF660B3C50874 /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC93289C06E300B32A39 /* PostStatus.swift */; };
+		C9733045C30265A19629C731 /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9D289C06E300B32A39 /* EnumTestModel+Schema.swift */; };
+		A2611FB3A426EBFAD2C63A46 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC99289C06E300B32A39 /* EnumTestModel.swift */; };
+		9E65DB5F5B7DBFE8426140B5 /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA3289C06E300B32A39 /* ListIntContainer+Schema.swift */; };
+		844427E40020C973FEC7205B /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA4289C06E300B32A39 /* ListIntContainer.swift */; };
+		621BA091889EC1DF8641F3AF /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC98289C06E300B32A39 /* ListStringContainer+Schema.swift */; };
+		7C73E7CEC97E77D51740B791 /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC97289C06E300B32A39 /* ListStringContainer.swift */; };
+		4331682E6B81B24F5A0F4114 /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9E289C06E300B32A39 /* Nested+Schema.swift */; };
+		10D38608315E935DA28DC063 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9B289C06E300B32A39 /* Nested.swift */; };
+		89C5056977783F00F4EA9112 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA1289C06E300B32A39 /* NestedTypeTestModel+Schema.swift */; };
+		7DE27B56235FA422EC127021 /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA2289C06E300B32A39 /* NestedTypeTestModel.swift */; };
+		293933BD1967BFCD416E5EAB /* Scalar+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9A289C06E300B32A39 /* Scalar+Equatable.swift */; };
+		6EC09CDF9A917CECACCEE2B8 /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA0289C06E300B32A39 /* ScalarContainer+Schema.swift */; };
+		C96E4DA616C090F40FF0F7BB /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9C289C06E300B32A39 /* ScalarContainer.swift */; };
+		7F16DCF572FC63368CBD147B /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9F289C06E300B32A39 /* TestEnum.swift */; };
+		B227E863372884B609882D68 /* Team+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBE289C06E300B32A39 /* Team+Schema.swift */; };
+		C9CB127A09F6CCC2688DD0A3 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBC289C06E300B32A39 /* Team.swift */; };
 		210445632AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */; };
 		210445642AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */; };
 		210D5D4A2982EF6B00D748FE /* AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D492982EF6B00D748FE /* AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift */; };
@@ -4152,6 +4205,7 @@
 				21BBFB88289C010E00B32A39 /* Sources */,
 				21BBFB89289C010E00B32A39 /* Frameworks */,
 				21BBFB8A289C010E00B32A39 /* Resources */,
+				363C78374DFC22C33C8AACFF /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -4599,6 +4653,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		213DBC4C28A57B5800B30280 /* Copy Configuration File */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4617,6 +4672,7 @@
 		};
 		213DBC4D28A57B8600B30280 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4635,6 +4691,7 @@
 		};
 		213DBC4E28A57B9500B30280 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4653,6 +4710,7 @@
 		};
 		21801C8328F9A23300FFA37E /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4671,6 +4729,7 @@
 		};
 		21977DBC289C16EB005B49D6 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4689,6 +4748,26 @@
 		};
 		21BBFE1A289C088E00B32A39 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		363C78374DFC22C33C8AACFF /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4707,6 +4786,7 @@
 		};
 		68826CEB2A43A1B0005E85A7 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4725,6 +4805,7 @@
 		};
 		68826D5E2A43A1BA005E85A7 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4743,6 +4824,7 @@
 		};
 		68826DF52A43A1C3005E85A7 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4761,6 +4843,7 @@
 		};
 		68826E602A43A1D1005E85A7 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4779,6 +4862,7 @@
 		};
 		68826E7D2A43A1DB005E85A7 /* Copy Configuration File */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4797,6 +4881,7 @@
 		};
 		68E9EBF62A448C23001F713D /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4815,6 +4900,7 @@
 		};
 		68E9EC412A448C47001F713D /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4833,6 +4919,7 @@
 		};
 		97731F0128B3D5B5006F180B /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -4851,6 +4938,7 @@
 		};
 		97914D0A29563544002000EA /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -5585,6 +5673,59 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DB85C77905DCA82ABAC3397 /* TestConfigHelper.swift in Sources */,
+				8DA968B93DF3B8A3E9B13DE7 /* Project1+Schema.swift in Sources */,
+				A76442F489061E5ECE6E3851 /* Project1.swift in Sources */,
+				1FDCF99D5586AE7005EBF579 /* Team1+Schema.swift in Sources */,
+				F7F1589D1D594EB18F9783B8 /* Team1.swift in Sources */,
+				5F4F5EADB36F5AF73E2AEF4F /* Project2+Schema.swift in Sources */,
+				50260D776D6207E7B3AD3244 /* Project2.swift in Sources */,
+				C940ABA25E97A111EEB15C32 /* Team2+Schema.swift in Sources */,
+				2C945C91D6C2F6978C5A4CF8 /* Team2.swift in Sources */,
+				D6E5A171E3BD8655E91B1058 /* Comment3+Schema.swift in Sources */,
+				120F82A0401E5903758BCA70 /* Comment3.swift in Sources */,
+				74D20438DDCFD53A159BB125 /* Post3+Schema.swift in Sources */,
+				21F7EE75800A15BEBF07DAB0 /* Post3.swift in Sources */,
+				A2E08525D05F9B830616C40E /* Comment4+Schema.swift in Sources */,
+				369431B0F41F31F95D478BDF /* Comment4.swift in Sources */,
+				49CE6394611970DF5D53992B /* Post4+Schema.swift in Sources */,
+				9004045F62D1384D66E9D252 /* Post4.swift in Sources */,
+				1C9660104FBA955F9927A290 /* Post5+Schema.swift in Sources */,
+				F55394758DAB73D0FA00EBD4 /* Post5.swift in Sources */,
+				651A02C3340673470AB81923 /* PostEditor5+Schema.swift in Sources */,
+				02C91C43C5F15A1CE8D5234E /* PostEditor5.swift in Sources */,
+				473A0B63EDB2809BB6C088A9 /* User5+Schema.swift in Sources */,
+				496AB36526963679FC6638F5 /* User5.swift in Sources */,
+				63CF14E10245D8BD04300FB4 /* Blog6+Schema.swift in Sources */,
+				847CBC70F355971B4CBA03EB /* Blog6.swift in Sources */,
+				28D1FFD1CD79D6C87710203A /* Comment6+Schema.swift in Sources */,
+				7052CDF67343051662AD58D8 /* Comment6.swift in Sources */,
+				D8D685EDE8FE2E362225825A /* Post6+Schema.swift in Sources */,
+				564CD654B172AFED26FE7F0F /* Post6.swift in Sources */,
+				81A027E4793E6BD4C89DEB07 /* Comment+Schema.swift in Sources */,
+				F3F9118AF5399D1F5A60FF4C /* Comment.swift in Sources */,
+				A52487E810946359ED99793A /* CustomerOrder+Schema.swift in Sources */,
+				58EB30BD33BA05A8F0CD9BBF /* CustomerOrder.swift in Sources */,
+				7E659193F163D0890D3BCC2E /* DeprecatedTodo.swift in Sources */,
+				113599C98E4197DA399D1F55 /* Post+Schema.swift in Sources */,
+				B0C3F4ED0551BFB67E029B81 /* Post.swift in Sources */,
+				B5F2EDD2DFCEF660B3C50874 /* PostStatus.swift in Sources */,
+				C9733045C30265A19629C731 /* EnumTestModel+Schema.swift in Sources */,
+				A2611FB3A426EBFAD2C63A46 /* EnumTestModel.swift in Sources */,
+				9E65DB5F5B7DBFE8426140B5 /* ListIntContainer+Schema.swift in Sources */,
+				844427E40020C973FEC7205B /* ListIntContainer.swift in Sources */,
+				621BA091889EC1DF8641F3AF /* ListStringContainer+Schema.swift in Sources */,
+				7C73E7CEC97E77D51740B791 /* ListStringContainer.swift in Sources */,
+				4331682E6B81B24F5A0F4114 /* Nested+Schema.swift in Sources */,
+				10D38608315E935DA28DC063 /* Nested.swift in Sources */,
+				89C5056977783F00F4EA9112 /* NestedTypeTestModel+Schema.swift in Sources */,
+				7DE27B56235FA422EC127021 /* NestedTypeTestModel.swift in Sources */,
+				293933BD1967BFCD416E5EAB /* Scalar+Equatable.swift in Sources */,
+				6EC09CDF9A917CECACCEE2B8 /* ScalarContainer+Schema.swift in Sources */,
+				C96E4DA616C090F40FF0F7BB /* ScalarContainer.swift in Sources */,
+				7F16DCF572FC63368CBD147B /* TestEnum.swift in Sources */,
+				B227E863372884B609882D68 /* Team+Schema.swift in Sources */,
+				C9CB127A09F6CCC2688DD0A3 /* Team.swift in Sources */,
 				21BBFB9A289C01CD00B32A39 /* DataStoreConnectionScenario1FlutterTests.swift in Sources */,
 				21BBFB97289C01A400B32A39 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */,
 				21BBFB9D289C01DB00B32A39 /* DataStoreFlutterEndToEndTests.swift in Sources */,
