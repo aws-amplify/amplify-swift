@@ -177,7 +177,7 @@
 			mainGroup = 976D71A52FABE7BF00E69B02;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */,
+				976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../.." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 976D71AF2FABE7BF00E69B02 /* Products */;
@@ -210,6 +210,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		976D72612FAC026500E69B02 /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -537,9 +538,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */ = {
+		976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../.." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../../../amplify-swift";
+			relativePath = "../../../../..";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -558,17 +559,17 @@
 		};
 		976D721B2FABFD1300E69B02 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../.." */;
 			productName = AWSCognitoAuthPlugin;
 		};
 		976D721D2FABFD2B00E69B02 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../.." */;
 			productName = Amplify;
 		};
 		976D721F2FABFE0700E69B02 /* AWSPluginsCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../../../amplify-swift" */;
+			package = 976D71F02FABE8DF00E69B02 /* XCLocalSwiftPackageReference "../../../../.." */;
 			productName = AWSPluginsCore;
 		};
 /* End XCSwiftPackageProductDependency section */
