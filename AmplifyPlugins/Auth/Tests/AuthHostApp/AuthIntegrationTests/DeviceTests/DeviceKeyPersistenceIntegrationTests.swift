@@ -22,7 +22,7 @@ import XCTest
 /// - Cognito User Pool with Device Tracking set to "Always Remember"
 /// - User Pool must allow both USER_SRP_AUTH and USER_PASSWORD_AUTH flows
 /// - Valid test configuration in testconfiguration/ resources
-class DeviceKeyPersistenceIntegrationTests: AWSAuthBaseTest {
+class DeviceKeyPersistenceIntegrationTests: AWSAuthBaseTest, @unchecked Sendable {
 
     var unsubscribeToken: UnsubscribeToken!
 

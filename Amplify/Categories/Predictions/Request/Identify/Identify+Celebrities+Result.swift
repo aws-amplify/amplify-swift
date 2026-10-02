@@ -8,7 +8,7 @@
 public extension Predictions.Identify.Celebrities {
     /// Results are mapped to IdentifyCelebritiesResult when .detectCelebrity in passed in the type: field
     /// in identify() API
-    struct Result {
+    struct Result: Sendable {
         public let celebrities: [Predictions.Celebrity]
 
         public init(celebrities: [Predictions.Celebrity]) {

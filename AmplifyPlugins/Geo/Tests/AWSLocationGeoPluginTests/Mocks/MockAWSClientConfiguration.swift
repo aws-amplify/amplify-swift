@@ -16,8 +16,8 @@ import XCTest
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
 
-extension LocationClient.LocationClientConfiguration {
-    static func mock(region: String) throws -> LocationClient.LocationClientConfiguration {
+extension LocationClient.LocationClientConfig {
+    static func mock(region: String) throws -> LocationClient.LocationClientConfig {
         try .init(
             awsCredentialIdentityResolver: MockAWSAuthService().getCredentialIdentityResolver(),
             awsRetryMode: .standard,

@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import XCTest
 
-class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
+class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest, @unchecked Sendable {
 
     func testModelWithImplicitDefaultPrimaryKey() async throws {
         setup(withModels: DefaultImplicitPKModels())

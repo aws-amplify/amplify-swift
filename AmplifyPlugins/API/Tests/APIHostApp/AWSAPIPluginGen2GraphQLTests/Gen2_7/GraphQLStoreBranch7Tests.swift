@@ -12,21 +12,21 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLStoreBranch7Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLStoreBranch7Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/identifiers/#composite-identifier
     func testCodeSnippet() async throws {
         await setup(withModels: StoreBranch7Models())
 
-        let queriedStoreBranch = try await Amplify.API.query(
+        _ = try await Amplify.API.query(
             request: .get(
                 StoreBranch.self,
                 byIdentifier: .identifier(
                     tenantId: "123",
                     name: "Downtown"
                 )
-            ))
+            )).get()
     }
 }
 

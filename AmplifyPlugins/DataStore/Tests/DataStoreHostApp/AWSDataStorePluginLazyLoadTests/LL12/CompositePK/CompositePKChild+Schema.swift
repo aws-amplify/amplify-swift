@@ -25,7 +25,8 @@ public extension CompositePKChild {
   static let schema = defineSchema { model in
     let compositePKChild = CompositePKChild.keys
 
-    model.pluralName = "CompositePKChildren"
+    model.listPluralName = "CompositePKChildren"
+    model.syncPluralName = "CompositePKChildren"
 
     model.attributes(
       .index(fields: ["childId", "content"], name: nil),

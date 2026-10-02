@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthEventIntegrationTests: AWSAuthBaseTest {
+class AuthEventIntegrationTests: AWSAuthBaseTest, @unchecked Sendable {
 
     var unsubscribeToken: UnsubscribeToken!
 
@@ -95,7 +95,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     ///    - I should get a session expired flow event.
     ///
     func testSessionExpiredEvent() async throws {
-        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
+        try XCTSkipIf(true, "TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 

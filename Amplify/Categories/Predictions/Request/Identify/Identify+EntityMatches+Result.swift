@@ -9,7 +9,7 @@ public extension Predictions.Identify.EntityMatches {
     /// Results are mapped to IdentifyEntityMatchesResult when .detectEntities is
     /// passed to type: field in identify() API and matches from your Rekognition Collection
     /// need to be identified
-    struct Result {
+    struct Result: Sendable {
         /// List of matched `Entity.Match`
         public let entities: [Predictions.Entity.Match]
 

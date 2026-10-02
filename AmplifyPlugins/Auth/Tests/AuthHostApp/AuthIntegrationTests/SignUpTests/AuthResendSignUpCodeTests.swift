@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthResendSignUpCodeTests: AWSAuthBaseTest {
+class AuthResendSignUpCodeTests: AWSAuthBaseTest, @unchecked Sendable {
 
     /// Test if resendSignUpCode returns userNotFound error for a non existing user
     ///

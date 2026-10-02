@@ -201,7 +201,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase, @unchecked Sendable {
 }
 
 // MARK: - API Auth provider
-private class CustomTokenProvider: AmplifyFunctionAuthProvider {
+private final class CustomTokenProvider: AmplifyFunctionAuthProvider {
     func getLatestAuthToken() async throws -> String {
         return "custom-lambda-token"
     }

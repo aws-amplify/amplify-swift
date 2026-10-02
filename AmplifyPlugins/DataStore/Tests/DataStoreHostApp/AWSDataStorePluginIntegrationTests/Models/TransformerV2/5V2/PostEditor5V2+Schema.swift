@@ -25,7 +25,8 @@ public extension PostEditor5V2 {
   static let schema = defineSchema { model in
     let postEditor5V2 = PostEditor5V2.keys
 
-    model.pluralName = "PostEditor5V2s"
+    model.listPluralName = "PostEditor5V2s"
+    model.syncPluralName = "PostEditor5V2s"
 
     model.fields(
       .id(),

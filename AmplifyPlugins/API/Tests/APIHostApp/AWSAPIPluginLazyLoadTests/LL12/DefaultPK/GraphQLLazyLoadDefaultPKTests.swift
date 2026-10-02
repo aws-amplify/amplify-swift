@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: DefaultPKModels())
@@ -46,7 +46,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         let newParent = DefaultPKParent()
         let savedNewParent = try await mutate(.create(newParent))
         savedChild.setParent(savedNewParent)
-        var updatedChild = try await mutate(.update(savedChild))
+        let updatedChild = try await mutate(.update(savedChild))
 
         assertLazyReference(
             updatedChild._parent,
@@ -105,7 +105,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)
-        let savedChild = try await mutate(.create(defaultPKChild))
+        _ = try await mutate(.create(defaultPKChild))
 
         let queriedParents = try await listQuery(.list(
             DefaultPKParent.self,

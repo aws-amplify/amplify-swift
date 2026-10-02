@@ -10,7 +10,7 @@ import CoreGraphics
 public extension Predictions.Identify.Labels {
     /// Results are mapped to IdentifyLabelsResult when .labels in passed to .detectLabels
     /// in the type: field in identify() API
-    struct Result {
+    struct Result: Sendable {
         public let labels: [Predictions.Label]
         public let unsafeContent: Bool?
 
@@ -23,7 +23,7 @@ public extension Predictions.Identify.Labels {
 
 public extension Predictions {
     /// Describes a real world object (e.g., chair, desk) identified in an image
-    struct Label {
+    struct Label: Sendable {
         public let name: String
         public let metadata: Metadata?
         public let boundingBoxes: [CGRect]?
@@ -39,7 +39,7 @@ public extension Predictions {
         }
     }
 
-    struct Parent {
+    struct Parent: Sendable {
         public let name: String
 
         public init(name: String) {
@@ -49,7 +49,7 @@ public extension Predictions {
 }
 
 public extension Predictions.Label {
-    struct Metadata {
+    struct Metadata: Sendable {
         public let confidence: Double
         public let parents: [Predictions.Parent]?
 

@@ -25,7 +25,8 @@ public extension PostWithCompositeKeyUnidirectional {
   static let schema = defineSchema { model in
     let postWithCompositeKeyUnidirectional = PostWithCompositeKeyUnidirectional.keys
 
-    model.pluralName = "PostWithCompositeKeyUnidirectionals"
+    model.listPluralName = "PostWithCompositeKeyUnidirectionals"
+    model.syncPluralName = "PostWithCompositeKeyUnidirectionals"
 
     model.attributes(
       .index(fields: ["id", "title"], name: nil),

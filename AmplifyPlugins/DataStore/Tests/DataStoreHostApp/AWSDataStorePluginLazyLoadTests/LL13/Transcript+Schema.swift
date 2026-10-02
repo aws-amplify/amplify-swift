@@ -26,7 +26,8 @@ public extension Transcript {
   static let schema = defineSchema { model in
     let transcript = Transcript.keys
 
-    model.pluralName = "Transcripts"
+    model.listPluralName = "Transcripts"
+    model.syncPluralName = "Transcripts"
 
     model.attributes(
       .primaryKey(fields: [transcript.id])

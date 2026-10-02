@@ -39,7 +39,7 @@ public extension AWSLocationGeoPlugin {
         let credentialsProvider = authService.getCredentialIdentityResolver()
         let region = configuration.regionName
         // TODO: FrameworkMetadata Replacement
-        let serviceConfiguration = try LocationClient.LocationClientConfiguration(
+        var serviceConfiguration = try LocationClient.LocationClientConfig(
             awsCredentialIdentityResolver: credentialsProvider,
             region: region,
             signingRegion: region

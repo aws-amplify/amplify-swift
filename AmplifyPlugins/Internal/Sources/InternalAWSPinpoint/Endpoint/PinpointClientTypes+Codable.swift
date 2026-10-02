@@ -53,7 +53,7 @@ extension PinpointClientTypes.EndpointLocation: @retroactive Decodable, @retroac
     }
 }
 
-extension PinpointClientTypes.EndpointDemographic: @retroactive Decodable, @retroactive Encodable, Equatable {
+extension PinpointClientTypes.EndpointDemographic: @retroactive Decodable, @retroactive Encodable, @retroactive Equatable {
     private enum CodingKeys: CodingKey {
         case appVersion
         case locale

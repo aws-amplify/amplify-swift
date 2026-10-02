@@ -26,7 +26,8 @@ public extension ChildSansBelongsTo {
   static let schema = defineSchema { model in
     let childSansBelongsTo = ChildSansBelongsTo.keys
 
-    model.pluralName = "ChildSansBelongsTos"
+    model.listPluralName = "ChildSansBelongsTos"
+    model.syncPluralName = "ChildSansBelongsTos"
 
     model.attributes(
       .index(fields: ["childId", "content"], name: nil),

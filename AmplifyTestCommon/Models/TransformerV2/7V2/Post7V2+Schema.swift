@@ -26,7 +26,8 @@ public extension Post7V2 {
   static let schema = defineSchema { model in
     let post7V2 = Post7V2.keys
 
-    model.pluralName = "Post7V2s"
+    model.listPluralName = "Post7V2s"
+    model.syncPluralName = "Post7V2s"
 
     model.fields(
       .id(),

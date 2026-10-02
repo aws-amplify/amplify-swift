@@ -19,11 +19,11 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     let defaultExpiration: Int64 = 50 * 60 // 50 minutes
 
     let bucket: String
-    let config: S3Client.S3ClientConfiguration
+    let config: S3Client.S3ClientConfig
     let logger: Logger
 
     /// Creates a pre-signed URL builder.
-    init(config: S3Client.S3ClientConfiguration, bucket: String, logger: Logger = storageLogger) {
+    init(config: S3Client.S3ClientConfig, bucket: String, logger: Logger = storageLogger) {
         self.bucket = bucket
         self.config = config
         self.logger = logger

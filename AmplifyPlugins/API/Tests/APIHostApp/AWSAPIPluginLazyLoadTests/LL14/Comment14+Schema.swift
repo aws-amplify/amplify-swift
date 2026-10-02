@@ -30,7 +30,8 @@ public extension Comment14 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Comment14s"
+    model.listPluralName = "Comment14s"
+    model.syncPluralName = "Comment14s"
 
     model.attributes(
       .primaryKey(fields: [comment14.id])

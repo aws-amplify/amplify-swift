@@ -43,7 +43,10 @@ extension Amplify {
             }
         }
 
-        await reset(Hub)
+        // A reset Hub traps on use, so swap in a stand-in first for work that outlives the reset.
+        let hub = Hub
+        Hub = HubCategory()
+        await reset(hub)
         await reset(Logging)
 
         log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry")

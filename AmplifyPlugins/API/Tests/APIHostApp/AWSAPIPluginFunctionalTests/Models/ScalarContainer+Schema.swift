@@ -36,7 +36,8 @@ public extension ScalarContainer {
   static let schema = defineSchema { model in
     let scalarContainer = ScalarContainer.keys
 
-    model.pluralName = "ScalarContainers"
+    model.listPluralName = "ScalarContainers"
+    model.syncPluralName = "ScalarContainers"
 
     model.fields(
       .id(),

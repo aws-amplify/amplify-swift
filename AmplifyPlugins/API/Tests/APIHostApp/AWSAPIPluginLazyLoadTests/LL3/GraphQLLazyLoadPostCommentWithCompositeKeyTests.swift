@@ -12,15 +12,15 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSave() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
 
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(post))
+        _ = try await mutate(.create(comment))
     }
 
     func testCommentWithLazyLoadPost() async throws {

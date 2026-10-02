@@ -14,7 +14,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
+class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests, @unchecked Sendable {
 
     override func setUp() {
         super.setUp()

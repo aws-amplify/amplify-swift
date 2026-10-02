@@ -15,7 +15,7 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class PinpointRequestsRegistryTests: XCTestCase, @unchecked Sendable {
     private var mockedHttpSdkClient: MockHttpClientEngine!
-    private var pinpointConfiguration: PinpointClient.PinpointClientConfiguration!
+    private var pinpointConfiguration: PinpointClient.PinpointClientConfig!
 
     override func setUpWithError() throws {
         mockedHttpSdkClient = MockHttpClientEngine()
@@ -25,7 +25,7 @@ class PinpointRequestsRegistryTests: XCTestCase, @unchecked Sendable {
 
     func testSetCustomHttpEngine_shouldReplaceConfigurationHttpEngine() throws {
         let oldHttpClientEngine = pinpointConfiguration.httpClientEngine
-        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
+        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: &pinpointConfiguration)
 
         XCTAssertNotEqual(
             oldHttpClientEngine.typeString,
@@ -34,7 +34,7 @@ class PinpointRequestsRegistryTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withSourcesRegistered_shouldAppendSuffixToUserAgent() async throws {
-        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
+        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: &pinpointConfiguration)
 
         await PinpointRequestsRegistry.shared.registerSource(.analytics, for: .recordEvent)
         await PinpointRequestsRegistry.shared.registerSource(.pushNotifications, for: .recordEvent)
@@ -51,7 +51,7 @@ class PinpointRequestsRegistryTests: XCTestCase, @unchecked Sendable {
     }
 
     func testExecute_withoutSourcesRegistered_shouldNotAppendSuffixToUserAgent() async throws {
-        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: pinpointConfiguration)
+        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: &pinpointConfiguration)
 
         await PinpointRequestsRegistry.shared.registerSource(.analytics, for: .recordEvent)
         await PinpointRequestsRegistry.shared.registerSource(.pushNotifications, for: .recordEvent)

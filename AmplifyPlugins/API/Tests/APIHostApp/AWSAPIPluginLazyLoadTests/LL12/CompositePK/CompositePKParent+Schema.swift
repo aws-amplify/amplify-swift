@@ -28,7 +28,8 @@ public extension CompositePKParent {
   static let schema = defineSchema { model in
     let compositePKParent = CompositePKParent.keys
 
-    model.pluralName = "CompositePKParents"
+    model.listPluralName = "CompositePKParents"
+    model.syncPluralName = "CompositePKParents"
 
     model.attributes(
       .index(fields: ["customId", "content"], name: nil),

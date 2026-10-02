@@ -26,7 +26,7 @@ import XCTest
  }
 
  */
-final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBaseTest {
+final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBaseTest, @unchecked Sendable {
 
     /// Save Post4V2 and Comment4V2 and ensure they are synced successfully.
     /// This test is from the issue https://github.com/aws-amplify/amplify-swift/issues/2644

@@ -542,7 +542,7 @@ extension AppSyncRealTimeClient: Resettable {
         cancellables = Set()
         cancellablesBindToConnection = Set()
 
-        if let resettableWebSocketClient = webSocketClient as? Resettable {
+        if let resettableWebSocketClient = webSocketClient as? any AppSyncWebSocketClientProtocol & Resettable {
             await resettableWebSocketClient.reset()
         }
     }

@@ -25,7 +25,8 @@ public extension Comment9 {
   static let schema = defineSchema { model in
     let comment9 = Comment9.keys
 
-    model.pluralName = "Comment9s"
+    model.listPluralName = "Comment9s"
+    model.syncPluralName = "Comment9s"
 
     model.attributes(
       .index(fields: ["commentId", "postId"], name: nil),

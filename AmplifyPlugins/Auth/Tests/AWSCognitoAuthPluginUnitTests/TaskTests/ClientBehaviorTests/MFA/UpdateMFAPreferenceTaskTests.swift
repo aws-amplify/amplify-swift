@@ -16,7 +16,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class UpdateMFAPreferenceTaskTests: BasePluginTest {
+class UpdateMFAPreferenceTaskTests: BasePluginTest, @unchecked Sendable {
 
     /// Test a successful updateMFAPreference call
     ///

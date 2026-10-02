@@ -108,7 +108,7 @@ final class AWSCloudWatchLoggingSessionController: @unchecked Sendable {
 
     private func createConsumer() throws -> LogBatchConsumer? {
         if client == nil {
-            let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
+            var configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfig(
                 awsCredentialIdentityResolver: credentialIdentityResolver,
                 region: region,
                 signingRegion: region

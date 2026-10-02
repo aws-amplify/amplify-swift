@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLLocationPostUser1Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLLocationPostUser1Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/add-fields/#specify-an-enum-field-type

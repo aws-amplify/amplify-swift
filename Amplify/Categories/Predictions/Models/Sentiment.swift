@@ -7,7 +7,7 @@
 
 public extension Predictions {
     /// Sentiment Analysis result for Predictions category
-    struct Sentiment {
+    struct Sentiment: Sendable {
         public let predominantSentiment: Kind
         public let sentimentScores: [Kind: Double]?
 

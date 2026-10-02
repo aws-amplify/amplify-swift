@@ -9,7 +9,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @_spi(KeychainStore) import AWSPluginsCore
 
-class CredentialStoreConfigurationTests: AWSAuthBaseTest {
+class CredentialStoreConfigurationTests: AWSAuthBaseTest, @unchecked Sendable {
 
     private let service = "com.amplify.awsCognitoAuthPlugin"
     private let sharedService = "com.amplify.awsCognitoAuthPluginShared"

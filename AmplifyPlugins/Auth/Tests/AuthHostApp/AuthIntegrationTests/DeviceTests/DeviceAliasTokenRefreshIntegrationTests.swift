@@ -22,7 +22,7 @@ import XCTest
 /// - Pre-created test user (credentials in testconfiguration/AWSCognitoAuthPluginDeviceAliasTests-credentials.json)
 /// - Backend definition in infra/device-alias-test/ (not committed, see README)
 /// - Config: testconfiguration/AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json
-class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest {
+class DeviceAliasTokenRefreshIntegrationTests: AWSAuthBaseTest, @unchecked Sendable {
 
     var unsubscribeToken: UnsubscribeToken!
 

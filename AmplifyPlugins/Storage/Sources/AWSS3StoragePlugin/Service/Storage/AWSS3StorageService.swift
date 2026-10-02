@@ -69,7 +69,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy, @un
     ) throws {
         let credentialsProvider = authService.getCredentialIdentityResolver()
         let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
-        let clientConfig = try S3Client.S3ClientConfiguration(
+        var clientConfig = try S3Client.S3ClientConfig(
             awsCredentialIdentityResolver: credentialsProvider,
             region: region,
             signingRegion: region

@@ -7,7 +7,7 @@
 
 public extension Predictions {
     /// Describes the pose of a person identified in an image from identify() API
-    struct Pose {
+    struct Pose: Sendable {
         public let pitch: Double
         public let roll: Double
         public let yaw: Double

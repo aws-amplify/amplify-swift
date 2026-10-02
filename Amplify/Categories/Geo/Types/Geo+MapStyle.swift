@@ -9,7 +9,7 @@ import Foundation
 
 public extension Geo {
     /// Identifies the name and style for a map resource.
-    struct MapStyle: Equatable {
+    struct MapStyle: Equatable, Sendable {
         /// The name of the map resource.
         public let mapName: String
         /// The map style selected from an available provider.

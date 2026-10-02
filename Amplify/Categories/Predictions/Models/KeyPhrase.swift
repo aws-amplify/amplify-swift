@@ -8,7 +8,7 @@
 public extension Predictions {
     /// Describes a key phrase identified in a text as
     /// a result of interpret() API call
-    struct KeyPhrase {
+    struct KeyPhrase: Sendable {
         public let score: Float?
         public let text: String
         public let range: Range<String.Index>

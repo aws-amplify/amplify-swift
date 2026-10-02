@@ -8,7 +8,6 @@
 import SQLite
 import XCTest
 
-@_implementationOnly import AmplifyAsyncTesting
 import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon

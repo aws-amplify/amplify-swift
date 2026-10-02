@@ -102,7 +102,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "sub": "123e4567-dead-beef-a456-426614174000"
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -138,7 +138,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "https://differentapp.com/claims/groups": ["Moderators"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -169,7 +169,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "https://differentapp.com/claims/groups": ["Moderators", "Editors"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -200,7 +200,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "https://myapp.com/claims/groups": ["Admins"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -231,7 +231,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "https://differentapp.com/claims/groups": ["Admins"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
@@ -267,7 +267,7 @@ class ModelWithOwnerAuthAndMultiGroup: XCTestCase, @unchecked Sendable {
             "https://differentapp.com/claims/groups": ["Users"]
         ] as IdentityClaimsDictionary
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(
-            modelType: OIDCMultiGroupPost.self,
+            modelSchema: OIDCMultiGroupPost.schema,
             operationType: .subscription
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))

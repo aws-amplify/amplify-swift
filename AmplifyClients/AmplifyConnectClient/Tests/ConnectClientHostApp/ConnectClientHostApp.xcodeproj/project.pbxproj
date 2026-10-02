@@ -16,11 +16,6 @@
 		A1000012 /* AmplifyConnectClient in Frameworks */ = {isa = PBXBuildFile; productRef = A3000012 /* AmplifyConnectClient */; };
 		A1000013 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = A3000013 /* AWSPluginsCore */; };
 		A1000014 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A3000014 /* AmplifyFoundation */; };
-		A1000020 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = A3000020 /* Amplify */; };
-		A1000021 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = A3000021 /* AWSCognitoAuthPlugin */; };
-		A1000022 /* AmplifyConnectClient in Frameworks */ = {isa = PBXBuildFile; productRef = A3000022 /* AmplifyConnectClient */; };
-		A1000023 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = A3000023 /* AWSPluginsCore */; };
-		A1000024 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A3000024 /* AmplifyFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,11 +54,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1000020 /* Amplify in Frameworks */,
-				A1000021 /* AWSCognitoAuthPlugin in Frameworks */,
-				A1000022 /* AmplifyConnectClient in Frameworks */,
-				A1000023 /* AWSPluginsCore in Frameworks */,
-				A1000024 /* AmplifyFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,11 +138,6 @@
 			);
 			name = ConnectClientIntegrationTests;
 			packageProductDependencies = (
-				A3000020 /* Amplify */,
-				A3000021 /* AWSCognitoAuthPlugin */,
-				A3000022 /* AmplifyConnectClient */,
-				A3000023 /* AWSPluginsCore */,
-				A3000024 /* AmplifyFoundation */,
 			);
 			productName = ConnectClientIntegrationTests;
 			productReference = A2000011 /* ConnectClientIntegrationTests.xctest */;
@@ -427,31 +412,6 @@
 			productName = AWSPluginsCore;
 		};
 		A3000014 /* AmplifyFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
-			productName = AmplifyFoundation;
-		};
-		A3000020 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
-			productName = Amplify;
-		};
-		A3000021 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
-			productName = AWSCognitoAuthPlugin;
-		};
-		A3000022 /* AmplifyConnectClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
-			productName = AmplifyConnectClient;
-		};
-		A3000023 /* AWSPluginsCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
-			productName = AWSPluginsCore;
-		};
-		A3000024 /* AmplifyFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA000001 /* XCLocalSwiftPackageReference "../../../.." */;
 			productName = AmplifyFoundation;

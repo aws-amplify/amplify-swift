@@ -28,7 +28,8 @@ public extension TodoIAMPublic {
       rule(allow: .public, provider: .iam, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "TodoIAMPublics"
+    model.listPluralName = "TodoIAMPublics"
+    model.syncPluralName = "TodoIAMPublics"
 
     model.fields(
       .id(),

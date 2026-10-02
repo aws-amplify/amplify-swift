@@ -8,7 +8,8 @@
 import Foundation
 
 /// Errors specific to the API Category
-public enum APIError {
+public enum APIError: @unchecked Sendable {
+    // `@unchecked`: `networkError` carries `UserInfo`, which is `[String: Any]`.
 
     /// Dictionary used to store additional information
     public typealias UserInfo = [String: Any]

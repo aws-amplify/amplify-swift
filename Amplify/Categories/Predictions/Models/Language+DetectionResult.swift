@@ -8,7 +8,7 @@
 public extension Predictions.Language {
     /// Result describing language identified in a text
     /// from interpret() API call
-    struct DetectionResult {
+    struct DetectionResult: Sendable {
         public let languageCode: Predictions.Language
         public let score: Double?
 

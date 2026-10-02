@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLPostVideoPrivacySettings2Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLPostVideoPrivacySettings2Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/add-fields/#specify-a-custom-field-type

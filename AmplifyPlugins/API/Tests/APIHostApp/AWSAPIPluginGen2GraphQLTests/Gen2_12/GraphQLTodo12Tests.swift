@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLTodo12Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLTodo12Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/react/build-a-backend/data/customize-authz/public-data-access/#add-public-authorization-rule-using-api-key-based-authentication
@@ -19,7 +19,7 @@ final class GraphQLTodo12Tests: AWSAPIPluginGen2GraphQLBaseTest {
         // Code Snippet begins
         do {
             let todo = Todo(content: "My new todo")
-            let createdTodo = try await Amplify.API.mutate(request: .create(
+            _ = try await Amplify.API.mutate(request: .create(
                 todo,
                 authMode: .apiKey
             )).get()

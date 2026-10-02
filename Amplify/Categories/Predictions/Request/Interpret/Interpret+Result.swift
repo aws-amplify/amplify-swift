@@ -6,7 +6,7 @@
 //
 
 public extension Predictions.Interpret {
-    struct Result {
+    struct Result: Sendable {
         public let keyPhrases: [Predictions.KeyPhrase]?
         public let sentiment: Predictions.Sentiment?
         public let entities: [Predictions.Entity.DetectionResult]?

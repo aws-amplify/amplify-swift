@@ -25,7 +25,8 @@ public extension Meeting8V2 {
   static let schema = defineSchema { model in
     let meeting8V2 = Meeting8V2.keys
 
-    model.pluralName = "Meeting8V2s"
+    model.listPluralName = "Meeting8V2s"
+    model.syncPluralName = "Meeting8V2s"
 
     model.fields(
       .id(),

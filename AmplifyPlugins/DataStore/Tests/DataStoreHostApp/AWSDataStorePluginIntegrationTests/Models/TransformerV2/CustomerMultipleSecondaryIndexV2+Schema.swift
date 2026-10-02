@@ -27,7 +27,8 @@ public extension CustomerMultipleSecondaryIndexV2 {
   static let schema = defineSchema { model in
     let customerMultipleSecondaryIndexV2 = CustomerMultipleSecondaryIndexV2.keys
 
-    model.pluralName = "CustomerMultipleSecondaryIndexV2s"
+    model.listPluralName = "CustomerMultipleSecondaryIndexV2s"
+    model.syncPluralName = "CustomerMultipleSecondaryIndexV2s"
 
     model.attributes(
       .index(fields: ["name", "phoneNumber"], name: "byNameAndPhoneNumber"),

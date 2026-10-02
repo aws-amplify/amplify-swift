@@ -342,7 +342,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
         }
 
-        documentBuilder.add(decorator: ModelIdDecorator(id: id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: ModelIdentifierFormat.Default.name, value: id)]))
         let document = documentBuilder.build()
 
         return GraphQLRequest<M?>(

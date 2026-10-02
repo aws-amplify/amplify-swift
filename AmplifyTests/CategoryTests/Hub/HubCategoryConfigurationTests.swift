@@ -71,6 +71,32 @@ class HubCategoryConfigurationTests: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
 
+    /// Test that `Amplify.Hub` stays usable while `Amplify.reset()` runs
+    ///
+    /// - Given: A configured Logging plugin, which `Amplify.reset()` resets after Hub
+    /// - When:
+    ///    - `Amplify.reset()` resets the Logging plugin
+    /// - Then:
+    ///    - `Amplify.Hub` is configured, so work that outlives the reset can still dispatch to it
+    ///
+    func testReset_whileResettingLogging_hubIsConfigured() async throws {
+        let loggingPlugin = MockLoggingCategoryPlugin()
+        let hubWasConfigured = AtomicValue<Bool?>(initialValue: nil)
+        loggingPlugin.listeners.append { message in
+            if message == "reset" {
+                hubWasConfigured.set(Amplify.Hub.isConfigured)
+            }
+        }
+        try Amplify.add(plugin: loggingPlugin)
+        try Amplify.configure(AmplifyConfiguration(logging: LoggingCategoryConfiguration(
+            plugins: ["MockLoggingCategoryPlugin": true]
+        )))
+
+        await Amplify.reset()
+
+        XCTAssertEqual(hubWasConfigured.get(), true)
+    }
+
     func testCanResetHubPluginFromAmplifyOutputs() async throws {
         let plugin = MockHubCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")

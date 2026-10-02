@@ -65,7 +65,12 @@ class AWSHTTPURLResponseTests: XCTestCase, @unchecked Sendable {
         }
 
         do {
-            guard let unarchivedResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? AWSHTTPURLResponse else {
+            // `AWSHTTPURLResponse` decodes without secure coding, so the unarchiver must allow it.
+            let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+            unarchiver.requiresSecureCoding = false
+            let decoded = try unarchiver.decodeTopLevelObject(forKey: NSKeyedArchiveRootObjectKey)
+            unarchiver.finishDecoding()
+            guard let unarchivedResponse = decoded as? AWSHTTPURLResponse else {
                 XCTFail("Failure while unarchiving")
                 return
             }

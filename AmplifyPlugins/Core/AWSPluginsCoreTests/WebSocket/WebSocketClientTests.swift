@@ -47,7 +47,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         let webSocketClient = WebSocketClient(url: endpoint)
         await verifyConnected(webSocketClient)
 
-        await webSocketClient.publisher
+        webSocketClient.publisher
             .sink { event in
                 switch event {
                 case let .disconnected(closeCode, reason):
@@ -77,7 +77,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         let webSocketClient = WebSocketClient(url: endpoint)
         await verifyConnected(webSocketClient)
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .string(let message) where message == sampleMessage:
                 messageReceivedExpectation.fulfill()
@@ -109,7 +109,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         await verifyConnected(webSocketClient, autoConnectOnNetworkStatusChange: true)
 
         let disconnectExpectation = expectation(description: "Network drop should trigger disconnect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case let .disconnected(closeCode, reason):
                 XCTAssertEqual(closeCode, .invalid)
@@ -129,7 +129,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         try await Task.sleep(seconds: 0.1)
         let reconnectExpectation = expectation(description: "Network back online trigger reconnect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .connected:
                 reconnectExpectation.fulfill()
@@ -156,7 +156,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         let disconnectExpectation = expectation(description: "Tresient Server Error should trigger retry")
         let reconnectedExpectation = expectation(description: "Connected should be re-triggered")
 
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case let .disconnected(closeCode, reason):
                 XCTAssertEqual(closeCode, .internalServerError)
@@ -309,7 +309,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
     ) async {
         var cancellables = Set<AnyCancellable>()
         let connectedExpectation = expectation(description: "WebSocket did connect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .connected:
                 connectedExpectation.fulfill()

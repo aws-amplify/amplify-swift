@@ -315,7 +315,7 @@ class StorageMultipartUploadSessionTests: XCTestCase, @unchecked Sendable {
     }
 
     func testPartUploadFailedOverLimit() throws {
-        throw XCTSkip("Temporarily disabling test which only fails on GitHub CI/CD")
+        try XCTSkipIf(true, "Temporarily disabling test which only fails on GitHub CI/CD")
         let initiatedExp = expectation(description: "Initiated")
         let completedExp = expectation(description: "Completed")
 

@@ -420,21 +420,19 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
         syncEngine: RemoteSyncEngineBehavior,
         completion: @escaping DataStoreCallback<Void>
     ) {
-        var savedDataStoreError: DataStoreError?
-
         guard !associatedModels.isEmpty else {
             syncDeletions(
                 withModels: models,
                 predicate: predicate,
                 syncEngine: syncEngine,
-                dataStoreError: savedDataStoreError,
+                dataStoreError: nil,
                 completion: completion
             )
             return
         }
         log.debug("[CascadeDelete.4] Begin syncing \(associatedModels.count) associated models for deletion. ")
 
-        var mutationEventsSubmitCompleted = 0
+        let progress = SyncDeletionsProgress()
         for (modelName, associatedModel) in associatedModels.reversed() {
             let mutationEvent: MutationEvent
             do {
@@ -451,23 +449,23 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
 
             let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
                 self.serialQueueSyncDeletions.async {
-                    mutationEventsSubmitCompleted += 1
+                    progress.submitCompleted += 1
                     switch result {
                     case .failure(let dataStoreError):
                         self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
-                        if savedDataStoreError == nil {
-                            savedDataStoreError = dataStoreError
+                        if progress.savedError == nil {
+                            progress.savedError = dataStoreError
                         }
                     case .success(let mutationEvent):
                         self.log.verbose("\(#function) successfully submitted \(mutationEvent.modelName) to sync engine \(mutationEvent)")
                     }
 
-                    if mutationEventsSubmitCompleted == associatedModels.count {
+                    if progress.submitCompleted == associatedModels.count {
                         self.syncDeletions(
                             withModels: models,
                             predicate: predicate,
                             syncEngine: syncEngine,
-                            dataStoreError: savedDataStoreError,
+                            dataStoreError: progress.savedError,
                             completion: completion
                         )
                     }
@@ -506,8 +504,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
                 return
             }
         }
-        var mutationEventsSubmitCompleted = 0
-        var savedDataStoreError = dataStoreError
+        let progress = SyncDeletionsProgress(savedError: dataStoreError)
         for model in models {
             let mutationEvent: MutationEvent
             do {
@@ -525,18 +522,18 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation, @unchecked
 
             let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
                 self.serialQueueSyncDeletions.async {
-                    mutationEventsSubmitCompleted += 1
+                    progress.submitCompleted += 1
                     switch result {
                     case .failure(let dataStoreError):
                         self.log.error("\(#function) failed to submit to sync engine \(mutationEvent)")
-                        if savedDataStoreError == nil {
-                            savedDataStoreError = dataStoreError
+                        if progress.savedError == nil {
+                            progress.savedError = dataStoreError
                         }
                     case .success:
                         self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
                     }
-                    if mutationEventsSubmitCompleted == models.count {
-                        if let lastEmittedDataStoreError = savedDataStoreError {
+                    if progress.submitCompleted == models.count {
+                        if let lastEmittedDataStoreError = progress.savedError {
                             completion(.failure(lastEmittedDataStoreError))
                         } else {
                             completion(.successfulVoid)
@@ -600,6 +597,16 @@ extension CascadeDeleteOperation {
                 return predicate
             }
         }
+    }
+}
+
+// `@unchecked Sendable`: after creation, only accessed on `serialQueueSyncDeletions`.
+private final class SyncDeletionsProgress: @unchecked Sendable {
+    var submitCompleted = 0
+    var savedError: DataStoreError?
+
+    init(savedError: DataStoreError? = nil) {
+        self.savedError = savedError
     }
 }
 

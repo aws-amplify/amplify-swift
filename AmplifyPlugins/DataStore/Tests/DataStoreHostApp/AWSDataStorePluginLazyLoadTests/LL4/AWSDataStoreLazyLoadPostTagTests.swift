@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
+final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: PostTagModels())

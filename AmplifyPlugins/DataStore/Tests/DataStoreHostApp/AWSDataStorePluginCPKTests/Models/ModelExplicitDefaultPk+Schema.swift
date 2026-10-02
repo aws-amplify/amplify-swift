@@ -24,7 +24,8 @@ public extension ModelExplicitDefaultPk {
   static let schema = defineSchema { model in
     let modelExplicitDefaultPk = ModelExplicitDefaultPk.keys
 
-    model.pluralName = "ModelExplicitDefaultPks"
+    model.listPluralName = "ModelExplicitDefaultPks"
+    model.syncPluralName = "ModelExplicitDefaultPks"
 
     model.attributes(
       .index(fields: ["id"], name: nil),

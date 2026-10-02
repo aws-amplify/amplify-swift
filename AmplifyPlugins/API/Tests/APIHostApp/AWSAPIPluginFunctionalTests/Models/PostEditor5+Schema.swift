@@ -25,7 +25,8 @@ public extension PostEditor5 {
   static let schema = defineSchema { model in
     let postEditor5 = PostEditor5.keys
 
-    model.pluralName = "PostEditor5s"
+    model.listPluralName = "PostEditor5s"
+    model.syncPluralName = "PostEditor5s"
 
     model.attributes(
       .index(fields: ["postID", "editorID"], name: "byPost5"),
