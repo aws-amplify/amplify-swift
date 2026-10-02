@@ -23,6 +23,32 @@ class LanguageTypeTest: XCTestCase, @unchecked Sendable {
         XCTAssertNotEqual(languageType, .undetermined)
     }
 
+    /// Test that a locale's language code ignores its script and region
+    ///
+    /// - Given: Locales with a script, a region, or both
+    /// - When:
+    ///    - `Predictions.Language(locale:)` is called
+    /// - Then:
+    ///    - The language is the locale's language code
+    ///
+    func testInitWithLocale_scriptAndRegion_usesLanguageCode() {
+        XCTAssertEqual(Predictions.Language(locale: Locale(identifier: "zh-Hant-TW")), .chinese)
+        XCTAssertEqual(Predictions.Language(locale: Locale(identifier: "pt_BR")), .portuguese)
+    }
+
+    /// Test that a locale without a language is undetermined
+    ///
+    /// - Given: Locales with no language code
+    /// - When:
+    ///    - `Predictions.Language(locale:)` is called
+    /// - Then:
+    ///    - The language is `.undetermined`
+    ///
+    func testInitWithLocale_noLanguage_isUndetermined() {
+        XCTAssertEqual(Predictions.Language(locale: Locale(identifier: "")), .undetermined)
+        XCTAssertEqual(Predictions.Language(locale: Locale(identifier: "_US")), .undetermined)
+    }
+
     func testConverToLocale() {
         let language = Predictions.Language.afrikaans
         let locale = Locale(identifier: language.code)

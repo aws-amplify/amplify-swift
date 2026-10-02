@@ -73,21 +73,27 @@ extension SignUpInput {
 
     private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
         get async {
+            // `UIDevice` is main-actor isolated; `WKInterfaceDevice` isn't.
             #if canImport(WatchKit)
             let device = WKInterfaceDevice.current()
+            let systemVersion = device.systemVersion
+            let systemName = device.systemName
+            let name = device.name
+            let model = device.model
+            let idForVendor = device.identifierForVendor?.uuidString ?? ""
             #elseif canImport(UIKit)
             let device = await UIDevice.current
+            let systemVersion = await device.systemVersion
+            let systemName = await device.systemName
+            let name = await device.name
+            let model = await device.model
+            let idForVendor = await device.identifierForVendor?.uuidString ?? ""
             #endif
 
             #if canImport(WatchKit) || canImport(UIKit)
             let bundle = Bundle.main
             let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
             let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-            let systemVersion = await device.systemVersion
-            let systemName = await device.systemName
-            let name = await device.name
-            let model = await device.model
-            let idForVendor = await device.identifierForVendor?.uuidString ?? ""
             return [
                 .init(name: "cognito:iOSVersion", value: systemVersion),
                 .init(name: "cognito:systemName", value: systemName),

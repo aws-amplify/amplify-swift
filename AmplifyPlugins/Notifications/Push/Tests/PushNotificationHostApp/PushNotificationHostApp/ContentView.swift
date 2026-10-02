@@ -115,7 +115,7 @@ extension HubPayload {
 extension Data {
     static func generateRandomDeviceToken() -> Data {
         var bytes = [UInt8](repeating: 0, count: 32)
-        let random = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
         return Data(bytes)
     }
 }

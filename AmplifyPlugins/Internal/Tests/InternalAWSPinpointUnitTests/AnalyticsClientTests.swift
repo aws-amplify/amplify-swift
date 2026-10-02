@@ -47,7 +47,7 @@ final class AnalyticsClientTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(event.eventType, "_monetization.purchase")
         XCTAssertEqual(event.attributes["_store"], "Apple")
         XCTAssertEqual(event.attributes["_product_id"], product.productIdentifier)
-        XCTAssertEqual(event.attributes["_currency"], product.priceLocale.currencyCode)
+        XCTAssertEqual(event.attributes["_currency"], (product.priceLocale as NSLocale).currencyCode)
         XCTAssertEqual(event.metrics["_item_price"], product.price.doubleValue)
         XCTAssertEqual(event.metrics["_quantity"], Double(transaction.payment.quantity))
         XCTAssertEqual(event.attributes["_transaction_id"], transaction.transactionIdentifier)

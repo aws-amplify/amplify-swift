@@ -9,7 +9,7 @@ public extension Predictions {
     /// Emotion identified in an entity(faces/celebrities)
     /// as a result of identify() API with associated `EmotionType`
     /// and confidence value
-    struct Emotion {
+    struct Emotion: Sendable {
         public let emotion: Kind
         public let confidence: Double
 

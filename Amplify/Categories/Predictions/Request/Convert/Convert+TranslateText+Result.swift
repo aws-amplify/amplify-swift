@@ -8,7 +8,7 @@
 public extension Predictions.Convert.TranslateText {
     /// Results are mapped to TranslateTextResult when convert() API is
     /// called to translate a text into another language
-    struct Result {
+    struct Result: Sendable {
         /// Translated text
         public let text: String
 
