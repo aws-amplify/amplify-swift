@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@testable import InternalAWSCognitoAuth
 #if os(iOS) || os(macOS)
 import Foundation
 
@@ -84,6 +85,7 @@ class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
         return plugin
     }
 
@@ -125,6 +127,7 @@ class AWSAuthHostedUISignInTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
     @MainActor

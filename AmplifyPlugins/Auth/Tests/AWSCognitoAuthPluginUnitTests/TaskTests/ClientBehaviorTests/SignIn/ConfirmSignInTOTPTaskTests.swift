@@ -11,6 +11,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -519,7 +520,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
-            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+            logger: AmplifyEngineLogRouter(scope: .category("awsCognitoAuthPluginTest"))
         )
         let stateMachine = Defaults.authStateMachineWith(
             environment: environment,
@@ -534,6 +535,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")

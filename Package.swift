@@ -12,6 +12,9 @@ let platforms: [SupportedPlatform] = [
 ]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.60"),
+    // Declared for the Smithy products AmplifyCognitoClient imports directly. Exactly the version
+    // aws-sdk-swift 1.7.60 requires (its `clientRuntimeVersion`), so resolution does not move: bump the two together.
+    .package(url: "https://github.com/smithy-lang/smithy-swift", exact: "0.242.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
@@ -32,7 +35,9 @@ let amplifyTargets: [Target] = [
     .target(
         name: "AWSPluginsCore",
         dependencies: [
-            "Amplify"
+            "Amplify",
+            "AmplifyFoundation",
+            "InternalAmplifyKeychain"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
@@ -41,6 +46,24 @@ let amplifyTargets: [Target] = [
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
+    ),
+    // The one keychain implementation, shared by `AWSPluginsCore` and the standalone clients. Depends
+    // only on `AmplifyFoundation`: clients must not depend on `Amplify` or `AWSPluginsCore`.
+    .target(
+        name: "InternalAmplifyKeychain",
+        dependencies: [
+            "AmplifyFoundation"
+        ],
+        path: "AmplifyClients/Internal/InternalAmplifyKeychain/Sources"
+    ),
+    // The in-memory keychain fake. Test targets only: keeping it out of `InternalAmplifyKeychain` keeps
+    // it out of every app that links the plugins.
+    .target(
+        name: "AmplifyKeychainTestCommon",
+        dependencies: [
+            "InternalAmplifyKeychain"
+        ],
+        path: "AmplifyClients/Internal/AmplifyKeychainTestCommon"
     ),
     .target(
         name: "InternalAmplifyCredentials",
@@ -114,7 +137,9 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCoreTests",
         dependencies: [
             "AWSPluginsCore",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
@@ -122,10 +147,22 @@ let amplifyTargets: [Target] = [
         ]
     ),
     .testTarget(
+        name: "InternalAmplifyKeychainTests",
+        dependencies: [
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon",
+            "AmplifyFoundation"
+        ],
+        path: "AmplifyClients/Internal/InternalAmplifyKeychain/Tests"
+    ),
+    .testTarget(
         name: "InternalAmplifyCredentialsTests",
         dependencies: [
             "InternalAmplifyCredentials",
             "AmplifyTestCommon",
+            // For the version-parity test: the clients' copy of the version and their user-agent engine.
+            "AmplifyFoundation",
+            "AmplifyFoundationBridge",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AmplifyCredentialsTests"
@@ -164,28 +201,54 @@ let apiTargets: [Target] = [
 ]
 
 let authTargets: [Target] = [
+    // AmplifyBigInteger, AmplifySRP, AmplifyAvailability and libtommathAmplify are Amplify-free internals
+    // shared by the plugin and the client, so they live under AmplifyClients/Internal/: the client
+    // never builds a target that lives in a plugin directory.
     .target(
         name: "AmplifyBigInteger",
         dependencies: [
             "libtommathAmplify"
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+        path: "AmplifyClients/Internal/AmplifyBigInteger/Sources"
     ),
     .target(
         name: "AmplifySRP",
         dependencies: [
             .target(name: "AmplifyBigInteger")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
+        path: "AmplifyClients/Internal/AmplifySRP/Sources"
+    ),
+    .target(
+        name: "InternalAWSCognitoAuth",
+        // The Cognito engine, shared by AWSCognitoAuthPlugin and AmplifyCognitoClient. Amplify-free: never
+        // `Amplify`, `AWSPluginsCore`, `InternalAmplifyCredentials` or `AmplifyCognitoClient`, and nothing in
+        // its closure lives under AmplifyPlugins/ (gate G6, scripts/m2/check_engine_deps.py --stage final).
+        dependencies: [
+            .target(name: "AmplifyAvailability"),
+            // Declared, not only reached through AmplifySRP: SRP/AmplifySRPClient.swift imports it.
+            .target(name: "AmplifyBigInteger"),
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifySRP"),
+            .target(name: "InternalAmplifyKeychain"),
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyClients/Internal/InternalAWSCognitoAuth/Sources",
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
     ),
     .target(
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AmplifyAvailability"),
+            .target(name: "AmplifyFoundation"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
             .target(name: "InternalAmplifyCredentials"),
+            .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
@@ -197,12 +260,12 @@ let authTargets: [Target] = [
     ),
     .target(
         name: "AmplifyAvailability",
-        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
+        path: "AmplifyClients/Internal/AmplifyAvailability/Sources",
         publicHeadersPath: "include"
     ),
     .target(
         name: "libtommathAmplify",
-        path: "AmplifyPlugins/Auth/Sources/libtommath",
+        path: "AmplifyClients/Internal/libtommathAmplify/Sources",
         exclude: [
             "changes.txt",
             "LICENSE",
@@ -213,8 +276,14 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
             "AWSCognitoAuthPlugin",
+            "InternalAWSCognitoAuth",
             "AWSPluginsTestCommon",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon",
+            // Tests only: the rollback matrix drives the client's real storage beside the plugin's, over
+            // one keychain. The plugin itself must never depend on the client.
+            "AmplifyCognitoClient"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
         resources: [.copy("TestResources")]
@@ -224,7 +293,7 @@ let authTargets: [Target] = [
         dependencies: [
             "AmplifyBigInteger"
         ],
-        path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
+        path: "AmplifyClients/Internal/AmplifyBigInteger/Tests"
     )
 ]
 
@@ -418,7 +487,8 @@ let kinesisTargets: [Target] = [
         name: "AmplifyKinesisClientTests",
         dependencies: [
             "AmplifyKinesisClient",
-            "AmplifyRecordCache"
+            "AmplifyRecordCache",
+            .product(name: "SQLite", package: "SQLite.swift")
         ],
         path: "AmplifyClients/AmplifyKinesisClient/Tests/UnitTests"
     )
@@ -638,6 +708,44 @@ let cloudWatchLoggingClientTargets: [Target] = [
     ),
 ]
 
+let cognitoClientTargets: [Target] = [
+    .target(
+        name: "AmplifyCognitoClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "InternalAmplifyKeychain"),
+            // The Cognito engine. Amplify-free: it never reaches `Amplify`,
+            // `AWSPluginsCore` or a plugin (gate G6, scripts/m2/check_engine_deps.py --stage final).
+            .target(name: "InternalAWSCognitoAuth"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),
+            // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`).
+            .product(name: "Smithy", package: "smithy-swift"),
+            .product(name: "SmithyIdentity", package: "smithy-swift"),
+            .product(name: "SmithyHTTPAPI", package: "smithy-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCognitoClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+    .testTarget(
+        name: "AmplifyCognitoClientTests",
+        dependencies: [
+            "AmplifyCognitoClient",
+            "AmplifyFoundation",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon",
+            "InternalAWSCognitoAuth",
+        ],
+        path: "AmplifyClients/AmplifyCognitoClient/Tests/UnitTests"
+    ),
+]
+
 let foundationTargets: [Target] = [
     .target(
         name: "AmplifyFoundation",
@@ -687,6 +795,7 @@ targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
 targets.append(contentsOf: cloudWatchLoggingClientTargets)
+targets.append(contentsOf: cognitoClientTargets)
 targets.append(contentsOf: foundationTargets)
 targets.append(contentsOf: foundationBridgeTargets)
 
@@ -761,6 +870,12 @@ let package = Package(
         .library(
             name: "AmplifyCloudWatchClient",
             targets: ["AmplifyCloudWatchClient"]
+        ),
+        // Experimental: the whole public surface is `@_spi(AmplifyExperimental)`, as with
+        // AmplifyCloudWatchClient. Its integration host app links it through this product.
+        .library(
+            name: "AmplifyCognitoClient",
+            targets: ["AmplifyCognitoClient"]
         ),
         .library(
             name: "AmplifyFoundation",

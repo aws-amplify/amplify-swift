@@ -8,6 +8,7 @@
 import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
+import InternalAWSCognitoAuth
 
 enum UpdateAttributesOperationHelper {
 

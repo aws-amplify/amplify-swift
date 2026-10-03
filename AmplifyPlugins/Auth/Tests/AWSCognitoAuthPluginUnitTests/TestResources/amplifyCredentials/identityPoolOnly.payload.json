@@ -1,0 +1,1 @@
+{"identityPoolOnly":{"credentials":{"secretAccessKey":"fixture-secret-access-key","sessionToken":"fixture-session-token","expiration":1021692800,"accessKeyId":"fixture-access-key-id"},"identityID":"us-east-1:fixture-guest-identity-id"}}

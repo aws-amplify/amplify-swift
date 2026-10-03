@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "us-east-1",
+    "user_pool_id": "us-east-1_minimal01",
+    "user_pool_client_id": "minimalclientid0123456789"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "comment": "U-DEF, the plugin's default backend (AuthIntegrationTests/README.md, Gen2): username sign-in, self sign-up with the pre-sign-up trigger, custom auth triggers, custom senders, MFA optional with TOTP and SMS, device tracking always, attribute updates without verification. Also hosts the hosted UI (P-7): `hostedui` for the client host app, `hostedui-plugin` (callback `myapp://`, AuthHostedUIApp/README.md) for the plugin's AuthHostedUIApp. `plugin` is `client` with user-existence errors on (LEGACY), which the plugin's AuthIntegrationTests expect (testUserNotFound*). `rotation` is `client` with refresh-token rotation on and no grace period, for the client's interop rotation tests (PluginRotationTests); Cognito refuses ALLOW_REFRESH_TOKEN_AUTH on it, and it is named only in rotation-amplify_outputs.json.",
+  "userPool": {
+    "UserPoolTier": "ESSENTIALS",
+    "DeletionProtection": "INACTIVE",
+    "Policies": {
+      "PasswordPolicy": {
+        "MinimumLength": 10,
+        "RequireUppercase": true,
+        "RequireLowercase": false,
+        "RequireNumbers": true,
+        "RequireSymbols": true,
+        "TemporaryPasswordValidityDays": 20
+      }
+    },
+    "UsernameConfiguration": { "CaseSensitive": false },
+    "AutoVerifiedAttributes": ["email"],
+    "AccountRecoverySetting": { "RecoveryMechanisms": [{ "Name": "verified_email", "Priority": 1 }] },
+    "UserAttributeUpdateSettings": { "AttributesRequireVerificationBeforeUpdate": [] },
+    "AdminCreateUserConfig": { "AllowAdminCreateUserOnly": false },
+    "DeviceConfiguration": { "ChallengeRequiredOnNewDevice": true, "DeviceOnlyRememberedOnUserPrompt": false },
+    "SmsConfiguration": { "SnsCallerArn": "${SMS_ROLE_ARN}", "ExternalId": "${SMS_EXTERNAL_ID}", "SnsRegion": "${SMS_REGION}" },
+    "LambdaConfig": {
+      "PreSignUp": "${PRE_SIGN_UP_ARN}",
+      "DefineAuthChallenge": "${DEFINE_AUTH_CHALLENGE_ARN}",
+      "CreateAuthChallenge": "${CREATE_AUTH_CHALLENGE_ARN}",
+      "VerifyAuthChallengeResponse": "${VERIFY_AUTH_CHALLENGE_ARN}",
+      "CustomEmailSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "CustomSMSSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "KMSKeyID": "${KMS_KEY_ARN}"
+    }
+  },
+  "mfa": {
+    "MfaConfiguration": "OPTIONAL",
+    "SoftwareTokenMfaConfiguration": { "Enabled": true },
+    "SmsMfaConfiguration": {
+      "SmsAuthenticationMessage": "Your code is {####}",
+      "SmsConfiguration": { "SnsCallerArn": "${SMS_ROLE_ARN}", "ExternalId": "${SMS_EXTERNAL_ID}", "SnsRegion": "${SMS_REGION}" }
+    }
+  },
+  "appClients": {
+    "client": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED"
+    },
+    "plugin": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "LEGACY"
+    },
+    "rotation": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "RefreshTokenRotation": { "Feature": "ENABLED", "RetryGracePeriodSeconds": 0 }
+    },
+    "hostedui": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "SupportedIdentityProviders": ["COGNITO"],
+      "AllowedOAuthFlowsUserPoolClient": true,
+      "AllowedOAuthFlows": ["code"],
+      "AllowedOAuthScopes": ["openid", "email", "phone", "profile", "aws.cognito.signin.user.admin"],
+      "CallbackURLs": ["cognitoclienthostapp://signin/"],
+      "LogoutURLs": ["cognitoclienthostapp://signout/"]
+    },
+    "hostedui-plugin": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "SupportedIdentityProviders": ["COGNITO"],
+      "AllowedOAuthFlowsUserPoolClient": true,
+      "AllowedOAuthFlows": ["code"],
+      "AllowedOAuthScopes": ["openid", "email", "phone", "profile", "aws.cognito.signin.user.admin"],
+      "CallbackURLs": ["myapp://"],
+      "LogoutURLs": ["myapp://"]
+    }
+  },
+  "domain": { "ManagedLoginVersion": 1 },
+  "outputs": {
+    "default": { "client": "client" },
+    "hosted-ui": { "client": "hostedui", "oauth": true },
+    "rotation": { "client": "rotation" }
+  }
+}

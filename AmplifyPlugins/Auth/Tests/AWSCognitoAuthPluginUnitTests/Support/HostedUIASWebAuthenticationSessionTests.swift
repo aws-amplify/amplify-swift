@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@testable import InternalAWSCognitoAuth
 #if os(iOS) || os(macOS) || os(visionOS)
 import Amplify
 import AuthenticationServices
@@ -129,6 +130,118 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// Test that a `false` return from `start()` does not leave the caller waiting forever
+    ///
+    /// - Given: An `ASWebAuthenticationSession` whose `canStart` is `true` but whose `start()`
+    ///   returns `false` without ever invoking its completion handler
+    /// - When:
+    ///    - showHostedUI is invoked
+    /// - Then:
+    ///    - A HostedUIError.unableToStartASWebAuthenticationSession should be thrown
+    ///
+    func testShowHostedUI_whenStartReturnsFalse_shouldThrowUnableToStartError() async {
+        factory.mockCanStart = true
+        factory.mockStartResult = false
+        factory.mockInvokesCallbackOnStart = false
+
+        let completed = expectation(description: "showHostedUI completed")
+        let session = session!
+        Task {
+            do {
+                _ = try await session.showHostedUI()
+                XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession")
+            } catch let error as HostedUIError {
+                XCTAssertEqual(error, .unableToStartASWebAuthenticationSession)
+            } catch {
+                XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession, got \(error)")
+            }
+            completed.fulfill()
+        }
+        await fulfillment(of: [completed], timeout: 30)
+    }
+
+    /// Test that the continuation is resumed exactly once when `start()` returns `false` after
+    /// the completion handler has already fired
+    ///
+    /// - Given: An `ASWebAuthenticationSession` whose `start()` invokes its completion handler
+    ///   with a URL and then returns `false`
+    /// - When:
+    ///    - showHostedUI is invoked
+    /// - Then:
+    ///    - The query items from the completion handler should be returned, and the
+    ///      continuation should not be resumed a second time
+    ///
+    func testShowHostedUI_whenStartReturnsFalseAfterCallback_shouldResumeOnlyOnce() async throws {
+        factory.mockedURL = createURL(queryItems: [.init(name: "name", value: "value")])
+        factory.mockStartResult = false
+        let queryItems = try await session.showHostedUI()
+        XCTAssertEqual(queryItems.count, 1)
+        XCTAssertEqual(queryItems.first?.name, "name")
+    }
+
+    /// Test that a completion handler firing after `start()` has returned `false` is ignored
+    ///
+    /// - Given: An `ASWebAuthenticationSession` whose `start()` returns `false` without invoking its
+    ///   completion handler, and whose completion handler fires later
+    /// - When:
+    ///    - showHostedUI is invoked, and the completion handler fires after the flow has ended
+    /// - Then:
+    ///    - A HostedUIError.unableToStartASWebAuthenticationSession should be thrown
+    ///    - The late completion handler should not resume the continuation a second time
+    ///
+    func testShowHostedUI_whenCallbackFiresAfterStartReturnsFalse_shouldResumeOnlyOnce() async throws {
+        factory.mockedURL = createURL(queryItems: [.init(name: "name", value: "value")])
+        factory.mockStartResult = false
+        factory.mockInvokesCallbackOnStart = false
+
+        // Awaited directly, with no timeout: the flow ends on the main queue, which a loaded simulator
+        // can leave unserviced for longer than any timeout. That a `false` start() ends the flow at all
+        // is pinned by `testShowHostedUI_whenStartReturnsFalse_shouldThrowUnableToStartError`.
+        do {
+            _ = try await session.showHostedUI()
+            XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession")
+        } catch let error as HostedUIError {
+            XCTAssertEqual(error, .unableToStartASWebAuthenticationSession)
+        } catch {
+            XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession, got \(error)")
+        }
+
+        // A second resume of a checked continuation traps, so reaching the end of the test is the assertion.
+        let lateSession = try XCTUnwrap(factory.lastSession)
+        await MainActor.run { lateSession.invokeCallback() }
+        XCTAssertNil(session.authenticationSession)
+    }
+
+    /// Test that the `ASWebAuthenticationSession` is retained for the duration of the flow
+    ///
+    /// - Given: An `ASWebAuthenticationSession` whose `start()` returns `true` and whose
+    ///   completion handler fires later
+    /// - When:
+    ///    - showHostedUI is invoked and the session has started
+    /// - Then:
+    ///    - The in-flight `ASWebAuthenticationSession` should be retained by the adapter
+    ///    - Once the completion handler fires, the query items should be returned and the
+    ///      session should no longer be retained
+    ///
+    func testShowHostedUI_whileInFlight_shouldRetainAuthenticationSession() async throws {
+        factory.mockedURL = createURL(queryItems: [.init(name: "name", value: "value")])
+        factory.mockInvokesCallbackOnStart = false
+        let started = expectation(description: "session started")
+        factory.onStart = { started.fulfill() }
+
+        let session = session!
+        let task = Task { try await session.showHostedUI() }
+        await fulfillment(of: [started], timeout: 30)
+
+        let inFlight = try XCTUnwrap(factory.lastSession)
+        XCTAssertTrue(session.authenticationSession === inFlight)
+
+        inFlight.invokeCallback()
+        let queryItems = try await task.value
+        XCTAssertEqual(queryItems.first?.name, "name")
+        XCTAssertNil(session.authenticationSession)
+    }
+
     private func createURL(queryItems: [URLQueryItem] = []) -> URL {
         var components = URLComponents(string: "https://test.com")!
         components.queryItems = queryItems
@@ -142,6 +255,13 @@ final class ASWebAuthenticationSessionFactory: @unchecked Sendable {
     var mockedURL: URL?
     var mockedError: Error?
     var mockCanStart: Bool?
+    var mockStartResult: Bool?
+    var mockInvokesCallbackOnStart = true
+    var onStart: (() -> Void)?
+    var mockInvokesCallbackOnCancel = false
+    /// Runs as each session is created, before the adapter queues its `start()`.
+    var onCreate: ((MockASWebAuthenticationSession) -> Void)?
+    private(set) var lastSession: MockASWebAuthenticationSession?
 
     func createSession(
         url URL: URL,
@@ -156,6 +276,12 @@ final class ASWebAuthenticationSessionFactory: @unchecked Sendable {
         session.mockedURL = mockedURL
         session.mockedError = mockedError
         session.mockCanStart = mockCanStart ?? true
+        session.mockStartResult = mockStartResult
+        session.mockInvokesCallbackOnStart = mockInvokesCallbackOnStart
+        session.onStart = onStart
+        session.mockInvokesCallbackOnCancel = mockInvokesCallbackOnCancel
+        lastSession = session
+        onCreate?(session)
         return session
     }
 }
@@ -179,9 +305,35 @@ final class MockASWebAuthenticationSession: ASWebAuthenticationSession, @uncheck
 
     var mockedURL: URL?
     var mockedError: Error?
+    var mockStartResult: Bool?
+    var mockInvokesCallbackOnStart = true
+    var onStart: (() -> Void)?
+    var mockInvokesCallbackOnCancel = false
+    private(set) var startCount = 0
+    private(set) var cancelCount = 0
     override func start() -> Bool {
-        callback(mockedURL, mockedError)
+        startCount += 1
+        if mockInvokesCallbackOnStart {
+            invokeCallback()
+        }
+        onStart?()
+        if let mockStartResult {
+            return mockStartResult
+        }
         return presentationContextProvider?.presentationAnchor(for: self) != nil
+    }
+
+    func invokeCallback() {
+        callback(mockedURL, mockedError)
+    }
+
+    /// Records the call; with `mockInvokesCallbackOnCancel`, answers as the system may, with
+    /// `canceledLogin`.
+    override func cancel() {
+        cancelCount += 1
+        if mockInvokesCallbackOnCancel {
+            callback(nil, ASWebAuthenticationSessionError(.canceledLogin))
+        }
     }
 
     var mockCanStart = true

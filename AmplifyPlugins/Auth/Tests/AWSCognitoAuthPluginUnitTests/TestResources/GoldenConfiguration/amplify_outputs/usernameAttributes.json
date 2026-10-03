@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "ca-central-1",
+    "user_pool_id": "ca-central-1_names0001",
+    "user_pool_client_id": "namesclientid0123456789",
+    "username_attributes": ["phone_number", "email"]
+  }
+}

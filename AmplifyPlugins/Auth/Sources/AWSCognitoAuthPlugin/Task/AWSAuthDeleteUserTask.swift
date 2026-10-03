@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger, @unchecked Sendable {
@@ -66,7 +67,7 @@ final class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger, @unchecked
             case .userDeleted:
                 return
             case .error(let error):
-                throw error
+                throw AuthError(error)
             default:
                 continue
             }

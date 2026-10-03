@@ -7,6 +7,7 @@
 
 import XCTest
 @testable @preconcurrency import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.

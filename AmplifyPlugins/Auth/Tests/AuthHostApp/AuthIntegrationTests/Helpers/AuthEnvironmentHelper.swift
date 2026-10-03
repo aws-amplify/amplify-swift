@@ -16,8 +16,8 @@ enum Defaults {
     static let appClientId = "XXX"
     static let appClientSecret = "XXX"
 
-    static func makeDefaultUserPoolConfigData() -> UserPoolConfigurationData {
-        UserPoolConfigurationData(
+    static func makeDefaultUserPoolConfigData() -> HostAppConfiguration.UserPool {
+        HostAppConfiguration.userPool(
             poolId: userPoolId,
             clientId: appClientId,
             region: regionString,
@@ -26,8 +26,8 @@ enum Defaults {
         )
     }
 
-    static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
-        IdentityPoolConfigurationData(
+    static func makeIdentityConfigData() -> HostAppConfiguration.IdentityPool {
+        HostAppConfiguration.identityPool(
             poolId: identityPoolId,
             region: regionString
         )
@@ -63,14 +63,14 @@ extension AWSCognitoUserPoolTokens {
     }
 }
 
-extension SignedInData {
+extension HostAppSignedInData {
 
-    static var testData: SignedInData {
+    static var testData: HostAppSignedInData {
         let tokens = AWSCognitoUserPoolTokens.testData
-        return SignedInData(
+        return HostAppSignedInData(
             signedInDate: Date(),
-            signInMethod: .apiBased(.userSRP),
-            cognitoUserPoolTokens: tokens
+            signInMethod: .init(apiBased: .userSRP),
+            cognitoUserPoolTokens: .init(tokens)
         )
     }
 

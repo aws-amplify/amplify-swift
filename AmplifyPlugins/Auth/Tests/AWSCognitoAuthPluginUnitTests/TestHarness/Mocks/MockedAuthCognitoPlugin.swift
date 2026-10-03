@@ -11,9 +11,11 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+import InternalAmplifyKeychain
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 struct MockedAuthCognitoPluginHelper {
 
@@ -24,7 +26,7 @@ struct MockedAuthCognitoPluginHelper {
 
     func createPlugin() -> AWSCognitoAuthPlugin {
 
-        let authResolver = AuthState.Resolver().eraseToAnyResolver()
+        let authResolver = AuthState.Resolver(logger: AmplifyEngineLogRouter()).eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(authConfiguration: authConfiguration)
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
@@ -102,7 +104,7 @@ struct MockedAuthCognitoPluginHelper {
         MockAmplifyStore()
     }
 
-    private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {
+    private func makeLegacyKeychainStore(service: String) -> any KeychainItemStoreBehavior {
         MockKeychainStoreBehavior(data: "mockedData")
     }
 
@@ -127,7 +129,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log
+                logger: AmplifyEngineLogRouter()
             )
 
         case .identityPools(let identityPoolConfigurationData):
@@ -140,7 +142,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log
+                logger: AmplifyEngineLogRouter()
             )
 
         case .userPoolsAndIdentityPools(
@@ -158,7 +160,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                logger: log
+                logger: AmplifyEngineLogRouter()
             )
         }
     }
@@ -212,7 +214,7 @@ struct MockedAuthCognitoPluginHelper {
                 amplifyCredentialStoreFactory: makeCredentialStore,
                 legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
             ),
-            logger: log
+            logger: AmplifyEngineLogRouter()
         )
     }
 

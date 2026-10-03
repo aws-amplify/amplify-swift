@@ -42,9 +42,9 @@ final class LogActorTests: XCTestCase {
         directory = nil
     }
 
-    /// Given: a Log Entry
-    /// When: LogActor records the entry
-    /// Then: the log entry is written to file
+    /// - Given: a Log Entry
+    /// - When: LogActor records the entry
+    /// - Then: the log entry is written to file
     func testLogActorRecordsEntry() async throws {
         XCTAssertEqual(rotations, [])
 
@@ -61,9 +61,9 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(decoded, entry)
     }
 
-    /// Given: a Log Entry that takes up too much space
-    /// When: LogActor records the entry
-    /// Then: the log file is rotated and entry is written to a new file
+    /// - Given: a Log Entry that takes up too much space
+    /// - When: LogActor records the entry
+    /// - Then: the log file is rotated and entry is written to a new file
     func testLogActorTriggersFileRotationOnRecord() async throws {
         XCTAssertEqual(rotations, [])
         let size = try LogEntry.minimumSizeForLogEntry(level: .error)
@@ -92,9 +92,9 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(decoded.sorted(), entries.sorted())
     }
 
-    /// Given: a Log file
-    /// When: LogActor deletes the log
-    /// Then: the log file is emptied
+    /// - Given: a Log file
+    /// - When: LogActor deletes the log
+    /// - Then: the log file is emptied
     func testLogActorDeletesEntry() async throws {
         let entry = LogEntry(namespace: "LogActorTests", level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
         try await systemUnderTest.record(LogEntryCodec().encode(entry: entry))
@@ -110,9 +110,9 @@ final class LogActorTests: XCTestCase {
         XCTAssertTrue(contents.isEmpty)
     }
 
-    /// Given: a LogActor with 1 existing log
-    /// When: get all logs is called after writing and rotating to a new log
-    /// Then: 2 log files are returned
+    /// - Given: a LogActor with 1 existing log
+    /// - When: get all logs is called after writing and rotating to a new log
+    /// - Then: 2 log files are returned
     func testLogActorReturnsLogList() async throws {
         var logs = try await systemUnderTest.getLogs()
         XCTAssertEqual(logs.count, 1)
@@ -128,9 +128,9 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(logs.count, 2)
     }
 
-    /// Given: a Log file
-    /// When: LogActor writes to a log file that doesn't exist
-    /// Then: the log file is created and the log entry is recorded
+    /// - Given: a Log file
+    /// - When: LogActor writes to a log file that doesn't exist
+    /// - Then: the log file is created and the log entry is recorded
     func testLogActorCreatesLogFileIfItDoesNotExist() async throws {
         let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         let fileURL = try XCTUnwrap(files.first)

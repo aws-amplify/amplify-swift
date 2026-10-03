@@ -14,6 +14,7 @@ import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
 import AWSCognitoIdentityProvider
+import InternalAWSCognitoAuth
 
 class AWSAuthSignUpTaskTests: BasePluginTest {
 

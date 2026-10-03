@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"minimalclientid0123456789","poolId":"us-east-1_minimal01","region":"us-east-1","signUpAttributes":[],"usernameAttributes":[],"verificationMechanisms":[]}}

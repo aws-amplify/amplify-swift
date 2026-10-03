@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"CUSTOM_AUTH_WITH_SRP"},"clientId":"gen1customclientid0123456","poolId":"eu-west-1_gen1cust1","region":"eu-west-1","signUpAttributes":[],"usernameAttributes":[],"verificationMechanisms":[]}}

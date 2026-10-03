@@ -7,49 +7,64 @@
 
 import Amplify
 import Foundation
+import InternalAmplifyKeychain
 
 public struct KeychainStoreMigrator {
     let oldAttributes: KeychainStoreAttributes
     let newAttributes: KeychainStoreAttributes
 
+    /// Creates the stores the migration reads, moves and clears through. Always
+    /// `KeychainStore(service:accessGroup:)` outside tests; a seam so the migration can run over the
+    /// in-memory fake.
+    private let makeStore: @Sendable (_ service: String, _ accessGroup: String?) -> KeychainStore
+
     public init(oldService: String, newService: String, oldAccessGroup: String?, newAccessGroup: String?) {
+        self.init(
+            oldService: oldService,
+            newService: newService,
+            oldAccessGroup: oldAccessGroup,
+            newAccessGroup: newAccessGroup,
+            makeStore: { KeychainStore(service: $0, accessGroup: $1) }
+        )
+    }
+
+    /// `package` so the auth plugin's credential store can pass its own test seam through.
+    package init(
+        oldService: String,
+        newService: String,
+        oldAccessGroup: String?,
+        newAccessGroup: String?,
+        makeStore: @escaping @Sendable (_ service: String, _ accessGroup: String?) -> KeychainStore
+    ) {
         self.oldAttributes = KeychainStoreAttributes(service: oldService, accessGroup: oldAccessGroup)
         self.newAttributes = KeychainStoreAttributes(service: newService, accessGroup: newAccessGroup)
+        self.makeStore = makeStore
     }
 
     public func migrate() throws {
-        log.verbose("[KeychainStoreMigrator] Starting to migrate items")
-
-        // Check if there are any existing items under the new service and access group
-        let existingItemsQuery = newAttributes.defaultGetQuery()
-        let existingItemsStatus = SecItemCopyMatching(existingItemsQuery as CFDictionary, nil)
-
-        if existingItemsStatus == errSecSuccess {
-            // Remove existing items to avoid duplicate item error
-            try? KeychainStore(service: newAttributes.service, accessGroup: newAttributes.accessGroup)._removeAll()
+        let migrator = KeychainItemMigrator(
+            source: oldAttributes.itemAttributes,
+            destination: newAttributes.itemAttributes,
+            sourceStore: makeStore(oldAttributes.service, oldAttributes.accessGroup).backingStore,
+            // Only asked whether it holds items, which has always been silent on failure.
+            destinationStore: makeStore(newAttributes.service, newAttributes.accessGroup).quietBackingStore,
+            logger: AmplifyLoggerBridge<KeychainStoreMigrator>()
+        )
+        try KeychainStoreError.mapping {
+            try migrator.migrate(clearingDestinationWith: clearDestination)
         }
+    }
 
-        let updateQuery = oldAttributes.defaultGetQuery()
-
-        var updateAttributes = [String: Any]()
-        updateAttributes[KeychainStore.Constants.AttributeService] = newAttributes.service
-        updateAttributes[KeychainStore.Constants.AttributeAccessGroup] = newAttributes.accessGroup
-
-        let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttributes as CFDictionary)
-        switch updateStatus {
-        case errSecSuccess:
-            break
-        case errSecItemNotFound:
-            log.verbose("[KeychainStoreMigrator] No items to migrate, keychain under new access group is cleared")
-        case errSecDuplicateItem:
-            log.verbose("[KeychainStoreMigrator] Duplicate items found, could not migrate")
-            return
-        default:
-            log.error("[KeychainStoreMigrator] Error of status=\(updateStatus) occurred when attempting to migrate items in keychain")
-            throw KeychainStoreError.securityError(updateStatus)
-        }
-
-        log.verbose("[KeychainStoreMigrator] Successfully migrated items to new service and access group")
+    /// Clears the destination before the move. Called by `migrate()` only when the destination already
+    /// holds items. Cleared through `KeychainStore`, as before.
+    ///
+    /// Spares the standalone clients' session records, which may share the destination service, except
+    /// the Cognito client's default-session sidecar and challenge items: `migrate()` moves those, so they
+    /// are cleared like the plugin's own items. If the destination cannot be listed nothing is removed,
+    /// and any account that then collides stays in the source.
+    func clearDestination() {
+        try? makeStore(newAttributes.service, newAttributes.accessGroup)
+            .removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
     }
 }
 

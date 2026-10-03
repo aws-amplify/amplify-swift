@@ -7,9 +7,10 @@
 
 import Amplify
 import Foundation
+import InternalAWSCognitoAuth
 
 extension AmplifyCredentials {
-    static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+    // `expiryBufferInSeconds` is declared with the engine's `AmplifyCredentials`.
     var cognitoSession: AWSAuthCognitoSession {
 
         switch self {
@@ -20,18 +21,18 @@ extension AmplifyCredentials {
                 isSignedIn: true,
                 identityIdResult: .failure(identityError),
                 awsCredentialsResult: .failure(credentialsError),
-                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens)
+                cognitoTokensResult: .success(AWSCognitoUserPoolTokens(signedInData.cognitoUserPoolTokens))
             )
         case .identityPoolOnly(let identityID, let credentials):
             return AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
                 identityId: identityID,
-                awsCredentials: credentials
+                awsCredentials: AuthAWSCognitoCredentials(credentials)
             )
         case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             return AWSAuthCognitoSession(
                 isSignedIn: true,
                 identityIdResult: .success(identityId),
-                awsCredentialsResult: .success(awsCredentials),
+                awsCredentialsResult: .success(AuthAWSCognitoCredentials(awsCredentials)),
                 cognitoTokensResult: .failure(
                     .invalidState(
                         "Users Federated to Identity Pool do not have User Pool access.",
@@ -44,45 +45,13 @@ extension AmplifyCredentials {
             return AWSAuthCognitoSession(
                 isSignedIn: true,
                 identityIdResult: .success(identityID),
-                awsCredentialsResult: .success(credentials),
-                cognitoTokensResult: .success(signedInData.cognitoUserPoolTokens)
+                awsCredentialsResult: .success(AuthAWSCognitoCredentials(credentials)),
+                cognitoTokensResult: .success(AWSCognitoUserPoolTokens(signedInData.cognitoUserPoolTokens))
             )
         case .noCredentials:
             return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
         }
     }
 
-    func areValid() -> Bool {
-        return self != .noCredentials &&
-        !doesExpire(in: Self.expiryBufferInSeconds)
-    }
-
-    private func doesExpire(in expiryBuffer: TimeInterval) -> Bool {
-        var doesExpire = false
-        switch self {
-
-        case .userPoolOnly(signedInData: let data):
-            doesExpire = data.cognitoUserPoolTokens.doesExpire(in: expiryBuffer)
-
-        case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-            doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
-
-        case .userPoolAndIdentityPool(
-            signedInData: let data,
-            identityID: _,
-            credentials: let awsCredentials
-        ):
-            doesExpire = (
-                data.cognitoUserPoolTokens.doesExpire(in: expiryBuffer) ||
-                awsCredentials.doesExpire(in: expiryBuffer)
-            )
-
-        case .identityPoolWithFederation(_, _, let awsCredentials):
-            doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
-
-        case .noCredentials:
-            doesExpire = true
-        }
-        return doesExpire
-    }
+    // `areValid(at:)` is declared with the engine's `AmplifyCredentials`.
 }

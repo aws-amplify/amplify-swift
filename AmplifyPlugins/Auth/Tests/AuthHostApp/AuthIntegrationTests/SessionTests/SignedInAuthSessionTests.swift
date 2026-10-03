@@ -102,7 +102,6 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     ///    - I should get the signedin state as true but with token result as sessionExpired
     ///
     func testSessionExpired() async throws {
-        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
@@ -120,8 +119,10 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive error \(error)")
         }
 
-        // Manually invalidate the tokens and then try to fetch the session.
-        AuthSessionHelper.invalidateSession(with: amplifyConfiguration)
+        // Manually invalidate the tokens, have the plugin load them from the keychain (it keeps the session
+        // in memory otherwise), and then try to fetch the session.
+        try invalidateStoredSession()
+        await reconfigureFromKeychain()
         let anotherSession = try await Amplify.Auth.fetchAuthSession()
         do {
             let authSession = anotherSession as? AuthCognitoTokensProvider
@@ -146,7 +147,6 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     ///    - I should get the signedin state as false but with token result as seignedOut
     ///
     func testSessionCleared() async throws {
-        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
@@ -164,7 +164,9 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Should not receive error \(error)")
         }
 
+        // Clear the keychain and have the plugin load from it (it keeps the session in memory otherwise).
         AuthSessionHelper.clearSession()
+        await reconfigureFromKeychain()
         let anotherSession = try await Amplify.Auth.fetchAuthSession()
         do {
             let authSession = anotherSession as? AuthCognitoTokensProvider

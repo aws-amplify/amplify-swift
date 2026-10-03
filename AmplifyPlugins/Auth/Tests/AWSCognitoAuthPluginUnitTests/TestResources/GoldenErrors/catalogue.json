@@ -1,0 +1,1937 @@
+{
+  "awsCognitoAuthErrorDescriptions" : {
+    "aliasExists" : "AWSCognitoAuthError.aliasExists: Alias already exists in the system.",
+    "codeDelivery" : "AWSCognitoAuthError.codeDelivery: Error in delivering the confirmation code.",
+    "codeExpired" : "AWSCognitoAuthError.codeExpired: Confirmation code has expired.",
+    "codeMismatch" : "AWSCognitoAuthError.codeMismatch: Confirmation code entered is not correct.",
+    "deviceNotTracked" : "AWSCognitoAuthError.deviceNotTracked: Device is not tracked.",
+    "emailRole" : "AWSCognitoAuthError.emailRole: Email role related issue.",
+    "errorLoadingUI" : "AWSCognitoAuthError.errorLoadingUI: Error in loading the web UI.",
+    "externalServiceException" : "AWSCognitoAuthError.externalServiceException: An external service like facebook/twitter threw an error.",
+    "failedAttemptsLimitExceeded" : "AWSCognitoAuthError.failedAttemptsLimitExceeded: The user has made too many failed attempts for a given action.",
+    "invalidAccountTypeException" : "AWSCognitoAuthError.invalidAccountTypeException: Requested resource is not available with the current account setup.",
+    "invalidParameter" : "AWSCognitoAuthError.invalidParameter: One or more parameters are incorrect.",
+    "invalidPassword" : "AWSCognitoAuthError.invalidPassword: Password given is invalid.",
+    "lambda" : "AWSCognitoAuthError.lambda: Amazon Cognito service encountered an invalid AWS Lambda response or encountered an unexpected exception with the AWS Lambda service.",
+    "limitExceeded" : "AWSCognitoAuthError.limitExceeded: Limit exceeded for the requested AWS resource.",
+    "limitExceededException" : "AWSCognitoAuthError.limitExceededException: Limit exceeded exception. Thrown when the total number of user pools has exceeded a preset limit.",
+    "mfaMethodNotFound" : "AWSCognitoAuthError.mfaMethodNotFound: Amazon Cognito cannot find a multi-factor authentication (MFA) method.",
+    "network" : "AWSCognitoAuthError.network: Request was not completed because of a network related issue.",
+    "passwordResetRequired" : "AWSCognitoAuthError.passwordResetRequired: Required to reset the password of the user.",
+    "requestLimitExceeded" : "AWSCognitoAuthError.requestLimitExceeded: The user has made too many requests for a given operation.",
+    "resourceConflictException" : "AWSCognitoAuthError.resourceConflictException: Thrown when a user tries to use a login which is already linked to another account.",
+    "resourceNotFound" : "AWSCognitoAuthError.resourceNotFound: Amazon Cognito service cannot find the requested resource.",
+    "smsRole" : "AWSCognitoAuthError.smsRole: SMS role related issue.",
+    "softwareTokenMFANotEnabled" : "AWSCognitoAuthError.softwareTokenMFANotEnabled: Software token (TOTP) multi-factor authentication (MFA) is not enabled for the user pool.",
+    "userCancelled" : "AWSCognitoAuthError.userCancelled: User cancelled the step.",
+    "userNotConfirmed" : "AWSCognitoAuthError.userNotConfirmed: User not confirmed in the system.",
+    "userNotFound" : "AWSCognitoAuthError.userNotFound: User not found in the system.",
+    "usernameExists" : "AWSCognitoAuthError.usernameExists: Username already exists in the system.",
+    "webAuthnChallengeNotFound" : "AWSCognitoAuthError.webAuthnChallengeNotFound: The WebAuthn credentials don't match an existing request.",
+    "webAuthnClientMismatch" : "AWSCognitoAuthError.webAuthnClientMismatch: The client doesn't support WebAuhn authentication.",
+    "webAuthnConfigurationMissing" : "AWSCognitoAuthError.webAuthnConfigurationMissing: The WebAuthn configuration is missing or incomplete.",
+    "webAuthnNotEnabled" : "AWSCognitoAuthError.webAuthnNotEnabled: WebAuthn is not enabled.",
+    "webAuthnNotSupported" : "AWSCognitoAuthError.webAuthnNotSupported: WebAuthn is not supported on this device.",
+    "webAuthnOriginNotAllowed" : "AWSCognitoAuthError.webAuthnOriginNotAllowed: The device origin is not registered as an allowed origin.",
+    "webAuthnRelyingPartyMismatch" : "AWSCognitoAuthError.webAuthnRelyingPartyMismatch: The relying party ID doesn't match."
+  },
+  "conversions" : [
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check if you are allowed to make this request based on the web ACL thats associated with your user pool",
+      "errorDescription" : "fixture service message",
+      "input" : "ForbiddenException/message",
+      "recoverySuggestion" : "Check if you are allowed to make this request based on the web ACL thats associated with your user pool"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Access to the requested resource is forbidden\nRecovery suggestion: Check if you are allowed to make this request based on the web ACL thats associated with your user pool",
+      "errorDescription" : "Access to the requested resource is forbidden",
+      "input" : "ForbiddenException/nil",
+      "recoverySuggestion" : "Check if you are allowed to make this request based on the web ACL thats associated with your user pool"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "InternalErrorException/message",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Internal exception occurred\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Internal exception occurred",
+      "input" : "InternalErrorException/nil",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the parameters passed are valid\nCaused by:\ninvalidParameter",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidParameterException/message",
+      "recoverySuggestion" : "Make sure that the parameters passed are valid",
+      "underlyingErrorCase" : "invalidParameter",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid parameter error\nRecovery suggestion: Make sure that the parameters passed are valid\nCaused by:\ninvalidParameter",
+      "errorDescription" : "Invalid parameter error",
+      "input" : "InvalidParameterException/nil",
+      "recoverySuggestion" : "Make sure that the parameters passed are valid",
+      "underlyingErrorCase" : "invalidParameter",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the password is valid\nCaused by:\ninvalidPassword",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidPasswordException/message",
+      "recoverySuggestion" : "Make sure that the password is valid",
+      "underlyingErrorCase" : "invalidPassword",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Encountered invalid password.\nRecovery suggestion: Make sure that the password is valid\nCaused by:\ninvalidPassword",
+      "errorDescription" : "Encountered invalid password.",
+      "input" : "InvalidPasswordException/nil",
+      "recoverySuggestion" : "Make sure that the password is valid",
+      "underlyingErrorCase" : "invalidPassword",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the request made to the particular AWS resources are under the resource quota limits\nCaused by:\nlimitExceeded",
+      "errorDescription" : "fixture service message",
+      "input" : "LimitExceededException/message",
+      "recoverySuggestion" : "Make sure that the request made to the particular AWS resources are under the resource quota limits",
+      "underlyingErrorCase" : "limitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Limit exceeded error.\nRecovery suggestion: Make sure that the request made to the particular AWS resources are under the resource quota limits\nCaused by:\nlimitExceeded",
+      "errorDescription" : "Limit exceeded error.",
+      "input" : "LimitExceededException/nil",
+      "recoverySuggestion" : "Make sure that the request made to the particular AWS resources are under the resource quota limits",
+      "underlyingErrorCase" : "limitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "NotAuthorizedException/message",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: Not authorized error.\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "Not authorized error.",
+      "input" : "NotAuthorizedException/nil",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Reset the user password using the changePassword API\nCaused by:\npasswordResetRequired",
+      "errorDescription" : "fixture service message",
+      "input" : "PasswordResetRequiredException/message",
+      "recoverySuggestion" : "Reset the user password using the changePassword API",
+      "underlyingErrorCase" : "passwordResetRequired",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Password reset required error.\nRecovery suggestion: Reset the user password using the changePassword API\nCaused by:\npasswordResetRequired",
+      "errorDescription" : "Password reset required error.",
+      "input" : "PasswordResetRequiredException/nil",
+      "recoverySuggestion" : "Reset the user password using the changePassword API",
+      "underlyingErrorCase" : "passwordResetRequired",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the user pool has a requested resource\nCaused by:\nresourceNotFound",
+      "errorDescription" : "fixture service message",
+      "input" : "ResourceNotFoundException/message",
+      "recoverySuggestion" : "Make sure that the user pool has a requested resource",
+      "underlyingErrorCase" : "resourceNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Resource not found error.\nRecovery suggestion: Make sure that the user pool has a requested resource\nCaused by:\nresourceNotFound",
+      "errorDescription" : "Resource not found error.",
+      "input" : "ResourceNotFoundException/nil",
+      "recoverySuggestion" : "Make sure that the user pool has a requested resource",
+      "underlyingErrorCase" : "resourceNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure the requests send are controlled and the errors are properly handled\nCaused by:\nrequestLimitExceeded",
+      "errorDescription" : "fixture service message",
+      "input" : "TooManyRequestsException/message",
+      "recoverySuggestion" : "Make sure the requests send are controlled and the errors are properly handled",
+      "underlyingErrorCase" : "requestLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Too many requests error.\nRecovery suggestion: Make sure the requests send are controlled and the errors are properly handled\nCaused by:\nrequestLimitExceeded",
+      "errorDescription" : "Too many requests error.",
+      "input" : "TooManyRequestsException/nil",
+      "recoverySuggestion" : "Make sure the requests send are controlled and the errors are properly handled",
+      "underlyingErrorCase" : "requestLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Confirm the user by calling confirmSignUp api\nCaused by:\nuserNotConfirmed",
+      "errorDescription" : "fixture service message",
+      "input" : "UserNotConfirmedException/message",
+      "recoverySuggestion" : "Confirm the user by calling confirmSignUp api",
+      "underlyingErrorCase" : "userNotConfirmed",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User not confirmed error.\nRecovery suggestion: Confirm the user by calling confirmSignUp api\nCaused by:\nuserNotConfirmed",
+      "errorDescription" : "User not confirmed error.",
+      "input" : "UserNotConfirmedException/nil",
+      "recoverySuggestion" : "Confirm the user by calling confirmSignUp api",
+      "underlyingErrorCase" : "userNotConfirmed",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the user is present in the backend\nCaused by:\nuserNotFound",
+      "errorDescription" : "fixture service message",
+      "input" : "UserNotFoundException/message",
+      "recoverySuggestion" : "Make sure that the user is present in the backend",
+      "underlyingErrorCase" : "userNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User not found error.\nRecovery suggestion: Make sure that the user is present in the backend\nCaused by:\nuserNotFound",
+      "errorDescription" : "User not found error.",
+      "input" : "UserNotFoundException/nil",
+      "recoverySuggestion" : "Make sure that the user is present in the backend",
+      "underlyingErrorCase" : "userNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Retry with a valid code\nCaused by:\ncodeMismatch",
+      "errorDescription" : "fixture service message",
+      "input" : "CodeMismatchException/message",
+      "recoverySuggestion" : "Retry with a valid code",
+      "underlyingErrorCase" : "codeMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Provided code does not match what the server was expecting.\nRecovery suggestion: Retry with a valid code\nCaused by:\ncodeMismatch",
+      "errorDescription" : "Provided code does not match what the server was expecting.",
+      "input" : "CodeMismatchException/nil",
+      "recoverySuggestion" : "Retry with a valid code",
+      "underlyingErrorCase" : "codeMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidLambdaResponseException/message",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid lambda response error.\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "Invalid lambda response error.",
+      "input" : "InvalidLambdaResponseException/nil",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Rerun the flow to send the code again\nCaused by:\ncodeExpired",
+      "errorDescription" : "fixture service message",
+      "input" : "ExpiredCodeException/message",
+      "recoverySuggestion" : "Rerun the flow to send the code again",
+      "underlyingErrorCase" : "codeExpired",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Provided code has expired.\nRecovery suggestion: Rerun the flow to send the code again\nCaused by:\ncodeExpired",
+      "errorDescription" : "Provided code has expired.",
+      "input" : "ExpiredCodeException/nil",
+      "recoverySuggestion" : "Rerun the flow to send the code again",
+      "underlyingErrorCase" : "codeExpired",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: User might have tried too many times with failed input\nCaused by:\nfailedAttemptsLimitExceeded",
+      "errorDescription" : "fixture service message",
+      "input" : "TooManyFailedAttemptsException/message",
+      "recoverySuggestion" : "User might have tried too many times with failed input",
+      "underlyingErrorCase" : "failedAttemptsLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Too many failed attempts error.\nRecovery suggestion: User might have tried too many times with failed input\nCaused by:\nfailedAttemptsLimitExceeded",
+      "errorDescription" : "Too many failed attempts error.",
+      "input" : "TooManyFailedAttemptsException/nil",
+      "recoverySuggestion" : "User might have tried too many times with failed input",
+      "underlyingErrorCase" : "failedAttemptsLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "fixture service message",
+      "input" : "UnexpectedLambdaException/message",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unexpected lambda error.\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "Unexpected lambda error.",
+      "input" : "UnexpectedLambdaException/nil",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "fixture service message",
+      "input" : "UserLambdaValidationException/message",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User lambda validation error.\nRecovery suggestion: Make sure that the lambda configuration is correct\nCaused by:\nlambda",
+      "errorDescription" : "User lambda validation error.",
+      "input" : "UserLambdaValidationException/nil",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct",
+      "underlyingErrorCase" : "lambda",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Try with a different alias for the user\nCaused by:\naliasExists",
+      "errorDescription" : "fixture service message",
+      "input" : "AliasExistsException/message",
+      "recoverySuggestion" : "Try with a different alias for the user",
+      "underlyingErrorCase" : "aliasExists",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Alias exists error.\nRecovery suggestion: Try with a different alias for the user\nCaused by:\naliasExists",
+      "errorDescription" : "Alias exists error.",
+      "input" : "AliasExistsException/nil",
+      "recoverySuggestion" : "Try with a different alias for the user",
+      "underlyingErrorCase" : "aliasExists",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidUserPoolConfigurationException/message",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: Invalid UserPool Configuration error.\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "Invalid UserPool Configuration error.",
+      "input" : "InvalidUserPoolConfigurationException/nil",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the delivery destination is valid\nCaused by:\ncodeDelivery",
+      "errorDescription" : "fixture service message",
+      "input" : "CodeDeliveryFailureException/message",
+      "recoverySuggestion" : "Make sure that the delivery destination is valid",
+      "underlyingErrorCase" : "codeDelivery",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Code Delivery Failure error.\nRecovery suggestion: Make sure that the delivery destination is valid\nCaused by:\ncodeDelivery",
+      "errorDescription" : "Code Delivery Failure error.",
+      "input" : "CodeDeliveryFailureException/nil",
+      "recoverySuggestion" : "Make sure that the delivery destination is valid",
+      "underlyingErrorCase" : "codeDelivery",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the email identity used with Cognito Service\nCaused by:\nemailRole",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidEmailRoleAccessPolicyException/message",
+      "recoverySuggestion" : "Check the email identity used with Cognito Service",
+      "underlyingErrorCase" : "emailRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid email role access policy error.\nRecovery suggestion: Check the email identity used with Cognito Service\nCaused by:\nemailRole",
+      "errorDescription" : "Invalid email role access policy error.",
+      "input" : "InvalidEmailRoleAccessPolicyException/nil",
+      "recoverySuggestion" : "Check the email identity used with Cognito Service",
+      "underlyingErrorCase" : "emailRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the role provided for SMS configuration in Cognito Service\nCaused by:\nsmsRole",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidSmsRoleAccessPolicyException/message",
+      "recoverySuggestion" : "Check the role provided for SMS configuration in Cognito Service",
+      "underlyingErrorCase" : "smsRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid SMS Role Access Policy error.\nRecovery suggestion: Check the role provided for SMS configuration in Cognito Service\nCaused by:\nsmsRole",
+      "errorDescription" : "Invalid SMS Role Access Policy error.",
+      "input" : "InvalidSmsRoleAccessPolicyException/nil",
+      "recoverySuggestion" : "Check the role provided for SMS configuration in Cognito Service",
+      "underlyingErrorCase" : "smsRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the role provided for SMS configuration in Cognito Service\nCaused by:\nsmsRole",
+      "errorDescription" : "fixture service message",
+      "input" : "InvalidSmsRoleTrustRelationshipException/message",
+      "recoverySuggestion" : "Check the role provided for SMS configuration in Cognito Service",
+      "underlyingErrorCase" : "smsRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid SMS Role Trust Relationship error.\nRecovery suggestion: Check the role provided for SMS configuration in Cognito Service\nCaused by:\nsmsRole",
+      "errorDescription" : "Invalid SMS Role Trust Relationship error.",
+      "input" : "InvalidSmsRoleTrustRelationshipException/nil",
+      "recoverySuggestion" : "Check the role provided for SMS configuration in Cognito Service",
+      "underlyingErrorCase" : "smsRole",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the user pool has a valid MFA configured\nCaused by:\nmfaMethodNotFound",
+      "errorDescription" : "fixture service message",
+      "input" : "MFAMethodNotFoundException/message",
+      "recoverySuggestion" : "Make sure that the user pool has a valid MFA configured",
+      "underlyingErrorCase" : "mfaMethodNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Amazon Cognito cannot find a multi-factor authentication (MFA) method.\nRecovery suggestion: Make sure that the user pool has a valid MFA configured\nCaused by:\nmfaMethodNotFound",
+      "errorDescription" : "Amazon Cognito cannot find a multi-factor authentication (MFA) method.",
+      "input" : "MFAMethodNotFoundException/nil",
+      "recoverySuggestion" : "Make sure that the user pool has a valid MFA configured",
+      "underlyingErrorCase" : "mfaMethodNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Enable the software token MFA for the user\nCaused by:\nsoftwareTokenMFANotEnabled",
+      "errorDescription" : "fixture service message",
+      "input" : "SoftwareTokenMFANotFoundException/message",
+      "recoverySuggestion" : "Enable the software token MFA for the user",
+      "underlyingErrorCase" : "softwareTokenMFANotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Software token TOTP multi-factor authentication (MFA) is not enabled for the user pool.\nRecovery suggestion: Enable the software token MFA for the user\nCaused by:\nsoftwareTokenMFANotEnabled",
+      "errorDescription" : "Software token TOTP multi-factor authentication (MFA) is not enabled for the user pool.",
+      "input" : "SoftwareTokenMFANotFoundException/nil",
+      "recoverySuggestion" : "Enable the software token MFA for the user",
+      "underlyingErrorCase" : "softwareTokenMFANotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Invoke the api with a different username\nCaused by:\nusernameExists",
+      "errorDescription" : "fixture service message",
+      "input" : "UsernameExistsException/message",
+      "recoverySuggestion" : "Invoke the api with a different username",
+      "underlyingErrorCase" : "usernameExists",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Username exists error\nRecovery suggestion: Invoke the api with a different username\nCaused by:\nusernameExists",
+      "errorDescription" : "Username exists error",
+      "input" : "UsernameExistsException/nil",
+      "recoverySuggestion" : "Invoke the api with a different username",
+      "underlyingErrorCase" : "usernameExists",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Concurrent modification error\nRecovery suggestion: Make sure the requests sent are controlled and concurrent operations are handled properly",
+      "errorDescription" : "Concurrent modification error",
+      "input" : "AWSCognitoIdentityProvider.ConcurrentModificationException/message",
+      "recoverySuggestion" : "Make sure the requests sent are controlled and concurrent operations are handled properly"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Concurrent modification error\nRecovery suggestion: Make sure the requests sent are controlled and concurrent operations are handled properly",
+      "errorDescription" : "Concurrent modification error",
+      "input" : "AWSCognitoIdentityProvider.ConcurrentModificationException/nil",
+      "recoverySuggestion" : "Make sure the requests sent are controlled and concurrent operations are handled properly"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to enable software token MFA\nRecovery suggestion: Enable the software token MFA for the user\nCaused by:\nsoftwareTokenMFANotEnabled",
+      "errorDescription" : "Unable to enable software token MFA",
+      "input" : "AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException/message",
+      "recoverySuggestion" : "Enable the software token MFA for the user",
+      "underlyingErrorCase" : "softwareTokenMFANotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to enable software token MFA\nRecovery suggestion: Enable the software token MFA for the user\nCaused by:\nsoftwareTokenMFANotEnabled",
+      "errorDescription" : "Unable to enable software token MFA",
+      "input" : "AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException/nil",
+      "recoverySuggestion" : "Enable the software token MFA for the user",
+      "underlyingErrorCase" : "softwareTokenMFANotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The credentials provided don't match an existing request\nRecovery suggestion: Call this API after receiving an WebAuthn challenge\nCaused by:\nwebAuthnChallengeNotFound",
+      "errorDescription" : "The credentials provided don't match an existing request",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnChallengeNotFoundException/message",
+      "recoverySuggestion" : "Call this API after receiving an WebAuthn challenge",
+      "underlyingErrorCase" : "webAuthnChallengeNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The credentials provided don't match an existing request\nRecovery suggestion: Call this API after receiving an WebAuthn challenge\nCaused by:\nwebAuthnChallengeNotFound",
+      "errorDescription" : "The credentials provided don't match an existing request",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnChallengeNotFoundException/nil",
+      "recoverySuggestion" : "Call this API after receiving an WebAuthn challenge",
+      "underlyingErrorCase" : "webAuthnChallengeNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The App client doesn't support WebAuthn authentication\nRecovery suggestion: Use an App client that supports passkey authentication\nCaused by:\nwebAuthnClientMismatch",
+      "errorDescription" : "The App client doesn't support WebAuthn authentication",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnClientMismatchException/message",
+      "recoverySuggestion" : "Use an App client that supports passkey authentication",
+      "underlyingErrorCase" : "webAuthnClientMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The App client doesn't support WebAuthn authentication\nRecovery suggestion: Use an App client that supports passkey authentication\nCaused by:\nwebAuthnClientMismatch",
+      "errorDescription" : "The App client doesn't support WebAuthn authentication",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnClientMismatchException/nil",
+      "recoverySuggestion" : "Use an App client that supports passkey authentication",
+      "underlyingErrorCase" : "webAuthnClientMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The device is unsupported\nRecovery suggestion: Create credentials using a supported device\nCaused by:\nwebAuthnNotSupported",
+      "errorDescription" : "The device is unsupported",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnCredentialNotSupportedException/message",
+      "recoverySuggestion" : "Create credentials using a supported device",
+      "underlyingErrorCase" : "webAuthnNotSupported",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The device is unsupported\nRecovery suggestion: Create credentials using a supported device\nCaused by:\nwebAuthnNotSupported",
+      "errorDescription" : "The device is unsupported",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnCredentialNotSupportedException/nil",
+      "recoverySuggestion" : "Create credentials using a supported device",
+      "underlyingErrorCase" : "webAuthnNotSupported",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: WebAuthn authentication is not enabled\nRecovery suggestion: Check that WebAuthn authentication is enabled\nCaused by:\nwebAuthnNotEnabled",
+      "errorDescription" : "WebAuthn authentication is not enabled",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnNotEnabledException/message",
+      "recoverySuggestion" : "Check that WebAuthn authentication is enabled",
+      "underlyingErrorCase" : "webAuthnNotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: WebAuthn authentication is not enabled\nRecovery suggestion: Check that WebAuthn authentication is enabled\nCaused by:\nwebAuthnNotEnabled",
+      "errorDescription" : "WebAuthn authentication is not enabled",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnNotEnabledException/nil",
+      "recoverySuggestion" : "Check that WebAuthn authentication is enabled",
+      "underlyingErrorCase" : "webAuthnNotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The device origin is not registered as an allowed origin\nRecovery suggestion: Check that the device origin is registered as an allowed origin\nCaused by:\nwebAuthnOriginNotAllowed",
+      "errorDescription" : "The device origin is not registered as an allowed origin",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnOriginNotAllowedException/message",
+      "recoverySuggestion" : "Check that the device origin is registered as an allowed origin",
+      "underlyingErrorCase" : "webAuthnOriginNotAllowed",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The device origin is not registered as an allowed origin\nRecovery suggestion: Check that the device origin is registered as an allowed origin\nCaused by:\nwebAuthnOriginNotAllowed",
+      "errorDescription" : "The device origin is not registered as an allowed origin",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnOriginNotAllowedException/nil",
+      "recoverySuggestion" : "Check that the device origin is registered as an allowed origin",
+      "underlyingErrorCase" : "webAuthnOriginNotAllowed",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The credential does not match the relying party ID\nRecovery suggestion: Check that the relying party ID is correct\nCaused by:\nwebAuthnRelyingPartyMismatch",
+      "errorDescription" : "The credential does not match the relying party ID",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException/message",
+      "recoverySuggestion" : "Check that the relying party ID is correct",
+      "underlyingErrorCase" : "webAuthnRelyingPartyMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The credential does not match the relying party ID\nRecovery suggestion: Check that the relying party ID is correct\nCaused by:\nwebAuthnRelyingPartyMismatch",
+      "errorDescription" : "The credential does not match the relying party ID",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnRelyingPartyMismatchException/nil",
+      "recoverySuggestion" : "Check that the relying party ID is correct",
+      "underlyingErrorCase" : "webAuthnRelyingPartyMismatch",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The WebAuthm configuration is missing\nRecovery suggestion: Check that the device is registered\nCaused by:\nwebAuthnConfigurationMissing",
+      "errorDescription" : "The WebAuthm configuration is missing",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnConfigurationMissingException/message",
+      "recoverySuggestion" : "Check that the device is registered",
+      "underlyingErrorCase" : "webAuthnConfigurationMissing",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The WebAuthm configuration is missing\nRecovery suggestion: Check that the device is registered\nCaused by:\nwebAuthnConfigurationMissing",
+      "errorDescription" : "The WebAuthm configuration is missing",
+      "input" : "AWSCognitoIdentityProvider.WebAuthnConfigurationMissingException/nil",
+      "recoverySuggestion" : "Check that the device is registered",
+      "underlyingErrorCase" : "webAuthnConfigurationMissing",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Unknown service error occured with:\n- status: HTTP status code: 400\n- message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nUnknownAWSHTTPServiceError(typeName: Optional(\"FixtureUnknownType\"), message: Optional(\"fixture service message\"), requestID: Optional(\"fixture-request-id\"), requestID2: nil, httpResponse: \nStatus Code: HTTP status code: 400 \n )",
+      "errorDescription" : "Unexpected error occurred with message: Unknown service error occured with:\n- status: HTTP status code: 400\n- message: fixture service message",
+      "input" : "AWSClientRuntime.UnknownAWSHTTPServiceError/message",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorType" : "AWSClientRuntime.UnknownAWSHTTPServiceError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Unknown service error occured with:\n- status: HTTP status code: 500\n- message: \nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nUnknownAWSHTTPServiceError(typeName: nil, message: nil, requestID: nil, requestID2: nil, httpResponse: \nStatus Code: HTTP status code: 500 \n )",
+      "errorDescription" : "Unexpected error occurred with message: Unknown service error occured with:\n- status: HTTP status code: 500\n- message: ",
+      "input" : "AWSClientRuntime.UnknownAWSHTTPServiceError/nil",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorType" : "AWSClientRuntime.UnknownAWSHTTPServiceError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: An exception thrown when a dependent service such as Facebook or Twitter is not responding\nCaused by:\nexternalServiceException",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.ExternalServiceException/message",
+      "recoverySuggestion" : "An exception thrown when a dependent service such as Facebook or Twitter is not responding",
+      "underlyingErrorCase" : "externalServiceException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: External service threw error.\nRecovery suggestion: An exception thrown when a dependent service such as Facebook or Twitter is not responding\nCaused by:\nexternalServiceException",
+      "errorDescription" : "External service threw error.",
+      "input" : "AWSCognitoIdentity.ExternalServiceException/nil",
+      "recoverySuggestion" : "An exception thrown when a dependent service such as Facebook or Twitter is not responding",
+      "underlyingErrorCase" : "externalServiceException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "AWSCognitoIdentity.InternalErrorException/message",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Internal exception occurred\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Internal exception occurred",
+      "input" : "AWSCognitoIdentity.InternalErrorException/nil",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.InvalidIdentityPoolConfigurationException/message",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: Invalid IdentityPool Configuration error.\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "Invalid IdentityPool Configuration error.",
+      "input" : "AWSCognitoIdentity.InvalidIdentityPoolConfigurationException/nil",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the parameters passed are valid\nCaused by:\ninvalidParameter",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.InvalidParameterException/message",
+      "recoverySuggestion" : "Make sure that the parameters passed are valid",
+      "underlyingErrorCase" : "invalidParameter",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Invalid parameter error\nRecovery suggestion: Make sure that the parameters passed are valid\nCaused by:\ninvalidParameter",
+      "errorDescription" : "Invalid parameter error",
+      "input" : "AWSCognitoIdentity.InvalidParameterException/nil",
+      "recoverySuggestion" : "Make sure that the parameters passed are valid",
+      "underlyingErrorCase" : "invalidParameter",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.NotAuthorizedException/message",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: Not authorized error.\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "Not authorized error.",
+      "input" : "AWSCognitoIdentity.NotAuthorizedException/nil",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check if the login is already linked to another account\nCaused by:\nresourceConflictException",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.ResourceConflictException/message",
+      "recoverySuggestion" : "Check if the login is already linked to another account",
+      "underlyingErrorCase" : "resourceConflictException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Resource conflict error.\nRecovery suggestion: Check if the login is already linked to another account\nCaused by:\nresourceConflictException",
+      "errorDescription" : "Resource conflict error.",
+      "input" : "AWSCognitoIdentity.ResourceConflictException/nil",
+      "recoverySuggestion" : "Check if the login is already linked to another account",
+      "underlyingErrorCase" : "resourceConflictException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the user pool has a requested resource\nCaused by:\nresourceNotFound",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.ResourceNotFoundException/message",
+      "recoverySuggestion" : "Make sure that the user pool has a requested resource",
+      "underlyingErrorCase" : "resourceNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Resource not found error.\nRecovery suggestion: Make sure that the user pool has a requested resource\nCaused by:\nresourceNotFound",
+      "errorDescription" : "Resource not found error.",
+      "input" : "AWSCognitoIdentity.ResourceNotFoundException/nil",
+      "recoverySuggestion" : "Make sure that the user pool has a requested resource",
+      "underlyingErrorCase" : "resourceNotFound",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure the requests send are controlled and the errors are properly handled\nCaused by:\nrequestLimitExceeded",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.TooManyRequestsException/message",
+      "recoverySuggestion" : "Make sure the requests send are controlled and the errors are properly handled",
+      "underlyingErrorCase" : "requestLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Too many requests error.\nRecovery suggestion: Make sure the requests send are controlled and the errors are properly handled\nCaused by:\nrequestLimitExceeded",
+      "errorDescription" : "Too many requests error.",
+      "input" : "AWSCognitoIdentity.TooManyRequestsException/nil",
+      "recoverySuggestion" : "Make sure the requests send are controlled and the errors are properly handled",
+      "underlyingErrorCase" : "requestLimitExceeded",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: The total number of user pools has exceeded a preset limit\nCaused by:\nlimitExceededException",
+      "errorDescription" : "fixture service message",
+      "input" : "AWSCognitoIdentity.LimitExceededException/message",
+      "recoverySuggestion" : "The total number of user pools has exceeded a preset limit",
+      "underlyingErrorCase" : "limitExceededException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Too many requests error.\nRecovery suggestion: The total number of user pools has exceeded a preset limit\nCaused by:\nlimitExceededException",
+      "errorDescription" : "Too many requests error.",
+      "input" : "AWSCognitoIdentity.LimitExceededException/nil",
+      "recoverySuggestion" : "The total number of user pools has exceeded a preset limit",
+      "underlyingErrorCase" : "limitExceededException",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nCaused by:\npathCreationFailed(\"fixture service message\")",
+      "errorDescription" : "fixture service message",
+      "input" : "SmithyHTTPAPI.HTTPClientError/pathCreationFailed",
+      "recoverySuggestion" : "",
+      "underlyingErrorCase" : "pathCreationFailed",
+      "underlyingErrorType" : "SmithyHTTPAPI.HTTPClientError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nCaused by:\nqueryItemCreationFailed(\"fixture service message\")",
+      "errorDescription" : "fixture service message",
+      "input" : "SmithyHTTPAPI.HTTPClientError/queryItemCreationFailed",
+      "recoverySuggestion" : "",
+      "underlyingErrorCase" : "queryItemCreationFailed",
+      "underlyingErrorType" : "SmithyHTTPAPI.HTTPClientError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the underlying error and try again\nCaused by:\nserializationFailed(\"fixture service message\")",
+      "errorDescription" : "fixture service message",
+      "input" : "Smithy.ClientError/serializationFailed",
+      "recoverySuggestion" : "Check the underlying error and try again",
+      "underlyingErrorCase" : "serializationFailed",
+      "underlyingErrorType" : "Smithy.ClientError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the underlying error and try again\nCaused by:\ndataNotFound(\"fixture service message\")",
+      "errorDescription" : "fixture service message",
+      "input" : "Smithy.ClientError/dataNotFound",
+      "recoverySuggestion" : "Check the underlying error and try again",
+      "underlyingErrorCase" : "dataNotFound",
+      "underlyingErrorType" : "Smithy.ClientError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check the underlying error and try again\nCaused by:\ninvalidValue(\"fixture service message\")",
+      "errorDescription" : "fixture service message",
+      "input" : "Smithy.ClientError/invalidValue",
+      "recoverySuggestion" : "Check the underlying error and try again",
+      "underlyingErrorCase" : "invalidValue",
+      "underlyingErrorType" : "Smithy.ClientError"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check if you are authorized to perform the request",
+      "errorDescription" : "fixture service message",
+      "input" : "Smithy.ClientError/authError",
+      "recoverySuggestion" : "Check if you are authorized to perform the request"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nunknownError(\"fixture service message\")",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "Smithy.ClientError/unknownError",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorCase" : "unknownError",
+      "underlyingErrorType" : "Smithy.ClientError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: AWS_IO_DNS_INVALID_NAME\nRecovery suggestion: Host name was invalid for dns resolution.\nCaused by:\nnetwork",
+      "errorDescription" : "AWS_IO_DNS_INVALID_NAME",
+      "input" : "CommonRunTimeError/connectivity",
+      "recoverySuggestion" : "Host name was invalid for dns resolution.",
+      "underlyingErrorCase" : "network",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: AWS_ERROR_OOM - Out of memory.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\ncrtError(AwsCommonRuntimeKit.CRTError(code: 1, message: \"Out of memory.\", name: \"AWS_ERROR_OOM\"))",
+      "errorDescription" : "Unexpected error occurred with message: AWS_ERROR_OOM - Out of memory.",
+      "input" : "CommonRunTimeError/other",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorCase" : "crtError",
+      "underlyingErrorType" : "AwsCommonRuntimeKit.CommonRunTimeError"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message",
+      "errorDescription" : "fixture service message",
+      "input" : "SignInError/configuration",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "SignInError/service-convertible",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: \nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nSentinelError()",
+      "errorDescription" : "Unexpected error occurred with message: ",
+      "input" : "SignInError/service-other",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "validation",
+      "debugDescription" : "AuthError: Username is required to signIn\nRecovery suggestion: Make sure that a valid username is passed during signIn",
+      "errorDescription" : "Username is required to signIn",
+      "field" : "fixtureField",
+      "input" : "SignInError/inputValidation",
+      "recoverySuggestion" : "Make sure that a valid username is passed during signIn"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message",
+      "errorDescription" : "fixture service message",
+      "input" : "SignInError/invalidServiceResponse",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: SignIn calculation returned an error\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: SignIn calculation returned an error",
+      "input" : "SignInError/calculation",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User cancelled the signIn flow and could not be completed.\nRecovery suggestion: Present the signIn UI again for the user to sign in\nCaused by:\nuserCancelled",
+      "errorDescription" : "User cancelled the signIn flow and could not be completed.",
+      "input" : "SignInError/hostedUI",
+      "recoverySuggestion" : "Present the signIn UI again for the user to sign in",
+      "underlyingErrorCase" : "userCancelled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User cancelled the signIn flow and could not be completed\nRecovery suggestion: Invoke the sign in with WebAuthn flow again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1001 \"(null)\"",
+      "errorDescription" : "User cancelled the signIn flow and could not be completed",
+      "input" : "SignInError/webAuthn",
+      "recoverySuggestion" : "Invoke the sign in with WebAuthn flow again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "SignInError/unknown",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: SignIn URI could not be created\nRecovery suggestion: Check the configuration to make sure that HostedUI related information are present",
+      "errorDescription" : "SignIn URI could not be created",
+      "input" : "HostedUIError/signInURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: Token URI could not be created\nRecovery suggestion: Check the configuration to make sure that HostedUI related information are present",
+      "errorDescription" : "Token URI could not be created",
+      "input" : "HostedUIError/tokenURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: SignOut URI could not be created\nRecovery suggestion: Check the configuration to make sure that HostedUI related information are present",
+      "errorDescription" : "SignOut URI could not be created",
+      "input" : "HostedUIError/signOutURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: Callback URL could not be retrieved\nRecovery suggestion: Check the configuration to make sure that HostedUI related information are present",
+      "errorDescription" : "Callback URL could not be retrieved",
+      "input" : "HostedUIError/signOutRedirectURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "authErrorCase" : "invalidState",
+      "debugDescription" : "AuthError: Proof calculation failed\nRecovery suggestion: Reach out with amplify team via github to raise an issue",
+      "errorDescription" : "Proof calculation failed",
+      "input" : "HostedUIError/proofCalculation",
+      "recoverySuggestion" : "Reach out with amplify team via github to raise an issue"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Found invalid parameter while parsing the webUI redirect URL\nRecovery suggestion: Make sure that the signIn URL has not been modified during the signIn flow",
+      "errorDescription" : "Found invalid parameter while parsing the webUI redirect URL",
+      "input" : "HostedUIError/codeValidation",
+      "recoverySuggestion" : "Make sure that the signIn URL has not been modified during the signIn flow"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Token returned by service could not be parsed\nRecovery suggestion: Check if the the configuration provided are correct",
+      "errorDescription" : "Token returned by service could not be parsed",
+      "input" : "HostedUIError/tokenParsing",
+      "recoverySuggestion" : "Check if the the configuration provided are correct"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Received an error message from the service",
+      "errorDescription" : "fixture service message",
+      "input" : "HostedUIError/serviceMessage",
+      "recoverySuggestion" : "Received an error message from the service"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "fixture service message",
+      "input" : "HostedUIError/pluginConfiguration",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User cancelled the signIn flow and could not be completed.\nRecovery suggestion: Present the signIn UI again for the user to sign in\nCaused by:\nuserCancelled",
+      "errorDescription" : "User cancelled the signIn flow and could not be completed.",
+      "input" : "HostedUIError/cancelled",
+      "recoverySuggestion" : "Present the signIn UI again for the user to sign in",
+      "underlyingErrorCase" : "userCancelled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "invalidState",
+      "debugDescription" : "AuthError: Presentation context provided is invalid or not present\nRecovery suggestion: Retry by providing a presentation context to present the webUI",
+      "errorDescription" : "Presentation context provided is invalid or not present",
+      "input" : "HostedUIError/invalidContext",
+      "recoverySuggestion" : "Retry by providing a presentation context to present the webUI"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to start a ASWebAuthenticationSession\nRecovery suggestion: Make sure that the app can present an ASWebAuthenticationSession\nCaused by:\nerrorLoadingUI",
+      "errorDescription" : "Unable to start a ASWebAuthenticationSession",
+      "input" : "HostedUIError/unableToStartASWebAuthenticationSession",
+      "recoverySuggestion" : "Make sure that the app can present an ASWebAuthenticationSession",
+      "underlyingErrorCase" : "errorLoadingUI",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: WebUI signIn encountered an unknown error\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: WebUI signIn encountered an unknown error",
+      "input" : "HostedUIError/unknown",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User cancelled the signIn flow and could not be completed\nRecovery suggestion: Invoke the sign in with WebAuthn flow again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1001 \"(null)\"",
+      "errorDescription" : "User cancelled the signIn flow and could not be completed",
+      "input" : "WebAuthnError/assertionFailed-canceled",
+      "recoverySuggestion" : "Invoke the sign in with WebAuthn flow again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to complete assertion of the given WebAuthn credential\nRecovery suggestion: Invoke the sign in with WebAuthn flow again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1004 \"(null)\"",
+      "errorDescription" : "Unable to complete assertion of the given WebAuthn credential",
+      "input" : "WebAuthnError/assertionFailed-failed",
+      "recoverySuggestion" : "Invoke the sign in with WebAuthn flow again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: User cancelled the creation of a new WebAuthn credential\nRecovery suggestion: Invoke the associate WebAuthn credential flow again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1001 \"(null)\"",
+      "errorDescription" : "User cancelled the creation of a new WebAuthn credential",
+      "input" : "WebAuthnError/creationFailed-canceled",
+      "recoverySuggestion" : "Invoke the associate WebAuthn credential flow again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The user already has associated a WebAuthn credential with this device\nRecovery suggestion: Remove the old WebAuthn credential and try again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1006 \"(null)\"",
+      "errorDescription" : "The user already has associated a WebAuthn credential with this device",
+      "input" : "WebAuthnError/creationFailed-matchedExcludedCredential",
+      "recoverySuggestion" : "Remove the old WebAuthn credential and try again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to complete the association of the given WebAuthn credential\nRecovery suggestion: Invoke the associate WebAuthn credential flow again\nCaused by:\nError Domain=com.apple.AuthenticationServices.AuthorizationError Code=1004 \"(null)\"",
+      "errorDescription" : "Unable to complete the association of the given WebAuthn credential",
+      "input" : "WebAuthnError/creationFailed-failed",
+      "recoverySuggestion" : "Invoke the associate WebAuthn credential flow again",
+      "underlyingErrorType" : "NSError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: WebAuthn authentication is not enabled\nRecovery suggestion: Check that WebAuthn authentication is enabled\nCaused by:\nwebAuthnNotEnabled",
+      "errorDescription" : "WebAuthn authentication is not enabled",
+      "input" : "WebAuthnError/service",
+      "recoverySuggestion" : "Check that WebAuthn authentication is enabled",
+      "underlyingErrorCase" : "webAuthnNotEnabled",
+      "underlyingErrorType" : "AWSCognitoAuthPlugin.AWSCognitoAuthError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: An unknown error type was thrown by the service. fixture service message.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists.\nPlease take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any\nexisting issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nSentinelError()",
+      "errorDescription" : "An unknown error type was thrown by the service. fixture service message.",
+      "input" : "WebAuthnError/unknown-withError",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists.\nPlease take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any\nexisting issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: An unknown error type was thrown by the service. fixture service message.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists.\nPlease take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any\nexisting issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "An unknown error type was thrown by the service. fixture service message.",
+      "input" : "WebAuthnError/unknown-nilError",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists.\nPlease take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any\nexisting issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: No identity pool configuration found\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "No identity pool configuration found",
+      "input" : "FetchSessionError/noIdentityPool",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: No user pool configuration found\nRecovery suggestion: Make sure that the amplify configuration passed to Auth plugin is valid",
+      "errorDescription" : "No user pool configuration found",
+      "input" : "FetchSessionError/noUserPool",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Invalid tokens received when refreshing session\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Invalid tokens received when refreshing session",
+      "input" : "FetchSessionError/invalidTokens",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: Not authorized error\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "Not authorized error",
+      "input" : "FetchSessionError/notAuthorized",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Invalid identity id received when fetching session\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Invalid identity id received when fetching session",
+      "input" : "FetchSessionError/invalidIdentityID",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Invalid temporary AWS Credentials received when fetching session\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Invalid temporary AWS Credentials received when fetching session",
+      "input" : "FetchSessionError/invalidAWSCredentials",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: No credentials found to refresh\nRecovery suggestion: There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "errorDescription" : "No credentials found to refresh",
+      "input" : "FetchSessionError/noCredentialsToRefresh",
+      "recoverySuggestion" : "There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSCognitoAuthPlugin/FetchSessionError.swift",
+          "function" : "authError",
+          "line" : 80
+        }
+      ]
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Refreshing credentials from federationToIdentityPool is not supported There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: Refreshing credentials from federationToIdentityPool is not supported There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "input" : "FetchSessionError/federationNotSupportedDuringRefresh",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSCognitoAuthPlugin/FetchSessionError.swift",
+          "function" : "authError",
+          "line" : 84
+        }
+      ]
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "FetchSessionError/service-convertible",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Service error occurred\nRecovery suggestion: There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "errorDescription" : "Service error occurred",
+      "input" : "FetchSessionError/service-other",
+      "recoverySuggestion" : "There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSCognitoAuthPlugin/FetchSessionError.swift",
+          "function" : "authError",
+          "line" : 91
+        }
+      ],
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthorizationError/configuration",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthorizationError/service-convertible",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Service error occurred\nRecovery suggestion: There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "errorDescription" : "Service error occurred",
+      "input" : "AuthorizationError/service-other",
+      "recoverySuggestion" : "There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSCognitoAuthPlugin/AuthorizationError.swift",
+          "function" : "authError",
+          "line" : 38
+        }
+      ],
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "invalidState",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Operation performed is not a valid operation for the current auth state",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthorizationError/invalidState",
+      "recoverySuggestion" : "Operation performed is not a valid operation for the current auth state"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: Not authorized error\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "Not authorized error",
+      "input" : "AuthorizationError/sessionError",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "sessionExpired",
+      "debugDescription" : "AuthError: Session expired\nRecovery suggestion: Invoke Auth.signIn to re-authenticate the user\nCaused by:\nNotAuthorizedException(message: \"fixture service message\")",
+      "errorDescription" : "Session expired",
+      "input" : "AuthorizationError/sessionExpired",
+      "recoverySuggestion" : "Invoke Auth.signIn to re-authenticate the user",
+      "underlyingErrorType" : "AWSCognitoIdentityProvider.NotAuthorizedException"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthenticationError/configuration",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthenticationError/service-convertible",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message\nCaused by:\nSentinelError()",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthenticationError/service-other",
+      "recoverySuggestion" : "",
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: fixture service message",
+      "errorDescription" : "fixture service message",
+      "input" : "AuthenticationError/service-nil",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "AuthenticationError/unknown",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: SignOut URI could not be created\nRecovery suggestion: Check the configuration to make sure that HostedUI related information are present",
+      "errorDescription" : "SignOut URI could not be created",
+      "input" : "SignOutError/hostedUI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: \nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: ",
+      "input" : "SignOutError/localSignOut",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't."
+    },
+    {
+      "authErrorCase" : "validation",
+      "debugDescription" : "AuthError: Username is required to signUp\nRecovery suggestion: Make sure that a valid username is passed for signUp",
+      "errorDescription" : "Username is required to signUp",
+      "field" : "username",
+      "input" : "SignUpError/invalidUsername",
+      "recoverySuggestion" : "Make sure that a valid username is passed for signUp"
+    },
+    {
+      "authErrorCase" : "validation",
+      "debugDescription" : "AuthError: Password is required to signUp\nRecovery suggestion: Make sure that a valid password is passed for signUp",
+      "errorDescription" : "Password is required to signUp",
+      "field" : "password",
+      "input" : "SignUpError/invalidPassword",
+      "recoverySuggestion" : "Make sure that a valid password is passed for signUp"
+    },
+    {
+      "authErrorCase" : "notAuthorized",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: Check whether the given values are correct and the user is authorized to perform the operation",
+      "errorDescription" : "fixture service message",
+      "input" : "SignUpError/service-convertible",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: Received unknown error from service\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nSentinelError()",
+      "errorDescription" : "Unexpected error occurred with message: Received unknown error from service",
+      "input" : "SignUpError/service-other",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "errorDescription" : "fixture service message",
+      "input" : "KeychainStoreError/configuration",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 91
+        }
+      ]
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.\nCaused by:\nSentinelError()",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "KeychainStoreError/unknown-withError",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 91
+        }
+      ],
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "unknown",
+      "debugDescription" : "AuthError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "errorDescription" : "Unexpected error occurred with message: fixture service message",
+      "input" : "KeychainStoreError/unknown-nilError",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: Unexpected error occurred with message: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-swift/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't.",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 91
+        }
+      ]
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "errorDescription" : "fixture service message",
+      "input" : "KeychainStoreError/conversionError",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 91
+        }
+      ],
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "configuration",
+      "debugDescription" : "AuthError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "errorDescription" : "fixture service message",
+      "input" : "KeychainStoreError/codingError",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: fixture service message\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>\nCaused by:\nSentinelError()",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 91
+        }
+      ],
+      "underlyingErrorType" : "AWSCognitoAuthPluginUnitTests.ErrorCatalogueSnapshotTests.SentinelError"
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unable to find the keychain item",
+      "errorDescription" : "Unable to find the keychain item",
+      "input" : "KeychainStoreError/itemNotFound",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: Unable to find the keychain item",
+      "recoverySuggestion" : ""
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Internal error when a required entitlement isn't present,\nclient has neither application-identifier nor keychain-access-groups entitlements.\nRecovery suggestion: To use Auth in a macOS project, you'll need to enable the Keychain Sharing capability.\nThis capability is required because Auth uses the Data Protection Keychain on macOS as\na platform best practice. See TN3137: macOS keychain APIs and implementations for more\ninformation on how Keychain works on macOS and the Keychain Sharing entitlement.\nFor more information on adding capabilities to your application, see Xcode Capabilities.",
+      "errorDescription" : "Internal error when a required entitlement isn't present,\nclient has neither application-identifier nor keychain-access-groups entitlements.",
+      "input" : "KeychainStoreError/securityError-missingEntitlement",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: Internal error when a required entitlement isn't present,\nclient has neither application-identifier nor keychain-access-groups entitlements.\nRecovery suggestion: To use Auth in a macOS project, you'll need to enable the Keychain Sharing capability.\nThis capability is required because Auth uses the Data Protection Keychain on macOS as\na platform best practice. See TN3137: macOS keychain APIs and implementations for more\ninformation on how Keychain works on macOS and the Keychain Sharing entitlement.\nFor more information on adding capabilities to your application, see Xcode Capabilities.",
+      "recoverySuggestion" : "To use Auth in a macOS project, you'll need to enable the Keychain Sharing capability.\nThis capability is required because Auth uses the Data Protection Keychain on macOS as\na platform best practice. See TN3137: macOS keychain APIs and implementations for more\ninformation on how Keychain works on macOS and the Keychain Sharing entitlement.\nFor more information on adding capabilities to your application, see Xcode Capabilities."
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: Unexpected error has occurred with status: -25308.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "errorDescription" : "Unexpected error has occurred with status: -25308.",
+      "input" : "KeychainStoreError/securityError-interactionNotAllowed",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: Unexpected error has occurred with status: -25308.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 78
+        }
+      ]
+    },
+    {
+      "authErrorCase" : "service",
+      "debugDescription" : "AuthError: The specified item already exists in the keychain.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "errorDescription" : "The specified item already exists in the keychain.",
+      "input" : "KeychainStoreError/securityError-duplicateItem",
+      "keychainStoreErrorDebugDescription" : "KeychainStoreError: The specified item already exists in the keychain.\nRecovery suggestion: This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "recoverySuggestion" : "This should not happen. There is a possibility that there is a bug if this error persists. Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that match your scenario, and file an issue with the details of the bug if there isn't. Issue encountered at:\nfile: <file>\nfunction: <function>\nline: <line>",
+      "reportBugLocations" : [
+        {
+          "file" : "AWSPluginsCore/KeychainStoreError.swift",
+          "function" : "recoverySuggestion",
+          "line" : 78
+        }
+      ]
+    }
+  ],
+  "errorConstants" : [
+    {
+      "errorDescription" : "Unable to decode configuration",
+      "name" : "decodeConfigurationError",
+      "recoverySuggestion" : "Make sure the plugin configuration is JSONValue"
+    },
+    {
+      "errorDescription" : "Configuration was not a dictionary literal",
+      "name" : "configurationObjectExpected",
+      "recoverySuggestion" : "Make sure the value for the plugin is a dictionary literal"
+    },
+    {
+      "errorDescription" : "Found invalid parameter while parsing the webUI redirect URL",
+      "name" : "hostedUISecurityFailedError",
+      "recoverySuggestion" : "Make sure that the signIn URL has not been modified during the signIn flow"
+    },
+    {
+      "errorDescription" : "User cancelled the signIn flow and could not be completed.",
+      "name" : "hostedUIUserCancelledError",
+      "recoverySuggestion" : "Present the signIn UI again for the user to sign in"
+    },
+    {
+      "errorDescription" : "User cancelled the signOut flow and could not be completed.",
+      "name" : "hostedUIUserCancelledSignOutError",
+      "recoverySuggestion" : "Present the signOut UI again for the user to sign out"
+    },
+    {
+      "errorDescription" : "Presentation context provided is invalid or not present",
+      "name" : "hostedUIInvalidPresentation",
+      "recoverySuggestion" : "Retry by providing a presentation context to present the webUI"
+    },
+    {
+      "errorDescription" : "Unable to start a ASWebAuthenticationSession",
+      "name" : "hostedUIUnableToStartASWebAuthenticationSession",
+      "recoverySuggestion" : "Make sure that the app can present an ASWebAuthenticationSession"
+    },
+    {
+      "errorDescription" : "SignIn URI could not be created",
+      "name" : "hostedUISignInURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "errorDescription" : "Token URI could not be created",
+      "name" : "hostedUITokenURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "errorDescription" : "SignOut URI could not be created",
+      "name" : "hostedUISignOutURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "errorDescription" : "Callback URL could not be retrieved",
+      "name" : "hostedUISignOutRedirectURI",
+      "recoverySuggestion" : "Check the configuration to make sure that HostedUI related information are present"
+    },
+    {
+      "errorDescription" : "Proof calculation failed",
+      "name" : "hostedUIProofCalculation",
+      "recoverySuggestion" : "Reach out with amplify team via github to raise an issue"
+    },
+    {
+      "errorDescription" : "Token returned by service could not be parsed",
+      "name" : "tokenParsingError",
+      "recoverySuggestion" : "Check if the the configuration provided are correct"
+    },
+    {
+      "errorDescription" : "Could not validate the user",
+      "name" : "userInvalidError",
+      "recoverySuggestion" : "Get the current user Auth.getCurrentUser() and make the request"
+    },
+    {
+      "errorDescription" : "There is no user signed in to retreive identity id",
+      "name" : "identityIdSignOutError",
+      "recoverySuggestion" : "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool"
+    },
+    {
+      "errorDescription" : "There is no user signed in to retreive AWS credentials",
+      "name" : "awsCredentialsSignOutError",
+      "recoverySuggestion" : "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool"
+    },
+    {
+      "errorDescription" : "There is no user signed in to retreive cognito tokens",
+      "name" : "cognitoTokensSignOutError",
+      "recoverySuggestion" : "Call Auth.signIn to sign in a user and then call Auth.fetchSession"
+    },
+    {
+      "errorDescription" : "There is no user signed in to retreive user sub",
+      "name" : "userSubSignOutError",
+      "recoverySuggestion" : "Call Auth.signIn to sign in a user and then call Auth.fetchSession"
+    },
+    {
+      "errorDescription" : "A network error occured while trying to fetch identity id",
+      "name" : "identityIdOfflineError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "A network error occured while trying to fetch AWS credentials",
+      "name" : "awsCredentialsOfflineError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "A network error occured while trying to fetch user sub",
+      "name" : "usersubOfflineError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "A network error occured while trying to fetch AWS Cognito Tokens",
+      "name" : "cognitoTokenOfflineError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "A serivce error occured while trying to fetch identity id",
+      "name" : "identityIdServiceError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "A service error occured while trying to fetch AWS credentials",
+      "name" : "awsCredentialsServiceError",
+      "recoverySuggestion" : "Try again with exponential backoff"
+    },
+    {
+      "errorDescription" : "Session expired could not fetch identity id",
+      "name" : "identityIdSessionExpiredError",
+      "recoverySuggestion" : "Invoke Auth.signIn to re-authenticate the user"
+    },
+    {
+      "errorDescription" : "Session expired could not fetch AWS Credentials",
+      "name" : "awsCredentialsSessionExpiredError",
+      "recoverySuggestion" : "Invoke Auth.signIn to re-authenticate the user"
+    },
+    {
+      "errorDescription" : "Session expired could not fetch user sub",
+      "name" : "usersubSessionExpiredError",
+      "recoverySuggestion" : "Invoke Auth.signIn to re-authenticate the user"
+    },
+    {
+      "errorDescription" : "Session expired could not fetch cognito tokens",
+      "name" : "cognitoTokensSessionExpiredError",
+      "recoverySuggestion" : "Invoke Auth.signIn to re-authenticate the user"
+    },
+    {
+      "errorDescription" : "User is not signed in through Cognito User pool",
+      "name" : "cognitoTokenSignedInThroughCIDPError",
+      "recoverySuggestion" : "Tokens are not valid with user signed in through AWS Cognito Identity Pool"
+    },
+    {
+      "errorDescription" : "User is not signed in through Cognito User pool",
+      "name" : "userSubSignedInThroughCIDPError",
+      "recoverySuggestion" : "User sub are not valid with user signed in through AWS Cognito Identity Pool"
+    },
+    {
+      "errorDescription" : "Could not fetch identity Id, AWS Cognito Identity Pool is not configured",
+      "name" : "signedInIdentityIdWithNoCIDPError",
+      "recoverySuggestion" : "Follow the steps to configure AWS Cognito Identity Pool and try again"
+    },
+    {
+      "errorDescription" : "Could not fetch AWS Credentials, AWS Cognito Identity Pool is not configured",
+      "name" : "signedInAWSCredentialsWithNoCIDPError",
+      "recoverySuggestion" : "Follow the steps to configure AWS Cognito Identity Pool and try again"
+    },
+    {
+      "errorDescription" : "Could not fetch attributes, there is no user signed in to the Auth category",
+      "name" : "fetchAttributeSignedOutError",
+      "recoverySuggestion" : "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    },
+    {
+      "errorDescription" : "Could not update attributes, there is no user signed in to the Auth category",
+      "name" : "updateAttributeSignedOutError",
+      "recoverySuggestion" : "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    },
+    {
+      "errorDescription" : "Could not resend attribute confirmation code, there is no user signed in to the Auth category",
+      "name" : "resendAttributeCodeSignedOutError",
+      "recoverySuggestion" : "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    },
+    {
+      "errorDescription" : "Could not confirm attribute, there is no user signed in to the Auth category",
+      "name" : "confirmAttributeSignedOutError",
+      "recoverySuggestion" : "SignIn to Auth category by using one of the sign in methods and then call user attributes apis"
+    },
+    {
+      "errorDescription" : "Could not change password, there is no user signed in to the Auth category",
+      "name" : "changePasswordSignedOutError",
+      "recoverySuggestion" : "Change password require a user signed in to Auth category, use one of the signIn apis to signIn"
+    },
+    {
+      "errorDescription" : "Could not change password, the user session is expired",
+      "name" : "changePasswordUnableToSignInError",
+      "recoverySuggestion" : "Re-authenticate the user by using one of the signIn apis"
+    },
+    {
+      "errorDescription" : "There is no user signed in to the Auth category",
+      "name" : "userSignedOutError",
+      "recoverySuggestion" : "SignIn to Auth category by using one of the sign in methods and then try again"
+    },
+    {
+      "errorDescription" : "User cancelled the creation of a new WebAuthn credential",
+      "name" : "associateWebAuthnCredentialUserCancelledError",
+      "recoverySuggestion" : "Invoke the associate WebAuthn credential flow again"
+    },
+    {
+      "errorDescription" : "The user already has associated a WebAuthn credential with this device",
+      "name" : "associateWebAuthnCredentialAlreadyExistError",
+      "recoverySuggestion" : "Remove the old WebAuthn credential and try again"
+    },
+    {
+      "errorDescription" : "Unable to complete the association of the given WebAuthn credential",
+      "name" : "associateWebAuthnCreationFailedError",
+      "recoverySuggestion" : "Invoke the associate WebAuthn credential flow again"
+    },
+    {
+      "errorDescription" : "User cancelled the signIn flow and could not be completed",
+      "name" : "signInWithWebAuthnUserCancelledError",
+      "recoverySuggestion" : "Invoke the sign in with WebAuthn flow again"
+    },
+    {
+      "errorDescription" : "Unable to complete assertion of the given WebAuthn credential",
+      "name" : "signInWithWebAuthnAssertionFailedError",
+      "recoverySuggestion" : "Invoke the sign in with WebAuthn flow again"
+    },
+    {
+      "errorDescription" : "Username is required to signIn",
+      "field" : "username",
+      "name" : "signInUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed during signIn"
+    },
+    {
+      "errorDescription" : "Password is required to signIn",
+      "field" : "password",
+      "name" : "signInPasswordError",
+      "recoverySuggestion" : "Make sure that a valid password is passed during signIn"
+    },
+    {
+      "errorDescription" : "Username is required to signUp",
+      "field" : "username",
+      "name" : "signUpUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed for signUp"
+    },
+    {
+      "errorDescription" : "Password is required to signUp",
+      "field" : "password",
+      "name" : "signUpPasswordError",
+      "recoverySuggestion" : "Make sure that a valid password is passed for signUp"
+    },
+    {
+      "errorDescription" : "Username is required to confirmSignUp",
+      "field" : "username",
+      "name" : "confirmSignUpUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed for confirmSignUp"
+    },
+    {
+      "errorDescription" : "Username is required to confirmSignUp",
+      "field" : "username",
+      "name" : "resendSignUpCodeUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed for confirmSignUp"
+    },
+    {
+      "errorDescription" : "code is required to confirmSignUp",
+      "field" : "code",
+      "name" : "confirmSignUpCodeError",
+      "recoverySuggestion" : "Make sure that a valid code is passed for confirmSignUp"
+    },
+    {
+      "errorDescription" : "challengeResponse is required to confirmSignIn",
+      "field" : "challengeResponse",
+      "name" : "confirmSignInChallengeResponseError",
+      "recoverySuggestion" : "Make sure that a valid challenge response is passed for confirmSignIn"
+    },
+    {
+      "errorDescription" : "challengeResponse for MFA selection can only have SMS_MFA or SOFTWARE_TOKEN_MFA.",
+      "field" : "challengeResponse",
+      "name" : "confirmSignInMFASelectionResponseError",
+      "recoverySuggestion" : "Make sure that a valid challenge response is passed for confirmSignIn.\nTry using `MFAType.totp.challengeResponse` or `MFAType.sms.challengeResponse` as the challenge response"
+    },
+    {
+      "errorDescription" : "challengeResponse for factor selection can only be one of the `AuthFactorType` values.",
+      "field" : "challengeResponse",
+      "name" : "confirmSignInFactorSelectionResponseError",
+      "recoverySuggestion" : "Make sure that a valid challenge response is passed for confirmSignIn.\nTry using `AuthFactorType.<type>.challengeResponse` as the challenge response."
+    },
+    {
+      "errorDescription" : "username is required to confirmResetPassword",
+      "field" : "username",
+      "name" : "confirmResetPasswordUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed for confirmResetPassword"
+    },
+    {
+      "errorDescription" : "newPassword is required to confirmResetPassword",
+      "field" : "newPassword",
+      "name" : "confirmResetPasswordNewPasswordError",
+      "recoverySuggestion" : "Make sure that a valid newPassword is passed for confirmResetPassword"
+    },
+    {
+      "errorDescription" : "confirmationCode is required to confirmResetPassword",
+      "field" : "confirmationCode",
+      "name" : "confirmResetPasswordCodeError",
+      "recoverySuggestion" : "Make sure that a valid confirmationCode is passed for confirmResetPassword"
+    },
+    {
+      "errorDescription" : "username is required to resetPassword",
+      "field" : "username",
+      "name" : "resetPasswordUsernameError",
+      "recoverySuggestion" : "Make sure that a valid username is passed for resetPassword"
+    },
+    {
+      "name" : "userNotFoundError",
+      "recoverySuggestion" : "Make sure that the user is present in the backend"
+    },
+    {
+      "name" : "aliasExistsError",
+      "recoverySuggestion" : "Try with a different alias for the user"
+    },
+    {
+      "name" : "codeDeliveryError",
+      "recoverySuggestion" : "Make sure that the delivery destination is valid"
+    },
+    {
+      "name" : "codeMismatchError",
+      "recoverySuggestion" : "Retry with a valid code"
+    },
+    {
+      "name" : "codeExpiredError",
+      "recoverySuggestion" : "Rerun the flow to send the code again"
+    },
+    {
+      "name" : "lambdaError",
+      "recoverySuggestion" : "Make sure that the lambda configuration is correct"
+    },
+    {
+      "name" : "invalidParameterError",
+      "recoverySuggestion" : "Make sure that the parameters passed are valid"
+    },
+    {
+      "name" : "invalidPasswordError",
+      "recoverySuggestion" : "Make sure that the password is valid"
+    },
+    {
+      "name" : "mfaMethodNotFoundError",
+      "recoverySuggestion" : "Make sure that the user pool has a valid MFA configured"
+    },
+    {
+      "name" : "passwordResetRequired",
+      "recoverySuggestion" : "Reset the user password using the changePassword API"
+    },
+    {
+      "name" : "resourceNotFoundError",
+      "recoverySuggestion" : "Make sure that the user pool has a requested resource"
+    },
+    {
+      "name" : "softwareTokenNotFoundError",
+      "recoverySuggestion" : "Enable the software token MFA for the user"
+    },
+    {
+      "name" : "tooManyFailedError",
+      "recoverySuggestion" : "User might have tried too many times with failed input"
+    },
+    {
+      "name" : "tooManyRequestError",
+      "recoverySuggestion" : "Make sure the requests send are controlled and the errors are properly handled"
+    },
+    {
+      "name" : "limitExceededError",
+      "recoverySuggestion" : "Make sure that the request made to the particular AWS resources are under the resource quota limits"
+    },
+    {
+      "name" : "configurationError",
+      "recoverySuggestion" : "Make sure that the amplify configuration passed to Auth plugin is valid"
+    },
+    {
+      "name" : "userNotConfirmedError",
+      "recoverySuggestion" : "Confirm the user by calling confirmSignUp api"
+    },
+    {
+      "name" : "userNameExistsError",
+      "recoverySuggestion" : "Invoke the api with a different username"
+    },
+    {
+      "name" : "errorLoadingPageError",
+      "recoverySuggestion" : "Make sure that the UI is configured correctly"
+    },
+    {
+      "name" : "deviceNotRememberedError",
+      "recoverySuggestion" : "Call remeberDevice to track the device"
+    },
+    {
+      "name" : "invalidStateError",
+      "recoverySuggestion" : "Operation performed is not a valid operation for the current auth state"
+    },
+    {
+      "name" : "notAuthorizedError",
+      "recoverySuggestion" : "Check whether the given values are correct and the user is authorized to perform the operation"
+    },
+    {
+      "name" : "hostedUIBadRequestError",
+      "recoverySuggestion" : "Retry the webUi signIn"
+    },
+    {
+      "name" : "configurationMissingError",
+      "recoverySuggestion" : "Could not read Cognito Service configuration from the auth configuration. Make sure that auth category\nis properly configured and auth information are present in the configuration. You can use Amplify CLI to\nconfigure the auth category"
+    },
+    {
+      "name" : "externalServiceException",
+      "recoverySuggestion" : "An exception thrown when a dependent service such as Facebook or Twitter is not responding"
+    },
+    {
+      "name" : "limitExceededException",
+      "recoverySuggestion" : "The total number of user pools has exceeded a preset limit"
+    },
+    {
+      "name" : "resourceConflictException",
+      "recoverySuggestion" : "Check if the login is already linked to another account"
+    },
+    {
+      "name" : "invalidEmailRoleError",
+      "recoverySuggestion" : "Check the email identity used with Cognito Service"
+    },
+    {
+      "name" : "invalidSMSRoleError",
+      "recoverySuggestion" : "Check the role provided for SMS configuration in Cognito Service"
+    },
+    {
+      "name" : "serviceError",
+      "recoverySuggestion" : "Received an error message from the service"
+    },
+    {
+      "name" : "forbiddenError",
+      "recoverySuggestion" : "Check if you are allowed to make this request based on the web ACL thats associated with your user pool"
+    },
+    {
+      "name" : "concurrentModificationException",
+      "recoverySuggestion" : "Make sure the requests sent are controlled and concurrent operations are handled properly"
+    },
+    {
+      "name" : "webAuthnChallengeNotFound",
+      "recoverySuggestion" : "Call this API after receiving an WebAuthn challenge"
+    },
+    {
+      "name" : "webAuthnClientMismatch",
+      "recoverySuggestion" : "Use an App client that supports passkey authentication"
+    },
+    {
+      "name" : "webAuthnCredentialNotSupported",
+      "recoverySuggestion" : "Create credentials using a supported device"
+    },
+    {
+      "name" : "webAuthnNotEnabled",
+      "recoverySuggestion" : "Check that WebAuthn authentication is enabled"
+    },
+    {
+      "name" : "webAuthnOriginNotAllowed",
+      "recoverySuggestion" : "Check that the device origin is registered as an allowed origin"
+    },
+    {
+      "name" : "webAuthnRelyingPartyMismatch",
+      "recoverySuggestion" : "Check that the relying party ID is correct"
+    },
+    {
+      "name" : "webAuthnConfigurationMissing",
+      "recoverySuggestion" : "Check that the device is registered"
+    }
+  ],
+  "notInvoked" : [
+    "SignUpError/invalidState: authError calls fatalError",
+    "SignUpError/invalidConfirmationCode: authError calls fatalError"
+  ],
+  "note" : "Captured at M2 step S0. Strings from AmplifyErrorMessages.reportBugToAWS() embed the call site's #file (= #fileID), #function and #line."
+}

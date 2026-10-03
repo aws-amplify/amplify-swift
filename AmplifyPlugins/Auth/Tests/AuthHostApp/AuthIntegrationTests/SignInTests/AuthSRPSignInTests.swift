@@ -247,26 +247,35 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///         Create new user in Cognito, only specify username and password, which should entered below in the test.
     ///         Make sure that you do not enter email and phone number, so that adding a new attribute could also be tested
     ///
-    ///   DISABLED TEST, because it needs special setup
+    ///   The credentials file lists such users (`new_password_required_usernames`, comma-separated) and
+    ///   their temporary password (`new_password_required_temporary_password`). Each is used once: the
+    ///   test takes the first still in FORCE_CHANGE_PASSWORD, so repeated iterations each find one. Without
+    ///   them the test skips.
     func testNewPasswordRequired() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
-
-        let username = "YOUR USERNAME CREATED IN COGNITO FOR TESTING TEMP PASSWORD FLOW"
-        let tempPassword = "YOUR TEMP PASSWORD THAT WAS SET"
+        guard !newPasswordRequiredUsernames.isEmpty, let tempPassword = newPasswordRequiredTemporaryPassword else {
+            throw XCTSkip("Needs FORCE_CHANGE_PASSWORD users in the credentials file (new_password_required_usernames)")
+        }
         let newPassword = "@mplifyI$Awesom3"
 
-        let operationExpectation = expectation(description: "Operation should complete")
-
-        do {
-            let result = try await Amplify.Auth.signIn(username: username, password: tempPassword, options: .none)
-            if case .confirmSignInWithNewPassword = result.nextStep {
-                operationExpectation.fulfill()
+        var challenged = false
+        for username in newPasswordRequiredUsernames {
+            do {
+                let result = try await Amplify.Auth.signIn(username: username, password: tempPassword, options: .none)
+                guard case .confirmSignInWithNewPassword = result.nextStep else {
+                    XCTFail("Expected confirmSignInWithNewPassword, got \(result.nextStep)")
+                    return
+                }
+                challenged = true
+                break
+            } catch AuthError.notAuthorized {
+                // Already used (its password was changed by an earlier iteration): try the next one.
+                continue
             }
-        } catch {
-            XCTFail("SignIn with invalid auth flow should not succeed: \(error)")
         }
-
-        await fulfillment(of: [operationExpectation], timeout: networkTimeout)
+        guard challenged else {
+            XCTFail("Every FORCE_CHANGE_PASSWORD user was already used; run infra/prepare-run.sh to reset them")
+            return
+        }
 
         let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
         do {

@@ -32,9 +32,9 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
         eventSubject = nil
     }
 
-    /// Given: a CloudWatchLoggingSessionController
-    /// When: a flush log is called and the CloudWatch client fails
-    /// Then: a flushLogFailure event is published to the event subject
+    /// - Given: a CloudWatchLoggingSessionController
+    /// - When: a flush log is called and the CloudWatch client fails
+    /// - Then: a flushLogFailure event is published to the event subject
     func testConsumeFailureSendsEvent() async throws {
         let eventExpectation = expectation(description: "Should receive the flush failure event")
         // A failed batch is now retained for retry (not deleted), so the failure event can fire on more
@@ -83,9 +83,9 @@ final class CloudWatchLoggingSessionControllerTests: XCTestCase {
         flushLoop.cancel()
     }
 
-    /// Given: a controller whose network monitor reports offline
-    /// When: flushLogs() is called
-    /// Then: no calls are made to CloudWatch (logs are retained for a later, online flush)
+    /// - Given: a controller whose network monitor reports offline
+    /// - When: flushLogs() is called
+    /// - Then: no calls are made to CloudWatch (logs are retained for a later, online flush)
     func testFlushLogsSkippedWhenOffline() async throws {
         mockLoggingNetworkMonitor.isOnline = false
         mockCloudWatchLogClient.putLogEventsHandler = { _ in

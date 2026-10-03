@@ -1,0 +1,26 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+
+package extension Action {
+
+    func logError(_ message: String, environment: Environment) {
+        let logger = (environment as? LoggerProvider)?.logger
+        logger?.error("\(message)")
+    }
+
+    func logInfo(_ message: String, environment: Environment) {
+        let logger = (environment as? LoggerProvider)?.logger
+        logger?.info("\(message)")
+    }
+
+    func logVerbose(_ message: String, environment: Environment) {
+        let logger = (environment as? LoggerProvider)?.logger
+        logger?.verbose("\(message)")
+    }
+}

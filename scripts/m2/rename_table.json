@@ -1,0 +1,28 @@
+{
+  "note": "Which engine name replaces which public or plugin name, by the step of the engine move that introduced it. One source of truth for test_rename_check.py and for the G5 log-transcript normaliser, which applies it in reverse. Add an entry in the step that introduces the name.",
+  "renames": [
+    { "step": "S1", "from": { "module": "Amplify", "name": "AuthUIPresentationAnchor" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EnginePresentationAnchor" } },
+    { "step": "S1", "from": { "module": "Amplify", "name": "AmplifyErrorMessages" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineErrorMessages" } },
+    { "step": "S3", "from": { "module": "Amplify", "name": "AuthError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAuthError" } },
+    { "step": "S3", "from": { "module": "AWSCognitoAuthPlugin", "name": "AuthErrorConvertible" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAuthErrorConvertible" } },
+    { "step": "S3", "from": { "module": "AWSCognitoAuthPlugin", "name": "AWSCognitoAuthError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineServiceErrorCode" } },
+    { "step": "S3", "from": { "module": "AWSCognitoAuthPlugin", "name": "AWSCognitoRevokeTokenError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineRevokeTokenFailure" } },
+    { "step": "S3", "from": { "module": "AWSCognitoAuthPlugin", "name": "AWSCognitoGlobalSignOutError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineGlobalSignOutFailure" } },
+    { "step": "S3", "from": { "module": "AWSCognitoAuthPlugin", "name": "AWSCognitoHostedUIError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineHostedUISignOutFailure" } },
+    { "step": "S4", "from": { "module": "AWSPluginsCore", "name": "KeychainStoreError" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineCredentialStoreError" } },
+    { "step": "S5a", "from": { "module": "AWSCognitoAuthPlugin", "name": "AWSCognitoUserPoolTokens" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineUserPoolTokens" } },
+    { "step": "S5a", "from": { "module": "AWSCognitoAuthPlugin", "name": "AuthAWSCognitoCredentials" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAWSCredentials" } },
+    { "step": "S5b", "from": { "module": "Amplify", "name": "AuthFactorType" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAuthFactorType" } },
+    { "step": "S5b", "from": { "module": "AWSCognitoAuthPlugin", "name": "AuthFlowType" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAuthFlowType" } },
+    { "step": "S5b", "from": { "module": "Amplify", "name": "AuthProvider" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineAuthProvider" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "MFAType" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineMFAType" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignInStep" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignInStep" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignUpResult" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignUpResult" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "AuthCodeDeliveryDetails" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineCodeDeliveryDetails" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "DeviceInfo" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineDeviceInfo" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "DeliveryDestination" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineDeliveryDestination" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "TOTPSetupDetails" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineTOTPSetupDetails" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "AuthSignUpStep" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineSignUpStep" } },
+    { "step": "S6", "from": { "module": "Amplify", "name": "AuthUserAttribute" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineUserAttribute" } }
+  ]
+}

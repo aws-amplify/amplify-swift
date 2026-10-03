@@ -1,0 +1,43 @@
+## catch KeychainStoreError.case: 0 (engine 0, split 0, glue 0)
+## catch let … as KeychainStoreError: 0 (engine 0, split 0, glue 0)
+## catch is KeychainStoreError: 0 (engine 0, split 0, glue 0)
+## as? KeychainStoreError: 0 (engine 0, split 0, glue 0)
+## as! KeychainStoreError: 0 (engine 0, split 0, glue 0)
+## is KeychainStoreError: 0 (engine 0, split 0, glue 0)
+## case KeychainStoreError.x: 0 (engine 0, split 0, glue 0)
+## catch AWSCognitoAuthError.case: 0 (engine 0, split 0, glue 0)
+## catch let … as AWSCognitoAuthError: 0 (engine 0, split 0, glue 0)
+## catch is AWSCognitoAuthError: 0 (engine 0, split 0, glue 0)
+## as? AWSCognitoAuthError: 1 (engine 0, split 0, glue 1)
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Task/AWSAuthDeleteUserTask.swift:79	case .userNotFound = (underlyingError as? AWSCognitoAuthError)
+## as! AWSCognitoAuthError: 0 (engine 0, split 0, glue 0)
+## is AWSCognitoAuthError: 0 (engine 0, split 0, glue 0)
+## case AWSCognitoAuthError.x: 0 (engine 0, split 0, glue 0)
+## catch AuthErrorConvertible.case: 0 (engine 0, split 0, glue 0)
+## catch let … as AuthErrorConvertible: 0 (engine 0, split 0, glue 0)
+## catch is AuthErrorConvertible: 0 (engine 0, split 0, glue 0)
+## as? AuthErrorConvertible: 1 (engine 0, split 0, glue 1)
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Support/EngineBridge/AuthError+Engine.swift:51	if let convertible = error as? AuthErrorConvertible {
+## as! AuthErrorConvertible: 0 (engine 0, split 0, glue 0)
+## is AuthErrorConvertible: 0 (engine 0, split 0, glue 0)
+## case AuthErrorConvertible.x: 0 (engine 0, split 0, glue 0)
+## catch AuthError.case: 1 (engine 0, split 0, glue 1)
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Models/AWSAuthCognitoSession.swift:66	} catch AuthError.signedOut {
+## catch let … as AuthError: 0 (engine 0, split 0, glue 0)
+## catch is AuthError: 0 (engine 0, split 0, glue 0)
+## as? AuthError: 0 (engine 0, split 0, glue 0)
+## as! AuthError: 0 (engine 0, split 0, glue 0)
+## is AuthError: 0 (engine 0, split 0, glue 0)
+## case AuthError.x: 1 (engine 0, split 0, glue 1)
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Task/AWSAuthDeleteUserTask.swift:78	guard case AuthError.service(_, _, let underlyingError) = error,
+## extension …: AuthErrorConvertible: 10 (engine 0, split 0, glue 10)
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:20	extension AuthError: AuthErrorConvertible {
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:36	extension AuthenticationError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:37	extension AuthorizationError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:38	extension FetchSessionError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:39	extension HostedUIError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:40	extension SignInError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:41	extension SignOutError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:42	extension SignUpError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Service/ErrorMapping/AuthErrorConvertible.swift:43	extension WebAuthnError: AuthErrorConvertible {}
+glue	AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/Support/EngineBridge/KeychainStoreError+Engine.swift:20	extension KeychainStoreError: AuthErrorConvertible {}

@@ -39,6 +39,21 @@ on:
         required: false
         type: string
         default: ''
+      uninstall_before_retry:
+        description: 'Space-separated bundle IDs to uninstall from the simulator before the retry. Empty keeps it as it is.'
+        required: false
+        type: string
+        default: ''
+      test_iterations:
+        description: 'The -test-iterations of an unscoped run and of its retry. Each iteration after a failure runs the whole suite again.'
+        required: false
+        type: number
+        default: 3
+      cognito_client_integ_ci_skips:
+        description: 'Set to 1 to give the test process COGNITO_CLIENT_INTEG_CI_SKIPS=1 (as TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS), so the Cognito client suites skip on CI, naming the reason, the tests whose resource the plugin''s CI does not provide. Empty sets nothing.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
     id-token: write
@@ -108,6 +123,19 @@ jobs:
         if: inputs.platform == 'iOS'
         run: defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false
 
+      # xcodebuild passes each TEST_RUNNER_<NAME> in its environment to the test process as <NAME>. Set for the
+      # steps after this one, both test runs included; nothing is set when the input is empty.
+      - name: Let the Cognito client suites skip on CI what CI does not provide
+        if: inputs.cognito_client_integ_ci_skips != ''
+        env:
+          CI_SKIPS: ${{ inputs.cognito_client_integ_ci_skips }}
+        run: |
+          if [ "$CI_SKIPS" != "1" ]; then
+            echo "::error::cognito_client_integ_ci_skips must be empty or 1."
+            exit 1
+          fi
+          echo "TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1" >> "$GITHUB_ENV"
+
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
         continue-on-error: ${{ inputs.only_testing == '' }}
@@ -124,7 +152,7 @@ jobs:
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
           # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
-          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || '-test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES' }}
+          other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || format('-test-iterations {0} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES', inputs.test_iterations) }}
 
       - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure' && inputs.only_testing == ''
@@ -142,7 +170,16 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+          uninstall_bundle_ids: ${{ inputs.uninstall_before_retry }}
+          other_flags: -test-iterations ${{ inputs.test_iterations }} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
+
+      # A failed test run must fail the job. A scoped run (only_testing) is not retried, and an unscoped one is
+      # retried once; the job fails when the last attempt failed, whatever `continue-on-error` let through.
+      - name: Fail when the ${{ inputs.platform }} Integration Tests failed
+        if: steps.run-tests.outcome == 'failure' && (inputs.only_testing != '' || steps.retry-tests.outcome != 'success')
+        run: |
+          echo "::error::The integration tests failed; see the test run step above."
+          exit 1
 
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')

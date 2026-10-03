@@ -6,12 +6,10 @@
 //
 
 import Foundation
+import InternalAWSCognitoAuth
 
 typealias AuthStateMachine = StateMachine<
     AuthState,
     AuthEnvironment
 >
-typealias CredentialStoreStateMachine = StateMachine<
-    CredentialStoreState,
-    CredentialEnvironment
->
+// `CredentialStoreStateMachine` is declared with `CredentialStoreOperationClient`, which moves into the engine.

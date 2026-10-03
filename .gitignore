@@ -33,10 +33,15 @@ AWS*.framework
 node_modules
 package.json
 package-lock.json
+# The integration sandbox's custom sender Lambda pins its dependencies (infra/parity.py runs npm ci).
+!AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/lambda/custom-sender/package.json
+!AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/lambda/custom-sender/package-lock.json
 
 # Stuff that can't be committed #
 ######################
 *credentials.json
+# Golden stored-format fixtures are synthetic test values, not secrets; the golden-fixture lock needs them committed.
+!/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat/*credentials.json
 Pods
 Documentation
 Scripts/build.sh
@@ -87,3 +92,6 @@ AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/infra/
 # IDEs
 .idea/
 .vscode/
+
+# Written by the fixture-lock workflow
+scripts/m2/.check_fixture_lock.run.sh

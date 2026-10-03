@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension SignUpState: Codable {
 
@@ -28,14 +29,14 @@ extension SignUpState: Codable {
             self = .initiatingSignUp(eventData)
         }  else if type == "SignUpState.awaitingUserConfirmation" {
             let eventData = try values.decode(SignUpEventData.self, forKey: .SignUpEventData)
-            let result = try values.decode(AuthSignUpResult.self, forKey: .AuthSignUpResult)
+            let result = try EngineSignUpResult(values.decode(AuthSignUpResult.self, forKey: .AuthSignUpResult))
             self = .awaitingUserConfirmation(eventData, result)
         }  else if type == "SignUpState.confirmingSignUp" {
             let eventData = try values.decode(SignUpEventData.self, forKey: .SignUpEventData)
             self = .confirmingSignUp(eventData)
         }  else if type == "SignUpState.signedUp" {
             let eventData = try values.decode(SignUpEventData.self, forKey: .SignUpEventData)
-            let result = try values.decode(AuthSignUpResult.self, forKey: .AuthSignUpResult)
+            let result = try EngineSignUpResult(values.decode(AuthSignUpResult.self, forKey: .AuthSignUpResult))
             self = .signedUp(eventData, result)
         } else if type == "SignUpState.error" {
             let eventError = try values.decode(SignUpError.self, forKey: .SignUpError)

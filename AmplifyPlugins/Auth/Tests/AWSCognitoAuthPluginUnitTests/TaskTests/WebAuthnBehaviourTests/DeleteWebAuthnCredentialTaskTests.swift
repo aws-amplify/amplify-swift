@@ -11,6 +11,7 @@ import struct AWSCognitoIdentityProvider.WebAuthnClientMismatchException
 import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -42,7 +43,7 @@ class DeleteWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )
             ),
             .sessionEstablished(AmplifyCredentials.testData),

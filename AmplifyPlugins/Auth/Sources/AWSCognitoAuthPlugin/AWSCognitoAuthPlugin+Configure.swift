@@ -16,6 +16,8 @@ import ClientRuntime
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 import SmithyRetries
 import SmithyRetriesAPI
+import InternalAmplifyKeychain
+import InternalAWSCognitoAuth
 
 extension AWSCognitoAuthPlugin {
 
@@ -39,8 +41,42 @@ extension AWSCognitoAuthPlugin {
             )
         }
 
+        // The environments outlive this call and the plugin owns them, so no factory may hold the plugin
+        // strongly: the closures below capture it weakly, and the factories that read only values fixed
+        // at this point capture those values instead (the preference types are not `Sendable`).
+        let accessGroup = secureStoragePreferences?.accessGroup?.name
+        let migrateKeychainItems = secureStoragePreferences?.accessGroup?.migrateKeychainItems ?? false
+        let requestTimeout = networkPreferences?.timeoutIntervalForRequest
+        let resourceTimeout = networkPreferences?.timeoutIntervalForResource
+        let environmentFactory = AuthEnvironmentFactory(
+            authConfiguration: authConfiguration,
+            makeUserPool: { [weak self] in
+                guard let self else { throw Self.releasedPluginError() }
+                return try makeUserPool()
+            },
+            makeIdentityClient: { [weak self] in
+                guard let self else { throw Self.releasedPluginError() }
+                return try makeIdentityClient()
+            },
+            credentialStoreFactory: {
+                Self.makeCredentialStore(
+                    authConfiguration: authConfiguration,
+                    accessGroup: accessGroup,
+                    migrateKeychainItems: migrateKeychainItems
+                )
+            },
+            legacyKeychainStoreFactory: Self.makeLegacyKeychainStore(service:),
+            logger: AmplifyEngineLogRouter(),
+            userPoolAnalytics: { [weak self] in
+                self?.makeUserPoolAnalytics() ?? NoUserPoolAnalytics()
+            },
+            makeURLSession: {
+                Self.makeURLSession(timeoutIntervalForRequest: requestTimeout, timeoutIntervalForResource: resourceTimeout)
+            }
+        )
+
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
-        let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
+        let credentialEnvironment = environmentFactory.makeCredentialEnvironment()
         let credentialStoreMachine = StateMachine(
             resolver: credentialStoreResolver,
             environment: credentialEnvironment
@@ -48,19 +84,20 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
-        let authResolver = AuthState.Resolver().eraseToAnyResolver()
-        let authEnvironment = makeAuthEnvironment(
-            authConfiguration: authConfiguration,
-            credentialsClient: credentialsClient
-        )
+        let authEnvironment = environmentFactory.makeAuthEnvironment(credentialsClient: credentialsClient)
+        let authResolver = AuthState.Resolver(logger: authEnvironment.logger).eraseToAnyResolver()
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
 
         let hubEventHandler = AuthHubEventHandler()
-        let analyticsHandler = try UserPoolAnalytics(
-            authConfiguration.getUserPoolConfiguration(),
-            credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment
-        )
+        // A keychain failure here has always been thrown to the app as `configure(using:)`'s error.
+        let analyticsHandler = try EngineCredentialStoreError.rethrowingPublicError {
+            try UserPoolAnalytics(
+                authConfiguration.getUserPoolConfiguration(),
+                credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment,
+                logger: credentialEnvironment.logger
+            )
+        }
 
         configure(
             authConfiguration: authConfiguration,
@@ -162,150 +199,59 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    private func makeHostedUISession() -> HostedUISessionBehavior {
-        return HostedUIASWebAuthenticationSession()
+    /// Thrown by the Cognito client factories when the plugin that configured the environment is gone.
+    private static func releasedPluginError() -> AuthError {
+        AuthError.configuration(
+            "The AWSCognitoAuthPlugin instance that configured this operation has been released.",
+            "Keep a reference to the plugin, or add it to Amplify, while it is in use."
+        )
     }
 
-    private func makeURLSession() -> URLSession {
+    private static func makeURLSession(
+        timeoutIntervalForRequest: TimeInterval?,
+        timeoutIntervalForResource: TimeInterval?
+    ) -> URLSession {
         let configuration = URLSessionConfiguration.default
         configuration.urlCache = nil
 
-        if let timeoutIntervalForRequest = networkPreferences?.timeoutIntervalForRequest {
+        if let timeoutIntervalForRequest {
             configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         }
 
-        if let timeoutIntervalForResource = networkPreferences?.timeoutIntervalForResource {
+        if let timeoutIntervalForResource {
             configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }
 
         return URLSession(configuration: configuration)
     }
 
-    private func makeRandomString() -> RandomStringBehavior {
-        return RandomStringGenerator()
-    }
-
-    private func makeCognitoASF() -> AdvancedSecurityBehavior {
-        CognitoUserPoolASF()
-    }
-
     private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         return analyticsHandler
     }
 
-    private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
+    private static func makeCredentialStore(
+        authConfiguration: AuthConfiguration,
+        accessGroup: String?,
+        migrateKeychainItems: Bool
+    ) -> AmplifyAuthCredentialStoreBehavior {
         return AWSCognitoAuthCredentialStore(
             authConfiguration: authConfiguration,
-            accessGroup: secureStoragePreferences?.accessGroup?.name,
-            migrateKeychainItemsOfUserSession: secureStoragePreferences?.accessGroup?.migrateKeychainItems ?? false
+            accessGroup: accessGroup,
+            migrateKeychainItemsOfUserSession: migrateKeychainItems,
+            logger: AmplifyEngineLogRouter()
         )
     }
 
-    private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {
-        KeychainStore(service: service)
+    /// What `KeychainStore(service:)` operates on: no access group, logging under `KeychainStore`.
+    private static func makeLegacyKeychainStore(service: String) -> any KeychainItemStoreBehavior {
+        EngineKeychainStore.makeItemStore(service: service, logger: AmplifyEngineLogRouter())
     }
 
-    private func makeAuthEnvironment(
-        authConfiguration: AuthConfiguration,
-        credentialsClient: CredentialStoreStateBehavior
-    ) -> AuthEnvironment {
-
-        switch authConfiguration {
-        case .userPools(let userPoolConfigurationData):
-            let authenticationEnvironment = authenticationEnvironment(
-                userPoolConfigData: userPoolConfigurationData)
-
-            return AuthEnvironment(
-                configuration: authConfiguration,
-                userPoolConfigData: userPoolConfigurationData,
-                identityPoolConfigData: nil,
-                authenticationEnvironment: authenticationEnvironment,
-                authorizationEnvironment: nil,
-                credentialsClient: credentialsClient,
-                logger: log
-            )
-
-        case .identityPools(let identityPoolConfigurationData):
-            let authorizationEnvironment = authorizationEnvironment(
-                identityPoolConfigData: identityPoolConfigurationData)
-            return AuthEnvironment(
-                configuration: authConfiguration,
-                userPoolConfigData: nil,
-                identityPoolConfigData: identityPoolConfigurationData,
-                authenticationEnvironment: nil,
-                authorizationEnvironment: authorizationEnvironment,
-                credentialsClient: credentialsClient,
-                logger: log
-            )
-
-        case .userPoolsAndIdentityPools(
-            let userPoolConfigurationData,
-            let identityPoolConfigurationData
-        ):
-            let authenticationEnvironment = authenticationEnvironment(
-                userPoolConfigData: userPoolConfigurationData)
-            let authorizationEnvironment = authorizationEnvironment(
-                identityPoolConfigData: identityPoolConfigurationData)
-            return AuthEnvironment(
-                configuration: authConfiguration,
-                userPoolConfigData: userPoolConfigurationData,
-                identityPoolConfigData: identityPoolConfigurationData,
-                authenticationEnvironment: authenticationEnvironment,
-                authorizationEnvironment: authorizationEnvironment,
-                credentialsClient: credentialsClient,
-                logger: log
-            )
+    /// The analytics fallback for a released plugin: no Pinpoint metadata.
+    private struct NoUserPoolAnalytics: UserPoolAnalyticsBehavior {
+        func analyticsMetadata() async -> CognitoIdentityProviderClientTypes.AnalyticsMetadataType? {
+            nil
         }
-    }
-
-    private func authenticationEnvironment(userPoolConfigData: UserPoolConfigurationData) -> AuthenticationEnvironment {
-
-        let srpAuthEnvironment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: userPoolConfigData,
-            cognitoUserPoolFactory: makeUserPool
-        )
-        let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        let userPoolEnvironment = BasicUserPoolEnvironment(
-            userPoolConfiguration: userPoolConfigData,
-            cognitoUserPoolFactory: makeUserPool,
-            cognitoUserPoolASFFactory: makeCognitoASF,
-            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics
-        )
-        let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
-        return BasicAuthenticationEnvironment(
-            srpSignInEnvironment: srpSignInEnvironment,
-            userPoolEnvironment: userPoolEnvironment,
-            hostedUIEnvironment: hostedUIEnvironment
-        )
-    }
-
-    private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {
-        guard let hostedUIConfig = configuration.hostedUIConfig else {
-            return nil
-        }
-        return BasicHostedUIEnvironment(
-            configuration: hostedUIConfig,
-            hostedUISessionFactory: makeHostedUISession,
-            urlSessionFactory: makeURLSession,
-            randomStringFactory: makeRandomString
-        )
-    }
-
-    private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
-        BasicAuthorizationEnvironment(
-            identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: makeIdentityClient
-        )
-    }
-
-    private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
-        CredentialEnvironment(
-            authConfiguration: authConfiguration,
-            credentialStoreEnvironment: BasicCredentialStoreEnvironment(
-                amplifyCredentialStoreFactory: makeCredentialStore,
-                legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
-            ), logger: log
-        )
     }
 
     private func internalConfigure() {
@@ -318,7 +264,3 @@ extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
     }
 }
-
-extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
-
-extension CognitoIdentityClient: CognitoIdentityBehavior {}

@@ -1,0 +1,75 @@
+# Checks on the shared Cognito module (InternalAWSCognitoAuth): the Cognito sign-in, token and session code that
+# the Auth plugin and AmplifyCognitoClient both use. It must stay free of Amplify so the client can use it:
+#
+# - Dependencies: the engine's in-package target closure reaches none of Amplify, AWSPluginsCore,
+#   InternalAmplifyCredentials and AmplifyCognitoClient, and no engine source imports one of them
+#   (scripts/m2/check_engine_deps.py --stage final).
+# - Privacy manifests: the engine is not a product and has no manifest, so every library product that links
+#   it must declare, with an accepted reason, each required-reason API category the engine uses, in the
+#   manifest of a target on its path to the engine (scripts/m2/check_engine_privacy_manifest.py).
+#
+# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. Both jobs run on ubuntu in
+# the official swift image, as unit_test.yml's detect job does: they need only python3 and
+# `swift package dump-package`, and the manifest has no host-OS conditionals. A missing script fails the job.
+
+name: Auth | Shared Cognito Module
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  dependencies:
+    name: Shared Cognito module does not depend on Amplify
+    runs-on: ubuntu-latest
+    container: swift:6.0
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Install python3
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          # As in unit_test.yml: the checkout is owned by another UID than the container's root user.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Check the shared Cognito module's dependencies and imports
+        run: |
+          if [ ! -f scripts/m2/check_engine_deps.py ]; then
+            echo "error: scripts/m2/check_engine_deps.py is missing; the shared Cognito module's dependencies cannot be checked" >&2
+            exit 1
+          fi
+          python3 scripts/m2/check_engine_deps.py --self-test
+          python3 scripts/m2/check_engine_deps.py --stage final
+
+  privacy-manifest:
+    name: Privacy manifests cover the shared Cognito module
+    runs-on: ubuntu-latest
+    container: swift:6.0
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Install python3
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          # As in unit_test.yml: the checkout is owned by another UID than the container's root user.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Check every product that links the shared Cognito module declares its required-reason APIs
+        run: |
+          if [ ! -f scripts/m2/check_engine_privacy_manifest.py ]; then
+            echo "error: scripts/m2/check_engine_privacy_manifest.py is missing; the privacy manifests cannot be checked" >&2
+            exit 1
+          fi
+          python3 scripts/m2/check_engine_privacy_manifest.py --self-test
+          python3 scripts/m2/check_engine_privacy_manifest.py

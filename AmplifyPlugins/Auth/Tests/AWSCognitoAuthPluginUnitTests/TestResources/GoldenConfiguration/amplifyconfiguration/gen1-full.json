@@ -1,0 +1,46 @@
+{
+  "UserAgent": "aws-amplify-cli/2.0",
+  "Version": "1.0",
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "UserAgent": "aws-amplify-cli/0.1.0",
+        "Version": "0.1.0",
+        "IdentityManager": {
+          "Default": {}
+        },
+        "CredentialsProvider": {
+          "CognitoIdentity": {
+            "Default": {
+              "PoolId": "us-east-1:00000000-1111-2222-3333-444444444444",
+              "Region": "us-east-1"
+            }
+          }
+        },
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_gen1full1",
+            "AppClientId": "gen1fullclientid0123456789",
+            "AppClientSecret": "gen1fullclientsecret",
+            "Region": "us-east-1",
+            "Endpoint": "cognito.example.com",
+            "PinpointAppId": "gen1fullpinpointappid"
+          }
+        },
+        "Auth": {
+          "Default": {
+            "authenticationFlowType": "USER_PASSWORD_AUTH",
+            "OAuth": {
+              "WebDomain": "gen1-full.auth.us-east-1.amazoncognito.com",
+              "AppClientId": "gen1fullclientid0123456789",
+              "AppClientSecret": "gen1fullhostedsecret",
+              "SignInRedirectURI": "myapp://signin/",
+              "SignOutRedirectURI": "myapp://signout/",
+              "Scopes": ["openid", "email", "aws.cognito.signin.user.admin"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

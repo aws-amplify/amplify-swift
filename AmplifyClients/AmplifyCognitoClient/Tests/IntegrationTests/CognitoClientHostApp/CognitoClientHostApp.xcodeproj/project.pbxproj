@@ -1,0 +1,1248 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC0000000000000000000022 /* AmplifyFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000020 /* AmplifyFoundation */; };
+		CC0000000000000000000023 /* AWSCognitoIdentity in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000021 /* AWSCognitoIdentity */; };
+		CC0000000000000000000029 /* AmplifyCognitoClient in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000025 /* AmplifyCognitoClient */; };
+		CC000000000000000000002A /* AmplifyFoundationBridge in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000026 /* AmplifyFoundationBridge */; };
+		CC000000000000000000002B /* AWSCognitoIdentityProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000027 /* AWSCognitoIdentityProvider */; };
+		CC000000000000000000002C /* AWSSTS in Frameworks */ = {isa = PBXBuildFile; productRef = CC0000000000000000000028 /* AWSSTS */; };
+		CC000000000000000000004F /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = CC000000000000000000004C /* Amplify */; };
+		CC0000000000000000000050 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = CC000000000000000000004D /* AWSCognitoAuthPlugin */; };
+		CC0000000000000000000051 /* AmplifyCognitoClient in Frameworks */ = {isa = PBXBuildFile; productRef = CC000000000000000000004E /* AmplifyCognitoClient */; };
+		CC00000000000000000000A0 /* AmplifyCognitoClient in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000B0 /* AmplifyCognitoClient */; };
+		CC00000000000000000000A1 /* AWSCognitoIdentityProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000B1 /* AWSCognitoIdentityProvider */; };
+		CC00000000000000000000C0 /* Smithy in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000C2 /* Smithy */; };
+		CC00000000000000000000C1 /* SmithyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000C3 /* SmithyJSON */; };
+		CC00000000000000000000F7 /* AmplifyCognitoClient in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000F6 /* AmplifyCognitoClient */; };
+		CC00000000000000000000F9 /* AmplifyCognitoClient in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000F8 /* AmplifyCognitoClient */; };
+		CC00000000000000000000FB /* AWSCognitoIdentityProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CC00000000000000000000FA /* AWSCognitoIdentityProvider */; };
+		CC00000000000000000000D6 /* IntegrationTestEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D0 /* IntegrationTestEnvironment.swift */; };
+		CC00000000000000000000D7 /* SandboxPools.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D1 /* SandboxPools.swift */; };
+		CC00000000000000000000D8 /* SandboxSignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D2 /* SandboxSignUp.swift */; };
+		CC00000000000000000000D9 /* SandboxUserCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D3 /* SandboxUserCleanup.swift */; };
+		CC00000000000000000000DA /* CodeSink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D4 /* CodeSink.swift */; };
+		CC00000000000000000000DB /* TOTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00000000000000000000D5 /* TOTP.swift */; };
+		CC0000000000000000000101 /* PluginTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000100 /* PluginTestConfiguration.swift */; };
+		CC0000000000000000000102 /* PluginTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000100 /* PluginTestConfiguration.swift */; };
+		CC0000000000000000000103 /* PluginTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000100 /* PluginTestConfiguration.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CC0000000000000000000013 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC000000000000000000000A;
+			remoteInfo = CognitoClientHostApp;
+		};
+		CC0000000000000000000048 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC000000000000000000000A;
+			remoteInfo = CognitoClientHostApp;
+		};
+		CC00000000000000000000A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC00000000000000000000A8;
+			remoteInfo = CognitoClientWebAuthnApp;
+		};
+		CC00000000000000000000EE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC00000000000000000000E0;
+			remoteInfo = CognitoClientHostedUIApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC0000000000000000000008 /* CognitoClientHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CognitoClientHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC0000000000000000000009 /* CognitoClientIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CognitoClientIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC0000000000000000000041 /* CognitoClientPluginInteropTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CognitoClientPluginInteropTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000000000000000000A3 /* CognitoClientWebAuthnApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CognitoClientWebAuthnApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000000000000000000A4 /* CognitoClientWebAuthnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CognitoClientWebAuthnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = CognitoClientWebAuthn.xcconfig; sourceTree = "<group>"; };
+		CC00000000000000000000E2 /* CognitoClientHostedUIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CognitoClientHostedUIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000000000000000000E3 /* CognitoClientUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CognitoClientUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000000000000000000D0 /* IntegrationTestEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntegrationTestEnvironment.swift; path = CognitoClientIntegrationTests/IntegrationTestEnvironment.swift; sourceTree = "<group>"; };
+		CC00000000000000000000D1 /* SandboxPools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SandboxPools.swift; path = CognitoClientIntegrationTests/SandboxPools.swift; sourceTree = "<group>"; };
+		CC00000000000000000000D2 /* SandboxSignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SandboxSignUp.swift; path = CognitoClientIntegrationTests/SandboxSignUp.swift; sourceTree = "<group>"; };
+		CC00000000000000000000D3 /* SandboxUserCleanup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SandboxUserCleanup.swift; path = CognitoClientIntegrationTests/SandboxUserCleanup.swift; sourceTree = "<group>"; };
+		CC00000000000000000000D4 /* CodeSink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CodeSink.swift; path = CognitoClientIntegrationTests/CodeSink.swift; sourceTree = "<group>"; };
+		CC00000000000000000000D5 /* TOTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TOTP.swift; path = CognitoClientIntegrationTests/TOTP.swift; sourceTree = "<group>"; };
+		CC0000000000000000000100 /* PluginTestConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PluginTestConfiguration.swift; path = CognitoClientIntegrationTests/PluginTestConfiguration.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CC0000000000000000000004 /* CognitoClientHostApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientHostApp;
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000005 /* CognitoClientIntegrationTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientIntegrationTests;
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000042 /* CognitoClientPluginInteropTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientPluginInteropTests;
+			sourceTree = "<group>";
+		};
+		CC00000000000000000000A6 /* CognitoClientWebAuthnApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientWebAuthnApp;
+			sourceTree = "<group>";
+		};
+		CC00000000000000000000A7 /* CognitoClientWebAuthnUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientWebAuthnUITests;
+			sourceTree = "<group>";
+		};
+		CC00000000000000000000E4 /* CognitoClientHostedUIApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientHostedUIApp;
+			sourceTree = "<group>";
+		};
+		CC00000000000000000000E5 /* CognitoClientUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CognitoClientUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC000000000000000000000D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC0000000000000000000010 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0000000000000000000022 /* AmplifyFoundation in Frameworks */,
+				CC0000000000000000000023 /* AWSCognitoIdentity in Frameworks */,
+				CC0000000000000000000029 /* AmplifyCognitoClient in Frameworks */,
+				CC000000000000000000002A /* AmplifyFoundationBridge in Frameworks */,
+				CC000000000000000000002B /* AWSCognitoIdentityProvider in Frameworks */,
+				CC000000000000000000002C /* AWSSTS in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC0000000000000000000044 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC000000000000000000004F /* Amplify in Frameworks */,
+				CC0000000000000000000050 /* AWSCognitoAuthPlugin in Frameworks */,
+				CC0000000000000000000051 /* AmplifyCognitoClient in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC00000000000000000000A0 /* AmplifyCognitoClient in Frameworks */,
+				CC00000000000000000000A1 /* AWSCognitoIdentityProvider in Frameworks */,
+				CC00000000000000000000C0 /* Smithy in Frameworks */,
+				CC00000000000000000000C1 /* SmithyJSON in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC00000000000000000000F7 /* AmplifyCognitoClient in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC00000000000000000000F9 /* AmplifyCognitoClient in Frameworks */,
+				CC00000000000000000000FB /* AWSCognitoIdentityProvider in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC0000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				CC0000000000000000000004 /* CognitoClientHostApp */,
+				CC0000000000000000000005 /* CognitoClientIntegrationTests */,
+				CC0000000000000000000042 /* CognitoClientPluginInteropTests */,
+				CC00000000000000000000A6 /* CognitoClientWebAuthnApp */,
+				CC00000000000000000000A7 /* CognitoClientWebAuthnUITests */,
+				CC00000000000000000000E4 /* CognitoClientHostedUIApp */,
+				CC00000000000000000000E5 /* CognitoClientUITests */,
+				CC00000000000000000000DC /* Shared sandbox helpers */,
+				CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */,
+				CC0000000000000000000024 /* Frameworks */,
+				CC0000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC0000000000000000000008 /* CognitoClientHostApp.app */,
+				CC0000000000000000000009 /* CognitoClientIntegrationTests.xctest */,
+				CC0000000000000000000041 /* CognitoClientPluginInteropTests.xctest */,
+				CC00000000000000000000A3 /* CognitoClientWebAuthnApp.app */,
+				CC00000000000000000000A4 /* CognitoClientWebAuthnUITests.xctest */,
+				CC00000000000000000000E2 /* CognitoClientHostedUIApp.app */,
+				CC00000000000000000000E3 /* CognitoClientUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CC0000000000000000000024 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CC00000000000000000000DC /* Shared sandbox helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CC00000000000000000000D0 /* IntegrationTestEnvironment.swift */,
+				CC00000000000000000000D1 /* SandboxPools.swift */,
+				CC00000000000000000000D2 /* SandboxSignUp.swift */,
+				CC00000000000000000000D3 /* SandboxUserCleanup.swift */,
+				CC00000000000000000000D4 /* CodeSink.swift */,
+				CC00000000000000000000D5 /* TOTP.swift */,
+				CC0000000000000000000100 /* PluginTestConfiguration.swift */,
+			);
+			name = "Shared sandbox helpers";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CC000000000000000000000A /* CognitoClientHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC0000000000000000000018 /* Build configuration list for PBXNativeTarget "CognitoClientHostApp" */;
+			buildPhases = (
+				CC000000000000000000000C /* Sources */,
+				CC000000000000000000000D /* Frameworks */,
+				CC000000000000000000000E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC0000000000000000000004 /* CognitoClientHostApp */,
+			);
+			name = CognitoClientHostApp;
+			packageProductDependencies = (
+			);
+			productName = CognitoClientHostApp;
+			productReference = CC0000000000000000000008 /* CognitoClientHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CC000000000000000000000B /* CognitoClientIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC000000000000000000001B /* Build configuration list for PBXNativeTarget "CognitoClientIntegrationTests" */;
+			buildPhases = (
+				CC000000000000000000000F /* Sources */,
+				CC0000000000000000000010 /* Frameworks */,
+				CC0000000000000000000011 /* Resources */,
+				CC0000000000000000000012 /* Copy test configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC0000000000000000000014 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC0000000000000000000005 /* CognitoClientIntegrationTests */,
+			);
+			name = CognitoClientIntegrationTests;
+			packageProductDependencies = (
+				CC0000000000000000000020 /* AmplifyFoundation */,
+				CC0000000000000000000021 /* AWSCognitoIdentity */,
+				CC0000000000000000000025 /* AmplifyCognitoClient */,
+				CC0000000000000000000026 /* AmplifyFoundationBridge */,
+				CC0000000000000000000027 /* AWSCognitoIdentityProvider */,
+				CC0000000000000000000028 /* AWSSTS */,
+			);
+			productName = CognitoClientIntegrationTests;
+			productReference = CC0000000000000000000009 /* CognitoClientIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CC0000000000000000000040 /* CognitoClientPluginInteropTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC0000000000000000000049 /* Build configuration list for PBXNativeTarget "CognitoClientPluginInteropTests" */;
+			buildPhases = (
+				CC0000000000000000000043 /* Sources */,
+				CC0000000000000000000044 /* Frameworks */,
+				CC0000000000000000000045 /* Resources */,
+				CC0000000000000000000046 /* Copy test configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC0000000000000000000047 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC0000000000000000000042 /* CognitoClientPluginInteropTests */,
+			);
+			name = CognitoClientPluginInteropTests;
+			packageProductDependencies = (
+				CC000000000000000000004C /* Amplify */,
+				CC000000000000000000004D /* AWSCognitoAuthPlugin */,
+				CC000000000000000000004E /* AmplifyCognitoClient */,
+			);
+			productName = CognitoClientPluginInteropTests;
+			productReference = CC0000000000000000000041 /* CognitoClientPluginInteropTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CC00000000000000000000A8 /* CognitoClientWebAuthnApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC00000000000000000000B8 /* Build configuration list for PBXNativeTarget "CognitoClientWebAuthnApp" */;
+			buildPhases = (
+				CC00000000000000000000AA /* Sources */,
+				CC00000000000000000000AB /* Frameworks */,
+				CC00000000000000000000AC /* Resources */,
+				CC00000000000000000000AD /* Copy test configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC00000000000000000000A6 /* CognitoClientWebAuthnApp */,
+			);
+			name = CognitoClientWebAuthnApp;
+			packageProductDependencies = (
+				CC00000000000000000000B0 /* AmplifyCognitoClient */,
+				CC00000000000000000000B1 /* AWSCognitoIdentityProvider */,
+				CC00000000000000000000C2 /* Smithy */,
+				CC00000000000000000000C3 /* SmithyJSON */,
+			);
+			productName = CognitoClientWebAuthnApp;
+			productReference = CC00000000000000000000A3 /* CognitoClientWebAuthnApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CC00000000000000000000A9 /* CognitoClientWebAuthnUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC00000000000000000000B9 /* Build configuration list for PBXNativeTarget "CognitoClientWebAuthnUITests" */;
+			buildPhases = (
+				CC00000000000000000000AE /* Sources */,
+				CC00000000000000000000AF /* Frameworks */,
+				CC00000000000000000000B2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC00000000000000000000B3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC00000000000000000000A7 /* CognitoClientWebAuthnUITests */,
+			);
+			name = CognitoClientWebAuthnUITests;
+			packageProductDependencies = (
+			);
+			productName = CognitoClientWebAuthnUITests;
+			productReference = CC00000000000000000000A4 /* CognitoClientWebAuthnUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		CC00000000000000000000E0 /* CognitoClientHostedUIApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC00000000000000000000F0 /* Build configuration list for PBXNativeTarget "CognitoClientHostedUIApp" */;
+			buildPhases = (
+				CC00000000000000000000E6 /* Sources */,
+				CC00000000000000000000E7 /* Frameworks */,
+				CC00000000000000000000E8 /* Resources */,
+				CC00000000000000000000E9 /* Copy test configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC00000000000000000000E4 /* CognitoClientHostedUIApp */,
+			);
+			name = CognitoClientHostedUIApp;
+			packageProductDependencies = (
+				CC00000000000000000000F6 /* AmplifyCognitoClient */,
+			);
+			productName = CognitoClientHostedUIApp;
+			productReference = CC00000000000000000000E2 /* CognitoClientHostedUIApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CC00000000000000000000E1 /* CognitoClientUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC00000000000000000000F3 /* Build configuration list for PBXNativeTarget "CognitoClientUITests" */;
+			buildPhases = (
+				CC00000000000000000000EA /* Sources */,
+				CC00000000000000000000EB /* Frameworks */,
+				CC00000000000000000000EC /* Resources */,
+				CC00000000000000000000ED /* Copy test configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC00000000000000000000EF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CC00000000000000000000E5 /* CognitoClientUITests */,
+			);
+			name = CognitoClientUITests;
+			packageProductDependencies = (
+				CC00000000000000000000F8 /* AmplifyCognitoClient */,
+				CC00000000000000000000FA /* AWSCognitoIdentityProvider */,
+			);
+			productName = CognitoClientUITests;
+			productReference = CC00000000000000000000E3 /* CognitoClientUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					CC000000000000000000000A = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					CC000000000000000000000B = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = CC000000000000000000000A;
+					};
+					CC0000000000000000000040 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = CC000000000000000000000A;
+					};
+					CC00000000000000000000A8 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					CC00000000000000000000A9 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = CC00000000000000000000A8;
+					};
+					CC00000000000000000000E0 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					CC00000000000000000000E1 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = CC00000000000000000000E0;
+					};
+				};
+			};
+			buildConfigurationList = CC0000000000000000000015 /* Build configuration list for PBXProject "CognitoClientHostApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CC0000000000000000000002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */,
+				CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+				CC00000000000000000000C4 /* XCRemoteSwiftPackageReference "smithy-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CC0000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC000000000000000000000A /* CognitoClientHostApp */,
+				CC000000000000000000000B /* CognitoClientIntegrationTests */,
+				CC0000000000000000000040 /* CognitoClientPluginInteropTests */,
+				CC00000000000000000000A8 /* CognitoClientWebAuthnApp */,
+				CC00000000000000000000A9 /* CognitoClientWebAuthnUITests */,
+				CC00000000000000000000E0 /* CognitoClientHostedUIApp */,
+				CC00000000000000000000E1 /* CognitoClientUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC000000000000000000000E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC0000000000000000000011 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC0000000000000000000045 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000AC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CC0000000000000000000012 /* Copy test configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy test configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copies the plugin's integration-test configuration (every role's outputs file and the default credentials file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed.\n# Each role is its Gen2 <suite>-amplify_outputs.json or, where the plugin has a Gen1 suite for the backend and\n# the Gen2 file is absent (as on the plugin's CI), its Gen1 <suite>-amplifyconfiguration.json, which the tests\n# translate into the equivalent Gen2 outputs before the client reads it (PluginTestConfiguration.swift). A role\n# with neither is named in a warning, with both names, and every test that needs it fails with a message naming\n# them.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n# One entry per role: the Gen2 file, then, after a colon, the plugin's Gen1 file for the same backend.\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoEmailMFARequiredTests-amplify_outputs.json \\\n    AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json \\\n    AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json \\\n    AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginIntegrationTests-credentials.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-amplifyconfiguration.json \"$DEST\"/*-credentials.json \\\n    \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n# The WebAuthn app's entitlements (committed, not account-specific), so a test can read the relying party.\ncp \"${SRCROOT}/CognitoClientWebAuthnApp.entitlements\" \"$DEST/\" || { echo \"error: CognitoClientWebAuthnApp.entitlements could not be copied into the test bundle\"; exit 1; }\n\nMISSING=\"\"\nfor entry in $FILES; do\n    gen2=\"${entry%%:*}\"\n    gen1=\"\"\n    case \"$entry\" in *:*) gen1=\"${entry#*:}\" ;; esac\n    if [ -f \"$SRC/$gen2\" ]; then\n        cp \"$SRC/$gen2\" \"$DEST/$gen2\"\n    elif [ -n \"$gen1\" ] && [ -f \"$SRC/$gen1\" ]; then\n        cp \"$SRC/$gen1\" \"$DEST/$gen1\"\n        echo \"note: $gen2 is not in the test configuration directory; copied the plugin's Gen1 $gen1, which the tests translate to Gen2.\"\n    elif [ -n \"$gen1\" ]; then\n        MISSING=\"$MISSING; $gen2 (or its Gen1 $gen1)\"\n    else\n        MISSING=\"$MISSING; $gen2\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC): ${MISSING#; }. The tests that need them fail, naming the file.\"\nfi\n";
+		};
+		CC0000000000000000000046 /* Copy test configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy test configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copies the plugin's integration-test configuration (the default backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed.\n# Each role is its Gen2 <suite>-amplify_outputs.json or, where the plugin has a Gen1 suite for the backend and\n# the Gen2 file is absent (as on the plugin's CI), its Gen1 <suite>-amplifyconfiguration.json, which the tests\n# translate into the equivalent Gen2 outputs before the client reads it (PluginTestConfiguration.swift). A role\n# with neither is named in a warning, with both names, and every test that needs it fails with a message naming\n# them.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n# One entry per role: the Gen2 file, then, after a colon, the plugin's Gen1 file for the same backend.\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-amplifyconfiguration.json \"$DEST\"/*-credentials.json \\\n    \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor entry in $FILES; do\n    gen2=\"${entry%%:*}\"\n    gen1=\"\"\n    case \"$entry\" in *:*) gen1=\"${entry#*:}\" ;; esac\n    if [ -f \"$SRC/$gen2\" ]; then\n        cp \"$SRC/$gen2\" \"$DEST/$gen2\"\n    elif [ -n \"$gen1\" ] && [ -f \"$SRC/$gen1\" ]; then\n        cp \"$SRC/$gen1\" \"$DEST/$gen1\"\n        echo \"note: $gen2 is not in the test configuration directory; copied the plugin's Gen1 $gen1, which the tests translate to Gen2.\"\n    elif [ -n \"$gen1\" ]; then\n        MISSING=\"$MISSING; $gen2 (or its Gen1 $gen1)\"\n    else\n        MISSING=\"$MISSING; $gen2\"\n    fi\ndone\n# Optional: the default pool's refresh-token rotation client (infra/pools/default.json `rotation`), which only\n# a sandbox provisioned with it has, and never the plugin's CI. PluginRotationTests skip without it, so its\n# absence is a note, not a warning.\nOPTIONAL=\"AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json\"\nfor name in $OPTIONAL; do\n    if [ -f \"$SRC/$name\" ]; then\n        cp \"$SRC/$name\" \"$DEST/$name\"\n    else\n        echo \"note: $name is not in the test configuration directory; the tests that need it skip.\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC): ${MISSING#; }. The tests that need them fail, naming the file.\"\nfi\n";
+		};
+		CC00000000000000000000AD /* Copy test configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy test configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copies the plugin's integration-test configuration (the WebAuthn backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed. A missing file is named in a warning, and every test that needs it fails\n# with a message naming it.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nFILES=\"AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-credentials.json \"$DEST/amplify_outputs.json\" \\\n    \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor f in $FILES; do\n    if [ -f \"$SRC/$f\" ]; then\n        cp \"$SRC/$f\" \"$DEST/$f\"\n    else\n        MISSING=\"$MISSING $f\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC):$MISSING. The tests that need them fail, naming the file.\"\nfi\n";
+		};
+		CC00000000000000000000E9 /* Copy test configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy test configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copies the plugin's integration-test configuration (the hosted-UI backend's outputs file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed.\n# Each role is its Gen2 <suite>-amplify_outputs.json or, where the plugin has a Gen1 suite for the backend and\n# the Gen2 file is absent (as on the plugin's CI), its Gen1 <suite>-amplifyconfiguration.json, which the tests\n# translate into the equivalent Gen2 outputs before the client reads it (PluginTestConfiguration.swift). A role\n# with neither is named in a warning, with both names, and every test that needs it fails with a message naming\n# them.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n# One entry per role: the Gen2 file, then, after a colon, the plugin's Gen1 file for the same backend.\nFILES=\"AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-amplifyconfiguration.json \"$DEST\"/*-credentials.json \\\n    \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor entry in $FILES; do\n    gen2=\"${entry%%:*}\"\n    gen1=\"\"\n    case \"$entry\" in *:*) gen1=\"${entry#*:}\" ;; esac\n    if [ -f \"$SRC/$gen2\" ]; then\n        cp \"$SRC/$gen2\" \"$DEST/$gen2\"\n    elif [ -n \"$gen1\" ] && [ -f \"$SRC/$gen1\" ]; then\n        cp \"$SRC/$gen1\" \"$DEST/$gen1\"\n        echo \"note: $gen2 is not in the test configuration directory; copied the plugin's Gen1 $gen1, which the tests translate to Gen2.\"\n    elif [ -n \"$gen1\" ]; then\n        MISSING=\"$MISSING; $gen2 (or its Gen1 $gen1)\"\n    else\n        MISSING=\"$MISSING; $gen2\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC): ${MISSING#; }. The tests that need them fail, naming the file.\"\nfi\n";
+		};
+		CC00000000000000000000ED /* Copy test configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy test configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copies the plugin's integration-test configuration (every role's outputs file and the default credentials file) into this bundle, by the plugin's file names:\n# what CI downloads into ~/.aws-amplify/amplify-ios/testconfiguration/ (download_test_configuration,\n# resource_subfolder: auth), or what infra/plugin-configs.py --dir writes for a local run.\n# COGNITO_CLIENT_INTEG_DIR names another directory. The copy lives only in DerivedData; nothing\n# account-specific is committed.\n# Each role is its Gen2 <suite>-amplify_outputs.json or, where the plugin has a Gen1 suite for the backend and\n# the Gen2 file is absent (as on the plugin's CI), its Gen1 <suite>-amplifyconfiguration.json, which the tests\n# translate into the equivalent Gen2 outputs before the client reads it (PluginTestConfiguration.swift). A role\n# with neither is named in a warning, with both names, and every test that needs it fails with a message naming\n# them.\nSRC=\"${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n# One entry per role: the Gen2 file, then, after a colon, the plugin's Gen1 file for the same backend.\nFILES=\"AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoPluginPasswordlessIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs.json:AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration.json \\\n    AWSCognitoEmailMFARequiredTests-amplify_outputs.json \\\n    AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs.json \\\n    AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json \\\n    AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json \\\n    AWSCognitoAuthPluginIntegrationTests-credentials.json\"\n\n# Clear every earlier copy first (the retired sandbox names too), so a removed file leaves no stale fixture.\nrm -f \"$DEST\"/*-amplify_outputs.json \"$DEST\"/*-amplifyconfiguration.json \"$DEST\"/*-credentials.json \\\n    \"$DEST/amplify_outputs.json\" \"$DEST/cognito-client-integ-state.json\" \"$DEST/cognito-client-integ-users.json\"\n\nMISSING=\"\"\nfor entry in $FILES; do\n    gen2=\"${entry%%:*}\"\n    gen1=\"\"\n    case \"$entry\" in *:*) gen1=\"${entry#*:}\" ;; esac\n    if [ -f \"$SRC/$gen2\" ]; then\n        cp \"$SRC/$gen2\" \"$DEST/$gen2\"\n    elif [ -n \"$gen1\" ] && [ -f \"$SRC/$gen1\" ]; then\n        cp \"$SRC/$gen1\" \"$DEST/$gen1\"\n        echo \"note: $gen2 is not in the test configuration directory; copied the plugin's Gen1 $gen1, which the tests translate to Gen2.\"\n    elif [ -n \"$gen1\" ]; then\n        MISSING=\"$MISSING; $gen2 (or its Gen1 $gen1)\"\n    else\n        MISSING=\"$MISSING; $gen2\"\n    fi\ndone\nif [ -n \"$MISSING\" ]; then\n    echo \"warning: missing from the test configuration directory ($SRC): ${MISSING#; }. The tests that need them fail, naming the file.\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CC000000000000000000000C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC000000000000000000000F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC0000000000000000000043 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0000000000000000000103 /* PluginTestConfiguration.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000AA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC0000000000000000000102 /* PluginTestConfiguration.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC00000000000000000000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC00000000000000000000D6 /* IntegrationTestEnvironment.swift in Sources */,
+				CC00000000000000000000D7 /* SandboxPools.swift in Sources */,
+				CC00000000000000000000D8 /* SandboxSignUp.swift in Sources */,
+				CC00000000000000000000D9 /* SandboxUserCleanup.swift in Sources */,
+				CC00000000000000000000DA /* CodeSink.swift in Sources */,
+				CC00000000000000000000DB /* TOTP.swift in Sources */,
+				CC0000000000000000000101 /* PluginTestConfiguration.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CC0000000000000000000014 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC000000000000000000000A /* CognitoClientHostApp */;
+			targetProxy = CC0000000000000000000013 /* PBXContainerItemProxy */;
+		};
+		CC0000000000000000000047 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC000000000000000000000A /* CognitoClientHostApp */;
+			targetProxy = CC0000000000000000000048 /* PBXContainerItemProxy */;
+		};
+		CC00000000000000000000B3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC00000000000000000000A8 /* CognitoClientWebAuthnApp */;
+			targetProxy = CC00000000000000000000A2 /* PBXContainerItemProxy */;
+		};
+		CC00000000000000000000EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC00000000000000000000E0 /* CognitoClientHostedUIApp */;
+			targetProxy = CC00000000000000000000EE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CC0000000000000000000016 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		CC0000000000000000000017 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CC0000000000000000000019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC000000000000000000001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CC000000000000000000001C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CognitoClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CognitoClientHostApp";
+			};
+			name = Debug;
+		};
+		CC000000000000000000001D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CognitoClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CognitoClientHostApp";
+			};
+			name = Release;
+		};
+		CC000000000000000000004A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientPluginInteropTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CognitoClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CognitoClientHostApp";
+			};
+			name = Debug;
+		};
+		CC000000000000000000004B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientPluginInteropTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CognitoClientHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CognitoClientHostApp";
+			};
+			name = Release;
+		};
+		CC00000000000000000000B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientWebAuthnApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 94KV3E626L;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.AuthWebAuthnApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC00000000000000000000B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientWebAuthnApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 94KV3E626L;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.AuthWebAuthnApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CC00000000000000000000B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientWebAuthnUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CognitoClientWebAuthnApp;
+			};
+			name = Debug;
+		};
+		CC00000000000000000000B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CC00000000000000000000A5 /* CognitoClientWebAuthn.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientWebAuthnUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CognitoClientWebAuthnApp;
+			};
+			name = Release;
+		};
+		CC00000000000000000000F1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientHostedUIApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CognitoClientHostedUIApp-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientHostedUIApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC00000000000000000000F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CognitoClientHostedUIApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CognitoClientHostedUIApp-Info.plist";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientHostedUIApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CC00000000000000000000F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CognitoClientHostedUIApp;
+			};
+			name = Debug;
+		};
+		CC00000000000000000000F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.cognitoclient.CognitoClientUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = CognitoClientHostedUIApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CC0000000000000000000015 /* Build configuration list for PBXProject "CognitoClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0000000000000000000016 /* Debug */,
+				CC0000000000000000000017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC0000000000000000000018 /* Build configuration list for PBXNativeTarget "CognitoClientHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC0000000000000000000019 /* Debug */,
+				CC000000000000000000001A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC000000000000000000001B /* Build configuration list for PBXNativeTarget "CognitoClientIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC000000000000000000001C /* Debug */,
+				CC000000000000000000001D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC0000000000000000000049 /* Build configuration list for PBXNativeTarget "CognitoClientPluginInteropTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC000000000000000000004A /* Debug */,
+				CC000000000000000000004B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC00000000000000000000B8 /* Build configuration list for PBXNativeTarget "CognitoClientWebAuthnApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC00000000000000000000B4 /* Debug */,
+				CC00000000000000000000B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC00000000000000000000B9 /* Build configuration list for PBXNativeTarget "CognitoClientWebAuthnUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC00000000000000000000B6 /* Debug */,
+				CC00000000000000000000B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC00000000000000000000F0 /* Build configuration list for PBXNativeTarget "CognitoClientHostedUIApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC00000000000000000000F1 /* Debug */,
+				CC00000000000000000000F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC00000000000000000000F3 /* Build configuration list for PBXNativeTarget "CognitoClientUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC00000000000000000000F4 /* Debug */,
+				CC00000000000000000000F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
+			requirement = {
+				kind = exactVersion;
+				version = 1.7.60;
+			};
+		};
+		CC00000000000000000000C4 /* XCRemoteSwiftPackageReference "smithy-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/smithy-lang/smithy-swift";
+			requirement = {
+				kind = exactVersion;
+				version = 0.242.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CC0000000000000000000020 /* AmplifyFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyFoundation;
+		};
+		CC0000000000000000000021 /* AWSCognitoIdentity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentity;
+		};
+		CC0000000000000000000025 /* AmplifyCognitoClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyCognitoClient;
+		};
+		CC0000000000000000000026 /* AmplifyFoundationBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyFoundationBridge;
+		};
+		CC0000000000000000000027 /* AWSCognitoIdentityProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentityProvider;
+		};
+		CC0000000000000000000028 /* AWSSTS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSSTS;
+		};
+		CC000000000000000000004C /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = Amplify;
+		};
+		CC000000000000000000004D /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		CC000000000000000000004E /* AmplifyCognitoClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyCognitoClient;
+		};
+		CC00000000000000000000B0 /* AmplifyCognitoClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyCognitoClient;
+		};
+		CC00000000000000000000B1 /* AWSCognitoIdentityProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentityProvider;
+		};
+		CC00000000000000000000C2 /* Smithy */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC00000000000000000000C4 /* XCRemoteSwiftPackageReference "smithy-swift" */;
+			productName = Smithy;
+		};
+		CC00000000000000000000C3 /* SmithyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC00000000000000000000C4 /* XCRemoteSwiftPackageReference "smithy-swift" */;
+			productName = SmithyJSON;
+		};
+		CC00000000000000000000F6 /* AmplifyCognitoClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyCognitoClient;
+		};
+		CC00000000000000000000F8 /* AmplifyCognitoClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001E /* XCLocalSwiftPackageReference "../../../../.." */;
+			productName = AmplifyCognitoClient;
+		};
+		CC00000000000000000000FA /* AWSCognitoIdentityProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC000000000000000000001F /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentityProvider;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = CC0000000000000000000001 /* Project object */;
+}

@@ -12,9 +12,9 @@ import SmithyIdentity
 @testable import AmplifyFoundationBridge
 
 class AWSCredentialsSDKTests: XCTestCase {
-    /// Given: A credentials that will expire after 100 second
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
+    /// - Given: A credentials that will expire after 100 second
+    /// - When: I convert the credentials to AWS SDK ClientRuntime
+    /// - Then: I should get a valid CRT credentials
     func testValidAWSCredentialsToCRTConversion() throws {
 
         let credentials = MockCredentials(
@@ -27,9 +27,9 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(sdkCredentials)
     }
 
-    /// Given: A credentials that expired 100 second back
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
+    /// - Given: A credentials that expired 100 second back
+    /// - When: I convert the credentials to AWS SDK ClientRuntime
+    /// - Then: I should get a valid CRT credentials
     func testExpiredAWSCredentialsToCRTConversion() throws {
 
         let credentials = MockCredentials(
@@ -42,9 +42,9 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(sdkCredentials)
     }
 
-    /// Given: A credentials that will expire after 100 second
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
+    /// - Given: A credentials that will expire after 100 second
+    /// - When: I convert the credentials to a Smithy `AWSCredentialIdentity`
+    /// - Then: I should get a valid Smithy credential identity
     func testValidAWSCredentialsToSmithyConversion() throws {
 
         let credentials = MockCredentials(
@@ -57,9 +57,9 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(smithyCredentials)
     }
 
-    /// Given: A credentials that expired 100 second back
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
+    /// - Given: A credentials that expired 100 second back
+    /// - When: I convert the credentials to a Smithy `AWSCredentialIdentity`
+    /// - Then: I should get a valid Smithy credential identity
     func testExpiredAWSCredentialsToSmithyConversion() throws {
 
         let credentials = MockCredentials(
@@ -72,18 +72,18 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(smithyCredentials)
     }
 
-    /// Given: A smithy credential without expiration and session token
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a static AWSCredentials
+    /// - Given: A smithy credential without expiration and session token
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a static AWSCredentials
     func testSmithyCredentialsToStaticAWSCredentialsConversion() throws {
         let credentials = AWSCredentialIdentity(accessKey: "someaccesskey", secret: "somesecret")
         let awsCredentials = try credentials.toAWSCredentials()
         XCTAssertNotNil(awsCredentials)
     }
 
-    /// Given: A smithy credential that will expire after 100 second
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a temporary AWSCredentials
+    /// - Given: A smithy credential that will expire after 100 second
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a temporary AWSCredentials
     func testValidSmithyCredentialsToTemporaryAWSCredentialsConversion() throws {
         let credentials = AWSCredentialIdentity(
             accessKey: "someaccesskey",
@@ -95,9 +95,9 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
 
-    /// Given: A smithy credential that expired 100 second back
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a temporary AWSCredentials
+    /// - Given: A smithy credential that expired 100 second back
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a temporary AWSCredentials
     func testExpiredSmithyCredentialsToTemporaryAWSCredentialsConversion() throws {
         let credentials = AWSCredentialIdentity(
             accessKey: "someaccesskey",
@@ -109,18 +109,18 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
 
-    /// Given: A CRT credential without expiration and session token
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a static AWSCredentials
+    /// - Given: A CRT credential without expiration and session token
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a static AWSCredentials
     func testCRTCredentialsToStaticAWSCredentialsConversion() throws {
         let credentials = try AwsCommonRuntimeKit.Credentials(accessKey: "someaccesskey", secret: "somesecret")
         let awsCredentials = try credentials.toAWSCredentials()
         XCTAssertNotNil(awsCredentials)
     }
 
-    /// Given: A CRT credential that will expire after 100 second
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a temporary AWSCredentials
+    /// - Given: A CRT credential that will expire after 100 second
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a temporary AWSCredentials
     func testValidCRTCredentialsToTemporaryAWSCredentialsConversion() throws {
         let credentials = try AwsCommonRuntimeKit.Credentials(
             accessKey: "someaccesskey",
@@ -132,9 +132,9 @@ class AWSCredentialsSDKTests: XCTestCase {
         XCTAssertNotNil(awsCredentials as? AWSTemporaryCredentials)
     }
 
-    /// Given: A CRT credential that that expired 100 second back
-    /// When: I convert the credentials to AWSCredentials
-    /// Then: I should get a temporary AWSCredentials
+    /// - Given: A CRT credential that that expired 100 second back
+    /// - When: I convert the credentials to AWSCredentials
+    /// - Then: I should get a temporary AWSCredentials
     func testExpiredCRTCredentialsToTemporaryAWSCredentialsConversion() throws {
         let credentials = try AwsCommonRuntimeKit.Credentials(
             accessKey: "someaccesskey",

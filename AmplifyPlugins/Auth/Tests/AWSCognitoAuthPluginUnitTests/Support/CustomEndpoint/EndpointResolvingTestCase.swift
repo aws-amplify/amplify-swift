@@ -8,6 +8,7 @@
 import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -32,7 +33,7 @@ class EndpointResolvingTestCase: XCTestCase, @unchecked Sendable {
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
                 "",
-                AuthError.validateConfigurationError
+                EngineAuthError.validateConfigurationError
             )
         }
 
@@ -44,7 +45,7 @@ class EndpointResolvingTestCase: XCTestCase, @unchecked Sendable {
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
                 "",
-                AuthError.validateConfigurationError
+                EngineAuthError.validateConfigurationError
             )
         }
 
@@ -57,7 +58,7 @@ class EndpointResolvingTestCase: XCTestCase, @unchecked Sendable {
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
                 "",
-                AuthError.validateConfigurationError
+                EngineAuthError.validateConfigurationError
             )
         }
 
@@ -69,7 +70,7 @@ class EndpointResolvingTestCase: XCTestCase, @unchecked Sendable {
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
                 "",
-                AuthError.validateConfigurationError
+                EngineAuthError.validateConfigurationError
             )
         }
     }

@@ -19,6 +19,11 @@ class AmplifyKinesisClientConfigureClientTests: XCTestCase, @unchecked Sendable 
 
     /// Verifies that the `configureClient` closure is applied to the underlying
     /// SDK client configuration.
+    ///
+    /// - Given: options whose `configureClient` closure sets the retry strategy's `maxRetriesBase` to 10
+    /// - When: the client is created with those options
+    /// - Then:
+    ///    - the SDK client's configuration has `maxRetriesBase` 10
     func testConfigureClientAppliesConfiguration() throws {
         let client = try AmplifyKinesisClient(
             region: "us-east-1",

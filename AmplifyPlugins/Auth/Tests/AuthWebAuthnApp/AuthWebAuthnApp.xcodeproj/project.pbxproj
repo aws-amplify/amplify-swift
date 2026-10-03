@@ -228,7 +228,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nSOURCE_DIR=$HOME/.aws-amplify/amplify-ios/testconfiguration\nDESTINATION_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [ ! -d \"$SOURCE_DIR\" ]; then\n    echo \"error: Test configuration directory does not exist: ${SOURCE_DIR}\" && exit 1\nfi\n\nmkdir -p \"$DESTINATION_DIR\"\ncp -r \"$SOURCE_DIR\"/*.json $DESTINATION_DIR\n\nexit 0\n\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# COGNITO_CLIENT_INTEG_DIR, when set, names the directory to copy instead of ~/.aws-amplify/amplify-ios/testconfiguration\n# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/README.md). Unset, as on CI, nothing changes.\nSOURCE_DIR=${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}\nDESTINATION_DIR=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [ ! -d \"$SOURCE_DIR\" ]; then\n    echo \"error: Test configuration directory does not exist: ${SOURCE_DIR}\" && exit 1\nfi\n\nmkdir -p \"$DESTINATION_DIR\"\ncp -r \"$SOURCE_DIR\"/*.json $DESTINATION_DIR\n\nexit 0\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

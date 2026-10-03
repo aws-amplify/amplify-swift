@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension AWSAuthCognitoSession {
     static var testData: AWSAuthCognitoSession {
@@ -55,7 +56,7 @@ extension AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .testData,
             identityID: "identityId",
-            credentials: AuthAWSCognitoCredentials.testData
+            credentials: EngineAWSCredentials.testData
         )
     }
 
@@ -70,7 +71,7 @@ extension AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .hostedUISignInData,
             identityID: "identityId",
-            credentials: AuthAWSCognitoCredentials.testData
+            credentials: EngineAWSCredentials.testData
         )
     }
 
@@ -78,7 +79,7 @@ extension AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .expiredTestData,
             identityID: "identityId",
-            credentials: AuthAWSCognitoCredentials.testData
+            credentials: EngineAWSCredentials.testData
         )
     }
 
@@ -86,14 +87,14 @@ extension AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(
             signedInData: .testData,
             identityID: "identityId",
-            credentials: AuthAWSCognitoCredentials.expiredTestData
+            credentials: EngineAWSCredentials.expiredTestData
         )
     }
 
     static var testDataIdentityPoolWithExpiredTokens: AmplifyCredentials {
         AmplifyCredentials.identityPoolOnly(
             identityID: "identityId",
-            credentials: AuthAWSCognitoCredentials.testData
+            credentials: EngineAWSCredentials.testData
         )
     }
 }

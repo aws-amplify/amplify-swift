@@ -16,6 +16,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 @testable import AWSPluginsTestCommon
+import InternalAWSCognitoAuth
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
