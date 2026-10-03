@@ -88,9 +88,10 @@ public extension AmplifyCognitoClient {
     /// saved under its configuration is deleted too (not revoked: a saved challenge holds no token). A session saved under a
     /// configuration this one does not carry from (another user pool, say) is not touched: sign it out with that
     /// configuration. For `.default`, a login the Auth plugin's configuration-change rule carries here is carried first,
-    /// then signed out; a change the rule would delete on is left alone, the app's login and its recorded
-    /// configuration included, so a call with a configuration other than the app's never deletes the app's login: the
-    /// next restore under the new configuration applies the rule.
+    /// then signed out; a change the rule would delete on is left alone, the app's login included, so a call with a
+    /// configuration other than the app's never deletes the app's login. The configuration the app last ran with stays
+    /// recorded (only a restore records one). After a carry, the login it came from is signed out too while it still
+    /// holds the user just signed out, so the user stays signed out under both configurations.
     ///
     /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
     ///   when the session is signed out on this device. `.failed`, and the session is still signed in:
@@ -120,7 +121,8 @@ public extension AmplifyCognitoClient {
     /// `.signedOut`, sends `.signedOut` if it held credentials, and its providers throw `notSignedIn`.
     /// For `.default`, the plugin's record is deleted too, so nothing resurrects the session; a login the Auth plugin's
     /// configuration-change rule carries here is carried first, and a change it would delete on is left alone, the
-    /// previous configuration's login included. For a named session, so are the copies
+    /// previous configuration's login included, and so is the login a carry came from (a purge revokes nothing), which
+    /// the next restore under the new configuration carries here again. For a named session, so are the copies
     /// of it this app left under earlier pool configurations (each only while untouched since it was carried, if it
     /// provably holds the same user and is not a guest's; their refresh tokens are not revoked), each with the
     /// interrupted sign-in saved under its configuration; and so is the session's record of which configuration
@@ -248,8 +250,8 @@ extension AmplifyCognitoClient {
             }
             // A record a restore would carry forward from a previous configuration is carried now, so it is
             // signed out (and revoked) here, not restored signed in later: for `.default`, by the Auth plugin's rule,
-            // which is applied only when it carries.
-            try await applyPluginConfigurationRule(sessionId, configuration, store, dependencies)
+            // which is applied only when it carries, and records no configuration.
+            let carried = try await applyPluginConfigurationRule(sessionId, configuration, store, dependencies)
             _ = try await store.perform { try $0.readCarryingForward(sessionId) }
             let outcome = try await SessionSignOut(
                 sessionId: sessionId,
@@ -280,6 +282,9 @@ extension AmplifyCognitoClient {
             ).run()
             if outcome.endedSession {
                 dependencies.gates.memory(for: namespace, sessionId: sessionId).reset()
+            }
+            if outcome.removedCredentials, case .carried(let source, let bytes)? = carried {
+                await SessionCore.signOutCarrySource(source, carried: bytes, through: store)
             }
             return .done(outcome.result())
         }
@@ -354,19 +359,21 @@ extension AmplifyCognitoClient {
     }
 
     /// For `.default`, the Auth plugin's configuration-change rule (`SessionCore.applyPluginConfigurationRule`), under
-    /// the gates `withSessionGates` holds, **only when it carries**: this call may be made with a configuration
-    /// other than the app's, so it never deletes the app's login, revokes it, or records a configuration; the next
-    /// restore under the new configuration applies the rule in full. Nothing for a named session.
+    /// the gates `withSessionGates` holds, **only when it carries**, and **never recording the configuration**:
+    /// this call may be made with a configuration other than the app's, so it never deletes or revokes the
+    /// app's login, and only a restore records a configuration. Returns what the rule did (`nil` for a named
+    /// session): a sign-out then signs out the record a carry came from; a purge leaves it.
+    @discardableResult
     private static func applyPluginConfigurationRule(
         _ sessionId: SessionID,
         _ configuration: AuthClientConfiguration,
         _ store: SessionRecordIO,
         _ dependencies: SessionCoreDependencies
-    ) async throws {
+    ) async throws -> SessionRecordStore.PluginConfigurationOutcome? {
         guard sessionId == .default else {
-            return
+            return nil
         }
-        try await SessionCore.applyPluginConfigurationRule(
+        return try await SessionCore.applyPluginConfigurationRule(
             through: store,
             current: AuthConfiguration(client: configuration),
             heldSource: nil,

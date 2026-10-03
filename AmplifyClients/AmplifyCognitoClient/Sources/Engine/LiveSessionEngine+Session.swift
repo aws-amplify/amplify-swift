@@ -151,14 +151,25 @@ extension LiveSessionEngine {
     }
 
     /// The sign-out with the hosted UI's step skipped.
+    ///
+    /// A caller already cancelled sends nothing: it throws `CancellationError`, and nothing is revoked.
+    /// Otherwise the sign-out runs in a task of its own, which the caller's cancellation does not reach, as a
+    /// presenting sign-out does (`revokePresenting`): the machine's actions run in detached tasks, so a
+    /// `GlobalSignOut` or `RevokeToken` once sent reaches Cognito whatever the caller does, and this returns what it
+    /// really did rather than a `CancellationError` while Cognito revokes the tokens.
     nonisolated func revokeSkippingHostedUI(_ payload: Data, global: Bool) async throws -> EngineSignOutOutcome {
-        let operation = try resources.makeOperation(seed: payload)
-        try await operation.configure(resources.authConfiguration)
-        await operation.send(AuthenticationEvent(eventType: .signOutRequested(SignOutEventData(
-            globalSignOut: global,
-            skipHostedUISignOut: true
-        ))))
-        return try await operation.firstState(Self.signOutResult)
+        try Task.checkCancellation()
+        let resources = resources
+        let flow = Task { () -> EngineSignOutOutcome in
+            let operation = try resources.makeOperation(seed: payload)
+            try await operation.configure(resources.authConfiguration)
+            await operation.send(AuthenticationEvent(eventType: .signOutRequested(SignOutEventData(
+                globalSignOut: global,
+                skipHostedUISignOut: true
+            ))))
+            return try await operation.firstState(Self.signOutResult)
+        }
+        return try await flow.value
     }
 
     /// A sign-out's result at `state`: the outcome once signed out, a thrown failure if the sign-out itself

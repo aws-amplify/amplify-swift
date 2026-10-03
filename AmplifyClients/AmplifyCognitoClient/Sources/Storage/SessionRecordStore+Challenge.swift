@@ -43,6 +43,8 @@ extension SessionRecordStore {
             "An expired interrupted sign-in's saved record could not be deleted. The next listing tries again."
         static let rememberedDeleteFailed =
             "A signed-out session's interrupted sign-in under a previous configuration could not be deleted. It is left, and cannot be resumed once 15 minutes old."
+        static let signOutDeleteFailed =
+            "A signed-out session's interrupted sign-in record could not be deleted. It cannot be resumed once 15 minutes old."
     }
 
     static var challengeLogger: any Logger {
@@ -98,6 +100,16 @@ extension SessionRecordStore {
     func deleteChallenge(_ sessionId: SessionID) throws {
         try performChallengeStorage("delete the interrupted sign-in record") {
             try keychain.remove(challengeAccount(for: sessionId))
+        }
+    }
+
+    /// Deletes the interrupted-sign-in record of a session a sign-out has ended, best effort: the session is signed out
+    /// whatever happens here, so a failure logs `ChallengeLog.signOutDeleteFailed` once and is not thrown.
+    func deleteChallengeAfterSignOut(_ sessionId: SessionID) {
+        do {
+            try keychain.remove(challengeAccount(for: sessionId))
+        } catch {
+            Self.challengeLogger.warn(ChallengeLog.signOutDeleteFailed)
         }
     }
 

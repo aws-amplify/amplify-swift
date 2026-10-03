@@ -36,7 +36,7 @@ extension AmplifyCredentials: Codable { }
 
 extension AmplifyCredentials: Equatable { }
 
-extension AmplifyCredentials: @unchecked Sendable { }
+extension AmplifyCredentials: Sendable { }
 
 extension AmplifyCredentials: CustomDebugStringConvertible {
     package var debugDescription: String {

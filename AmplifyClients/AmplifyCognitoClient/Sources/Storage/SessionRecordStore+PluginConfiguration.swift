@@ -36,10 +36,17 @@ import InternalAWSCognitoAuth
 //
 // **The sidecar goes with a carried record**, while the new namespace has none: it holds the record's label and last
 // user, which the plugin's format cannot, and the carried record is the same user's. **It goes with a deleted record**
-// too, so no signed-out row is left for a login the user never signed out of. Both are best effort.
+// too, so no signed-out row is left for a login the user never signed out of, and so does the old namespace's
+// interrupted sign-in (`$default.challenge`). All are best effort.
 //
 // **The static `signOutStoredSession` and `purgeStoredSession` apply the rule only when it carries**: they can
 // be called with a configuration other than the app's, which must never delete the app's login (`onlyIfCarrying`).
+// **And they never write `authConfiguration`**: only the app actually running a configuration, a restore, records
+// it. Otherwise a static purge under Y while the app runs X would record Y, and the app's next restore under X would
+// carry nothing back from Y (purged) and read X's copy as if the login had moved away and come back. **A static sign-out
+// that carried a user's login also signs out the record it carried from** (`signOutCarrySource`), through
+// the byte guard, so neither a restore under X nor a later move to Y brings the signed-out user back. A static purge
+// revokes nothing, so it leaves that record alone.
 //
 // A record the rule reads is read again once if found absent where the keychain's `set` deletes and re-adds (macOS),
 // as the shared record is.
@@ -56,8 +63,8 @@ extension SessionRecordStore {
     enum PluginConfigurationOutcome: Equatable, Sendable {
         /// Nothing was carried or deleted.
         case unchanged
-        /// The previous configuration's record was copied to this one's, as its bytes are.
-        case carried
+        /// The previous configuration's record, at `fromAccount`, was copied to this one's, as its bytes are (`bytes`).
+        case carried(fromAccount: String, bytes: Data)
         /// The previous configuration's record was deleted. `previousPayload` is what it held (`nil`: nothing), for the
         /// revoke.
         case cleared(previousPayload: Data?, previous: AuthConfiguration)
@@ -88,17 +95,18 @@ extension SessionRecordStore {
     }
 
     /// Runs the plugin's configuration-change rule for `.default`, from the recorded previous configuration to
-    /// `current`, then records `current`. The caller holds the gates of this namespace and of the one the previous
-    /// configuration names (`pluginConfigurationSource()`).
+    /// `current`, then records `current` (a restore only, not `onlyIfCarrying`). The caller holds the gates of this
+    /// namespace and of the one the previous configuration names (`pluginConfigurationSource()`).
     ///
     /// - Parameters:
     ///   - current: The engine configuration `.default` runs with now, `AuthConfiguration(client:)`.
     ///   - heldSource: For a caller holding the gate of the namespace the previous configuration names: the namespace
     ///     it expects. Another throws `CarrySourceChanged`, and nothing is changed. `nil` does not check.
-    ///   - onlyIfCarrying: For the static `signOutStoredSession` and `purgeStoredSession`: apply the rule only
-    ///     when it carries. They may be called with a configuration other than the app's, which must never delete the
-    ///     app's login, so any other decision changes nothing at all, `authConfiguration` included; the next restore
-    ///     under the new configuration applies the rule in full.
+    ///   - onlyIfCarrying: For the static `signOutStoredSession` and `purgeStoredSession`: apply the rule
+    ///     only when it carries, and never record `current`. They may be called with a configuration other than the
+    ///     app's, which must never delete the app's login, so any other decision changes nothing at all; and a carry
+    ///     leaves `authConfiguration` naming the configuration the app last ran with, which only a restore records.
+    ///     The next restore under the new configuration applies the rule in full.
     /// - Throws: `AuthClientError.storageUnavailable` if an item could not be read, written or deleted. Nothing after
     ///   the failure is done, and `authConfiguration` is written only once the rest succeeded.
     func applyPluginConfigurationRule(
@@ -106,13 +114,35 @@ extension SessionRecordStore {
         heldSource: PoolNamespace?? = nil,
         onlyIfCarrying: Bool = false
     ) throws -> PluginConfigurationOutcome {
+        let applied = try applyPluginConfigurationRuleReportingRecord(
+            current: current,
+            heldSource: heldSource,
+            onlyIfCarrying: onlyIfCarrying
+        )
+        if let failure = applied.recordFailure {
+            throw failure
+        }
+        return applied.outcome
+    }
+
+    /// `applyPluginConfigurationRule`, with a failure to record `current` returned beside what the rule did instead of
+    /// thrown: the carry or delete has happened by then, and a deleted login must still be
+    /// revoked, though the restore fails. The next restore applies the rule again, and finds nothing left to delete.
+    ///
+    /// - Throws: `AuthClientError.storageUnavailable` if an item could not be read, written or deleted before the
+    ///   record of `current`; `CarrySourceChanged` as `applyPluginConfigurationRule` does.
+    func applyPluginConfigurationRuleReportingRecord(
+        current: AuthConfiguration,
+        heldSource: PoolNamespace??,
+        onlyIfCarrying: Bool
+    ) throws -> (outcome: PluginConfigurationOutcome, recordFailure: AuthClientError?) {
         let previous = try previousPluginConfiguration()
         if let heldSource, Self.otherNamespace(of: previous, than: namespace.pools) != heldSource {
             throw CarrySourceChanged()
         }
         let change = AWSCognitoAuthCredentialStore.configurationChange(from: previous, to: current)
         if onlyIfCarrying, !Self.carries(change) {
-            return .unchanged
+            return (.unchanged, nil)
         }
         let outcome: PluginConfigurationOutcome
         switch change {
@@ -124,16 +154,25 @@ extension SessionRecordStore {
             let payload = try fetchRereadingAbsent(account, operation: "read the saved login of the previous configuration")
             try perform("delete the saved login of the previous configuration") { try keychain.remove(account) }
             // The old namespace's sidecar goes with its record, so no signed-out row is left for a login the user
-            // never signed out of. Cosmetic, so best effort.
-            try? keychain.remove(SessionRecordKey.metaAccount(in: PoolNamespace(previous)))
+            // never signed out of; and so does its interrupted sign-in, which nothing under the new
+            // configuration resumes. Both best effort.
+            let previousPools = PoolNamespace(previous)
+            try? keychain.remove(SessionRecordKey.metaAccount(in: previousPools))
+            try? keychain.remove(SessionRecordKey.account(for: .default, in: previousPools, kind: .challenge))
             outcome = .cleared(previousPayload: payload, previous: previous)
         }
-        if previous != current {
+        // Only a restore records the configuration it runs.
+        guard !onlyIfCarrying, previous != current else {
+            return (outcome, nil)
+        }
+        do {
             try perform("record the configuration for the Auth plugin") {
                 try keychain.set(AWSCognitoAuthCredentialStore.encodeAuthConfiguration(current), key: Self.pluginConfigurationAccount)
             }
+        } catch let failure as AuthClientError {
+            return (outcome, failure)
         }
-        return outcome
+        return (outcome, nil)
     }
 
     /// The payload a deleted login's revoke sends, if it is revoked at all: the deleted record's, when it
@@ -183,7 +222,24 @@ extension SessionRecordStore {
         if let previousPools = previous.map(PoolNamespace.init) {
             carrySidecar(from: SessionRecordKey.metaAccount(in: previousPools))
         }
-        return .carried
+        return .carried(fromAccount: fromAccount, bytes: bytes)
+    }
+
+    /// A static sign-out's last step after it carried a user's login here and signed it out: writes
+    /// `{"noCredentials":{}}` over the record it was carried from, so neither a restore under that configuration nor a
+    /// later move to this one brings the signed-out user back. Through the byte guard: only while that record still
+    /// holds exactly the bytes carried, the login just signed out; another writer's record is left alone. A guest's
+    /// carried record is left too: nothing of it was revoked.
+    ///
+    /// - Returns: `true` if the record was signed out; `false` if it no longer holds `carried` (or it is a guest's).
+    /// - Throws: `AuthClientError.storageUnavailable` if it could not be read or written.
+    func signOutCarrySource(_ account: String, carried bytes: Data) throws -> Bool {
+        guard Self.isUserKind(summarizeSharedRecord(bytes).kind) else {
+            return false
+        }
+        return try perform("sign out the saved login of the previous configuration") {
+            try keychain.setIfUnchanged(PluginRecordSummary.signedOutPayload, key: account, expecting: bytes)
+        }
     }
 
     /// Copies the previous namespace's sidecar here if this namespace has none. Cosmetic, so best effort: a failure

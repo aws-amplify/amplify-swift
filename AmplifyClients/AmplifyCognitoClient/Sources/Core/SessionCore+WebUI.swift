@@ -28,10 +28,10 @@ extension SessionCore {
     /// | no window (`signOut(options:)`) | none | `.skip` | `hostedUIError` `.validation(field: "presentationAnchor")`: the one documented difference from the plugin, which shows a window of its own |
     /// | no hosted UI, or no sign-out redirect URI, in the configuration | none | — | throws `SignOutRefusal(noHostedUIForSignOut)`: nothing cleared, the plugin's `.failed` |
     /// | the engine finds no hosted UI or sign-out redirect URI (`HostedUIError.pluginConfiguration`, `.signOutRedirectURI`) | released | `.present` | the same refusal, the engine's error underneath |
-    /// | another session holds the sheet | none | — | throws `SignOutRefusal(.browserBusy(holder:))` at once, before anything is stopped: nothing cleared, and this session's passkey registration left running |
-    /// | this session's passkey registration holds the sheet, or is still before its sheet | stopped first, then waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; if the sheet does not close in time, the busy row |
-    /// | the sheet is busy (another session took it meanwhile, or this session's passkey sheet did not close in time) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
-    /// | lease taken | around this attempt | `.present` | the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
+    /// | another session holds the sheet when the page asks for it (`.fail` first: taking the sheet is the check) | none | — | throws `SignOutRefusal(.browserBusy(holder:))` at once: nothing stopped, nothing cleared, and this session's passkey registration left running |
+    /// | this session's passkey registration holds the sheet (or its lease is granted, not yet attached) | refused; the registration is stopped, then the page waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; with no registration to stop, asked for once more with `.fail`, else the busy row |
+    /// | the sheet stays busy (this session's passkey sheet did not close in time, or passed to another session as it closed) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
+    /// | lease taken | around this attempt | `.present` | first stops this session's passkey registrations still before their sheet, then the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
     /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is expired, which reruns `.skip` and reports it |
     /// | `cancelWebUISignIn()` or `resetSystemSheet()` interrupted the lease | released | — | waits for the sign-out's own result: the row above if that closed the page, else what it did (signed out, or its failure reported as the revoke's) |
     /// | the interrupt came before the body began (between the grant and the start; the body is abandoned, never runs) | released | — | the closed-page row, at once: nothing ran |
@@ -56,59 +56,14 @@ extension SessionCore {
             // The plugin's `.failed`, with the user still signed in: nothing is revoked or cleared.
             throw SignOutRefusal(error: Self.noHostedUIForSignOut())
         }
-        // Another session's sheet refuses the page whatever this session does, so that comes first: a sign-out
-        // that does nothing must not stop this session's passkey registration.
-        if let holder = await sheetLock.currentHolder, holder != sessionId {
-            throw SignOutRefusal(error: Self.signOutBrowserBusy(
-                .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .heldByAnotherSession)
-            ))
-        }
-        let engine = engine
-        let body = LeaseBodyResult<EngineSignOutOutcome>()
-        // A passkey registration of this session holding the sheet would make the page `browserBusy(self)`: it is
-        // stopped first, as the sign-out would stop it anyway, and the page waits for its sheet to close. Stopped
-        // even if the user then closes the page and stays signed in, or if its sheet does not
-        // close within `passkeySheetClosingTimeout`.
-        var policy: WebUIOptions.BrowserBusyPolicy = .fail
-        if await stopPasskeyRegistrations() {
-            // Also for a registration whose lease the lock has granted but whose flow has not attached yet, which
-            // the flow's own cancel cannot reach: the lock then refuses it as it attaches.
-            await sheetLock.cancel(for: sessionId)
-            // Wait only for this session's own closing sheet; another session's is the busy row, at once. Since
-            // the check above, another session holds the sheet here only if it took it in between (when this
-            // session's sheet closed, or the lock was free): without this guard the page would queue behind it
-            // for up to `passkeySheetClosingTimeout`. No unit test reaches that window: nothing between the check
-            // and this line can be held from a test without a seam in the sign-out itself, and the fix that
-            // removes the window (acquire first) is still open. The own-sheet tests cover the `true` branch.
-            if await sheetLock.currentHolder == sessionId {
-                policy = .wait(timeout: Self.passkeySheetClosingTimeout)
-            }
-        }
-        do {
-            return try await sheetLock.withLease(for: sessionId, policy: policy) { _ in
-                // Claimed before anything runs, so an interrupt can tell a body that never started (the lock
-                // answers an interrupt between grant and start without running it) from one that did.
-                guard body.begin() else {
-                    throw CancellationError()
-                }
-                do {
-                    let outcome = try await engine.revoke(payload, global: global, hostedUI: .present(box))
-                    body.finish(.success(outcome))
-                    return outcome
-                } catch {
-                    body.finish(.failure(error))
-                    throw error
-                }
-            }
-        } catch let error as AuthClientError where error.isBrowserBusy {
-            // The user asked for the page and it cannot be shown: they stay signed in.
-            throw SignOutRefusal(error: Self.signOutBrowserBusy(error))
-        } catch let error as AuthClientError where error.isUserCancelled {
-            return try await afterClosedLogout(payload, global: global, error)
-        } catch is CancellationError {
-            // The caller's own cancellation too: the engine's sign-out runs in a task of its own and may go on
-            // revoking, so the record must follow what it did, not the cancellation (verification should-fix).
-            return try await afterInterruptedLogout(payload, global: global, body: body, byCaller: Task.isCancelled)
+        // Taking the sheet is the busy check: the page asks for it with `.fail` before anything is stopped,
+        // so a sign-out another session's sheet refuses leaves this session's passkey registration alone, however
+        // late that session took the sheet.
+        switch try await logoutUnderLease(payload, global: global, box: box, policy: .fail) {
+        case .finished(let outcome):
+            return outcome
+        case .heldByThisSession(let busy):
+            return try await logoutAfterOwnSheet(payload, global: global, box: box, busy: busy)
         }
         #else
         return try await skippingHostedUI(payload, global: global, reporting: Self.noSignOutWindow())
@@ -119,6 +74,115 @@ extension SessionCore {
     static let passkeySheetClosingTimeout: TimeInterval = 10
 
     #if os(iOS) || os(macOS) || os(visionOS)
+    /// What one attempt at the logout page under the sheet's lease came to.
+    private enum LogoutAttempt {
+        /// The attempt ran: the outcome `firstSignOutAttempt`'s table gives. Its refusals and failures are thrown.
+        case finished(EngineSignOutOutcome)
+        /// The lease was refused because this session holds the sheet. Nothing ran.
+        case heldByThisSession(AuthClientError)
+    }
+
+    /// One attempt at the logout page, under the sheet's lease taken with `policy` (and `waitsOnlyForItself`, the
+    /// lock's).
+    ///
+    /// The lease body stops this session's passkey registrations before `engine.revoke`: the sign-out holds the
+    /// sheet, so the page goes ahead, and a registration still before its sheet is refused as it reaches it. It
+    /// does not call `sheetLock.cancel(for:)`, which would interrupt this lease, the sign-out's own; no
+    /// registration of this session can hold a lease while this one is held.
+    private nonisolated func logoutUnderLease(
+        _ payload: Data,
+        global: Bool,
+        box: EnginePresentationAnchorBox,
+        policy: WebUIOptions.BrowserBusyPolicy,
+        waitsOnlyForItself: Bool = false
+    ) async throws -> LogoutAttempt {
+        let engine = engine
+        let body = LeaseBodyResult<EngineSignOutOutcome>()
+        do {
+            let shown = try await sheetLock.withLease(
+                for: sessionId,
+                policy: policy,
+                waitsOnlyForItself: waitsOnlyForItself
+            ) { [self] _ in
+                // Claimed before anything runs, so an interrupt can tell a body that never started (the lock
+                // answers an interrupt between grant and start without running it) from one that did.
+                guard body.begin() else {
+                    throw CancellationError()
+                }
+                do {
+                    _ = await stopPasskeyRegistrations()
+                    await afterLogoutStop(sessionId)
+                    // An interrupt that landed while the registrations were stopped: the page is never shown.
+                    try Task.checkCancellation()
+                    let outcome = try await engine.revoke(payload, global: global, hostedUI: .present(box))
+                    body.finish(.success(outcome))
+                    return outcome
+                } catch {
+                    body.finish(.failure(error))
+                    throw error
+                }
+            }
+            return .finished(shown)
+        } catch let error as AuthClientError where error.isBrowserBusy {
+            // Refused before the body began: the lock's own refusal, so nothing was stopped. This session's own
+            // sheet is for `logoutAfterOwnSheet`; another session's is the busy row.
+            if case .browserBusy(let holder, _, _, _) = error, holder == sessionId, body.abandonIfNotBegun() {
+                return .heldByThisSession(error)
+            }
+            // The user asked for the page and it cannot be shown: they stay signed in.
+            throw SignOutRefusal(error: Self.signOutBrowserBusy(error))
+        } catch let error as AuthClientError where error.isUserCancelled {
+            return try await .finished(afterClosedLogout(payload, global: global, error))
+        } catch is CancellationError {
+            // The caller's own cancellation too: the engine's sign-out runs in a task of its own and may go on
+            // revoking, so the record must follow what it did, not the cancellation (verification should-fix).
+            return try await .finished(
+                afterInterruptedLogout(payload, global: global, body: body, byCaller: Task.isCancelled)
+            )
+        }
+    }
+
+    /// The page's lease was refused because this session holds the sheet: its passkey registration's sheet, or a
+    /// registration's lease the lock has granted but whose flow has not attached yet. The registration is stopped,
+    /// as the sign-out would stop it anyway, and the page waits for its sheet to close. Stopped even if the user
+    /// then closes the page and stays signed in, or if its sheet does not close within
+    /// `passkeySheetClosingTimeout`. With no registration to stop, the sheet is asked for once more with `.fail`:
+    /// this session's holder may have finished since the first ask (a registration that ended and unregistered),
+    /// leaving the sheet free; if it is still held, the busy row, with nothing stopped.
+    private nonisolated func logoutAfterOwnSheet(
+        _ payload: Data,
+        global: Bool,
+        box: EnginePresentationAnchorBox,
+        busy: AuthClientError
+    ) async throws -> EngineSignOutOutcome {
+        guard await stopPasskeyRegistrations() else {
+            switch try await logoutUnderLease(payload, global: global, box: box, policy: .fail) {
+            case .finished(let outcome):
+                return outcome
+            case .heldByThisSession(let busy):
+                throw SignOutRefusal(error: Self.signOutBrowserBusy(busy))
+            }
+        }
+        // Also for a lease granted but not yet attached, which the flow's own cancel cannot reach: the lock then
+        // refuses it as it attaches.
+        await sheetLock.cancel(for: sessionId)
+        // Waits only for this session's own closing sheet, in one step on the lock: another session holding it, or
+        // the lock passing to a session queued behind the closing sheet, is the busy row at once, never a wait of up
+        // to `passkeySheetClosingTimeout` behind another session's sheet.
+        switch try await logoutUnderLease(
+            payload,
+            global: global,
+            box: box,
+            policy: .wait(timeout: Self.passkeySheetClosingTimeout),
+            waitsOnlyForItself: true
+        ) {
+        case .finished(let outcome):
+            return outcome
+        case .heldByThisSession(let busy):
+            throw SignOutRefusal(error: Self.signOutBrowserBusy(busy))
+        }
+    }
+
     /// The lease was interrupted: by the caller's cancellation, or by `cancelWebUISignIn()` or `resetSystemSheet()`,
     /// which also dismisses the page. The sign-out may already be past the page, revoking, so what it
     /// did is its own result, which comes once the page is gone.

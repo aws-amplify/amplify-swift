@@ -68,6 +68,8 @@ actor SessionCore {
     /// The process-wide system-sheet lock: held around this session's
     /// hosted-UI sign-in and the first attempt of a sign-out that shows the logout page.
     nonisolated let sheetLock: SystemSheetLock
+    /// `SessionCoreDependencies.afterLogoutStop`: a test seam, a no-op in the app.
+    nonisolated let afterLogoutStop: @Sendable (SessionID) async -> Void
     #endif
 
     // Mutable, in memory only.
@@ -144,6 +146,7 @@ actor SessionCore {
         self.registry = dependencies.registry
         #if os(iOS) || os(macOS) || os(visionOS)
         self.sheetLock = dependencies.sheetLock
+        self.afterLogoutStop = dependencies.afterLogoutStop
         #endif
     }
 
@@ -298,8 +301,9 @@ actor SessionCore {
     }
 
     /// Stops this session's passkey registrations in flight now, ahead of `cancelPendingSignIns()`: what a
-    /// sign-out that shows the hosted UI's logout page does first, so the page can have the system sheet.
-    /// Each reports that the session ended. `true` if there was one.
+    /// sign-out that shows the hosted UI's logout page does once it holds the system sheet, or to free the sheet a
+    /// registration holds, so the page can have it. Each reports that the session ended.
+    /// `true` if there was one.
     func stopPasskeyRegistrations() -> Bool {
         let stops = passkeyRegistrations.values
         passkeyRegistrations = [:]

@@ -31,21 +31,21 @@ struct BrowserLease: Sendable, Equatable {
 ///   device cannot offer two), and the foreground belongs to the process, not to a user pool.
 /// - **In memory only, never persisted.** Process death releases it. A persisted lock would survive
 ///   a crash and block sign-in until something cleared it.
-/// - **Scoped.** The only way to hold it is `withLease(for:policy:_:)`, which releases it when the
-///   flow finishes: on success, on a throw, and after cancellation once the flow has unwound. There
-///   is no public release to forget.
+/// - **Scoped.** The only way to hold it is `withLease(for:policy:waitsOnlyForItself:_:)`, which
+///   releases it when the flow finishes: on success, on a throw, and after cancellation once the flow
+///   has unwound. There is no public release to forget.
 /// - **Recoverable.** `cancel(for:)` stops one session's flow; `reset()` frees the lock whoever
 ///   holds it, for a flow that has stopped responding.
 ///
-/// Acquiring, per policy:
+/// Acquiring, per policy (`waitsOnlyForItself` changes `.wait` only, and is `false` by default):
 ///
-/// | Lock is | `.fail` | `.wait(timeout:)` |
-/// |---|---|---|
-/// | free | acquire | acquire |
-/// | held by another session | throw `browserBusy(holder:)` | queue, first come first served |
-/// | held by the calling session | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` |
-/// | held by the calling session, whose flow was cancelled and is closing | throw `browserBusy(holder:)`, "still closing" | queue, first come first served |
-/// | the calling session is already queued | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` |
+/// | Lock is | `.fail` | `.wait(timeout:)` | `.wait(timeout:)`, `waitsOnlyForItself` |
+/// |---|---|---|---|
+/// | free | acquire | acquire | acquire |
+/// | held by another session | throw `browserBusy(holder:)` | queue, first come first served | throw `browserBusy(holder:)` at once |
+/// | held by the calling session | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` |
+/// | held by the calling session, whose flow was cancelled and is closing | throw `browserBusy(holder:)`, "still closing" | queue, first come first served | queue, first come first served; refused with `browserBusy(holder:)` once the lock passes to another session |
+/// | the calling session is already queued | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` | throw `browserBusy(holder:)` |
 ///
 /// A session waiting on itself could only time out, so that is refused whatever the policy. The
 /// exception is a holder that has been cancelled and is only unwinding: that wait does end, so the
@@ -54,6 +54,10 @@ struct BrowserLease: Sendable, Equatable {
 /// waiter whose timeout expires throws `browserBusy(holder:)` naming the holder at that moment; a
 /// waiter whose task is cancelled throws `CancellationError`. Either way it leaves the queue and
 /// never takes the lock.
+///
+/// A caller may also wait only for its own session's closing sheet (`waitsOnlyForItself`, a sign-out's logout page
+/// waiting for the passkey sheet it closed): another session holding the lock is refused at once, as with
+/// `.fail`, and so is such a waiter when the lock passes to another session queued ahead of it.
 ///
 /// Compiled on iOS, macOS and visionOS only, the platforms with a hosted UI.
 ///
@@ -70,6 +74,9 @@ actor SystemSheetLock {
     /// A test seam: a point inside `withLease` where a test can hold a caller. Does nothing in
     /// production.
     typealias Seam = @Sendable (BrowserLease) async -> Void
+
+    /// A test seam before a caller asks for the lock, given the session asking. Does nothing in production.
+    typealias RequestSeam = @Sendable (SessionID) async -> Void
 
     private struct Holder {
         let lease: BrowserLease
@@ -91,6 +98,8 @@ actor SystemSheetLock {
         let session: SessionID
         let continuation: CheckedContinuation<BrowserLease, Error>
         var timeout: Task<Void, Never>?
+        /// Queued only behind its own session's closing sheet: refused once the lock passes to another session.
+        let waitsOnlyForItself: Bool
     }
 
     private var holder: Holder?
@@ -103,6 +112,7 @@ actor SystemSheetLock {
     private let afterAttach: Seam
     private let beforeRelease: Seam
     private let beforeBody: Seam
+    private let beforeAcquire: RequestSeam
 
     /// - Parameters:
     ///   - sleep: how a waiter's timeout waits.
@@ -114,14 +124,18 @@ actor SystemSheetLock {
     ///     answered. A test holds a flow here to interrupt it after its body produced a result.
     ///   - beforeBody: runs in the flow's task once it has started, just before the body is called. A test holds
     ///     a flow here to interrupt it after it started but before its body's first step.
+    ///   - beforeAcquire: runs in the caller's task as `withLease` is called, before it asks for the lock. A test
+    ///     holds a caller here to change who holds the sheet just before it asks.
     init(
         sleep: @escaping Sleep = { try await Task.sleep(nanoseconds: $0) },
         afterAcquire: @escaping Seam = { _ in },
         afterAttach: @escaping Seam = { _ in },
         beforeRelease: @escaping Seam = { _ in },
-        beforeBody: @escaping Seam = { _ in }
+        beforeBody: @escaping Seam = { _ in },
+        beforeAcquire: @escaping RequestSeam = { _ in }
     ) {
         self.beforeBody = beforeBody
+        self.beforeAcquire = beforeAcquire
         self.sleep = sleep
         self.afterAcquire = afterAcquire
         self.afterAttach = afterAttach
@@ -176,14 +190,19 @@ actor SystemSheetLock {
     /// tokens, and the caller commits them after `withLease` returns. That way a sign-in the caller
     /// saw as cancelled can never sign the session in behind its back.
     ///
+    /// - Parameter waitsOnlyForItself: with `.wait(timeout:)`, queue only behind this session's own closing
+    ///   sheet. Another session holding the lock refuses the call at once, as `.fail` does, and so does the lock
+    ///   passing to another session while the call waits. `false` by default.
     /// - Throws: `AuthClientError.browserBusy(holder:)` if the lock could not be acquired under
     ///   `policy`; `CancellationError` as above; otherwise whatever `body` throws.
     nonisolated func withLease<T: Sendable>(
         for session: SessionID,
         policy: WebUIOptions.BrowserBusyPolicy,
+        waitsOnlyForItself: Bool = false,
         _ body: @escaping @Sendable (BrowserLease) async throws -> T
     ) async throws -> T {
-        let lease = try await acquire(for: session, policy: policy)
+        await beforeAcquire(session)
+        let lease = try await acquire(for: session, policy: policy, waitsOnlyForItself: waitsOnlyForItself)
         await afterAcquire(lease)
         let flow = LeasedFlow<T>()
         let attached = await attach(flow, to: lease)
@@ -267,7 +286,8 @@ actor SystemSheetLock {
 
     private func acquire(
         for session: SessionID,
-        policy: WebUIOptions.BrowserBusyPolicy
+        policy: WebUIOptions.BrowserBusyPolicy,
+        waitsOnlyForItself: Bool
     ) async throws -> BrowserLease {
         let id = mintID()
         return try await withTaskCancellationHandler {
@@ -308,6 +328,15 @@ actor SystemSheetLock {
                     ))
                     return
                 }
+                // A caller waiting only for its own closing sheet never queues behind another session.
+                if waitsOnlyForItself, holding != session {
+                    continuation.resume(throwing: AuthClientError.browserBusy(
+                        heldBy: holding,
+                        requestedBy: session,
+                        reason: .heldByAnotherSession
+                    ))
+                    return
+                }
                 guard let timeout = policy.timeoutNanoseconds, timeout > 0 else {
                     continuation.resume(throwing: AuthClientError.browserBusy(
                         heldBy: holding,
@@ -316,7 +345,12 @@ actor SystemSheetLock {
                     ))
                     return
                 }
-                var waiter = Waiter(id: id, session: session, continuation: continuation)
+                var waiter = Waiter(
+                    id: id,
+                    session: session,
+                    continuation: continuation,
+                    waitsOnlyForItself: waitsOnlyForItself
+                )
                 // `UInt64.max` nanoseconds is 584 years: no timer, rather than one that never fires.
                 if timeout < .max {
                     // Isolated to this actor like its surroundings; only the sleep runs off it.
@@ -370,6 +404,25 @@ actor SystemSheetLock {
         let lease = BrowserLease(id: mintID(), holder: next.session)
         holder = Holder(lease: lease)
         next.continuation.resume(returning: lease)
+        refuseWaitersOnlyForThemselves(behind: next.session)
+    }
+
+    /// The lock has passed to `newHolder`: a waiter of another session that waits only for its own closing sheet
+    /// will never be served behind it, so it is refused now rather than when its timeout expires.
+    private func refuseWaitersOnlyForThemselves(behind newHolder: SessionID) {
+        let refused = waiters.filter { $0.waitsOnlyForItself && $0.session != newHolder }
+        guard !refused.isEmpty else {
+            return
+        }
+        waiters.removeAll { $0.waitsOnlyForItself && $0.session != newHolder }
+        for waiter in refused {
+            waiter.timeout?.cancel()
+            waiter.continuation.resume(throwing: AuthClientError.browserBusy(
+                heldBy: newHolder,
+                requestedBy: waiter.session,
+                reason: .heldByAnotherSession
+            ))
+        }
     }
 
     private func expireWaiter(_ id: UInt64) {

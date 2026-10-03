@@ -21,7 +21,7 @@ import Foundation
 /// | the sign-in completes | deleted, in the commit, under the gate |
 /// | it fails for good (`challengeExpired`, "restart", any failure that drops the attempt) | deleted |
 /// | a new `signIn`, `autoSignIn` or hosted-UI sign-in supersedes it | deleted before the new step starts |
-/// | sign-out, purge, user deletion | deleted by the store (`SessionRecordStore.signOut`, `purge`) |
+/// | sign-out, purge, user deletion | deleted once, best effort, by the sign-out (`SessionSignOut.run`, through `SessionRecordStore.signOut` when it writes the signed-out row), or by the store's `purge` |
 ///
 /// Every write runs under the record's gate and checks the sign-in epoch there, as a sign-in's commit does: a
 /// sign-out, purge or deletion moves the epoch under the gate, so a step that finishes after one never writes the

@@ -267,8 +267,8 @@ struct SessionRecordStore: Sendable {
     ///
     /// Writes a record with no credentials and `kind: .signedOut`, carrying the label and username forward so
     /// a picker can still render the row as signed-out and resumable. A session with no record has no row to keep,
-    /// so nothing is written. For `.default` that is the sidecar first (the last user and the label), then the
-    /// plugin's `{"noCredentials":{}}` through the guard.
+    /// so nothing is written. For `.default` that is the plugin's `{"noCredentials":{}}` through the guard, then, once it
+    /// has committed, the sidecar (the last user and the label).
     ///
     /// **It removes only the credentials it read.** The first read fixes which credentials this sign-out
     /// is removing. It writes through the commit guard; on a lost race it re-reads, and:
@@ -279,8 +279,8 @@ struct SessionRecordStore: Sendable {
     ///   sign out a session this call never saw — possibly a different user, whose tokens nobody revoked.
     ///   It returns `.superseded` and leaves that record alone.
     ///
-    /// Unless superseded, it also deletes the session's interrupted-sign-in record; a superseded sign-out leaves it,
-    /// since it may belong to the newer sign-in.
+    /// Unless superseded, it also deletes the session's interrupted-sign-in record, best effort (a failure is logged:
+    /// the session is signed out by then); a superseded sign-out leaves it, since it may belong to the newer sign-in.
     ///
     /// A record this build cannot read is replaced by a signed-out row, since its credentials cannot be
     /// kept past sign-out; its generation cannot be read, so the row starts again at generation 1.
@@ -328,7 +328,9 @@ struct SessionRecordStore: Sendable {
         guard outcome != .superseded else {
             return outcome
         }
-        try perform("delete the interrupted sign-in record") { try keychain.remove(challengeAccount(for: sessionId)) }
+        // Best effort, as every step after the signed-out record is saved: the session is signed out, and a failure
+        // here must not report it as still signed in.
+        deleteChallengeAfterSignOut(sessionId)
         guard sessionId != .default else {
             // `.default` keeps no namespace marker, so it has no remembered copies or challenges to sweep.
             return outcome

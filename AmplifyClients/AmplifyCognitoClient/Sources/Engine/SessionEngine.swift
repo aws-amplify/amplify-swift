@@ -163,6 +163,11 @@ protocol SessionEngine: Sendable {
     /// failure to run the sign-out at all; the core still clears locally, and reports it as the revoke
     /// failure.
     ///
+    /// **Cancellation.** A caller already cancelled sends nothing and throws `CancellationError`: nothing is
+    /// revoked. A sign-out that has started is not cancelled with its caller: a request once sent reaches Cognito
+    /// anyway, so it runs to its end and returns its outcome. A caller's cancellation only
+    /// dismisses a logout page that is showing.
+    ///
     /// **After a failed global sign-out, `RevokeToken` is not called**, as in the plugin
     /// (`SignOutGlobally.invokeNextStep` → `.globalSignOutError`). The outcome then has
     /// `globalSignOutError` set to the real, mapped `GlobalSignOut` error, and `revokeError` set to the

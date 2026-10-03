@@ -69,7 +69,8 @@ public struct SessionID: Hashable, Sendable {
     /// same user pool, app client and region; a changed identity pool keeps the old identity ID, as the plugin does.
     /// Any other change of the pools deletes it; a deleted login of the same user pool is revoked, best effort, with
     /// the previous app client, and otherwise stays valid until it expires. A change of the app client alone keeps it,
-    /// and its next refresh fails with `sessionExpired`.
+    /// and its next refresh fails with `sessionExpired`. So `.default` keeps one backend's login at a time: for runtime
+    /// switching between backends, use named sessions.
     public static let `default` = SessionID(unchecked: "$default")
 
     /// An app-chosen session ID.

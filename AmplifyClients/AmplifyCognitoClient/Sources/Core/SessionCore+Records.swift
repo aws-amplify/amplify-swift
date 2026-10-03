@@ -161,16 +161,17 @@ extension SessionCore {
                 // From here on nothing throws: the record is cleared, or the outcome says why not.
                 if outcome.endedSession {
                     forgetRecordMemory()
+                    // The sign-out has deleted the interrupted sign-in's record, under the gate this holds, so no step of the
+                    // sign-in cancelled here can write it back (each writes under the gate, after checking the epoch).
                     await cancelPendingSignIns()
-                    // The store deletes the challenge record when it signs a record out; a session with none to sign
-                    // out (a first sign-in waiting on its challenge) still ends that sign-in, so its record goes too.
-                    await deleteChallengeRecord(in: store)
                 }
                 let after: SessionSnapshot?
                 do {
                     after = try await store.load(sessionId)
                 } catch {
-                    after = outcome.removedCredentials ? .absent : nil
+                    // The record is signed out, but could not be read back: the signed-out row as this session knew it,
+                    // keeping its label and last user, rather than no row at all.
+                    after = outcome.removedCredentials ? Self.signedOutRow(keeping: await restoredSnapshotIfAny) : nil
                 }
                 if let after {
                     await apply(
@@ -209,6 +210,19 @@ extension SessionCore {
             .interrupted,
             "The session's saved record kept changing, so the \(operation) could not be saved.",
             "Retry the operation."
+        )
+    }
+
+    /// The signed-out row a sign-out leaves, as `known` described the session before it: its label and last user. No
+    /// version, as `.absent` has none: a write over it is discarded while a record is stored, and re-reads. `.absent`
+    /// when this session knew no record of its own.
+    static func signedOutRow(keeping known: SessionSnapshot?) -> SessionSnapshot {
+        guard let record = known?.ownRecord else {
+            return .absent
+        }
+        return SessionSnapshot(
+            version: nil,
+            source: .own(.signedOut(label: record.label, username: record.username, userId: record.userId))
         )
     }
 }

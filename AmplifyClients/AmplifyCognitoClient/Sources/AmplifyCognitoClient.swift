@@ -49,12 +49,13 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 ///
 /// ## Saved sessions
 ///
-/// A session's credentials are saved in the keychain under its session ID, scoped to the configuration's
+/// A named session's credentials are saved in the keychain under its session ID, scoped to the configuration's
 /// pools (the user pool ID, the identity pool ID, or both) and to the keychain access group
-/// (`Options.accessGroup`). Constructing a client restores the session saved there, in this launch or a
-/// later one. `storedSessions(configuration:accessGroup:includingSignedOut:)` lists the sessions saved under
-/// one configuration and access group, for an account picker. Signing out keeps a session's row, with its
-/// label, until it is purged.
+/// (`Options.accessGroup`). `.default`'s are the Auth plugin's own saved login, under the plugin's key for the same
+/// pools and access group, with no session ID in it (see `SessionID.default`). Constructing a client restores the
+/// session saved there, in this launch or a later one. `storedSessions(configuration:accessGroup:includingSignedOut:)`
+/// lists the sessions saved under one configuration and access group, for an account picker. Signing out keeps a
+/// session's row, with its label, until it is purged.
 ///
 /// ## Changing the configuration
 ///

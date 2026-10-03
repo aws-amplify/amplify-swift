@@ -50,6 +50,11 @@ struct SessionCoreDependencies: Sendable {
     /// The system-sheet lock every session's hosted-UI flows take: the process-wide one in the app, a test's
     /// own in tests, so no test touches `SystemSheetLock.shared`.
     var sheetLock: SystemSheetLock = .shared
+
+    /// A test seam inside a sign-out's logout-page lease body, given the session: runs once the body has stopped
+    /// the session's passkey registrations, before it checks for an interrupt and shows the page. Does nothing in
+    /// the app. A test holds the body here to interrupt it at that moment.
+    var afterLogoutStop: @Sendable (SessionID) async -> Void = { _ in }
     #endif
 
     static let live: SessionCoreDependencies = {

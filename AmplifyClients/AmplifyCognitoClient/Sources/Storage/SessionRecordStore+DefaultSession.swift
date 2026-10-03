@@ -187,9 +187,11 @@ extension SessionRecordStore {
 
     /// `write(_:for:expecting:)` for `.default`: the shared record through the byte guard, then the sidecar.
     ///
-    /// The payload is the record's credentials, or `{"noCredentials":{}}` for a signed-out row. A signed-out row
-    /// writes the sidecar first (its last user and label), so the row keeps them even if the process stops between
-    /// the two writes. No namespace marker is written.
+    /// The payload is the record's credentials, or `{"noCredentials":{}}` for a signed-out row. The sidecar is written
+    /// only once the record has committed, a signed-out row's too: a commit another writer beat
+    /// leaves that writer's sidecar, never one naming the user who was signing out. A process stopped between the two
+    /// writes leaves the sidecar the record had, which for a sign-out is the same user's: the signed-out row keeps the
+    /// label and last user it had, if any. No namespace marker is written.
     func writeDefault(_ record: SessionRecord, expecting expected: RecordVersion?) throws -> CommitOutcome {
         let account = sharedRecordAccount
         let current = try fetch(account, operation: "read the default session's saved login before writing it")
@@ -209,24 +211,18 @@ extension SessionRecordStore {
 
         let signingOut = record.isSignedOut || record.credentials == nil
         let payload = record.credentials.flatMap { signingOut ? nil : $0 } ?? PluginRecordSummary.signedOutPayload
-        var sidecar: DefaultSessionMeta?
-        if signingOut {
-            sidecar = updateSidecar(for: record)
-        }
         let committed = try perform("write the default session's saved login") {
             try keychain.setIfUnchanged(payload, key: account, expecting: current)
         }
         guard committed else {
             return .discarded
         }
-        if !signingOut {
-            sidecar = updateSidecar(for: record)
-        }
+        let sidecar = updateSidecar(for: record)
         let written = defaultRecord(holding: payload, sidecar: sidecar) ?? record
         return .committed(VersionedSessionRecord(record: written, version: .storedBytes(payload)))
     }
 
-    /// Rewrites the sidecar for `record`, the record just committed or, for a sign-out, about to be.
+    /// Rewrites the sidecar for `record`, the record just committed.
     ///
     /// - A signed-out row: its last user and its label.
     /// - A user: that user, keeping the stored sidecar's label while it applies (the same user, or a sidecar with no
@@ -354,7 +350,8 @@ extension SessionRecordStore {
     }
 
     /// Sign-out's last resort for `.default`: replaces the shared record with `{"noCredentials":{}}`, unguarded,
-    /// but only if it still holds `credentials`, after writing the sidecar for the signed-out row.
+    /// but only if it still holds `credentials`; then, once replaced, the sidecar for the signed-out row (a record
+    /// purged meanwhile gets no sidecar back).
     func forceSignOutDefault(removing credentials: Data?) throws -> SignOutOutcome {
         guard let data = try fetch(sharedRecordAccount, operation: "read the default session's saved login before signing it out") else {
             return .noRecord
@@ -368,8 +365,11 @@ extension SessionRecordStore {
         guard Self.holdSameCredentials(stored.credentials, credentials, sameCredentials) else {
             return .superseded
         }
+        guard try replaceSharedRecordSignedOut() else {
+            return .noRecord
+        }
         updateSidecar(for: .signedOut(label: stored.label, username: stored.username, userId: stored.userId))
-        return try replaceSharedRecordSignedOut() ? .signedOut : .noRecord
+        return .signedOut
     }
 
     /// Replaces a shared record that is not the plugin's format with `{"noCredentials":{}}`, unless it has meanwhile

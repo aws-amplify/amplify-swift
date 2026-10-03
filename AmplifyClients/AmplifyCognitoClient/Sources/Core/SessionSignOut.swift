@@ -35,11 +35,14 @@ struct SessionSignOut: Sendable {
         /// The same user's credentials kept changing, and every attempt lost its race. The session is
         /// still signed in locally, with credentials that may already be revoked.
         case contended(server: EngineSignOutOutcome)
+        /// After the revoke, the record held something this build cannot read: corrupt bytes, or a newer schema's
+        /// record. It was left as it is, since nothing shows whose it is.
+        case unreadable(SessionSnapshot.Unreadable, server: EngineSignOutOutcome)
 
         /// The server-side failures the sign-out collected, if any.
         var server: EngineSignOutOutcome {
             switch self {
-            case .signedOut(let server), .contended(let server):
+            case .signedOut(let server), .contended(let server), .unreadable(_, let server):
                 return server
             case .nothingToSignOut, .superseded:
                 return .complete
@@ -59,7 +62,7 @@ struct SessionSignOut: Sendable {
             switch self {
             case .nothingToSignOut, .signedOut:
                 return true
-            case .superseded, .contended:
+            case .superseded, .contended, .unreadable:
                 return false
             }
         }
@@ -71,6 +74,8 @@ struct SessionSignOut: Sendable {
         ///   signed in.
         /// - `.contended` is `.failed(.storageUnavailable(.interrupted))`, carrying the first server-side failure,
         ///   if any, as its underlying error.
+        /// - `.unreadable` is `.failed(.unknown)`, saying what was found, with the first
+        ///   server-side failure, if any, as its underlying error.
         func result() -> AuthClientSignOutResult {
             switch self {
             case .nothingToSignOut:
@@ -86,6 +91,8 @@ struct SessionSignOut: Sendable {
                     "Retry the sign-out.",
                     server.firstError
                 ))
+            case .unreadable(let unreadable, let server):
+                return .failed(SessionSignOut.unreadableError(unreadable, underlying: server.firstError))
             }
         }
     }
@@ -112,7 +119,7 @@ struct SessionSignOut: Sendable {
 
     private enum Held {
         case nothing
-        case unreadable
+        case unreadable(SessionSnapshot.Unreadable)
         case credentials(Data, CredentialSummary)
     }
 
@@ -122,7 +129,21 @@ struct SessionSignOut: Sendable {
     ///   `AuthClientError.userCancelled` (the user closed the hosted UI's logout page), or a `SignOutRefusal`
     ///   (no hosted UI to sign out of), rethrows it before anything is cleared, so the session stays signed in,
     ///   as the plugin's does. The caller maps every throw to `.failed` with `failure(_:)`.
+    ///
+    /// A sign-out that ends the session ends its interrupted sign-in too: the store's sign-out deletes that record when
+    /// it writes the signed-out row, and this deletes it, once, when the session ended without one (nothing to sign out,
+    /// or another writer signed it out first). Best effort, with one warning on failure.
     func run() async throws -> Outcome {
+        var challengeDeleted = false
+        let outcome = try await signOut(challengeDeleted: &challengeDeleted)
+        if outcome.endedSession, !challengeDeleted {
+            _ = try? await store.perform { [sessionId] in $0.deleteChallengeAfterSignOut(sessionId) }
+        }
+        return outcome
+    }
+
+    /// `run()`, with `challengeDeleted` set once the store's own sign-out has deleted the interrupted-sign-in record.
+    private func signOut(challengeDeleted: inout Bool) async throws -> Outcome {
         var target: (payload: Data, principal: CredentialSummary)
         switch try await held(store.read(sessionId)) {
         case .nothing:
@@ -132,6 +153,7 @@ struct SessionSignOut: Sendable {
             // signed-out row, so no unreadable credentials outlive sign-out.
             switch try await store.signOut(sessionId) {
             case .signedOut, .noRecord:
+                challengeDeleted = true
                 return .nothingToSignOut
             case .superseded:
                 return .superseded
@@ -150,14 +172,15 @@ struct SessionSignOut: Sendable {
                 try await server.merge(revoke(target.payload, attempt == 1))
                 revokedOnce = true
             } catch is CancellationError where revokedOnce {
-                // A retry, cancelled with its caller (a cancelled task's revoke never reaches Cognito), after an
-                // earlier attempt revoked. Keeping the record would keep revoked tokens: count it as a failed revoke
+                // A retry, after an earlier attempt revoked, that the engine did not start because its caller is
+                // cancelled: it sent nothing. Keeping the record would keep revoked tokens: count it as a failed revoke
                 // of the newer credentials, and go on to clear.
                 server.merge(EngineSignOutOutcome(revokeError: Self.revokeFailure(CancellationError())))
             } catch is CancellationError {
-                // The caller gave up, and nothing was revoked (a presenting sign-out that went on revoking returns
-                // its outcome instead, `SessionCore.afterInterruptedLogout`); that is not a failed revoke. Clear
-                // nothing and report cancellation.
+                // The caller gave up before this first attempt sent anything, so nothing was revoked; that is not a
+                // failed revoke. Clear nothing and report cancellation. A revoke already sent is not cancelled
+                // with its caller: the engine runs it in a task of its own and returns its outcome
+                // (`LiveSessionEngine.revokeSkippingHostedUI` and `revokePresenting`, `SessionCore.afterInterruptedLogout`).
                 throw CancellationError()
             } catch let error as AuthClientError where error.isUserCancelled && !revokedOnce {
                 // The user closed the logout page: they chose not to sign out. Clear nothing. (Only a first attempt
@@ -175,8 +198,9 @@ struct SessionSignOut: Sendable {
             switch try await held(store.read(sessionId)) {
             case .nothing:
                 return .signedOut(server: server)
-            case .unreadable:
-                return .superseded
+            case .unreadable(let unreadable):
+                // Not another sign-in: something this build cannot read, left as it is.
+                return .unreadable(unreadable, server: server)
             case .credentials(let payload, let principal):
                 if payload != target.payload {
                     guard !sameCredentials(payload, target.payload) else {
@@ -216,6 +240,7 @@ struct SessionSignOut: Sendable {
 
             switch try await store.signOut(sessionId, removing: target.payload) {
             case .signedOut, .noRecord:
+                challengeDeleted = true
                 return .signedOut(server: server)
             case .superseded:
                 // Another writer replaced the credentials between the check and the clear.
@@ -224,8 +249,10 @@ struct SessionSignOut: Sendable {
                     return .signedOut(server: server)
                 case .credentials(let payload, let principal) where principal.isSamePrincipal(as: target.principal):
                     target = (payload, principal)
-                case .credentials, .unreadable:
+                case .credentials:
                     return .superseded
+                case .unreadable(let unreadable):
+                    return .unreadable(unreadable, server: server)
                 }
             }
         }
@@ -236,8 +263,10 @@ struct SessionSignOut: Sendable {
         switch result {
         case .absent:
             return .nothing
-        case .unsupportedSchema, .corrupt:
-            return .unreadable
+        case .unsupportedSchema(let version):
+            return .unreadable(.unsupportedSchema(version: version))
+        case .corrupt:
+            return .unreadable(.corrupt)
         case .record(let stored):
             let record = stored.record
             guard let credentials = record.credentials, record.kind != .signedOut else {
@@ -281,6 +310,29 @@ struct SessionSignOut: Sendable {
             "Retry the sign-out.",
             CancellationError()
         )
+    }
+
+    /// The record held something this build cannot read after the revoke, so it was left as it is. `underlying` is
+    /// the sign-out's first server-side failure, if any.
+    static func unreadableError(_ unreadable: SessionSnapshot.Unreadable, underlying: Error? = nil) -> AuthClientError {
+        let revoked = underlying == nil
+            ? "Its tokens were revoked."
+            : "Its tokens could not all be revoked; the underlying error says why."
+        switch unreadable {
+        case .corrupt:
+            return .unknown(
+                "The session's saved record became unreadable during sign-out, so it was left as it is. \(revoked)",
+                "Sign the session out again to reset it.",
+                underlying
+            )
+        case .unsupportedSchema(let version):
+            return .unknown(
+                "A newer version of the app saved this session during sign-out (record schema \(version)), so it was left as "
+                    + "it is. \(revoked)",
+                "Sign the session out again to replace the record, or update the app.",
+                underlying
+            )
+        }
     }
 
     /// Another sign-in replaced the session while it was signing out.
