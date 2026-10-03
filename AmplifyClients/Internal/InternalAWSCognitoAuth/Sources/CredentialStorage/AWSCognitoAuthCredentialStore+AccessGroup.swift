@@ -51,15 +51,17 @@ extension AWSCognitoAuthCredentialStore {
             destination: KeychainItemAttributes(service: newService, accessGroup: newAccessGroup),
             sourceStore: makeKeychainStore(oldService, oldAccessGroup),
             // Only asked whether it holds items, which has always been silent on failure.
-            destinationStore: EngineKeychainStore.quiet(makeKeychainStore(newService, newAccessGroup)),
-            logger: Self.migratorLog
+            destinationStore: EngineKeychainStore.quiet(makeKeychainStore(newService, newAccessGroup), logger: logger),
+            logger: migratorLog
         )
         do {
             try EngineCredentialStoreError.mapping {
-                // Clears a non-empty destination first, sparing the standalone clients' session records.
-                // If it cannot be listed, nothing is removed.
-                try migrator.migrate(clearingDestinationWith: { [makeKeychainStore] in
-                    try? Self.keychainStore(newService, newAccessGroup, makeKeychainStore).removeAllExceptSessionRecords()
+                // Clears a non-empty destination first, sparing the standalone clients' session records but
+                // not the Cognito client's default-session sidecar and challenge items, which belong to the
+                // plugin's session and are moved with it. If it cannot be listed, nothing is removed.
+                try migrator.migrate(clearingDestinationWith: { [makeKeychainStore, logger] in
+                    try? Self.keychainStore(newService, newAccessGroup, makeKeychainStore, logger: logger)
+                        .removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
                 })
             }
         } catch {
@@ -78,10 +80,16 @@ extension AWSCognitoAuthCredentialStore {
     /// Only the plugin's own items count: a standalone client's session record in the shared service
     /// says nothing about whether the plugin has migrated. A failed check counts as "no items", as it
     /// always has.
+    ///
+    /// The Cognito client's default-session sidecar and challenge items (`$default.meta` and
+    /// `$default.challenge`) do not count either, although the migration moves them and the destination
+    /// clear removes them. The client can write them in the shared service before the plugin has
+    /// migrated, so counting them would let a shared service holding only those items abort the
+    /// migration, and strand the plugin's signed-in record in the old service.
     func sharedKeychainHasItems(accessGroup: String?) -> Bool {
         guard let accessGroup else { return false }
 
-        let sharedKeychain = Self.keychainStore(sharedService, accessGroup, makeKeychainStore)
+        let sharedKeychain = Self.keychainStore(sharedService, accessGroup, makeKeychainStore, logger: logger)
         return (try? sharedKeychain.hasItemsExceptSessionRecords()) ?? false
     }
 }

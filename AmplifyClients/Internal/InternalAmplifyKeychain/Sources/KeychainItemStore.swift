@@ -33,7 +33,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     }
 
     package func getData(_ key: String) throws -> Data {
-        logger.verbose("[KeychainStore] Started retrieving `Data` from the store with key=\(key)")
+        logger.verbose("[KeychainStore] Started retrieving `Data` from the store with kind=\(Self.recordKind(of: key))")
         let query = attributes.getDataQuery(account: key)
 
         var result: AnyObject?
@@ -42,7 +42,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     }
 
     package func set(_ value: Data, key: String) throws {
-        logger.verbose("[KeychainStore] Started setting `Data` for key=\(key)")
+        logger.verbose("[KeychainStore] Started setting `Data` for kind=\(Self.recordKind(of: key))")
         let getQuery = attributes.itemQuery(account: key)
         logger.verbose("[KeychainStore] Initialized fetching to decide whether update or add")
         let fetchStatus = SecItemCopyMatching(getQuery as CFDictionary, nil)
@@ -61,7 +61,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
                 logger.error("[KeychainStore] Error updating item to keychain with status=\(updateStatus)")
                 throw KeychainAccessError.securityError(updateStatus)
             }
-            logger.verbose("[KeychainStore] Successfully updated `Data` in keychain for key=\(key)")
+            logger.verbose("[KeychainStore] Successfully updated `Data` in keychain for kind=\(Self.recordKind(of: key))")
             #endif
         case errSecItemNotFound:
             logger.verbose("[KeychainStore] Unable to find an existing item, creating new item")
@@ -72,7 +72,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
                 logger.error("[KeychainStore] Error adding item to keychain with status=\(addStatus)")
                 throw KeychainAccessError.securityError(addStatus)
             }
-            logger.verbose("[KeychainStore] Successfully added `Data` in keychain for key=\(key)")
+            logger.verbose("[KeychainStore] Successfully added `Data` in keychain for kind=\(Self.recordKind(of: key))")
         default:
             logger.error("[KeychainStore] Error occurred while retrieving data from keychain when deciding to update or add with status=\(fetchStatus)")
             throw KeychainAccessError.securityError(fetchStatus)
@@ -81,7 +81,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
 
     /// A single `SecItemAdd`. The keychain itself refuses a duplicate, so this never replaces an item.
     package func addIfAbsent(_ value: Data, key: String) throws -> Bool {
-        logger.verbose("[KeychainStore] Adding `Data` only if absent for key=\(key)")
+        logger.verbose("[KeychainStore] Adding `Data` only if absent for kind=\(Self.recordKind(of: key))")
         let status = SecItemAdd(attributes.addQuery(account: key, value: value) as CFDictionary, nil)
         return try Self.writeOutcome(fromStatus: status, refusedBy: errSecDuplicateItem, key: key, logger: logger)
     }
@@ -92,7 +92,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     /// add the item is absent, and a concurrent reader would see "no item" — for a credential record,
     /// "signed out". An update never exposes that state.
     package func replaceIfPresent(_ value: Data, key: String) throws -> Bool {
-        logger.verbose("[KeychainStore] Replacing `Data` only if present for key=\(key)")
+        logger.verbose("[KeychainStore] Replacing `Data` only if present for kind=\(Self.recordKind(of: key))")
         let status = SecItemUpdate(
             attributes.itemQuery(account: key) as CFDictionary,
             attributes.updateAttributes(value: value) as CFDictionary
@@ -101,7 +101,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     }
 
     package func remove(_ key: String) throws {
-        logger.verbose("[KeychainStore] Starting to remove item from keychain with key=\(key)")
+        logger.verbose("[KeychainStore] Starting to remove item from keychain with kind=\(Self.recordKind(of: key))")
         let query = attributes.itemQuery(account: key)
 
         let status = SecItemDelete(query as CFDictionary)
@@ -204,10 +204,10 @@ package extension KeychainItemStore {
                 logger.error("[KeychainStore] The keychain item retrieved is not the correct type")
                 throw KeychainAccessError.unknown("The keychain item retrieved is not the correct type")
             }
-            logger.verbose("[KeychainStore] Successfully retrieved `Data` from the store with key=\(key)")
+            logger.verbose("[KeychainStore] Successfully retrieved `Data` from the store with kind=\(Self.recordKind(of: key))")
             return data
         case errSecItemNotFound:
-            logger.verbose("[KeychainStore] No Keychain item found for key=\(key)")
+            logger.verbose("[KeychainStore] No Keychain item found for kind=\(recordKind(of: key))")
             throw KeychainAccessError.itemNotFound
         default:
             logger.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve a Keychain item of kind=\(recordKind(of: key))")
@@ -282,10 +282,10 @@ package extension KeychainItemStore {
     ) throws -> Bool {
         switch status {
         case errSecSuccess:
-            logger.verbose("[KeychainStore] Conditional write succeeded for key=\(key)")
+            logger.verbose("[KeychainStore] Conditional write succeeded for kind=\(recordKind(of: key))")
             return true
         case refusal:
-            logger.verbose("[KeychainStore] Conditional write refused with status=\(status) for key=\(key)")
+            logger.verbose("[KeychainStore] Conditional write refused with status=\(status) for kind=\(recordKind(of: key))")
             return false
         default:
             logger.error("[KeychainStore] Error during conditional write with status=\(status) for kind=\(recordKind(of: key))")

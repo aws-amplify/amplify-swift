@@ -58,11 +58,13 @@ public struct KeychainStoreMigrator {
     /// Clears the destination before the move. Called by `migrate()` only when the destination already
     /// holds items. Cleared through `KeychainStore`, as before.
     ///
-    /// Spares the standalone clients' session records, which may share the destination service. If the
-    /// destination cannot be listed nothing is removed, and any account that then collides stays in the
-    /// source.
+    /// Spares the standalone clients' session records, which may share the destination service, except
+    /// the Cognito client's default-session sidecar and challenge items: `migrate()` moves those, so they
+    /// are cleared like the plugin's own items. If the destination cannot be listed nothing is removed,
+    /// and any account that then collides stays in the source.
     func clearDestination() {
-        try? makeStore(newAttributes.service, newAttributes.accessGroup).removeAllExceptSessionRecords()
+        try? makeStore(newAttributes.service, newAttributes.accessGroup)
+            .removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
     }
 }
 

@@ -16,11 +16,15 @@ package extension KeychainItemStoreBehavior {
     /// clients. Every account that `SessionRecordAccount` does not recognise is removed, so on a service
     /// that holds no session records this removes exactly what `removeAll()` would.
     ///
+    /// - Parameter sparingDefaultSessionItems: Whether the Cognito client's default-session sidecar and
+    ///   challenge items (`SessionRecordAccount.isDefaultSessionItem`) are spared like any session record.
+    ///   `false` removes them too, for a wipe of the plugin's own session, which they belong to. Every other
+    ///   session record is spared either way. No default: every caller says which it wants.
     /// - Throws: If the accounts cannot be listed, logs a warning and throws that error **without removing
     ///   anything**. It never falls back to `removeAll()`: leaving stale items behind is safe, and deleting
     ///   another client's sessions is not. Otherwise, every removal is attempted and the first failure,
     ///   if any, is thrown afterwards.
-    func removeAllExceptSessionRecords(logger: any Logger) throws {
+    func removeAllExceptSessionRecords(logger: any Logger, sparingDefaultSessionItems: Bool) throws {
         let entries: [KeychainEntry]
         do {
             entries = try allEntries()
@@ -41,7 +45,8 @@ package extension KeychainItemStoreBehavior {
         // delete removes exactly the listed copy on every platform, the same way the migrator moves one.
         // A removal that finds nothing left succeeds.
         for entry in entries {
-            if SessionRecordAccount.isClientSessionRecord(entry.account) {
+            if SessionRecordAccount.isClientSessionRecord(entry.account),
+               sparingDefaultSessionItems || !SessionRecordAccount.isDefaultSessionItem(entry.account) {
                 sparedCount += 1
                 continue
             }

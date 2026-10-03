@@ -9,11 +9,13 @@ import AmplifyFoundation
 import Foundation
 
 /// Moves the items of one service and access group to another, one account at a time, except the
-/// standalone clients' session records (`SessionRecordAccount`), which stay where they are.
+/// standalone clients' session records (`SessionRecordAccount`), which stay where they are. The Cognito
+/// client's default-session sidecar and challenge items (`SessionRecordAccount.isDefaultSessionItem`)
+/// belong to the plugin's session, and move.
 ///
 /// This is a *move*, not a copy: the moved items no longer exist in the source afterwards, so it is
-/// never rollback-safe. If the destination already holds items it is cleared first, sparing session
-/// records there too.
+/// never rollback-safe. If the destination already holds items it is cleared first, sparing the session
+/// records that stay, but not the default-session items, which are moved.
 /// `AWSPluginsCore.KeychainStoreMigrator` delegates here.
 package struct KeychainItemMigrator: Sendable {
 
@@ -42,11 +44,14 @@ package struct KeychainItemMigrator: Sendable {
     }
 
     /// Migrates, clearing a non-empty destination with `removeAllExceptSessionRecords`, as
-    /// `AWSPluginsCore.KeychainStoreMigrator` does.
+    /// `AWSPluginsCore.KeychainStoreMigrator` does. The clear removes the default-session items too, as
+    /// the move does.
     package func migrate() throws {
         let destinationStore = destinationStore
         let logger = logger
-        try migrate(clearingDestinationWith: { try? destinationStore.removeAllExceptSessionRecords(logger: logger) })
+        try migrate(clearingDestinationWith: {
+            try? destinationStore.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: false)
+        })
     }
 
     /// Migrates, calling `clearDestination` first if the destination already holds items.
@@ -79,8 +84,11 @@ package struct KeychainItemMigrator: Sendable {
         // collides with it and is skipped below.
         for entry in entries {
             // Client session records stay where the client put them: it scopes its records by access
-            // group itself, and moving one would hide it from the client.
-            guard !SessionRecordAccount.isClientSessionRecord(entry.account) else {
+            // group itself, and moving one would hide it from the client. The default session's sidecar
+            // and challenge items are the exception: they belong to the plugin's session, so they move
+            // with the plugin's record.
+            guard !SessionRecordAccount.isClientSessionRecord(entry.account)
+                || SessionRecordAccount.isDefaultSessionItem(entry.account) else {
                 continue
             }
             switch try sourceStore.move(entry, to: destination) {

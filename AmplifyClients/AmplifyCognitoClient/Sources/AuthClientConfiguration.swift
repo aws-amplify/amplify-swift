@@ -215,6 +215,68 @@ extension AuthClientConfiguration.UserPool: CustomStringConvertible, CustomDebug
     }
 }
 
+extension AuthClientConfiguration.IdentityPool: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    /// Every setting, with the pool ID masked and the region redacted as the engine's
+    /// `IdentityPoolConfigurationData` masks them, so neither reaches a log through string interpolation,
+    /// `print`, `debugPrint` or `dump`, nor through the configuration that holds the pool.
+    public var description: String {
+        let fields = printedFields.map { "\($0.key): \($0.value)" }
+        return "IdentityPool(\(fields.joined(separator: ", ")))"
+    }
+
+    public var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the same fields as `description`.
+    public var customMirror: Mirror {
+        Mirror(self, children: printedFields, displayStyle: .struct)
+    }
+
+    /// Every stored property, in declaration order, as the printed forms show it.
+    private var printedFields: KeyValuePairs<String, Any> {
+        [
+            "poolId": poolId.maskedForLog(interiorCount: 4, retainingCount: 4),
+            "region": region.redactedForLog(),
+            "unauthenticatedIdentitiesEnabled": unauthenticatedIdentitiesEnabled.map { "\($0)" } ?? "nil"
+        ]
+    }
+}
+
+extension AuthClientConfiguration.OAuth: CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
+
+    /// Every setting, with the domain and each redirect URI masked as the engine's `OAuthConfigurationData`
+    /// masks them, so none of them reaches a log through string interpolation, `print`, `debugPrint` or `dump`,
+    /// nor through the user pool that holds them. The scopes, identity providers and response type are not
+    /// identifiers, and print as they are.
+    public var description: String {
+        let fields = printedFields.map { "\($0.key): \($0.value)" }
+        return "OAuth(\(fields.joined(separator: ", ")))"
+    }
+
+    public var debugDescription: String {
+        description
+    }
+
+    /// For `dump` and debuggers: the same fields as `description`.
+    public var customMirror: Mirror {
+        Mirror(self, children: printedFields, displayStyle: .struct)
+    }
+
+    /// Every stored property, in declaration order, as the printed forms show it.
+    private var printedFields: KeyValuePairs<String, Any> {
+        [
+            "domain": domain.maskedForLog(interiorCount: 4, retainingCount: 4),
+            "scopes": scopes,
+            "redirectSignInURIs": redirectSignInURIs.map { $0.maskedForLog(interiorCount: 4, retainingCount: 4) },
+            "redirectSignOutURIs": redirectSignOutURIs.map { $0.maskedForLog(interiorCount: 4, retainingCount: 4) },
+            "identityProviders": identityProviders,
+            "responseType": responseType
+        ]
+    }
+}
+
 /// What decides which stored record a session reads: the pools, plus the keychain access group.
 /// Two clients for one session ID must agree on this, or the registry refuses the second.
 struct SessionStorageNamespace: Hashable, Sendable {

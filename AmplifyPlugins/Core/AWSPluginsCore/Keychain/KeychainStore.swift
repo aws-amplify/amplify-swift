@@ -113,7 +113,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: A string value
     @_spi(KeychainStore)
     public func _getString(_ key: String) throws -> String {
-        log.verbose("[KeychainStore] Started retrieving `String` from the store with key=\(key)")
+        log.verbose("[KeychainStore] Started retrieving `String` from the store with kind=\(KeychainItemStore.recordKind(of: key))")
         let data = try _getData(key)
         guard let string = String(data: data, encoding: .utf8) else {
             log.error("[KeychainStore] Unable to create String from Data retrieved")
@@ -140,13 +140,13 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - key: A String key for the value to store in the Keychain
     @_spi(KeychainStore)
     public func _set(_ value: String, key: String) throws {
-        log.verbose("[KeychainStore] Started setting `String` for key=\(key)")
+        log.verbose("[KeychainStore] Started setting `String` for kind=\(KeychainItemStore.recordKind(of: key))")
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
-            log.error("[KeychainStore] Unable to create Data from String retrieved for key=\(key)")
+            log.error("[KeychainStore] Unable to create Data from String retrieved for kind=\(KeychainItemStore.recordKind(of: key))")
             throw KeychainStoreError.conversionError("Unable to create Data from String retrieved")
         }
         try _set(data, key: key)
-        log.verbose("[KeychainStore] Successfully added `String` for key=\(key)")
+        log.verbose("[KeychainStore] Successfully added `String` for kind=\(KeychainItemStore.recordKind(of: key))")
     }
 
     /// Set a key-value pair in the Keychain.
@@ -180,9 +180,16 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// Use this, not `_removeAll()`, to clear a service a standalone client may also store in. With no
     /// session records present it removes exactly what `_removeAll()` would. If the items cannot be
     /// listed it logs a warning and removes nothing, never falling back to `_removeAll()`.
-    package func removeAllExceptSessionRecords() throws {
+    ///
+    /// - Parameter sparingDefaultSessionItems: `false` also removes the Cognito client's default-session
+    ///   sidecar and challenge items, which belong to the plugin's session. Other session records are
+    ///   spared either way. No default: every caller says which it wants.
+    package func removeAllExceptSessionRecords(sparingDefaultSessionItems: Bool) throws {
         try KeychainStoreError.mapping {
-            try backingStore.removeAllExceptSessionRecords(logger: AmplifyLoggerBridge<KeychainStore>())
+            try backingStore.removeAllExceptSessionRecords(
+                logger: AmplifyLoggerBridge<KeychainStore>(),
+                sparingDefaultSessionItems: sparingDefaultSessionItems
+            )
         }
     }
 
