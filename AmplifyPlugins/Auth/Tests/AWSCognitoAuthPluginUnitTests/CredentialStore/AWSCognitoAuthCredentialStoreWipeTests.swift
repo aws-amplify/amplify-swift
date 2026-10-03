@@ -37,9 +37,15 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
     private let sessionRecordAccounts = [
         "amplify.1.us-east-1_Pool.us-east-1:identity-pool.work.session",
         "amplify.1.us-east-1_Pool.us-east-1:identity-pool.work.challenge",
-        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.session",
+        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.home.session",
         // A newer client's schema: a released plugin must spare it too.
         "amplify.2.us-east-1_Pool.us-east-1:identity-pool.work.session"
+    ]
+
+    /// The Cognito client's default-session sidecar and challenge items, which belong to the plugin's session.
+    private let defaultSessionItemAccounts = [
+        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.meta",
+        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.challenge"
     ]
 
     /// A session record the plugin retained under an earlier configuration's namespace.
@@ -257,6 +263,96 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
         }
     }
 
+    // MARK: The default session's sidecar and challenge items
+
+    /// The access-group transition without migration also removes the default session's two items.
+    ///
+    /// - Given: an unshared service holding every plugin item, client session records (a leftover
+    ///   `$default.session` among them), and the default session's `$default.meta` and `$default.challenge`
+    /// - When:
+    ///    - the plugin is configured with an access group for the first time, without migration, and the
+    ///      shared service is empty
+    /// - Then:
+    ///    - the plugin items and the default session's two items are gone: they belong to the plugin's session
+    ///    - every other client record is still there, unchanged
+    func testAccessGroupTransitionRemovesTheDefaultSessionItems() throws {
+        _ = try populateUnsharedServiceAsAPluginWould()
+        try writeSessionRecords()
+        try writeDefaultSessionItems()
+        let leftover = "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.session"
+        try keychain.store(service: service).set(Data(leftover.utf8), key: leftover)
+
+        _ = makeStore(accessGroup: accessGroup)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), (sessionRecordAccounts + [leftover]).sorted())
+        for account in sessionRecordAccounts + [leftover] {
+            XCTAssertEqual(keychain.value(service: service, account: account), Data(account.utf8), account)
+        }
+    }
+
+    /// The migration moves the default session's two items with the plugin's items.
+    ///
+    /// - Given: an unshared service holding every plugin item, client session records (a leftover
+    ///   `$default.session` among them), and the default session's `$default.meta` and `$default.challenge`
+    /// - When:
+    ///    - the plugin is configured with an access group for the first time, with migration
+    /// - Then:
+    ///    - the shared service holds the plugin items and the default session's two items, with their bytes
+    ///    - every other client record is still in the unshared service, unchanged
+    func testMigrationMovesTheDefaultSessionItems() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        try writeSessionRecords()
+        try writeDefaultSessionItems()
+        let leftover = "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.session"
+        try keychain.store(service: service).set(Data(leftover.utf8), key: leftover)
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(
+            try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts(),
+            (pluginAccounts + defaultSessionItemAccounts).sorted()
+        )
+        for account in defaultSessionItemAccounts {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), (sessionRecordAccounts + [leftover]).sorted())
+    }
+
+    /// The migration's destination clear removes the default session's two items the shared service
+    /// already holds, so the unshared service's copies replace them.
+    ///
+    /// - Given: an unshared service holding every plugin item and the default session's `$default.meta` and
+    ///   `$default.challenge`, and a shared service holding stale copies of those two items and a named
+    ///   client session record
+    /// - When:
+    ///    - the plugin is configured with an access group for the first time, with migration
+    /// - Then:
+    ///    - the shared service holds the plugin items, the two default-session items with the unshared
+    ///      service's bytes, and the named client record, unchanged
+    ///    - the unshared service is empty: nothing collided and stayed behind
+    func testMigrationClearsTheDefaultSessionItemsTheSharedServiceHolds() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        try writeDefaultSessionItems()
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        for account in defaultSessionItemAccounts {
+            try shared.set(Data("stale".utf8), key: account)
+        }
+        let sharedClientAccount = "amplify.1.us-east-1_Pool.us-east-1:identity-pool.shared.session"
+        try shared.set(Data("client".utf8), key: sharedClientAccount)
+
+        _ = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(
+            try shared.allAccounts(),
+            (pluginAccounts + defaultSessionItemAccounts + [sharedClientAccount]).sorted()
+        )
+        for account in defaultSessionItemAccounts {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
+        XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sharedClientAccount), Data("client".utf8))
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+    }
+
     // MARK: Whether the shared service "already has items"
 
     /// A client record in the shared service does not make the plugin skip its migration.
@@ -303,6 +399,55 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
         XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: sharedClientAccount), Data("client".utf8))
     }
 
+    /// The default session's two items in the shared service do not make the plugin skip its migration:
+    /// the client can write them there before the plugin migrates, and skipping would strand the
+    /// plugin's signed-in record in the unshared service.
+    ///
+    /// - Given: an unshared service holding every plugin item, and a shared service holding only the
+    ///   default session's `$default.meta` and `$default.challenge`
+    /// - When:
+    ///    - the plugin is configured with an access group for the first time, with migration
+    /// - Then:
+    ///    - the plugin items are migrated into the shared service, and the new store reads the session
+    ///    - the destination clear removed the two items, which the unshared service did not hold
+    func testDefaultSessionItemsInSharedServiceDoNotSkipMigration() throws {
+        let pluginAccounts = try populateUnsharedServiceAsAPluginWould()
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        for account in defaultSessionItemAccounts {
+            try shared.set(Data("client".utf8), key: account)
+        }
+
+        let store = makeStore(accessGroup: accessGroup, migrate: true)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        XCTAssertEqual(try shared.allAccounts(), pluginAccounts.sorted())
+        XCTAssertNoThrow(try store.retrieveCredential())
+    }
+
+    /// The default session's two items in the shared service do not make the plugin skip its clear.
+    ///
+    /// - Given: an unshared service holding every plugin item, and a shared service holding only the
+    ///   default session's `$default.meta` and `$default.challenge`
+    /// - When:
+    ///    - the plugin is configured with an access group for the first time, without migration
+    /// - Then:
+    ///    - the unshared plugin items are removed
+    ///    - the shared service's two items are untouched: the transition clears only the unshared service
+    func testDefaultSessionItemsInSharedServiceDoNotSkipTheClear() throws {
+        _ = try populateUnsharedServiceAsAPluginWould()
+        let shared = keychain.store(service: sharedService, accessGroup: accessGroup)
+        for account in defaultSessionItemAccounts {
+            try shared.set(Data("client".utf8), key: account)
+        }
+
+        _ = makeStore(accessGroup: accessGroup)
+
+        XCTAssertEqual(try keychain.store(service: service).allAccounts(), [])
+        for account in defaultSessionItemAccounts {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data("client".utf8), account)
+        }
+    }
+
     /// A plugin item in the shared service still means "already migrated", as it always has.
     ///
     /// - Given: an unshared service holding every plugin item, and a shared service already holding the
@@ -331,7 +476,8 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
             userDefaults: userDefaults,
             makeKeychainStore: { service, accessGroup in
                 keychain.store(service: service, accessGroup: accessGroup)
-            }
+            },
+            logger: AmplifyEngineLogRouter()
         )
     }
 
@@ -361,6 +507,14 @@ class AWSCognitoAuthCredentialStoreWipeTests: XCTestCase {
     private func writeSessionRecords() throws {
         let store = keychain.store(service: service)
         for account in sessionRecordAccounts {
+            try store.set(Data(account.utf8), key: account)
+        }
+    }
+
+    /// Writes `defaultSessionItemAccounts` into the unshared service, each holding its own account name.
+    private func writeDefaultSessionItems() throws {
+        let store = keychain.store(service: service)
+        for account in defaultSessionItemAccounts {
             try store.set(Data(account.utf8), key: account)
         }
     }

@@ -11,7 +11,8 @@ import SwiftUI
 /// The plugin's `AuthHostedUIApp` screens (`SignedOutView`, `SignedInView`) as one screen over the client:
 /// sign in with the view's window (HU-1), sign in with a window the app looks up itself (HU-2), and sign
 /// out. Every action reports on the `LastResult` line, `"<action> failed: <error>"` on
-/// failure, as the WebAuthn app does.
+/// failure, as the WebAuthn app does. A sign-out never throws: its `.failed` result is reported the same way, and
+/// the session stays signed in.
 struct HostedUIView: View {
     let client: Result<AmplifyCognitoClient, HarnessAppError>
 
@@ -141,17 +142,28 @@ struct HostedUIView: View {
     }
 
     /// `signOut(presentationAnchor:)` with the view's window. After a private sign-in it shows nothing
-    /// (no cookie to clear) and revokes the tokens. The row is purged, so a run leaves nothing behind.
+    /// (no cookie to clear) and revokes the tokens. The session is purged, so a run leaves no login behind: the
+    /// shared login (the plugin's record), the sidecar and any interrupted sign-in go. The configuration `.default`
+    /// records for the plugin (`authConfiguration`) stays, as the plugin's own does.
+    ///
+    /// The result line, as the plugin's app reads a sign-out:
+    /// - `.complete`: "User is signed out".
+    /// - `.partial`: signed out on this device too, so "User is signed out", then what failed (the revoke, say).
+    /// - `.failed`: thrown, so the line is "Sign Out failed: <the error's case name>", and the screen stays signed
+    ///   in. Nothing was revoked or cleared: a closed sign-out page, or one that could not be shown or completed
+    ///  .
+    ///
+    /// Errors are named by case only: their text or payload can hold a username or an identifier.
     private func signOut(_ client: AmplifyCognitoClient) async throws -> String {
         guard let window = windowHolder.window ?? HostedUIHarness.foregroundKeyWindow() else {
             throw HarnessAppError("The view is in no window")
         }
-        let result = try await client.signOut(
+        let result = await client.signOut(
             presentationAnchor: window,
             options: AuthClientSignOutOptions(purgeStoredSession: true)
         )
-        guard result == .complete else {
-            return "Sign Out did not complete: \(result)"
+        if case .failed(let error) = result {
+            throw HarnessAppError(error.harnessCaseName)
         }
         do {
             _ = try await client.getCurrentUser()
@@ -159,7 +171,7 @@ struct HostedUIView: View {
         } catch AuthClientError.notSignedIn {
             isSignedIn = false
             currentUsername = ""
-            return "User is signed out"
+            return result == .complete ? "User is signed out" : "User is signed out, but part of it failed: \(result.failedParts)"
         }
     }
 

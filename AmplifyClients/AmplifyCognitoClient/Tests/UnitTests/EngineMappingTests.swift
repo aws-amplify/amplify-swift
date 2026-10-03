@@ -176,7 +176,7 @@ final class EngineMappingTests: XCTestCase {
         for factor in factors {
             let engine = EngineAuthFactorType(factor)
             XCTAssertEqual(factor.challengeResponse, engine.challengeResponse)
-            XCTAssertEqual(EngineAuthFactorType(rawValue: factor.challengeResponse), engine)
+            XCTAssertEqual(EngineAuthFactorType(rawValue: factor.challengeResponse, logger: ClientEngineLogger()), engine)
             XCTAssertNotEqual(factor.challengeResponse, factor.rawValue)
             XCTAssertNoThrow(try SessionCore.validate(factor.challengeResponse, for: selection), "\(factor)")
         }

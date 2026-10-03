@@ -38,20 +38,25 @@ final class SessionRecordKeyTests: XCTestCase {
         )
     }
 
-    /// The v1 key must be a sibling of the plugin's key, never the same string, or read-through
-    /// adoption and rollback both break.
+    /// `.default`'s session record is the plugin's own account; the `$default` v1 session account is a
+    /// development build's leftover, distinct from it.
     ///
     /// - Given: a pool namespace
-    /// - When: the legacy account and the default session's v1 account are generated
+    /// - When: the plugin's account and the default session's v1 session account are generated
     /// - Then:
-    ///    - the legacy account matches the plugin's format and differs from every v1 account
-    func testLegacyAccountMatchesThePluginAndIsDistinct() {
+    ///    - the plugin's account matches the plugin's format, is what `.default`'s store reads and writes, and
+    ///      differs from every v1 account
+    func testPluginSessionAccountMatchesThePluginAndIsDefaultsRecord() throws {
         let namespace = PoolNamespace.userPool(userPoolId)
-        XCTAssertEqual(SessionRecordKey.legacySessionAccount(in: namespace), "amplify.\(userPoolId).session")
+        XCTAssertEqual(SessionRecordKey.pluginSessionAccount(in: namespace), "amplify.\(userPoolId).session")
+        XCTAssertNil(SessionRecordKey.parse(SessionRecordKey.pluginSessionAccount(in: namespace)))
         XCTAssertNotEqual(
-            SessionRecordKey.legacySessionAccount(in: namespace),
+            SessionRecordKey.pluginSessionAccount(in: namespace),
             SessionRecordKey.account(for: .default, in: namespace, kind: .session)
         )
+        let store = TestKeychain().recordStore(for: SessionStorageNamespace(pools: namespace, accessGroup: nil))
+        XCTAssertEqual(store.sessionAccount(for: .default), "amplify.\(userPoolId).session")
+        XCTAssertNil(try store.pluginSessionAccount(for: SessionID.named("work")))
         XCTAssertEqual(
             SessionRecordKey.account(for: .default, in: namespace, kind: .session),
             "amplify.1.\(userPoolId).$default.session"

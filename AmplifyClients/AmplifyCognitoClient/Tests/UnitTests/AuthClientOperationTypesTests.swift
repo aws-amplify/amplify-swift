@@ -176,7 +176,7 @@ final class AuthClientOperationTypesTests: XCTestCase {
     }
 
     /// - Given: a few service codes
-    /// - When: their `LocalizedError` descriptions are read
+    /// - When: their `errorDescription`s are read
     /// - Then:
     ///    - each has the plugin's message, prefixed with the client's type and case name
     func testServiceErrorCodeCarriesThePluginMessages() {
@@ -190,6 +190,68 @@ final class AuthClientOperationTypesTests: XCTestCase {
         )
         for code in AuthClientServiceErrorCode.allCases {
             XCTAssertTrue(code.errorDescription?.hasPrefix("AuthClientServiceErrorCode.\(Self.name(of: code)): ") == true)
+        }
+    }
+
+    /// - Given: a service code
+    /// - When: it is checked for `Error` conformance at run time
+    /// - Then:
+    ///    - it is not an `Error`: the code is a plain value, carried by `AuthClientError.service` and never
+    ///      thrown on its own
+    func testServiceErrorCodeIsNotAnError() {
+        XCTAssertFalse((AuthClientServiceErrorCode.userNotFound as Any) is Error)
+        for code in AuthClientServiceErrorCode.allCases {
+            XCTAssertFalse((code as Any) is Error, "\(code)")
+        }
+    }
+
+    /// The plugin's message for each case, as it was while the type was a `LocalizedError`.
+    static let pinnedServiceErrorMessages: [(AuthClientServiceErrorCode, String)] = [
+        (.userNotFound, "User not found in the system."),
+        (.userNotConfirmed, "User not confirmed in the system."),
+        (.usernameExists, "Username already exists in the system."),
+        (.aliasExists, "Alias already exists in the system."),
+        (.codeDelivery, "Error in delivering the confirmation code."),
+        (.codeMismatch, "Confirmation code entered is not correct."),
+        (.codeExpired, "Confirmation code has expired."),
+        (.invalidParameter, "One or more parameters are incorrect."),
+        (.invalidPassword, "Password given is invalid."),
+        (.limitExceeded, "Limit exceeded for the requested AWS resource."),
+        (.mfaMethodNotFound, "Amazon Cognito cannot find a multi-factor authentication (MFA) method."),
+        (.softwareTokenMFANotEnabled, "Software token (TOTP) multi-factor authentication (MFA) is not enabled for the user pool."),
+        (.passwordResetRequired, "Required to reset the password of the user."),
+        (.resourceNotFound, "Amazon Cognito service cannot find the requested resource."),
+        (.failedAttemptsLimitExceeded, "The user has made too many failed attempts for a given action."),
+        (.requestLimitExceeded, "The user has made too many requests for a given operation."),
+        (.lambda, "Amazon Cognito service encountered an invalid AWS Lambda response or encountered an unexpected exception with the AWS Lambda service."),
+        (.deviceNotTracked, "Device is not tracked."),
+        (.errorLoadingUI, "Error in loading the web UI."),
+        (.userCancelled, "User cancelled the step."),
+        (.invalidAccountTypeException, "Requested resource is not available with the current account setup."),
+        (.network, "Request was not completed because of a network related issue."),
+        (.smsRole, "SMS role related issue."),
+        (.emailRole, "Email role related issue."),
+        (.externalServiceException, "An external service like facebook/twitter threw an error."),
+        (.limitExceededException, "Limit exceeded exception. Thrown when the total number of user pools has exceeded a preset limit."),
+        (.resourceConflictException, "Thrown when a user tries to use a login which is already linked to another account."),
+        (.webAuthnChallengeNotFound, "The WebAuthn credentials don't match an existing request."),
+        (.webAuthnClientMismatch, "The client doesn't support WebAuhn authentication."),
+        (.webAuthnNotSupported, "WebAuthn is not supported on this device."),
+        (.webAuthnNotEnabled, "WebAuthn is not enabled."),
+        (.webAuthnOriginNotAllowed, "The device origin is not registered as an allowed origin."),
+        (.webAuthnRelyingPartyMismatch, "The relying party ID doesn't match."),
+        (.webAuthnConfigurationMissing, "The WebAuthn configuration is missing or incomplete.")
+    ]
+
+    /// - Given: the message each of the 34 service codes carried while the type was a `LocalizedError`
+    /// - When: each code's plain `errorDescription` property is read
+    /// - Then:
+    ///    - the text is unchanged: `"AuthClientServiceErrorCode.<case>: <the plugin's message>"`, for every case
+    func testErrorDescriptionIsUnchanged() {
+        XCTAssertEqual(Self.pinnedServiceErrorMessages.count, AuthClientServiceErrorCode.allCases.count)
+        XCTAssertEqual(Self.pinnedServiceErrorMessages.map(\.0), AuthClientServiceErrorCode.allCases)
+        for (code, message) in Self.pinnedServiceErrorMessages {
+            XCTAssertEqual(code.errorDescription, "AuthClientServiceErrorCode.\(Self.name(of: code)): \(message)")
         }
     }
 
@@ -364,40 +426,47 @@ final class AuthClientOperationTypesTests: XCTestCase {
     /// - Then:
     ///    - the same two failures are equal
     ///    - a missing revoke failure, or a missing global sign-out failure, makes them unequal
-    ///    - a partial sign-out built with only a revoke failure has no global sign-out failure
+    ///    - a missing or extra storage failure makes them unequal
     func testPartialSignOutComparesBothFailures() {
         let revoke = AuthClientError.service(.network, "revoke failed", "retry")
         let global = AuthClientError.notAuthorized("global failed", "sign in again")
+        let storage = AuthClientError.storageUnavailable(.interrupted, "row kept", "purge")
         XCTAssertEqual(
-            AuthClientPartialSignOut(revokeError: revoke, globalSignOutError: global),
-            AuthClientPartialSignOut(revokeError: revoke, globalSignOutError: global)
+            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil),
+            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
         XCTAssertNotEqual(
-            AuthClientPartialSignOut(revokeError: nil, globalSignOutError: global),
-            AuthClientPartialSignOut(revokeError: revoke, globalSignOutError: global)
+            AuthClientSignOutResult.partial(revokeTokenError: nil, globalSignOutError: global, hostedUIError: nil, storageError: nil),
+            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
         XCTAssertNotEqual(
-            AuthClientPartialSignOut(revokeError: revoke, globalSignOutError: nil),
-            AuthClientPartialSignOut(revokeError: revoke, globalSignOutError: global)
+            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil),
+            .partial(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: nil, storageError: nil)
         )
-        XCTAssertNil(AuthClientPartialSignOut(revokeError: revoke).globalSignOutError)
+        XCTAssertNotEqual(
+            AuthClientSignOutResult.partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: storage),
+            .partial(revokeTokenError: revoke, globalSignOutError: nil, hostedUIError: nil, storageError: nil)
+        )
     }
 
     /// - Given: engine sign-out outcomes across several attempts
     /// - When: they are merged
     /// - Then:
-    ///    - the first failure of each kind is kept; a complete outcome has no partial result
+    ///    - the first failure of each kind is kept; a complete outcome is a `.complete` result
     func testSignOutOutcomeKeepsTheFirstFailureOfEachKind() {
         let first = AuthClientError.service(.network, "first", "s")
         let second = AuthClientError.service(.network, "second", "s")
         let global = AuthClientError.unknown("global", "s")
 
         var outcome = EngineSignOutOutcome.complete
-        XCTAssertNil(outcome.partial)
+        XCTAssertEqual(outcome.signedOutResult(), .complete)
         outcome.merge(EngineSignOutOutcome(revokeError: first))
         outcome.merge(EngineSignOutOutcome(revokeError: second, globalSignOutError: global))
 
         XCTAssertEqual(outcome, EngineSignOutOutcome(revokeError: first, globalSignOutError: global))
-        XCTAssertEqual(outcome.partial, AuthClientPartialSignOut(revokeError: first, globalSignOutError: global))
+        XCTAssertEqual(
+            outcome.signedOutResult(),
+            .partial(revokeTokenError: first, globalSignOutError: global, hostedUIError: nil, storageError: nil)
+        )
     }
 }

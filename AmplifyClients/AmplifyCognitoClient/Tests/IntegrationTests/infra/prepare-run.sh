@@ -18,7 +18,8 @@
 #                rest of the run if any parity pool could deliver a real email or SMS (DEVELOPER email
 #                or SMS configured without the custom sender and the KMS key), the SES identity or SNS
 #                sandbox changed, a pool-scoped policy is still open to any pool, or a parity pool is
-#                missing or its self sign-up differs from its template (MISSING, DRIFT).
+#                missing (MISSING), has self sign-up on outside an infra/self-sign-up.sh run (LEFT-ON), or
+#                on against its template or unstated (DRIFT). Self sign-up off is the resting state.
 #
 # It never touches alice, bob or carol, and it refuses to run unless the user pool recorded in
 # $STATE_DIR/state.json carries purpose=amplify-cognito-client-integ (checked before every mutating

@@ -75,9 +75,10 @@ final class DataProtectionKeychainProbeTests: XCTestCase {
 
     /// An attributes-only enumeration returns every account name in the service.
     ///
-    /// - Given: One service holding v1 session records for two session IDs (under both a
-    ///   user-pool-only and a user-pool-plus-identity-pool namespace), a v1 challenge record, the
-    ///   plugin's legacy session record, device-metadata and ASF records, and its stored
+    /// - Given: One service holding v1 session records for a named session and a development build's leftover
+    ///   `$default.session` (under both a user-pool-only and a user-pool-plus-identity-pool namespace), v1
+    ///   challenge records for the named session and `.default`, `.default`'s `$default.meta` sidecar, the
+    ///   plugin's session records (one of them `.default`'s), device-metadata and ASF records, and its stored
     ///   configuration — the full sibling set the enumeration will meet in the plugin's service
     /// - When:
     ///    - `SecItemCopyMatching` runs with `kSecReturnAttributes: true`,
@@ -86,7 +87,8 @@ final class DataProtectionKeychainProbeTests: XCTestCase {
     ///    - It returns `errSecSuccess` and an array of attribute dictionaries
     ///    - Every dictionary carries `kSecAttrAccount` as a `String`, and no `kSecValueData`
     ///    - The account names are exactly the ones written, byte for byte (`$`, `:` included)
-    ///    - `SessionRecordKey.parse` over the result picks out exactly the v1 records
+    ///    - `SessionRecordKey.parse` over the result picks out exactly the v1 session and challenge records,
+    ///      never the sidecar
     ///
     func testAttributesOnlyEnumerationReturnsEveryAccount() throws {
         let names = ProbeAccounts.make()
@@ -541,7 +543,9 @@ final class DataProtectionKeychainProbeTests: XCTestCase {
     }
 }
 
-/// The account names a real plugin service holds, plus the client's v1 records beside them.
+/// The account names a real plugin service holds, plus the client's v1 records beside them: named sessions'
+/// records, `.default`'s sidecar and challenge record, and a development build's leftover `$default.session`.
+/// `.default`'s session record is the plugin's own `amplify.<ns>.session`.
 private struct ProbeAccounts {
     let all: [String]
     /// `namespace|sessionId|kind` for each account that is a v1 record.
@@ -561,16 +565,24 @@ private struct ProbeAccounts {
             (userPoolOnly, .default, .session),
             (bothPools, work, .session),
             (bothPools, .default, .session),
-            (bothPools, work, .challenge)
+            (bothPools, work, .challenge),
+            (bothPools, .default, .challenge)
         ]
         let v1Accounts = v1.map { SessionRecordKey.account(for: $0.1, in: $0.0, kind: $0.2) }
 
-        // Literal, so the probe also pins the shapes the task specifies independently of the
-        // key builder: `amplify.1.<userPoolId>.work.session` and `…$default.session`.
-        precondition(v1Accounts[0] == "amplify.1.\(userPoolId).work.session")
-        precondition(v1Accounts[1] == "amplify.1.\(userPoolId).$default.session")
+        // Literal, so the probe also pins the shapes the task specifies independently of the key builder:
+        // `amplify.1.<userPoolId>.work.session`, and the `$default.session` shape a development build left, which
+        // still renders and parses (every reader skips it). Asserted, not a `precondition`: a trap here would
+        // kill the whole test process, not fail one test. Booleans, so a failure prints no pool ID.
+        XCTAssertTrue(v1Accounts[0] == "amplify.1.\(userPoolId).work.session", "the named session's key")
+        XCTAssertTrue(v1Accounts[1] == "amplify.1.\(userPoolId).$default.session", "the leftover `$default.session` key")
 
-        // The plugin's own records, as `AWSCognitoAuthCredentialStore` names them.
+        // `.default`'s sidecar: in the v1 family, but never parsed as a session record.
+        let sidecar = SessionRecordKey.metaAccount(in: bothPools)
+        XCTAssertTrue(sidecar == "amplify.1.\(bothPools.keyComponent).$default.meta", "the sidecar's key")
+
+        // The plugin's own records, as `AWSCognitoAuthCredentialStore` names them. The two-pool session record
+        // is also `.default`'s.
         let pluginAccounts = [
             "amplify.\(userPoolId).session",
             "amplify.\(userPoolId).\(identityPoolId).session",
@@ -578,9 +590,10 @@ private struct ProbeAccounts {
             "amplify.\(userPoolId).\(identityPoolId).Alice.deviceASF",
             "authConfiguration"
         ]
+        XCTAssertTrue(SessionRecordKey.pluginSessionAccount(in: bothPools) == pluginAccounts[1], "`.default`'s session record")
 
         return ProbeAccounts(
-            all: v1Accounts + pluginAccounts,
+            all: v1Accounts + [sidecar] + pluginAccounts,
             expectedV1Parses: Set(v1.map { "\($0.0.keyComponent)|\($0.1.stringValue)|\($0.2.rawValue)" })
         )
     }

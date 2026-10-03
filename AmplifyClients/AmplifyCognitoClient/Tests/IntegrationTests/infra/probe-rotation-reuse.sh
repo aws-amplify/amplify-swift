@@ -26,12 +26,16 @@
 # mode-600 file in a mode-700 temporary directory that the trap removes. No identifier is printed (AWS CLI
 # errors pass through lib.sh's redact).
 #
-# Usage: [AWS_PROFILE=<sandbox-profile>] ./probe-rotation-reuse.sh [region]   (profile default: hsinghvq-Admin)
+# Usage: AWS_PROFILE=<sandbox-profile> ./probe-rotation-reuse.sh [region]
 #        GRACE_SECONDS (default 5, at most 60) sets RetryGracePeriodSeconds.
 set -euo pipefail
-# The sandbox's profile unless the caller names another; require_recorded_account below still
+# The caller names the sandbox profile; there is no default. require_recorded_account below still
 # refuses any account other than the one in state.json.
-export AWS_PROFILE="${AWS_PROFILE:-hsinghvq-Admin}"
+if [[ -z "${AWS_PROFILE:-}" ]]; then
+    echo "Refusing: AWS_PROFILE is not set. Run as AWS_PROFILE=<sandbox-profile> $0 [region]." >&2
+    exit 1
+fi
+export AWS_PROFILE
 
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh

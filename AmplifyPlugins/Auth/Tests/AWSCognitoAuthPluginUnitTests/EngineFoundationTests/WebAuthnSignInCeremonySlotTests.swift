@@ -147,6 +147,7 @@ final class WebAuthnSignInCeremonySlotTests: XCTestCase, @unchecked Sendable {
             options: options,
             respondToAuthChallenge: challenge,
             presentationAnchor: nil,
+            logger: AmplifyEngineLogRouter(),
             asserterFactory: { _ in asserter }
         )
     }

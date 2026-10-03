@@ -57,7 +57,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         }
         live.scriptSignOut()
 
-        let signOut = Task { try await client.signOut() }
+        let signOut = Task { await client.signOut() }
         await cancelGate.waitForArrivals(1)
         let getId = Gate()
         live.scriptSRP("bob")
@@ -71,7 +71,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         let second = Task { try await client.signIn(username: "bob", password: "password") }
         await getId.waitForArrivals(1)
         await cancelGate.open()
-        _ = try await signOut.value
+        _ = await signOut.value
         await getId.open()
         let result = await second.result
 
@@ -110,11 +110,11 @@ final class LiveEngineCoreRaceTests: XCTestCase {
         }
         live.cognito.clearCalls()
 
-        let signOut = Task { try await client.signOut() }
+        let signOut = Task { await client.signOut() }
         await cancelGate.waitForArrivals(1)
         let confirm = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
         await cancelGate.open()
-        _ = try await signOut.value
+        _ = await signOut.value
 
         XCTAssertEqual(confirm?.kind, .invalidState)
         XCTAssertEqual(live.cognito.operations, [], "the old attempt's answer was sent")

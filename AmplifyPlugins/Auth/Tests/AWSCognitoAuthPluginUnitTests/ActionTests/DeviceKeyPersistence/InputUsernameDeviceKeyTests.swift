@@ -203,7 +203,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-canonical-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -240,7 +241,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
         let event = UserPoolSignInHelper.parseResponse(
             response,
             for: "user@example.com",
-            signInMethod: .apiBased(.userPassword)
+            signInMethod: .apiBased(.userPassword),
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -269,7 +271,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-canonical-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,
@@ -308,7 +311,8 @@ class InputUsernameDeviceKeyTests: XCTestCase, @unchecked Sendable {
             response,
             for: "cognito-id",
             signInMethod: .apiBased(.userSRP),
-            inputUsername: "user@example.com"
+            inputUsername: "user@example.com",
+            logger: AmplifyEngineLogRouter()
         )
 
         guard let signInEvent = event as? SignInEvent,

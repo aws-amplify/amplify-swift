@@ -168,8 +168,8 @@ final class AuthClientConfigurationTests: XCTestCase {
         XCTAssertThrowsError(try AuthClientConfiguration(userPool: nil, identityPool: nil))
     }
 
-    /// The namespace must match what the plugin already writes, or read-through adoption and
-    /// rollback both miss the plugin's record.
+    /// The namespace must match what the plugin already writes, or `.default` and a rolled-back plugin
+    /// both miss the plugin's record.
     ///
     /// - Given: each of the three pool combinations
     /// - When: the pool namespace is derived
@@ -457,6 +457,151 @@ final class AuthClientConfigurationTests: XCTestCase {
         let description = String(describing: userPool)
         for property in Self.userPoolStoredPropertyNames {
             XCTAssertTrue(description.contains("\(property): "), "\(property) missing from \(description)")
+        }
+    }
+
+    // MARK: - Masked printed forms of the identity pool and OAuth
+
+    /// Every printed form of `value`: `description`, `debugDescription`, interpolation and `dump`.
+    private func printedForms(_ value: Any) -> [String] {
+        var dumped = ""
+        dump(value, to: &dumped)
+        return [String(describing: value), String(reflecting: value), "\(value)", dumped]
+    }
+
+    private static let oauth = AuthClientConfiguration.OAuth(
+        domain: "example-domain.auth.us-west-2.amazoncognito.com",
+        scopes: ["openid", "email"],
+        redirectSignInURIs: ["exampleapp://signin/callback", "exampleapp://second/signin"],
+        redirectSignOutURIs: ["exampleapp://signout/callback"],
+        identityProviders: ["GOOGLE"],
+        responseType: "code"
+    )
+
+    /// - Given: an identity pool, alone and in a configuration
+    /// - When: it is printed with `String(describing:)`, `String(reflecting:)`, interpolation and `dump()`
+    /// - Then:
+    ///    - the pool ID appears only masked as the engine's `IdentityPoolConfigurationData` masks it (four
+    ///      characters kept at each end), and the region is `<REDACTED>`
+    ///    - the guest flag still appears, and the stored values are unchanged
+    func testIdentityPoolPrintsMasked() throws {
+        let identityPool = AuthClientConfiguration.IdentityPool(
+            poolId: "us-west-2:11111111-2222-3333-4444-555555555555",
+            region: "us-west-2",
+            unauthenticatedIdentitiesEnabled: true
+        )
+        let configuration = try AuthClientConfiguration(identityPool: identityPool)
+        for value in [identityPool, configuration, Optional(identityPool) as Any] as [Any] {
+            for text in printedForms(value) {
+                for identifier in ["us-west-2:11111111-2222-3333-4444-555555555555", "11111111", "us-west-2"] {
+                    XCTAssertFalse(text.contains(identifier), "\(identifier) in \(text)")
+                }
+                for shown in ["us-w****5555", "<REDACTED>", "unauthenticatedIdentitiesEnabled", "true"] {
+                    XCTAssertTrue(text.contains(shown), "\(shown) missing from \(text)")
+                }
+            }
+        }
+        XCTAssertEqual(String(describing: identityPool), "IdentityPool(poolId: us-w****5555, region: <REDACTED>, unauthenticatedIdentitiesEnabled: true)")
+        let unstated = AuthClientConfiguration.IdentityPool(poolId: "p", region: "r")
+        XCTAssertTrue(String(describing: unstated).contains("unauthenticatedIdentitiesEnabled: nil"), String(describing: unstated))
+        XCTAssertEqual(identityPool.poolId, "us-west-2:11111111-2222-3333-4444-555555555555")
+        XCTAssertEqual(identityPool.region, "us-west-2")
+    }
+
+    /// - Given: hosted UI settings with a domain and redirect URIs
+    /// - When: they are printed with `String(describing:)`, `String(reflecting:)`, interpolation and `dump()`
+    /// - Then:
+    ///    - the domain and every redirect URI appear only masked as the engine's `OAuthConfigurationData` masks
+    ///      them (four characters kept at each end)
+    ///    - the scopes, identity providers and response type still appear, and the stored values are unchanged
+    func testOAuthPrintsMasked() {
+        let oauth = Self.oauth
+        for value in [oauth, Optional(oauth) as Any] as [Any] {
+            for text in printedForms(value) {
+                for identifier in ["example-domain", "amazoncognito", "signin/callback", "signout/callback", "second/signin"] {
+                    XCTAssertFalse(text.contains(identifier), "\(identifier) in \(text)")
+                }
+                for shown in ["exam****.com", "exam****back", "exam****gnin", "openid", "email", "GOOGLE", "code"] {
+                    XCTAssertTrue(text.contains(shown), "\(shown) missing from \(text)")
+                }
+            }
+        }
+        XCTAssertEqual(oauth.domain, "example-domain.auth.us-west-2.amazoncognito.com")
+        XCTAssertEqual(oauth.redirectSignInURIs, ["exampleapp://signin/callback", "exampleapp://second/signin"])
+    }
+
+    /// The stored properties of `IdentityPool` and of `OAuth`, in declaration order, as tuple types (see
+    /// `UserPoolStoredProperties`).
+    private typealias IdentityPoolStoredProperties = (
+        String, // poolId
+        String, // region
+        Bool? // unauthenticatedIdentitiesEnabled
+    )
+
+    private typealias OAuthStoredProperties = (
+        String, // domain
+        [String], // scopes
+        [String], // redirectSignInURIs
+        [String], // redirectSignOutURIs
+        [String], // identityProviders
+        String // responseType
+    )
+
+    private static let identityPoolStoredPropertyNames = ["poolId", "region", "unauthenticatedIdentitiesEnabled"]
+
+    private static let oauthStoredPropertyNames = [
+        "domain", "scopes", "redirectSignInURIs", "redirectSignOutURIs", "identityProviders", "responseType"
+    ]
+
+    /// Field-list drift: a stored property added to `IdentityPool` or `OAuth` must be added to its printed forms.
+    ///
+    /// - Given: the stored properties listed above, as tuple types and as names
+    /// - When: each type's layout is compared with its tuple's, and the names with the custom mirror's labels and
+    ///   the description
+    /// - Then:
+    ///    - the layouts match, so each list is every stored property (a new property breaks this; update the list
+    ///      and `printedFields` together)
+    ///    - each mirror has exactly these labels, in order, and each description names each
+    func testThePrintedFormsListEveryStoredPropertyOfTheIdentityPoolAndOAuth() {
+        typealias IdentityPool = AuthClientConfiguration.IdentityPool
+        typealias OAuth = AuthClientConfiguration.OAuth
+        XCTAssertEqual(MemoryLayout<IdentityPool>.size, MemoryLayout<IdentityPoolStoredProperties>.size)
+        XCTAssertEqual(MemoryLayout<IdentityPool>.stride, MemoryLayout<IdentityPoolStoredProperties>.stride)
+        XCTAssertEqual(MemoryLayout<IdentityPool>.alignment, MemoryLayout<IdentityPoolStoredProperties>.alignment)
+        XCTAssertEqual(MemoryLayout<OAuth>.size, MemoryLayout<OAuthStoredProperties>.size)
+        XCTAssertEqual(MemoryLayout<OAuth>.stride, MemoryLayout<OAuthStoredProperties>.stride)
+        XCTAssertEqual(MemoryLayout<OAuth>.alignment, MemoryLayout<OAuthStoredProperties>.alignment)
+
+        let printed: [(Any, [String])] = [
+            (IdentityPool(poolId: "p", region: "r"), Self.identityPoolStoredPropertyNames),
+            (Self.oauth, Self.oauthStoredPropertyNames)
+        ]
+        for (value, names) in printed {
+            XCTAssertEqual(Mirror(reflecting: value).children.map(\.label), names.map { Optional($0) })
+            let description = String(describing: value)
+            for property in names {
+                XCTAssertTrue(description.contains("\(property): "), "\(property) missing from \(description)")
+            }
+        }
+    }
+
+    /// - Given: a user pool with hosted UI settings, alone and in a configuration
+    /// - When: it is printed with `String(describing:)`, `String(reflecting:)`, interpolation and `dump()`
+    /// - Then:
+    ///    - its `oauth` prints through the masked form: no domain or redirect URI appears in full, and the masked
+    ///      domain and the scopes do
+    func testUserPoolPrintsItsOAuthMasked() throws {
+        let userPool = AuthClientConfiguration.UserPool(poolId: "p", appClientId: "c", region: "r", oauth: Self.oauth)
+        let configuration = try AuthClientConfiguration(userPool: userPool)
+        for value in [userPool, configuration] as [Any] {
+            for text in printedForms(value) {
+                for identifier in ["example-domain", "amazoncognito", "signin/callback", "signout/callback"] {
+                    XCTAssertFalse(text.contains(identifier), "\(identifier) in \(text)")
+                }
+                for shown in ["oauth", "exam****.com", "openid"] {
+                    XCTAssertTrue(text.contains(shown), "\(shown) missing from \(text)")
+                }
+            }
         }
     }
 }

@@ -374,6 +374,21 @@ class PluginConfigsTests(unittest.TestCase):
             self.quiet(lambda: self.pc.write_into(self.target, ci=True))
         self.assertEqual(os.listdir(self.target), [])
 
+    def test_the_rotation_file_is_written_only_once_its_client_exists(self):
+        name = "AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json"
+        self.assertNotIn(name, self.pc.build(), "a sandbox without the rotation client has no rotation file")
+        rotation = fake_outputs("default")
+        rotation["auth"]["user_pool_client_id"] = "client-rotation"
+        with open(os.path.join(self.state, "rotation-amplify_outputs.json"), "w") as f:
+            json.dump(rotation, f)
+        files = self.pc.build()
+        self.assertEqual(files[name]["auth"]["user_pool_client_id"], "client-rotation")
+        self.assertEqual(files[name]["auth"]["user_pool_id"], files["AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json"]["auth"]["user_pool_id"])
+        self.assertNotIn("identity_pool_id", files[name]["auth"])
+        other = os.path.join(self.root, "ci-shape")
+        self.quiet(lambda: self.pc.write_into(other, ci=True))
+        self.assertNotIn(name, os.listdir(other), "the CI shape has no rotation file")
+
     def test_ci_shape_is_exactly_the_file_set_ci_downloads(self):
         other = os.path.join(self.root, "ci-shape")
         # A full set written there first: the CI shape must not keep any of it.

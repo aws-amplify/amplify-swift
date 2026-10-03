@@ -11,7 +11,7 @@ import Security
 import XCTest
 @_spi(KeychainStore) @testable import AWSPluginsCore
 
-/// `KeychainStore.removeAllExceptSessionRecords()` and the migrator's destination clear, which uses it.
+/// `KeychainStore.removeAllExceptSessionRecords(sparingDefaultSessionItems:)` and the migrator's destination clear, which uses it.
 /// Both run over the in-memory fake: `swift test` runs unsigned, so the real keychain is unavailable.
 class KeychainStoreScopedRemovalTests: XCTestCase {
 
@@ -30,6 +30,12 @@ class KeychainStoreScopedRemovalTests: XCTestCase {
     private let sessionRecordAccounts = [
         "amplify.1.us-east-1_Pool.us-east-1:identity-pool.work.session",
         "amplify.1.us-east-1_Pool.us-east-1:identity-pool.work.challenge"
+    ]
+
+    /// The Cognito client's default-session sidecar and challenge items, which belong to the plugin's session.
+    private let defaultSessionItems = [
+        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.meta",
+        "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.challenge"
     ]
 
     /// The test seam routes every member through the injected store, with the usual error mapping.
@@ -54,7 +60,7 @@ class KeychainStoreScopedRemovalTests: XCTestCase {
     /// The store's scoped clear keeps session records.
     ///
     /// - Given: a store holding plugin items and client session records
-    /// - When: `removeAllExceptSessionRecords()` runs
+    /// - When: `removeAllExceptSessionRecords(sparingDefaultSessionItems: true)` runs
     /// - Then:
     ///    - the plugin items are gone and the session records are kept
     func testKeychainStoreScopedClearSparesSessionRecords() throws {
@@ -62,7 +68,7 @@ class KeychainStoreScopedRemovalTests: XCTestCase {
         let store = makeStore(keychain)
         try populate(keychain, with: pluginAccounts + sessionRecordAccounts)
 
-        try store.removeAllExceptSessionRecords()
+        try store.removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
 
         assertOnlySessionRecordsRemain(in: keychain)
     }
@@ -81,6 +87,79 @@ class KeychainStoreScopedRemovalTests: XCTestCase {
 
         assertOnlySessionRecordsRemain(in: keychain)
         XCTAssertFalse(keychain.mutations.contains(.removeAll(service: sharedService)))
+    }
+
+    /// The store's scoped clear removes the default session's two items only when asked to.
+    ///
+    /// - Given: a store holding plugin items, client session records and the default session's
+    ///   `$default.meta` and `$default.challenge`
+    /// - When: `removeAllExceptSessionRecords(sparingDefaultSessionItems: true)` runs, then with `false`
+    /// - Then:
+    ///    - the first keeps the two items with the other session records
+    ///    - the second removes them, and keeps the other session records
+    func testKeychainStoreScopedClearRemovesTheDefaultSessionItemsOnlyWhenAsked() throws {
+        let keychain = InMemoryKeychain()
+        let store = makeStore(keychain)
+        try populate(keychain, with: pluginAccounts + sessionRecordAccounts + defaultSessionItems)
+
+        try store.removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
+        XCTAssertEqual(
+            try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts(),
+            (sessionRecordAccounts + defaultSessionItems).sorted()
+        )
+
+        try store.removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
+        assertOnlySessionRecordsRemain(in: keychain)
+    }
+
+    /// The migrator's destination clear removes the default session's two items, which `migrate()` moves,
+    /// and spares every other session record.
+    ///
+    /// - Given: a migration destination holding plugin items, client session records and the default
+    ///   session's `$default.meta` and `$default.challenge`
+    /// - When: the migrator clears the destination
+    /// - Then:
+    ///    - the plugin items and the two default-session items are gone, and the other session records are kept
+    func testMigratorDestinationClearRemovesTheDefaultSessionItems() throws {
+        let keychain = InMemoryKeychain()
+        try populate(keychain, with: pluginAccounts + sessionRecordAccounts + defaultSessionItems)
+
+        makeMigrator(keychain).clearDestination()
+
+        assertOnlySessionRecordsRemain(in: keychain)
+    }
+
+    /// The public migrator replaces the default session's two items a destination already holds with the
+    /// source's, so none collides and stays behind.
+    ///
+    /// - Given: an unshared source holding plugin items and the default session's two items, and a shared
+    ///   destination holding stale copies of those two items and client session records
+    /// - When: `KeychainStoreMigrator.migrate()` runs
+    /// - Then:
+    ///    - the destination holds the plugin items, the two items with the source's bytes, and the session
+    ///      records, unchanged
+    ///    - the source is empty
+    func testMigratorReplacesTheDefaultSessionItemsTheDestinationHolds() throws {
+        let keychain = InMemoryKeychain()
+        let source = keychain.store(service: "com.amplify.awsCognitoAuthPlugin")
+        for account in pluginAccounts + defaultSessionItems {
+            try source.set(Data(account.utf8), key: account)
+        }
+        let destination = keychain.store(service: sharedService, accessGroup: accessGroup)
+        for account in defaultSessionItems {
+            try destination.set(Data("stale".utf8), key: account)
+        }
+        for account in sessionRecordAccounts {
+            try destination.set(Data(account.utf8), key: account)
+        }
+
+        try makeMigrator(keychain).migrate()
+
+        XCTAssertEqual(try source.allAccounts(), [])
+        XCTAssertEqual(try destination.allAccounts(), (pluginAccounts + defaultSessionItems + sessionRecordAccounts).sorted())
+        for account in defaultSessionItems + sessionRecordAccounts {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
     }
 
     /// If the destination cannot be listed, the migrator's clear removes nothing.
@@ -139,6 +218,35 @@ class KeychainStoreScopedRemovalTests: XCTestCase {
             try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts(),
             pluginAccounts.sorted()
         )
+    }
+
+    /// The public migrator moves the Cognito client's default-session sidecar and challenge items too.
+    ///
+    /// - Given: an unshared source holding plugin items, client session records, a leftover
+    ///   `$default.session`, and the default session's `$default.meta` and `$default.challenge`, and an
+    ///   empty shared destination
+    /// - When: `KeychainStoreMigrator.migrate()` runs
+    /// - Then:
+    ///    - the destination holds the plugin items and the two default-session items, with their bytes
+    ///    - the source holds exactly the other client records
+    func testMigratorMovesTheDefaultSessionItems() throws {
+        let keychain = InMemoryKeychain()
+        let source = keychain.store(service: "com.amplify.awsCognitoAuthPlugin")
+        let staying = sessionRecordAccounts + ["amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.session"]
+        for account in pluginAccounts + staying + defaultSessionItems {
+            try source.set(Data(account.utf8), key: account)
+        }
+
+        try makeMigrator(keychain).migrate()
+
+        XCTAssertEqual(try source.allAccounts(), staying.sorted())
+        XCTAssertEqual(
+            try keychain.store(service: sharedService, accessGroup: accessGroup).allAccounts(),
+            (pluginAccounts + defaultSessionItems).sorted()
+        )
+        for account in defaultSessionItems {
+            XCTAssertEqual(keychain.value(service: sharedService, accessGroup: accessGroup, account: account), Data(account.utf8), account)
+        }
     }
 
     /// The quiet store the migrator checks its destination through is the same store, logging at

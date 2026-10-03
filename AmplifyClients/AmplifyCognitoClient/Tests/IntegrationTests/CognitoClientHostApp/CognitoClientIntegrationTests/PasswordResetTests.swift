@@ -75,7 +75,7 @@ final class PasswordResetTests: ClientIntegrationTestCase {
     ///
     /// It needs a code API on the default backend, checked first so that a backend without one fails
     /// naming the file, and account recovery by an email verified at sign-up. The plugin's CI default
-    /// backend has neither (its trigger only confirms).
+    /// backend has neither (its trigger only confirms): on CI it skips (`CISkipReason.defaultCodeAPIAndVerifiedEmail`).
     ///
     /// - Given: a fresh user on `default`, whose email is verified
     /// - When:
@@ -85,7 +85,7 @@ final class PasswordResetTests: ClientIntegrationTestCase {
     ///    - the reset reports the code sent to the email; the sign-in is `.done` as that user
     ///
     func testSuccessfulResetPasswordEndToEnd() async throws {
-        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard)
+        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip: .defaultCodeAPIAndVerifiedEmail)
         let user = try await makeFreshUser(on: .standard)
         let client = try makeClient("rp-3", pool: .standard)
         let sink = try CodeSink()

@@ -23,7 +23,9 @@ import XCTest
 /// `PlatformWebAuthnCredentials`, `AWSCognitoAuthCredentialStore`, `MFAType`), and the golden transcript is
 /// locked. So each test here drives one site through its real call path, with the production router
 /// (`AmplifyEngineLogRouter()`) installed as the global router and a capturing `Amplify.Logging` plugin,
-/// and asserts what reached `Amplify.Logging`:
+/// and asserts what reached `Amplify.Logging`. Now the engine's six sites take the caller's
+/// logger, so the tests of those sites pass the plugin's own (`AmplifyEngineLogRouter()`), as the plugin
+/// does; the plugin's own sites still use the global router. Each test asserts:
 /// - the entry point that resolved the logger and its category and namespace, compared with the resolution
 ///   the site had before the engine got its own logging, computed from the type
 ///   (`String(describing: Type.self)`, and `CategoryType.auth.displayName` for the sites that log under the
@@ -116,9 +118,10 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
 
     /// Test that the credential store logs at its previous scope
     ///
-    /// - Given: A keychain holding only the Cognito client's default-session record
+    /// - Given: A plugin configured before without an access group, whose unshared service holds its session
     /// - When:
-    ///    - The plugin's credential store retrieves its credentials
+    ///    - The plugin's credential store is built with an access group and asked to migrate its items, and
+    ///      the shared service is empty
     /// - Then:
     ///    - One `verbose` line reaches `Amplify.Logging.logger(forCategory: "AWSCognitoAuthCredentialStore")`
     ///
@@ -127,16 +130,25 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         let identityPool = IdentityPoolConfigurationData(poolId: "us-east-1:identity-pool", region: "us-east-1")
         let configuration = AuthConfiguration.userPoolsAndIdentityPools(userPool, identityPool)
         let keychain = InMemoryKeychain()
-        let credentials = LongLivedCredentials.userPoolAndIdentityPool()
-        _ = try CognitoClientRecords.writeDefaultSession(credentials, in: keychain, for: configuration)
-        let store = AWSCognitoAuthCredentialStore(
+        let suite = "EngineStaticLogSiteTests.\(UUID().uuidString)"
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { userDefaults.removePersistentDomain(forName: suite) }
+        try keychain.store(service: "com.amplify.awsCognitoAuthPlugin")
+            .set(Data("session".utf8), key: "amplify.us-east-1_Pool.us-east-1:identity-pool.session")
+
+        _ = AWSCognitoAuthCredentialStore(
             authConfiguration: configuration,
-            keychain: InMemoryPluginKeychainStore(keychain: keychain)
+            accessGroup: "group",
+            migrateKeychainItemsOfUserSession: true,
+            userDefaults: userDefaults,
+            makeKeychainStore: { service, accessGroup in
+                keychain.store(service: service, accessGroup: accessGroup)
+            },
+            logger: AmplifyEngineLogRouter()
         )
 
-        XCTAssertEqual(try store.retrieveCredential(), credentials)
         assertLines(at: shapeB(AWSCognitoAuthCredentialStore.self), [
-            ("verbose", "[AWSCognitoAuthCredentialStore] Read the session from the Cognito client's default session record")
+            ("verbose", "[AWSCognitoAuthCredentialStore] Migration of keychain items from old access group to new access group successful")
         ])
     }
 
@@ -182,7 +194,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn needs iOS 17.4 / macOS 13.5")
         }
-        let credentials = PlatformWebAuthnCredentials(presentationAnchor: nil)
+        let credentials = PlatformWebAuthnCredentials(presentationAnchor: nil, logger: AmplifyEngineLogRouter())
         let error = NSError(domain: "WebAuthnSiteTest", code: 7)
 
         credentials.authorizationController(
@@ -211,7 +223,7 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn needs iOS 17.4 / macOS 13.5")
         }
-        let credentials = PlatformWebAuthnCredentials(presentationAnchor: nil)
+        let credentials = PlatformWebAuthnCredentials(presentationAnchor: nil, logger: AmplifyEngineLogRouter())
         let request = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: "example.com")
             .createCredentialAssertionRequest(challenge: Data("challenge".utf8))
         let error = ASAuthorizationError(.canceled)
@@ -228,6 +240,95 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         ])
     }
     #endif
+
+    // MARK: The engine's sites take the plugin's logger
+
+    /// Test that no engine site reads the global router on a plugin path
+    ///
+    /// - Given: A global router that fails the test if any scope is resolved through it, and the plugin's
+    ///   logger (`AmplifyEngineLogRouter()`), as the plugin passes it
+    /// - When:
+    ///    - Each engine site is driven through the plugin's logger: an unknown MFA type in a sign-in response,
+    ///      an unknown factor answered on a failed WebAuthn sign-in, the WebAuthn delegate's logger, a keychain
+    ///      store built as the plugin's legacy store is, and an access-group migration of the credential store
+    /// - Then:
+    ///    - The global router resolves nothing
+    ///    - Each site's lines reach `Amplify.Logging` at the scope they had before: `MFAType`,
+    ///      `AuthFactorType`, `PlatformWebAuthnCredentials`, the `KeychainStore` namespace,
+    ///      `AWSCognitoAuthCredentialStore` and `KeychainStoreMigrator`
+    ///
+    func testNoEngineSiteResolvesTheGlobalRouterOnAPluginPath() throws {
+        EngineLog.install(FailingRouter())
+        let plugin = AmplifyEngineLogRouter()
+
+        // `MFAType`: an MFA setup offering a type this build does not know.
+        let response = RespondToAuthChallengeOutput(
+            challengeName: .mfaSetup,
+            challengeParameters: ["MFAS_CAN_SETUP": "[\"X\"]"],
+            session: "session"
+        )
+        _ = UserPoolSignInHelper.parseResponse(response, for: "user", signInMethod: .apiBased(.userSRP), logger: plugin)
+        assertLines(at: shapeB(MFAType.self), [
+            ("error", "Tried to initialize an unsupported MFA type with value: X")
+        ])
+
+        #if os(iOS) || os(macOS) || os(visionOS)
+        if #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) {
+            // `AuthFactorType`: the WebAuthn resolver's retry, through the machine's logger.
+            let challenge = RespondToAuthChallenge(
+                challenge: .webAuthn,
+                availableChallenges: [],
+                username: "user",
+                session: "session",
+                parameters: [:]
+            )
+            let answer = SignInChallengeEvent(eventType: .verifyChallengeAnswer(ConfirmSignInEventData(
+                answer: "X",
+                attributes: [:],
+                metadata: nil,
+                friendlyDeviceName: nil,
+                presentationAnchor: nil
+            )))
+            _ = WebAuthnSignInState.Resolver(logger: plugin).resolve(
+                oldState: .error(.unknown(message: "failed"), challenge),
+                byApplying: answer
+            )
+            assertLines(at: shapeB(AuthFactorType.self), [
+                ("error", "Tried to initialize an unsupported MFA type with value: X")
+            ])
+
+            // `PlatformWebAuthnCredentials`: the delegate's logger, as `AssertWebAuthnCredentials` builds it. Its
+            // own lines are driven by the tests above; here no controller is made.
+            PlatformWebAuthnCredentials(presentationAnchor: nil, logger: plugin).log.verbose("probe")
+            assertLines(at: shapeB(PlatformWebAuthnCredentials.self), [("verbose", "probe")])
+        }
+        #endif
+
+        // The `KeychainStore` namespace: the plugin's legacy keychain store.
+        _ = EngineKeychainStore.makeItemStore(service: "svc", logger: plugin)
+        XCTAssertEqual(lines(at: ("namespace", nil, "KeychainStore")).map(\.level), ["verbose"])
+
+        // `AWSCognitoAuthCredentialStore` and `KeychainStoreMigrator`: an access-group migration.
+        let suite = "EngineStaticLogSiteTests.\(UUID().uuidString)"
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { userDefaults.removePersistentDomain(forName: suite) }
+        let keychain = InMemoryKeychain()
+        for accessGroup in ["group.example", "group.example"] {
+            _ = AWSCognitoAuthCredentialStore(
+                authConfiguration: Defaults.makeDefaultAuthConfigData(),
+                accessGroup: accessGroup,
+                migrateKeychainItemsOfUserSession: true,
+                userDefaults: userDefaults,
+                makeKeychainStore: { service, accessGroup in keychain.store(service: service, accessGroup: accessGroup) },
+                logger: plugin
+            )
+        }
+        XCTAssertTrue(lines(at: shapeB(KeychainStoreMigrator.self)).contains { $0.message.contains("Starting to migrate items") })
+        assertLines(at: shapeB(AWSCognitoAuthCredentialStore.self), [
+            ("verbose", "[AWSCognitoAuthCredentialStore] Migration of keychain items from old access group to new access group successful"),
+            ("info", "[AWSCognitoAuthCredentialStore] Stored access group is the same as current access group, aborting migration")
+        ])
+    }
 
     // MARK: Sites the log transcript covers (their scope read from the site, not from a literal)
 
@@ -281,5 +382,13 @@ final class EngineStaticLogSiteTests: XCTestCase, @unchecked Sendable {
         assertLines(at: shapeB(FetchAuthSessionOperationHelper.self), [
             ("verbose", "Received fetch auth session error - \(error)")
         ])
+    }
+}
+
+/// A global router that fails the test for every scope resolved through it.
+private struct FailingRouter: EngineLogRouter {
+    func logger(_ scope: EngineLogScope) -> EngineLogger {
+        XCTFail("An engine site resolved \(scope) through the global router")
+        return DiscardingEngineLogger()
     }
 }

@@ -321,7 +321,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
 
         let first = try await client.signIn(username: "alice", presentationAnchor: windowA, options: .init(authFlowType: .userAuth(preferredFirstFactor: nil)))
         let confirmed = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN")
-        try await client.signOut()
+        await client.signOut()
         _ = try await client.signIn(username: "alice", presentationAnchor: windowA, options: .init(authFlowType: .userAuth(preferredFirstFactor: nil)))
         let own = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN", presentationAnchor: windowB)
 
@@ -398,7 +398,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
             try await client.signIn(username: "alice", presentationAnchor: window, options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn)))
         }
         try await held.up()
-        try await client.signOut()
+        await client.signOut()
 
         let error = await authClientError { try await signIn.value(within: 10) }
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
@@ -511,7 +511,7 @@ final class LiveWebAuthnCeremonyTests: XCTestCase {
             try await client.signIn(username: "alice", presentationAnchor: window, options: .init(authFlowType: .userAuth(preferredFirstFactor: .webAuthn)))
         }
         try await respond.arrivals(1)
-        try await client.signOut()
+        await client.signOut()
         await respond.open()
 
         let error = await authClientError { try await signIn.value(within: 10) }

@@ -55,7 +55,7 @@ final class EngineKeychainStoreTests: XCTestCase {
         let keychain = InMemoryKeychain()
         let itemStore = keychain.store(service: "svc", accessGroup: "grp")
         let plugin = KeychainStore(service: "svc", accessGroup: "grp", itemStore: itemStore)
-        let engine = EngineKeychainStore(itemStore)
+        let engine = EngineKeychainStore(itemStore, logger: AmplifyEngineLogRouter())
         try itemStore.set(Data("value".utf8), key: "present")
         try itemStore.set(Data([0xff, 0xfe]), key: "notUTF8")
         try itemStore.set(Data("x".utf8), key: "lockedRemove")
@@ -87,7 +87,7 @@ final class EngineKeychainStoreTests: XCTestCase {
     /// - Given: Two identical keychains holding plugin items and a client session record, one behind each
     ///   store, and a third whose listing fails
     /// - When:
-    ///    - `removeAllExceptSessionRecords()` runs on each
+    ///    - `removeAllExceptSessionRecords(sparingDefaultSessionItems: true)` runs on each
     /// - Then:
     ///    - Both keep only the session record, and the failing listing throws the same error from both
     ///
@@ -96,21 +96,21 @@ final class EngineKeychainStoreTests: XCTestCase {
             let keychain = InMemoryKeychain()
             let store = keychain.store(service: "svc")
             try store.set(Data("s".utf8), key: "amplify.pool.session")
-            try store.set(Data("c".utf8), key: "amplify.1.pool.$default.session")
+            try store.set(Data("c".utf8), key: "amplify.1.pool.work.session")
             return (keychain, store)
         }
         let (_, engineItems) = try populated()
         let (_, pluginItems) = try populated()
-        try EngineKeychainStore(engineItems).removeAllExceptSessionRecords()
-        try KeychainStore(service: "svc", itemStore: pluginItems).removeAllExceptSessionRecords()
-        XCTAssertEqual(try engineItems.allAccounts(), ["amplify.1.pool.$default.session"])
+        try EngineKeychainStore(engineItems, logger: AmplifyEngineLogRouter()).removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
+        try KeychainStore(service: "svc", itemStore: pluginItems).removeAllExceptSessionRecords(sparingDefaultSessionItems: true)
+        XCTAssertEqual(try engineItems.allAccounts(), ["amplify.1.pool.work.session"])
         XCTAssertEqual(try engineItems.allAccounts(), try pluginItems.allAccounts())
 
         let (failing, failingItems) = try populated()
         failing.failing(.listAccounts, with: errSecInteractionNotAllowed)
         assertSame(
-            try EngineKeychainStore(failingItems).removeAllExceptSessionRecords(),
-            try KeychainStore(service: "svc", itemStore: failingItems).removeAllExceptSessionRecords(),
+            try EngineKeychainStore(failingItems, logger: AmplifyEngineLogRouter()).removeAllExceptSessionRecords(sparingDefaultSessionItems: true),
+            try KeychainStore(service: "svc", itemStore: failingItems).removeAllExceptSessionRecords(sparingDefaultSessionItems: true),
             "failed listing"
         )
     }
@@ -139,20 +139,62 @@ final class EngineKeychainStoreTests: XCTestCase {
         }
 
         let plugin = KeychainStore(service: "svc", itemStore: itemStore)
-        run(plugin._getString, plugin._set, plugin.removeAllExceptSessionRecords)
+        run(plugin._getString, plugin._set) { try plugin.removeAllExceptSessionRecords(sparingDefaultSessionItems: true) }
         let pluginLines = capture.lines
         capture.clear()
 
         try itemStore.set(Data("value".utf8), key: "present")
         try itemStore.set(Data([0xff, 0xfe]), key: "notUTF8")
-        let engine = EngineKeychainStore(itemStore)
-        run(engine._getString, engine._set, engine.removeAllExceptSessionRecords)
+        let engine = EngineKeychainStore(itemStore, logger: AmplifyEngineLogRouter())
+        run(engine._getString, engine._set) { try engine.removeAllExceptSessionRecords(sparingDefaultSessionItems: true) }
         let engineLines = capture.lines
 
         XCTAssertFalse(pluginLines.isEmpty)
         XCTAssertEqual(engineLines, pluginLines)
         XCTAssertEqual(Set(engineLines.map(\.namespace)), ["KeychainStore"])
         XCTAssertTrue(engineLines.contains { $0.level == "error" && $0.message.contains("Unable to create String") })
+    }
+
+    /// Test that neither store's lines name the keychain key
+    ///
+    /// - Given: A `KeychainStore` and an `EngineKeychainStore` over the same in-memory keychain
+    /// - When:
+    ///    - Each writes, reads and removes a string on key `amplify.p.alice.deviceMetadata`, and reads it once
+    ///      it is gone
+    /// - Then:
+    ///    - Both log the same lines, which name `kind=deviceMetadata`, and no line contains `alice`, the key or
+    ///      `key=`
+    ///
+    func testVerboseLinesNeverNameTheAccount() {
+        let account = "amplify.p.alice.deviceMetadata"
+        let itemStore = InMemoryKeychain().store(service: "svc")
+
+        func run(
+            _ setString: (String, String) throws -> Void,
+            _ getString: (String) throws -> String,
+            _ remove: (String) throws -> Void
+        ) {
+            try? setString("value", account)
+            _ = try? getString(account)
+            try? remove(account)
+            _ = try? getString(account)
+        }
+
+        let plugin = KeychainStore(service: "svc", itemStore: itemStore)
+        run(plugin._set, plugin._getString, plugin._remove)
+        let pluginLines = capture.lines
+        capture.clear()
+        let engine = EngineKeychainStore(itemStore, logger: AmplifyEngineLogRouter())
+        run(engine._set, engine._getString, engine._remove)
+        let engineLines = capture.lines
+
+        XCTAssertEqual(engineLines, pluginLines)
+        XCTAssertTrue(engineLines.contains { $0.message == "[KeychainStore] Started setting `String` for kind=deviceMetadata" })
+        for line in pluginLines + engineLines {
+            XCTAssertFalse(line.message.contains("alice"), line.message)
+            XCTAssertFalse(line.message.contains(account), line.message)
+            XCTAssertFalse(line.message.contains("key="), line.message)
+        }
     }
 
     /// Test that the production item store is the one `KeychainStore(service:accessGroup:)` builds
@@ -171,7 +213,7 @@ final class EngineKeychainStoreTests: XCTestCase {
             let plugin = KeychainStore(service: "svc", accessGroup: accessGroup)
             let pluginLines = capture.lines
             capture.clear()
-            let engine = EngineKeychainStore.makeItemStore(service: "svc", accessGroup: accessGroup)
+            let engine = EngineKeychainStore.makeItemStore(service: "svc", accessGroup: accessGroup, logger: AmplifyEngineLogRouter())
             let engineLines = capture.lines
 
             XCTAssertEqual(engine.attributes, plugin.itemStore.attributes, "\(accessGroup ?? "-")")
@@ -190,8 +232,8 @@ final class EngineKeychainStoreTests: XCTestCase {
     ///      level only; the double comes back as it is
     ///
     func testQuietMatchesQuietBackingStore() throws {
-        let production = EngineKeychainStore.makeItemStore(service: "svc", accessGroup: "grp")
-        let quiet = try XCTUnwrap(EngineKeychainStore.quiet(production) as? KeychainItemStore)
+        let production = EngineKeychainStore.makeItemStore(service: "svc", accessGroup: "grp", logger: AmplifyEngineLogRouter())
+        let quiet = try XCTUnwrap(EngineKeychainStore.quiet(production, logger: AmplifyEngineLogRouter()) as? KeychainItemStore)
         XCTAssertEqual(quiet.attributes, production.attributes)
         XCTAssertEqual(
             quiet.attributes,
@@ -204,7 +246,7 @@ final class EngineKeychainStoreTests: XCTestCase {
         XCTAssertEqual(capture.lines.filter { $0.level != "verbose" }, [])
 
         let double = InMemoryKeychain().store(service: "svc")
-        XCTAssertTrue(EngineKeychainStore.quiet(double) is InMemoryKeychainItemStore)
+        XCTAssertTrue(EngineKeychainStore.quiet(double, logger: AmplifyEngineLogRouter()) is InMemoryKeychainItemStore)
     }
 
     // MARK: Helpers

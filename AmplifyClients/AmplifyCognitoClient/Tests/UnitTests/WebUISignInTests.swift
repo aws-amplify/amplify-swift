@@ -392,7 +392,7 @@ final class WebUISignInTests: XCTestCase {
         let signIn = startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
-        _ = try await client.signOut()
+        _ = await client.signOut()
 
         let error = await authClientError { try await signIn.value }
         XCTAssertEqual(error?.kind, .invalidState)
@@ -416,12 +416,12 @@ final class WebUISignInTests: XCTestCase {
         let signIn = startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
         await waitUntil("the listing is held") { listing.hasBeenReached }
 
-        let signOut = Task { try await client.signOut() }
+        let signOut = Task { await client.signOut() }
         await waitUntil("the sign-out has ended the session") { engine.cancelPendingSignInCount == 1 }
         listing.release()
 
         let error = await authClientError { try await signIn.value }
-        _ = try await signOut.value
+        _ = await signOut.value
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
         XCTAssertEqual(engine.webUISignInCalls.count, 0)
     }
@@ -440,14 +440,14 @@ final class WebUISignInTests: XCTestCase {
         let held = Gate()
         engine.holdCancels(on: held)
         _ = await client.currentSessionState()
-        let signOut = Task { try await client.signOut() }
+        let signOut = Task { await client.signOut() }
         await held.waitForArrivals(1)
         engine.holdCancels(on: nil)
 
         let signIn = startSignIn(client)
         await browser.shown.waitForArrivals(1)
         await held.open()
-        _ = try await signOut.value
+        _ = await signOut.value
         await Task.yield()
 
         XCTAssertEqual(browser.cancelCount, 0)
@@ -763,13 +763,13 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertNil(try harness.storedRecord(work))
     }
 
-    /// - Given: the default `.default` session read through from the Auth plugin's record, signed in
+    /// - Given: `.default` on the Auth plugin's record, its own, signed in
     /// - When: another session signs in with `.distinctFromOtherSessions`
     /// - Then:
     ///    - the plugin record's user, read through `describe`, is excluded
-    func testDistinctFromOtherSessionsReadsThroughThePluginRecord() async throws {
+    func testDistinctFromOtherSessionsExcludesTheDefaultSessionsPluginRecord() async throws {
         let store = harness.store()
-        let account = try XCTUnwrap(store.legacyAccount(for: .default))
+        let account = try XCTUnwrap(store.pluginSessionAccount(for: .default))
         harness.keychain.put(FakePayload.signedIn("frank").data, account)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))

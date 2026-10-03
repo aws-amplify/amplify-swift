@@ -10,6 +10,7 @@ import AmplifyKeychainTestCommon
 import Foundation
 import InternalAmplifyKeychain
 import Security
+import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
 // This is the only file in the client's tests that names the keychain module's in-memory fake, so if
@@ -33,6 +34,7 @@ final class TestKeychain: @unchecked Sendable {
     private var accountFailures: [String: OSStatus] = [:]
     private var removalFailures: [String: OSStatus] = [:]
     private var setFailures: [String: OSStatus] = [:]
+    private var writeFailures: [String: OSStatus] = [:]
     private var removalHooks: [String: @Sendable () -> Void] = [:]
     private var duplicateListing = false
 
@@ -40,8 +42,13 @@ final class TestKeychain: @unchecked Sendable {
     /// on wall-clock time.
     ///
     /// `markerScope` names the app whose namespace markers the store uses; tests of two apps sharing one
-    /// keychain pass two.
-    func recordStore(for namespace: SessionStorageNamespace, markerScope: String = TestKeychain.markerScope) -> SessionRecordStore {
+    /// keychain pass two. `rereadsAbsentSharedRecord` is off unless a test turns it on, so read counts are the same on
+    /// every platform.
+    func recordStore(
+        for namespace: SessionStorageNamespace,
+        markerScope: String = TestKeychain.markerScope,
+        rereadsAbsentSharedRecord: Bool = false
+    ) -> SessionRecordStore {
         let clock = TestClock()
         return SessionRecordStore(
             namespace: namespace,
@@ -50,7 +57,40 @@ final class TestKeychain: @unchecked Sendable {
             userPoolTokensOnly: Self.userPoolTokensOnly,
             identityIdOf: Self.identityId,
             refreshTokenOf: Self.refreshToken,
-            markerScope: markerScope
+            markerScope: markerScope,
+            summarizeSharedRecord: Self.summarizeSharedRecord,
+            rereadsAbsentSharedRecord: rereadsAbsentSharedRecord,
+            sameCredentials: Self.sameCredentials
+        )
+    }
+
+    /// The fake engine's comparison: two `FakePayload`s hold the same credentials when they decode equal, as
+    /// `FakeSessionEngine.sameCredentials` says. Any other payload is the engine's format, compared as the live store
+    /// compares it.
+    @Sendable
+    static func sameCredentials(_ lhs: Data, _ rhs: Data) -> Bool {
+        if let lhs = FakePayload.decode(lhs), let rhs = FakePayload.decode(rhs) {
+            return lhs == rhs
+        }
+        return CredentialSlot.sameCredentials(lhs, rhs)
+    }
+
+    /// The fake engine's view of `.default`'s shared record: the Auth plugin's stored format as the live store peeks
+    /// it, else a `FakePayload`'s kind, user and identity, so core tests can keep `.default` on the fake's payloads.
+    /// Anything else is unrecognised, as in the live store.
+    @Sendable
+    static func summarizeSharedRecord(_ payload: Data) -> PluginRecordSummary {
+        let summary = PluginRecordSummary.peek(payload)
+        guard !summary.isRecognised, let fake = FakePayload.decode(payload), let kind = SessionKind(storedValue: fake.kind) else {
+            return summary
+        }
+        let hasUser = kind == .userPoolOnly || kind == .userPoolAndIdentityPool
+        return PluginRecordSummary(
+            kind: kind,
+            username: hasUser ? fake.username : nil,
+            userId: hasUser ? fake.userId : nil,
+            identityId: fake.identityId,
+            isRecognised: true
         )
     }
 
@@ -223,12 +263,18 @@ final class TestKeychain: @unchecked Sendable {
         withLock { setFailures[account] = status }
     }
 
+    /// Makes every write of one account fail with `status`: plain `set`s and the commit guard's adds and replaces.
+    func failingWrites(of account: String, with status: OSStatus) {
+        withLock { writeFailures[account] = status }
+    }
+
     func clearFailures() {
         keychain.clearFailures()
         withLock {
             accountFailures.removeAll()
             removalFailures.removeAll()
             setFailures.removeAll()
+            writeFailures.removeAll()
         }
     }
 
@@ -287,7 +333,13 @@ final class TestKeychain: @unchecked Sendable {
     }
 
     fileprivate func recordSet(_ account: String) throws {
-        if let failure = withLock({ setFailures[account] }) {
+        if let failure = withLock({ setFailures[account] ?? writeFailures[account] }) {
+            throw KeychainAccessError.securityError(failure)
+        }
+    }
+
+    fileprivate func recordWrite(_ account: String) throws {
+        if let failure = withLock({ writeFailures[account] }) {
             throw KeychainAccessError.securityError(failure)
         }
     }
@@ -319,11 +371,13 @@ private struct SpyItemStore: KeychainItemStoreBehavior {
     }
 
     func addIfAbsent(_ value: Data, key: String) throws -> Bool {
-        try base.addIfAbsent(value, key: key)
+        try spy.recordWrite(key)
+        return try base.addIfAbsent(value, key: key)
     }
 
     func replaceIfPresent(_ value: Data, key: String) throws -> Bool {
-        try base.replaceIfPresent(value, key: key)
+        try spy.recordWrite(key)
+        return try base.replaceIfPresent(value, key: key)
     }
 
     func move(_ key: String, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
@@ -411,6 +465,21 @@ final class Flag: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         raised = true
+    }
+}
+
+// MARK: - Record versions
+
+extension VersionedSessionRecord {
+
+    /// A named session's generation, for tests that count commits. A record versioned by its stored bytes has
+    /// none, and fails the test.
+    var generation: UInt64 {
+        guard case .generation(let generation) = version else {
+            XCTFail("expected a record versioned by its generation, got \(version)")
+            return 0
+        }
+        return generation
     }
 }
 

@@ -138,9 +138,10 @@ final class SandboxParityProvisioningTests: XCTestCase {
     ///
     func testCustomAuthCompletesWithTheStoredAnswer() async throws {
         let pool = try ParityPool(.standard)
+        // Read before the sign-up, so a run without the answer (it skips on CI) signs no user up.
+        let answer = try IntegrationTestEnvironment.credentials().requireCustomChallengeAnswer()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, deletingAtTeardownOf: self)
-        let answer = try IntegrationTestEnvironment.credentials().requireCustomChallengeAnswer()
 
         let start = try await pool.client.initiateAuth(input: InitiateAuthInput(
             authFlow: .customAuth,
@@ -671,14 +672,20 @@ private struct ParityPool {
         }
         // Before any request: a role that cannot confirm a user gets no sign-up, so no message either.
         try SandboxSignUp.requireNotKnownUnconfirmable(kind)
+        try SandboxSignUp.requireSelfSignUp(kind)
         await CodeSink.prepare(kind)
         let signedUpAt = Date()
-        let output = try await client.signUp(input: SignUpInput(
-            clientId: clientId,
-            password: user.password,
-            userAttributes: attributes,
-            username: user.username
-        ))
+        let output: SignUpOutput
+        do {
+            output = try await client.signUp(input: SignUpInput(
+                clientId: clientId,
+                password: user.password,
+                userAttributes: attributes,
+                username: user.username
+            ))
+        } catch {
+            throw SandboxSignUp.selfSignUpRefusal(error, on: kind)
+        }
         if let userSub = output.userSub {
             let fresh = FreshUser(
                 pool: kind,

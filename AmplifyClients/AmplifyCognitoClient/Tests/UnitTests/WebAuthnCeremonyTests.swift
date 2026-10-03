@@ -78,7 +78,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             let holdsWindow = await request.anchor?.holds(window)
             XCTAssertEqual(holdsWindow, true)
             XCTAssertTrue(engine.ceremonyAnchorCalls[index] === request.anchor)
-            try await client.signOut()
+            await client.signOut()
         }
     }
 
@@ -115,7 +115,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         _ = try await client.signIn(username: "alice", presentationAnchor: windowA)
         let first = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN")
-        try await client.signOut()
+        await client.signOut()
         _ = try await client.signIn(username: "alice", presentationAnchor: windowA)
         let second = try await client.confirmSignIn(challengeResponse: "WEB_AUTHN", presentationAnchor: windowB)
 
@@ -292,7 +292,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let associate = Task { @MainActor in try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
         let busyAssociate = await authClientError { try await homeClient.associateWebAuthnCredential(presentationAnchor: window) }
-        try await homeClient.signOut()
+        await homeClient.signOut()
         let busySignIn = await authClientError {
             try await homeClient.signIn(
                 username: "bob",
@@ -359,7 +359,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             )
         }
         try await held.up()
-        try await client.signOut()
+        await client.signOut()
         try await unwound.arrivals(1)
 
         XCTAssertFalse(signIn.isCancelled)
@@ -558,7 +558,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
-        try await client.signOut()
+        await client.signOut()
 
         let error = await authClientError { try await associate.value(within: 10) }
         XCTAssertEqual(error?.kind, .invalidState)
@@ -589,7 +589,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await start.arrivals(1)
-        try await client.signOut()
+        await client.signOut()
         await start.open()
 
         let error = await authClientError { try await associate.value(within: 10) }
@@ -621,7 +621,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
-        try await homeClient.signOut()
+        await homeClient.signOut()
         await held.letAnswer()
 
         try await associate.value(within: 10)

@@ -40,9 +40,10 @@ struct ContentView: View {
                 if isSignedIn {
                     Button("Sign Out") {
                         run("Sign Out") { driver in
-                            try await driver.signOut()
+                            // Throws while the user is still signed in, which keeps this button.
+                            let line = try await driver.signOut()
                             isSignedIn = false
-                            return "User is signed out"
+                            return line
                         }
                     }
                     .accessibilityIdentifier("SignOut")

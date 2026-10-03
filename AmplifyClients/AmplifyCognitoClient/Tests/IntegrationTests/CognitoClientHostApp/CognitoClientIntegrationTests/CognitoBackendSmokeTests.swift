@@ -66,6 +66,8 @@ final class CognitoBackendSmokeTests: XCTestCase {
     ///      custom-challenge answer (`custom_challenge_answer`), at least one new-password user
     ///      (`new_password_required_usernames`) and their temporary password
     ///      (`new_password_required_temporary_password`). Other keys, such as the plugin suites', are allowed
+    ///    - On CI (`IntegrationTestEnvironment.skipOnCIIfMissing`), where the plugin downloads no credentials
+    ///      file, it skips after the outputs checks (`CISkipReason.credentialsFile`)
     ///
     func testProvisionedUsersAreAvailable() throws {
         try IntegrationTestEnvironment.requireProvisioned()
@@ -77,6 +79,7 @@ final class CognitoBackendSmokeTests: XCTestCase {
         }
 
         let credentials = try IntegrationTestEnvironment.credentials()
+        try IntegrationTestEnvironment.skipOnCIIfMissing(.credentialsFile, present: credentials.isPresent)
         XCTAssertTrue(credentials.isPresent, "\(IntegrationTestEnvironment.credentialsResource).json is not in the test bundle")
         XCTAssertFalse(credentials.customChallengeAnswer?.value.isEmpty ?? true, "No custom-challenge answer")
         XCTAssertFalse(credentials.newPasswordRequiredUsernames.isEmpty, "No new-password users")

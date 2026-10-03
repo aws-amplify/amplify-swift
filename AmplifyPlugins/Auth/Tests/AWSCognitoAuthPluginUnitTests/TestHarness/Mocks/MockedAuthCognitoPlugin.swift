@@ -26,7 +26,7 @@ struct MockedAuthCognitoPluginHelper {
 
     func createPlugin() -> AWSCognitoAuthPlugin {
 
-        let authResolver = AuthState.Resolver().eraseToAnyResolver()
+        let authResolver = AuthState.Resolver(logger: AmplifyEngineLogRouter()).eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(authConfiguration: authConfiguration)
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()

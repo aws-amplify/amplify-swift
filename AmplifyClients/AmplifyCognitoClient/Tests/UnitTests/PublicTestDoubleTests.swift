@@ -34,12 +34,21 @@ final class PublicTestDoubleTests: XCTestCase {
             userPoolTokensResult: .success(tokens)
         )
         let result = AuthClientSignInResult(nextStep: .confirmSignInWithTOTPCode)
-        let partial = AuthClientPartialSignOut(revokeError: nil, globalSignOutError: .unknown("global", "retry"))
+        let partial = AuthClientSignOutResult.partial(
+            revokeTokenError: nil,
+            globalSignOutError: .unknown("global", "retry"),
+            hostedUIError: nil,
+            storageError: nil
+        )
 
         XCTAssertEqual(try session.userPoolTokensResult.get(), tokens)
         XCTAssertEqual(try session.awsCredentialsResult.get().accessKeyId, "AKID")
         XCTAssertEqual(result.nextStep, .confirmSignInWithTOTPCode)
-        XCTAssertNil(partial.revokeError)
-        XCTAssertNotNil(partial.globalSignOutError)
+        XCTAssertTrue(partial.signedOutLocally)
+        guard case .partial(let revokeTokenError, let globalSignOutError, _, _) = partial else {
+            return XCTFail("expected .partial, got \(partial)")
+        }
+        XCTAssertNil(revokeTokenError)
+        XCTAssertNotNil(globalSignOutError)
     }
 }

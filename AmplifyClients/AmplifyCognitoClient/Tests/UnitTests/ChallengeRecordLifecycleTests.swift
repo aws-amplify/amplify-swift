@@ -174,11 +174,11 @@ final class ChallengeRecordLifecycleTests: XCTestCase {
     ///    - each time the record is gone
     func testSignOutPurgeAndDeletionDeleteTheRecord() async throws {
         var (client, _) = try await challenged()
-        _ = try await client.signOut()
+        _ = await client.signOut()
         XCTAssertEqual(try store.readChallenge(work), .absent, "sign-out")
 
         (client, _) = try await challenged()
-        _ = try await client.signOut(options: .init(purgeStoredSession: true))
+        _ = await client.signOut(options: .init(purgeStoredSession: true))
         XCTAssertEqual(try store.readChallenge(work), .absent, "purge")
 
         (client, _) = try await challenged()

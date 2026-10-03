@@ -10,12 +10,13 @@ import Security
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// `setSessionLabel` and `completeAdoption()`.
+/// `setSessionLabel`: task T9. And how a named session's label follows its user when another principal takes the
+/// session (as `.default`'s sidecar binding).
 final class SessionRecordOperationsTests: XCTestCase {
 
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
-    private var pluginAccount: String { SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools) }
+    private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
 
     override func setUp() {
         harness = ClientHarness()
@@ -28,7 +29,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         harness = nil
     }
 
-    private func envelope(_ sessionId: SessionID) throws -> SessionRecordEnvelope? {
+    private func envelope(_ sessionId: SessionID) throws -> VersionedSessionRecord? {
         guard case .record(let envelope) = try harness.store().read(sessionId) else {
             return nil
         }
@@ -84,23 +85,29 @@ final class SessionRecordOperationsTests: XCTestCase {
         XCTAssertEqual(try envelope(work)?.generation, 3)
     }
 
-    /// The storage layer's defined first write after read-through: it lands on `.default`'s own key and
-    /// leaves the plugin's record byte-identical, so a rollback still finds it.
+    /// `.default`'s label lives in its sidecar: the plugin's record is never rewritten for a label.
     ///
-    /// - Given: `.default` reading through to the plugin's record
+    /// - Given: `.default` on the plugin's record, holding alice, under the plugin's last configuration
     /// - When: a label is set
     /// - Then:
-    ///    - `.default`'s own record now holds the plugin's credentials, described by the engine, with
-    ///      the label; the plugin's record is untouched
-    func testLabelOnAReadThroughSessionWritesItsOwnRecordAndKeepsThePlugins() async throws {
+    ///    - only the sidecar is written, bound to alice, with the label; the plugin's record is byte-identical and
+    ///      the session reads the label back
+    func testLabelOnTheDefaultSessionWritesOnlyTheSidecar() async throws {
         let payload = FakePayload.signedIn("alice")
         harness.keychain.put(payload.data, pluginAccount)
+        harness.keychain.recordPluginConfiguration()
         let client = try harness.client(.default)
 
         try await client.setSessionLabel("Main")
 
-        XCTAssertEqual(try envelope(.default)?.record, payload.record(label: "Main"))
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        XCTAssertEqual(harness.keychain.writtenAccounts, [sidecarAccount])
         XCTAssertEqual(harness.keychain.value(pluginAccount), payload.data)
+        guard case .meta(let meta) = DefaultSessionMeta.decode(try XCTUnwrap(harness.keychain.value(sidecarAccount))) else {
+            return XCTFail("the sidecar must be readable")
+        }
+        XCTAssertEqual([meta.label, meta.username, meta.userId], ["Main", "alice", "sub-alice"])
+        XCTAssertEqual(try harness.storedRecord(.default), payload.record(label: "Main"))
     }
 
     /// A record this build cannot read is never overwritten.
@@ -121,27 +128,24 @@ final class SessionRecordOperationsTests: XCTestCase {
         XCTAssertEqual(harness.keychain.value(harness.store().sessionAccount(for: work)), StorageFixtures.corruptRecord)
     }
 
-    /// Public calls throw only `AuthClientError`: an engine that cannot read a payload must not leak its
-    /// own error type.
+    /// A shared record this build cannot read is never overwritten, and gets no label.
     ///
-    /// - Given: `.default` reading through to a plugin record the engine cannot read
-    /// - When: a label is set, and adoption is attempted
+    /// - Given: `.default` on a plugin record that is not the plugin's format, under the plugin's last configuration
+    /// - When: a label is set
     /// - Then:
-    ///    - each throws `AuthClientError.unknown` carrying the engine's error as its underlying error, and
-    ///      nothing is written
-    func testUndescribablePayloadThrowsAuthClientErrorFromLabelAndAdoption() async throws {
+    ///    - it throws `AuthClientError.unknown`, and nothing is written
+    func testLabelOnAnUnrecognisedDefaultRecordThrowsAndWritesNothing() async throws {
         harness.keychain.put(Data("opaque".utf8), pluginAccount)
+        harness.keychain.recordPluginConfiguration()
         let client = try harness.client(.default)
 
-        for operation in [{ try await client.setSessionLabel("Main") }, { try await client.completeAdoption() }] {
-            await assertThrowsAsync(operation) { error in
-                guard case .unknown(_, _, let underlying) = error as? AuthClientError else {
-                    return XCTFail("expected AuthClientError.unknown, got \(error)")
-                }
-                XCTAssertEqual(underlying as? FakeEngineError, .unreadablePayload)
+        await assertThrowsAsync({ try await client.setSessionLabel("Main") }) { error in
+            guard case .unknown = error as? AuthClientError else {
+                return XCTFail("expected AuthClientError.unknown, got \(error)")
             }
         }
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
+        XCTAssertEqual(harness.keychain.value(pluginAccount), Data("opaque".utf8))
     }
 
     /// A lost race is rebased, not forced: forcing would write back credentials a concurrent refresh
@@ -192,187 +196,144 @@ final class SessionRecordOperationsTests: XCTestCase {
         XCTAssertNotEqual(try envelope(work)?.record.label, "Work")
     }
 
-    // MARK: Adoption
+    // MARK: Label binding
 
-    /// - Given: `.default` reading through to the plugin's record
-    /// - When: adoption completes
-    /// - Then:
-    ///    - `.default`'s own record holds the plugin's bytes verbatim, described by the engine
-    ///    - the own write happened before the plugin record's delete, and the plugin record is gone
-    ///    - the state is unchanged
-    func testAdoptionWritesTheOwnRecordThenDeletesThePlugins() async throws {
-        let payload = FakePayload.signedIn("alice")
-        harness.keychain.put(payload.data, pluginAccount)
-        let client = try harness.client(.default)
-        let before = await client.currentSessionState()
-
-        try await client.completeAdoption()
-
-        XCTAssertEqual(try envelope(.default)?.record, payload.record())
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(
-            harness.keychain.mutationOrder,
-            [
-                .write(harness.store().sessionAccount(for: .default)),
-                // The namespace marker of a record created with credentials (`SessionRecordStore+CopyForward.swift`).
-                .write(harness.store().markerAccount(for: .default)),
-                .remove(pluginAccount)
-            ],
-            "own record first, plugin record second"
-        )
-        let after = await client.currentSessionState()
-        XCTAssertEqual(after, before)
-    }
-
-    /// - Given: `.default` with its own record, copied earlier from the plugin's record, which is still present
-    /// - When: adoption completes, twice
-    /// - Then:
-    ///    - the own record is kept as it was, the plugin's is deleted, and the second call succeeds with
-    ///      nothing to do
-    func testAdoptionIsIdempotent() async throws {
-        let alice = FakePayload.signedIn("alice")
-        let envelope = try harness.signIn(.default, alice)
-        harness.keychain.put(alice.data, pluginAccount)
-        let client = try harness.client(.default)
-
-        try await client.completeAdoption()
-        try await client.completeAdoption()
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(try self.envelope(.default), envelope)
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-    }
-
-    /// The own record was refreshed since it was copied, so the plugin's copy of the same user is stale.
+    /// A guest that takes over a signed-out row left by a user never takes that user's label, so it cannot pass
+    /// it on to the next user.
     ///
-    /// - Given: `.default`'s own record holding alice's refreshed credentials, and the plugin's record
-    ///   holding alice's older ones
-    /// - When: adoption completes
+    /// - Given: a named session where alice signs in, sets a label, and signs out
+    /// - When:
+    ///    - its session is fetched, which makes it a guest
+    ///    - then bob signs in over the guest
     /// - Then:
-    ///    - the plugin's record is deleted and the own record is kept
-    func testAdoptionDeletesThePluginsOlderCopyOfTheSameUser() async throws {
-        let envelope = try harness.signIn(.default, .signedIn("alice", version: 2))
-        harness.keychain.put(FakePayload.signedIn("alice", version: 1).data, pluginAccount)
-        let client = try harness.client(.default)
-
-        try await client.completeAdoption()
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(try self.envelope(.default), envelope)
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-    }
-
-    /// An unbridged plugin running beside the client signed a different user in. Deleting that record
-    /// would sign `Amplify.Auth` out of a session this call never adopted.
-    ///
-    /// - Given: `.default`'s own record holding alice, and the plugin's record holding bob
-    /// - When: adoption completes
-    /// - Then:
-    ///    - it throws `.unknown`, and both records are kept
-    func testAdoptionKeepsAPluginRecordHoldingADifferentUser() async throws {
-        let envelope = try harness.signIn(.default, .signedIn("alice"))
-        let bob = FakePayload.signedIn("bob")
-        harness.keychain.put(bob.data, pluginAccount)
-        let client = try harness.client(.default)
-
-        await assertThrowsAsync({ try await client.completeAdoption() }) { error in
-            guard case .unknown = error as? AuthClientError else {
-                return XCTFail("\(error)")
-            }
-        }
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(harness.keychain.value(pluginAccount), bob.data)
-        XCTAssertEqual(try self.envelope(.default), envelope)
-    }
-
-    /// - Given: `.default` reading through to alice's plugin record, and the plugin writing bob's record
-    ///   while adoption copies alice's
-    /// - When: adoption completes
-    /// - Then:
-    ///    - it throws, the own record holds the copy of alice, and bob's plugin record is kept
-    func testAdoptionKeepsAPluginRecordThatChangedDuringTheCopy() async throws {
-        let alice = FakePayload.signedIn("alice")
-        let bob = FakePayload.signedIn("bob")
-        harness.keychain.put(alice.data, pluginAccount)
-        let client = try harness.client(.default)
-        _ = await client.currentSessionState()
-        let keychain = harness.keychain
-        let pluginAccount = pluginAccount
-        // Own-key reads during adoption: the read, then the commit guard's re-read.
-        harness.keychain.onceAfterReading(harness.store().sessionAccount(for: .default), occurrence: 2) {
-            keychain.put(bob.data, pluginAccount)
-        }
-
-        await assertThrowsAsync { try await client.completeAdoption() }
-
-        XCTAssertEqual(harness.keychain.value(pluginAccount), bob.data)
-        XCTAssertEqual(try envelope(.default)?.record, alice.record())
-    }
-
-    /// - Given: `.default` reading through to the plugin's record, and a keychain that fails to delete the
-    ///   plugin's record once
-    /// - When: adoption is attempted, and then retried once the keychain recovers
-    /// - Then:
-    ///    - the first attempt throws `storageUnavailable`, with the own record committed and the session
-    ///      already reading it in memory, and the plugin's record kept
-    ///    - the retry deletes the plugin's record
-    func testAdoptionRecoversWhenThePluginRecordDeleteFails() async throws {
-        let alice = FakePayload.signedIn("alice")
-        harness.keychain.put(alice.data, pluginAccount)
-        let client = try harness.client(.default)
-        harness.keychain.failingRemovals(of: pluginAccount, with: errSecInteractionNotAllowed)
-
-        await assertThrowsAsync({ try await client.completeAdoption() }) { error in
-            XCTAssertEqual((error as? AuthClientError)?.storageUnavailableReason, .locked, "\(error)")
-        }
-        XCTAssertEqual(try envelope(.default)?.record, alice.record())
-        XCTAssertEqual(harness.keychain.value(pluginAccount), alice.data)
-        let inMemory = await client.core.restoredSnapshotIfAny
-        XCTAssertEqual(inMemory?.ownRecord, alice.record(), "memory follows the committed own record")
-
-        harness.keychain.clearFailures()
-        try await client.completeAdoption()
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-    }
-
-    /// - Given: `.default` with nothing stored
-    /// - When: adoption completes
-    /// - Then:
-    ///    - it succeeds and writes nothing
-    func testAdoptionWithNothingToAdoptSucceeds() async throws {
-        let client = try harness.client(.default)
-
-        try await client.completeAdoption()
-
-        XCTAssertEqual(harness.keychain.writtenAccounts, [])
-    }
-
-    /// - Given: `.default` with a corrupt own record, and the plugin's record
-    /// - When: adoption is attempted
-    /// - Then:
-    ///    - it throws, and the plugin's record is not deleted
-    func testAdoptionOverAnUnreadableRecordThrowsAndKeepsThePlugins() async throws {
-        harness.keychain.put(FakePayload.signedIn("alice").data, pluginAccount)
-        harness.keychain.put(StorageFixtures.corruptRecord, harness.store().sessionAccount(for: .default))
-        let client = try harness.client(.default)
-
-        await assertThrowsAsync { try await client.completeAdoption() }
-
-        XCTAssertEqual(harness.keychain.value(pluginAccount), FakePayload.signedIn("alice").data)
-    }
-
-    /// - Given: the plugin's record, and a named session
-    /// - When: the named session completes adoption
-    /// - Then:
-    ///    - it is a no-op: nothing is read, written or deleted
-    func testAdoptionIsANoOpForNamedSessions() async throws {
-        harness.keychain.put(FakePayload.signedIn("alice").data, pluginAccount)
+    ///    - alice's signed-out row keeps her label and username
+    ///    - the guest record has no label
+    ///    - bob's record has no label, and nor does the listed row
+    func testAGuestOverAnotherUsersSignedOutRowDropsTheLabelSoTheNextUserHasNone() async throws {
         let client = try harness.client(work)
+        try await client.signInForTest("alice")
+        try await client.setSessionLabel("Alice's work")
+        _ = await client.signOut()
+        XCTAssertEqual(
+            try harness.storedRecord(work),
+            .signedOut(label: "Alice's work", username: "alice", userId: "sub-alice")
+        )
 
-        try await client.completeAdoption()
+        _ = try await client.fetchAuthSession()
 
-        XCTAssertEqual(harness.keychain.readAccounts, [])
-        XCTAssertFalse(harness.keychain.hasMutations)
+        let guest = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(guest.kind, .guest)
+        XCTAssertNil(guest.label)
+
+        try await client.signInForTest("bob")
+
+        let bob = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(bob.username, "bob")
+        XCTAssertNil(bob.label)
+        XCTAssertEqual(try harness.store().storedSessions(includingSignedOut: true).map(\.label), [nil])
+    }
+
+    /// "No user yet": a label set while the session is a guest names no user, so the first user who signs
+    /// in keeps it.
+    ///
+    /// - Given: a guest session, whose label is set while it is a guest
+    /// - When: a user signs in over the guest
+    /// - Then:
+    ///    - the user's record keeps the label
+    func testAGuestsOwnLabelIsKeptWhenAUserSignsIn() async throws {
+        try harness.signIn(work, .guest(identityId: "us-east-1:guest"))
+        let client = try harness.client(work)
+        try await client.setSessionLabel("Kiosk")
+
+        try await client.signInForTest("alice")
+
+        let record = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(record.username, "alice")
+        XCTAssertEqual(record.label, "Kiosk")
+    }
+
+    /// "No user yet": a label set before anyone signed in is kept by the guest that takes the row, and then
+    /// by the first user.
+    ///
+    /// - Given: a named session with nothing stored, labelled
+    /// - When:
+    ///    - its session is fetched, which makes it a guest
+    ///    - then a user signs in over the guest
+    /// - Then:
+    ///    - the guest record and then the user's record keep the label
+    func testALabelSetBeforeAnyoneSignedInPassesThroughAGuestToTheFirstUser() async throws {
+        let client = try harness.client(work)
+        try await client.setSessionLabel("Shared iPad")
+
+        _ = try await client.fetchAuthSession()
+
+        let guest = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(guest.kind, .guest)
+        XCTAssertEqual(guest.label, "Shared iPad")
+
+        try await client.signInForTest("alice")
+
+        XCTAssertEqual(try harness.storedRecord(work)?.label, "Shared iPad")
+    }
+
+    /// A federation never takes a label from a signed-out row left by a user, directly or through a guest, so
+    /// clearing it and signing another user in leaves no label either.
+    ///
+    /// - Given: a named session where alice signs in, sets a label, and signs out
+    /// - When:
+    ///    - it federates; it clears the federation, and bob signs in
+    ///    - then, after alice signs in, labels it and signs out again, its session is fetched (a guest) and it
+    ///      federates
+    /// - Then:
+    ///    - each federated record has no label; the cleared row and bob's record have none
+    func testAFederationOverAnotherUsersSignedOutRowHasNoLabel() async throws {
+        let client = try harness.client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        try await client.signInForTest("alice")
+        try await client.setSessionLabel("Alice's work")
+        _ = await client.signOut()
+        engine.scriptPhase5(.federateToIdentityPool) { _ in FakePayload.federated(identityId: "us-east-1:fed").data }
+
+        _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
+
+        let direct = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(direct.kind, .federated)
+        XCTAssertNil(direct.label)
+        try await client.clearFederationToIdentityPool()
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: nil, username: nil))
+        try await client.signInForTest("bob")
+        XCTAssertNil(try harness.storedRecord(work)?.label)
+        _ = await client.signOut()
+
+        try await client.signInForTest("alice")
+        try await client.setSessionLabel("Alice's work")
+        _ = await client.signOut()
+        _ = try await client.fetchAuthSession()
+        _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
+
+        let throughGuest = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(throughGuest.kind, .federated)
+        XCTAssertNil(throughGuest.label)
+    }
+
+    /// "No user yet": a federated identity names no user, so its own label survives clearing the federation
+    /// and is kept by the first user who signs in, as `.default`'s sidecar keeps it.
+    ///
+    /// - Given: a federated session, labelled while federated
+    /// - When: it clears the federation, then a user signs in
+    /// - Then:
+    ///    - the signed-out row keeps the label with no user, and the user's record keeps it
+    func testAFederatedIdentitysOwnLabelSurvivesClearingAndIsKeptByTheFirstUser() async throws {
+        try harness.signIn(work, .federated(identityId: "us-east-1:fed"))
+        let client = try harness.client(work)
+        try await client.setSessionLabel("Tablet")
+
+        try await client.clearFederationToIdentityPool()
+
+        XCTAssertEqual(try harness.storedRecord(work), .signedOut(label: "Tablet", username: nil))
+        try await client.signInForTest("alice")
+        let record = try XCTUnwrap(harness.storedRecord(work))
+        XCTAssertEqual(record.username, "alice")
+        XCTAssertEqual(record.label, "Tablet")
     }
 }

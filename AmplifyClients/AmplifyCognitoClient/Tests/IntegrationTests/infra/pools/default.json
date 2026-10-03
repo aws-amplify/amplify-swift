@@ -1,5 +1,5 @@
 {
-  "comment": "U-DEF, the plugin's default backend (AuthIntegrationTests/README.md, Gen2): username sign-in, self sign-up with the pre-sign-up trigger, custom auth triggers, custom senders, MFA optional with TOTP and SMS, device tracking always, attribute updates without verification. Also hosts the hosted UI (P-7): `hostedui` for the client host app, `hostedui-plugin` (callback `myapp://`, AuthHostedUIApp/README.md) for the plugin's AuthHostedUIApp. `plugin` is `client` with user-existence errors on (LEGACY), which the plugin's AuthIntegrationTests expect (testUserNotFound*).",
+  "comment": "U-DEF, the plugin's default backend (AuthIntegrationTests/README.md, Gen2): username sign-in, self sign-up with the pre-sign-up trigger, custom auth triggers, custom senders, MFA optional with TOTP and SMS, device tracking always, attribute updates without verification. Also hosts the hosted UI (P-7): `hostedui` for the client host app, `hostedui-plugin` (callback `myapp://`, AuthHostedUIApp/README.md) for the plugin's AuthHostedUIApp. `plugin` is `client` with user-existence errors on (LEGACY), which the plugin's AuthIntegrationTests expect (testUserNotFound*). `rotation` is `client` with refresh-token rotation on and no grace period, for the client's interop rotation tests (PluginRotationTests); Cognito refuses ALLOW_REFRESH_TOKEN_AUTH on it, and it is named only in rotation-amplify_outputs.json.",
   "userPool": {
     "UserPoolTier": "ESSENTIALS",
     "DeletionProtection": "INACTIVE",
@@ -49,6 +49,12 @@
       "EnableTokenRevocation": true,
       "PreventUserExistenceErrors": "LEGACY"
     },
+    "rotation": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "RefreshTokenRotation": { "Feature": "ENABLED", "RetryGracePeriodSeconds": 0 }
+    },
     "hostedui": {
       "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
       "EnableTokenRevocation": true,
@@ -75,6 +81,7 @@
   "domain": { "ManagedLoginVersion": 1 },
   "outputs": {
     "default": { "client": "client" },
-    "hosted-ui": { "client": "hostedui", "oauth": true }
+    "hosted-ui": { "client": "hostedui", "oauth": true },
+    "rotation": { "client": "rotation" }
   }
 }

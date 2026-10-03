@@ -40,7 +40,7 @@ final class DeviceKeyPersistenceTests: DeviceTestCase {
         let firstDeviceKey = try await thisDeviceKey(client)
         assertOnlyThisDevice(try await client.fetchDevices(), firstDeviceKey, "after the first sign-in")
 
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         try await signInToDone(client, user, flow: .userSRP)
 
         let secondDeviceKey = try await thisDeviceKey(client)
@@ -64,7 +64,7 @@ final class DeviceKeyPersistenceTests: DeviceTestCase {
         XCTAssertFalse(otherDevices.contains(firstDeviceKey), "another user lists the first user's device")
 
         // The other user's sign-in left the first user's device record alone.
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         try await signInToDone(client, user, flow: .userSRP)
         let afterOtherUserKey = try await thisDeviceKey(client)
         XCTAssertTrue(afterOtherUserKey == firstDeviceKey, "another user's sign-in changed the first user's device key")
@@ -164,7 +164,7 @@ final class DeviceKeyPersistenceTests: DeviceTestCase {
         assertOnlyThisDevice(try await client.fetchDevices(), originalDeviceKey, "after the first sign-in")
 
         for (index, flow) in then.enumerated() {
-            _ = try await client.signOut()
+            XCTAssertSignOutComplete(await client.signOut())
             try await signInToDone(client, user, flow: flow)
             let cycle = "cycle \(index + 1) (\(flow))"
             let deviceKey = try await thisDeviceKey(client)

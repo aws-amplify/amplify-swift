@@ -29,7 +29,7 @@ class BaseAuthorizationTests: XCTestCase, @unchecked Sendable {
             userPoolFactory: userPool
         )
         let statemachine = AuthStateMachine(
-            resolver: AuthState.Resolver(),
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
             environment: environment,
             initialState: initialState
         )

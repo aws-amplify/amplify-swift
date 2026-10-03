@@ -51,6 +51,11 @@ Suite -> file -> sandbox backend:
         AWSCognitoAuthPluginHostedUIIntegrationTests-*        default, client hostedui-plugin (myapp://)
     AuthWebAuthnApp
         AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs          webauthn (P-10)
+    the client's interop target only (CognitoClientPluginInteropTests' PluginRotationTests), not the plugin's
+        AmplifyCognitoClientRotationIntegrationTests-amplify_outputs     default, client `rotation` (P-15, refresh-token
+                                                             rotation on, no grace period); written only once
+                                                             provision.sh has made that client, and never in
+                                                             the CI shape, so the tests skip without it
 
 The `data` section is the code sink's AppSync API with its read-only API key, which the plugin's
 `onCreateMfaInfo` subscription (AWSAuthBaseTest.subscribeToOTPCreation) uses through AWSAPIPlugin. Every
@@ -320,6 +325,10 @@ def build():
         "AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs.json": data(hosted),
         "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs.json": data(outputs("webauthn")),
     }
+    # The default pool's `rotation` client, once provision.sh has made it: an older sandbox has no such file, and
+    # the client's rotation tests then skip.
+    if os.path.exists(os.path.join(STATE_DIR, "rotation-amplify_outputs.json")):
+        files["AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json"] = data(outputs("rotation"))
     # Gen2 allows any `custom` block; the plugin and the client ignore it.
     return {name: dict(document, custom=SANDBOX_MARKER) if name.endswith("-amplify_outputs.json") else document
             for name, document in files.items()}

@@ -41,12 +41,16 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
 
     func signUpAndSignIn(username: String, password: String, email: String, signedUp: @MainActor () -> Void) async throws {
         // Fresh users come from the raw SignUp, not from the API under test.
-        _ = try await signUp.signUp(input: SignUpInput(
-            clientId: clientId,
-            password: password,
-            userAttributes: [.init(name: "email", value: email)],
-            username: username
-        ))
+        do {
+            _ = try await signUp.signUp(input: SignUpInput(
+                clientId: clientId,
+                password: password,
+                userAttributes: [.init(name: "email", value: email)],
+                username: username
+            ))
+        } catch {
+            throw HarnessAppError.selfSignUpRefusal(error)
+        }
         signedUp()
         let result = try await client.signIn(
             username: username,
@@ -69,9 +73,20 @@ final class ClientWebAuthnDriver: WebAuthnHarnessDriver {
         }
     }
 
-    func signOut() async throws {
+    /// The sign-out never throws: `.failed` is the session still signed in, and is thrown here so the screen
+    /// says so and stays signed in. `.partial` signed it out on this device, as the plugin's app reads it.
+    func signOut() async throws -> String {
         // The row is purged, not kept: this app shares its keychain with the plugin's AuthWebAuthnApp.
-        _ = try await client.signOut(options: AuthClientSignOutOptions(purgeStoredSession: true))
+        let result = await client.signOut(options: AuthClientSignOutOptions(purgeStoredSession: true))
+        switch result {
+        case .complete:
+            return "User is signed out"
+        case .partial:
+            return "User is signed out, but part of it failed: \(result.failedParts)"
+        case .failed(let error):
+            // By case name only: an error's text or payload can hold a username or an identifier.
+            throw HarnessAppError("Sign-out left the user signed in: \(error.harnessCaseName)")
+        }
     }
 
     func associateWebAuthnCredential(presentationAnchor: ASPresentationAnchor) async throws {

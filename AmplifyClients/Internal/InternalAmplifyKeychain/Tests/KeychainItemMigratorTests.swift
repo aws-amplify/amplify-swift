@@ -235,6 +235,77 @@ final class KeychainItemMigratorTests: XCTestCase {
         }
     }
 
+    /// The default session's sidecar and challenge items move with the plugin's record; every other client
+    /// record stays.
+    ///
+    /// - Given: a source holding plugin items, the default session's `$default.meta` and `$default.challenge`,
+    ///   a named session's `work.session` and `work.challenge`, and a leftover `$default.session`
+    /// - When: the migration runs
+    /// - Then:
+    ///    - the plugin items and the two default-session items are in the destination with their bytes
+    ///    - the named session's records and the leftover are still in the source, and not in the destination
+    func testDefaultSessionItemsMoveAndOtherClientRecordsStay() throws {
+        let keychain = InMemoryKeychain()
+        let defaultSessionItems = [
+            "amplify.1.us-east-1_Pool.$default.meta",
+            "amplify.1.us-east-1_Pool.$default.challenge"
+        ]
+        let staying = [
+            "amplify.1.us-east-1_Pool.work.session",
+            "amplify.1.us-east-1_Pool.work.challenge",
+            "amplify.1.us-east-1_Pool.$default.session"
+        ]
+        try populate(keychain, source, with: pluginAccounts + defaultSessionItems + staying)
+
+        try makeMigrator(keychain).migrate()
+
+        XCTAssertEqual(try keychain.store(service: source.service).allAccounts(), staying.sorted())
+        XCTAssertEqual(
+            try keychain.store(service: destination.service, accessGroup: destination.accessGroup).allAccounts(),
+            (pluginAccounts + defaultSessionItems).sorted()
+        )
+        for account in defaultSessionItems {
+            XCTAssertEqual(value(keychain, destination, account), Data("\(source.service)/\(account)".utf8), account)
+        }
+        for account in staying {
+            XCTAssertEqual(value(keychain, source, account), Data("\(source.service)/\(account)".utf8), account)
+        }
+    }
+
+    /// The destination clear removes the default session's two items, as the move does, and spares every
+    /// other client record.
+    ///
+    /// - Given: a source holding plugin items and the default session's `$default.meta`; a destination
+    ///   holding a stale plugin item, its own `$default.meta` and `$default.challenge`, a named session's
+    ///   `work.session` and a leftover `$default.session`
+    /// - When: the migration runs
+    /// - Then:
+    ///    - the destination's `$default.meta` is the source's: the stale one was cleared, so the source's moved
+    ///    - the destination's `$default.challenge` is gone: the clear removed it and the source had none
+    ///    - the named session's record and the leftover are still in the destination with their own bytes
+    ///    - the source is empty
+    func testDestinationClearRemovesTheDefaultSessionItemsAndSparesOtherClientRecords() throws {
+        let keychain = InMemoryKeychain()
+        let meta = "amplify.1.us-east-1_Pool.$default.meta"
+        let challenge = "amplify.1.us-east-1_Pool.$default.challenge"
+        let spared = ["amplify.1.us-east-1_Pool.work.session", "amplify.1.us-east-1_Pool.$default.session"]
+        try populate(keychain, source, with: pluginAccounts + [meta])
+        try populate(keychain, destination, with: ["amplify.us-east-1_Old.session", meta, challenge] + spared)
+
+        try makeMigrator(keychain).migrate()
+
+        XCTAssertEqual(
+            try keychain.store(service: destination.service, accessGroup: destination.accessGroup).allAccounts(),
+            (pluginAccounts + [meta] + spared).sorted()
+        )
+        XCTAssertEqual(value(keychain, destination, meta), Data("\(source.service)/\(meta)".utf8))
+        XCTAssertNil(value(keychain, destination, challenge))
+        for account in spared {
+            XCTAssertEqual(value(keychain, destination, account), Data("\(destination.service)/\(account)".utf8), account)
+        }
+        XCTAssertEqual(try keychain.store(service: source.service).allAccounts(), [])
+    }
+
     /// The same client account in source and destination no longer abandons the migration.
     ///
     /// Before client records were excluded, the destination's clear spared the destination's copy, the

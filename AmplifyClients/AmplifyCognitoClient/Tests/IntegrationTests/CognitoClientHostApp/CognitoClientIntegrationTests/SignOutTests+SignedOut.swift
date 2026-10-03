@@ -37,9 +37,9 @@ extension SignOutTests {
             )
             events = StreamRecorder(client.listenToAuthEvents())
 
-            let result = try await client.signOut()
+            let result = await client.signOut()
 
-            XCTAssertEqual(result, .complete)
+            XCTAssertSignOutComplete(result)
             let state = await client.currentSessionState()
             XCTAssertState(state, .signedOut)
         }

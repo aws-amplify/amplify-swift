@@ -180,7 +180,8 @@ class EngineFlowTypeForkTests: XCTestCase {
     ///
     func testParsersMatch() {
         for raw in Self.rawCorpus {
-            XCTAssertEqual(EngineAuthFactorType(rawValue: raw), publicFactor(rawValue: raw), raw)
+            XCTAssertEqual(EngineAuthFactorType(rawValue: raw, logger: DiscardingEngineLogger()), publicFactor(rawValue: raw), raw)
+            XCTAssertEqual(EngineAuthFactorType(decodingRawValue: raw), publicFactor(rawValue: raw), raw)
             XCTAssertEqual(EngineAuthFlowType(rawValue: raw), AuthFlowType(rawValue: raw).map { EngineAuthFlowType($0) }, raw)
             XCTAssertEqual(
                 EngineAuthFlowType.legacyInit(rawValue: raw),
@@ -306,30 +307,40 @@ class EngineFlowTypeForkTests: XCTestCase {
 
     /// Test that the fork's factor parser logs exactly what the public one does, at the same scope
     ///
-    /// - Given: A capturing engine log router
+    /// - Given: A capturing caller's logger, and a capturing global router
     /// - When:
-    ///    - An unsupported factor string is parsed, and then every supported one
+    ///    - An unsupported factor string is parsed with the caller's logger, and then every supported one
+    ///    - The same string is parsed as the public `AuthFlowType` decode parses it
     /// - Then:
-    ///    - One error is logged under category `AuthFactorType` (never the fork's name), with the public
-    ///      type's message; supported factors log nothing
+    ///    - The caller's parse logs one error through the caller's logger under category `AuthFactorType`
+    ///      (never the fork's name), with the public type's message, and nothing through the global router
+    ///     ; supported factors log nothing
+    ///    - The decode's parse logs the same error through the global router: the one engine site without a
+    ///      caller's logger
     ///
     func testUnsupportedFactorLogsUnderTheAuthFactorTypeCategory() {
         let router = CapturingRouter()
-        EngineLog.install(router)
-
-        XCTAssertNil(EngineAuthFactorType(rawValue: "X"))
-        XCTAssertEqual(router.entries, [
-            .init(
+        let global = CapturingRouter()
+        EngineLog.install(global)
+        let expected = [
+            CapturingRouter.Entry(
                 scope: .category("AuthFactorType"),
                 level: .error,
                 message: "Tried to initialize an unsupported MFA type with value: X",
                 hasError: false
             )
-        ])
+        ]
+
+        XCTAssertNil(EngineAuthFactorType(rawValue: "X", logger: router.scopedLogger()))
+        XCTAssertEqual(router.entries, expected)
+        XCTAssertEqual(global.entries, [])
 
         for factor in Self.factors {
-            XCTAssertNotNil(EngineAuthFactorType(rawValue: factor.challengeResponse))
+            XCTAssertNotNil(EngineAuthFactorType(rawValue: factor.challengeResponse, logger: router.scopedLogger()))
         }
         XCTAssertEqual(router.entries.count, 1)
+
+        XCTAssertNil(EngineAuthFactorType(decodingRawValue: "X"))
+        XCTAssertEqual(global.entries, expected)
     }
 }

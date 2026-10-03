@@ -255,14 +255,15 @@ final class LiveEngineSessionTests: XCTestCase {
         )
     }
 
-    /// After a failed global sign-out, `RevokeToken` is not called, and only the real global failure is
-    /// reported.
+    /// After a failed global sign-out, `RevokeToken` is not called, and the outcome carries the plugin's
+    /// placeholder revoke error beside the real global failure.
     ///
     /// - Given: `GlobalSignOut` failing
     /// - When:
     ///    - alice's payload is revoked with `global: true`
     /// - Then:
-    ///    - the only call is `GlobalSignOut`; the outcome has the mapped global error and `revokeError` nil
+    ///    - the only call is `GlobalSignOut`; the outcome has the mapped global error, and `revokeError` is the
+    ///      placeholder: `.service` with no code and empty texts
     ///
     func testAFailedGlobalSignOutSkipsTheRevoke() async throws {
         let engine = try harness.engine()
@@ -275,7 +276,9 @@ final class LiveEngineSessionTests: XCTestCase {
         let outcome = try await engine.revoke(payload, global: true)
 
         XCTAssertEqual(harness.cognito.operations, ["GlobalSignOut"])
-        XCTAssertNil(outcome.revokeError)
+        guard case .service(nil, "", "", _) = outcome.revokeError else {
+            return XCTFail("expected the placeholder revoke error, got \(String(describing: outcome.revokeError))")
+        }
         guard case .service(.requestLimitExceeded?, _, _, _) = outcome.globalSignOutError else {
             return XCTFail("expected the mapped global sign-out failure, got \(String(describing: outcome.globalSignOutError))")
         }

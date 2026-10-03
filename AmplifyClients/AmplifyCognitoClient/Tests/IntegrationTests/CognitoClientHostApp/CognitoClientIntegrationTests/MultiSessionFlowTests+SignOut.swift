@@ -38,9 +38,9 @@ extension MultiSessionFlowTests {
             aliceEvents = StreamRecorder(alice.listenToAuthEvents())
             bobEvents = StreamRecorder(bob.listenToAuthEvents())
 
-            let signOut = try await alice.signOut()
+            let signOut = await alice.signOut()
 
-            XCTAssertEqual(signOut, .complete)
+            XCTAssertSignOutComplete(signOut)
             let aliceState = await alice.currentSessionState()
             XCTAssertState(aliceState, .signedOut)
             let bobState = await bob.currentSessionState()

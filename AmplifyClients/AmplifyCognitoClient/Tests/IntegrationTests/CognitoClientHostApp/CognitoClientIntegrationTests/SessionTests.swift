@@ -147,7 +147,7 @@ final class SessionTests: ClientIntegrationTestCase {
         }
         var record = envelope.record
         record.credentials = try Self.expiringWithARejectedRefreshToken(XCTUnwrap(record.credentials))
-        let planted = try store.write(record, for: sessionId, expecting: envelope.generation)
+        let planted = try store.write(record, for: sessionId, expecting: envelope.version)
         guard planted.didCommit else {
             return XCTFail("the expired record was not planted: the record moved under the test")
         }
@@ -269,7 +269,7 @@ final class SessionTests: ClientIntegrationTestCase {
         }
         await Task.yield()
         // Bounded too, so a sign-out that deadlocks against the fetches fails the test instead of hanging it.
-        let signOutCall = ConcurrentCalls("the sign-out", count: 1) { _ in try await client.signOut() }
+        let signOutCall = ConcurrentCalls("the sign-out", count: 1) { _ in await client.signOut() }
         await fulfillment(of: [signOutCall.expectation], timeout: Self.networkTimeout)
         let signOut = try XCTUnwrap(signOutCall.values().first)
         let afterCalls = ConcurrentCalls("the fetches after the sign-out", count: 50) { _ in
@@ -279,7 +279,7 @@ final class SessionTests: ClientIntegrationTestCase {
         let during = try duringCalls.values()
         let after = try afterCalls.values()
 
-        XCTAssertEqual(signOut, .complete)
+        XCTAssertSignOutComplete(signOut)
         XCTAssertEqual(during.count, 100)
         for (index, session) in during.enumerated() {
             XCTAssertNoThrow(try session.identityIdResult.get(), "fetch \(index) has an identity")

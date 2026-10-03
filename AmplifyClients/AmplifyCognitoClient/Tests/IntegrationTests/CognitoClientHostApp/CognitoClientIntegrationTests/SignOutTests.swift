@@ -41,9 +41,9 @@ final class SignOutTests: ClientIntegrationTestCase {
         let tokens = try await client.fetchAuthSession().userPoolTokensResult.get()
         let refreshToken = tokens.refreshToken
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
 
-        XCTAssertEqual(result, .complete)
+        XCTAssertSignOutComplete(result)
         let state = await client.currentSessionState()
         XCTAssertState(state, .signedOut)
         let userPool = try XCTUnwrap(client.getUserPoolClient())
@@ -80,9 +80,9 @@ final class SignOutTests: ClientIntegrationTestCase {
         try await SessionCleanup.waitUntilReleased([sessionId])
         let before = try KeychainSnapshot.versions()
 
-        let result = try await AmplifyCognitoClient.signOutStoredSession(sessionId: sessionId, configuration: configuration)
+        let result = await AmplifyCognitoClient.signOutStoredSession(sessionId: sessionId, configuration: configuration)
 
-        XCTAssertEqual(result, .complete)
+        XCTAssertSignOutComplete(result)
         let listed = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         let row = try XCTUnwrap(listed.first { $0.sessionId == sessionId }, "the signed-out row is kept")
         XCTAssertEqual(row.kind, SessionKind.signedOut)

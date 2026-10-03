@@ -123,16 +123,16 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertNil(pending)
     }
 
-    /// A payload the live engine produces is what the plugin's forward-compatible reader reads.
+    /// a payload the live engine produces is what the plugin's own credential store reads.
     ///
     /// - Given: a payload from a live sign-in, a refresh and a guest fetch
     /// - When:
-    ///    - each is wrapped in the record the core writes, and read with the plugin's
-    ///      `DefaultSessionRecordReader`
+    ///    - each is stored as it is under the plugin's session account, and retrieved with the plugin's
+    ///      `AWSCognitoAuthCredentialStore`
     /// - Then:
-    ///    - each reads as signed in, with exactly the credentials the payload decodes to
+    ///    - each is retrieved as exactly the credentials the payload decodes to, none of them signed out
     ///
-    func testProducedPayloadsAreReadByThePluginsReader() async throws {
+    func testProducedPayloadsAreReadByThePluginsStore() async throws {
         let engine = try harness.engine()
         let signedIn = try await harness.signedInPayload(on: engine)
         harness.scriptRefresh()
@@ -140,20 +140,11 @@ final class LiveEngineSignInTests: XCTestCase {
         let guest = try await engine.fetchGuestCredentials(current: nil)
 
         for payload in [signedIn, refreshed, guest] {
-            let summary = try engine.describe(payload)
-            let record = SessionRecord(
-                label: nil,
-                username: summary.username,
-                userId: summary.userId,
-                kind: summary.kind,
-                credentials: payload
-            )
-            let stored = try SessionRecordEnvelope(generation: 1, lastWriteTimestamp: Date(), record: record).encoded()
+            let kind = try engine.describe(payload).kind
+            let read = try harness.retrievedByThePlugin(payload)
 
-            guard case .signedIn(let read) = DefaultSessionRecordReader.decode(stored) else {
-                return XCTFail("the plugin's reader should read a produced \(summary.kind) payload")
-            }
-            XCTAssertEqual(read, try AmplifyCredentials.decoded(payload))
+            XCTAssertNotEqual(read, .noCredentials, "the plugin should read a produced \(kind) payload as signed in")
+            XCTAssertEqual(read, try AmplifyCredentials.decoded(payload), "\(kind)")
         }
     }
 

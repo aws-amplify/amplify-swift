@@ -170,10 +170,18 @@ enum IntegrationTestEnvironment {
     }
 
     /// The `data` API a role's codes are published to (the plugin's MfaInfo API), from its outputs file.
-    static func codeSinkAPI(_ pool: SandboxPool) throws -> CodeSinkAPI {
-        guard let data = try outputsDocument(pool)["data"] as? [String: Any],
-              let url = (data["url"] as? String).flatMap(URL.init(string:)),
-              let apiKey = data["api_key"] as? String, !apiKey.isEmpty else {
+    ///
+    /// A test that reads a code on the default backend names its CI skip (`ciSkip`: `.defaultCodeAPI` or
+    /// `.defaultCodeAPIAndVerifiedEmail`), so on CI, where that backend names no code API, it skips with that
+    /// reason (`skipOnCIIfMissing(_:present:)`) rather than fail.
+    static func codeSinkAPI(_ pool: SandboxPool, ciSkip: CISkipReason? = nil) throws -> CodeSinkAPI {
+        let data = try outputsDocument(pool)["data"] as? [String: Any]
+        let url = (data?["url"] as? String).flatMap(URL.init(string:))
+        let apiKey = (data?["api_key"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        if let ciSkip {
+            try skipOnCIIfMissing(ciSkip, present: url != nil && apiKey != nil)
+        }
+        guard let url, let apiKey else {
             throw HarnessError.malformedFixture("""
             \(pool.sourceName) has no data block with a url and an api_key: this test reads a code \
             Cognito sent a \(pool.rawValue) user, so the backend must publish its codes to the plugin's MfaInfo \
@@ -216,6 +224,58 @@ enum IntegrationTestEnvironment {
             block), and this check needs \(needs), which only the sandbox provisions.\(rewrite)
             """)
         }
+    }
+
+    // MARK: - CI skips
+
+    /// What the client's CI job sets to `1` in the test process, through `xcodebuild`'s
+    /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS` (`run_integration_tests.yml`'s `cognito_client_integ_ci_skips`
+    /// input). A local run never sets it, so local runs stay strict.
+    static let ciSkipsVariable = "COGNITO_CLIENT_INTEG_CI_SKIPS"
+
+    /// Whether this process runs in the client's CI job (`ciSkipsVariable` is `1`).
+    static var isCIRun: Bool {
+        ProcessInfo.processInfo.environment[ciSkipsVariable] == "1"
+    }
+
+    /// Whether the file set is the sandbox's: any role's outputs carry the sandbox mark (`isSandbox(_:)`), as
+    /// every Gen2 file `infra/plugin-configs.py --dir` writes does. The plugin's CI files, and the CI shape,
+    /// carry none.
+    static var isSandboxFileSet: Bool {
+        SandboxPool.allCases.contains { isSandbox($0) }
+    }
+
+    /// Skips the test, with `reason`'s message, when it runs on CI (`isCIRun`), the file set is not the
+    /// sandbox's (`isSandboxFileSet`) and the resource the reason names is missing (`present` is false).
+    /// Otherwise it returns, and the test goes on to fail naming the resource, as it does off CI: a sandbox run
+    /// never skips, even with the variable set by mistake, and once CI gains the resource the test runs there.
+    static func skipOnCIIfMissing(_ reason: CISkipReason, present: Bool) throws {
+        try skipOnCIIfMissing(reason, present: present, isCIRun: isCIRun, isSandboxFileSet: isSandboxFileSet)
+    }
+
+    /// Whether `skipOnCIIfMissing(_:present:)` skips, whatever the reason, for a check that must leave one part
+    /// out rather than skip the whole test (the every-pool sign-up check's device-alias pool).
+    static func skipsOnCI(present: Bool) -> Bool {
+        skipsOnCI(present: present, isCIRun: isCIRun, isSandboxFileSet: isSandboxFileSet)
+    }
+
+    /// `skipOnCIIfMissing(_:present:)` over the three conditions given, for the offline check
+    /// (`HarnessHelperTests`).
+    static func skipOnCIIfMissing(
+        _ reason: CISkipReason,
+        present: Bool,
+        isCIRun: Bool,
+        isSandboxFileSet: @autoclosure () -> Bool
+    ) throws {
+        if skipsOnCI(present: present, isCIRun: isCIRun, isSandboxFileSet: isSandboxFileSet()) {
+            throw XCTSkip(reason.message)
+        }
+    }
+
+    /// The rule: skip only when all three hold. The file set is read last, and only by a CI run missing the
+    /// resource.
+    static func skipsOnCI(present: Bool, isCIRun: Bool, isSandboxFileSet: @autoclosure () -> Bool) -> Bool {
+        isCIRun && !present && !isSandboxFileSet()
     }
 
     /// The default backend's credentials file. Absent keys are nil or empty, and an absent file has none, as
@@ -465,16 +525,22 @@ struct PluginCredentials: Sendable {
         self.secondIdentityPoolId = value("second_identity_pool_id")
     }
 
-    /// The custom-auth answer; fails (never skips) without it.
+    /// The custom-auth answer; fails without it, except on CI, where it skips (`CISkipReason.customAuthAnswer`).
     func requireCustomChallengeAnswer() throws -> SandboxSecret {
+        try IntegrationTestEnvironment.skipOnCIIfMissing(.customAuthAnswer, present: customChallengeAnswer != nil)
         guard let customChallengeAnswer else {
             throw HarnessError.malformedFixture(missing("custom_challenge_answer", "custom-auth triggers that accept it"))
         }
         return customChallengeAnswer
     }
 
-    /// The new-password users and their temporary password; fails (never skips) without them.
+    /// The new-password users and their temporary password; fails without them, except on CI, where it skips
+    /// (`CISkipReason.newPasswordUsers`).
     func requireNewPasswordUsers() throws -> (usernames: [String], temporaryPassword: SandboxSecret) {
+        try IntegrationTestEnvironment.skipOnCIIfMissing(
+            .newPasswordUsers,
+            present: !newPasswordRequiredUsernames.isEmpty && newPasswordRequiredTemporaryPassword != nil
+        )
         guard !newPasswordRequiredUsernames.isEmpty, let newPasswordRequiredTemporaryPassword else {
             throw HarnessError.malformedFixture(missing(
                 "new_password_required_usernames and new_password_required_temporary_password",
@@ -496,6 +562,52 @@ struct PluginCredentials: Sendable {
             """
         }
         return "\(file) has no \(keys): the default backend needs \(backend), as the plugin's own suite does."
+    }
+}
+
+/// Why a test skips on CI: each case names a resource the plugin's CI does not provide, and its
+/// message, the skip's, says so (`IntegrationTestEnvironment.skipOnCIIfMissing(_:present:)`). When CI gains the
+/// resource, the test runs there with no change here.
+enum CISkipReason: CaseIterable, Sendable {
+    /// The custom-auth answer: CA-1…3 and the parity check's custom auth.
+    case customAuthAnswer
+    /// The new-password users and their temporary password: CH-1 and P-3.
+    case newPasswordUsers
+    /// The credentials file itself: the fixture check.
+    case credentialsFile
+    /// A code API on the default backend: AT-2's second half.
+    case defaultCodeAPI
+    /// A code API on the default backend, and an email its pre-sign-up trigger verifies: RP-3.
+    case defaultCodeAPIAndVerifiedEmail
+    /// A way to confirm a fresh sign-up on the device-alias backend: DV-10…19, its parity check, and its pool in
+    /// the every-pool sign-up check.
+    case deviceAliasConfirmation
+
+    /// The skip's message.
+    var message: String {
+        switch self {
+        case .customAuthAnswer:
+            "Skipped on CI: the plugin's CI provides no AWSCognitoAuthPluginIntegrationTests-credentials.json "
+                + "with custom_challenge_answer, so there is no custom-auth answer. The plugin's AuthCustomSignInTests "
+                + "skip on CI for the same reason."
+        case .newPasswordUsers:
+            "Skipped on CI: the plugin's CI provides no AWSCognitoAuthPluginIntegrationTests-credentials.json "
+                + "with new_password_required_usernames and new_password_required_temporary_password. The plugin's "
+                + "testNewPasswordRequired skips on CI for the same reason."
+        case .credentialsFile:
+            "Skipped on CI: the plugin's CI downloads no AWSCognitoAuthPluginIntegrationTests-credentials.json, "
+                + "so there is no fixture to check."
+        case .defaultCodeAPI:
+            "Skipped on CI: the plugin's default backend (AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json) "
+                + "names no code API, so the code this test reads cannot be captured."
+        case .defaultCodeAPIAndVerifiedEmail:
+            "Skipped on CI: the plugin's default backend (AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json) "
+                + "names no code API, and its pre-sign-up trigger does not verify the email a password reset is sent to."
+        case .deviceAliasConfirmation:
+            "Skipped on CI: the plugin's device-alias backend (AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json) "
+                + "has no pre-sign-up trigger that confirms a fresh sign-up and names no code API, so no user is signed "
+                + "up there."
+        }
     }
 }
 

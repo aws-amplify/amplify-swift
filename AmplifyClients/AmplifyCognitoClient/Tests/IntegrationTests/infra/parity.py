@@ -13,6 +13,10 @@
     parity.py preflight   read-only: refuse a test run if a live pool could deliver a real message (prepare-run.sh)
     parity.py plugin-users  reset the plugin suites' pre-created user (prepare-run.sh, P-14)
     parity.py verify      read-only: describe every resource, print names and settings, no identifiers
+    parity.py self-sign-up on|release|off [--force]  self sign-up on or off, under leases (infra/self-sign-up.sh)
+    parity.py self-sign-up require-idle  refuse while an infra/self-sign-up.sh run holds a lease (provision.sh)
+    parity.py self-sign-up status  read-only: whether every parity pool has self sign-up off and its MFA as
+                          provisioned (infra/self-sign-up.sh, after a release that did not finish)
     parity.py teardown    delete every resource below (run by teardown.sh)
 
 Resources, all tagged purpose=amplify-cognito-client-integ and recorded under "parity" in state.json:
@@ -68,7 +72,10 @@ errors are printed with identifiers redacted.
 """
 
 import base64
+import contextlib
+import copy
 import datetime
+import fcntl
 import hashlib
 import io
 import json
@@ -76,6 +83,7 @@ import os
 import re
 import secrets
 import shutil
+import signal
 import string
 import subprocess
 import sys
@@ -192,7 +200,28 @@ def redact(text):
 
 
 def say(message):
-    print(redact(message), flush=True)
+    """Prints one line for the operator. A stdout that has gone (a pipe whose reader died, as a Ctrl-C on
+    `… | xcbeautify` leaves it, or a terminal that hung up) never stops the caller, which may be half-way
+    through a toggle: the line is dropped, and so is everything said after it."""
+    _write(sys.stdout, redact(message))
+
+
+def warn(message):
+    """As say, on stderr."""
+    _write(sys.stderr, redact(message))
+
+
+def _write(stream, line):
+    try:
+        print(line, file=stream, flush=True)
+    except OSError:
+        # Point the descriptor at /dev/null, so that later lines, and the flush at exit, cannot fail again.
+        try:
+            null = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(null, stream.fileno())
+            os.close(null)
+        except (OSError, ValueError):
+            pass
 
 
 def fail(message):
@@ -322,9 +351,15 @@ def require_cli_history_off():
 
 
 def require_recorded_account(state):
+    """Exits unless the caller's account is the one state.json records. An STS refusal (expired credentials, say)
+    exits with one redacted line, not a traceback: infra/self-sign-up.sh copies a failed release's output into the
+    run's log as it is."""
     global ACCOUNT, REGION
     REGION = state["region"]
-    ACCOUNT = aws("sts", "get-caller-identity")["Account"]
+    try:
+        ACCOUNT = aws("sts", "get-caller-identity")["Account"]
+    except AwsError as error:
+        sys.exit(f"Could not confirm the AWS account (STS refused): {error.message}")
     if ACCOUNT != state["account"]:
         sys.exit("Refusing: the caller's account is not the one state.json records.")
 
@@ -1098,13 +1133,89 @@ def wildcard_gaps():
     return gaps
 
 
-# Self sign-up (AdminCreateUserConfig.AllowAdminCreateUserOnly = false) is what the templates ask for, and
-# what the sign-up tests need. The account's security tooling may flag such a pool, and an automated
-# mitigation may then turn self sign-up off with its own UpdateUserPool call. provision re-enables it only
-# when this is set, so a re-run never silently undoes a mitigation: a person decides first (an exception
-# for the finding, or a recorded choice to re-enable without one).
-REENABLE_SELF_SIGN_UP = "COGNITO_CLIENT_INTEG_REENABLE_SELF_SIGN_UP"
-SELF_SIGN_UP_OFF = "self sign-up is off, but pools/{key}.json allows it (an automated mitigation, or a change by hand)"
+# Self sign-up (AdminCreateUserConfig.AllowAdminCreateUserOnly = false) is what the sign-up tests need, and the
+# shape the templates keep. The account's security tooling flags a pool that allows it, and an automated
+# mitigation may then turn it off with its own UpdateUserPool call. So it is OFF at rest: provision always
+# creates and updates the pools with it off, and only `self-sign-up on` turns it on, for the length of one local
+# run wrapped by infra/self-sign-up.sh, whose trap turns it off again however the run ends. The wrapper exports
+# SELF_SIGN_UP_RUN=on to the run (and TEST_RUNNER_<it> to xcodebuild's test runner), so preflight inside the run
+# accepts it on, and the tests that sign a user up fail fast while it is unset. Never on CI: the plugin's CI
+# backends are not this sandbox, and CI never changes it.
+SELF_SIGN_UP_RUN = "COGNITO_CLIENT_INTEG_SELF_SIGN_UP"
+CI_VARIABLES = ("CI", "GITHUB_ACTIONS")
+SELF_SIGN_UP_LEFT_ON = "self sign-up was left on; run infra/self-sign-up.sh off"
+# The token infra/self-sign-up.sh hands `self-sign-up on|release`: its own PID, which must be this process's
+# parent. Without it those two modes refuse, so self sign-up is never turned on without the wrapper's trap.
+SELF_SIGN_UP_WRAPPER = "COGNITO_CLIENT_INTEG_SELF_SIGN_UP_WRAPPER"
+# One lease per self-sign-up.sh run that holds self sign-up on: {"pid", "start", "clock"}, the wrapper's PID and
+# its process start time (so a reused PID is not mistaken for the run), read in LEASE_CLOCK. Changed only under the
+# lock, which also serialises every toggle and provision.
+SELF_SIGN_UP_LEASES = os.path.join(STATE_DIR, "self-sign-up-leases.json")
+SELF_SIGN_UP_LOCK = os.path.join(STATE_DIR, "self-sign-up.lock")
+# `ps` prints a start time in the caller's locale and time zone ("Fri  2 Oct 05:54:37 2026" under LANG=en_CA,
+# "Fri Oct  2 05:54:37 2026" under LC_ALL=C, and TZ moves the hour), so it is always read with LC_ALL=C and TZ=UTC:
+# a lease taken under one locale and zone is then live under any other.
+LEASE_CLOCK = "C/UTC"
+
+
+def process_start(pid):
+    """The start time `ps` reports for `pid` in LEASE_CLOCK, or None when no such process runs."""
+    result = subprocess.run(["ps", "-o", "lstart=", "-p", str(pid)], capture_output=True, text=True,
+                            env=dict(os.environ, LC_ALL="C", TZ="UTC"))
+    started = result.stdout.strip()
+    return started if result.returncode == 0 and started else None
+
+
+def lease_is_live(lease):
+    """Whether the run that took `lease` still runs: its PID exists and started when the lease says. A lease
+    without LEASE_CLOCK's "clock" cannot be compared, so it is dead: a reused PID must never hold self sign-up on."""
+    try:
+        os.kill(lease["pid"], 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        pass
+    if lease.get("clock") != LEASE_CLOCK:
+        return False
+    return process_start(lease["pid"]) == lease.get("start")
+
+
+def live_leases():
+    """The leases whose run still runs. Read-only: dead ones are pruned when the lock is next taken."""
+    leases = load_json(SELF_SIGN_UP_LEASES, default=[])
+    return [lease for lease in leases if isinstance(lease, dict) and isinstance(lease.get("pid"), int)
+            and lease_is_live(lease)]
+
+
+def write_leases(leases):
+    os.makedirs(STATE_DIR, exist_ok=True)
+    save_json(SELF_SIGN_UP_LEASES, leases)
+
+
+@contextlib.contextmanager
+def self_sign_up_lock():
+    """Holds an exclusive `fcntl.flock` on SELF_SIGN_UP_LOCK (macOS has no flock(1)), waiting for any other
+    toggle or provision to finish first. Released when the process exits, however it exits."""
+    os.makedirs(STATE_DIR, exist_ok=True)
+    fd = os.open(SELF_SIGN_UP_LOCK, os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            say("Waiting for another self sign-up change, or a provision, to finish")
+            fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        os.close(fd)
+
+
+def require_no_live_lease(command):
+    """Exits while a self-sign-up.sh run holds self sign-up on."""
+    leases = live_leases()
+    if leases:
+        sys.exit(f"Refusing to {command}: {len(leases)} infra/self-sign-up.sh run(s) hold self sign-up on (PID "
+                 f"{', '.join(str(lease['pid']) for lease in leases)}). Let them finish first; they turn it off.")
 
 
 def admin_only(config):
@@ -1121,10 +1232,14 @@ def template_self_sign_up(template):
     return not value
 
 
-def self_sign_up_gaps(expected, recorded, described):
+def self_sign_up_gaps(expected, recorded, described, in_run=False):
     """Pure. `expected` maps every pool key to whether its template allows self sign-up, `recorded` is the set
-    of keys state.json has a pool for, and `described` maps a recorded key to its DescribeUserPool `UserPool`
-    (None when the pool is gone). Returns (kind, message) pairs, kind "MISSING" or "DRIFT"."""
+    of keys state.json has a pool for, `described` maps a recorded key to its DescribeUserPool `UserPool`
+    (None when the pool is gone), and `in_run` is whether a self-sign-up.sh run holds a live lease. Returns
+    (kind, message) pairs, kind "MISSING", "LEFT-ON" or "DRIFT".
+
+    Off is the resting state, never a gap. On is a gap without a live lease (left on after a crash, say), and
+    on a pool whose template does not allow it at all."""
     gaps = []
     for key in sorted(expected):
         if key not in recorded:
@@ -1137,9 +1252,10 @@ def self_sign_up_gaps(expected, recorded, described):
         live = admin_only(pool.get("AdminCreateUserConfig"))
         if live is None:
             gaps.append(("DRIFT", f"{key}: the pool does not state whether self sign-up is allowed"))
-        elif (not live) != expected[key]:
-            gaps.append(("DRIFT", f"{key}: " + (SELF_SIGN_UP_OFF.format(key=key) if expected[key] else
-                                               f"self sign-up is on, but pools/{key}.json does not allow it")))
+        elif live is False and not expected[key]:
+            gaps.append(("DRIFT", f"{key}: self sign-up is on, but pools/{key}.json does not allow it"))
+        elif live is False and not in_run:
+            gaps.append(("LEFT-ON", f"{key}: {SELF_SIGN_UP_LEFT_ON}"))
     return gaps
 
 
@@ -1151,7 +1267,61 @@ def live_self_sign_up_gaps(state):
     for key, pool_id in ids.items():
         pool = aws_or_none("cognito-idp", "describe-user-pool", "--user-pool-id", pool_id)
         described[key] = (pool or {}).get("UserPool")
-    return self_sign_up_gaps(expected, set(ids), described)
+    return self_sign_up_gaps(expected, set(ids), described, bool(live_leases()))
+
+
+# MFA: a toggle's UpdateUserPool can reset the pool's MFA configuration (provision's set_mfa follows every update),
+# so preflight and verify compare each pool's live MFA with its template as provision degraded it.
+
+def mfa_summary(mfa):
+    """Pure. What an MFA configuration (pools/*.json `mfa`, or GetUserPoolMfaConfig) enforces: MfaConfiguration
+    and the MFA methods it offers, sorted."""
+    methods = [m for m, k in (("EMAIL", "EmailMfaConfiguration"), ("SMS", "SmsMfaConfiguration"),
+                              ("TOTP", "SoftwareTokenMfaConfiguration"))
+               if mfa.get(k) and (k != "SoftwareTokenMfaConfiguration" or mfa[k].get("Enabled"))]
+    return mfa.get("MfaConfiguration", "OFF"), methods
+
+
+def expected_mfa(key, pending):
+    """The MFA summary provision applied to pool `key`: its template's, degraded as the `pending` list
+    state.json records for it says (degrade)."""
+    template = copy.deepcopy(load_template(key))
+    pending = set(pending or [])
+    degrade(template, ses_ready=not pending & {"ses-email-configuration", "email-mfa", "email-otp"},
+            sms_ready=not pending & {"sms-mfa", "sms-otp"},
+            webauthn_ready=not pending & {"webauthn-relying-party", "web-authn"})
+    return mfa_summary(template["mfa"])
+
+
+def mfa_gaps(expected, live):
+    """Pure. `expected` and `live` map a pool key to its MFA summary (live None when the pool is gone, which
+    self_sign_up_gaps reports). Returns ("MFA", message) pairs."""
+    gaps = []
+    for key in sorted(expected):
+        if live.get(key) is not None and live[key] != expected[key]:
+            (want, want_methods), (have, have_methods) = expected[key], live[key]
+            gaps.append(("MFA", f"{key}: MFA is {have} {have_methods}, but pools/{key}.json (as provisioned) "
+                                f"has {want} {want_methods}; run infra/provision.sh"))
+    return gaps
+
+
+def live_mfa_summaries(state):
+    """Read-only. Each recorded pool's live MFA summary, None for a pool that is gone."""
+    summaries = {}
+    for key, pool_id in pool_ids(state).items():
+        mfa = aws_or_none("cognito-idp", "get-user-pool-mfa-config", "--user-pool-id", pool_id)
+        summaries[key] = None if mfa is None else mfa_summary(mfa)
+    return summaries
+
+
+def expected_mfa_summaries(state):
+    records = state.get("parity", {}).get("pools", {})
+    return {key: expected_mfa(key, records[key].get("pending")) for key in pool_ids(state)}
+
+
+def live_mfa_gaps(state):
+    """Read-only. mfa_gaps for every recorded pool."""
+    return mfa_gaps(expected_mfa_summaries(state), live_mfa_summaries(state))
 
 
 def exit_on_gaps(command, unsafe, sign_up):
@@ -1168,24 +1338,36 @@ def exit_on_gaps(command, unsafe, sign_up):
                      "re-checks all three.")
         sys.exit(f"{command}: {len(unsafe)} unsafe setting(s); re-run infra/provision.sh")
     if sign_up:
+        kinds = {kind for kind, _ in sign_up}
+        remedies = []
+        if "LEFT-ON" in kinds:
+            remedies.append("for LEFT-ON, run infra/self-sign-up.sh off (self sign-up is off at rest, and on only "
+                            "during a run wrapped by infra/self-sign-up.sh on -- <command>)")
+        if kinds & {"MISSING", "DRIFT"}:
+            remedies.append("for MISSING or DRIFT, re-run infra/provision.sh")
+        if "MFA" in kinds:
+            remedies.append("for MFA, re-run infra/provision.sh, which re-applies each pool's MFA configuration")
         sys.exit(f"{'Refusing' if command == 'preflight' else command}: {len(sign_up)} parity pool(s) missing, "
-                 f"or whose self sign-up differs from its template, so the tests that sign up a user there "
-                 f"would fail. For a DRIFT, check the account's security findings first: re-enabling undoes a "
-                 f"security mitigation and needs the owner's decision (an exception, or a recorded choice to "
-                 f"re-enable without one). Then run {REENABLE_SELF_SIGN_UP}=1 infra/provision.sh.")
+                 f"or with self sign-up or MFA in a state this run does not expect: {'; '.join(remedies)}.")
 
 
-def admin_create_user_config_to_send(desired, current, reenable):
-    """Pure. The AdminCreateUserConfig an UpdateUserPool call sends: the template's, except that when the
-    template allows self sign-up and the pool does not explicitly allow it (off, or not stated), it stays
-    off unless `reenable`. The template's other AdminCreateUserConfig fields are kept either way.
-    Returns (config, kept_off)."""
+def admin_create_user_config_to_send(desired, on=False):
+    """Pure. The AdminCreateUserConfig a CreateUserPool or UpdateUserPool call sends: `desired`'s, with self
+    sign-up off, so provision never turns it on. Only `self-sign-up on` passes `on`. The other
+    AdminCreateUserConfig fields are kept either way. None when `desired` has no AdminCreateUserConfig."""
     wanted = desired.get("AdminCreateUserConfig")
-    if wanted is None or admin_only(wanted) is not False or reenable:
-        return wanted, False
-    if admin_only(current.get("AdminCreateUserConfig")) is False:
-        return wanted, False
-    return dict(wanted, AllowAdminCreateUserOnly=True), True
+    if wanted is None:
+        return None
+    return dict(wanted, AllowAdminCreateUserOnly=not on)
+
+
+def refuse_on_ci(environ=None):
+    """Exits when CI or GITHUB_ACTIONS is set: self sign-up is never changed on CI."""
+    environ = os.environ if environ is None else environ
+    for name in CI_VARIABLES:
+        if environ.get(name):
+            sys.exit(f"Refusing: {name} is set. Self sign-up is changed only for a local run against the sandbox, "
+                     "never on CI.")
 
 
 def preflight():
@@ -1197,11 +1379,12 @@ def preflight():
     gaps = live_sender_gaps(state) + ses_gaps(state.get("parity", {})) + wildcard_gaps()
     if not aws("sns", "get-sms-sandbox-account-status").get("IsInSandbox"):
         gaps.append("the account's SNS is out of the SMS sandbox")
-    exit_on_gaps("preflight", gaps, live_self_sign_up_gaps(state))
+    exit_on_gaps("preflight", gaps, live_self_sign_up_gaps(state) + live_mfa_gaps(state))
     say("Preflight: every email- or SMS-enabled parity pool routes through the custom senders, the SES "
         "identity is still verified in an SES-sandbox region, the KMS encrypt, sender decrypt and SMS "
-        "role trust are scoped to the parity pools, and each parity pool's self sign-up matched its "
-        "template when read (a later mitigation can still change it)")
+        "role trust are scoped to the parity pools, each parity pool's MFA is its template's, and its self "
+        "sign-up was off when read, or on under a live self-sign-up.sh lease (a later mitigation can still turn "
+        "it off)")
 
 
 # --- P-10: the WebAuthn relying party ----------------------------------------------------------------
@@ -1405,35 +1588,41 @@ def ensure_user_pool(key, template, recorded):
     pool_id = find_user_pool(recorded.get("userPoolId"), pool_name)
     if pool_id is None:
         create = dict(desired, PoolName=pool_name, UserPoolTags={TAG_KEY: TAG_VALUE})
+        if "AdminCreateUserConfig" in desired:
+            create["AdminCreateUserConfig"] = admin_create_user_config_to_send(desired)
         pool_id = aws("cognito-idp", "create-user-pool", stdin=create)["UserPool"]["Id"]
         say(f"Created user pool {pool_name}")
         return pool_id
     current = require_user_pool_tag(pool_id, pool_name)
+    update_user_pool(pool_id, pool_name, desired, current)
+    return pool_id
+
+
+def update_user_pool(pool_id, pool_name, desired, current, self_sign_up=False):
+    """Brings the tagged pool `current` to `desired`'s updatable fields, with self sign-up off unless
+    `self_sign_up` (only `self-sign-up on` asks). Returns whether an update was sent."""
     for field in CREATE_ONLY_KEYS & set(desired):
         if not same(desired[field], current.get(field)):
             fail(f"user pool {pool_name} differs in {field}, which only creation sets. Delete the pool "
                  f"(teardown.sh) and re-run.")
     updatable = {k: v for k, v in desired.items() if k in UPDATE_KEYS}
-    reenable = os.environ.get(REENABLE_SELF_SIGN_UP) == "1"
-    config, kept_off = admin_create_user_config_to_send(updatable, current, reenable)
-    if kept_off:
-        updatable["AdminCreateUserConfig"] = config
-        say(f"Keeping self sign-up off on {pool_name}: it is not on, though the template allows it (check the "
-            f"account's security findings). Once the owner has decided, set {REENABLE_SELF_SIGN_UP}=1 to "
-            f"re-enable it; preflight refuses until then.")
+    if "AdminCreateUserConfig" in updatable:
+        updatable["AdminCreateUserConfig"] = admin_create_user_config_to_send(updatable, on=self_sign_up)
     drift = sorted(k for k, v in updatable.items() if not same(v, current.get(k)))
     # A field the template leaves out must be absent too (EmailConfiguration after a degrade, say).
     if "EmailConfiguration" not in desired and current.get("EmailConfiguration", {}).get("EmailSendingAccount") == "DEVELOPER":
         drift.append("EmailConfiguration")
-    if drift:
-        # UpdateUserPool resets every field it is not given: always the whole template.
-        require_user_pool_tag(pool_id, pool_name)
-        aws("cognito-idp", "update-user-pool",
-            stdin=dict(updatable, UserPoolId=pool_id, PoolName=pool_name, UserPoolTags={TAG_KEY: TAG_VALUE}))
-        say(f"Updated user pool {pool_name} ({', '.join(drift)})")
-    else:
+    if not drift:
         say(f"Reusing user pool {pool_name}")
-    return pool_id
+        return False
+    # UpdateUserPool resets every field it is not given: always the whole template, and the pool's own tags
+    # (which carry the purpose tag, checked again just before).
+    require_user_pool_tag(pool_id, pool_name)
+    tags = dict(current.get("UserPoolTags") or {}, **{TAG_KEY: TAG_VALUE})
+    aws("cognito-idp", "update-user-pool",
+        stdin=dict(updatable, UserPoolId=pool_id, PoolName=pool_name, UserPoolTags=tags))
+    say(f"Updated user pool {pool_name} ({', '.join(drift)})")
+    return True
 
 
 def set_mfa(pool_id, pool_name, mfa):
@@ -1649,6 +1838,13 @@ def require_sources():
 
 
 def provision():
+    # Never while a self-sign-up.sh run holds self sign-up on (provision turns it off), and never beside a toggle.
+    with self_sign_up_lock():
+        require_no_live_lease("provision")
+        provision_locked()
+
+
+def provision_locked():
     require_sources()
     state = load_state()
     require_cli_history_off()
@@ -1953,6 +2149,231 @@ def rotate_key():
     rotate_api_key(api_id, api["graphqlApi"]["arn"])
 
 
+# --- Self sign-up on|off, for one local run -------------------------------------------------------------
+
+def live_update_document(pool):
+    """Pure. The updatable configuration a live pool already has, from its DescribeUserPool `UserPool`: the full
+    template provision applied (substituted, and degraded where a prerequisite is pending), read back. Sent back
+    whole, with only self sign-up changed, it changes nothing else: UpdateUserPool resets every field it is not
+    sent, so a bare AdminCreateUserConfig call would wipe the pool's other settings, and the template file alone
+    still has placeholders that only provision's own steps resolve. AdminCreateUserConfig's deprecated
+    UnusedAccountValidityDays is left out: DescribeUserPool still returns it, and UpdateUserPool refuses it beside
+    Policies.PasswordPolicy.TemporaryPasswordValidityDays."""
+    document = {k: copy.deepcopy(v) for k, v in pool.items() if k in UPDATE_KEYS}
+    if "AdminCreateUserConfig" in document:
+        document["AdminCreateUserConfig"].pop("UnusedAccountValidityDays", None)
+    return document
+
+
+def changed_by_toggle(before, after):
+    """Pure. The updatable fields other than AdminCreateUserConfig, and the tags, that differ between two
+    DescribeUserPool `UserPool`s of one pool, taken before and after a self sign-up change: always empty unless
+    something else changed the pool at the same time."""
+    document = live_update_document(before)
+    document.pop("AdminCreateUserConfig", None)
+    changed = [k for k, v in document.items() if not same(v, after.get(k))]
+    if (before.get("UserPoolTags") or {}) != (after.get("UserPoolTags") or {}):
+        changed.append("UserPoolTags")
+    return sorted(changed)
+
+
+def toggle_self_sign_up(key, pool_id, pool, on, expected=None):
+    """Sets one tagged pool's self sign-up, sending its full live configuration through update_user_pool, then
+    reads it back: any other field that changed is reported, and an MFA configuration the update reset (as
+    provision's set_mfa follows every update) is restored. `expected` is the pool's MFA summary as provisioned;
+    an MFA configuration that differed from it before the change is reported too. Returns a problem, or None."""
+    name = POOLS[key]
+    mode = "on" if on else "off"
+    if admin_only(pool.get("AdminCreateUserConfig")) is (not on):
+        say(f"Self sign-up already {mode} on {name}")
+        return None
+    mfa_before = aws("cognito-idp", "get-user-pool-mfa-config", "--user-pool-id", pool_id)
+    try:
+        update_user_pool(pool_id, name, live_update_document(pool), pool, self_sign_up=on)
+    finally:
+        # However the update step ends (an error after the call, say), the MFA configuration it may have reset
+        # is put back before anything else can go wrong.
+        if aws("cognito-idp", "get-user-pool-mfa-config", "--user-pool-id", pool_id) != mfa_before:
+            set_mfa(pool_id, name, mfa_before)
+            say(f"Restored the MFA configuration of {name}")
+    after = require_user_pool_tag(pool_id, name)
+    problems = []
+    if admin_only(after.get("AdminCreateUserConfig")) is not (not on):
+        problems.append(f"self sign-up did not turn {mode}")
+    changed = changed_by_toggle(pool, after)
+    if changed:
+        problems.append(f"{', '.join(changed)} changed as well; re-run infra/provision.sh")
+    if expected is not None and mfa_summary(mfa_before) != expected:
+        problems.append("its MFA configuration differs from its template's; re-run infra/provision.sh")
+    if problems:
+        return f"{name}: {'; '.join(problems)}"
+    say(f"Self sign-up {mode} on {name}")
+    return None
+
+
+def set_self_sign_up(state, on):
+    """Turns every recorded parity pool's self sign-up on or off. Call under self_sign_up_lock.
+
+    Every pool is described and its tag checked first. `on` changes all or none: an untagged, missing or
+    unreadable pool, or one whose MFA is not its template's, stops it before any change, and so does any failure
+    on the way, after which later pools are not tried (the wrapper's trap then turns the earlier ones off again).
+    Off turns off every tagged pool it can, skips (and reports) the others, and exits non-zero if any was
+    skipped or failed. A pool already in the asked state is not changed. `on` skips a pool whose template does
+    not allow self sign-up."""
+    mode = "on" if on else "off"
+    ids = pool_ids(state)
+    if not ids:
+        sys.exit("No parity pool is recorded in state.json; run infra/provision.sh first.")
+    expected = expected_mfa_summaries(state)
+    problems, pools = [], {}
+    for key, pool_id in sorted(ids.items()):
+        try:
+            pools[key] = require_user_pool_tag(pool_id, POOLS[key])
+        except AwsError as error:
+            problems.append(f"{POOLS[key]}: could not be read ({error.code})")
+        except SystemExit as refusal:
+            problems.append(str(refusal.code))
+    if on and not problems:
+        problems = [gap for _, gap in mfa_gaps(expected, live_mfa_summaries(state))]
+    if problems and on:
+        sys.exit("Refusing to turn self sign-up on; nothing was changed:\n  " + "\n  ".join(problems))
+    for key, pool in pools.items():
+        if on and not template_self_sign_up(load_template(key)):
+            say(f"Skipped {POOLS[key]}: pools/{key}.json does not allow self sign-up")
+            continue
+        try:
+            problem = toggle_self_sign_up(key, ids[key], pool, on, expected.get(key))
+        except AwsError as error:
+            problem = f"{POOLS[key]}: {error.code}: {error.message}"
+        except SystemExit as refusal:
+            problem = str(refusal.code)
+        if problem:
+            problems.append(problem)
+            if on:
+                break
+    if problems:
+        sys.exit(f"Self sign-up {mode}: {len(problems)} problem(s):\n  " + "\n  ".join(problems))
+
+
+def self_sign_up(mode, lease=None, force=False):
+    """`self-sign-up on|release|off`, run by infra/self-sign-up.sh only. Never on CI. Every mode runs under
+    self_sign_up_lock, so toggles never overlap.
+
+    - `on`: the run `lease` (its PID) takes a lease, recorded before any change so that its trap's `release`
+      undoes an `on` that fails part-way; then every pool is turned on (a no-op where it already is).
+    - `release`: the run's lease is dropped, and dead runs' leases with it. Self sign-up is turned off only
+      when no live lease remains, so one run's end never turns it off under another. A run that holds no lease
+      returns at once, without waiting for the lock: its `on` changed nothing (it records the lease before any
+      change), or an `off --force` already turned self sign-up off and dropped it.
+    - `off`: recovery after a run that could not release (a kill -9). It refuses while a live lease exists,
+      unless `force`, which also drops every lease."""
+    refuse_on_ci()
+    if mode not in ("on", "release", "off"):
+        sys.exit(f"Usage: {sys.argv[0]} self-sign-up on|release|off [--force]")
+    if mode in ("on", "release") and lease is None:
+        sys.exit(f"Refusing: self-sign-up {mode} runs only through infra/self-sign-up.sh, whose trap turns it off.")
+    if mode == "release" and not any(isinstance(held, dict) and held.get("pid") == lease
+                                     for held in load_json(SELF_SIGN_UP_LEASES, default=[])):
+        say("This run holds no lease, so it changed nothing: nothing to release")
+        return
+    state = load_state()
+    require_cli_history_off()
+    require_recorded_account(state)
+    with self_sign_up_lock():
+        ignore_interrupts()
+        leases = [held for held in live_leases() if held["pid"] != lease]
+        if mode == "on":
+            started = process_start(lease)
+            if started is None:
+                sys.exit(f"Refusing: the run {lease} is not running.")
+            write_leases(leases + [{"pid": lease, "start": started, "clock": LEASE_CLOCK}])
+            set_self_sign_up(state, on=True)
+            return
+        if mode == "off" and leases and not force:
+            sys.exit(f"Refusing: {len(leases)} infra/self-sign-up.sh run(s) hold self sign-up on (PID "
+                     f"{', '.join(str(held['pid']) for held in leases)}); each turns it off when it ends. Use "
+                     f"`off --force` only for a run that is stuck.")
+        if mode == "release" and leases:
+            write_leases(leases)
+            say(f"Self sign-up stays on: {len(leases)} other infra/self-sign-up.sh run(s) still hold it")
+            return
+        write_leases([])
+        set_self_sign_up(state, on=False)
+
+
+def self_sign_up_status():
+    """`self-sign-up status`, read-only: whether every recorded parity pool is at rest, with self sign-up off and
+    its MFA configuration as provisioned. infra/self-sign-up.sh runs it after a release that did not finish (a
+    kill -9, say), to say what was left rather than guess. Exits 0 when every pool is at rest; 4 when self sign-up
+    is on but other runs still hold live leases (on for them, and the last to end turns it off); 3 naming each pool
+    that is otherwise not at rest; and 1 when a pool cannot be read. The calling wrapper's own lease (its token,
+    SELF_SIGN_UP_WRAPPER), if its release left it, is not another run's. The token is only compared here, never
+    trusted for a change, so it need not be this process's parent (the wrapper runs status in a subshell)."""
+    state = load_state()
+    require_cli_history_off()
+    require_recorded_account(state)
+    token = os.environ.get(SELF_SIGN_UP_WRAPPER, "")
+    own = int(token) if token.isdigit() else None
+    others = [held for held in live_leases() if held["pid"] != own]
+    on = []
+    try:
+        for key, pool_id in sorted(pool_ids(state).items()):
+            pool = (aws_or_none("cognito-idp", "describe-user-pool", "--user-pool-id", pool_id) or {}).get("UserPool")
+            # A pool that is gone has nothing on; one that does not state the flag is not known to be off.
+            if pool is not None and admin_only(pool.get("AdminCreateUserConfig")) is not True:
+                on.append(POOLS[key])
+        gaps = live_mfa_gaps(state)
+    except AwsError as error:
+        sys.exit(f"Could not read the parity pools ({error.code}): {error.message}")
+    for name in on:
+        say(f"Self sign-up is still on: {name}")
+    for _, gap in gaps:
+        say(f"MFA {gap}")
+    if on and others:
+        say(f"{len(others)} other infra/self-sign-up.sh run(s) hold self sign-up on (PID "
+            f"{', '.join(str(held['pid']) for held in others)}); the last of them to end turns it off")
+    if gaps or (on and not others):
+        sys.exit(3)
+    if on:
+        sys.exit(4)
+    say("Self sign-up: every parity pool has self sign-up off, and its MFA as provisioned")
+
+
+def ignore_interrupts():
+    """INT, TERM and HUP are ignored from the moment the lock is held to the end of the command, so a toggle is
+    never cut between its UpdateUserPool and its MFA restore. Before that, while `on` waits for the lock, they stop
+    it at once, with nothing changed and no lease taken. The wrapper's trap still runs once the command ends."""
+    for number in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        signal.signal(number, signal.SIG_IGN)
+
+
+def self_sign_up_command(args):
+    """The CLI: `self-sign-up on|release|off [--force]`. `on` and `release` need the wrapper's token: its PID in
+    SELF_SIGN_UP_WRAPPER, which must be this process's parent."""
+    if not args or args[0] not in ("on", "release", "off", "require-idle", "status") or len(args) > 2 \
+            or (len(args) == 2 and (args[0] != "off" or args[1] != "--force")):
+        sys.exit(f"Usage: {sys.argv[0]} self-sign-up on|release|off [--force]|require-idle|status")
+    if args[0] == "require-idle":
+        require_no_live_lease("provision")
+        return
+    if args[0] == "status":
+        self_sign_up_status()
+        return
+    lease = None
+    if args[0] in ("on", "release"):
+        token = os.environ.get(SELF_SIGN_UP_WRAPPER)
+        if token != str(os.getppid()):
+            sys.exit(f"Refusing: self-sign-up {args[0]} runs only through infra/self-sign-up.sh, whose trap turns "
+                     "it off.")
+        lease = os.getppid()
+    try:
+        self_sign_up(args[0], lease=lease, force=args[1:] == ["--force"])
+    except KeyboardInterrupt:
+        # Only possible before the lock is held (ignore_interrupts), so before any change or lease.
+        warn(f"Interrupted before self-sign-up {args[0]} held the lock: nothing was changed, and no lease taken.")
+        sys.exit(130)
+
+
 def webauthn_summary(mfa):
     """The pool's WebAuthnConfiguration as booleans: whether it is set, and whether its relying party is
     the harness's (the domain itself is never printed)."""
@@ -1962,6 +2383,12 @@ def webauthn_summary(mfa):
     rp_id, _ = webauthn_relying_party()
     return {"harnessRelyingParty": config.get("RelyingPartyId") == rp_id,
             "userVerification": config.get("UserVerification")}
+
+
+def self_sign_up_summary(pool):
+    """verify's `selfSignUp=`: on, off, or unstated (no KeyError when Cognito omits the field)."""
+    value = admin_only(pool.get("AdminCreateUserConfig"))
+    return "unstated" if value is None else "off" if value else "on"
 
 
 def verify():
@@ -1982,7 +2409,7 @@ def verify():
         say(f"{key}: tagged={tagged(pool.get('UserPoolTags'))} tier={pool.get('UserPoolTier')} "
             f"mfa={mfa.get('MfaConfiguration')}{methods} firstFactors={factors} "
             f"usernameAttributes={pool.get('UsernameAttributes', [])} devices={'DeviceConfiguration' in pool} "
-            f"selfSignUp={not pool['AdminCreateUserConfig']['AllowAdminCreateUserOnly']} "
+            f"selfSignUp={self_sign_up_summary(pool)} "
             f"email={pool.get('EmailConfiguration', {}).get('EmailSendingAccount')} "
             f"domain={bool(pool.get('Domain'))} triggers={lambdas} clients={sorted(c['ClientName'] for c in clients)} "
             f"webAuthn={webauthn_summary(mfa)} pending={parity['pools'][key].get('pending')}")
@@ -2035,7 +2462,7 @@ def verify():
     say(f"ses identity: "
         f"{'address (owned)' if parity.get('sesEmail') else 'domain (account-owned, read-only)' if parity.get('sesDomain') else 'not configured'}")
     gaps += wildcards
-    exit_on_gaps("verify", gaps, live_self_sign_up_gaps(state))
+    exit_on_gaps("verify", gaps, live_self_sign_up_gaps(state) + live_mfa_gaps(state))
 
 
 def teardown():
@@ -2178,7 +2605,7 @@ def teardown():
         # Every deletion skips what is already gone, so keeping the whole section makes a re-run
         # retry exactly the failures.
         sys.exit(f"Teardown incomplete ({', '.join(failures)}); the parity state is kept. Re-run teardown.sh.")
-    for name in list(POOLS) + ["hosted-ui", "identity-only"]:
+    for name in list(POOLS) + ["hosted-ui", "rotation", "identity-only"]:
         path = outputs_path(name)
         if os.path.exists(path):
             os.unlink(path)
@@ -2193,6 +2620,16 @@ if __name__ == "__main__":
                 "plugin-users": plugin_users,
                 "verify": verify,
                 "teardown": teardown}
-    if len(sys.argv) != 2 or sys.argv[1] not in commands:
-        sys.exit(f"Usage: {sys.argv[0]} {'|'.join(commands)}")
-    commands[sys.argv[1]]()
+    # The command boundary: an AWS error no step handles ends the command with one redacted line, naming the
+    # command and the error, and a non-zero exit, never a traceback. The message is the AWS CLI's own
+    # last line, which names the operation.
+    try:
+        if len(sys.argv) >= 2 and sys.argv[1] == "self-sign-up":
+            self_sign_up_command(sys.argv[2:])
+        elif len(sys.argv) != 2 or sys.argv[1] not in commands:
+            sys.exit(f"Usage: {sys.argv[0]} {'|'.join(commands)}|self-sign-up on|release|off [--force]|require-idle"
+                     "|status")
+        else:
+            commands[sys.argv[1]]()
+    except AwsError as error:
+        sys.exit(f"parity.py {' '.join(sys.argv[1:3])}: an AWS call failed ({error.code}): {redact(error.message)}")

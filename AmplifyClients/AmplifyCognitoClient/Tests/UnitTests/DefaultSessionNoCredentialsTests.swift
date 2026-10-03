@@ -9,22 +9,20 @@
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// The Auth plugin's signed-out marker, `{"noCredentials":{}}`, under the plugin's key.
-///
-/// The forward-compatible plugin writes it on sign-out while a client record exists, instead of
-/// deleting its record. It is a present record that holds no session, so `.default` reading through to it
-/// is signed out: nothing to revoke, nothing to report as signed out when it is purged, nothing to adopt.
-final class PluginSignedOutMarkerTests: XCTestCase {
+/// `.default` over the Auth plugin's signed-out record, `{"noCredentials":{}}`, with no sidecar: what a plugin or a
+/// client sign-out leaves. It is a present record that holds no session: nothing to revoke, nothing to report as
+/// signed out when it is ended again, and labelling it never turns it into credentials.
+final class DefaultSessionNoCredentialsTests: XCTestCase {
 
     /// Exactly what the plugin writes.
-    private let marker = Data(#"{"noCredentials":{}}"#.utf8)
+    private let noCredentials = Data(#"{"noCredentials":{}}"#.utf8)
 
     private var harness: ClientHarness!
-    private var pluginAccount: String { SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools) }
+    private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
 
     override func setUp() {
         harness = ClientHarness()
-        harness.keychain.put(marker, pluginAccount)
+        harness.keychain.put(noCredentials, pluginAccount)
     }
 
     override func tearDown() async throws {
@@ -32,12 +30,12 @@ final class PluginSignedOutMarkerTests: XCTestCase {
         harness = nil
     }
 
-    /// - Given: `.default` with no record of its own, and the plugin's signed-out marker
-    /// - When: its state is read, and its providers are asked
+    /// - Given: the plugin's signed-out record, and no sidecar
+    /// - When: a fresh `.default` client reads its state, and its providers are asked
     /// - Then:
-    ///    - it is `.signedOut`, without asking the engine to read the marker, and both providers throw
+    ///    - it is `.signedOut`, without asking the engine to describe the record, and both providers throw
     ///      `notSignedIn`
-    func testReadThroughOfTheMarkerIsSignedOut() async throws {
+    func testFreshRestoreOfNoCredentialsIsSignedOut() async throws {
         let client = try harness.client(.default)
 
         let state = await client.currentSessionState()
@@ -52,12 +50,12 @@ final class PluginSignedOutMarkerTests: XCTestCase {
         }
     }
 
-    /// - Given: `.default` reading through to the marker, with no live client
-    /// - When: it is signed out through the static call
+    /// - Given: the plugin's signed-out record, with no live client
+    /// - When: `.default` is signed out through the static call
     /// - Then:
-    ///    - nothing is revoked, and the result is `.complete`
-    func testStaticSignOutDoesNotRevokeTheMarker() async throws {
-        let result = try await AmplifyCognitoClient.signOutStoredSession(
+    ///    - nothing is revoked, the result is `.complete`, and the record is left as it was
+    func testStaticSignOutOfNoCredentialsRevokesNothing() async throws {
+        let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: .default,
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -66,18 +64,19 @@ final class PluginSignedOutMarkerTests: XCTestCase {
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.revoker.revokeCalls, [])
+        XCTAssertEqual(harness.keychain.value(pluginAccount), noCredentials)
     }
 
-    /// - Given: a live `.default` client reading through to the marker, and an event subscriber
-    /// - When: it is signed out, and then purged, through the static calls
+    /// - Given: a live `.default` client over the plugin's signed-out record, and an event subscriber
+    /// - When: it is signed out, then purged, through the static calls
     /// - Then:
-    ///    - its engine revoked nothing, no `.signedOut` event was sent for either, and it is `.signedOut`
-    func testLiveSignOutAndPurgeOfTheMarkerSendNoEvent() async throws {
+    ///    - its engine revoked nothing, no event was sent for either, and it is `.signedOut`
+    func testLiveSignOutAndPurgeOfNoCredentialsSendNoEvent() async throws {
         let client = try harness.client(.default)
         _ = await client.currentSessionState()
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await AmplifyCognitoClient.signOutStoredSession(
+        let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: .default,
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -97,17 +96,16 @@ final class PluginSignedOutMarkerTests: XCTestCase {
         XCTAssertEqual(state, .signedOut)
     }
 
-    /// - Given: `.default` reading through to the marker
-    /// - When: a label is set, and adoption completes
+    /// - Given: the plugin's signed-out record
+    /// - When: `.default` is labelled
     /// - Then:
-    ///    - the label creates a signed-out row of `.default`'s own, and adoption, with nothing to adopt,
-    ///      succeeds; the marker is not copied into the own record as credentials
-    func testLabelAndAdoptionTreatTheMarkerAsNoSession() async throws {
+    ///    - only the sidecar is written: the record is still `{"noCredentials":{}}`, read as a labelled signed-out row
+    func testLabelOverNoCredentialsKeepsTheRecordSignedOut() async throws {
         let client = try harness.client(.default)
 
         try await client.setSessionLabel("Main")
-        try await client.completeAdoption()
 
+        XCTAssertEqual(harness.keychain.value(pluginAccount), noCredentials)
         XCTAssertEqual(try harness.storedRecord(.default), .signedOut(label: "Main", username: nil))
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)

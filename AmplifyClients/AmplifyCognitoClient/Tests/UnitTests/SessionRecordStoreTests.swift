@@ -17,7 +17,7 @@ final class SessionRecordStoreTests: XCTestCase {
     private var work: SessionID!
 
     private var workAccount: String { store.sessionAccount(for: work) }
-    private var legacyAccount: String { SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools) }
+    private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
 
     override func setUpWithError() throws {
         keychain = TestKeychain()
@@ -36,14 +36,18 @@ final class SessionRecordStoreTests: XCTestCase {
         }
     }
 
+    /// The envelope a named session's write committed, as stored for `work`; the outcome must report the same record.
     private func committedEnvelope(_ outcome: SessionRecordStore.CommitOutcome) throws -> SessionRecordEnvelope {
-        guard case .committed(let envelope) = outcome else {
+        guard case .committed(let committed) = outcome,
+              let data = keychain.value(workAccount),
+              case .envelope(let envelope) = SessionRecordEnvelope.decode(data) else {
             throw UnexpectedResult("expected a commit, got \(outcome)")
         }
+        XCTAssertEqual(committed, VersionedSessionRecord(envelope))
         return envelope
     }
 
-    private func storedEnvelope(_ sessionId: SessionID) throws -> SessionRecordEnvelope {
+    private func storedEnvelope(_ sessionId: SessionID) throws -> VersionedSessionRecord {
         let result = try store.read(sessionId)
         guard case .record(let envelope) = result else {
             throw UnexpectedResult("expected a readable record for \(sessionId), got \(result)")
@@ -150,7 +154,8 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertEqual(envelope.generation, 1)
         XCTAssertEqual(envelope.schemaVersion, SessionRecordEnvelope.currentSchemaVersion)
         XCTAssertEqual(envelope.lastWriteTimestamp, TestClock.start.addingTimeInterval(1))
-        XCTAssertEqual(try store.read(work), .record(envelope))
+        XCTAssertEqual(try store.read(work), .record(VersionedSessionRecord(envelope)))
+        XCTAssertEqual(keychain.value(workAccount), try envelope.encoded())
         // And the session's namespace marker, as for every record created with credentials
         // (`SessionRecordStore+CopyForward.swift`).
         XCTAssertEqual(keychain.writtenAccounts, [workAccount, store.markerAccount(for: work)])
@@ -164,7 +169,7 @@ final class SessionRecordStoreTests: XCTestCase {
         var generation = try committedEnvelope(store.write(StorageFixtures.signedIn(), for: work, expecting: nil)).generation
         for index in 1 ... 5 {
             let next = try committedEnvelope(
-                store.write(StorageFixtures.signedIn(credentials: "tokens-v\(index + 1)"), for: work, expecting: generation)
+                store.write(StorageFixtures.signedIn(credentials: "tokens-v\(index + 1)"), for: work, expecting: .generation(generation))
             )
             XCTAssertEqual(next.generation, generation + 1)
             generation = next.generation
@@ -182,11 +187,11 @@ final class SessionRecordStoreTests: XCTestCase {
     func testWriteIsDiscardedWhenAnotherWriterCommittedFirst() throws {
         let loaded = try committedEnvelope(store.write(StorageFixtures.signedIn(), for: work, expecting: nil))
         let writerB = keychain.recordStore(for: StorageFixtures.namespace)
-        try writerB.write(StorageFixtures.signedIn(credentials: "rotated-by-B"), for: work, expecting: loaded.generation)
+        try writerB.write(StorageFixtures.signedIn(credentials: "rotated-by-B"), for: work, expecting: .generation(loaded.generation))
         let bytesAfterB = keychain.value(workAccount)
         keychain.resetLogs()
 
-        let outcome = try store.write(StorageFixtures.signedIn(credentials: "stale-A"), for: work, expecting: loaded.generation)
+        let outcome = try store.write(StorageFixtures.signedIn(credentials: "stale-A"), for: work, expecting: .generation(loaded.generation))
 
         XCTAssertEqual(outcome, .discarded)
         XCTAssertEqual(keychain.value(workAccount), bytesAfterB)
@@ -206,12 +211,12 @@ final class SessionRecordStoreTests: XCTestCase {
         let intruderCommitted = Flag()
         let sessionId: SessionID = work
         keychain.onceAfterReading(workAccount) {
-            if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: 1))?.didCommit == true {
+            if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: .generation(1)))?.didCommit == true {
                 intruderCommitted.raise()
             }
         }
 
-        let outcome = try store.write(StorageFixtures.signedIn(credentials: "mine"), for: work, expecting: 1)
+        let outcome = try store.write(StorageFixtures.signedIn(credentials: "mine"), for: work, expecting: .generation(1))
 
         XCTAssertTrue(intruderCommitted.isRaised)
         XCTAssertEqual(outcome, .discarded)
@@ -233,12 +238,12 @@ final class SessionRecordStoreTests: XCTestCase {
         let intruderCommitted = Flag()
         let sessionId: SessionID = work
         keychain.onceAfterReading(workAccount, occurrence: 2) {
-            if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: 1))?.didCommit == true {
+            if (try? intruder.write(StorageFixtures.signedIn(credentials: "intruder"), for: sessionId, expecting: .generation(1)))?.didCommit == true {
                 intruderCommitted.raise()
             }
         }
 
-        let outcome = try store.write(StorageFixtures.signedIn(credentials: "mine"), for: work, expecting: 1)
+        let outcome = try store.write(StorageFixtures.signedIn(credentials: "mine"), for: work, expecting: .generation(1))
 
         XCTAssertTrue(intruderCommitted.isRaised)
         XCTAssertTrue(outcome.didCommit)
@@ -278,7 +283,7 @@ final class SessionRecordStoreTests: XCTestCase {
         keychain.resetLogs()
 
         XCTAssertEqual(try store.write(StorageFixtures.signedIn(), for: work, expecting: nil), .discarded)
-        XCTAssertEqual(try store.write(StorageFixtures.signedIn(), for: home, expecting: 4), .discarded)
+        XCTAssertEqual(try store.write(StorageFixtures.signedIn(), for: home, expecting: .generation(4)), .discarded)
         XCTAssertEqual(keychain.writtenAccounts, [])
         XCTAssertEqual(try store.read(home), .absent)
     }
@@ -292,7 +297,7 @@ final class SessionRecordStoreTests: XCTestCase {
         keychain.put(StorageFixtures.futureSchemaRecord, workAccount)
         keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: home))
 
-        for expected: UInt64? in [nil, 1] {
+        for expected: RecordVersion? in [nil, .generation(1)] {
             XCTAssertEqual(try store.write(StorageFixtures.signedIn(), for: work, expecting: expected), .discarded)
             XCTAssertEqual(try store.write(StorageFixtures.signedIn(), for: home, expecting: expected), .discarded)
         }
@@ -348,46 +353,40 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertNotNil(keychain.value(store.challengeAccount(for: home)))
     }
 
-    /// Both keys: a plugin record left behind after sign-out would resurrect the ended session in an
-    /// app rolled back to a plugin-only release.
+    /// `.default`'s sign-out writes the plugin's own signed-out record, which every plugin release reads as signed
+    /// out, and keeps the last user and the label in the sidecar.
     ///
-    /// - Given: the default session with its own record and the plugin's record
+    /// - Given: `.default` on the plugin's record, signed in as alice with a label
     /// - When: it is signed out
     /// - Then:
-    ///    - its own record is kept signed-out and the plugin's record is deleted
-    func testSignOutOfTheDefaultSessionDeletesThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        try store.write(StorageFixtures.signedIn(label: "Main"), for: .default, expecting: nil)
+    ///    - the plugin's record is `{"noCredentials":{}}`, the sidecar holds alice and the label, and the read is
+    ///      alice's signed-out row
+    func testSignOutOfTheDefaultSessionWritesNoCredentialsAndKeepsTheSidecar() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        XCTAssertEqual(try store.setDefaultLabel("Main"), .written(try store.read(.default)))
 
         XCTAssertEqual(try store.signOut(.default), .signedOut)
 
-        XCTAssertNil(keychain.value(legacyAccount))
-        XCTAssertEqual(try storedEnvelope(.default).record, .signedOut(label: "Main", username: "alice"))
-    }
-
-    /// - Given: the default session reading through to the plugin's record, never written
-    /// - When: it is signed out
-    /// - Then:
-    ///    - a signed-out row is written under its own key and the plugin's record is deleted
-    func testSignOutOfAReadThroughSessionWritesASignedOutRow() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-
-        XCTAssertEqual(try store.signOut(.default), .signedOut)
-
-        XCTAssertNil(keychain.value(legacyAccount))
-        XCTAssertEqual(try storedEnvelope(.default).record, .signedOut(label: nil, username: nil))
-        XCTAssertEqual(try store.read(.default).isAbsent, false)
+        XCTAssertEqual(keychain.value(pluginAccount), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(
+            try storedEnvelope(.default).record,
+            .signedOut(label: "Main", username: "alice@corp", userId: "1234567890")
+        )
+        XCTAssertNil(keychain.value(SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session)))
     }
 
     /// Only `.default` owns the plugin's record; signing a named session out must not sign the plugin
     /// out.
     ///
-    /// - Given: the plugin's record, and two signed-in named sessions
+    /// - Given: the plugin's record and `.default`'s sidecar, and two signed-in named sessions
     /// - When: both are read, signed out and purged
     /// - Then:
-    ///    - the plugin's record is untouched and was never even read
-    func testNamedSessionsNeverTouchThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
+    ///    - the plugin's record and the sidecar are untouched and were never even read
+    func testNamedSessionsNeverTouchThePluginRecordOrTheSidecar() throws {
+        keychain.put(StorageFixtures.pluginCredentials, pluginAccount)
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        let sidecar = try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Home", username: nil, userId: nil).encoded()
+        keychain.put(sidecar, sidecarAccount)
         for sessionId in [work!, try SessionID.named("home")] {
             try store.write(StorageFixtures.signedIn(), for: sessionId, expecting: nil)
             _ = try store.read(sessionId)
@@ -396,9 +395,12 @@ final class SessionRecordStoreTests: XCTestCase {
             XCTAssertEqual(try store.read(sessionId), .absent)
         }
 
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
-        XCTAssertFalse(keychain.readAccounts.contains(legacyAccount))
-        XCTAssertFalse(keychain.removedAccounts.contains(legacyAccount))
+        XCTAssertEqual(keychain.value(pluginAccount), StorageFixtures.pluginCredentials)
+        XCTAssertEqual(keychain.value(sidecarAccount), sidecar)
+        for account in [pluginAccount, sidecarAccount] {
+            XCTAssertFalse(keychain.readAccounts.contains(account))
+            XCTAssertFalse(keychain.removedAccounts.contains(account))
+        }
     }
 
     /// - Given: a session with no record, and a session already signed out
@@ -432,7 +434,7 @@ final class SessionRecordStoreTests: XCTestCase {
         let intruder = keychain.recordStore(for: StorageFixtures.namespace)
         let sessionId: SessionID = work
         keychain.onceAfterReading(workAccount) {
-            _ = try? intruder.write(StorageFixtures.signedIn(label: "New"), for: sessionId, expecting: 1)
+            _ = try? intruder.write(StorageFixtures.signedIn(label: "New"), for: sessionId, expecting: .generation(1))
         }
 
         XCTAssertEqual(try store.signOut(work), .signedOut)
@@ -456,7 +458,7 @@ final class SessionRecordStoreTests: XCTestCase {
         let otherProcess = keychain.recordStore(for: StorageFixtures.namespace)
         let sessionId: SessionID = work
         keychain.onceAfterReading(workAccount) {
-            _ = try? otherProcess.write(StorageFixtures.signedIn(username: "bob", credentials: "bob-tokens"), for: sessionId, expecting: 1)
+            _ = try? otherProcess.write(StorageFixtures.signedIn(username: "bob", credentials: "bob-tokens"), for: sessionId, expecting: .generation(1))
         }
 
         XCTAssertEqual(try store.signOut(work), .superseded)
@@ -465,25 +467,26 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertNotNil(keychain.value(store.challengeAccount(for: work)))
     }
 
-    /// A superseded sign-out reports that the session was left signed in, so it must not delete the plugin's
-    /// record either: that would sign `Amplify.Auth` out behind the result's back.
+    /// A superseded sign-out leaves the other writer's record alone: here the plugin's, holding another user.
     ///
-    /// - Given: the default session with its own record and the plugin's record, and another process
-    ///   signing bob in between sign-out's read and its write
+    /// - Given: `.default` on the plugin's record for alice, and the plugin signing bob in between sign-out's read
+    ///   and its write
     /// - When: it is signed out
     /// - Then:
-    ///    - it returns `.superseded`, and the plugin's record is untouched
-    func testSupersededSignOutKeepsThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        try store.write(StorageFixtures.signedIn(username: "alice", credentials: "alice-tokens"), for: .default, expecting: nil)
-        let otherProcess = keychain.recordStore(for: StorageFixtures.namespace)
-        keychain.onceAfterReading(store.sessionAccount(for: .default)) {
-            _ = try? otherProcess.write(StorageFixtures.signedIn(username: "bob", credentials: "bob-tokens"), for: .default, expecting: 1)
+    ///    - it returns `.superseded`, and bob's record is untouched
+    func testSupersededSignOutKeepsThePluginsNewRecord() throws {
+        let alice = FakePayload.signedIn("alice").data
+        let bob = FakePayload.signedIn("bob").data
+        keychain.put(alice, pluginAccount)
+        let otherWriter = keychain!
+        let account = pluginAccount
+        keychain.onceAfterReading(account) {
+            otherWriter.put(bob, account)
         }
 
         XCTAssertEqual(try store.signOut(.default), .superseded)
 
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
+        XCTAssertEqual(keychain.value(pluginAccount), bob)
     }
 
     /// - Given: a signed-in record, and a writer that changes only its label before every one of
@@ -532,7 +535,7 @@ final class SessionRecordStoreTests: XCTestCase {
 
     /// Each guarded attempt reads the record twice (the read, then the guard's re-read) and the rival
     /// commits after each, so this budget loses every guarded attempt and then stops.
-    private func makeRival(_ change: @escaping @Sendable (SessionRecordEnvelope) -> SessionRecord) -> RivalWriter {
+    private func makeRival(_ change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord) -> RivalWriter {
         RivalWriter(
             store: keychain.recordStore(for: StorageFixtures.namespace),
             sessionId: work,
@@ -589,52 +592,6 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertEqual(try storedEnvelope(work).record, .signedOut(label: "Main", username: "alice", userId: "sub-alice"))
     }
 
-    // MARK: Adoption
-
-    /// - Given: the default session with its own record, the plugin's record, and a challenge record
-    /// - When: the plugin's record is removed
-    /// - Then:
-    ///    - exactly the plugin's `amplify.<ns>.session` item is deleted; the own and challenge records stay
-    func testRemovePluginRecordRemovesOnlyThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        keychain.put(Data("challenge".utf8), store.challengeAccount(for: .default))
-        try store.write(StorageFixtures.signedIn(), for: .default, expecting: nil)
-        keychain.resetLogs()
-
-        try store.removePluginRecord(for: .default)
-
-        XCTAssertEqual(keychain.removedAccounts, [legacyAccount])
-        XCTAssertEqual(legacyAccount, "amplify.\(StorageFixtures.userPoolId).\(StorageFixtures.identityPoolId).session")
-        XCTAssertNil(keychain.value(legacyAccount))
-        XCTAssertNotNil(keychain.value(store.sessionAccount(for: .default)))
-        XCTAssertNotNil(keychain.value(store.challengeAccount(for: .default)))
-    }
-
-    /// - Given: the plugin's record, and a named session
-    /// - When: the named session's plugin record is removed
-    /// - Then:
-    ///    - nothing is removed: only `.default` reads through to the plugin's record
-    func testRemovePluginRecordIsANoOpForNamedSessions() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-
-        try store.removePluginRecord(for: work)
-
-        XCTAssertEqual(keychain.removedAccounts, [])
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
-    }
-
-    /// - Given: the plugin's record, and a keychain whose removals fail as if locked
-    /// - When: the plugin's record is removed
-    /// - Then:
-    ///    - it throws `storageUnavailable(.locked)`, and the record is still there
-    func testRemovePluginRecordFailureThrowsStorageUnavailable() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        keychain.failingRemovals(of: legacyAccount, with: errSecInteractionNotAllowed)
-
-        assertStorageUnavailable(.locked) { try store.removePluginRecord(for: .default) }
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
-    }
-
     // MARK: Purge
 
     /// - Given: a record and a challenge record for the session, and another session's record
@@ -655,79 +612,53 @@ final class SessionRecordStoreTests: XCTestCase {
         try store.purge(work)
     }
 
-    /// - Given: the default session with its own record and the plugin's record
+    /// - Given: `.default` on the plugin's record, with its sidecar and a challenge record, and a leftover
+    ///   `$default.session` and `$default` marker from a development build
     /// - When: it is purged
     /// - Then:
-    ///    - both keys and the challenge key are removed
-    func testPurgeOfTheDefaultSessionRemovesBothKeys() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        try store.write(StorageFixtures.signedIn(), for: .default, expecting: nil)
-
-        try store.purge(.default)
-
-        XCTAssertEqual(try store.read(.default), .absent)
-        XCTAssertEqual(
-            Set(keychain.removedAccounts),
-            Set([
-                store.sessionAccount(for: .default),
-                legacyAccount,
-                store.challengeAccount(for: .default),
-                store.markerAccount(for: .default)
-            ])
-        )
-    }
-
-    /// A purge that fails part-way must never leave the default session reading the plugin's record,
-    /// which would sign the purged session back in.
-    ///
-    /// - Given: the default session with its own record and the plugin's record, and the delete of
-    ///   either key failing in turn
-    /// - When: the session is purged
-    /// - Then:
-    ///    - the purge throws, and a read afterwards is never `.pluginRecord`
-    func testPartlyFailedPurgeNeverReadsThroughToThePluginRecord() throws {
-        let ownAccount = store.sessionAccount(for: .default)
-        for failingAccount in [legacyAccount, ownAccount] {
-            keychain.clearFailures()
-            keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-            keychain.put(try SessionRecordEnvelope(
-                generation: 1,
-                lastWriteTimestamp: TestClock.start,
-                record: StorageFixtures.signedIn()
-            ).encoded(), ownAccount)
-            keychain.failingRemovals(of: failingAccount, with: errSecIO)
-
-            assertStorageUnavailable(.interrupted) { try store.purge(.default) }
-
-            let result = try store.read(.default)
-            if case .pluginRecord = result {
-                XCTFail("a purge failing at \(failingAccount) left the session reading the plugin's record")
-            }
-        }
-        keychain.clearFailures()
-        try store.purge(.default)
-        XCTAssertEqual(try store.read(.default), .absent)
-    }
-
-    /// - Given: the default session with its own record and the plugin's record
-    /// - When: it is purged
-    /// - Then:
-    ///    - the plugin's record is deleted before the session's own record
-    func testPurgeDeletesThePluginRecordFirst() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        try store.write(StorageFixtures.signedIn(), for: .default, expecting: nil)
+    ///    - exactly the plugin's record, then the sidecar, then the challenge record are deleted; the leftovers
+    ///      are not touched
+    func testPurgeOfTheDefaultSessionDeletesTheSharedRecordTheSidecarAndTheChallenge() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        XCTAssertEqual(try store.setDefaultLabel("Main"), .written(try store.read(.default)))
+        keychain.put(Data("challenge".utf8), store.challengeAccount(for: .default))
+        let leftover = SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session)
+        keychain.put(StorageFixtures.corruptRecord, leftover)
+        let leftoverMarker = SessionRecordKey.markerAccount(for: .default, scope: TestKeychain.markerScope)
+        keychain.put(Data("{}".utf8), leftoverMarker)
         keychain.resetLogs()
 
         try store.purge(.default)
 
-        // No namespace marker, so no previous copy to delete; the marker's own account goes last
-        // (`SessionRecordStore+CopyForward.swift`).
         XCTAssertEqual(keychain.removedAccounts, [
-            legacyAccount,
-            store.sessionAccount(for: .default),
-            store.challengeAccount(for: .default),
-            store.markerAccount(for: .default)
+            pluginAccount,
+            SessionRecordKey.metaAccount(in: StorageFixtures.pools),
+            store.challengeAccount(for: .default)
         ])
+        XCTAssertEqual(try store.read(.default), .absent)
+        XCTAssertNotNil(keychain.value(leftover))
+        XCTAssertNotNil(keychain.value(leftoverMarker))
+    }
+
+    /// A purge that fails part-way is safe to repeat.
+    ///
+    /// - Given: `.default` on the plugin's record with a sidecar, and the delete of each item failing in turn
+    /// - When: the session is purged
+    /// - Then:
+    ///    - the purge throws `storageUnavailable`, and a purge afterwards leaves it absent
+    func testPartlyFailedPurgeOfTheDefaultSessionIsSafeToRepeat() throws {
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        for failingAccount in [pluginAccount, sidecarAccount, store.challengeAccount(for: .default)] {
+            keychain.clearFailures()
+            keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+            keychain.put(try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: "Main", username: nil, userId: nil).encoded(), sidecarAccount)
+            keychain.failingRemovals(of: failingAccount, with: errSecIO)
+
+            assertStorageUnavailable(.interrupted) { try store.purge(.default) }
+        }
+        keychain.clearFailures()
+        try store.purge(.default)
+        XCTAssertEqual(try store.read(.default), .absent)
     }
 
     /// - Given: the keychain fails deletes
@@ -743,77 +674,112 @@ final class SessionRecordStoreTests: XCTestCase {
         XCTAssertNotEqual(try store.read(work), .absent)
     }
 
-    // MARK: Read-through adoption
+    // MARK: `.default` on the plugin's record
 
-    /// - Given: only the plugin's record
+    /// - Given: only the plugin's record, holding alice
     /// - When: the default session is read
     /// - Then:
-    ///    - it returns the plugin's bytes as an opaque payload, after trying its own key first, and
-    ///      writes and deletes nothing
-    func testAdoptionReadsThroughWithoutWritingOrDeleting() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
+    ///    - it is alice's record, versioned by the stored bytes, after reading the plugin's record and the sidecar
+    ///      only, and nothing is written
+    func testDefaultReadsThePluginsRecordInPlace() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
 
-        XCTAssertEqual(try store.read(.default), .pluginRecord(StorageFixtures.pluginCredentials))
+        let read = try storedEnvelope(.default)
 
-        XCTAssertEqual(keychain.readAccounts, [store.sessionAccount(for: .default), legacyAccount])
+        XCTAssertEqual(read.version, .storedBytes(PluginRecordFixtures.userPoolAndIdentityPool))
+        XCTAssertEqual(read.record, SessionRecord(
+            label: nil,
+            username: "alice@corp",
+            userId: "1234567890",
+            kind: .userPoolAndIdentityPool,
+            credentials: PluginRecordFixtures.userPoolAndIdentityPool
+        ))
+        XCTAssertEqual(keychain.readAccounts, [pluginAccount, SessionRecordKey.metaAccount(in: StorageFixtures.pools)])
         XCTAssertFalse(keychain.hasMutations)
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
     }
 
-    /// - Given: the default session reading through to the plugin's record
-    /// - When: its first write lands
+    /// - Given: no plugin record
+    /// - When: the default session's first write lands, expecting none
     /// - Then:
-    ///    - the write goes to its own key, the plugin's record is byte-identical, and later reads
-    ///      prefer its own record
-    func testFirstWriteAfterReadThroughKeepsThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        guard case .pluginRecord = try store.read(.default) else {
-            return XCTFail("expected the plugin's record")
-        }
+    ///    - it lands on the plugin's record as the credentials verbatim, with the sidecar, and no marker or `$default`
+    ///      session record is written
+    func testFirstWriteOfTheDefaultSessionLandsOnThePluginsRecord() throws {
+        let committed = try store.write(FakePayload.signedIn("alice").record(), for: .default, expecting: nil)
 
-        let envelope = try committedEnvelope(store.write(StorageFixtures.signedIn(), for: .default, expecting: nil))
-
-        XCTAssertEqual(keychain.writtenAccounts, [store.sessionAccount(for: .default), store.markerAccount(for: .default)])
-        XCTAssertEqual(keychain.value(legacyAccount), StorageFixtures.pluginCredentials)
-        XCTAssertEqual(try store.read(.default), .record(envelope))
+        XCTAssertEqual(
+            committed,
+            .committed(VersionedSessionRecord(
+                record: FakePayload.signedIn("alice").record(),
+                version: .storedBytes(FakePayload.signedIn("alice").data)
+            ))
+        )
+        XCTAssertEqual(keychain.value(pluginAccount), FakePayload.signedIn("alice").data)
+        XCTAssertEqual(keychain.writtenAccounts, [pluginAccount, SessionRecordKey.metaAccount(in: StorageFixtures.pools)])
     }
 
-    /// Falling through on a failed read would pick up a stale plugin record and write it forward over
-    /// a good one.
+    /// The commit guard compares the stored bytes: a generation never matches the shared record.
     ///
-    /// - Given: the default session's own key fails to read with a locked device
-    /// - When: the session is read
+    /// - Given: the plugin's record for alice
+    /// - When: writes expect no item, other bytes, and a generation
     /// - Then:
-    ///    - it throws `.locked`, and the plugin's record is never read
-    func testFailedReadOfTheOwnKeyNeverFallsThroughToThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        keychain.failingReads(of: store.sessionAccount(for: .default), with: errSecInteractionNotAllowed)
+    ///    - each is discarded and the record is untouched
+    func testDefaultWritesAreGuardedOnTheStoredBytes() throws {
+        let alice = FakePayload.signedIn("alice").data
+        keychain.put(alice, pluginAccount)
+        let bob = FakePayload.signedIn("bob").record()
 
-        assertStorageUnavailable(.locked) { try store.read(.default) }
-        XCTAssertFalse(keychain.readAccounts.contains(legacyAccount))
-    }
-
-    /// - Given: unreadable bytes under the default session's own key and the plugin's record
-    /// - When: the session is read
-    /// - Then:
-    ///    - it reports its own record as corrupt rather than falling through
-    func testUnreadableOwnRecordDoesNotFallThroughToThePluginRecord() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: .default))
-
-        XCTAssertEqual(try store.read(.default), .corrupt)
-        XCTAssertFalse(keychain.readAccounts.contains(legacyAccount))
+        for expected: RecordVersion? in [nil, .storedBytes(FakePayload.signedIn("carol").data), .generation(1)] {
+            XCTAssertEqual(try store.write(bob, for: .default, expecting: expected), .discarded, "\(String(describing: expected))")
+        }
+        XCTAssertEqual(keychain.value(pluginAccount), alice)
+        XCTAssertEqual(keychain.writtenAccounts, [])
     }
 
     /// - Given: the plugin's record fails to read
-    /// - When: the default session, with no record of its own, is read
+    /// - When: the default session is read
     /// - Then:
     ///    - it throws `storageUnavailable`, not `absent`
     func testFailedReadOfThePluginRecordIsStorageUnavailable() throws {
-        keychain.put(StorageFixtures.pluginCredentials, legacyAccount)
-        keychain.failingReads(of: legacyAccount, with: errSecIO)
+        keychain.put(StorageFixtures.pluginCredentials, pluginAccount)
+        keychain.failingReads(of: pluginAccount, with: errSecIO)
 
         assertStorageUnavailable(.interrupted) { try store.read(.default) }
+    }
+
+    /// - Given: the plugin's record, and `.default`'s sidecar failing to read
+    /// - When: the default session is read
+    /// - Then:
+    ///    - it throws `storageUnavailable`: a failed read is never "no label"
+    func testFailedReadOfTheSidecarIsStorageUnavailable() throws {
+        keychain.put(StorageFixtures.pluginCredentials, pluginAccount)
+        keychain.failingReads(of: SessionRecordKey.metaAccount(in: StorageFixtures.pools), with: errSecInteractionNotAllowed)
+
+        assertStorageUnavailable(.locked) { try store.read(.default) }
+    }
+
+    /// - Given: a plugin record that is not the plugin's format
+    /// - When: the default session is read
+    /// - Then:
+    ///    - it is `.corrupt`, present but unreadable
+    func testUnrecognisedPluginRecordIsCorrupt() throws {
+        keychain.put(StorageFixtures.corruptRecord, pluginAccount)
+
+        XCTAssertEqual(try store.read(.default), .corrupt)
+    }
+
+    /// The development leftover is never read: `.default` is the plugin's record only.
+    ///
+    /// - Given: a signed-in `$default.session` envelope and no plugin record
+    /// - When: the default session is read
+    /// - Then:
+    ///    - it is absent, and the leftover is never read
+    func testLeftoverDollarDefaultRecordIsNeverRead() throws {
+        let leftover = SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session)
+        let envelope = SessionRecordEnvelope(generation: 1, lastWriteTimestamp: TestClock.start, record: StorageFixtures.signedIn())
+        keychain.put(try envelope.encoded(), leftover)
+
+        XCTAssertEqual(try store.read(.default), .absent)
+        XCTAssertFalse(keychain.readAccounts.contains(leftover))
     }
 }
 
@@ -835,13 +801,13 @@ private final class RivalWriter: @unchecked Sendable {
     let budget: Int
     private let store: SessionRecordStore
     private let sessionId: SessionID
-    private let change: @Sendable (SessionRecordEnvelope) -> SessionRecord
+    private let change: @Sendable (VersionedSessionRecord) -> SessionRecord
     private let lock = NSLock()
     private var moving = false
     private var committed: UInt64 = 0
     private var commitCount = 0
 
-    init(store: SessionRecordStore, sessionId: SessionID, budget: Int, change: @escaping @Sendable (SessionRecordEnvelope) -> SessionRecord) {
+    init(store: SessionRecordStore, sessionId: SessionID, budget: Int, change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord) {
         self.store = store
         self.sessionId = sessionId
         self.budget = budget
@@ -863,7 +829,7 @@ private final class RivalWriter: @unchecked Sendable {
         guard case .record(let envelope) = try? store.read(sessionId), !envelope.record.isSignedOut else {
             return
         }
-        if case .committed(let written)? = try? store.write(change(envelope), for: sessionId, expecting: envelope.generation) {
+        if case .committed(let written)? = try? store.write(change(envelope), for: sessionId, expecting: envelope.version) {
             withLock {
                 committed = written.generation
                 commitCount += 1

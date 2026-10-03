@@ -8,21 +8,28 @@
 @testable import Amplify
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 import AWSCognitoAuthPlugin
+import AWSPluginsCore
 import Foundation
 import Security
 import XCTest
 
-/// The plugin, in the same app as the client, writes its record where the client's read-through of
-/// `.default` looks for it. The adoption tests (AD-1, AD-2) build on this.
+/// The plugin, in the same app as the client, writes its record under its own key, `amplify.<ns>.session`, which is
+/// also the client's `.default` session record. `PluginSharedLoginTests` (AD-1 … AD-8)
+/// builds on this.
 ///
 /// This target links `Amplify` and `AWSCognitoAuthPlugin`; `CognitoClientIntegrationTests` does not,
 /// so that target stays a standing proof that the client needs neither.
 final class PluginRecordLocationTests: XCTestCase {
 
-    /// The plugin's record for the default backend's namespace. It is also the client's read-through record for
-    /// `.default`, and this bundle shares the keychain with `CognitoClientIntegrationTests`, so it is
-    /// removed before and after each test.
-    private var legacyAccount = ""
+    /// `.default`'s items for the default backend's namespace: the plugin's record, `amplify.<ns>.session`, which is
+    /// `.default`'s session record, and the client's `$default.meta` sidecar and `$default.challenge` record beside
+    /// it. This bundle shares the keychain with `CognitoClientIntegrationTests`, so all three are removed before
+    /// and after each test.
+    private var defaultAccounts: [String] = []
+    /// The plugin's record, `amplify.<ns>.session`.
+    private var pluginAccount = ""
+    /// The client configuration for the default backend, from the same outputs as the plugin's.
+    private var configuration: AuthClientConfiguration?
     /// The test's own user, deleted at teardown.
     private var user: InteropUser?
 
@@ -33,48 +40,62 @@ final class PluginRecordLocationTests: XCTestCase {
             from: InteropEnvironment.outputsResource,
             bundle: InteropEnvironment.outputsBundle()
         )
-        legacyAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
-        try InteropEnvironment.deleteSessionAccount(legacyAccount)
-        XCTAssertFalse(try InteropEnvironment.sessionAccounts().contains(legacyAccount), "setUp left \(RealKeychain.redact(legacyAccount))")
+        self.configuration = configuration
+        pluginAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
+        defaultAccounts = [
+            pluginAccount,
+            SessionRecordKey.metaAccount(in: configuration.poolNamespace),
+            SessionRecordKey.account(for: .default, in: configuration.poolNamespace, kind: .challenge)
+        ]
+        try deleteDefaultAccounts()
+        let left = try Set(InteropEnvironment.sessionAccounts()).intersection(defaultAccounts)
+        XCTAssertTrue(left.isEmpty, "setUp left \(left.map(RealKeychain.redact))")
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
         try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
     }
 
-    /// Removes the plugin's record first, whatever failed, then signs out only when Auth is configured:
-    /// a throwing `setUp` leaves it unconfigured, and an unconfigured `Amplify.Auth` aborts the process.
+    /// Removes `.default`'s items first, whatever failed, then signs out only when Auth is configured:
+    /// a throwing `setUp` leaves it unconfigured, and an unconfigured `Amplify.Auth` aborts the process. Last, the
+    /// user's device and advanced-security records and the plugin's `authConfiguration` go, so no later suite reads
+    /// them.
     override func tearDown() async throws {
-        if !legacyAccount.isEmpty {
-            try? InteropEnvironment.deleteSessionAccount(legacyAccount)
-        }
+        try? deleteDefaultAccounts()
         if Amplify.Auth.isConfigured {
             _ = await Amplify.Auth.signOut()
         }
         await Amplify.reset()
         if let user {
             await InteropEnvironment.deleteFreshUser(user)
+            if let configuration {
+                try InteropEnvironment.removeDeviceRecords(of: user, under: configuration)
+            }
         }
-        if !legacyAccount.isEmpty {
-            try InteropEnvironment.deleteSessionAccount(legacyAccount)
-        }
+        try deleteDefaultAccounts()
+        try InteropEnvironment.deleteSessionAccount(SessionRecordStore.pluginConfigurationAccount)
         try await super.tearDown()
     }
 
-    /// The plugin's sign-in writes its record under the legacy key the client reads through, and no v1 record.
+    /// The plugin's sign-in writes its record under its own key, `.default`'s session record, and no v1 record; its
+    /// sign-out deletes it.
     ///
     /// - Given: The plugin configured from the default backend's outputs, the client configuration from the
-    ///   same file, no plugin record for that namespace (`setUp` removes any left by an earlier run), and a
-    ///   fresh user of the test's own
+    ///   same file, none of `.default`'s items for that namespace (`setUp` removes any left by an earlier run), and
+    ///   a fresh user of the test's own
     /// - When:
     ///    - The user signs in through the plugin (SRP, its default)
     ///    - The plugin then signs out
     /// - Then:
     ///    - The sign-in completes, and the session service now holds
-    ///      `SessionRecordKey.legacySessionAccount(in:)` for the client's namespace:
+    ///      `SessionRecordKey.pluginSessionAccount(in:)` for the client's namespace:
     ///      `amplify.<userPoolId>.<identityPoolId>.session`
-    ///    - The plugin wrote no `amplify.1.` account (it never writes a v1 record)
-    ///    - After the sign-out, the plugin reports signed out
+    ///    - The plugin wrote no `amplify.1.` account: it never writes a v1 record, nor `.default`'s sidecar
+    ///    - Straight after the sign-out, before any fetch, its record is gone: the plugin deletes it, and writes
+    ///      no signed-out marker
+    ///    - A fetch then reports signed out. When it returns guest credentials (the default backend's identity pool
+    ///      allows guests), it saves a guest record, `identityPoolOnly`, under the same key: `.default`'s record is
+    ///      then the plugin's guest. When it returns none, it saves nothing
     ///
-    func testPluginWritesItsRecordUnderTheKeyTheClientReadsThrough() async throws {
+    func testPluginWritesItsRecordUnderTheDefaultSessionsKey() async throws {
         let user = try await InteropEnvironment.signUpFreshUser()
         self.user = user
         let v1Before = try InteropEnvironment.sessionAccounts().filter { $0.hasPrefix("amplify.1.") }
@@ -83,12 +104,32 @@ final class PluginRecordLocationTests: XCTestCase {
 
         XCTAssertTrue(result.isSignedIn)
         let accounts = try InteropEnvironment.sessionAccounts()
-        XCTAssertTrue(accounts.contains(legacyAccount), RealKeychain.redact("No \(legacyAccount) in \(accounts)"))
-        XCTAssertEqual(accounts.filter { $0.hasPrefix("amplify.1.") }, v1Before)
+        XCTAssertTrue(accounts.contains(pluginAccount), RealKeychain.redact("No \(pluginAccount) in \(accounts)"))
+        // A boolean, so a failure prints no account (accounts carry the pool identifiers).
+        XCTAssertTrue(accounts.filter { $0.hasPrefix("amplify.1.") } == v1Before, "the plugin wrote a v1 account")
 
         _ = await Amplify.Auth.signOut()
+        let afterSignOut = try InteropEnvironment.sessionAccounts()
+        XCTAssertFalse(afterSignOut.contains(pluginAccount), "the plugin's record is left after the sign-out")
+
         let session = try await Amplify.Auth.fetchAuthSession()
         XCTAssertFalse(session.isSignedIn)
+        let afterFetch = RealKeychain.rows(service: SessionRecordStore.unsharedService).first { $0.account == pluginAccount }
+        // Decided by what the fetch returned, not by the configuration: the Gen1 translation the plugin's CI uses
+        // states no guest flag, and the plugin asks for guest credentials whenever there is an identity pool.
+        let gotGuestCredentials = (try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()) != nil
+        if gotGuestCredentials {
+            let kind = afterFetch.map { PluginRecordSummary.peek(Data($0.value.utf8)).kind }
+            XCTAssertTrue(kind == .guest, "the signed-out fetch got guest credentials but saved no guest record")
+        } else {
+            XCTAssertTrue(afterFetch == nil, "the signed-out fetch got no guest credentials but saved a record")
+        }
+    }
+
+    private func deleteDefaultAccounts() throws {
+        for account in defaultAccounts {
+            try InteropEnvironment.deleteSessionAccount(account)
+        }
     }
 }
 
@@ -130,22 +171,65 @@ enum InteropEnvironment {
         }
     }
 
+    /// Why a sign-up on the sandbox fails fast while its self sign-up is off, its resting state, as
+    /// `SandboxSignUp.selfSignUpOffMessage` says it in the client suite.
+    static let selfSignUpOffMessage = """
+    Self sign-up is off on the sandbox. Run the suite through infra/self-sign-up.sh on -- <command>.
+    """
+
+    /// Whether the outputs are the sandbox's: `infra/plugin-configs.py --dir` marks each file it writes with
+    /// `custom.amplify_cognito_client_integ.sandbox: true`, as `IntegrationTestEnvironment.isSandbox(_:)` reads it.
+    static var isSandbox: Bool {
+        guard let data = try? outputsData(),
+              let document = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let custom = document["custom"] as? [String: Any],
+              let marker = custom["amplify_cognito_client_integ"] as? [String: Any] else {
+            return false
+        }
+        return marker["sandbox"] as? Bool == true
+    }
+
+    /// Fails, before any request, a sign-up on the sandbox outside an `infra/self-sign-up.sh` run, which sets
+    /// `COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on` (`TEST_RUNNER_…` to `xcodebuild`). The plugin's backends (CI) are
+    /// never checked: they allow self sign-up, and the script never runs there.
+    static func requireSelfSignUp() throws {
+        guard isSandbox, ProcessInfo.processInfo.environment["COGNITO_CLIENT_INTEG_SELF_SIGN_UP"] != "on" else {
+            return
+        }
+        throw InteropError(selfSignUpOffMessage)
+    }
+
     /// A user of the test's own on the default backend, never one another run could be using: a `ccit-`
     /// username, an `@example.com` email (RFC 2606, never delivered to) and a password meeting the backend's
     /// policy, signed up through the client on a session used for nothing else, which is purged at once.
     /// The backend's pre-sign-up trigger confirms it. Delete it with `deleteFreshUser(_:)`.
     static func signUpFreshUser() async throws -> InteropUser {
+        try requireSelfSignUp()
         let hex = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(12).lowercased()
         let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!")
         let configuration = try AuthClientConfiguration(from: outputsResource, bundle: outputsBundle())
         let sessionId = try SessionID.named("interop-signup-\(hex.prefix(8))")
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
-            let result = try await client.signUp(
-                username: user.username,
-                password: user.password,
-                options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "\(user.username)@example.com")])
-            )
+            let result: AuthClientSignUpResult
+            do {
+                result = try await client.signUp(
+                    username: user.username,
+                    password: user.password,
+                    options: .init(userAttributes: [AuthClientUserAttribute(.email, value: "\(user.username)@example.com")])
+                )
+            } catch AuthClientError.notAuthorized(let description, _, _)
+                where description.contains("SignUp is not permitted") && isSandbox {
+                // Inside a run, the run had turned it on, so something turned it off again since.
+                if ProcessInfo.processInfo.environment["COGNITO_CLIENT_INTEG_SELF_SIGN_UP"] == "on" {
+                    throw InteropError("""
+                    Self sign-up was turned off on the sandbox during this infra/self-sign-up.sh run, which had \
+                    turned it on (Cognito refused the sign-up: SignUp is not permitted). Check the account's \
+                    security findings, then run the suite again.
+                    """)
+                }
+                throw InteropError("\(selfSignUpOffMessage) (Cognito refused the sign-up: SignUp is not permitted.)")
+            }
             guard result.isSignUpComplete else {
                 throw InteropError("The backend did not confirm the fresh user: it needs a pre-sign-up trigger that does.")
             }
@@ -187,6 +271,14 @@ enum InteropEnvironment {
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw InteropError(RealKeychain.redact("Deleting \(account) returned \(status)."))
         }
+    }
+
+    /// Removes `user`'s device and advanced-security records under `configuration`'s pools from this device's
+    /// keychain, as `DeviceTestCase` does: the plugin and the client keep them per user and never remove them.
+    static func removeDeviceRecords(of user: InteropUser, under configuration: AuthClientConfiguration) throws {
+        let store = DeviceRecordStore(namespace: SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil))
+        try store.removeDeviceMetadata(for: user.username)
+        try store.removeASFDeviceId(for: user.username)
     }
 
     /// Every account in the service the plugin and the client store session records under, sorted.

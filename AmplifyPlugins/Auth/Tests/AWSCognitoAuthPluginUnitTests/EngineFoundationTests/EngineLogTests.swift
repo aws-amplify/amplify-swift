@@ -138,6 +138,46 @@ final class CapturingRouter: EngineLogRouter, @unchecked Sendable {
     fileprivate func append(_ entry: Entry) {
         lock.withLock { _entries.append(entry) }
     }
+
+    /// A caller's logger over this router: each scope it is asked for is recorded under that scope, and its
+    /// own lines under `scope`. What a site that takes its caller's logger is given in a test.
+    func scopedLogger(at scope: EngineLogScope = .category("Caller")) -> any EngineScopedLogger {
+        CapturingScopedLogger(scope: scope, router: self)
+    }
+}
+
+/// `CapturingRouter.scopedLogger(at:)`.
+private struct CapturingScopedLogger: EngineScopedLogger {
+    let scope: EngineLogScope
+    let router: CapturingRouter
+
+    func scoped(_ scope: EngineLogScope) -> EngineLogger {
+        router.logger(scope)
+    }
+
+    func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).error(message(), error())
+    }
+
+    func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).warn(message(), error())
+    }
+
+    func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).info(message(), error())
+    }
+
+    func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).debug(message(), error())
+    }
+
+    func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).verbose(message(), error())
+    }
+
+    func log(_ logLevel: AmplifyFoundation.LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {
+        router.logger(scope).log(logLevel, message(), error())
+    }
 }
 
 private struct CapturingLogger: AmplifyFoundation.Logger {

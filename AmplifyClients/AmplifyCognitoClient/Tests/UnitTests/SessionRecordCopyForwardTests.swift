@@ -55,11 +55,12 @@ final class SessionRecordCopyForwardTests: XCTestCase {
     /// whose creation writes the marker naming `pools`. Returns the stored bytes.
     @discardableResult
     private func ran(_ payload: FakePayload, label: String? = "Work", under pools: PoolNamespace) throws -> Data {
-        guard case .committed(let envelope) = try store(pools).write(payload.record(label: label), for: work, expecting: nil) else {
+        guard try store(pools).write(payload.record(label: label), for: work, expecting: nil).didCommit,
+              let stored = keychain.value(account(pools, work)) else {
             throw FakeEngineError.unreadablePayload
         }
         XCTAssertEqual(try store(pools).marker(for: work)?.poolNamespace, pools.keyComponent)
-        return try envelope.encoded()
+        return stored
     }
 
     /// Stores `payload` for `sessionId` under `pools` without touching any marker: a record this app did not
@@ -97,7 +98,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
     }
 
-    private func carriedRecord(_ result: SessionRecordStore.ReadResult, file: StaticString = #filePath, line: UInt = #line) -> SessionRecordEnvelope? {
+    private func carriedRecord(_ result: SessionRecordStore.ReadResult, file: StaticString = #filePath, line: UInt = #line) -> VersionedSessionRecord? {
         guard case .record(let envelope) = result else {
             XCTFail("expected a record, got \(result)", file: file, line: line)
             return nil
@@ -329,24 +330,24 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         XCTAssertNotEqual(try store(Self.userPoolOnly).read(work), .absent)
     }
 
-    /// An app and its extension share the access group and `.default`, with different configurations.
+    /// An app and its extension share the access group and a named session, with different configurations.
     ///
     /// - Given: the app signed in under both pools (its marker), and the extension, another marker scope, never
     ///   run
-    /// - When: the extension, under the user pool alone, reads `.default`, then signs it out
+    /// - When: the extension, under the user pool alone, reads the session, then signs it out
     /// - Then: it reads `.absent`, and the app's record and marker are untouched
     func testAnExtensionNeverTouchesTheAppsRecord() throws {
         let app = store(Self.bothPools)
-        try app.write(FakePayload.signedIn().record(), for: .default, expecting: nil)
-        let appRecord = keychain.value(account(Self.bothPools, .default))
-        let appMarker = try app.marker(for: .default)
+        try app.write(FakePayload.signedIn().record(), for: work, expecting: nil)
+        let appRecord = try XCTUnwrap(keychain.value(account(Self.bothPools, work)))
+        let appMarker = try XCTUnwrap(app.marker(for: work))
         let extensionStore = store(Self.userPoolOnly, scope: "fedcba9876543210")
 
-        XCTAssertEqual(try extensionStore.readCarryingForward(.default), .absent)
-        XCTAssertEqual(try extensionStore.signOut(.default), .noRecord)
+        XCTAssertEqual(try extensionStore.readCarryingForward(work), .absent)
+        XCTAssertEqual(try extensionStore.signOut(work), .noRecord)
 
-        XCTAssertEqual(keychain.value(account(Self.bothPools, .default)), appRecord)
-        XCTAssertEqual(try app.marker(for: .default), appMarker)
+        XCTAssertEqual(keychain.value(account(Self.bothPools, work)), appRecord)
+        XCTAssertEqual(try app.marker(for: work), appMarker)
     }
 
     /// A rollback A → B → A never revives a signed-out session.
@@ -569,7 +570,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
         XCTAssertEqual(try marker()?.poolNamespace, Self.userPoolOnly.keyComponent, "a signed-out row writes no marker")
 
-        try store(Self.bothPools).write(FakePayload.signedIn("bob").record(), for: work, expecting: row.generation)
+        try store(Self.bothPools).write(FakePayload.signedIn("bob").record(), for: work, expecting: .generation(row.generation))
 
         XCTAssertEqual(try marker()?.poolNamespace, Self.bothPools.keyComponent)
     }
@@ -711,10 +712,10 @@ final class SessionRecordCopyForwardTests: XCTestCase {
                 let who = viaA ? starter : "\(starter), B → A' directly"
                 keychain = TestKeychain()
                 let atA = try ran(.signedIn("alice"), under: Self.bothPools)
-                guard case .record(let carried) = try store(Self.otherIdentityPool).readCarryingForward(work) else {
+                guard case .record = try store(Self.otherIdentityPool).readCarryingForward(work) else {
                     return XCTFail("\(who): not carried")
                 }
-                let atAPrime = try carried.encoded()
+                let atAPrime = try XCTUnwrap(keychain.value(account(Self.otherIdentityPool, work)), "the carried record's stored bytes")
                 XCTAssertEqual(try marker()?.copies, [Marker.Copy(poolNamespace: Self.bothPools.keyComponent, sha256: SessionRecordStore.digest(atA), user: "user:sub-alice")], who)
 
                 XCTAssertEqual(try store(atB).readCarryingForward(work), .absent, who)
@@ -750,7 +751,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
                 XCTAssertEqual(keychain.value(account(Self.bothPools)), atA, "\(who): readKept at A' keeps A")
                 var rotated = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 3)
                 rotated.refreshToken = "refresh-alice-rotated"
-                try store(Self.otherIdentityPool).write(rotated.record(), for: work, expecting: back.generation)
+                try store(Self.otherIdentityPool).write(rotated.record(), for: work, expecting: back.version)
                 let revocable = try store(Self.otherIdentityPool).copiesToRevoke(of: work, revoking: rotated.data)
                 XCTAssertEqual(revocable, [FakePayload.signedIn("alice").data], "\(who): her A copy's token is revoked")
                 XCTAssertEqual(try store(Self.otherIdentityPool).signOut(work), .signedOut, who)
@@ -777,7 +778,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         }
         var rotated = FakePayload.signedIn("alice", kind: .userPoolOnly, version: 2)
         rotated.refreshToken = "refresh-alice-rotated"
-        try store(Self.otherIdentityPool).write(rotated.record(), for: work, expecting: carried.generation)
+        try store(Self.otherIdentityPool).write(rotated.record(), for: work, expecting: carried.version)
 
         try store(atB).write(FakePayload.signedIn("bob", kind: .userPoolOnly).record(), for: work, expecting: nil)
         XCTAssertEqual(
@@ -810,10 +811,10 @@ final class SessionRecordCopyForwardTests: XCTestCase {
     func testAnotherUsersPurgeKeepsTheEarlierUsersCopies() throws {
         let atB = PoolNamespace.userPool("us-east-1_Other9999")
         let atA = try ran(.signedIn("alice"), under: Self.bothPools)
-        guard case .record(let carried) = try store(Self.otherIdentityPool).readCarryingForward(work) else {
+        guard case .record = try store(Self.otherIdentityPool).readCarryingForward(work) else {
             return XCTFail("not carried")
         }
-        let atAPrime = try carried.encoded()
+        let atAPrime = try XCTUnwrap(keychain.value(account(Self.otherIdentityPool, work)), "the carried record's stored bytes")
         let challengeAtAPrime = SessionRecordKey.account(for: work, in: Self.otherIdentityPool, kind: .challenge)
         keychain.put(Data("interrupted".utf8), challengeAtAPrime)
         try store(atB).write(FakePayload.signedIn("bob", kind: .userPoolOnly).record(), for: work, expecting: nil)
@@ -920,10 +921,10 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         let atB = Self.bothPools
         let atC = Self.userPoolOnly
         let alice0 = try ran(.signedIn("alice", kind: .userPoolOnly), under: atA0)
-        guard case .record(let carried) = try store(atA).readCarryingForward(work) else {
+        guard case .record = try store(atA).readCarryingForward(work) else {
             return XCTFail("alice not carried to A")
         }
-        let aliceAtA = try carried.encoded()
+        let aliceAtA = try XCTUnwrap(keychain.value(account(atA, work)), "the carried record's stored bytes")
         try store(atB).write(FakePayload.signedIn("bob").record(), for: work, expecting: nil)
         XCTAssertEqual(carriedRecord(try store(atC).readCarryingForward(work))?.record.username, "bob", "B carries into C")
         XCTAssertEqual(try marker()?.poolNamespace, atC.keyComponent)
@@ -964,10 +965,10 @@ final class SessionRecordCopyForwardTests: XCTestCase {
         let atB = PoolNamespace.userPool("us-east-1_Other9999")
         let bob = try plant(.signedIn("bob", kind: .userPoolOnly), under: atB)
         try ran(.signedIn("alice"), under: Self.bothPools)
-        guard case .record(let carried) = try store(Self.otherIdentityPool).readCarryingForward(work) else {
+        guard case .record = try store(Self.otherIdentityPool).readCarryingForward(work) else {
             return XCTFail("not carried")
         }
-        let atAPrime = try carried.encoded()
+        let atAPrime = try XCTUnwrap(keychain.value(account(Self.otherIdentityPool, work)), "the carried record's stored bytes")
 
         XCTAssertEqual(carriedRecord(try store(atB).readCarryingForward(work))?.record.username, "bob")
         XCTAssertTrue(
@@ -1086,9 +1087,9 @@ final class SessionRecordCopyForwardTests: XCTestCase {
             _ = try store(pools).readCarryingForward(work)
         }
         func signIn(_ username: String, at pools: PoolNamespace) throws {
-            let expecting: UInt64?
+            let expecting: RecordVersion?
             if case .record(let envelope) = try store(pools).read(work) {
-                expecting = envelope.generation
+                expecting = envelope.version
             } else {
                 expecting = nil
             }
@@ -1302,7 +1303,7 @@ final class SessionRecordCopyForwardTests: XCTestCase {
                 _ = try? purger.purge(work)
             case 2:
                 if case .record(let envelope) = try? newStore.read(work) {
-                    _ = try? newStore.write(FakePayload.signedIn("bob").record(), for: work, expecting: envelope.generation)
+                    _ = try? newStore.write(FakePayload.signedIn("bob").record(), for: work, expecting: envelope.version)
                 }
             default:
                 break

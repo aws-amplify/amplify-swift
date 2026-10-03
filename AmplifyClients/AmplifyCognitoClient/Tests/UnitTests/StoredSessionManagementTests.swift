@@ -16,7 +16,7 @@ final class StoredSessionManagementTests: XCTestCase {
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
-    private var pluginAccount: String { SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools) }
+    private var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
 
     override func setUp() {
         harness = ClientHarness()
@@ -48,8 +48,8 @@ final class StoredSessionManagementTests: XCTestCase {
         )
     }
 
-    private func signOut(_ sessionId: SessionID, accessGroup: String? = nil) async throws -> AuthClientSignOutResult {
-        try await AmplifyCognitoClient.signOutStoredSession(
+    private func signOut(_ sessionId: SessionID, accessGroup: String? = nil) async -> AuthClientSignOutResult {
+        await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
             accessGroup: accessGroup,
@@ -94,13 +94,15 @@ final class StoredSessionManagementTests: XCTestCase {
 
     // MARK: Purge
 
-    /// - Given: a saved session no client holds, and `.default` reading through to the plugin's record
+    /// - Given: a saved session no client holds, and `.default` on the plugin's record with its sidecar
     /// - When: both are purged
     /// - Then:
-    ///    - their records are gone, the plugin's included, and no session was built to do it
+    ///    - their records are gone, the plugin's and the sidecar included, and no session was built to do it
     func testPurgeWithNoLiveSessionDeletesTheRecords() async throws {
         try harness.signIn(work, .signedIn("alice"))
-        harness.keychain.put(FakePayload.signedIn("alice").data, pluginAccount)
+        try harness.signIn(.default, .signedIn("alice"), label: "Home")
+        let sidecarAccount = SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+        XCTAssertNotNil(harness.keychain.value(sidecarAccount))
 
         try await purge(work)
         try await purge(.default)
@@ -108,6 +110,7 @@ final class StoredSessionManagementTests: XCTestCase {
         XCTAssertEqual(try harness.store().read(work), .absent)
         XCTAssertEqual(try harness.store().read(.default), .absent)
         XCTAssertNil(harness.keychain.value(pluginAccount))
+        XCTAssertNil(harness.keychain.value(sidecarAccount))
         XCTAssertEqual(harness.engines.count, 0)
     }
 
@@ -215,7 +218,7 @@ final class StoredSessionManagementTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         try harness.signIn(work, carol, accessGroup: "group.shared")
 
-        let result = try await signOut(work, accessGroup: "group.shared")
+        let result = await signOut(work, accessGroup: "group.shared")
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.revoker.revokeCalls, [carol.data])
@@ -267,7 +270,7 @@ final class StoredSessionManagementTests: XCTestCase {
             }
         }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.revoker.revokeCalls, [payload.data])
@@ -283,9 +286,9 @@ final class StoredSessionManagementTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         harness.revoker.scriptRevoke { _ in throw AuthClientError.unknown("network down", "retry") }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .partial(AuthClientPartialSignOut(revokeError: .unknown("network down", "retry"))))
+        XCTAssertEqual(result, .partialResult(revokeTokenError: .unknown("network down", "retry")))
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
@@ -301,9 +304,9 @@ final class StoredSessionManagementTests: XCTestCase {
         let failure = AuthClientError.service(.network, "revoke failed", "retry")
         harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: failure) }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .partial(AuthClientPartialSignOut(revokeError: failure, globalSignOutError: nil)))
+        XCTAssertEqual(result, .partialResult(revokeTokenError: failure))
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
@@ -314,8 +317,8 @@ final class StoredSessionManagementTests: XCTestCase {
     func testStaticSignOutWithNothingToSignOutRevokesNothing() async throws {
         try harness.store().write(.signedOut(label: nil, username: "bob"), for: home, expecting: nil)
 
-        let absent = try await signOut(work)
-        let signedOut = try await signOut(home)
+        let absent = await signOut(work)
+        let signedOut = await signOut(home)
 
         XCTAssertEqual(absent, .complete)
         XCTAssertEqual(signedOut, .complete)
@@ -343,7 +346,7 @@ final class StoredSessionManagementTests: XCTestCase {
         // Reads of the record: 1 the initial read, 2 the check after the revoke, 3 the store sign-out's.
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(rival.commits, 1)
         XCTAssertEqual(harness.revoker.revokeCalls, [original.data, refreshed.data])
@@ -358,7 +361,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   sign-out reads the record
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - only alice's credentials were revoked; bob's record is untouched; the result is `.superseded`
+    ///    - only alice's credentials were revoked; bob's record is untouched; the result is `.failed(.invalidState)`
     func testSupersededByADifferentUserLeavesThemSignedIn() async throws {
         let alice = FakePayload.signedIn("alice")
         let bob = FakePayload.signedIn("bob")
@@ -366,9 +369,9 @@ final class StoredSessionManagementTests: XCTestCase {
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.revoker.revokeCalls, [alice.data])
         XCTAssertEqual(try harness.storedRecord(work), bob.record())
     }
@@ -381,7 +384,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   follows the revoke (the second read of the record)
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - the result is `.superseded`, only alice was revoked, and bob's record is untouched
+    ///    - the result is `.failed(.invalidState)`, only alice was revoked, and bob's record is untouched
     func testDifferentUserLandingAfterTheFinalCheckIsNotSignedOut() async throws {
         let alice = FakePayload.signedIn("alice")
         let bob = FakePayload.signedIn("bob")
@@ -389,10 +392,10 @@ final class StoredSessionManagementTests: XCTestCase {
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 2) { rival.move() }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(rival.commits, 1)
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.revoker.revokeCalls, [alice.data])
         XCTAssertEqual(try harness.storedRecord(work), bob.record())
     }
@@ -400,7 +403,7 @@ final class StoredSessionManagementTests: XCTestCase {
     /// - Given: alice's saved session, and a revoke during which another process signs bob in
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - the check after the revoke sees bob, so nothing is cleared and the result is `.superseded`
+    ///    - the check after the revoke sees bob, so nothing is cleared and the result is `.failed(.invalidState)`
     func testDifferentUserSigningInDuringTheRevokeIsNotSignedOut() async throws {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, .signedIn("alice"))
@@ -408,13 +411,13 @@ final class StoredSessionManagementTests: XCTestCase {
         let work = work
         harness.revoker.scriptRevoke { _ in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(bob.record(), for: work, expecting: envelope.generation)
+                try store.write(bob.record(), for: work, expecting: envelope.version)
             }
         }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(try harness.storedRecord(work), bob.record())
     }
 
@@ -423,14 +426,16 @@ final class StoredSessionManagementTests: XCTestCase {
     /// - Given: a saved session, and a revoke that throws `CancellationError`
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - it throws `CancellationError`, and the session is still signed in
+    ///    - the result is `.failed(.unknown)` with an underlying `CancellationError`, and the session is
+    ///      still signed in
     func testCancelledRevokeClearsNothing() async throws {
         try harness.signIn(work, .signedIn("alice"))
         harness.revoker.scriptRevoke { _ in throw CancellationError() }
 
-        await assertThrowsAsync({ try await self.signOut(work) }) { error in
-            XCTAssertTrue(error is CancellationError, "\(error)")
-        }
+        let error = await failedSignOutError(signOut(work))
+
+        XCTAssertEqual(error.map { $0.isEquivalent(to: SessionSignOut.cancelledError()) }, true, "\(String(describing: error))")
+        XCTAssertTrue(error?.underlyingError is CancellationError)
 
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
@@ -443,7 +448,7 @@ final class StoredSessionManagementTests: XCTestCase {
         let guest = FakePayload.guest()
         try harness.signIn(work, guest)
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.revoker.revokeCalls, [guest.data])
@@ -457,7 +462,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   the revoke
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - the result is `.superseded`, only the original credentials were revoked, and the new ones are
+    ///    - the result is `.failed(.invalidState)`, only the original credentials were revoked, and the new ones are
     ///      kept
     func testDifferentGuestCredentialsDuringTheRevokeAreNotSignedOut() async throws {
         let guest = FakePayload.guest(version: 1)
@@ -467,13 +472,13 @@ final class StoredSessionManagementTests: XCTestCase {
         let work = work
         harness.revoker.scriptRevoke { _ in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(otherGuest.record(), for: work, expecting: envelope.generation)
+                try store.write(otherGuest.record(), for: work, expecting: envelope.version)
             }
         }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.revoker.revokeCalls, [guest.data])
         XCTAssertEqual(try harness.storedRecord(work), otherGuest.record())
     }
@@ -482,9 +487,9 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   every revoke
     /// - When: it is signed out through the static call
     /// - Then:
-    ///    - it gives up after three attempts and throws `storageUnavailable(.interrupted)`, and the session
-    ///      is still signed in — it never forces over credentials it did not revoke
-    ///    - the first revoke failure is not dropped: it is the thrown error's underlying error
+    ///    - it gives up after three attempts and returns `.failed(.storageUnavailable(.interrupted))`, and the
+    ///      session is still signed in — it never forces over credentials it did not revoke
+    ///    - the first revoke failure is not dropped: it is the error's underlying error
     func testSignOutGivesUpWhenTheSameUserKeepsRefreshing() async throws {
         try harness.signIn(work, .signedIn("alice", version: 1))
         let store = harness.store()
@@ -492,16 +497,14 @@ final class StoredSessionManagementTests: XCTestCase {
         harness.revoker.scriptRevoke { _ in
             if case .record(let envelope) = try store.read(work),
                let current = envelope.record.credentials.flatMap(FakePayload.decode) {
-                try store.write(current.refreshed.record(), for: work, expecting: envelope.generation)
+                try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
             }
             throw AuthClientError.unknown("revoke failed", "retry")
         }
 
-        await assertThrowsAsync({ try await self.signOut(work) }) { error in
-            let error = error as? AuthClientError
-            XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(String(describing: error))")
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, "revoke failed")
-        }
+        let error = await failedSignOutError(signOut(work))
+        XCTAssertEqual(error?.storageUnavailableReason, .interrupted, "\(String(describing: error))")
+        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.errorDescription, "revoke failed")
         XCTAssertEqual(harness.revoker.revokeCalls.count, SessionSignOut.maximumAttempts)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
@@ -520,7 +523,7 @@ final class StoredSessionManagementTests: XCTestCase {
         _ = await client.currentSessionState()
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [payload.data])
@@ -539,7 +542,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   store's sign-out reads the record
     /// - When: the session is signed out through the static call
     /// - Then:
-    ///    - the result is `.superseded`, no `.signedOut` event is sent, and the session now reports bob
+    ///    - the result is `.failed(.invalidState)`, no `.signedOut` event is sent, and the session now reports bob
     ///    - see also `testLiveSignOutCancelsAPendingChallenge`
     func testLiveSignOutSupersededKeepsThePendingChallenge() async throws {
         let bob = FakePayload.signedIn("bob")
@@ -549,9 +552,9 @@ final class StoredSessionManagementTests: XCTestCase {
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(harness.engine(for: work)?.cancelPendingSignInCount, 0, "a superseded sign-out ends nothing")
     }
 
@@ -568,7 +571,7 @@ final class StoredSessionManagementTests: XCTestCase {
         let before = await client.currentSessionState()
         XCTAssertEqual(before, .awaitingChallenge(.confirmSignInWithTOTPCode))
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.engine(for: work)?.cancelPendingSignInCount, 1)
@@ -580,7 +583,7 @@ final class StoredSessionManagementTests: XCTestCase {
     ///   store's sign-out reads the record
     /// - When: the session is signed out through the static call
     /// - Then:
-    ///    - the result is `.superseded`, no `.signedOut` event is sent, and the session now reports bob
+    ///    - the result is `.failed(.invalidState)`, no `.signedOut` event is sent, and the session now reports bob
     func testLiveSignOutSupersededByADifferentUser() async throws {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, .signedIn("alice"))
@@ -590,9 +593,9 @@ final class StoredSessionManagementTests: XCTestCase {
         let rival = ConcurrentWriter(store: harness.store(), sessionId: work) { _ in bob.record() }
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: work), occurrence: 3) { rival.move() }
 
-        let result = try await signOut(work)
+        let result = await signOut(work)
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(events.received, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))

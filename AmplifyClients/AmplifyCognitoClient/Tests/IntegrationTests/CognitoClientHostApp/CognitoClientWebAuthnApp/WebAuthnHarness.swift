@@ -25,7 +25,9 @@ protocol WebAuthnHarnessDriver: AnyObject {
     /// Signs in with `USER_AUTH`, `WEB_AUTHN` as the preferred first factor: the passkey sheet.
     func signInWithWebAuthn(username: String, presentationAnchor: ASPresentationAnchor) async throws
 
-    func signOut() async throws
+    /// Signs out, and returns the result line: "User is signed out", with what failed after it when the user is
+    /// signed out on this device but part of the sign-out failed. Throws when the user is still signed in.
+    func signOut() async throws -> String
 
     /// Registers a passkey for the signed-in user: the passkey sheet, then Face ID.
     func associateWebAuthnCredential(presentationAnchor: ASPresentationAnchor) async throws
@@ -101,5 +103,32 @@ struct HarnessAppError: Error, CustomStringConvertible {
 
     init(_ description: String) {
         self.description = description
+    }
+}
+
+extension AuthClientSignOutResult {
+
+    /// What a sign-out that signed the user out on this device left undone, by case names only, for the result
+    /// line: "" for `.complete`, else the parts that failed, as `revokeTokenError: service`. Never an error's text or
+    /// payload, which can hold a username, a service message or an identifier, and the UI tests print the line.
+    var failedParts: String {
+        guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
+            return ""
+        }
+        let parts: [(String, AuthClientError?)] = [
+            ("revokeTokenError", revoke),
+            ("globalSignOutError", global),
+            ("hostedUIError", hostedUI),
+            ("storageError", storage)
+        ]
+        return parts.compactMap { name, error in error.map { "\(name): \($0.harnessCaseName)" } }.joined(separator: ", ")
+    }
+}
+
+extension AuthClientError {
+
+    /// The error's case name alone (`browserBusy`, `userCancelled`), never its text or payload.
+    var harnessCaseName: String {
+        Mirror(reflecting: self).children.first?.label ?? "unknown"
     }
 }

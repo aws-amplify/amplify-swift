@@ -23,7 +23,9 @@ import XCTest
 /// pool's identity (a deliberate difference); an identity-pool-only configuration
 /// whose identity pool changed carries nothing (the plugin clears its record). The
 /// old record is kept, as the plugin keeps it (an extension still on the old configuration may be reading it),
-/// and a sign-out or purge deletes it only while it is untouched since the carry.
+/// and a sign-out or purge deletes it only while it is untouched since the carry. These are named sessions' rows:
+/// `.default` uses the plugin's own record and follows the plugin's rule exactly, which CS-D1 … CS-D3
+/// pin (`StorageConfigurationTests+DefaultSession.swift`).
 ///
 /// **Access groups.** A record lives in one keychain access group. With no migration, a client in another
 /// group does not see it. The plugin's access-group migrations have no client counterpart, so they are

@@ -44,6 +44,57 @@ final class LiveEngineWiringTests: XCTestCase {
         XCTAssertTrue(revoker is LiveSessionRevoker)
     }
 
+    /// The live dependencies revoke a login deleted by a configuration change with that configuration's own clients.
+    ///
+    /// - Given: a previous configuration in another region, with its own app client
+    /// - When: the live dependencies build its revoker, and its resources are built
+    /// - Then:
+    ///    - it is the live revoker; its engine configuration is the previous one, and its user pool client is in, and
+    ///      signs for, the previous region, with no identity client
+    func testLiveDependenciesBuildThePreviousConfigurationsRevoker() throws {
+        let previous = AuthConfiguration.userPools(UserPoolConfigurationData(
+            poolId: "eu-west-1_Previous1",
+            clientId: "previous-client",
+            region: "eu-west-1"
+        ))
+
+        let revoker = SessionCoreDependencies.live.makePreviousConfigurationRevoker(previous)
+        let clients = try CognitoServiceClients(previous: previous)
+        let resources = LiveSessionRevoker.resources(previous: previous, clients: clients)
+
+        XCTAssertTrue(revoker is LiveSessionRevoker)
+        XCTAssertEqual(resources.authConfiguration, previous)
+        let userPool = try XCTUnwrap(clients.userPool).config
+        XCTAssertEqual(userPool.region, "eu-west-1")
+        XCTAssertEqual(userPool.signingRegion, "eu-west-1")
+        XCTAssertNil(clients.identity)
+    }
+
+    /// A previous configuration's custom endpoint (a Gen1 plugin configuration can record one) is used by its revoke,
+    /// as the plugin's own user pool client uses it.
+    ///
+    /// - Given: a previous configuration with a custom endpoint, and one without
+    /// - When: their revokers' user pool clients are built
+    /// - Then:
+    ///    - the first resolves every request to the custom host; the second keeps the SDK's own resolver
+    func testThePreviousConfigurationsRevokerUsesItsCustomEndpoint() throws {
+        func previous(endpoint: String?) -> AuthConfiguration {
+            .userPools(UserPoolConfigurationData(
+                poolId: "us-east-1_Previous1",
+                clientId: "previous-client",
+                region: "us-east-1",
+                endpoint: endpoint.map { UserPoolConfigurationData.CustomEndpoint(validatedHost: $0) }
+            ))
+        }
+
+        let custom = try XCTUnwrap(CognitoServiceClients(previous: previous(endpoint: "auth.example.com")).userPool).config
+        let standard = try XCTUnwrap(CognitoServiceClients(previous: previous(endpoint: nil)).userPool).config
+
+        let resolver = try XCTUnwrap(custom.endpointResolver as? AWSEndpointResolving)
+        XCTAssertEqual(try resolver.resolve(params: .init(region: "us-east-1")).uri.host, "auth.example.com")
+        XCTAssertFalse(standard.endpointResolver is AWSEndpointResolving)
+    }
+
     // MARK: The stateless revoker
 
     /// The revoker runs the live revoke with inert device records: it revokes, and keeps nothing.
@@ -109,7 +160,8 @@ final class LiveEngineWiringTests: XCTestCase {
                 pools: configuration.poolNamespace,
                 accessGroup: nil
             ))),
-            analytics: LazyUserPoolAnalytics(pinpointAppId: nil)
+            analytics: LazyUserPoolAnalytics(pinpointAppId: nil),
+            makeAdvancedSecurity: FixedDeviceASF.factory
         ))
 
         await assertThrowsAsync({ try await engine.signIn(.flow(.userPassword), current: nil) }) { error in
@@ -164,7 +216,7 @@ final class LiveEngineWiringTests: XCTestCase {
         let state = await client.currentSessionState()
         let session = try await client.fetchAuthSession()
         let record = try clientHarness.storedRecord(ClientFixtures.id("work"))
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
         let afterSignOut = try clientHarness.storedRecord(ClientFixtures.id("work"))
 
         XCTAssertEqual(signIn.nextStep, .done)

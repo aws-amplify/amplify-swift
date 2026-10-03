@@ -194,7 +194,7 @@ enum Defaults {
             hostedUIEnvironment: hostedUIEnvironment
         )
         return AuthStateMachine(
-            resolver: AuthState.Resolver(),
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
             environment: environment,
             initialState: initialState
         )
@@ -214,7 +214,7 @@ enum Defaults {
     )
     -> AuthStateMachine {
         return AuthStateMachine(
-            resolver: AuthState.Resolver(),
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
             environment: environment,
             initialState: initialState
         )
@@ -407,6 +407,9 @@ struct MockASF: AdvancedSecurityBehavior {
         return ""
     }
 
+    func device(id: String) -> ASFDeviceBehavior {
+        FixedASFDevice(id: id)
+    }
 }
 
 extension AmplifyConfiguration {

@@ -318,7 +318,8 @@ final class LiveEngineWebUITests: XCTestCase {
     /// - When: it is revoked globally with `.present`, and again with `GlobalSignOut` failing
     /// - Then:
     ///    - the logout page comes first, before any Cognito call, then `GlobalSignOut`, then `RevokeToken`;
-    ///      after a failed `GlobalSignOut` the token is not revoked, and the failure is reported
+    ///      after a failed `GlobalSignOut` the token is not revoked, and the failure is reported beside the
+    ///      plugin's placeholder revoke error
     func testAGlobalPresentingSignOutShowsTheLogoutFirst() async throws {
         let payload = try await sharedCookiePayload()
         let engine = try harness.engine()
@@ -342,25 +343,33 @@ final class LiveEngineWebUITests: XCTestCase {
 
         XCTAssertEqual(cognito.operations, ["GlobalSignOut"])
         XCTAssertNotNil(failed.globalSignOutError)
-        XCTAssertNil(failed.revokeError)
+        XCTAssertEqual(failed.revokeError?.kind, .service(nil))
+        XCTAssertEqual(failed.revokeError?.errorDescription, "")
     }
 
+    /// a page the user asked for that cannot be shown is the plugin's `.failed`.
+    ///
     /// - Given: a shared-cookie payload, and a window that has closed
     /// - When: it is revoked with `.present`
     /// - Then:
-    ///    - nothing is shown; the token is revoked, and `hostedUIError` is `.validation(field: "presentationAnchor")`
-    func testAPresentingSignOutWithAClosedWindowRevokesWithoutThePage() async throws {
+    ///    - nothing is shown; it throws a `SignOutRefusal` with `.validation(field: "presentationAnchor")`, and
+    ///      nothing is revoked
+    func testAPresentingSignOutWithAClosedWindowIsRefused() async throws {
         let payload = try await sharedCookiePayload()
         let shownBefore = presenter.shown.count
         harness.scriptSignOut()
         harness.cognito.clearCalls()
         let engine = try harness.engine()
 
-        let outcome = try await engine.revoke(payload, global: false, hostedUI: .present(.empty()))
+        do {
+            _ = try await engine.revoke(payload, global: false, hostedUI: .present(.empty()))
+            XCTFail("expected a refusal")
+        } catch let refusal as SignOutRefusal {
+            XCTAssertEqual(refusal.error.kind, .validation(field: "presentationAnchor"))
+        }
 
         XCTAssertEqual(presenter.shown.count, shownBefore)
-        XCTAssertEqual(harness.cognito.operations, ["RevokeToken"])
-        XCTAssertEqual(outcome.hostedUIError?.kind, .validation(field: "presentationAnchor"))
+        XCTAssertEqual(harness.cognito.operations, [])
     }
 
     /// - Given: a shared-cookie payload
@@ -380,23 +389,68 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, [])
     }
 
+    /// the engine's own refusals of the hosted UI's sign-out end it, as the plugin's `.failed` does,
+    /// instead of rerunning it without the page.
+    ///
     /// - Given: a shared-cookie payload
-    /// - When: the logout browser fails to start
+    /// - When: the logout step fails with no hosted-UI configuration (`HostedUIError.pluginConfiguration`), and
+    ///   then with no usable sign-out redirect URI (`HostedUIError.signOutRedirectURI`)
     /// - Then:
-    ///    - the sign-out reruns with the step skipped: the token is revoked once, and `hostedUIError` carries the
-    ///      mapped failure
-    func testAnotherLogoutFailureRerunsWithoutTheBrowserAndIsReported() async throws {
+    ///    - each revoke throws a `SignOutRefusal` carrying `SessionCore.noHostedUIForSignOut()`, the one value of
+    ///      the core's own check, with the engine's mapped `.configuration` error underneath; nothing was revoked
+    func testAHostedUIConfigurationRefusalRevokesNothing() async throws {
         let payload = try await sharedCookiePayload()
-        presenter.behave(.fail(.unableToStartASWebAuthenticationSession))
-        harness.scriptSignOut()
-        harness.cognito.clearCalls()
         let engine = try harness.engine()
+        for failure in [HostedUIError.pluginConfiguration("no hosted UI"), .signOutRedirectURI] {
+            presenter.behave(.fail(failure))
+            harness.scriptSignOut()
+            harness.cognito.clearCalls()
 
-        let outcome = try await engine.revoke(payload, global: false, hostedUI: .present(box()))
+            do {
+                _ = try await engine.revoke(payload, global: false, hostedUI: .present(box()))
+                XCTFail("expected a refusal for \(failure)")
+            } catch let refusal as SignOutRefusal {
+                XCTAssertTrue(refusal.error.isEquivalent(to: SessionCore.noHostedUIForSignOut()), "\(failure)")
+                XCTAssertEqual((refusal.error.underlyingError as? AuthClientError)?.kind, .configuration, "\(failure)")
+            }
 
-        XCTAssertEqual(harness.cognito.operations, ["RevokeToken"])
-        XCTAssertNil(outcome.revokeError)
-        XCTAssertEqual(outcome.hostedUIError?.kind, .service(.errorLoadingUI))
+            XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
+        }
+    }
+
+    /// as the plugin, every other `HostedUIError` of the logout step stops the sign-out, instead of rerunning
+    /// it without the page.
+    ///
+    /// - Given: a shared-cookie payload
+    /// - When: the logout step fails in each other way: the browser fails to start, an invalid context, an unknown
+    ///   failure, a service message, a sign-out URL that cannot be built
+    /// - Then:
+    ///    - each revoke throws a `SignOutRefusal` with the mapped failure (`.service(.errorLoadingUI)` for a failed
+    ///      start), and nothing was revoked
+    func testEveryOtherLogoutFailureIsRefusedAndRevokesNothing() async throws {
+        let payload = try await sharedCookiePayload()
+        let engine = try harness.engine()
+        let failures: [HostedUIError] = [
+            .unableToStartASWebAuthenticationSession, .invalidContext, .unknown, .serviceMessage("down"), .signOutURI
+        ]
+        for failure in failures {
+            presenter.behave(.fail(failure))
+            harness.scriptSignOut()
+            harness.cognito.clearCalls()
+
+            do {
+                _ = try await engine.revoke(payload, global: false, hostedUI: .present(box()))
+                XCTFail("expected a refusal for \(failure)")
+            } catch let refusal as SignOutRefusal {
+                XCTAssertTrue(
+                    refusal.error.isEquivalent(to: AuthClientError(engine: failure.engineError)),
+                    "\(failure): \(refusal.error)"
+                )
+            }
+
+            XCTAssertEqual(harness.cognito.operations, [], "\(failure)")
+        }
+        XCTAssertEqual(AuthClientError(engine: HostedUIError.unableToStartASWebAuthenticationSession.engineError).kind, .service(.errorLoadingUI))
     }
 
     /// - Given: a shared-cookie payload

@@ -188,7 +188,7 @@ final class AutoSignInRoutingTests: XCTestCase {
         _ = try await client.confirmSignUp(for: "carol", confirmationCode: "123456")
 
         _ = try await client.autoSignIn()
-        try await client.signOut()
+        await client.signOut()
         let second = try await client.autoSignIn()
 
         XCTAssertEqual(second.nextStep, .done)
@@ -214,7 +214,7 @@ final class AutoSignInRoutingTests: XCTestCase {
 
         let pending = Task { try await client.autoSignIn() }
         await latch.waitForArrivals(1)
-        try await client.signOut()
+        await client.signOut()
         await latch.open()
 
         await assertThrowsAsync({ try await pending.value }) { error in

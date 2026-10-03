@@ -111,7 +111,7 @@ extension ChallengeRecord.State {
     var fakeResumedStep: AuthClientSignInStep? {
         switch self {
         case .challenge(let challenge):
-            return EngineSignInStep(challenge.step).map(AuthClientSignInStep.init)
+            return EngineSignInStep(challenge.step, logger: ClientEngineLogger()).map(AuthClientSignInStep.init)
         case .totpSetup(let setup):
             return .continueSignInWithTOTPSetup(AuthClientTOTPSetupDetails(sharedSecret: setup.secretCode, username: setup.username))
         }

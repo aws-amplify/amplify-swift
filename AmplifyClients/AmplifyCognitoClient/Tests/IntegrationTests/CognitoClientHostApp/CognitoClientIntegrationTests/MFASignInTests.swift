@@ -30,7 +30,7 @@ final class MFASignInTests: ClientMFATestCase {
         let (client, user) = try await signedInFreshUser("mf-3")
         let secret = try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: nil, totp: .enabled)
-        try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
 
         let signIn = try await client.signIn(username: user.username, password: XCTUnwrap(user.password))
 
@@ -55,7 +55,7 @@ final class MFASignInTests: ClientMFATestCase {
     func testSignInWithSMSMFA() async throws {
         let (client, user) = try await signedInFreshUser("mf-4", on: .passwordless, withPhoneNumber: true)
         try await client.updateMFAPreference(sms: .enabled, totp: nil)
-        try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         let sink = try CodeSink()
 
         let (signIn, code) = try await sink.code(for: user, .mfa) {
@@ -87,7 +87,7 @@ final class MFASignInTests: ClientMFATestCase {
         let (client, user) = try await signedInFreshUser("mf-5", withPhoneNumber: true)
         let secret = try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: .enabled, totp: .enabled)
-        try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
 
         let signIn = try await client.signIn(username: user.username, password: XCTUnwrap(user.password))
 
@@ -116,7 +116,7 @@ final class MFASignInTests: ClientMFATestCase {
         let (client, user) = try await signedInFreshUser("mf-6", on: .passwordless, withPhoneNumber: true)
         try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: .enabled, totp: .enabled)
-        try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         let sink = try CodeSink()
 
         let signIn = try await client.signIn(username: user.username, password: XCTUnwrap(user.password))

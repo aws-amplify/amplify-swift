@@ -18,7 +18,7 @@
 # Outputs, all OUTSIDE the repo (they are account-specific, and the users' passwords are secrets):
 #   $STATE_DIR/state.json            resource ids
 #   $STATE_DIR/amplify_outputs.json  the client's configuration
-#   $STATE_DIR/<pool>-amplify_outputs.json  one per parity pool, plus hosted-ui and identity-only
+#   $STATE_DIR/<pool>-amplify_outputs.json  one per parity pool, plus hosted-ui, rotation and identity-only
 #   $STATE_DIR/users.json            test passwords, carol's TOTP secret, the code sink API key and
 #                                    the custom-challenge answer (mode 600)
 #
@@ -40,6 +40,9 @@ aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 
 require_cli_history_off
 require_recorded_account
+# Never while an infra/self-sign-up.sh run holds self sign-up on: provisioning turns it off (parity.py provision
+# checks again, under the toggle lock).
+python3 "$INFRA_DIR/parity.py" self-sign-up require-idle
 
 # --- User pool -----------------------------------------------------------------------------------
 # The id an earlier run recorded wins over the name lookup, which reads only the first page.

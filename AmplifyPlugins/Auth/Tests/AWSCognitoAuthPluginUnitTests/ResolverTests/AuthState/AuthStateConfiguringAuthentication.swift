@@ -13,7 +13,7 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class AuthStateConfiguringAuthentication: XCTestCase, @unchecked Sendable {
     var resolver: AnyResolver<AuthState> {
-        AuthState.Resolver().logging().eraseToAnyResolver()
+        AuthState.Resolver(logger: AmplifyEngineLogRouter()).logging().eraseToAnyResolver()
     }
 
     let oldState = AuthState.configuringAuthentication(.notConfigured)

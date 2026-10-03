@@ -493,7 +493,7 @@ enum TranscriptPlugin {
             authConfiguration: configuration,
             authEnvironment: environment,
             authStateMachine: AuthStateMachine(
-                resolver: TrackingResolver(AuthState.Resolver(), activity: authActivity),
+                resolver: TrackingResolver(AuthState.Resolver(logger: AmplifyEngineLogRouter()), activity: authActivity),
                 environment: environment,
                 initialState: initialState
             ),

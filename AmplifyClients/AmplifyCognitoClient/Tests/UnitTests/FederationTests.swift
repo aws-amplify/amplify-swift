@@ -183,7 +183,7 @@ final class FederationTests: XCTestCase {
 
         let federation = Task { try await client.federateToIdentityPool(withProviderToken: "token", for: .google) }
         await gate.waitForArrivals(1)
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await gate.open()
 
         await assertThrowsAsync({ try await federation.value }) { error in
@@ -239,7 +239,7 @@ final class FederationTests: XCTestCase {
         let store = harness.store()
         let work = work
         harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
-            _ = try store.write(old.refreshed.record(), for: work, expecting: envelope.generation)
+            _ = try store.write(old.refreshed.record(), for: work, expecting: .generation(envelope.generation))
             return next.data
         }
 
@@ -364,7 +364,7 @@ final class FederationTests: XCTestCase {
         await gate.waitForArrivals(1)
         let second = Task { try await client.federateToIdentityPool(withProviderToken: "second", for: .google) }
         await waitUntil("the second federation queues") { await client.core.signInLock.waiterCount == 1 }
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await gate.open()
 
         await assertThrowsAsync({ try await first.value }) { Self.assertCancelled($0) }
@@ -388,7 +388,7 @@ final class FederationTests: XCTestCase {
         let store = harness.store()
         let work = work
         harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
-            _ = try store.write(other.record(), for: work, expecting: envelope.generation)
+            _ = try store.write(other.record(), for: work, expecting: .generation(envelope.generation))
             return FakePayload.federated(identityId: "us-east-1:b").data
         }
 
@@ -420,7 +420,7 @@ final class FederationTests: XCTestCase {
 
         let federation = Task { try await client.federateToIdentityPool(withProviderToken: "bad", for: .facebook) }
         await gate.waitForArrivals(1)
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await gate.open()
 
         await assertThrowsAsync({ try await federation.value }) { Self.assertCancelled($0) }
@@ -554,7 +554,7 @@ final class FederationTests: XCTestCase {
         // Settle: a federation (no event) and a sign-out (one `.signedOut`) after both clears. The stream is in
         // order, so two events in all means the clears sent exactly one between them.
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await events.waitFor(2)
         XCTAssertEqual(events.received, [.signedOut, .signedOut])
     }
@@ -596,7 +596,7 @@ final class FederationTests: XCTestCase {
         let envelope = try harness.signIn(work, .federated())
         let client = try harness.client(work)
         _ = await client.currentSessionState()
-        _ = try harness.store().write(FakePayload.signedIn("alice").record(), for: work, expecting: envelope.generation)
+        _ = try harness.store().write(FakePayload.signedIn("alice").record(), for: work, expecting: .generation(envelope.generation))
 
         await assertThrowsAsync({ try await client.clearFederationToIdentityPool() }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, "Clearing of federation failed.")
@@ -618,7 +618,7 @@ final class FederationTests: XCTestCase {
         let client = try harness.client(work)
         _ = await client.currentSessionState()
         let other = FakePayload.federated(identityId: "us-east-1:b")
-        _ = try harness.store().write(other.record(), for: work, expecting: envelope.generation)
+        _ = try harness.store().write(other.record(), for: work, expecting: .generation(envelope.generation))
 
         await assertThrowsAsync({ try await client.clearFederationToIdentityPool() }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, "Clearing of federation failed.")
@@ -690,7 +690,7 @@ final class FederationTests: XCTestCase {
         _ = await client.currentSessionState()
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
 
         XCTAssertEqual(result, .complete)
         XCTAssertNil(try harness.storedRecord(work)?.credentials)

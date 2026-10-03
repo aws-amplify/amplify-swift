@@ -39,7 +39,7 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
 
     /// SHA-256 of `queries.json`. Regenerating the baseline changes it, so a regeneration also has to
     /// edit this line, in review.
-    static let pinnedBaselineSHA256 = "f5cdfdcab51488c3a7b52e92a4ea8077c80dba309d9e6afef3840e6705b79a30"
+    static let pinnedBaselineSHA256 = "5856aae1ac794cccb9bd16ba4ed035464507e82930877d3f51c32c85a9595b40"
 
     static var baselineURL: URL {
         GoldenFiles.directory("GoldenKeychainQueries").appendingPathComponent("queries.json")
@@ -401,21 +401,6 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
             let result = await plugin.signOut(options: .init())
             XCTAssertTrue((result as? AWSCognitoSignOutResult)?.signedOutLocally ?? false)
         }
-        try await run(
-            "signOutWithClientDefaultSessionRecord",
-            "Sign-out while the Cognito client has a $default session record; writes a signed-out record"
-        ) { harness in
-            try harness.seedPluginSession(LongLivedCredentials.userPoolAndIdentityPool())
-            try CognitoClientRecords.writeDefaultSession(
-                LongLivedCredentials.userPoolAndIdentityPool(),
-                in: harness.keychain,
-                for: Defaults.makeDefaultAuthConfigData()
-            )
-            let plugin = await harness.configuredPlugin(userPool: MockIdentityProvider(mockRevokeTokenResponse: { _ in .testData }))
-            harness.recorder.reset()
-            let result = await plugin.signOut(options: .init())
-            XCTAssertTrue((result as? AWSCognitoSignOutResult)?.signedOutLocally ?? false)
-        }
         try await run("deleteUser", "Delete user of a signed-in plugin") { harness in
             try harness.seedPluginSession(LongLivedCredentials.userPoolAndIdentityPool())
             let plugin = await harness.configuredPlugin(userPool: MockIdentityProvider(
@@ -472,57 +457,23 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
             harness.recorder.reset()
             try await harness.launch(.userPools(otherUserPool))
         }
+        // A development build's leftover `$default` session record of the Cognito client, which this plugin
+        // never reads.
         try await run(
-            "configurationChangeDifferentUserPoolWithClientDefaultSession",
-            "A different user pool while the client has a $default record in the old namespace: the old session becomes the signed-out marker"
+            "firstConfigureBesideALeftoverClientDefaultRecord",
+            "First configuration beside a leftover client $default session record: no query names it"
         ) { harness in
-            let old = AuthConfiguration.userPools(StoredFormatFixtures.minimalUserPool)
-            try await harness.launch(old, storing: LongLivedCredentials.userPoolAndIdentityPool())
-            try CognitoClientRecords.writeDefaultSession(LongLivedCredentials.userPoolAndIdentityPool(), in: harness.keychain, for: old)
-            harness.recorder.reset()
-            try await harness.launch(.userPools(otherUserPool))
-        }
-
-        // The Cognito client's default-session record.
-        try await run(
-            "fallbackReadFromClientDefaultSession",
-            "Launch with no plugin session and a signed-in client $default record: the session is read from the client's record"
-        ) { harness in
-            try CognitoClientRecords.writeDefaultSession(
-                LongLivedCredentials.userPoolAndIdentityPool(),
-                in: harness.keychain,
-                for: userPoolAndIdentityPool
+            try harness.keychain.store(service: service)
+                .set(Data("leftover".utf8), key: leftoverClientDefaultSessionAccount)
+            _ = await harness.configuredPlugin()
+            XCTAssertFalse(
+                harness.recorder.rawQueries.contains { $0.contains("$default") },
+                "A query names the leftover client record"
             )
-            try await harness.launch(userPoolAndIdentityPool)
-        }
-        try await run(
-            "signOutWhenClientDefaultSessionReadFails",
-            "Sign-out while reading the client's $default record fails (locked keychain): the signed-out marker is written"
-        ) { harness in
-            let client = try await harness.launch(userPoolAndIdentityPool, storing: LongLivedCredentials.userPoolAndIdentityPool())
-            harness.keychain.failing(
-                .read,
-                with: errSecInteractionNotAllowed,
-                forAccount: CognitoClientRecords.defaultSessionAccount(for: userPoolAndIdentityPool)
+            XCTAssertEqual(
+                harness.keychain.value(service: service, account: leftoverClientDefaultSessionAccount),
+                Data("leftover".utf8)
             )
-            harness.recorder.reset()
-            try await client.deleteData(type: .amplifyCredentials)
-        }
-        try await run(
-            "signOutWhenMarkerWriteFails",
-            "Sign-out with a client $default record present and the marker write failing: the plugin session is removed and the clear fails"
-        ) { harness in
-            let client = try await harness.launch(userPoolAndIdentityPool, storing: LongLivedCredentials.userPoolAndIdentityPool())
-            try CognitoClientRecords.writeDefaultSession(
-                LongLivedCredentials.userPoolAndIdentityPool(),
-                in: harness.keychain,
-                for: userPoolAndIdentityPool
-            )
-            harness.keychain.failing(.write, with: errSecInteractionNotAllowed, forAccount: userPoolAndIdentityPoolSessionKey)
-            harness.recorder.reset()
-            // Expected to throw. Not asserted here: the recorded queries show the failed write and the
-            // removal, and an assertion inside a scenario would stop the run before the drift report.
-            try? await client.deleteData(type: .amplifyCredentials)
         }
 
         // Access groups.
@@ -620,6 +571,41 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
             harness.recorder.reset()
             try await harness.launch(userPoolAndIdentityPool, migrate: true)
         }
+        // The Cognito client's default-session sidecar and challenge items belong to the plugin's session:
+        // they move with it, and the transition wipe and the destination clear remove
+        // them. They never count as the plugin's items in the shared service. Named sessions stay.
+        try await run(
+            "migrateKeychainItemsMovesTheDefaultSessionsSidecarAndChallenge",
+            "Access group, migrateKeychainItems: true, with the client's $default.meta and .challenge: both move; the named session's record stays"
+        ) { harness in
+            try await harness.populateUnsharedService()
+            try harness.seedDefaultSessionItems()
+            harness.recorder.reset()
+            try await harness.launch(userPoolAndIdentityPool, accessGroup: accessGroup, migrate: true)
+        }
+        try await run(
+            "accessGroupTransitionClearRemovesTheDefaultSessionsSidecarAndChallenge",
+            "Access group without migration, with the client's $default.meta and .challenge: both are removed; the named session's record is spared"
+        ) { harness in
+            try await harness.populateUnsharedService()
+            try harness.seedDefaultSessionItems()
+            harness.recorder.reset()
+            try await harness.launch(userPoolAndIdentityPool, accessGroup: accessGroup)
+        }
+        try await run(
+            "migrateKeychainItemsIntoSharedHoldingTheDefaultSessionsSidecarAndChallenge",
+            "migrateKeychainItems: true while the shared service holds only the client's $default.meta, .challenge and a named session's record: the migration still runs, the destination clear removes the two $default items and spares the named record, then the unshared service's items move"
+        ) { harness in
+            try await harness.populateUnsharedService()
+            try harness.seedDefaultSessionItems()
+            let shared = harness.keychain.store(service: sharedService, accessGroup: accessGroup)
+            for account in defaultSessionItemAccounts {
+                try shared.set(Data("stale".utf8), key: account)
+            }
+            try shared.set(Data("client".utf8), key: clientSessionAccount)
+            harness.recorder.reset()
+            try await harness.launch(userPoolAndIdentityPool, accessGroup: accessGroup, migrate: true)
+        }
 
         // The legacy AWSMobileClient migration: every seed set.
         for seed in try legacySeedNames() {
@@ -637,7 +623,11 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
         ) { harness in
             let environment = harness.credentialEnvironment(.userPools(StoredFormatFixtures.fullUserPool)).credentialStoreEnvironment
             for launch in 1 ... 2 {
-                let analytics = try UserPoolAnalytics(StoredFormatFixtures.fullUserPool, credentialStoreEnvironment: environment)
+                let analytics = try UserPoolAnalytics(
+                    StoredFormatFixtures.fullUserPool,
+                    credentialStoreEnvironment: environment,
+                    logger: AmplifyEngineLogRouter()
+                )
                 let endpoint = try XCTUnwrap(analytics.pinpointEndpoint)
                 harness.recorder.substitute(endpoint, with: "<generated ID \(launch)>")
             }
@@ -700,6 +690,16 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
 
     /// A Cognito client session record for `userPoolAndIdentityPool`.
     static let clientSessionAccount = "amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.work.session"
+
+    /// The Cognito client's default-session sidecar and challenge items for `userPoolAndIdentityPool`.
+    static let defaultSessionItemAccounts = [
+        "amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.meta",
+        "amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.challenge"
+    ]
+
+    /// A development build's leftover Cognito client `$default` session record, in the namespace of
+    /// `Defaults.makeDefaultAuthConfigData()`.
+    static let leftoverClientDefaultSessionAccount = "amplify.1.\(Defaults.userPoolId).\(Defaults.identityPoolId).$default.session"
 
     /// The plugin's session record for `userPoolAndIdentityPool`.
     static let userPoolAndIdentityPoolSessionKey = "amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session"
@@ -809,7 +809,8 @@ private final class Harness: @unchecked Sendable {
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: migrate,
             userDefaults: userDefaults,
-            makeKeychainStore: recorder.makeKeychainStore
+            makeKeychainStore: recorder.makeKeychainStore,
+            logger: AmplifyEngineLogRouter()
         )
     }
 
@@ -884,6 +885,15 @@ private final class Harness: @unchecked Sendable {
         try await client.storeData(data: .asfDeviceId("asf-device-id", "Alice.Example"))
         try keychain.store(service: KeychainQueryParityTests.service)
             .set(Data("client".utf8), key: KeychainQueryParityTests.clientSessionAccount)
+    }
+
+    /// The Cognito client has stored its default session's sidecar and challenge items for
+    /// `userPoolAndIdentityPool` in the unshared service.
+    func seedDefaultSessionItems() throws {
+        let store = keychain.store(service: KeychainQueryParityTests.service)
+        for account in KeychainQueryParityTests.defaultSessionItemAccounts {
+            try store.set(Data("client".utf8), key: account)
+        }
     }
 
     /// Writes a legacy seed set into the keychain, as `LegacyMigrationGoldenTests` serves it, and returns
@@ -976,7 +986,7 @@ private final class Harness: @unchecked Sendable {
         plugin.configure(
             authConfiguration: authConfiguration,
             authEnvironment: authEnvironment,
-            authStateMachine: AuthStateMachine(resolver: AuthState.Resolver(), environment: authEnvironment),
+            authStateMachine: AuthStateMachine(resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()), environment: authEnvironment),
             credentialStoreStateMachine: credentialStoreMachine,
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()

@@ -139,7 +139,7 @@ final class AWSAuthSignInTaskStateOrderTests: XCTestCase, @unchecked Sendable {
         )
         let environment = Defaults.makeDefaultAuthEnvironment(userPoolFactory: { userPool })
         return AuthStateMachine(
-            resolver: TrackingResolver(AuthState.Resolver(), activity: MachineActivity(), onResolve: onResolve),
+            resolver: TrackingResolver(AuthState.Resolver(logger: AmplifyEngineLogRouter()), activity: MachineActivity(), onResolve: onResolve),
             environment: environment,
             initialState: .configured(.signedOut(.init(lastKnownUserName: nil)), .configured, .notStarted)
         )

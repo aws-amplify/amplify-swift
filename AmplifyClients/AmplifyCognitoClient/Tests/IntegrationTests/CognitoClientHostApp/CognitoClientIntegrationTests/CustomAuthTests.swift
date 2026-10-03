@@ -111,9 +111,9 @@ final class CustomAuthTests: ClientIntegrationTestCase {
         XCTAssertEqual(recorder.answered.compactMap(\.challengeName), ["CUSTOM_CHALLENGE"])
         try await assertSignedIn(client, as: user)
 
-        let signOut = try await client.signOut()
-        guard case .complete = signOut else {
-            XCTFail("the sign-out should be complete")
+        let signOut = await client.signOut()
+        XCTAssertSignOutComplete(signOut)
+        guard signOut == .complete else {
             return
         }
         let signedOut = await client.currentSessionState()

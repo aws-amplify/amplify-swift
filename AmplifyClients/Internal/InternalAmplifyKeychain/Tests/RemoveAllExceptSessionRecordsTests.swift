@@ -50,7 +50,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         let store = keychain.store(service: service)
         try populate(store, with: pluginAccounts + sessionRecordAccounts)
 
-        try store.removeAllExceptSessionRecords(logger: SilentLogger())
+        try store.removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
 
         for account in pluginAccounts {
             XCTAssertNil(keychain.value(service: service, account: account), "\(account) should be removed")
@@ -78,7 +78,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         keychain.failing(.listAccounts, with: errSecInteractionNotAllowed)
         let logger = RecordingLogger()
 
-        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: logger)) { error in
+        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: true)) { error in
             XCTAssertEqual(error as? KeychainAccessError, .securityError(errSecInteractionNotAllowed))
         }
 
@@ -103,7 +103,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         try populate(scoped.store(service: service), with: pluginAccounts)
 
         try unscoped.store(service: service).removeAll()
-        try scoped.store(service: service).removeAllExceptSessionRecords(logger: SilentLogger())
+        try scoped.store(service: service).removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
 
         XCTAssertEqual(try unscoped.store(service: service).allAccounts(), [])
         XCTAssertEqual(try scoped.store(service: service).allAccounts(), [])
@@ -126,7 +126,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         try populate(keychain.store(service: service, accessGroup: "group-b"), with: ["authConfiguration"])
         try populate(keychain.store(service: "other", accessGroup: "group-a"), with: ["authConfiguration"])
 
-        try keychain.store(service: service, accessGroup: "group-a").removeAllExceptSessionRecords(logger: SilentLogger())
+        try keychain.store(service: service, accessGroup: "group-a").removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
 
         XCTAssertNil(keychain.value(service: service, accessGroup: "group-a", account: "authConfiguration"))
         XCTAssertNotNil(keychain.value(service: service, accessGroup: "group-b", account: "authConfiguration"))
@@ -153,7 +153,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
             try populate(store, with: ["authConfiguration", clientAccount])
         }
 
-        try keychain.store(service: service).removeAllExceptSessionRecords(logger: SilentLogger())
+        try keychain.store(service: service).removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
 
         XCTAssertEqual(try keychain.store(service: service).allAccounts(), [clientAccount, clientAccount])
         XCTAssertNil(keychain.value(service: service, account: "authConfiguration"))
@@ -172,7 +172,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         try populate(store, with: ["authConfiguration"])
         keychain.failing(.remove, with: errSecIO)
 
-        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: SilentLogger())) { error in
+        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)) { error in
             XCTAssertEqual(error as? KeychainAccessError, .securityError(errSecIO))
         }
     }
@@ -226,7 +226,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         keychain.failing(.remove, with: errSecIO, forAccount: "authConfiguration")
         let logger = RecordingLogger()
 
-        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: logger))
+        XCTAssertThrowsError(try store.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: true))
 
         XCTAssertFalse(logger.messages(at: .verbose).contains { $0.contains("Removed") })
         XCTAssertEqual(logger.messages(at: .warn).count, 1)
@@ -256,7 +256,7 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         ]
         try populate(store, with: laterSchemaAccounts + legacyAccounts)
 
-        try store.removeAllExceptSessionRecords(logger: SilentLogger())
+        try store.removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
 
         XCTAssertEqual(try store.allAccounts(), laterSchemaAccounts.sorted())
     }
@@ -314,6 +314,106 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         for account in pluginAccounts + lookAlikes {
             XCTAssertFalse(SessionRecordAccount.isClientSessionRecord(account), account)
         }
+    }
+
+    // MARK: The default session's items
+
+    /// The default session's sidecar and challenge items are recognised in every namespace shape.
+    ///
+    /// - Given: `$default.meta` and `$default.challenge` accounts under a user pool, an identity pool and
+    ///   both, with schema versions 1, 2 and 10
+    /// - When: each is classified
+    /// - Then:
+    ///    - every one is a default-session item, and also a client session record
+    func testDefaultSessionItemsAreRecognised() {
+        let namespaces = [
+            "us-east-1_Pool",
+            "us-east-1:identity-pool",
+            "us-east-1_Pool.us-east-1:identity-pool"
+        ]
+        for version in ["1", "2", "10"] {
+            for namespace in namespaces {
+                for kind in ["meta", "challenge"] {
+                    let account = "amplify.\(version).\(namespace).$default.\(kind)"
+                    XCTAssertTrue(SessionRecordAccount.isDefaultSessionItem(account), account)
+                    XCTAssertTrue(SessionRecordAccount.isClientSessionRecord(account), account)
+                }
+            }
+        }
+    }
+
+    /// Every other account is not a default-session item.
+    ///
+    /// - Given: a development build's leftover `$default.session`, a named session's items, a marker, the
+    ///   plugin's own accounts, and near misses of the two suffixes
+    /// - When: each is classified
+    /// - Then:
+    ///    - none is a default-session item
+    func testOtherAccountsAreNotDefaultSessionItems() {
+        let others = [
+            "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.session",
+            "amplify.1.us-east-1_Pool.work.session",
+            "amplify.1.us-east-1_Pool.work.challenge",
+            "amplify.1.us-east-1_Pool.work.meta",
+            "amplify.1.$default.0123456789abcdef.configuration",
+            "amplify.1.$default.meta",
+            "amplify.1..$default.meta",
+            "amplify.1.us-east-1_Pool.$default.metadata",
+            "amplify.1.us-east-1_Pool.$default.challenge.session",
+            "amplify.1.us-east-1_Pool.default.meta",
+            "amplify.us-east-1_Pool.$default.meta",
+            "amplify.us-east-1_Pool.$default.challenge"
+        ]
+        for account in pluginAccounts + others {
+            XCTAssertFalse(SessionRecordAccount.isDefaultSessionItem(account), account)
+        }
+    }
+
+    /// A wipe of the plugin's session removes the default session's items and spares every other record.
+    ///
+    /// - Given: a service holding plugin items, client session records, and the default session's sidecar
+    ///   and challenge items
+    /// - When: `removeAllExceptSessionRecords` runs over it, not sparing the default session's items
+    /// - Then:
+    ///    - the plugin items and the default session's items are gone
+    ///    - every other session record, a leftover `$default.session` included, is still there unchanged
+    func testNotSparingDefaultSessionItemsRemovesThemAndSparesOtherRecords() throws {
+        let keychain = InMemoryKeychain()
+        let store = keychain.store(service: service)
+        let defaultSessionItems = [
+            "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.meta",
+            "amplify.1.us-east-1_Pool.us-east-1:identity-pool.$default.challenge"
+        ]
+        let spared = sessionRecordAccounts.filter { !SessionRecordAccount.isDefaultSessionItem($0) }
+        try populate(store, with: pluginAccounts + sessionRecordAccounts + defaultSessionItems)
+
+        try store.removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: false)
+
+        XCTAssertEqual(try store.allAccounts(), spared.sorted())
+        for account in spared {
+            XCTAssertEqual(keychain.value(service: service, account: account), Data(account.utf8), "\(account) should be kept")
+        }
+        XCTAssertTrue(spared.contains("amplify.1.us-east-1_Pool.$default.session"))
+    }
+
+    /// Asked to, the wipe spares the default session's items like any session record.
+    ///
+    /// - Given: a service holding plugin items and the default session's sidecar and challenge items
+    /// - When: `removeAllExceptSessionRecords` runs over it with `sparingDefaultSessionItems: true`
+    /// - Then:
+    ///    - only the plugin items are gone
+    func testDefaultSessionItemsAreSparedWhenAsked() throws {
+        let keychain = InMemoryKeychain()
+        let store = keychain.store(service: service)
+        let defaultSessionItems = [
+            "amplify.1.us-east-1_Pool.$default.meta",
+            "amplify.1.us-east-1_Pool.$default.challenge"
+        ]
+        try populate(store, with: pluginAccounts + defaultSessionItems)
+
+        try store.removeAllExceptSessionRecords(logger: SilentLogger(), sparingDefaultSessionItems: true)
+
+        XCTAssertEqual(try store.allAccounts(), defaultSessionItems.sorted())
     }
 
     private func populate(_ store: InMemoryKeychainItemStore, with accounts: [String]) throws {

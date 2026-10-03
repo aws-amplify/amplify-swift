@@ -37,9 +37,9 @@ extension MultiSessionFlowTests {
         let bUser = try await b.getCurrentUser()
         XCTAssertTrue(bUser.username == alice.username, "B names another user")
 
-        let signOut = try await a.signOut()
+        let signOut = await a.signOut()
 
-        XCTAssertEqual(signOut, .complete)
+        XCTAssertSignOutComplete(signOut)
         let aState = await a.currentSessionState()
         XCTAssertState(aState, .signedOut)
         let bState = await b.currentSessionState()

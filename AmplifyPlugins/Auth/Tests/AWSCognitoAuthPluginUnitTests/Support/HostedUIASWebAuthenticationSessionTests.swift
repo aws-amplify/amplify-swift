@@ -194,20 +194,17 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase, @unchecked Sendable {
         factory.mockStartResult = false
         factory.mockInvokesCallbackOnStart = false
 
-        let completed = expectation(description: "showHostedUI completed")
-        let session = session!
-        Task {
-            do {
-                _ = try await session.showHostedUI()
-                XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession")
-            } catch let error as HostedUIError {
-                XCTAssertEqual(error, .unableToStartASWebAuthenticationSession)
-            } catch {
-                XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession, got \(error)")
-            }
-            completed.fulfill()
+        // Awaited directly, with no timeout: the flow ends on the main queue, which a loaded simulator
+        // can leave unserviced for longer than any timeout. That a `false` start() ends the flow at all
+        // is pinned by `testShowHostedUI_whenStartReturnsFalse_shouldThrowUnableToStartError`.
+        do {
+            _ = try await session.showHostedUI()
+            XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession")
+        } catch let error as HostedUIError {
+            XCTAssertEqual(error, .unableToStartASWebAuthenticationSession)
+        } catch {
+            XCTFail("Expected HostedUIError.unableToStartASWebAuthenticationSession, got \(error)")
         }
-        await fulfillment(of: [completed], timeout: 30)
 
         // A second resume of a checked continuation traps, so reaching the end of the test is the assertion.
         let lateSession = try XCTUnwrap(factory.lastSession)

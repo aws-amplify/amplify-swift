@@ -243,7 +243,7 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
         for step in steps {
             let saved = ChallengeRecord.Step(step)
             XCTAssertNotNil(saved, "\(step)")
-            XCTAssertEqual(saved.flatMap(EngineSignInStep.init), step)
+            XCTAssertEqual(saved.flatMap { EngineSignInStep($0, logger: ClientEngineLogger()) }, step)
         }
         let unsaved: [EngineSignInStep] = [
             .continueSignInWithTOTPSetup(EngineTOTPSetupDetails(sharedSecret: "S", username: "u")),
@@ -269,9 +269,9 @@ final class LiveEngineChallengeResumeTests: XCTestCase {
         ]
         for flow in flows {
             let saved = ChallengeRecord.SignInMethod(.apiBased(flow))
-            XCTAssertEqual(saved.flatMap(SignInMethod.init), .apiBased(flow), "\(flow)")
+            XCTAssertEqual(saved.flatMap { SignInMethod($0, logger: ClientEngineLogger()) }, .apiBased(flow), "\(flow)")
         }
-        XCTAssertNil(SignInMethod(ChallengeRecord.SignInMethod(authFlow: "passkeyOnly")))
-        XCTAssertNil(SignInMethod(ChallengeRecord.SignInMethod(authFlow: "userAuth", preferredFirstFactor: "TELEPATHY")))
+        XCTAssertNil(SignInMethod(ChallengeRecord.SignInMethod(authFlow: "passkeyOnly"), logger: ClientEngineLogger()))
+        XCTAssertNil(SignInMethod(ChallengeRecord.SignInMethod(authFlow: "userAuth", preferredFirstFactor: "TELEPATHY"), logger: ClientEngineLogger()))
     }
 }

@@ -51,18 +51,22 @@ final class AuthClientConfigurationIntegrationTests: XCTestCase {
         XCTAssertTrue(configuration.poolNamespace.keyComponent == "\(state.userPoolId).\(state.identityPoolId)", "the key component")
     }
 
-    /// The real configuration yields the keys the design specifies, beside the plugin's.
+    /// The real configuration yields the keys the design specifies: `.default`'s session record is the plugin's
+    /// own, and the rest stay in the client's v1 family beside it.
     ///
     /// - Given: The configuration loaded from the default backend's outputs
     /// - When:
-    ///    - The v1 session key and the plugin's legacy key are rendered for its namespace
-    ///    - The v1 key is parsed back
+    ///    - `.default`'s keys and a named session's v1 key are rendered for its namespace
+    ///    - The v1 keys are parsed back
     /// - Then:
-    ///    - `amplify.1.<userPoolId>.<identityPoolId>.$default.session` and
-    ///      `amplify.<userPoolId>.<identityPoolId>.session` — siblings, not replacements
-    ///    - The identity pool id's `:` survives the round trip through the parser
+    ///    - `.default`'s session record is the plugin's `amplify.<userPoolId>.<identityPoolId>.session`
+    ///    - its sidecar is `amplify.1.<userPoolId>.<identityPoolId>.$default.meta`, which does not parse as a
+    ///      session record, and its interrupted sign-in `amplify.1.<userPoolId>.<identityPoolId>.$default.challenge`,
+    ///      which parses as `.default`'s challenge
+    ///    - a named session's record is `amplify.1.<userPoolId>.<identityPoolId>.<sessionId>.session`, and the
+    ///      identity pool id's `:` survives the round trip through the parser
     ///
-    func testProvisionedNamespaceRendersV1AndLegacyKeys() throws {
+    func testProvisionedNamespaceRendersTheDefaultAndNamedSessionKeys() throws {
         try IntegrationTestEnvironment.requireProvisioned()
         let state = try RawOutputs()
         let configuration = try AuthClientConfiguration(
@@ -70,17 +74,28 @@ final class AuthClientConfigurationIntegrationTests: XCTestCase {
             bundle: IntegrationTestEnvironment.outputsBundle(.standard)
         )
         let namespace = configuration.poolNamespace
+        let component = "\(state.userPoolId).\(state.identityPoolId)"
 
-        let v1 = SessionRecordKey.account(for: .default, in: namespace, kind: .session)
-        XCTAssertTrue(v1 == "amplify.1.\(state.userPoolId).\(state.identityPoolId).$default.session", "the v1 key")
         XCTAssertTrue(
-            SessionRecordKey.legacySessionAccount(in: namespace) == "amplify.\(state.userPoolId).\(state.identityPoolId).session",
-            "the plugin's key"
+            SessionRecordKey.pluginSessionAccount(in: namespace) == "amplify.\(component).session",
+            "`.default`'s session record is not the plugin's key"
         )
+        let sidecar = SessionRecordKey.metaAccount(in: namespace)
+        XCTAssertTrue(sidecar == "amplify.1.\(component).$default.meta", "the sidecar's key")
+        XCTAssertTrue(SessionRecordKey.parse(sidecar) == nil, "the sidecar parses as a session record")
+        let challenge = SessionRecordKey.account(for: .default, in: namespace, kind: .challenge)
+        XCTAssertTrue(challenge == "amplify.1.\(component).$default.challenge", "`.default`'s challenge key")
+        let parsedChallenge = try XCTUnwrap(SessionRecordKey.parse(challenge))
+        XCTAssertEqual(parsedChallenge.sessionId, .default)
+        XCTAssertEqual(parsedChallenge.kind, .challenge)
 
-        let parsed = try XCTUnwrap(SessionRecordKey.parse(v1))
-        XCTAssertEqual(parsed.namespaceComponent, namespace.keyComponent)
-        XCTAssertEqual(parsed.sessionId, .default)
+        let work = try SessionID.named("work")
+        let named = SessionRecordKey.account(for: work, in: namespace, kind: .session)
+        XCTAssertTrue(named == "amplify.1.\(component).work.session", "the named session's key")
+        let parsed = try XCTUnwrap(SessionRecordKey.parse(named))
+        // A boolean, so a failure prints no identifier.
+        XCTAssertTrue(parsed.namespaceComponent == namespace.keyComponent, "the identity pool id did not survive the round trip")
+        XCTAssertEqual(parsed.sessionId, work)
         XCTAssertEqual(parsed.kind, .session)
     }
 }

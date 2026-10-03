@@ -56,7 +56,7 @@ final class EngineResourcesTests: XCTestCase {
     /// - Then:
     ///    - the engine configuration is the 1:1 map of the client's; the SDK clients are the context's own
     ///      instances; analytics has no Pinpoint app, so it will never read; device records use the context's
-    ///      namespace
+    ///      namespace; the advanced-security client is the system's, `CognitoUserPoolASF`
     ///
     func testResourcesComeFromTheContext() throws {
         let clients = try CognitoServiceClients(configuration: ClientFixtures.configuration, configureUserPoolClient: nil)
@@ -75,6 +75,7 @@ final class EngineResourcesTests: XCTestCase {
         XCTAssertFalse(resources.analytics.isEnabled)
         XCTAssertEqual(resources.devices.store.namespace, StorageFixtures.namespace)
         XCTAssertEqual(resources.logger.name, "AmplifyCognitoClient")
+        XCTAssertTrue(resources.makeAdvancedSecurity() is CognitoUserPoolASF)
     }
 
     /// The engine's configuration is filled from the client's, field for field.

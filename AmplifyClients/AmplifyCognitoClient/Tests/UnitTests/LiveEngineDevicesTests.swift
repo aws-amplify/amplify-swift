@@ -465,7 +465,8 @@ final class LiveEngineDevicesTests: XCTestCase {
             clients: base.clients,
             devices: DeviceRecordIO(store: harness.keychain.deviceStore(for: namespace)),
             analytics: base.analytics,
-            services: base.services
+            services: base.services,
+            makeAdvancedSecurity: base.makeAdvancedSecurity
         ))
     }
 

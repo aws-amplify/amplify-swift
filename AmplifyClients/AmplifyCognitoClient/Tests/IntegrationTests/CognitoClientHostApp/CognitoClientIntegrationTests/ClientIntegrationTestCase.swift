@@ -128,42 +128,43 @@ enum SessionCleanup {
     /// them is live in the registry.
     ///
     /// Best effort: every session gets both calls and the wait always runs, whatever fails along the
-    /// way. The first error is rethrown at the end.
+    /// way. The first error is rethrown at the end: a sign-out's `.failed` result (the session is still signed
+    /// in), a purge's error, or a call that ran out of time. A `.partial` sign-out signed the session out here,
+    /// and the purge follows, so it is not a failure.
     static func cleanUp(_ sessions: [CreatedSession], configuration: AuthClientConfiguration) async throws {
         var firstError: Error?
-        func record(_ error: Error) {
-            firstError = firstError ?? error
+        // Bounded: a call routed through a live core that deadlocked must fail the teardown, not hang the run.
+        func attempt(_ what: String, _ operation: @escaping @Sendable () async throws -> Void) async {
+            do {
+                try await bounded(Self.cleanupTimeout, what, operation)
+            } catch {
+                firstError = firstError ?? error
+            }
         }
         for session in sessions {
-            // Bounded: a sign-out routed through a live core that deadlocked must fail the teardown, not hang
-            // the run.
-            do {
-                _ = try await bounded(Self.cleanupTimeout, "signing session \(session.sessionId) out at teardown") {
-                    try await AmplifyCognitoClient.signOutStoredSession(
-                        sessionId: session.sessionId,
-                        configuration: configuration,
-                        accessGroup: session.accessGroup
-                    )
+            await attempt("signing session \(session.sessionId) out at teardown") {
+                // A sign-out never throws; `.failed` is the session still signed in.
+                let result = await AmplifyCognitoClient.signOutStoredSession(
+                    sessionId: session.sessionId,
+                    configuration: configuration,
+                    accessGroup: session.accessGroup
+                )
+                if case .failed(let error) = result {
+                    throw error
                 }
-            } catch {
-                record(error)
             }
-            do {
-                try await bounded(Self.cleanupTimeout, "purging session \(session.sessionId) at teardown") {
-                    try await AmplifyCognitoClient.purgeStoredSession(
-                        sessionId: session.sessionId,
-                        configuration: configuration,
-                        accessGroup: session.accessGroup
-                    )
-                }
-            } catch {
-                record(error)
+            await attempt("purging session \(session.sessionId) at teardown") {
+                try await AmplifyCognitoClient.purgeStoredSession(
+                    sessionId: session.sessionId,
+                    configuration: configuration,
+                    accessGroup: session.accessGroup
+                )
             }
         }
         do {
             try await waitUntilReleased(sessions.map(\.sessionId))
         } catch {
-            record(error)
+            firstError = firstError ?? error
         }
         if let firstError {
             throw firstError

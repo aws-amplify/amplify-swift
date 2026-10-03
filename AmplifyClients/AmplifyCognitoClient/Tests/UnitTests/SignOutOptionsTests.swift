@@ -42,7 +42,7 @@ final class SignOutOptionsTests: XCTestCase {
         _ = await client.currentSessionState()
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(engine.revokeCalls, [alice.data])
@@ -62,37 +62,35 @@ final class SignOutOptionsTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
 
-        let result = try await client.signOut(options: .init(globalSignOut: true))
+        let result = await client.signOut(options: .init(globalSignOut: true))
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.engine(for: work)?.revokeGlobalFlags, [true])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// The engine contract for a failed global sign-out is the plugin's — `RevokeToken` is
-    /// skipped — and the outcome carries the real global error and no placeholder revoke error.
+    /// the engine contract for a failed global sign-out is the plugin's — `RevokeToken` is skipped — and
+    /// the outcome carries the real global error beside the plugin's placeholder revoke error.
     ///
     /// - Given: a signed-in session whose global sign-out fails at Cognito, reported as the contract says
     /// - When: it signs out globally
     /// - Then:
-    ///    - it is still signed out on this device, and the result is `.partial` with the global failure
-    ///      only: `revokeError` is `nil`, not an empty error
+    ///    - it is still signed out on this device, and the result is `.partial` with the global failure and the
+    ///      placeholder `revokeTokenError`
     func testAFailedGlobalSignOutIsPartial() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         let global = AuthClientError.service(.network, "global sign-out failed", "retry")
+        let placeholder = AuthClientError.service(nil, "", "")
         harness.engine(for: work)?.scriptRevokeOutcome { _, _ in
-            EngineSignOutOutcome(revokeError: nil, globalSignOutError: global)
+            EngineSignOutOutcome(revokeError: placeholder, globalSignOutError: global)
         }
 
-        let result = try await client.signOut(options: .init(globalSignOut: true))
+        let result = await client.signOut(options: .init(globalSignOut: true))
 
-        XCTAssertEqual(result, .partial(AuthClientPartialSignOut(revokeError: nil, globalSignOutError: global)))
-        guard case .partial(let partial) = result else {
-            return XCTFail("\(result)")
-        }
-        XCTAssertNil(partial.revokeError)
-        XCTAssertEqual(partial.globalSignOutError?.errorDescription, "global sign-out failed")
+        XCTAssertEqual(result, .partialResult(revokeTokenError: placeholder, globalSignOutError: global))
+        XCTAssertTrue(result.signedOutLocally)
+        XCTAssertEqual(result.partialErrors?.globalSignOutError?.errorDescription, "global sign-out failed")
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedOut)
     }
@@ -107,7 +105,7 @@ final class SignOutOptionsTests: XCTestCase {
         _ = await client.currentSessionState()
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await client.signOut(options: .init(purgeStoredSession: true))
+        let result = await client.signOut(options: .init(purgeStoredSession: true))
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.engine(for: work)?.revokeCalls.count, 1)
@@ -126,7 +124,7 @@ final class SignOutOptionsTests: XCTestCase {
         let client = try harness.client(work)
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await client.signOut(options: .init(purgeStoredSession: true))
+        let result = await client.signOut(options: .init(purgeStoredSession: true))
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [])
@@ -134,13 +132,14 @@ final class SignOutOptionsTests: XCTestCase {
         XCTAssertEqual(events.received, [])
     }
 
-    /// When only the purge fails, the thrown error must not lose what the sign-out reported.
+    /// when only the purge fails, the session is signed out, and the result keeps what the sign-out
+    /// reported beside the purge's failure.
     ///
     /// - Given: a signed-in session whose revoke fails at Cognito, and whose keychain removals fail
     /// - When: it signs out with `purgeStoredSession`
     /// - Then:
-    ///    - it throws `storageUnavailable`, whose underlying error is the revoke failure; the session is
-    ///      signed out and its row kept
+    ///    - the result is `.partial` with the revoke failure and a `storageUnavailable(.locked)` `storageError`;
+    ///      `signedOutLocally` is `true`; the session is signed out and its row kept
     func testAFailedPurgeCarriesThePartialSignOut() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -148,11 +147,14 @@ final class SignOutOptionsTests: XCTestCase {
         harness.engine(for: work)?.scriptRevokeOutcome { _, _ in EngineSignOutOutcome(revokeError: revoke) }
         harness.keychain.failingRemovals(of: harness.store().sessionAccount(for: work), with: errSecInteractionNotAllowed)
 
-        let error = await authClientError { try await client.signOut(options: .init(purgeStoredSession: true)) }
+        let result = await client.signOut(options: .init(purgeStoredSession: true))
 
-        XCTAssertEqual(error?.kind, .storageUnavailable(.locked))
-        let underlying = error?.underlyingError as? AuthClientError
-        XCTAssertEqual(underlying.map { $0.isEquivalent(to: revoke) }, true)
+        XCTAssertTrue(result.signedOutLocally)
+        let partial = try XCTUnwrap(result.partialErrors, "\(result)")
+        XCTAssertEqual(partial.revokeTokenError.map { $0.isEquivalent(to: revoke) }, true)
+        XCTAssertNil(partial.globalSignOutError)
+        XCTAssertNil(partial.hostedUIError)
+        XCTAssertEqual(partial.storageError?.kind, .storageUnavailable(.locked))
         harness.keychain.clearFailures()
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
         let state = await client.currentSessionState()
@@ -164,7 +166,7 @@ final class SignOutOptionsTests: XCTestCase {
     /// - Given: a session whose record another process replaces with a different user during the revoke
     /// - When: it signs out with `purgeStoredSession`
     /// - Then:
-    ///    - the result is `.superseded`, and the other user's record is kept
+    ///    - the result is `.failed(.invalidState)`, and the other user's record is kept
     func testASupersededSignOutPurgesNothing() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
@@ -172,26 +174,27 @@ final class SignOutOptionsTests: XCTestCase {
         let bob = FakePayload.signedIn("bob")
         harness.engine(for: work)?.scriptRevoke { [work] _ in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(bob.record(), for: work, expecting: envelope.generation)
+                try store.write(bob.record(), for: work, expecting: envelope.version)
             }
         }
 
-        let result = try await client.signOut(options: .init(purgeStoredSession: true))
+        let result = await client.signOut(options: .init(purgeStoredSession: true))
 
-        XCTAssertEqual(result, .superseded)
+        XCTAssertEqual(result, .failed(SessionSignOut.supersededError()))
         XCTAssertEqual(try harness.storedRecord(work)?.credentials, bob.data)
     }
 
     /// - Given: a signed-in session whose storage is locked
     /// - When: it signs out
     /// - Then:
-    ///    - it throws `storageUnavailable(.locked)`, not a signed-out result, and nothing is revoked
-    func testSignOutOverUnavailableStorageThrows() async throws {
+    ///    - the result is `.failed(.storageUnavailable(.locked))`, not a signed-out result, and nothing is
+    ///      revoked
+    func testSignOutOverUnavailableStorageFails() async throws {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         harness.keychain.failing(.read, with: errSecInteractionNotAllowed)
 
-        let error = await authClientError { try await client.signOut() }
+        let error = await failedSignOutError(client.signOut())
 
         XCTAssertEqual(error?.kind, .storageUnavailable(.locked))
         XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [])
@@ -206,18 +209,20 @@ final class SignOutOptionsTests: XCTestCase {
     ///    - `home` is untouched: still signed in, no event, its record kept
     func testGlobalSignOutDoesNotReachIntoASiblingSession() async throws {
         try harness.signIn(work, .signedIn("alice"))
-        let homeEnvelope = try harness.signIn(home, .signedIn("alice"))
+        let homeRecord = try harness.signIn(home, .signedIn("alice"))
+        let homeBytes = harness.storedBytes(home)
         let workClient = try harness.client(work)
         let homeClient = try harness.client(home)
         _ = await homeClient.currentSessionState()
         let homeEvents = StreamRecorder(homeClient.listenToAuthEvents())
 
-        _ = try await workClient.signOut(options: .init(globalSignOut: true))
+        _ = await workClient.signOut(options: .init(globalSignOut: true))
 
         let homeState = await homeClient.currentSessionState()
         XCTAssertEqual(homeState, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
         XCTAssertEqual(homeEvents.received, [])
-        XCTAssertEqual(try harness.store().read(home), .record(homeEnvelope))
+        XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
+        XCTAssertEqual(harness.storedBytes(home), homeBytes)
         XCTAssertEqual(harness.engine(for: home)?.revokeCalls, [])
     }
 }

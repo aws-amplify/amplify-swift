@@ -9,7 +9,6 @@ import AmplifyKeychainTestCommon
 import Foundation
 import XCTest
 @_spi(KeychainStore) import AWSPluginsCore
-@_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 @testable import AWSCognitoAuthPlugin
 @testable import InternalAWSCognitoAuth
 
@@ -110,7 +109,7 @@ enum AmplifyCredentialsPayloadFixtures {
 }
 
 /// Decodes the frozen payload fixtures with the plugin's own types, and reads each through the plugin's
-/// fallback to the Cognito client's default-session record.
+/// credential store from its own session record.
 class AmplifyCredentialsPayloadFixtureTests: XCTestCase {
 
     private let authConfiguration = AuthConfiguration.userPoolsAndIdentityPools(
@@ -156,51 +155,27 @@ class AmplifyCredentialsPayloadFixtureTests: XCTestCase {
         }
     }
 
-    /// Test that the plugin signs in from each frozen payload carried in a client record
+    /// Test that the plugin retrieves each frozen payload stored under its own key
     ///
-    /// - Given: For each fixture, a version-1 client default-session record, written by the client's record
-    ///   store, whose `credentials` are exactly the fixture's bytes
+    /// - Given: For each fixture, the fixture's bytes stored as they are under the plugin's session account,
+    ///   `amplify.<pool namespace>.session`
     /// - When:
     ///    - The plugin retrieves its credentials
     /// - Then:
-    ///    - Each signed-in fixture is returned as its values; the `noCredentials` fixture reads as no session
+    ///    - Each fixture decodes to the value it was written from, `noCredentials` included
     ///
-    func testEveryFrozenPayload_isReadFromAClientRecord() throws {
-        let kinds: [String: SessionKind] = [
-            "userPoolOnly": .userPoolOnly,
-            "userPoolAndIdentityPool": .userPoolAndIdentityPool,
-            "identityPoolOnly": .guest,
-            "identityPoolWithFederation": .federated,
-            "noCredentials": .userPoolOnly
-        ]
+    func testEveryFrozenPayload_writtenUnderThePluginKey_isRetrieved() throws {
+        let account = "amplify.us-east-1_Pool.us-east-1:identity-pool.session"
         for caseName in AmplifyCredentialsPayloadFixtures.caseNames {
             let keychain = InMemoryKeychain()
-            let record = try SessionRecord(
-                label: nil,
-                username: nil,
-                kind: XCTUnwrap(kinds[caseName]),
-                credentials: AmplifyCredentialsPayloadFixtures.data(caseName)
-            )
-            let clientStore = SessionRecordStore(
-                namespace: SessionStorageNamespace(
-                    pools: .userPoolAndIdentityPool(userPoolId: "us-east-1_Pool", identityPoolId: "us-east-1:identity-pool"),
-                    accessGroup: nil
-                ),
-                keychain: keychain.store(service: SessionRecordStore.unsharedService)
-            )
-            XCTAssertTrue(try clientStore.write(record, for: .default, expecting: nil).didCommit, caseName)
+            try keychain.store(service: pluginKeychainService).set(AmplifyCredentialsPayloadFixtures.data(caseName), key: account)
             let store = AWSCognitoAuthCredentialStore(
                 authConfiguration: authConfiguration,
-                keychain: InMemoryPluginKeychainStore(keychain: keychain)
+                keychain: InMemoryPluginKeychainStore(keychain: keychain),
+                logger: AmplifyEngineLogRouter()
             )
 
-            if caseName == "noCredentials" {
-                XCTAssertThrowsError(try store.retrieveCredential(), caseName) { error in
-                    XCTAssertEqual(error as? EngineCredentialStoreError, .itemNotFound)
-                }
-            } else {
-                XCTAssertEqual(try store.retrieveCredential(), AmplifyCredentialsPayloadFixtures.expected(caseName), caseName)
-            }
+            XCTAssertEqual(try store.retrieveCredential(), AmplifyCredentialsPayloadFixtures.expected(caseName), caseName)
         }
     }
 }

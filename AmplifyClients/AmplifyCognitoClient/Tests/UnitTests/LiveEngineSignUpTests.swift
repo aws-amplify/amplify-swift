@@ -932,7 +932,7 @@ final class LiveEngineSignUpTests: XCTestCase {
         await events.waitFor(1)
         XCTAssertEqual(events.received.first, .signedIn)
 
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await assertThrowsAsync({ try await client.autoSignIn() }) { error in
             guard case .notAuthorized = authError(error) else {
                 return XCTFail("\(error)")

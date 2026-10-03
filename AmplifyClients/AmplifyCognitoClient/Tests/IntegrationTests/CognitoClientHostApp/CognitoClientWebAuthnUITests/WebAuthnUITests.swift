@@ -30,6 +30,8 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     private var isSignedUp = false
     /// The passkey sheet's confirming button, once tapped.
     private var confirmedSheet: XCUIElement?
+    /// The teardown's deadline, held on the test so that tearDown awaits and ends it before the test finishes.
+    private var teardownDeadline: StepDeadline?
 
     @MainActor
     override func setUp() async throws {
@@ -40,38 +42,91 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
     }
 
+    /// Every wait is bounded: the simulator server's requests by their own timeout (`SimulatorServer.post`),
+    /// and each XCUI call, which blocks the main thread until the app and the sheet's host idle and has no
+    /// timeout of its own, by a `StepDeadline`. In a live run, WA-1's sheet stayed up after its confirming tap
+    /// on a fresh simulator, and this teardown then held the runner about 8 minutes, until XCTest's 10-minute
+    /// allowance, without ever sending its `/uninstall`.
+    ///
+    /// The time budget, against that 10-minute allowance. A passing WA-1 takes 62 to 95 s. A failing step ends
+    /// the flow (`continueAfterFailure` is off), so a failing run is the steps before it at their usual pace,
+    /// the failing step at its bound, and this teardown. The longest bounds are the warm-up (130 s, then 10 s
+    /// for the busy flag and up to 30 s for a sheet it left), a sheet that never appears (`attemptSheet`: tries
+    /// start only within `sheetRetryLimit`, 120 s, and each waits `timeout`, 30 s, so about 160 s), and the
+    /// first ceremony's result (`firstCeremonyTimeout`, 60 s, plus up to 64 s for a `/match` the server does not
+    /// answer). The teardown is at most 30 s (the sheet), 60 s (the user), 30 s (terminating) and 64 s (the
+    /// uninstall: 3 tries of 20 s, 2 s apart), about 3 minutes. So a run with one step failing at its bound
+    /// ends within about 6 minutes; setUp's `/boot` and `/enroll` add at most 64 s each if the server stalls.
     @MainActor
     override func tearDown() async throws {
+        // A failure here must not stop the teardown before its uninstall.
+        continueAfterFailure = true
+        teardownDeadline?.end()
+        let deadline = device.map(StepDeadline.init(device:))
+        teardownDeadline = deadline
         // A passkey sheet left open keeps its ceremony, and so the app, busy: close it first.
+        deadline?.begin("Closing the passkey sheet", limit: Self.teardownStepLimit)
         for host in sheetHosts ?? [] {
             let close = host.buttons.matching(Self.sheetClose).firstMatch
             if close.exists, close.isHittable {
                 close.tap()
+                if !close.waitForNonExistence(timeout: 5) {
+                    XCTContext.runActivity(named: "The passkey sheet stayed up 5 s after its Close was tapped") { _ in }
+                }
             }
         }
         if isSignedUp, let app {
-            if cancelInFlightAction() {
-                app.buttons["DeleteUser"].tap()
-                XCTAssertTrue(waitForResult("User was deleted"), "Failed to delete the user: \(redactedResult)")
-            } else {
-                // Tapping would be ignored, so the user cannot be deleted from here: that is a failure. P-12
+            if deadline?.hasExpired == true {
+                // The deadline sent the app's uninstall: there is no app left to delete the user with. P-12
                 // (infra/prepare-run.sh) deletes ccit- users older than 24 h.
-                XCTFail("Could not delete the user: the app is still busy (\(busyAction)) after cancelling its passkey ceremony")
+                XCTFail("Could not delete the user: the app was uninstalled to end a stuck teardown step")
+            } else {
+                deadline?.begin("Deleting the user", limit: Self.teardownStepLimit + timeout)
+                if cancelInFlightAction() {
+                    app.buttons["DeleteUser"].tap()
+                    XCTAssertTrue(waitForResult("User was deleted"), "Failed to delete the user: \(redactedResult)")
+                } else {
+                    // Tapping would be ignored, so the user cannot be deleted from here: that is a failure. P-12
+                    // deletes it.
+                    XCTFail("Could not delete the user: the app is still busy (\(busyAction)) after cancelling its passkey ceremony")
+                }
             }
         }
-        app?.terminate()
+        if deadline?.hasExpired != true {
+            deadline?.begin("Terminating the app", limit: Self.teardownStepLimit)
+            app?.terminate()
+        }
+        deadline?.end()
         app = nil
         confirmedSheet = nil
         springboard = nil
         username = nil
         isSignedUp = false
-        if let device {
-            // Removes the app. The passkey stays on the simulator; its server-side credential went with
-            // step 5 or with the user, so it can no longer sign anyone in.
-            try await SimulatorServer.uninstallApp(device)
+        // The uninstall a deadline sent belongs to this test: it ends here, not during the next one.
+        await deadline?.waitForUninstall()
+        var uninstallError: Error?
+        if let device, deadline?.uninstalledApp != true {
+            // Removes the app, unless a deadline's uninstall already did. The passkey stays on the simulator; its
+            // server-side credential went with step 5 or with the user, so it can no longer sign anyone in.
+            do {
+                try await SimulatorServer.uninstallApp(device)
+            } catch {
+                uninstallError = error
+            }
         }
         device = nil
+        for step in deadline?.timedOut ?? [] {
+            XCTFail("Teardown: \(step)")
+        }
+        teardownDeadline = nil
+        if let uninstallError {
+            throw uninstallError
+        }
     }
+
+    /// How long a teardown step (closing the sheet, terminating the app) may take before its `StepDeadline`
+    /// uninstalls the app. Deleting the user gets `timeout` more, for its result.
+    private static let teardownStepLimit: TimeInterval = 30
 
     /// WA-0. The plugin's WebAuthn flow over the raw Cognito API.
     ///
@@ -136,8 +191,9 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
             XCTFail("Failed to find the passkey sheet's button to associate a WebAuthn credential: \(redactedResult)")
             return
         }
-        confirm(associateContinue)
-        guard try await waitForResultMatchingBiometrics("WebAuthn credential was associated") else {
+        // The flow's first sheet: on a fresh simulator it is the first one AuthenticationServicesUI shows after
+        // the install, which is slow (`firstCeremonyTimeout`).
+        guard try await confirm(associateContinue, waitingFor: "WebAuthn credential was associated", timeout: Self.firstCeremonyTimeout) else {
             XCTFail("Failed to associate credential: \(redactedResult); \(sheetState)")
             return
         }
@@ -150,8 +206,9 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
         }
 
         // 3. Sign out
+        // Exactly: a `.partial` sign-out ("User is signed out, but part of it failed: …") must fail the flow.
         app.buttons["SignOut"].tap()
-        guard waitForResult("User is signed out"), app.buttons["SignIn"].exists else {
+        guard waitForResult("User is signed out", exactly: true), app.buttons["SignIn"].exists else {
             XCTFail("Failed to sign out user: \(redactedResult)")
             return
         }
@@ -172,8 +229,7 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
                 break
             }
         }
-        confirm(signInContinue)
-        guard try await waitForResultMatchingBiometrics("User is signed in") else {
+        guard try await confirm(signInContinue, waitingFor: "User is signed in", timeout: timeout) else {
             XCTFail("Failed to sign in with WebAuthn: \(redactedResult); \(sheetState)")
             return
         }
@@ -209,9 +265,10 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
         }
     }
 
+    /// Waits for the result line to contain `containing`, or, with `exactly`, to be exactly it.
     @MainActor
-    private func waitForResult(_ containing: String, timeout: TimeInterval? = nil) -> Bool {
-        let predicate = NSPredicate(format: "label CONTAINS %@", containing)
+    private func waitForResult(_ containing: String, exactly: Bool = false, timeout: TimeInterval? = nil) -> Bool {
+        let predicate = NSPredicate(format: exactly ? "label == %@" : "label CONTAINS %@", containing)
         return app.staticTexts.matching(identifier: "LastResult").matching(predicate).firstMatch
             .waitForExistence(timeout: timeout ?? self.timeout)
     }
@@ -222,7 +279,7 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     /// sheet's Continue was tapped, the match was posted, and the delegate never answered). A match with no
     /// prompt up is ignored, so presenting it again is harmless.
     @MainActor
-    private func waitForResultMatchingBiometrics(_ containing: String) async throws -> Bool {
+    private func waitForResultMatchingBiometrics(_ containing: String, timeout: TimeInterval) async throws -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
             try await SimulatorServer.matchBiometrics(device)
@@ -301,19 +358,32 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
         return "\(action) failed: \(head)\(code)"
     }
 
-    /// Taps the sheet's confirming button once, and remembers it, so a failure can say whether the sheet
-    /// ever took the tap.
+    /// Taps the sheet's confirming button once, remembers it (so a failure can say whether the sheet ever took
+    /// the tap, `sheetState`), and waits up to `timeout` for the result containing `containing`, presenting a
+    /// matching face about every 4 to 7 s (`waitForResultMatchingBiometrics`: one `/match`, then a 4 s wait for
+    /// the result, then a check of the busy flag). Presenting the face again is what recovers a dropped match.
     ///
-    /// No second tap: tried after review (a re-tap when the button was still hittable 5 s later), it hung the
-    /// run. The sheet keeps its button in the hierarchy under the Face ID prompt, still reported hittable, and
-    /// the re-tap then waits for SpringBoard to idle while the prompt waits for a face, which only comes after
-    /// the tap returns. Presenting the face again (`waitForResultMatchingBiometrics`) is what recovers a
-    /// dropped match.
+    /// No second tap, for a sheet still up after the first (WA-1 in a live run, on a fresh simulator) or for any
+    /// other reason. A re-tap was tried earlier and hung the run: the sheet keeps its
+    /// button in the hierarchy under the Face ID prompt, still reported hittable, and the re-tap waited for the
+    /// sheet's host to idle while the prompt waited for a face that only came after the tap returned. Nothing the
+    /// harness can query tells a sheet that ignored its tap from one with the Face ID prompt up under it (the
+    /// plugin's `AuthWebAuthnAppUITests` has no such query either), so a still-hittable button proves nothing,
+    /// and the step fails instead, saying the sheet is still up (`sheetState`). Its teardown is bounded
+    /// (`tearDown()`).
     @MainActor
-    private func confirm(_ button: XCUIElement) {
+    private func confirm(_ button: XCUIElement, waitingFor containing: String, timeout: TimeInterval) async throws -> Bool {
         button.tap()
         confirmedSheet = button
+        return try await waitForResultMatchingBiometrics(containing, timeout: timeout)
     }
+
+    /// How long the flow's first ceremony (associating the passkey) is given for its result after the sheet's
+    /// confirming tap, instead of `timeout`. Only the first: on a fresh simulator the warm-up shows no sheet
+    /// (the simulator holds no passkey for the relying party), so the associate sheet is the first one
+    /// AuthenticationServicesUI shows after the install, and its confirming tap has taken 10 s to be delivered,
+    /// with one accessibility snapshot taking 46 s. Later ceremonies keep `timeout`.
+    private static let firstCeremonyTimeout: TimeInterval = 60
 
     /// The sheet button last confirmed, and whether it is gone: part of a failure message.
     @MainActor
@@ -460,5 +530,97 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
             _ = sheetHosts[0].descendants(matching: .any)["ASAuthorizationControllerContinueButton"].waitForExistence(timeout: 1)
         } while Date() < deadline
         return nil
+    }
+}
+
+/// Bounds a step XCTest cannot: an XCUI call (a tap, `terminate()`) blocks the main thread until the app and
+/// the passkey sheet's host idle, and has no timeout of its own, so a stalled sheet can hold the runner until
+/// XCTest's execution-time allowance (WA-1, in a live run: about 8 minutes, in teardown).
+///
+/// `begin(_:limit:)` starts a step, ending the one before it. A step still running at its limit has the
+/// simulator server uninstall the app, from a task off the main actor: that ends the app's ceremony, which
+/// closes its sheet and releases the blocked call. The step is then listed in `timedOut`, for the test to
+/// fail with, and printed at once, in case the call never returns. The test awaits that uninstall
+/// (`waitForUninstall()`) before it ends, so it cannot land in the next test.
+final class StepDeadline: @unchecked Sendable {
+    private let device: String
+    private let lock = NSLock()
+    private var timer: Task<Void, Never>?
+    private var uninstall: Task<Void, Never>?
+    private var expired: [String] = []
+    private var fired = false
+    private var uninstalled = false
+
+    init(device: String) {
+        self.device = device
+    }
+
+    /// Starts `step`, which must end within `limit` seconds, and ends the step before it. Once a step has run
+    /// past its limit, no later step is timed: the app's uninstall has been sent, and there is nothing left to
+    /// end.
+    func begin(_ step: String, limit: TimeInterval) {
+        end()
+        guard !hasExpired else {
+            return
+        }
+        let timer = Task.detached { [self] in
+            guard (try? await Task.sleep(nanoseconds: UInt64(limit * 1_000_000_000))) != nil else {
+                return
+            }
+            expire(step, limit: limit)
+        }
+        lock.withLock {
+            self.timer = timer
+        }
+    }
+
+    /// Ends the current step. An uninstall already sent goes on (`waitForUninstall()`).
+    func end() {
+        lock.withLock {
+            timer?.cancel()
+            timer = nil
+        }
+    }
+
+    /// The steps that ran past their limit, each with what was done about it.
+    var timedOut: [String] {
+        lock.withLock { expired }
+    }
+
+    /// Whether a step ran past its limit, so the app's uninstall was sent.
+    var hasExpired: Bool {
+        lock.withLock { fired }
+    }
+
+    /// Whether the uninstall a step's deadline sent succeeded.
+    var uninstalledApp: Bool {
+        lock.withLock { uninstalled }
+    }
+
+    /// Returns once the uninstall a step's deadline sent, if any, has ended (it is bounded by
+    /// `SimulatorServer.post`).
+    func waitForUninstall() async {
+        let uninstall = lock.withLock { self.uninstall }
+        await uninstall?.value
+    }
+
+    /// Records the step first, so the call it releases finds it, then sends the uninstall from a task of its
+    /// own, which ending the step does not cancel.
+    private func expire(_ step: String, limit: TimeInterval) {
+        let message = "\(step) did not finish within \(Int(limit)) s; the app's uninstall was sent to end it"
+        let uninstall = Task.detached { [self] in
+            do {
+                try await SimulatorServer.uninstallApp(device)
+                lock.withLock { uninstalled = true }
+            } catch {
+                lock.withLock { expired.append("The uninstall sent to end a stuck step failed: \(error)") }
+            }
+        }
+        lock.withLock {
+            fired = true
+            expired.append(message)
+            self.uninstall = uninstall
+        }
+        print("[WebAuthnUITests] \(message).")
     }
 }

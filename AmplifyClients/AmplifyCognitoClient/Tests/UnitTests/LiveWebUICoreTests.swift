@@ -49,7 +49,10 @@ final class LiveWebUICoreTests: XCTestCase {
     }
 
     /// A client whose session core runs the live engine.
-    private func client(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
+    private func client(
+        _ sessionId: SessionID,
+        configuration: AuthClientConfiguration = HostedUIFixtures.configuration
+    ) throws -> AmplifyCognitoClient {
         let engine = try live.engine()
         var dependencies = harness.dependencies
         dependencies = SessionCoreDependencies(
@@ -65,7 +68,7 @@ final class LiveWebUICoreTests: XCTestCase {
         )
         dependencies.sheetLock = harness.sheetLock
         return try AmplifyCognitoClient(
-            configuration: HostedUIFixtures.configuration,
+            configuration: configuration,
             options: .init(sessionId: sessionId),
             dependencies: dependencies
         )
@@ -156,7 +159,7 @@ final class LiveWebUICoreTests: XCTestCase {
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await waitUntil("the code exchange is held") { exchange.hasBeenReached }
 
-        _ = try await client.signOut()
+        _ = await client.signOut()
         let error = await authClientError { try await signIn.value }
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
         exchange.release()
@@ -203,7 +206,7 @@ final class LiveWebUICoreTests: XCTestCase {
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await identity.waitForArrivals(1)
 
-        _ = try await client.signOut()
+        _ = await client.signOut()
         let error = await authClientError { try await signIn.value }
         XCTAssertEqual(error?.errorDescription, SessionCore.signInCancelled().errorDescription)
         await identity.open()
@@ -322,14 +325,137 @@ final class LiveWebUICoreTests: XCTestCase {
         let client = try await signedInSharingCookies()
         presenter.behave(.hold)
         let window = window!
-        let signOut = Task { try await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
         await presenter.showing.waitForArrivals(2)
 
         await client.cancelWebUISignIn()
 
-        let error = await authClientError { try await signOut.value }
+        let error = await failedSignOutError(signOut.value)
         XCTAssertEqual(error?.kind, .userCancelled)
         XCTAssertGreaterThanOrEqual(presenter.cancelCount, 1)
+        XCTAssertEqual(live.cognito.operations, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
+    }
+
+    // MARK: A logout page that cannot be shown or completed
+
+    /// Asserts `result` is `.failed` with an error of `kind`, and that nothing was revoked or cleared.
+    private func assertRefusedAndStillSignedIn(
+        _ result: AuthClientSignOutResult,
+        _ kind: AuthClientError.Kind,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws {
+        XCTAssertEqual(failedSignOutError(result, file: file, line: line)?.kind, kind, file: file, line: line)
+        XCTAssertEqual(live.cognito.operations, [], "nothing revoked", file: file, line: line)
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false, file: file, line: line)
+    }
+
+    /// - Given: a shared-cookie session over the live engine, whose logout browser fails to start
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the result is `.failed(.service(.errorLoadingUI))`: nothing is revoked, and the session is still
+    ///      signed in, stored and in memory
+    func testABrowserThatFailsToStartIsFailedAndRevokesNothing() async throws {
+        let client = try await signedInSharingCookies()
+        presenter.behave(.fail(.unableToStartASWebAuthenticationSession))
+        let window = window!
+
+        let result = await client.signOut(presentationAnchor: window)
+
+        try await assertRefusedAndStillSignedIn(result, .service(.errorLoadingUI))
+        let state = await client.currentSessionState()
+        guard case .signedIn = state else {
+            return XCTFail("expected the session still signed in, got \(state)")
+        }
+    }
+
+    /// - Given: a shared-cookie session over the live engine, and another session holding the system sheet
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the result is `.failed(.browserBusy(holder:))` naming the holder; nothing is shown or revoked, and
+    ///      the session is still signed in
+    func testABusySheetIsFailedAndRevokesNothing() async throws {
+        let client = try await signedInSharingCookies()
+        let shownBefore = presenter.shown.count
+        let lock = harness.sheetLock
+        let home = ClientFixtures.id("home")
+        let holds = Gate(isOpen: true)
+        let release = Gate()
+        let other = Task {
+            try await lock.withLease(for: home, policy: .fail) { _ in
+                await holds.pass()
+                await release.pass()
+            }
+        }
+        await holds.waitForArrivals(1)
+        let window = window!
+
+        let result = await client.signOut(presentationAnchor: window)
+
+        try await assertRefusedAndStillSignedIn(result, .browserBusy(holder: home))
+        XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(presenter.shown.count, shownBefore)
+        await release.open()
+        _ = try await other.value
+    }
+
+    /// - Given: a shared-cookie session over the live engine, and a window that has closed
+    /// - When: the core signs it out with that window
+    /// - Then:
+    ///    - the result is `.failed(.validation(field: "presentationAnchor"))`: nothing is shown or revoked, and
+    ///      the session is still signed in
+    func testAClosedWindowIsFailedAndRevokesNothing() async throws {
+        let client = try await signedInSharingCookies()
+        let shownBefore = presenter.shown.count
+
+        let result = await client.core.signOut(window: .anchor(.empty()))
+
+        try await assertRefusedAndStillSignedIn(result, .validation(field: "presentationAnchor"))
+        XCTAssertEqual(presenter.shown.count, shownBefore)
+    }
+
+    /// The engine's own check of the sign-out redirect URI, through the core: the core's check passes (the URI is
+    /// there), and the engine cannot use it (no scheme).
+    ///
+    /// - Given: a shared-cookie session over the live engine, under a configuration whose sign-out redirect URI
+    ///   has no scheme
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the result is `.failed` with `SessionCore.noHostedUIForSignOut()`, the engine's `.configuration` error
+    ///      underneath; nothing is revoked, and the session is still signed in
+    func testAnUnusableSignOutRedirectURIIsFailedWithTheOneNoHostedUIValue() async throws {
+        let oauth = try XCTUnwrap(HostedUIFixtures.userPool.oauth)
+        let userPool = AuthClientConfiguration.UserPool(
+            poolId: HostedUIFixtures.userPool.poolId,
+            appClientId: HostedUIFixtures.userPool.appClientId,
+            region: HostedUIFixtures.userPool.region,
+            oauth: AuthClientConfiguration.OAuth(
+                domain: oauth.domain,
+                scopes: oauth.scopes,
+                redirectSignInURIs: oauth.redirectSignInURIs,
+                redirectSignOutURIs: ["no-scheme"]
+            )
+        )
+        let configuration = ClientFixtures.make(userPool: userPool, identityPool: ClientFixtures.identityPool)
+        live = LiveEngineHarness(
+            configuration: configuration,
+            hostedUIPresenter: presenter,
+            hostedUIURLSession: TokenEndpointStub.session
+        )
+        live.scriptIdentityPool()
+        live.scriptSignOut()
+        let client = try client(work, configuration: configuration)
+        let window = window!
+        _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
+        live.cognito.clearCalls()
+
+        let result = await client.signOut(presentationAnchor: window)
+
+        let error = failedSignOutError(result)
+        XCTAssertEqual(error.map { $0.isEquivalent(to: SessionCore.noHostedUIForSignOut()) }, true, "\(result)")
+        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.kind, .configuration)
+        XCTAssertEqual(result, .failed(SessionCore.noHostedUIForSignOut()))
         XCTAssertEqual(live.cognito.operations, [])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
@@ -346,13 +472,13 @@ final class LiveWebUICoreTests: XCTestCase {
             return RevokeTokenOutput()
         }
         let window = window!
-        let signOut = Task { try await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
         await revoking.open()
 
-        let result = try await signOut.value
+        let result = await signOut.value
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(live.cognito.operations, ["RevokeToken"])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
@@ -370,13 +496,13 @@ final class LiveWebUICoreTests: XCTestCase {
             return RevokeTokenOutput()
         }
         let window = window!
-        let signOut = Task { try await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 
         signOut.cancel()
         await revoking.open()
 
-        let result = try await signOut.value
+        let result = await signOut.value
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(live.cognito.operations, ["RevokeToken"])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)

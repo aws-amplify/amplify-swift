@@ -138,26 +138,36 @@ final class SessionStateProjectionTests: XCTestCase {
         XCTAssertGreaterThan(harness.engine(for: work)?.describeCount ?? 0, 0)
     }
 
-    /// - Given: `.default` with no record of its own, and the Auth plugin's record holding a user
-    /// - When: its state is read
+    /// - Given: the Auth plugin's record, `.default`'s own, holding a user
+    /// - When: `.default`'s state is read
     /// - Then:
-    ///    - it reads through: the engine describes the plugin's payload and the state is that user
-    func testDefaultReadsThroughToThePluginRecord() async throws {
-        harness.keychain.put(FakePayload.signedIn("alice").data, SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools))
+    ///    - the state is that user, read in place
+    func testDefaultReadsThePluginRecordInPlace() async throws {
+        harness.keychain.put(FakePayload.signedIn("alice").data, SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools))
 
         let state = try await state(of: .default)
 
         XCTAssertEqual(state, .signedIn(alice))
     }
 
-    /// - Given: the plugin's record holding bytes the engine cannot read
+    /// - Given: the plugin's record in the plugin's format, naming no user, whose credentials the engine cannot read
     /// - When: `.default`'s state is read
     /// - Then:
     ///    - it is `.failed`, never `.signedOut`, since a record is present
     func testUndescribablePluginRecordIsFailed() async throws {
-        harness.keychain.put(Data("opaque".utf8), SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools))
+        harness.keychain.put(Data(#"{"userPoolOnly":{}}"#.utf8), SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools))
         let state = try await state(of: .default)
         assertFailed(state, mentioning: "could not be read")
+    }
+
+    /// - Given: the plugin's record holding bytes that are not the plugin's format
+    /// - When: `.default`'s state is read
+    /// - Then:
+    ///    - it is `.failed` as unreadable, never `.signedOut`, since a record is present
+    func testUnrecognisedPluginRecordIsFailed() async throws {
+        harness.keychain.put(Data("opaque".utf8), SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools))
+        let state = try await state(of: .default)
+        assertFailed(state, mentioning: "unreadable")
     }
 
     /// - Given: a session whose engine has a sign-in waiting on the user
@@ -222,16 +232,16 @@ final class SessionStateProjectionTests: XCTestCase {
         let signedIn = FakePayload.signedIn("alice").record()
         let rows: [(SessionSnapshot, AuthSessionState)] = [
             (.absent, .signedOut),
-            (SessionSnapshot(generation: 1, source: .own(.signedOut(label: nil, username: nil))), .signedOut),
-            (SessionSnapshot(generation: 1, source: .own(signedIn)), .signedIn(alice)),
-            (SessionSnapshot(generation: 1, source: .own(FakePayload.guest().record())), .guest),
-            (SessionSnapshot(generation: nil, source: .pluginReadThrough(FakePayload.signedIn("alice").data)), .signedIn(alice))
+            (SessionSnapshot(version: .generation(1), source: .own(.signedOut(label: nil, username: nil))), .signedOut),
+            (SessionSnapshot(version: .generation(1), source: .own(signedIn)), .signedIn(alice)),
+            (SessionSnapshot(version: .generation(1), source: .own(FakePayload.guest().record())), .guest),
+            (SessionSnapshot(version: .storedBytes(FakePayload.signedIn("alice").data), source: .own(signedIn)), .signedIn(alice))
         ]
         for (snapshot, expected) in rows {
             XCTAssertEqual(snapshot.state(engine: engine, challenge: nil), expected, "\(snapshot)")
             XCTAssertEqual(snapshot.state(engine: engine, challenge: .confirmSignInWithPassword), .awaitingChallenge(.confirmSignInWithPassword))
         }
-        let corrupt = SessionSnapshot(generation: nil, source: .unreadable(.corrupt))
+        let corrupt = SessionSnapshot(version: nil, source: .unreadable(.corrupt))
         guard case .failed = corrupt.state(engine: engine, challenge: .confirmSignInWithPassword) else {
             return XCTFail("a challenge must not hide an unreadable record")
         }

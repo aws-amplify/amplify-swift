@@ -434,7 +434,7 @@ final class LiveEngineFederationTests: XCTestCase {
 
         _ = try await client.federateToIdentityPool(withProviderToken: "provider-token", for: .google)
         harness.cognito.clearCalls()
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
         XCTAssertEqual(signOut, .complete)
         XCTAssertEqual(harness.cognito.operations, [])
         let signedOut = await client.currentSessionState()

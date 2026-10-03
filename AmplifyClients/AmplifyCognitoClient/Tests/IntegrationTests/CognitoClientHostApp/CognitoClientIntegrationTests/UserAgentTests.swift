@@ -38,9 +38,9 @@ final class UserAgentTests: ClientIntegrationTestCase {
 
         _ = try await client.signIn(username: alice.username, password: alice.password)
         _ = try await client.fetchAuthSession(options: .init(forceRefresh: true)).userPoolTokensResult.get()
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
 
-        XCTAssertEqual(signOut, .complete)
+        XCTAssertSignOutComplete(signOut)
         let operations = Set(recorder.operations)
         for expected in ["InitiateAuth", "RespondToAuthChallenge", "GetTokensFromRefreshToken", "RevokeToken"] {
             XCTAssertTrue(operations.contains(expected), "no \(expected) in \(recorder.operations)")

@@ -322,7 +322,7 @@ final class CredentialProviderTests: XCTestCase {
         let work = work
         harness.engine(for: work)?.scriptRefresh { _ in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(otherProcess.record(), for: work, expecting: envelope.generation)
+                try store.write(otherProcess.record(), for: work, expecting: envelope.version)
             }
             throw SessionEngineError.refreshTokenReused
         }
@@ -437,7 +437,7 @@ final class CredentialProviderTests: XCTestCase {
         engine.scriptRefresh { _ in
             calls.increment()
             if calls.count == 2, case .record(let envelope) = try store.read(work) {
-                try store.write(FakePayload.signedIn("alice", version: 2, stale: true).record(), for: work, expecting: envelope.generation)
+                try store.write(FakePayload.signedIn("alice", version: 2, stale: true).record(), for: work, expecting: envelope.version)
             }
             throw SessionEngineError.refreshTokenReused
         }
@@ -476,7 +476,7 @@ final class CredentialProviderTests: XCTestCase {
         harness.engine(for: work)?.scriptRefresh { _ in
             calls.increment()
             if calls.count == 2, case .record(let envelope) = try store.read(work) {
-                try store.write(otherProcess.record(), for: work, expecting: envelope.generation)
+                try store.write(otherProcess.record(), for: work, expecting: envelope.version)
             }
             throw SessionEngineError.refreshTokenReused
         }
@@ -539,7 +539,7 @@ final class CredentialProviderTests: XCTestCase {
         let work = work
         harness.engine(for: work)?.scriptRefresh { _ in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(otherProcess.record(), for: work, expecting: envelope.generation)
+                try store.write(otherProcess.record(), for: work, expecting: envelope.version)
             }
             throw SessionEngineError.refreshTokenInvalid
         }
@@ -570,7 +570,7 @@ final class CredentialProviderTests: XCTestCase {
         guard case .record(let envelope) = try harness.store().read(work) else {
             return XCTFail("the expired record was not kept")
         }
-        try harness.store().write(extensionSignIn.record(), for: work, expecting: envelope.generation)
+        try harness.store().write(extensionSignIn.record(), for: work, expecting: envelope.version)
 
         let credentials = try await client.credentialsProvider.resolve()
 
@@ -598,7 +598,7 @@ final class CredentialProviderTests: XCTestCase {
         let work = work
         harness.engine(for: work)?.scriptRefresh { payload in
             if case .record(let envelope) = try store.read(work) {
-                try store.write(otherProcess.record(), for: work, expecting: envelope.generation)
+                try store.write(otherProcess.record(), for: work, expecting: envelope.version)
             }
             return try XCTUnwrap(FakePayload.decode(payload)).refreshed.data
         }
@@ -628,7 +628,7 @@ final class CredentialProviderTests: XCTestCase {
             if case .record(let envelope) = try store.read(work) {
                 var relabelled = envelope.record
                 relabelled.label = "Set elsewhere"
-                try store.write(relabelled, for: work, expecting: envelope.generation)
+                try store.write(relabelled, for: work, expecting: envelope.version)
             }
             return try XCTUnwrap(FakePayload.decode(payload)).refreshed.data
         }
@@ -640,22 +640,22 @@ final class CredentialProviderTests: XCTestCase {
         XCTAssertEqual(harness.engine(for: work)?.refreshCalls.count, 1)
     }
 
-    /// - Given: a read-through `.default` session needing a refresh
+    /// - Given: `.default` on the Auth plugin's record, holding credentials that need a refresh
     /// - When: credentials are requested
     /// - Then:
-    ///    - the refreshed payload is committed to `.default`'s own record, and the plugin's record is left
-    ///      as it was
-    func testRefreshOfAReadThroughSessionWritesItsOwnRecord() async throws {
+    ///    - the refreshed payload is committed to the plugin's record in place, and no `$default` session record is
+    ///      written
+    func testRefreshOfTheDefaultSessionWritesThePluginsRecordInPlace() async throws {
         let stale = FakePayload.signedIn("alice", stale: true)
-        let pluginAccount = SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools)
+        let pluginAccount = SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools)
         harness.keychain.put(stale.data, pluginAccount)
         let client = try harness.client(.default)
 
         let credentials = try await client.credentialsProvider.resolve()
 
         XCTAssertEqual(credentials as? CognitoAWSCredentials, stale.refreshed.awsCredentials)
-        XCTAssertEqual(try harness.storedRecord(.default), stale.refreshed.record())
-        XCTAssertEqual(harness.keychain.value(pluginAccount), stale.data)
+        XCTAssertEqual(harness.keychain.value(pluginAccount), stale.refreshed.data)
+        XCTAssertNil(harness.keychain.value(SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session)))
     }
 
     // MARK: Lifetime

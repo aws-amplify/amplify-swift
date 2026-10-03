@@ -97,10 +97,11 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     ///    - alice signs out with default options
     ///    - then alice signs in again and signs out with `purgeStoredSession: true`
     /// - Then:
-    ///    - after the first sign-out, `storedSessions(includingSignedOut: true)` still lists alice's ID, with
-    ///      `kind == .signedOut` and alice's username; the default listing hides it; bob still resolves
-    ///      credentials
-    ///    - after the purge, the row is gone from both listings, and the raw keychain has no account for it
+    ///    - the first sign-out is `.complete`, and alice is `.signedOut`
+    ///    - after it, `storedSessions(includingSignedOut: true)` still lists alice's ID, with `kind == .signedOut`
+    ///      and alice's username; the default listing hides it; bob still resolves credentials
+    ///    - the purging sign-out is `.complete` too; after it, the row is gone from both listings, and the raw
+    ///      keychain has no account for it
     ///
     func testSignOutKeepsStoredRow() async throws {
         let aliceId = try makeSessionID("alice")
@@ -110,9 +111,9 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         _ = try await alice.signIn(username: users.alice.username, password: users.alice.password)
         _ = try await bob.signIn(username: users.bob.username, password: users.bob.password)
 
-        let signOut = try await alice.signOut()
+        let signOut = await alice.signOut()
 
-        XCTAssertEqual(signOut, .complete)
+        XCTAssertSignOutComplete(signOut)
         let aliceState = await alice.currentSessionState()
         XCTAssertEqual(aliceState, .signedOut)
         let withSignedOut = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
@@ -124,7 +125,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         _ = try await bob.credentialsProvider.resolve()
 
         _ = try await alice.signIn(username: users.alice.username, password: users.alice.password)
-        _ = try await alice.signOut(options: .init(purgeStoredSession: true))
+        XCTAssertSignOutComplete(await alice.signOut(options: .init(purgeStoredSession: true)), "the purging sign-out")
 
         let afterPurge = try await AmplifyCognitoClient.storedSessions(configuration: configuration, includingSignedOut: true)
         XCTAssertFalse(afterPurge.contains { $0.sessionId == aliceId }, "the purged row is gone")
@@ -135,16 +136,18 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     }
 
     /// `storedSessions()` lists every stored session from the real keychain, with its label, and without a
-    /// network call; the plugin's own record adds no session of ours (MS-4).
+    /// network call; the plugin's own record is `.default`'s, and adds no other session (MS-4).
     ///
-    /// - Given: alice and bob signed in under two session IDs, alice labelled `"Work"`, every handle then
-    ///   dropped, and a plugin record (`amplify.<ns>.session`) written into the same keychain service
+    /// - Given: alice and bob signed in under two named session IDs, alice labelled `"Work"`, every handle then
+    ///   dropped, and a plugin record (`amplify.<ns>.session`) in the same keychain service: written by the test,
+    ///   for a probe user, unless one is already there
     /// - When:
-    ///    - `storedSessions()` reads the keychain, with no live session for either
+    ///    - `storedSessions()` reads the keychain, with no live session for any of them
     /// - Then:
     ///    - both session IDs are listed, alice with the label `"Work"`, each naming its user
-    ///    - every listed ID is a v1 `amplify.1.` record's, or `.default`, which reads through to the plugin's
-    ///      record; the plugin's account is never a session ID of its own
+    ///    - every listed ID is a named session's v1 `amplify.1.` record's, or `.default`, whose record is the
+    ///      plugin's; the plugin's account is never a session ID of its own
+    ///    - when the test wrote the plugin record, `.default` is listed from it, naming the probe user
     ///    - no request is sent: structurally, since no handle is live and the listing reads only the
     ///      keychain; the recorder the handles used confirms it saw nothing
     ///
@@ -156,19 +159,19 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         try await signIn(bobId, as: users.bob, label: nil, recorder: recorder)
         try await SessionCleanup.waitUntilReleased([aliceId, bobId])
         recorder.reset()
-        let legacyAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
-        let legacyWritten = try !IntegrationTestEnvironment.rawKeychainAccounts().contains(legacyAccount)
-        if legacyWritten {
+        let pluginAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
+        let pluginRecordWritten = try !IntegrationTestEnvironment.rawKeychainAccounts().contains(pluginAccount)
+        if pluginRecordWritten {
             let status = RealKeychain.add(
-                #"{"userPoolOnly":{"signedInData":{"username":"legacy-probe"}}}"#,
-                account: legacyAccount,
+                #"{"userPoolOnly":{"signedInData":{"username":"plugin-probe"}}}"#,
+                account: pluginAccount,
                 service: IntegrationTestEnvironment.sessionService
             )
             XCTAssertEqual(status, errSecSuccess, "could not write the plugin record")
         }
         defer {
-            if legacyWritten {
-                Self.removeRawAccount(legacyAccount)
+            if pluginRecordWritten {
+                Self.removeRawAccount(pluginAccount)
             }
         }
 
@@ -180,8 +183,9 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         XCTAssertEqual(byId[aliceId]?.label, "Work")
         XCTAssertTrue(byId[bobId]?.username == users.bob.username, "bob's row names another user")
         XCTAssertNil(byId[bobId]?.label)
+        // A `$default.session` record is a development build's leftover, never `.default`'s record.
         let v1Ids = try Set(IntegrationTestEnvironment.rawKeychainAccounts().compactMap { account -> SessionID? in
-            guard let parsed = SessionRecordKey.parse(account), parsed.kind == .session,
+            guard let parsed = SessionRecordKey.parse(account), parsed.kind == .session, parsed.sessionId != .default,
                   parsed.namespaceComponent == configuration.poolNamespace.keyComponent else {
                 return nil
             }
@@ -190,8 +194,11 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
         for row in stored {
             XCTAssertTrue(
                 v1Ids.contains(row.sessionId) || row.sessionId == .default,
-                "a listed session came from neither a v1 record nor .default's read-through"
+                "a listed session came from neither a named session's v1 record nor the plugin's record"
             )
+        }
+        if pluginRecordWritten {
+            XCTAssertEqual(byId[.default]?.username, "plugin-probe", "`.default` is not listed from the plugin's record")
         }
     }
 
@@ -225,8 +232,8 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
     ///      and alice's and bob's differ; their identity-pool identities differ
     ///    - both sign as the authenticated role, the one a raw sign-in's credentials assume (STS names the
     ///      role, not the identity, so the identities are compared through the sessions)
-    ///    - after bob signs out, alice's provider still resolves, and bob's throws `notSignedIn` rather
-    ///      than falling back to guest
+    ///    - bob's sign-out is `.complete`; after it, alice's provider still resolves, and bob's throws
+    ///      `notSignedIn` rather than falling back to guest
     ///
     func testCredentialsProviderPerSession() async throws {
         let region = try XCTUnwrap(configuration.identityPool).region
@@ -256,7 +263,7 @@ final class MultiSessionFlowTests: ClientIntegrationTestCase {
             XCTAssertEqual(role, .authenticated, "a signed-in session signs as the authenticated role")
         }
 
-        _ = try await bob.signOut()
+        XCTAssertSignOutComplete(await bob.signOut())
 
         _ = try await CallerIdentity.of(alice.credentialsProvider, region: region)
         await assertResolveThrowsNotSignedIn(bob)

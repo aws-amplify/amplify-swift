@@ -47,7 +47,7 @@ final class SignInFlowTests: ClientIntegrationTestCase {
     func testSRPSignInForAlice() async throws {
         let alice = try await makeSignInUser()
         let sessionId = try makeSessionID("alice")
-        let legacyAccount = SessionRecordKey.legacySessionAccount(in: pools)
+        let legacyAccount = SessionRecordKey.pluginSessionAccount(in: pools)
         let legacyBefore = try IntegrationTestEnvironment.rawKeychainAccounts().contains(legacyAccount)
         let recorder = RecordingHTTPClient()
         let client = try AmplifyCognitoClient(

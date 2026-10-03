@@ -63,7 +63,7 @@ final class SandboxProvisioningTests: ClientMFATestCase {
         let (client, user) = try await signedInFreshUser("totp-provisioning")
         let secret = try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: nil, totp: .preferred)
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
 
         let challenge = try await sandbox.initiatePasswordAuth(user.testUser)
         sandbox.revokeAtTeardown(challenge.authenticationResult, of: self)

@@ -310,7 +310,7 @@ private final class ControllerRecorder: @unchecked Sendable {
     }
 
     func credentials() -> PlatformWebAuthnCredentials {
-        PlatformWebAuthnCredentials(presentationAnchor: nil) { requests in
+        PlatformWebAuthnCredentials(presentationAnchor: nil, logger: DiscardingEngineLogger()) { requests in
             self.make(requests)
         }
     }

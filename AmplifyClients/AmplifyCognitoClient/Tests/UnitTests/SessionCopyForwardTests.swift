@@ -378,7 +378,7 @@ final class SessionCopyForwardTests: XCTestCase {
                 _ = try store.write(
                     FakePayload.signedIn("alice", version: 3, identityId: "us-east-1:other-writer").record(label: "Work"),
                     for: work,
-                    expecting: envelope.generation
+                    expecting: envelope.version
                 )
             }
             throw SessionEngineError.refreshedThenFailed(payload: stored.data, error: .service(.service(.limitExceeded, "", "")))
@@ -523,7 +523,7 @@ final class SessionCopyForwardTests: XCTestCase {
                 _ = try store.write(
                     FakePayload.signedIn("alice", version: 3, identityId: "us-east-1:other-writer").record(label: "Work"),
                     for: work,
-                    expecting: envelope.generation
+                    expecting: envelope.version
                 )
             }
             throw SessionEngineError.refreshTokenReused
@@ -582,7 +582,7 @@ final class SessionCopyForwardTests: XCTestCase {
     func testSignOutStoredSessionBeforeARestoreNeverResurrectsIt() async throws {
         try aliceUnderTheUserPoolOnly()
 
-        let result = try await AmplifyCognitoClient.signOutStoredSession(
+        let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: work,
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -774,14 +774,14 @@ final class SessionCopyForwardTests: XCTestCase {
             }
             var refreshed = FakePayload.signedIn("alice", version: 2)
             refreshed.refreshToken = rotated ? "refresh-alice-rotated" : nil
-            try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.generation)
+            try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
             carrying = nil
             await harness.waitForBaseline()
 
             let client = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
             _ = await client.currentSessionState()
             let engine = try XCTUnwrap(harness.engine(for: work))
-            _ = try await client.signOut()
+            _ = await client.signOut()
 
             let revoked = engine.revokeCalls.compactMap { FakePayload.decode($0) }
             XCTAssertEqual(revoked.map(\.version), rotated ? [1, 2] : [1], "rotated: \(rotated)")
@@ -808,11 +808,11 @@ final class SessionCopyForwardTests: XCTestCase {
             }
             var refreshed = FakePayload.signedIn("alice", version: 2)
             refreshed.refreshToken = rotated ? "refresh-alice-rotated" : nil
-            try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.generation)
+            try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
             carrying = nil
             await harness.waitForBaseline()
 
-            let result = try await AmplifyCognitoClient.signOutStoredSession(
+            let result = await AmplifyCognitoClient.signOutStoredSession(
                 sessionId: work,
                 configuration: ClientFixtures.userPoolOnlyConfiguration,
                 accessGroup: nil,
@@ -854,7 +854,7 @@ final class SessionCopyForwardTests: XCTestCase {
     func testEveryEndOfTheSessionForgetsTheRecordsMemory() async throws {
         let namespace = SessionStorageNamespace(pools: ClientFixtures.configuration.poolNamespace, accessGroup: nil)
         let ends: [(String, @Sendable (AmplifyCognitoClient?, ClientHarness, SessionID) async throws -> Void)] = [
-            ("sign-out", { client, _, _ in _ = try await client?.signOut() }),
+            ("sign-out", { client, _, _ in _ = await client?.signOut() }),
             ("purge through a live client", { _, harness, work in
                 try await AmplifyCognitoClient.purgeStoredSession(
                     sessionId: work,
@@ -865,7 +865,7 @@ final class SessionCopyForwardTests: XCTestCase {
             }),
             ("user deletion", { client, _, _ in try await client?.deleteUser() }),
             ("stored-session sign-out", { _, harness, work in
-                _ = try await AmplifyCognitoClient.signOutStoredSession(
+                _ = await AmplifyCognitoClient.signOutStoredSession(
                     sessionId: work,
                     configuration: ClientFixtures.configuration,
                     accessGroup: nil,
@@ -912,8 +912,8 @@ final class SessionCopyForwardTests: XCTestCase {
     /// - Given: alice carried from the user pool alone into both pools, refreshed there with rotation, then restored
     ///   under the user pool alone (the rotated copy remembered), and an engine whose revoke of that copy fails
     /// - When: the user-pool-only client signs out
-    /// - Then: the sign-out completes; the copy-revoke warning is logged once, naming no user, session or pool; the
-    ///   copy is deleted
+    /// - Then: the sign-out completes; the copy-revoke warning is logged once, under
+    ///   `AmplifyCognitoClient.SessionSignOut`, naming no user, session or pool; the copy is deleted
     func testAFailedCopyRevokeIsLoggedAndTheSweepGoesAhead() async throws {
         let warnings = CopyRevokeWarningCapture.shared
         let before = warnings.count
@@ -926,7 +926,7 @@ final class SessionCopyForwardTests: XCTestCase {
         }
         var refreshed = FakePayload.signedIn("alice", version: 2)
         refreshed.refreshToken = "refresh-alice-rotated"
-        try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.generation)
+        try bothStore.write(refreshed.record(label: "Work"), for: work, expecting: carried.version)
         carrying = nil
         await harness.waitForBaseline()
         let client = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
@@ -938,12 +938,13 @@ final class SessionCopyForwardTests: XCTestCase {
             }
         }
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(warnings.count - before, 1)
         let logged = try XCTUnwrap(warnings.last)
         XCTAssertEqual(logged, SessionSignOut.copyRevokeFailedWarning)
+        XCTAssertEqual(warnings.lastCategory, "AmplifyCognitoClient.SessionSignOut")
         for identifier in ["alice", "sub-alice", "work", StorageFixtures.userPoolId, StorageFixtures.identityPoolId] {
             XCTAssertFalse(logged.contains(identifier), "the warning names no identifier")
         }
@@ -1033,9 +1034,9 @@ final class SessionCopyForwardTests: XCTestCase {
         guard case .record(let envelope) = try userPoolOnlyStore.read(work) else {
             return XCTFail("the old record is kept")
         }
-        try userPoolOnlyStore.write(FakePayload.signedIn("alice", kind: .userPoolOnly, version: 5).record(), for: work, expecting: envelope.generation)
+        try userPoolOnlyStore.write(FakePayload.signedIn("alice", kind: .userPoolOnly, version: 5).record(), for: work, expecting: envelope.version)
 
-        _ = try await client.signOut()
+        _ = await client.signOut()
 
         XCTAssertNotEqual(try userPoolOnlyStore.read(work), .absent)
     }
@@ -1059,22 +1060,19 @@ final class SessionCopyForwardTests: XCTestCase {
 
     /// - Given: alice under the user pool alone, and reads of that record failing
     /// - When: `signOutStoredSession` runs over both pools
-    /// - Then: it throws `storageUnavailable`; nothing is revoked, and alice's record is kept
+    /// - Then: it is `.failed(.storageUnavailable)`; nothing is revoked, and alice's record is kept
     func testSignOutStoredSessionWithAFailedReadRevokesNothing() async throws {
         try aliceUnderTheUserPoolOnly()
         harness.keychain.failingReads(of: userPoolOnlyStore.sessionAccount(for: work), with: errSecInteractionNotAllowed)
 
-        do {
-            _ = try await AmplifyCognitoClient.signOutStoredSession(
-                sessionId: work,
-                configuration: ClientFixtures.configuration,
-                accessGroup: nil,
-                dependencies: harness.dependencies
-            )
-            XCTFail("a failed read must fail the sign-out")
-        } catch let error as AuthClientError {
-            XCTAssertEqual(error.storageUnavailableReason, .locked)
-        }
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: work,
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            dependencies: harness.dependencies
+        )
+
+        XCTAssertEqual(failedSignOutError(result)?.storageUnavailableReason, .locked)
 
         XCTAssertEqual(harness.revoker.revokeCalls, [])
         harness.keychain.clearFailures()
@@ -1083,7 +1081,8 @@ final class SessionCopyForwardTests: XCTestCase {
 
     /// - Given: `work` live, restored, under the user pool alone
     /// - When: `purgeStoredSession` and `signOutStoredSession` run over both pools
-    /// - Then: each throws `sessionConfigurationMismatch`; the live session's record is intact, nothing revoked
+    /// - Then: the purge throws `sessionConfigurationMismatch`, and the sign-out is `.failed` with it; the live
+    ///   session's record is intact, nothing revoked
     func testStoredSessionCallsRefuseASessionLiveUnderAnotherConfiguration() async throws {
         try aliceUnderTheUserPoolOnly()
         let live = try harness.client(work, configuration: ClientFixtures.userPoolOnlyConfiguration)
@@ -1094,11 +1093,11 @@ final class SessionCopyForwardTests: XCTestCase {
         let purge = await Result(catching: { try await AmplifyCognitoClient.purgeStoredSession(
             sessionId: work, configuration: ClientFixtures.configuration, accessGroup: nil, dependencies: dependencies
         ) })
-        let signOut = await Result(catching: { try await AmplifyCognitoClient.signOutStoredSession(
+        let signOut = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: work, configuration: ClientFixtures.configuration, accessGroup: nil, dependencies: dependencies
-        ) })
+        )
 
-        for (name, error) in [("purge", purge.failure), ("sign-out", signOut.failure)] {
+        for (name, error) in [("purge", purge.failure), ("sign-out", failedSignOutError(signOut) as Error?)] {
             guard case .sessionConfigurationMismatch(let id, _, _, _) = error as? AuthClientError else {
                 XCTFail("\(name) should refuse, got \(String(describing: error))")
                 continue
@@ -1164,14 +1163,19 @@ final class CopyRevokeWarningCapture: LogSinkBehavior, @unchecked Sendable {
 
     // `@unchecked Sendable`: `captured` is only touched while holding `lock`.
     private let lock = NSLock()
-    private var captured: [String] = []
+    private var captured: [(category: String, content: String)] = []
 
     var count: Int {
         lock.withLock { captured.count }
     }
 
     var last: String? {
-        lock.withLock { captured.last }
+        lock.withLock { captured.last?.content }
+    }
+
+    /// The category (the logger name) of the last warning.
+    var lastCategory: String? {
+        lock.withLock { captured.last?.category }
     }
 
     func isEnabled(for logLevel: LogLevel) -> Bool {
@@ -1182,6 +1186,6 @@ final class CopyRevokeWarningCapture: LogSinkBehavior, @unchecked Sendable {
         guard message.content == SessionSignOut.copyRevokeFailedWarning else {
             return
         }
-        lock.withLock { captured.append(message.content) }
+        lock.withLock { captured.append((message.name, message.content)) }
     }
 }

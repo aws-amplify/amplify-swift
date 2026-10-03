@@ -18,8 +18,7 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.XXX_XX.XXX.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> itemNotFound"
       ],
       "summary" : "First configuration of the plugin over an empty keychain"
     },
@@ -76,29 +75,12 @@
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.XXX_XX.XXX.$default.session -> itemNotFound",
         "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.XXX | - | - -> ok",
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok"
       ],
       "summary" : "Sign-out with no Cognito client default-session record"
-    },
-    {
-      "name" : "signOutWithClientDefaultSessionRecord",
-      "queries" : [
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.XXX_XX.XXX.$default.session -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
-        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
-        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.XXX | - | - -> ok",
-        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok"
-      ],
-      "summary" : "Sign-out while the Cognito client has a $default session record; writes a signed-out record"
     },
     {
       "name" : "deleteUser",
@@ -108,7 +90,6 @@
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.XXX_XX.XXX.$default.session -> itemNotFound",
         "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.XXX | - | - -> ok",
@@ -196,7 +177,6 @@
       "name" : "configurationChangeDifferentUserPool",
       "queries" : [
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.$default.session -> itemNotFound",
         "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.session -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | other-client-id.currentUser -> itemNotFound",
@@ -207,74 +187,28 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_OtherPool.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_OtherPool.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_OtherPool.session -> itemNotFound"
       ],
       "summary" : "A different user pool: the old namespace's session is removed"
     },
     {
-      "name" : "configurationChangeDifferentUserPoolWithClientDefaultSession",
-      "queries" : [
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.$default.session -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.session -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | other-client-id.currentUser -> itemNotFound",
-        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | other-client-id.currentUser -> itemNotFound",
-        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
-        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
-        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
-        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_OtherPool.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_OtherPool.$default.session -> itemNotFound"
-      ],
-      "summary" : "A different user pool while the client has a $default record in the old namespace: the old session becomes the signed-out marker"
-    },
-    {
-      "name" : "fallbackReadFromClientDefaultSession",
+      "name" : "firstConfigureBesideALeftoverClientDefaultRecord",
       "queries" : [
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
-        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
-        "legacy | getData | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | accessKey -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | XXX.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | XXX.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoCredentialsProvider.XXX | - | accessKey -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
-        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
+        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.XXX | - | - -> ok",
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> ok"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.XXX_XX.XXX.session -> itemNotFound"
       ],
-      "summary" : "Launch with no plugin session and a signed-in client $default record: the session is read from the client's record"
-    },
-    {
-      "name" : "signOutWhenClientDefaultSessionReadFails",
-      "queries" : [
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> error(securityError(-25308))",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
-        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
-        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
-        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok"
-      ],
-      "summary" : "Sign-out while reading the client's $default record fails (locked keychain): the signed-out marker is written"
-    },
-    {
-      "name" : "signOutWhenMarkerWriteFails",
-      "queries" : [
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> ok",
-        "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> error(securityError(-25308))",
-        "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok"
-      ],
-      "summary" : "Sign-out with a client $default record present and the marker write failing: the plugin session is removed and the clear fails"
+      "summary" : "First configuration beside a leftover client $default session record: no query names it"
     },
     {
       "name" : "accessGroupTransitionClear",
@@ -297,8 +231,7 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "First configuration with an access group, without migration: the unshared service is cleared, sparing client records"
     },
@@ -395,8 +328,7 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "A group, then no group, migrateKeychainItems: true: items move back to the unshared service"
     },
@@ -415,8 +347,7 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "A group, then no group, without migration: nothing is moved or cleared"
     },
@@ -509,10 +440,95 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "A group, then no group, migrateKeychainItems: true, over a stale authConfiguration already in the unshared service under the group: its move is destinationOccupied, the rest move"
+    },
+    {
+      "name" : "migrateKeychainItemsMovesTheDefaultSessionsSidecarAndChallenge",
+      "queries" : [
+        "store | allAccounts | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> 0 accounts",
+        "store | hasItems | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> false",
+        "store | allEntries | com.amplify.awsCognitoAuthPlugin | - | - -> 7 entries",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.challenge -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.meta -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.Alice.Example.deviceASF -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.alice.example.deviceMetadata -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> moved",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | accessKey -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
+        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
+        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
+        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok"
+      ],
+      "summary" : "Access group, migrateKeychainItems: true, with the client's $default.meta and .challenge: both move; the named session's record stays"
+    },
+    {
+      "name" : "accessGroupTransitionClearRemovesTheDefaultSessionsSidecarAndChallenge",
+      "queries" : [
+        "store | allAccounts | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> 0 accounts",
+        "store | allEntries | com.amplify.awsCognitoAuthPlugin | - | - -> 7 entries",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.challenge -> ok",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.meta -> ok",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.Alice.Example.deviceASF -> ok",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.alice.example.deviceMetadata -> ok",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
+        "store | removeEntry(group: -) | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> itemNotFound",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | accessKey -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
+        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
+        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
+        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
+      ],
+      "summary" : "Access group without migration, with the client's $default.meta and .challenge: both are removed; the named session's record is spared"
+    },
+    {
+      "name" : "migrateKeychainItemsIntoSharedHoldingTheDefaultSessionsSidecarAndChallenge",
+      "queries" : [
+        "store | allAccounts | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> 3 accounts",
+        "store | hasItems | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> true",
+        "store | allEntries | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | - -> 3 entries",
+        "store | removeEntry(group: fixture.access.group) | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.challenge -> ok",
+        "store | removeEntry(group: fixture.access.group) | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.meta -> ok",
+        "store | allEntries | com.amplify.awsCognitoAuthPlugin | - | - -> 7 entries",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.challenge -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.meta -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.Alice.Example.deviceASF -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.alice.example.deviceMetadata -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> moved",
+        "store | moveEntry(group: -, to: com.amplify.awsCognitoAuthPluginShared / fixture.access.group) | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> moved",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | fixture-client-id.currentUser -> itemNotFound",
+        "legacy | getData | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | accessKey -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
+        "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
+        "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
+        "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
+        "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | set | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | authConfiguration -> ok",
+        "store | getData | com.amplify.awsCognitoAuthPluginShared | fixture.access.group | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok"
+      ],
+      "summary" : "migrateKeychainItems: true while the shared service holds only the client's $default.meta, .challenge and a named session's record: the migration still runs, the destination clear removes the two $default items and spares the named record, then the unshared service's items move"
     },
     {
       "name" : "legacyMigration-empty",
@@ -529,8 +545,7 @@
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "AWSMobileClient records of GoldenStoredFormat/AWSMobileClient/empty.seed.json migrate on first configuration"
     },
@@ -573,7 +588,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> ok",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
@@ -600,7 +614,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
@@ -633,11 +646,9 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound"
+        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound"
       ],
       "summary" : "AWSMobileClient records of GoldenStoredFormat/AWSMobileClient/locked-keychain.seed.json migrate on first configuration"
     },
@@ -664,7 +675,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
@@ -688,7 +698,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> ok",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",
@@ -723,7 +732,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
@@ -757,7 +765,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> ok",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.fixture-user.deviceMetadata -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.fixture-user.deviceASF -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
@@ -792,7 +799,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.us-east-1:00000000-0000-4000-8000-00000000ffff.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | - | - -> ok",
@@ -821,7 +827,6 @@
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | loginsMap -> itemNotFound",
         "legacy | getData | Optional(\"<bundle>\").AWSMobileClient | - | federationProvider -> itemNotFound",
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.session -> itemNotFound",
-        "store | getData | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.$default.session -> itemNotFound",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.session -> ok",
         "legacy | removeAll | <bundle>.AWSCognitoIdentityUserPool | - | - -> ok",
         "legacy | removeAll | Optional(\"<bundle>\").AWSMobileClient | - | - -> ok",

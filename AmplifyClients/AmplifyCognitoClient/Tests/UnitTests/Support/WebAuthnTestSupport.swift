@@ -361,6 +361,14 @@ extension Task where Failure == Error {
     }
 }
 
+extension Task where Failure == Never {
+
+    /// The task's value, or `WaitTimedOut` after `seconds`: for a task that cannot fail, such as a sign-out.
+    func value(within seconds: Double = 10) async throws -> Success {
+        try await withinTime(seconds, "the task's end") { await self.value }
+    }
+}
+
 extension Gate {
 
     /// `waitForArrivals(_:)`, failing with `WaitTimedOut` after `seconds`.

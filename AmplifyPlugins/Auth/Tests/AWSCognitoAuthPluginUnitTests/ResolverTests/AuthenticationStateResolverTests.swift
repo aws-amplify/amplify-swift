@@ -14,7 +14,7 @@ import InternalAWSCognitoAuth
 class AuthenticationStateResolverTests: XCTestCase, @unchecked Sendable {
 
     var resolver: AuthenticationState.Resolver {
-        AuthenticationState.Resolver()
+        AuthenticationState.Resolver(logger: AmplifyEngineLogRouter())
     }
 
     func testInitialState() {

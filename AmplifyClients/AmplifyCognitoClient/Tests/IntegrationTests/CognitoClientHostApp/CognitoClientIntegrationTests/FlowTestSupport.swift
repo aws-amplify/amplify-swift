@@ -153,11 +153,20 @@ extension AuthSessionState {
         case .federated: return "federated"
         case .signedOut: return "signedOut"
         case .guest: return "guest"
-        case .federated: return "federated"
         case .awaitingChallenge(let step): return "awaitingChallenge(\(step.caseName))"
         case .unavailable(let reason): return "unavailable(\(reason))"
-        case .failed(let error): return "failed(\(error.kind))"
+        case .failed(let error): return "failed(\(error.kindName))"
         }
+    }
+}
+
+extension AuthClientError {
+
+    /// The case's name alone, for failure messages: never its payload (`unexpectedIdentity` carries a username and
+    /// a sub, `browserBusy` a session ID) nor its text.
+    var kindName: String {
+        let described = String(describing: kind)
+        return described.firstIndex(of: "(").map { String(described[..<$0]) } ?? described
     }
 }
 
@@ -199,6 +208,47 @@ func XCTAssertState(
     XCTAssertTrue(
         state == expected,
         "the state is \(state.redactedDescription), expected \(expected.redactedDescription). \(message)",
+        file: file,
+        line: line
+    )
+}
+
+extension AuthClientSignOutResult {
+
+    /// For failure messages: the case and each error's case name, never an error's payload or text.
+    var redactedDescription: String {
+        func kind(_ error: AuthClientError?) -> String {
+            error?.kindName ?? "nil"
+        }
+        switch self {
+        case .complete:
+            return "complete"
+        case .partial(let revoke, let global, let hostedUI, let storage):
+            return "partial(revokeTokenError: \(kind(revoke)), globalSignOutError: \(kind(global)), "
+                + "hostedUIError: \(kind(hostedUI)), storageError: \(kind(storage)))"
+        case .failed(let error):
+            return "failed(\(error.kindName))"
+        }
+    }
+}
+
+/// Asserts that a sign-out completed: `.complete`, so the session is signed out on this device and nothing
+/// failed. A sign-out never throws: `.partial` and `.failed` are results, and either fails this.
+func XCTAssertSignOutComplete(
+    _ result: AuthClientSignOutResult,
+    _ message: String = "",
+    file: StaticString = #filePath,
+    line: UInt = #line
+) {
+    XCTAssertTrue(
+        result == .complete,
+        "the sign-out returned \(result.redactedDescription), expected complete. \(message)",
+        file: file,
+        line: line
+    )
+    XCTAssertTrue(
+        result.signedOutLocally,
+        "the sign-out left the session signed in: \(result.redactedDescription). \(message)",
         file: file,
         line: line
     )

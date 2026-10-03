@@ -154,7 +154,7 @@ final class SessionRestoreTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         _ = await client.currentSessionState()
-        try harness.store().write(FakePayload.signedIn("bob").record(), for: work, expecting: 1)
+        try harness.store().write(FakePayload.signedIn("bob").record(), for: work, expecting: .generation(1))
         harness.keychain.resetLogs()
 
         let again = await client.currentSessionState()

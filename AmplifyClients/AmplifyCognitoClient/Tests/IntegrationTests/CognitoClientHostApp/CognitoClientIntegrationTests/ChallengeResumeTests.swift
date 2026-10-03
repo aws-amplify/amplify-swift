@@ -22,7 +22,7 @@ final class ChallengeResumeTests: ClientMFATestCase {
         let (client, user) = try await signedInFreshUser(tag)
         let secret = try await enrollTOTP(client, user)
         try await client.updateMFAPreference(sms: nil, totp: .enabled)
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         return (user, secret, client.sessionId)
     }
 

@@ -235,7 +235,7 @@ final class ChallengeTests: XCTestCase {
     func testSignOutCancelsThePendingChallenge() async throws {
         let (client, engine) = try await challengedClient(work)
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
         let answer = await authClientError { try await client.confirmSignIn(challengeResponse: "123456") }
 
         XCTAssertEqual(result, .complete)
@@ -456,7 +456,7 @@ final class ChallengeTests: XCTestCase {
         engine.duringPendingChallengeRead {
             guard reads.count < 1 else { return }
             reads.increment()
-            _ = try? await client.signOut()
+            _ = await client.signOut()
         }
 
         let wrong = await authClientError { try await client.confirmSignIn(challengeResponse: "000000") }
@@ -529,7 +529,7 @@ final class ChallengeTests: XCTestCase {
         await waitUntil("bob queues behind alice") { await client.core.signInLock.waiterCount == 1 }
         bobSignIn.cancel()
         await waitUntil("bob leaves the queue") { await client.core.signInLock.waiterCount == 0 }
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
         await latch.open()
         let alice = await authClientError { try await aliceSignIn.value }
         let bob: Error?
@@ -564,7 +564,7 @@ final class ChallengeTests: XCTestCase {
         await latch.waitForArrivals(1)
         let bobSignIn = Task { try await client.signInForTest("bob") }
         await waitUntil("bob queues behind alice") { await client.core.signInLock.waiterCount == 1 }
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await latch.open()
         let alice = await authClientError { try await aliceSignIn.value }
         let bob = await authClientError { try await bobSignIn.value }
@@ -593,7 +593,7 @@ final class ChallengeTests: XCTestCase {
 
         let confirm = Task { try await client.confirmSignIn(challengeResponse: "123456") }
         await latch.waitForArrivals(1)
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await latch.open()
         let error = await authClientError { try await confirm.value }
 
@@ -621,7 +621,7 @@ final class ChallengeTests: XCTestCase {
 
         let signIn = Task { try await client.signInForTest("alice") }
         await latch.waitForArrivals(1)
-        _ = try await client.signOut()
+        _ = await client.signOut()
         await latch.open()
         let error = await authClientError { try await signIn.value }
 
@@ -652,7 +652,7 @@ final class ChallengeTests: XCTestCase {
 
         let confirm = Task { try await client.confirmSignIn(challengeResponse: "123456") }
         await latch.waitForArrivals(1)
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
         await latch.open()
         let error = await authClientError { try await confirm.value }
 

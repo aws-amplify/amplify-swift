@@ -411,7 +411,7 @@ class AWSAuthFetchSessionTokenRotationTests: XCTestCase, @unchecked Sendable {
             .notStarted
         )
         let stateMachine = AuthStateMachine(
-            resolver: AuthState.Resolver(),
+            resolver: AuthState.Resolver(logger: AmplifyEngineLogRouter()),
             environment: environment,
             initialState: initialState
         )

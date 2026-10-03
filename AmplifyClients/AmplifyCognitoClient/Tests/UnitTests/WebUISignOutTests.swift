@@ -47,9 +47,9 @@ final class WebUISignOutTests: XCTestCase {
     private func signOut(
         _ client: AmplifyCognitoClient,
         options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async throws -> AuthClientSignOutResult {
+    ) async -> AuthClientSignOutResult {
         let window = window!
-        return try await client.signOut(presentationAnchor: window, options: options)
+        return await client.signOut(presentationAnchor: window, options: options)
     }
 
     /// The plan the engine got, without the box (boxes compare by identity).
@@ -63,10 +63,7 @@ final class WebUISignOutTests: XCTestCase {
     }
 
     private func hostedUIError(_ result: AuthClientSignOutResult) -> AuthClientError? {
-        guard case .partial(let partial) = result else {
-            return nil
-        }
-        return partial.hostedUIError
+        result.partialErrors?.hostedUIError
     }
 
     // MARK: Cookies, window and lease
@@ -88,7 +85,7 @@ final class WebUISignOutTests: XCTestCase {
                 return .complete
             }
 
-            let result = try await signOut(client)
+            let result = await signOut(client)
 
             XCTAssertEqual(result, .complete)
             XCTAssertEqual(plans(engine), ["skip"])
@@ -113,7 +110,7 @@ final class WebUISignOutTests: XCTestCase {
             return .complete
         }
 
-        let result = try await signOut(client, options: AuthClientSignOutOptions(globalSignOut: true))
+        let result = await signOut(client, options: AuthClientSignOutOptions(globalSignOut: true))
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(plans(engine), ["present"])
@@ -167,7 +164,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
         let error = await authClientError { try await associate.value(within: 10) }
         XCTAssertEqual(error?.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
@@ -204,7 +201,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await held.up()
-        let signOutError = await authClientError { try await signOut(client) }
+        let signOutError = await failedSignOutError(signOut(client))
         let associateError = await authClientError { try await associate.value(within: 10) }
 
         XCTAssertEqual(signOutError?.kind, .userCancelled)
@@ -224,16 +221,16 @@ final class WebUISignOutTests: XCTestCase {
     }
 
     /// The logout page's wait for the session's own passkey sheet is bounded: a sheet that never closes is the
-    /// busy row, and the sign-out still completes.
+    /// busy row, and the sign-out still answers (`.failed`, as the plugin's).
     ///
     /// - Given: a shared-cookie session whose passkey registration's sheet is up and will not close even when
     ///   cancelled, and a sheet lock whose waits time out at once (its injected sleep)
     /// - When: it is signed out with a window
     /// - Then:
-    ///    - the result is `.partial` with `hostedUIError` `.browserBusy(holder: work)`: the page was skipped, the
-    ///      engine was told `.skip`, and the session is signed out
+    ///    - the result is `.failed(.browserBusy(holder: work))`: the page could not be shown, the engine was never
+    ///      called, and the session is still signed in
     ///    - once the sheet finally closes, the lock is free
-    func testALogoutPageWhosePasskeySheetNeverClosesIsSkippedAsBusy() async throws {
+    func testALogoutPageWhosePasskeySheetNeverClosesIsFailedAsBusy() async throws {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn is not available on this OS version")
         }
@@ -254,35 +251,40 @@ final class WebUISignOutTests: XCTestCase {
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await up.arrivals(1)
         let result = try await withinTime(10, "the sign-out") {
-            try await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
         }
 
-        XCTAssertEqual(hostedUIError(result)?.kind, .browserBusy(holder: work))
-        XCTAssertEqual(plans(engine), ["skip"])
-        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: work))
+        XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
         await stuck.open()
         _ = await authClientError { try await associate.value(within: 10) }
         let lock = harness.sheetLock
         await waitUntil("the sheet is free once the passkey sheet closes") { await lock.currentHolder == nil }
     }
 
-    /// The logout page does not wait for another session's sheet, even when it stopped this session's passkey
-    /// registration first.
+    /// Another session's sheet refuses the logout page before anything is stopped, so a refused sign-out leaves
+    /// this session's passkey registration alone.
     ///
     /// - Given: a shared-cookie session whose passkey registration is still at `StartWebAuthnRegistration` (no
     ///   sheet yet), another session holding the sheet, and a lock whose waits would fail the test if they
     ///   started a timer
-    /// - When: the first session is signed out with a window
+    /// - When:
+    ///    - the first session is signed out with a window
+    ///    - then the other session lets the sheet go, and the registration's `StartWebAuthnRegistration` answers
     /// - Then:
-    ///    - the page is skipped at once: `.partial` with `hostedUIError` `.browserBusy(holder: home)`, nothing
-    ///      queued behind the other session, and the session is signed out
-    ///    - the stopped registration reports `passkeyRegistrationEnded()` and never shows its sheet
-    func testAStoppedRegistrationDoesNotMakeThePageWaitForAnotherSessionsSheet() async throws {
+    ///    - the sign-out answers at once: `.failed(.browserBusy(holder: home))` with the sign-out's suggestion,
+    ///      nothing queued behind the other session, nothing revoked, and the session still signed in with its
+    ///      record unchanged
+    ///    - the registration is untouched: it goes on to show its sheet and succeeds
+    func testABusySheetRefusalLeavesTheSessionsPasskeyRegistrationAlone() async throws {
         guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
             throw XCTSkip("WebAuthn is not available on this OS version")
         }
         harness.sheetLock = SystemSheetLock(sleep: { _ in XCTFail("the logout page queued behind another session") })
-        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let payload = HostedUIFixtures.hostedUIPayload()
+        try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = window!
@@ -306,20 +308,28 @@ final class WebUISignOutTests: XCTestCase {
         try await start.arrivals(1)
 
         let result = try await withinTime(10, "the sign-out") {
-            try await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
         }
 
-        XCTAssertEqual(hostedUIError(result)?.kind, .browserBusy(holder: home))
-        XCTAssertEqual(plans(engine), ["skip"])
+        XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: home))
+        XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(engine.revokeCalls, [])
         let waiters = await lock.waiterCount
         XCTAssertEqual(waiters, 0)
-        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
-        await start.open()
-        let error = await authClientError { try await associate.value(within: 10) }
-        XCTAssertEqual(error?.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
-        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
         await otherRelease.open()
         _ = try await other.value(within: 10)
+        await start.open()
+        do {
+            try await associate.value(within: 10)
+        } catch {
+            // Names the error, so a regression reads `passkeyRegistrationEnded()` rather than a bare throw.
+            XCTFail("the registration failed: \((error as? AuthClientError)?.errorDescription ?? "\(error)")")
+        }
+        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 1)
     }
 
     /// A passkey lease the lock has granted but whose flow has not attached yet is still stopped, so the logout
@@ -359,7 +369,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
         try await seamHeld.arrivals(1)
-        let signOut = Task { try await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
         await waitUntil("the sign-out queues behind the stopped lease") { await lock.waiterCount == 1 }
         await seamRelease.open()
 
@@ -372,12 +382,14 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
     }
 
+    /// a page the user asked for that cannot be shown is the plugin's `.failed`.
+    ///
     /// - Given: a shared-cookie session, and another session holding the sheet with its hosted-UI sign-in
     /// - When: the first is signed out with a window
     /// - Then:
-    ///    - the engine skips the hosted UI; the result is `.partial` with `hostedUIError` `browserBusy` naming the
-    ///      holder; the session is signed out
-    func testABusySheetSkipsTheLogoutAndReportsIt() async throws {
+    ///    - the result is `.failed(.browserBusy)` naming the holder; nothing is revoked, and the session is still
+    ///      signed in
+    func testABusySheetIsFailedAndStaysSignedIn() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let homeClient = try client(home)
         let client = try client(work)
@@ -388,13 +400,40 @@ final class WebUISignOutTests: XCTestCase {
         let homeSignIn = Task { try await homeClient.signInWithWebUI(presentationAnchor: window) }
         await browser.shown.waitForArrivals(1)
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
-        XCTAssertEqual(plans(engine), ["skip"])
-        XCTAssertEqual(hostedUIError(result)?.kind, .browserBusy(holder: home))
-        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: home))
+        XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(engine.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
         browser.finishWithDefault()
         _ = try await homeSignIn.value
+    }
+
+    /// A sign-out has no `whenBrowserBusy`, so its busy refusal must not suggest one; the sign-in texts keep it.
+    ///
+    /// - Given: the sheet lock's `browserBusy` for a session held by another, still closing, and timed out
+    /// - When: each is made a sign-out's refusal
+    /// - Then:
+    ///    - the holder and description are kept, and the suggestion is the sign-out's, naming no `whenBrowserBusy`
+    ///    - the sign-in errors themselves still suggest `whenBrowserBusy: .wait(timeout:)`
+    func testABusySignOutRefusalSuggestsRetryingTheSignOut() {
+        for reason in [BrowserBusyReason.heldByAnotherSession, .stillClosing, .timedOut] {
+            let signIn = AuthClientError.browserBusy(heldBy: home, requestedBy: work, reason: reason)
+
+            let signOut = SessionCore.signOutBrowserBusy(signIn)
+
+            XCTAssertEqual(signOut.kind, .browserBusy(holder: home), "\(reason)")
+            XCTAssertEqual(signOut.errorDescription, signIn.errorDescription, "\(reason)")
+            XCTAssertEqual(
+                signOut.recoverySuggestion,
+                "Retry the sign-out when the other sheet has closed; the session is still signed in.",
+                "\(reason)"
+            )
+            XCTAssertFalse(signOut.recoverySuggestion.contains("whenBrowserBusy"), "\(reason)")
+            XCTAssertTrue(signIn.recoverySuggestion.contains("whenBrowserBusy: .wait(timeout:)"), "\(reason)")
+        }
     }
 
     /// - Given: a shared-cookie session
@@ -407,7 +446,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        let result = try await client.signOut()
+        let result = await client.signOut()
 
         XCTAssertEqual(plans(engine), ["skip"])
         let error = try XCTUnwrap(hostedUIError(result))
@@ -416,27 +455,100 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
+    /// as the plugin, a hosted-UI sign-out with no hosted UI to sign out of fails, and the user stays
+    /// signed in.
+    ///
     /// - Given: a shared-cookie session (an adopted plugin record) under a configuration with no hosted UI
     /// - When: it is signed out with a window
     /// - Then:
-    ///    - the engine skips the hosted UI; the result is `.partial` with `hostedUIError` `.configuration`
-    func testAConfigurationWithoutAHostedUISkipsTheLogoutAndReportsIt() async throws {
-        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+    ///    - the result is `.failed(.configuration)`; nothing is revoked; the session is still signed in, and no
+    ///      `.signedOut` is sent
+    func testHostedUISignOutWithNoHostedUIConfigurationIsFailedAndStaysSignedIn() async throws {
+        let payload = HostedUIFixtures.hostedUIPayload()
+        try harness.signIn(work, payload)
         let client = try client(work, configuration: ClientFixtures.configuration)
         let engine = try XCTUnwrap(harness.engine(for: work))
+        let events = StreamRecorder(client.listenToAuthEvents())
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
-        XCTAssertEqual(plans(engine), ["skip"])
-        XCTAssertEqual(hostedUIError(result)?.kind, .configuration)
+        let error = failedSignOutError(result)
+        XCTAssertEqual(error?.kind, .configuration)
+        XCTAssertEqual(error.map { $0.isEquivalent(to: SessionCore.noHostedUIForSignOut()) }, true)
+        XCTAssertEqual(engine.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        XCTAssertEqual(events.received, [])
     }
 
-    /// - Given: a shared-cookie session whose `.present` sign-out failed in the browser, so the engine reran it
-    ///   with the step skipped and reports the failure
+    /// the same for a hosted UI configured with no sign-out redirect URI.
+    ///
+    /// - Given: a shared-cookie session under a configuration whose `oauth` has no sign-out redirect URI
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the result is `.failed(.configuration)`; nothing is revoked; the session is still signed in
+    func testHostedUISignOutWithNoSignOutRedirectURIIsFailedAndStaysSignedIn() async throws {
+        let payload = HostedUIFixtures.hostedUIPayload()
+        try harness.signIn(work, payload)
+        let oauth = try XCTUnwrap(HostedUIFixtures.userPool.oauth)
+        let userPool = AuthClientConfiguration.UserPool(
+            poolId: HostedUIFixtures.userPool.poolId,
+            appClientId: HostedUIFixtures.userPool.appClientId,
+            region: HostedUIFixtures.userPool.region,
+            oauth: AuthClientConfiguration.OAuth(
+                domain: oauth.domain,
+                scopes: oauth.scopes,
+                redirectSignInURIs: oauth.redirectSignInURIs,
+                redirectSignOutURIs: []
+            )
+        )
+        let configuration = ClientFixtures.make(userPool: userPool, identityPool: ClientFixtures.identityPool)
+        let client = try client(work, configuration: configuration)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+
+        let result = await signOut(client)
+
+        XCTAssertEqual(failedSignOutError(result)?.kind, .configuration)
+        XCTAssertEqual(engine.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+    }
+
+    /// the engine's own check of the hosted UI's configuration (`HostedUIError.pluginConfiguration`, or a
+    /// sign-out redirect URI it cannot use) is the same `.failed`.
+    ///
+    /// - Given: a shared-cookie session whose `.present` sign-out the engine refuses for its configuration
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the result is `.failed` with the engine's error; the session is still signed in
+    func testAnEngineRefusalOfTheHostedUIConfigurationIsFailedAndStaysSignedIn() async throws {
+        let payload = HostedUIFixtures.hostedUIPayload()
+        try harness.signIn(work, payload)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let refused = AuthClientError.configuration("no sign-out redirect URI", "add one")
+        engine.scriptHostedUIRevoke { _, _, _ in throw SignOutRefusal(error: refused) }
+
+        let result = await signOut(client)
+
+        XCTAssertEqual(result, .failed(refused))
+        XCTAssertEqual(engine.revokeCalls.count, 1)
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+    }
+
+    /// A failure the engine continues past (one that is not a `HostedUIError`, which the plugin also continues past
+    /// in `ShowHostedUISignOut`) is still reported beside the revoke. A `HostedUIError` is a refusal instead
+    /// (`testAnEngineRefusalOfTheHostedUIConfigurationIsFailedAndStaysSignedIn`, and the live engine's tests).
+    ///
+    /// - Given: a shared-cookie session whose `.present` sign-out signed out past a failure of the browser step
     /// - When: it is signed out with a window
     /// - Then:
     ///    - the result is `.partial` with that `hostedUIError`, and the session is signed out
-    func testABrowserFailureIsReportedInThePartialResult() async throws {
+    func testABrowserFailureTheEngineContinuedPastIsReportedInThePartialResult() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -444,7 +556,7 @@ final class WebUISignOutTests: XCTestCase {
             EngineSignOutOutcome(hostedUIError: .service(.errorLoadingUI, "could not start", "retry"))
         }
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
         XCTAssertEqual(hostedUIError(result)?.kind, .service(.errorLoadingUI))
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
@@ -453,8 +565,8 @@ final class WebUISignOutTests: XCTestCase {
     /// - Given: a shared-cookie session
     /// - When: the user closes the logout page
     /// - Then:
-    ///    - the sign-out throws `.userCancelled` before clearing anything: the session is still signed in, one
-    ///      revoke was attempted, and no `.signedOut` is sent
+    ///    - the sign-out is `.failed(.userCancelled)` before clearing anything: the session is still signed in,
+    ///      one revoke was attempted, and no `.signedOut` is sent
     func testClosingTheLogoutPageKeepsTheSessionSignedIn() async throws {
         let payload = HostedUIFixtures.hostedUIPayload()
         try harness.signIn(work, payload)
@@ -463,7 +575,7 @@ final class WebUISignOutTests: XCTestCase {
         engine.scriptHostedUIRevoke { _, _, _ in throw AuthClientError.userCancelled("closed", "retry") }
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let error = await authClientError { try await signOut(client) }
+        let error = await failedSignOutError(signOut(client))
 
         XCTAssertEqual(error?.kind, .userCancelled)
         XCTAssertEqual(engine.revokeCalls.count, 1)
@@ -495,7 +607,7 @@ final class WebUISignOutTests: XCTestCase {
             return .complete
         }
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
         XCTAssertEqual(plans(engine), ["present", "skip"])
         XCTAssertEqual(hostedUIError(result)?.kind, .userCancelled)
@@ -518,12 +630,12 @@ final class WebUISignOutTests: XCTestCase {
         engine.scriptHostedUIRevoke { _, _, _ in
             if !refreshed.isRaised, case .record(let envelope) = try store.read(work) {
                 refreshed.raise()
-                try store.write(HostedUIFixtures.hostedUIPayload(version: 2).record(), for: work, expecting: envelope.generation)
+                try store.write(HostedUIFixtures.hostedUIPayload(version: 2).record(), for: work, expecting: envelope.version)
             }
             return .complete
         }
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(plans(engine), ["present", "skip"])
@@ -552,17 +664,15 @@ final class WebUISignOutTests: XCTestCase {
             }
             if case .record(let envelope) = try store.read(work) {
                 refreshed.raise()
-                try store.write(HostedUIFixtures.hostedUIPayload(version: 2).record(), for: work, expecting: envelope.generation)
+                try store.write(HostedUIFixtures.hostedUIPayload(version: 2).record(), for: work, expecting: envelope.version)
             }
             return .complete
         }
 
-        let result = try await signOut(client)
+        let result = await signOut(client)
 
-        guard case .partial(let partial) = result else {
-            return XCTFail("expected .partial, got \(result)")
-        }
-        XCTAssertNotNil(partial.revokeError)
+        let partial = try XCTUnwrap(result.partialErrors, "expected .partial, got \(result)")
+        XCTAssertNotNil(partial.revokeTokenError)
         XCTAssertEqual(plans(engine), ["present", "skip"])
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
@@ -573,7 +683,7 @@ final class WebUISignOutTests: XCTestCase {
         _ client: AmplifyCognitoClient,
         _ engine: FakeSessionEngine,
         end: @escaping @Sendable (_ interrupted: Bool) throws -> EngineSignOutOutcome
-    ) async -> Task<AuthClientSignOutResult, Error> {
+    ) async -> Task<AuthClientSignOutResult, Never> {
         let opened = Gate(isOpen: true)
         let closed = Gate()
         engine.scriptHostedUIRevoke { _, _, _ in
@@ -582,7 +692,7 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = window!
-        let signOut = Task { try await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         await client.cancelWebUISignIn()
         await closed.open()
@@ -594,7 +704,7 @@ final class WebUISignOutTests: XCTestCase {
     /// - Given: a shared-cookie session whose logout page is open
     /// - When: `cancelWebUISignIn()` interrupts the lease, and the sign-out then ends with the page closed
     /// - Then:
-    ///    - the sign-out throws `.userCancelled` once it has ended, and the session stays signed in
+    ///    - the sign-out is `.failed(.userCancelled)` once it has ended, and the session stays signed in
     func testAnInterruptThatClosesTheLogoutPageKeepsTheSessionSignedIn() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
@@ -605,7 +715,7 @@ final class WebUISignOutTests: XCTestCase {
             throw AuthClientError.userCancelled("closed", "retry")
         }
 
-        let error = await authClientError { try await signOut.value }
+        let error = await failedSignOutError(signOut.value)
         XCTAssertEqual(error?.kind, .userCancelled)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
         let lock = harness.sheetLock
@@ -625,7 +735,7 @@ final class WebUISignOutTests: XCTestCase {
 
         let signOut = await interruptedSignOut(client, engine) { _ in .complete }
 
-        let result = try await signOut.value
+        let result = await signOut.value
         XCTAssertEqual(result, .complete)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
@@ -643,11 +753,9 @@ final class WebUISignOutTests: XCTestCase {
             throw AuthClientError.service(nil, "revoke failed", "retry")
         }
 
-        let result = try await signOut.value
-        guard case .partial(let partial) = result else {
-            return XCTFail("expected .partial, got \(result)")
-        }
-        XCTAssertEqual(partial.revokeError?.errorDescription, "revoke failed")
+        let result = await signOut.value
+        let partial = try XCTUnwrap(result.partialErrors, "expected .partial, got \(result)")
+        XCTAssertEqual(partial.revokeTokenError?.errorDescription, "revoke failed")
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
@@ -659,7 +767,7 @@ final class WebUISignOutTests: XCTestCase {
         _ client: AmplifyCognitoClient,
         _ engine: FakeSessionEngine,
         end: @escaping @Sendable (_ interrupted: Bool) throws -> EngineSignOutOutcome
-    ) async -> Result<AuthClientSignOutResult, Error> {
+    ) async -> AuthClientSignOutResult {
         let opened = Gate(isOpen: true)
         let closed = Gate()
         engine.scriptHostedUIRevoke { _, _, _ in
@@ -668,17 +776,18 @@ final class WebUISignOutTests: XCTestCase {
             return try end(Task.isCancelled)
         }
         let window = window!
-        let signOut = Task { try await client.signOut(presentationAnchor: window) }
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         signOut.cancel()
         await closed.open()
-        return await signOut.result
+        return await signOut.value
     }
 
     /// - Given: a shared-cookie session whose sign-out is past its logout page, revoking
     /// - When: the calling task is cancelled, and the revoke then completes
     /// - Then:
-    ///    - the sign-out returns what it did, `.complete`, and the session is signed out on this device
+    ///    - the sign-out returns what it did, `.complete`, and the session is signed out on this device: once a
+    ///      revoke has completed, cancellation never stops the local clear
     func testACallerCancelledAfterTheLogoutPageStillSignsOut() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
@@ -686,14 +795,16 @@ final class WebUISignOutTests: XCTestCase {
 
         let result = await callerCancelledSignOut(client, engine) { _ in .complete }
 
-        XCTAssertEqual(try result.get(), .complete)
+        XCTAssertEqual(result, .complete)
+        XCTAssertTrue(result.signedOutLocally)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
     /// - Given: a shared-cookie session whose logout page is open
     /// - When: the calling task is cancelled, which closes the page
     /// - Then:
-    ///    - the sign-out throws `CancellationError`, and the session stays signed in
+    ///    - the sign-out is `.failed(.unknown)`, with an underlying `CancellationError`, and the session
+    ///      stays signed in
     func testACallerCancelledOnTheLogoutPageKeepsTheSession() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
@@ -704,9 +815,9 @@ final class WebUISignOutTests: XCTestCase {
             throw AuthClientError.userCancelled("closed", "retry")
         }
 
-        XCTAssertThrowsError(try result.get()) { error in
-            XCTAssertTrue(error is CancellationError, "got \(error)")
-        }
+        let error = failedSignOutError(result)
+        XCTAssertEqual(error.map { $0.isEquivalent(to: SessionSignOut.cancelledError()) }, true, "got \(result)")
+        XCTAssertTrue(error?.underlyingError is CancellationError)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
     }
 
@@ -741,7 +852,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let anchor = self.window!
-        let signOut = Task { try await client.signOut(presentationAnchor: anchor) }
+        let signOut = Task { await client.signOut(presentationAnchor: anchor) }
         await held.waitForArrivals(1)
 
         switch window {
@@ -753,7 +864,7 @@ final class WebUISignOutTests: XCTestCase {
         let answered = expectation(description: "the interrupted sign-out answers")
         let outcome = ResultBox<AuthClientSignOutResult>()
         Task {
-            outcome.set(await signOut.result)
+            outcome.set(.success(await signOut.value))
             answered.fulfill()
         }
         if window == .cancelBeforeBodyBegins {
@@ -764,24 +875,19 @@ final class WebUISignOutTests: XCTestCase {
             await held.open()
             await fulfillment(of: [answered], timeout: 10)
         }
-        XCTAssertThrowsError(try outcome.value?.get(), file: file, line: line) { error in
-            XCTAssertEqual((error as? AuthClientError)?.kind, .userCancelled, file: file, line: line)
-        }
+        let result = try XCTUnwrap(outcome.value?.get(), file: file, line: line)
+        XCTAssertEqual(failedSignOutError(result, file: file, line: line)?.kind, .userCancelled, file: file, line: line)
         XCTAssertEqual(engine.revokeCalls.count, 0, "the body never ran", file: file, line: line)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false, file: file, line: line)
 
         let followUp = expectation(description: "a later sign-out on the same client returns")
         let later = ResultBox<AuthClientSignOutResult>()
         Task {
-            do {
-                later.set(.success(try await client.signOut()))
-            } catch {
-                later.set(.failure(error))
-            }
+            later.set(.success(await client.signOut()))
             followUp.fulfill()
         }
         await fulfillment(of: [followUp], timeout: 10)
-        XCTAssertNoThrow(try later.value?.get(), file: file, line: line)
+        XCTAssertEqual(try later.value?.get().signedOutLocally, true, file: file, line: line)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true, file: file, line: line)
     }
 
@@ -828,7 +934,7 @@ final class WebUISignOutTests: XCTestCase {
     func testSignOutStoredSessionReportsTheCookieLeftBehind() async throws {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
 
-        let result = try await AmplifyCognitoClient.signOutStoredSession(
+        let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: work,
             configuration: HostedUIFixtures.configuration,
             accessGroup: nil,
@@ -847,7 +953,7 @@ final class WebUISignOutTests: XCTestCase {
     func testSignOutStoredSessionOfAPasswordSessionIsComplete() async throws {
         try harness.signIn(work, .signedIn("alice"))
 
-        let result = try await AmplifyCognitoClient.signOutStoredSession(
+        let result = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: work,
             configuration: HostedUIFixtures.configuration,
             accessGroup: nil,
@@ -874,8 +980,8 @@ final class SignOutOutcomeHostedUITests: XCTestCase {
         let outcome = EngineSignOutOutcome(hostedUIError: busy)
 
         XCTAssertFalse(outcome.isComplete)
-        XCTAssertEqual(outcome.partial, AuthClientPartialSignOut(revokeError: nil, hostedUIError: busy))
-        XCTAssertEqual(outcome.partial?.hostedUIError?.kind, .browserBusy(holder: .default))
+        XCTAssertEqual(outcome.signedOutResult(), .partialResult(hostedUIError: busy))
+        XCTAssertEqual(outcome.signedOutResult().partialErrors?.hostedUIError?.kind, .browserBusy(holder: .default))
     }
 
     /// - Given: two outcomes, each with a hosted-UI failure
@@ -896,23 +1002,21 @@ final class SignOutOutcomeHostedUITests: XCTestCase {
     func testEqualityComparesTheHostedUIFailure() {
         XCTAssertNotEqual(EngineSignOutOutcome(hostedUIError: busy), EngineSignOutOutcome.complete)
         XCTAssertNotEqual(
-            AuthClientPartialSignOut(revokeError: nil, hostedUIError: busy),
-            AuthClientPartialSignOut(revokeError: nil)
+            AuthClientSignOutResult.partialResult(hostedUIError: busy),
+            .partialResult()
         )
     }
 
     /// - Given: a sign-out whose every attempt lost its race, with only a hosted-UI failure
     /// - When: its result is read
     /// - Then:
-    ///    - it throws `storageUnavailable(.interrupted)` carrying the hosted-UI failure underneath
+    ///    - it is `.failed(.storageUnavailable(.interrupted))` carrying the hosted-UI failure underneath
     func testAContendedSignOutCarriesTheHostedUIFailure() {
         let outcome = SessionSignOut.Outcome.contended(server: EngineSignOutOutcome(hostedUIError: busy))
 
-        XCTAssertThrowsError(try outcome.result()) { error in
-            let error = error as? AuthClientError
-            XCTAssertEqual(error?.storageUnavailableReason, .interrupted)
-            XCTAssertEqual((error?.underlyingError as? AuthClientError)?.kind, .browserBusy(holder: .default))
-        }
+        let error = failedSignOutError(outcome.result())
+        XCTAssertEqual(error?.storageUnavailableReason, .interrupted)
+        XCTAssertEqual((error?.underlyingError as? AuthClientError)?.kind, .browserBusy(holder: .default))
     }
 }
 

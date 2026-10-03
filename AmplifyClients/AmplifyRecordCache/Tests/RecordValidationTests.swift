@@ -7,7 +7,6 @@
 
 import SQLite
 import XCTest
-@testable import AmplifyKinesisClient
 @testable import AmplifyRecordCache
 
 /// Unit tests for PutRecords record-level validation.
@@ -27,6 +26,10 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
 
     private let maxRecordSize: Int64 = 1_000
 
+    /// Kinesis's PutRecords partition-key limit: 1–256 Unicode characters. `AmplifyKinesisClient` passes it to
+    /// the storage as `maxPartitionKeyLength`; it is repeated here because this target does not depend on Kinesis.
+    private static let kinesisMaxPartitionKeyLength = 256
+
     private var storage: SQLiteRecordStorage!
 
     override func setUp() async throws {
@@ -37,7 +40,7 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
             cacheMaxBytes: 10_000,
             maxRecordSizeBytes: maxRecordSize,
             maxBytesPerStream: 10_000,
-            maxPartitionKeyLength: 256,
+            maxPartitionKeyLength: Self.kinesisMaxPartitionKeyLength,
             connection: Connection(.inMemory)
         )
     }
@@ -125,7 +128,7 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
             cacheMaxBytes: 80,
             maxRecordSizeBytes: maxRecordSize,
             maxBytesPerStream: 10_000,
-            maxPartitionKeyLength: 256,
+            maxPartitionKeyLength: Self.kinesisMaxPartitionKeyLength,
             connection: Connection(.inMemory)
         )
 
@@ -177,7 +180,7 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
     ///    - it is accepted
     func testPartitionKeyAtMaxLength256IsAccepted() async throws {
         try await storage.addRecord(
-            RecordInput(streamName: "stream", partitionKey: String(repeating: "k", count: 256), data: Data([1]))
+            RecordInput(streamName: "stream", partitionKey: String(repeating: "k", count: Self.kinesisMaxPartitionKeyLength), data: Data([1]))
         )
     }
 
@@ -188,7 +191,7 @@ class RecordValidationTests: XCTestCase, @unchecked Sendable {
     func testPartitionKeyExceeding256CharactersIsRejected() async throws {
         do {
             try await storage.addRecord(
-                RecordInput(streamName: "stream", partitionKey: String(repeating: "k", count: 257), data: Data([1]))
+                RecordInput(streamName: "stream", partitionKey: String(repeating: "k", count: Self.kinesisMaxPartitionKeyLength + 1), data: Data([1]))
             )
             XCTFail("Expected validation error")
         } catch let error as RecordCacheError {

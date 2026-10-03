@@ -36,7 +36,8 @@ final class SessionLifecycleTests: XCTestCase {
     func testActingOnOneSessionLeavesAnotherUntouched() async throws {
         let bob = FakePayload.signedIn("bob")
         try harness.signIn(work, .signedIn("alice"))
-        let homeEnvelope = try harness.signIn(home, bob)
+        let homeRecord = try harness.signIn(home, bob)
+        let homeBytes = harness.storedBytes(home)
         let clientA = try harness.client(work)
         let clientB = try harness.client(home)
         _ = await clientA.currentSessionState()
@@ -45,7 +46,7 @@ final class SessionLifecycleTests: XCTestCase {
         let eventsB = StreamRecorder(clientB.listenToAuthEvents())
 
         try await clientA.setSessionLabel("A")
-        _ = try await AmplifyCognitoClient.signOutStoredSession(
+        _ = await AmplifyCognitoClient.signOutStoredSession(
             sessionId: work,
             configuration: ClientFixtures.configuration,
             accessGroup: nil,
@@ -67,7 +68,8 @@ final class SessionLifecycleTests: XCTestCase {
         guard case .record(let stored) = try harness.store().read(home) else {
             return XCTFail("B's record is gone")
         }
-        XCTAssertEqual(stored, homeEnvelope)
+        XCTAssertEqual(stored, homeRecord)
+        XCTAssertEqual(harness.storedBytes(home), homeBytes)
         let credentialsB = try await clientB.credentialsProvider.resolve()
         XCTAssertEqual(credentialsB as? CognitoAWSCredentials, bob.awsCredentials)
         XCTAssertEqual(harness.engine(for: home)?.revokeCalls, [])
@@ -82,7 +84,8 @@ final class SessionLifecycleTests: XCTestCase {
     ///    - A saw every transition; B's state, events, record, provider and engine are all untouched
     func testEverySessionOperationLeavesAnotherSessionUntouched() async throws {
         let bob = FakePayload.signedIn("bob")
-        let homeEnvelope = try harness.signIn(home, bob)
+        let homeRecord = try harness.signIn(home, bob)
+        let homeBytes = harness.storedBytes(home)
         let clientA = try harness.client(work)
         let clientB = try harness.client(home)
         _ = await clientA.currentSessionState()
@@ -97,7 +100,7 @@ final class SessionLifecycleTests: XCTestCase {
         _ = try await clientA.signInForTest("alice")
         _ = try await clientA.confirmSignIn(challengeResponse: "123456")
         _ = try await clientA.fetchAuthSession(options: .init(forceRefresh: true))
-        _ = try await clientA.signOut(options: .init(globalSignOut: true))
+        _ = await clientA.signOut(options: .init(globalSignOut: true))
         engineA.scriptSignIn { request, _ in .done(payload: FakePayload.signedIn(request.username).data) }
         _ = try await clientA.signInForTest("alice")
         try await clientA.deleteUser()
@@ -108,7 +111,8 @@ final class SessionLifecycleTests: XCTestCase {
         XCTAssertEqual(stateB, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(statesB.received, [])
         XCTAssertEqual(eventsB.received, [])
-        XCTAssertEqual(try harness.store().read(home), .record(homeEnvelope))
+        XCTAssertEqual(try harness.store().read(home), .record(homeRecord))
+        XCTAssertEqual(harness.storedBytes(home), homeBytes)
         let credentialsB = try await clientB.credentialsProvider.resolve()
         XCTAssertEqual(credentialsB as? CognitoAWSCredentials, bob.awsCredentials)
         let engineB = try XCTUnwrap(harness.engine(for: home))

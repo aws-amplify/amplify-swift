@@ -142,7 +142,7 @@ final class RefreshTests: ClientIntegrationTestCase {
             _ = try await b.credentialsProvider.resolve()
             events = StreamRecorder(b.listenToAuthEvents())
 
-            signOutResult = try await a.signOut(options: .init(globalSignOut: true))
+            signOutResult = await a.signOut(options: .init(globalSignOut: true))
 
             for attempt in 1 ... 2 {
                 let refreshed = try await b.fetchAuthSession(options: .init(forceRefresh: true))
@@ -165,7 +165,7 @@ final class RefreshTests: ClientIntegrationTestCase {
             XCTAssertEqual(tokenError?.caseName, "sessionExpired")
         }
 
-        XCTAssertEqual(signOutResult, .complete)
+        XCTAssertSignOutComplete(signOutResult)
         // Both handles are gone, so B's stream finishes and holds every event it delivered.
         let delivered = try await events.waitUntilFinished()
         XCTAssertEqual(delivered, [.sessionExpired])

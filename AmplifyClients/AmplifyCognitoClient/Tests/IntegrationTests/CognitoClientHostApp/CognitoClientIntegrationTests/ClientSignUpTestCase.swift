@@ -67,16 +67,22 @@ class ClientSignUpTestCase: ClientIntegrationTestCase {
         recordingIn users: SignedUpUsers
     ) async throws -> (result: AuthClientSignUpResult, user: FreshUser) {
         try SandboxSignUp.requireNotKnownUnconfirmable(pool)
+        try SandboxSignUp.requireSelfSignUp(pool)
         let identity = SandboxSignUp.identity(needsConfirmation: needsConfirmation)
         let password = withPassword ? identity.password : nil
         // Listening before the sign-up: its code is published once, when it is sent.
         await CodeSink.prepare(pool)
         let signedUpAt = Date()
-        let result = try await client.signUp(
-            username: identity.username,
-            password: password,
-            options: .init(userAttributes: [.init(.email, value: identity.email)])
-        )
+        let result: AuthClientSignUpResult
+        do {
+            result = try await client.signUp(
+                username: identity.username,
+                password: password,
+                options: .init(userAttributes: [.init(.email, value: identity.email)])
+            )
+        } catch {
+            throw SandboxSignUp.selfSignUpRefusal(error, on: pool)
+        }
         // Recorded before any check, so a user Cognito created is deleted whatever follows.
         let user = FreshUser(
             pool: pool,

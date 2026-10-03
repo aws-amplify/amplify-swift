@@ -55,7 +55,9 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
         if state.label == "Signed in" {
             try await tapWhenHittable(app.buttons["SignOut"])
             let result = await waitForResult()
-            guard result == "User is signed out" else {
+            // A leftover's user may be gone already (an earlier teardown deleted it), so its revoke can fail: a
+            // `.partial` sign-out still signs it out here. Only `.failed` ("Sign Out failed: …") leaves it signed in.
+            guard result.hasPrefix("User is signed out") else {
                 throw UIStepFailure("Could not sign the leftover session out: \(result)")
             }
         }
@@ -80,7 +82,7 @@ final class HostedUISignInTests: XCTestCase, @unchecked Sendable {
     /// - Then:
     ///    - The browser returns to the app (the outputs' sign-in redirect, the plugin's `myapp://`), the
     ///      session is signed in and `getCurrentUser` names the user
-    ///    - `signOut(presentationAnchor:)` completes without showing a browser, and leaves the session
+    ///    - `signOut(presentationAnchor:)` returns `.complete` without showing a browser, and leaves the session
     ///      signed out
     ///
     @MainActor

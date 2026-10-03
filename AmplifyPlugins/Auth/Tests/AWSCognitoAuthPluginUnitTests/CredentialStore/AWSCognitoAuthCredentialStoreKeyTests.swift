@@ -73,6 +73,6 @@ class AWSCognitoAuthCredentialStoreKeyTests: XCTestCase {
     }
 
     private func makeStore(_ authConfiguration: AuthConfiguration) -> AWSCognitoAuthCredentialStore {
-        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
+        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration, logger: AmplifyEngineLogRouter())
     }
 }

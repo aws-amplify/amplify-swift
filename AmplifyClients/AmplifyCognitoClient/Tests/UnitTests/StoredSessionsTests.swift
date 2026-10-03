@@ -107,12 +107,30 @@ final class StoredSessionsTests: XCTestCase {
 
     // MARK: The plugin's record, listed as `.default`
 
-    private var legacyAccount: String {
-        SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools)
+    private var pluginAccount: String {
+        SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools)
     }
 
-    /// `.default` reads through to the plugin's record, so a migrated app's picker must show it: an
-    /// empty list would offer sign-in to a signed-in user.
+    private var sidecarAccount: String {
+        SessionRecordKey.metaAccount(in: StorageFixtures.pools)
+    }
+
+    /// The account a development build kept `.default`'s own record under.
+    private var leftoverAccount: String {
+        SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session)
+    }
+
+    /// The plugin fixtures' user.
+    private let pluginUserId = "1234567890"
+    private let pluginUsername = "alice@corp"
+
+    private func putSidecar(label: String?, username: String?, userId: String?) throws {
+        let meta = DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: label, username: username, userId: userId)
+        keychain.put(try meta.encoded(), sidecarAccount)
+    }
+
+    /// `.default`'s record is the plugin's, so a migrated app's picker shows it: an empty list would offer sign-in to
+    /// a signed-in user.
     ///
     /// - Given: only the plugin's record, in each of its signed-in shapes as the plugin writes them
     /// - When: saved sessions are listed
@@ -127,7 +145,7 @@ final class StoredSessionsTests: XCTestCase {
             (PluginRecordFixtures.identityPoolWithFederation, .federated, nil)
         ]
         for (record, kind, username) in cases {
-            keychain.put(record, legacyAccount)
+            keychain.put(record, pluginAccount)
 
             XCTAssertEqual(
                 try store.storedSessions(),
@@ -144,41 +162,105 @@ final class StoredSessionsTests: XCTestCase {
     ///    - the `.default` row sorts with the others, first since `$` precedes letters
     func testPluginRowSortsWithTheOtherRows() throws {
         try store.write(StorageFixtures.signedIn(username: "bob"), for: id("work"), expecting: nil)
-        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, legacyAccount)
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
 
         XCTAssertEqual(try store.storedSessions().map(\.sessionId), [.default, try id("work")])
     }
 
-    /// Read precedence applies to the listing: once `$default` exists, the plugin's record is not read.
-    ///
-    /// - Given: the plugin's record for alice, and `$default`'s own record for bob with a label
+    /// - Given: the plugin's record for alice, and a sidecar bound to alice with a label
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - the one `.default` row is bob's, from `$default`, and the plugin's record was never read
-    func testOnlyTheDefaultSessionsOwnRecordCountsWhenBothExist() throws {
-        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, legacyAccount)
-        try store.write(StorageFixtures.signedIn(label: "Home", username: "bob"), for: .default, expecting: nil)
-        keychain.resetLogs()
+    ///    - the `.default` row is alice's, from the plugin's record, with the sidecar's label
+    func testDefaultRowComesFromTheSharedRecordWithTheSidecarsLabel() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
 
         XCTAssertEqual(try store.storedSessions(), [
-            StoredSession(sessionId: .default, label: "Home", username: "bob", kind: .userPoolAndIdentityPool)
+            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .userPoolAndIdentityPool)
         ])
-        XCTAssertFalse(keychain.readAccounts.contains(legacyAccount))
+        XCTAssertFalse(keychain.hasMutations)
     }
 
-    /// - Given: the plugin's record, and `$default`'s own record in corrupt bytes
+    /// The label is bound to the user: another user signed in through the plugin never shows it.
+    ///
+    /// - Given: the plugin's record for alice, and a sidecar bound to bob with a label
     /// - When: saved sessions are listed
     /// - Then:
-    ///    - `$default` is reported unreadable and the plugin's record does not stand in for it, as
-    ///      `read(.default)` does not fall through to it either
-    func testAnUnreadableDefaultRecordIsNotReplacedByThePluginRecord() throws {
-        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, legacyAccount)
-        keychain.put(StorageFixtures.corruptRecord, store.sessionAccount(for: .default))
+    ///    - the `.default` row is alice's, with no label, and the sidecar is left as it was
+    func testDefaultRowIgnoresASidecarBoundToAnotherUser() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        try putSidecar(label: "Bob's", username: "bob", userId: "sub-bob")
+        let sidecar = keychain.value(sidecarAccount)
+
+        XCTAssertEqual(try store.storedSessions(), [
+            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+        ])
+        XCTAssertEqual(keychain.value(sidecarAccount), sidecar)
+    }
+
+    /// - Given: the plugin's record signed out (`{"noCredentials":{}}`), and a sidecar naming alice with a label
+    /// - When: saved sessions are listed with and without `includingSignedOut`
+    /// - Then:
+    ///    - it is hidden by default, and shown on request as a signed-out row with the sidecar's label and alice
+    func testSignedOutSharedRecordWithSidecarIsASignedOutRowWithTheLastUser() throws {
+        keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
+        try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
+
+        XCTAssertEqual(try store.storedSessions(), [])
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
+            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+        ])
+    }
+
+    /// The plugin deletes its record on its own sign-out (and on `deleteUser`); the sidecar stays.
+    ///
+    /// - Given: no plugin record, and a sidecar naming alice with a label
+    /// - When: saved sessions are listed with `includingSignedOut: true`
+    /// - Then:
+    ///    - there is a signed-out `.default` row with the sidecar's label and alice
+    func testAbsentSharedRecordWithSidecarIsASignedOutRow() throws {
+        try putSidecar(label: "Home", username: pluginUsername, userId: pluginUserId)
+
+        XCTAssertEqual(try store.storedSessions(), [])
+        XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
+            StoredSession(sessionId: .default, label: "Home", username: pluginUsername, kind: .signedOut)
+        ])
+    }
+
+    /// A development build kept `.default`'s own record under `$default`: it must never show as a ghost row.
+    ///
+    /// - Given: a leftover `$default.session` holding bob, a `$default` namespace marker, and no plugin record
+    /// - When: saved sessions are listed with `includingSignedOut: true`
+    /// - Then:
+    ///    - no `.default` row is listed, and neither leftover is read
+    func testLeftoverDollarDefaultRecordIsNotAGhostRow() throws {
+        let envelope = SessionRecordEnvelope(generation: 1, lastWriteTimestamp: TestClock.start, record: StorageFixtures.signedIn(username: "bob"))
+        keychain.put(try envelope.encoded(), leftoverAccount)
+        let marker = SessionRecordKey.markerAccount(for: .default, scope: TestKeychain.markerScope)
+        keychain.put(Data(#"{"poolNamespace":"us-east-1_Other","schemaVersion":1}"#.utf8), marker)
 
         let listing = try store.listing()
 
         XCTAssertEqual(listing.sessions, [])
-        XCTAssertEqual(listing.unreadable, [.default: .corrupt])
+        XCTAssertEqual(listing.unreadable, [:])
+        XCTAssertFalse(keychain.readAccounts.contains(leftoverAccount))
+        XCTAssertFalse(keychain.readAccounts.contains(marker))
+    }
+
+    /// - Given: the plugin's record for alice, and a leftover `$default.session` in corrupt bytes
+    /// - When: saved sessions are listed
+    /// - Then:
+    ///    - the `.default` row is the plugin's record, and the leftover is neither listed nor reported unreadable
+    func testALeftoverDefaultRecordNeverStandsInForThePluginRecord() throws {
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        keychain.put(StorageFixtures.corruptRecord, leftoverAccount)
+
+        let listing = try store.listing()
+
+        XCTAssertEqual(listing.sessions, [
+            StoredSession(sessionId: .default, label: nil, username: pluginUsername, kind: .userPoolAndIdentityPool)
+        ])
+        XCTAssertEqual(listing.unreadable, [:])
     }
 
     /// - Given: only the plugin's record, holding no credentials
@@ -186,7 +268,7 @@ final class StoredSessionsTests: XCTestCase {
     /// - Then:
     ///    - it is hidden by default, like any signed-out row, and shown as `.signedOut` on request
     func testPluginNoCredentialsRecordIsASignedOutRow() throws {
-        keychain.put(PluginRecordFixtures.noCredentials, legacyAccount)
+        keychain.put(PluginRecordFixtures.noCredentials, pluginAccount)
 
         XCTAssertEqual(try store.storedSessions(), [])
         XCTAssertEqual(try store.storedSessions(includingSignedOut: true), [
@@ -209,7 +291,7 @@ final class StoredSessionsTests: XCTestCase {
             "not json"
         ]
         for shape in shapes {
-            keychain.put(Data(shape.utf8), legacyAccount)
+            keychain.put(Data(shape.utf8), pluginAccount)
 
             XCTAssertEqual(
                 try store.storedSessions(),
@@ -225,8 +307,8 @@ final class StoredSessionsTests: XCTestCase {
     /// - Then:
     ///    - it throws `.locked`, as for any row
     func testFailedPluginRecordReadThrows() throws {
-        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, legacyAccount)
-        keychain.failingReads(of: legacyAccount, with: errSecInteractionNotAllowed)
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
+        keychain.failingReads(of: pluginAccount, with: errSecInteractionNotAllowed)
 
         assertStorageUnavailable(.locked) { try store.storedSessions() }
     }
@@ -236,7 +318,7 @@ final class StoredSessionsTests: XCTestCase {
     /// - Then:
     ///    - it lists no `.default` row: only this namespace's plugin record counts
     func testAnotherNamespacesPluginRecordIsNotListed() throws {
-        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, legacyAccount)
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
         let userPoolOnly = keychain.recordStore(for: SessionStorageNamespace(pools: .userPool(userPoolId), accessGroup: nil))
 
         XCTAssertEqual(try userPoolOnly.storedSessions(includingSignedOut: true), [])
@@ -341,7 +423,7 @@ final class StoredSessionsTests: XCTestCase {
     ///    - each session appears once
     func testDuplicateAccountsCollapseToOneRow() throws {
         try store.write(StorageFixtures.signedIn(), for: id("work"), expecting: nil)
-        try store.write(StorageFixtures.signedIn(), for: .default, expecting: nil)
+        keychain.put(PluginRecordFixtures.userPoolAndIdentityPool, pluginAccount)
         keychain.listingEveryAccountTwice()
 
         XCTAssertEqual(try store.storedSessions().map(\.sessionId), [.default, try id("work")])

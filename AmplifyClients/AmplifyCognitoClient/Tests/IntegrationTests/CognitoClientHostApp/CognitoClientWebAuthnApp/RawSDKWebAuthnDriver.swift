@@ -40,12 +40,16 @@ final class RawSDKWebAuthnDriver: WebAuthnHarnessDriver {
     }
 
     func signUpAndSignIn(username: String, password: String, email: String, signedUp: @MainActor () -> Void) async throws {
-        _ = try await client.signUp(input: SignUpInput(
-            clientId: clientId,
-            password: password,
-            userAttributes: [.init(name: "email", value: email)],
-            username: username
-        ))
+        do {
+            _ = try await client.signUp(input: SignUpInput(
+                clientId: clientId,
+                password: password,
+                userAttributes: [.init(name: "email", value: email)],
+                username: username
+            ))
+        } catch {
+            throw HarnessAppError.selfSignUpRefusal(error)
+        }
         signedUp()
         let result = try await client.initiateAuth(input: InitiateAuthInput(
             authFlow: .userPasswordAuth,
@@ -75,12 +79,13 @@ final class RawSDKWebAuthnDriver: WebAuthnHarnessDriver {
         try keep(result.authenticationResult, after: "WEB_AUTHN", challenge: result.challengeName?.rawValue)
     }
 
-    func signOut() async throws {
+    func signOut() async throws -> String {
         if let refreshToken {
             _ = try await client.revokeToken(input: RevokeTokenInput(clientId: clientId, token: refreshToken))
         }
         accessToken = nil
         refreshToken = nil
+        return "User is signed out"
     }
 
     func associateWebAuthnCredential(presentationAnchor: ASPresentationAnchor) async throws {
@@ -188,5 +193,21 @@ final class RawSDKWebAuthnDriver: WebAuthnHarnessDriver {
             return number
         }
         return NSNull()
+    }
+}
+
+extension HarnessAppError {
+    /// Cognito's refusal of a sign-up on a pool whose self sign-up is off (`NotAuthorizedException`, "SignUp
+    /// is not permitted"), the sandbox's resting state, as a clear error; any other error unchanged. The
+    /// UI test shows only the result line's first word, so the description starts with `SelfSignUpIsOff`.
+    static func selfSignUpRefusal(_ error: Error) -> Error {
+        guard let refused = error as? NotAuthorizedException,
+              refused.message?.contains("SignUp is not permitted") == true else {
+            return error
+        }
+        return HarnessAppError("""
+        SelfSignUpIsOff. Self sign-up is off on the sandbox. Run the suite through \
+        infra/self-sign-up.sh on -- <command>.
+        """)
     }
 }

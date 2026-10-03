@@ -69,9 +69,17 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///      the second is a no-op
     ///    - The user can no longer sign in
     ///    - A pool that fails is reported by name, and the others are still checked
+    ///    - On CI, a pool whose sign-ups skip there (`SandboxSignUp.ciSkip(for:)`: the device-alias pool, while
+    ///      the plugin's backend cannot confirm a fresh user) is left out, with its reason recorded as an
+    ///      activity, so the other pools are still checked
     ///
     func testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt() async throws {
         for kind in SandboxPools.userPools {
+            if let skip = SandboxSignUp.ciSkip(for: kind),
+               IntegrationTestEnvironment.skipsOnCI(present: skip.present) {
+                await XCTContext.runActivity(named: "\(kind) left out on CI. \(skip.reason.message)") { _ in }
+                continue
+            }
             do {
                 let pool = try SandboxPools.pool(kind)
                 let user = try await makeFreshUser(on: kind)

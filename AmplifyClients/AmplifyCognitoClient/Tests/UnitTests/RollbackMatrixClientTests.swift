@@ -7,34 +7,37 @@
 
 import AWSCognitoIdentityProvider
 import Foundation
+import InternalAmplifyKeychain
 import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// The rollback matrix, the client's side: an app moving from a build with only the Auth plugin to
-/// a build with this client, or rolled forward to it again after a rollback, and the states the client leaves
-/// for a rollback.
+/// The rollback matrix, the client's side, for the shared saved login: `.default` reads
+/// and writes the Auth plugin's own record, so the plugin and the client, alternating over one keychain, each see the
+/// other's latest login at rest.
 ///
-/// Each test names the matrix row it runs: `Matrix07` is a cell of the key matrix (which records exist: the
-/// plugin's key only, the session key only, both, neither, or keys for several sessions; by the client's
-/// column), `Matrix03` a row of the adoption-state table (states A1 to A6, from the plugin's record alone to
-/// sessions created on the client), `Marker` the plugin's signed-out marker, and `FirstLoad` the rule that
-/// `.default` reads the plugin's record at first load only (the plugin and the client side by side over the
-/// default session is not supported). `docs/design/issues/rollback-behaviours.md` records the behaviours the
-/// matrix found. The plugin's records are its own bytes: the frozen payload fixtures and the
-/// stored-format goldens in the plugin's test resources, read in place. The client runs its real record store,
-/// core and live engine over the in-memory keychain, with scripted Cognito. The plugin's half of each row is
-/// in `RollbackMatrixPluginTests`.
+/// Each row alternates the plugin's real credential store, `AWSCognitoAuthCredentialStore`, and the client (its real
+/// record store, core and live engine, with scripted Cognito) over one in-memory keychain. The plugin's half of each
+/// row is in `RollbackMatrixPluginTests`, under the same name, with the row map of the matrix's checklist: rows 1
+/// to 7 and 9 are in both files, and row 8 (the keychain attributes) and the client's bytes decoded by the released
+/// types are in the plugin's `KeychainAttributeParityTests` only. The rollback rows are in
+/// `RollbackMatrixClientTests+Rollback.swift`.
+///
+/// Where a row says "each plugin binary", the plugin's store runs over `RollbackPluginBinary.released` (a released
+/// plugin, 2.62.0) and `.current`. The two run identical code on every read, save, delete and refresh path: the
+/// plugin's credential store, which touches only its own key. `.released` differs only in its view of the keychain,
+/// which refuses it any read of a client record (a guard on the emulation; 2.62.0 never asks), and in the
+/// access-group transition rows, where it runs 2.62.0's service-wide `_removeAll()`. So the columns are not double
+/// coverage: the recorded client-record reads (`HiddenReads`) and the keychain's mutations are the evidence. The
+/// released access-group migration (`migrateKeychainItemsOfUserSession: true`) is not emulated. The plugin's own
+/// refresh is the engine's, which the plugin runs, over the credentials its store read.
 final class RollbackMatrixClientTests: XCTestCase {
 
-    private var harness: ClientHarness!
-    private var live: LiveEngineHarness!
+    var harness: ClientHarness!
+    var live: LiveEngineHarness!
 
-    private let fixtureUser = AuthClientUser(username: "fixture-user", userId: "fixture-sub")
-    /// The user in the stored-format goldens: the same user name, another `sub`.
-    private let goldenUser = AuthClientUser(username: "fixture-user", userId: "fixture-sub-0001")
-
-    private var pluginAccount: String { SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools) }
+    var pluginAccount: String { SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools) }
+    var sidecarAccount: String { SessionRecordKey.metaAccount(in: StorageFixtures.pools) }
 
     override func setUp() {
         harness = ClientHarness()
@@ -47,587 +50,350 @@ final class RollbackMatrixClientTests: XCTestCase {
         live = nil
     }
 
-    // MARK: - Matrix 07: plugin key only; matrix 03 rows 1 (A1) and 4 (A3)
+    // MARK: - Rows
 
-    /// Matrix 07 row "Plugin key only", column `client (.default), read-through`; matrix 03 row 1 (A1)
+    /// A client sign-in is seen by the plugin.
     ///
-    /// - Given: Only the plugin's record, as the plugin wrote it
+    /// - Given: The client signs alice in on `.default`
     /// - When:
-    ///    - `.default` reports its state and fetches its session
+    ///    - The plugin's credential store, over the same keychain, retrieves its credentials
     /// - Then:
-    ///    - It is signed in as the plugin's user, with the plugin's tokens, and writes and deletes nothing: the
-    ///      plugin's record is byte-identical, so a rollback finds it (A1)
+    ///    - It retrieves alice's credentials, exactly the bytes the client stored, decoded
     ///
-    func testMatrix07_pluginKeyOnly_readThrough_matrix03Row1_A1_isSignedInAndWritesNothing() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
+    func testMatrix_clientSignIn_isSeenByThePlugin() async throws {
         let client = try makeClient()
+        try await signInAlice(client)
 
-        let state = await client.currentSessionState()
-        let session = try await client.fetchAuthSession()
+        let stored = try XCTUnwrap(harness.keychain.value(pluginAccount))
+        let retrieved = try pluginStore().retrieveCredential()
 
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-        XCTAssertEqual(try session.userPoolTokensResult.get().refreshToken, EnginePayloadFixtures.refreshToken)
-        XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:fixture-identity-id")
-        XCTAssertEqual(harness.keychain.value(pluginAccount), payload)
-        XCTAssertEqual(harness.keychain.mutationOrder, [])
-        live.cognito.assertConsumed()
-    }
-
-    /// Matrix 07 row "Plugin key only", column `client (.default), after completeAdoption()`; it produces matrix
-    /// 03 row 4 (A3)
-    ///
-    /// - Given: Only the plugin's record
-    /// - When:
-    ///    - `.default` completes adoption
-    /// - Then:
-    ///    - Its own record holds the plugin's payload verbatim, written (with its namespace marker, which names
-    ///      the configuration it was written under) before the plugin's record is deleted, and it is still
-    ///      signed in as the same user
-    ///
-    func testMatrix07_pluginKeyOnly_completeAdoption_matrix03Row4_A3_copiesThenDeletes() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
-        let client = try makeClient()
-
-        try await client.completeAdoption()
-
-        let own = try XCTUnwrap(harness.storedRecord(.default))
-        XCTAssertEqual(own.credentials, payload)
-        XCTAssertEqual(own.kind, .userPoolAndIdentityPool)
-        XCTAssertEqual(own.username, "fixture-user")
-        XCTAssertEqual(own.userId, "fixture-sub")
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(
-            harness.keychain.mutationOrder,
-            [.write(defaultAccount), .write(markerAccount(.default)), .remove(pluginAccount)]
-        )
-        let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-    }
-
-    // MARK: - Matrix 07: session key only
-
-    /// Matrix 07 row "Session key only (`.default`)", columns `client` read-through and after
-    /// `completeAdoption()`
-    ///
-    /// - Given: Only `.default`'s own record, holding the plugin's payload
-    /// - When:
-    ///    - `.default` reports its state, then completes adoption
-    /// - Then:
-    ///    - It is signed in, adoption has nothing to do, and its record is byte-identical
-    ///
-    func testMatrix07_sessionKeyOnly_isSignedIn_andAdoptionChangesNothing() async throws {
-        let own = try writeOwnRecord(EnginePayloadFixtures.data("userPoolAndIdentityPool"))
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        try await client.completeAdoption()
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-        XCTAssertEqual(harness.keychain.value(defaultAccount), own)
-        XCTAssertEqual(harness.keychain.writtenAccounts, [])
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-    }
-
-    // MARK: - Matrix 07: both keys
-
-    /// Matrix 07 row "Both keys", column `client (.default), read-through`
-    ///
-    /// - Given: `.default`'s own record for one user, and the plugin's record for another (the stored-format golden)
-    /// - When:
-    ///    - `.default` reports its state
-    /// - Then:
-    ///    - Its own record wins: it is signed in as its own user. The plugin's key is read once, only to warn that the
-    ///      plugin holds another user, and is left as it is
-    ///
-    func testMatrix07_bothKeys_ownRecordWins_andThePluginKeyIsOnlyReadToWarn() async throws {
-        let warningsBefore = SideBySideWarningCapture.shared.count
-        try writeOwnRecord(EnginePayloadFixtures.data("userPoolAndIdentityPool"))
-        let pluginRecord = try goldenSession("session-userPoolAndIdentityPool")
-        harness.keychain.put(pluginRecord, pluginAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-        XCTAssertEqual(harness.keychain.readAccounts.count(where: { $0 == pluginAccount }), 1)
-        XCTAssertEqual(SideBySideWarningCapture.shared.count - warningsBefore, 1)
-        XCTAssertFalse(harness.keychain.writtenAccounts.contains(pluginAccount))
-        XCTAssertEqual(harness.keychain.value(pluginAccount), pluginRecord)
-    }
-
-    /// Matrix 07 row "Both keys", column `client (.default), after completeAdoption()`
-    ///
-    /// - Given: `.default`'s own record beside the plugin's record, first holding the same session, then another
-    ///   user's
-    /// - When:
-    ///    - `.default` completes adoption
-    /// - Then:
-    ///    - The same session: the plugin's key is deleted and the own record is unchanged
-    ///    - Another user: adoption throws and both records are kept, since it deletes only what it adopted
-    ///
-    func testMatrix07_bothKeys_completeAdoption_deletesOnlyWhatItAdopted() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        let own = try writeOwnRecord(payload)
-        harness.keychain.put(payload, pluginAccount)
-        let client = try makeClient()
-
-        try await client.completeAdoption()
-
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(harness.keychain.value(defaultAccount), own)
-
-        let otherUser = try goldenSession("session-userPoolAndIdentityPool")
-        harness.keychain.put(otherUser, pluginAccount)
-        await assertThrowsAsync({ try await client.completeAdoption() }) { error in
-            guard case .unknown = error as? AuthClientError else {
-                return XCTFail("Expected unknown, got \(error)")
-            }
+        XCTAssertEqual(retrieved, try AmplifyCredentials.decoded(stored))
+        guard case .userPoolAndIdentityPool(let signedInData, _, _) = retrieved else {
+            return XCTFail("expected alice signed in with both pools, got \(retrieved)")
         }
-        await settlePluginPrincipalCheck(of: client)
-        XCTAssertEqual(harness.keychain.value(pluginAccount), otherUser)
-        XCTAssertEqual(harness.keychain.value(defaultAccount), own)
+        XCTAssertEqual(signedInData.username, "alice")
     }
 
-    /// Matrix 07 row "Both keys", column `client (.default), after completeAdoption()`, from matrix 03's A2: the
-    /// realistic case, which takes A2 to A3
+    /// A sign-out by a plugin build that deletes its record is seen by the client.
     ///
-    /// - Given: A2: `.default`'s own record after its refresh rotated the refresh token, beside the plugin's older
-    ///   copy of the same user's session (the stored-format golden), which is not byte-equal to it
+    /// - Given: Alice signed in through the client, and a live core holding her
     /// - When:
-    ///    - `.default` completes adoption
+    ///    - The plugin's store deletes its record while the client's next refresh is at Cognito
     /// - Then:
-    ///    - The plugin's older copy is deleted, by the same-user rule, and the own record is unchanged: A3
+    ///    - The client's guarded write is discarded, the re-read finds nothing, and the session is `.signedOut`
+    ///    - The record is never recreated, and a new core restores `.signedOut`
     ///
-    func testMatrix07_bothKeys_completeAdoption_matrix03A2ToA3_deletesTheOlderCopyOfTheSameUser() async throws {
-        let pluginCopy = try goldenSession("session-userPoolAndIdentityPool")
-        let own = try writeOwnRecord(pluginRefreshed(pluginCopy, refreshToken: "rotated-by-the-client"))
-        harness.keychain.put(pluginCopy, pluginAccount)
-        let client = try makeClient()
+    func testMatrix_oldPluginSignOut_isSeenByTheClient() async throws {
+        var client: AmplifyCognitoClient? = try makeClient()
+        try await signInAlice(XCTUnwrap(client))
+        let pluginKeychain = harness.keychain.itemStore(service: SessionRecordStore.unsharedService)
+        live.cognito.once("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) in
+            try Self.pluginStore(over: pluginKeychain).deleteCredential()
+            return GetTokensFromRefreshTokenOutput(authenticationResult: LiveEngineFixtures.tokens("alice", version: 2))
+        }
+        live.scriptIdentityPool(version: 2)
 
-        try await client.completeAdoption()
+        _ = try? await client?.fetchAuthSession(options: .init(forceRefresh: true))
 
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(harness.keychain.value(defaultAccount), own)
-        XCTAssertEqual(harness.keychain.writtenAccounts, [])
-        let state = await client.currentSessionState()
-        await settlePluginPrincipalCheck(of: client)
-        XCTAssertEqual(state, .signedIn(goldenUser))
-    }
-
-    // MARK: - Matrix 07: neither; matrix 03 row 6 (A5)
-
-    /// Matrix 07 row "Neither", both `client` columns
-    ///
-    /// - Given: No record at either key
-    /// - When:
-    ///    - `.default` reports its state, then completes adoption
-    /// - Then:
-    ///    - It is signed out, and nothing is written
-    ///
-    func testMatrix07_neither_isSignedOutAndWritesNothing() async throws {
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        try await client.completeAdoption()
-
+        let state = await client?.currentSessionState()
         XCTAssertEqual(state, .signedOut)
-        XCTAssertEqual(harness.keychain.writtenAccounts, [])
-    }
-
-    /// Matrix 03 row 6 (A5): the purge that leaves "Neither"
-    ///
-    /// - Given: The plugin's record and `.default`'s own record for the same session
-    /// - When:
-    ///    - `.default` is purged
-    /// - Then:
-    ///    - Both keys are gone, the plugin's first, so a rolled-back plugin finds nothing
-    ///
-    func testMatrix03Row6_A5_purgeRemovesBothRecords() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
-        try writeOwnRecord(payload)
-
-        try await AmplifyCognitoClient.purgeStoredSession(
-            sessionId: .default,
-            configuration: ClientFixtures.configuration,
-            accessGroup: nil,
-            dependencies: dependencies
-        )
-
         XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertNil(harness.keychain.value(defaultAccount))
-        XCTAssertEqual(Array(harness.keychain.mutationOrder.prefix(2)), [.remove(pluginAccount), .remove(defaultAccount)])
+        client = nil
+        await harness.waitForBaseline()
+        let restored = try await makeClient().currentSessionState()
+        XCTAssertEqual(restored, .signedOut)
+        XCTAssertNil(harness.keychain.value(pluginAccount))
     }
 
-    // MARK: - Matrix 07: session keys for N > 1 sessions
-
-    /// Matrix 07 row "Session keys for N > 1 sessions", both `client` columns
+    /// The label is bound to the user: it is dropped when the plugin signs another user in.
     ///
-    /// - Given: The plugin's record, and records of two named sessions for other principals
+    /// - Given: The client labels alice's `.default` "Work"
     /// - When:
-    ///    - Each session reports its state, the named sessions complete adoption, then `.default` does
+    ///    - The plugin's store saves alice again, refreshed; then it saves bob
     /// - Then:
-    ///    - Each named session reads only its own record, never the plugin's, and its adoption is a no-op
-    ///    - `.default` reads the plugin's record, and its adoption leaves the named records byte-identical
+    ///    - With alice refreshed, the row keeps "Work"
+    ///    - With bob, the row is bob's with no label, a restore shows no label, and the client's next write rewrites
+    ///      the sidecar for bob without a label
     ///
-    func testMatrix07_namedSessions_eachReadsItsOwnRecord() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
+    func testMatrix_labelIsDroppedWhenTheUserChanges() async throws {
+        var client: AmplifyCognitoClient? = try makeClient()
+        try await signInAlice(XCTUnwrap(client))
+        try await client?.setSessionLabel("Work")
+        client = nil
+        await harness.waitForBaseline()
+        let engine = try live.engine()
+        let alice = try XCTUnwrap(harness.keychain.value(pluginAccount))
+        live.scriptRefresh("alice", version: 2)
+        live.scriptIdentityPool(version: 2)
+        let aliceRefreshed = try await engine.refresh(alice, force: true)
+
+        try pluginStore().saveCredential(AmplifyCredentials.decoded(aliceRefreshed))
+
+        let afterAliceRefreshed = try await listed()
+        XCTAssertEqual(afterAliceRefreshed, [
+            StoredSession(sessionId: .default, label: "Work", username: "alice", kind: .userPoolAndIdentityPool)
+        ])
+
+        let bob = try await live.signedInPayload("bob", on: engine)
+        try pluginStore().saveCredential(AmplifyCredentials.decoded(bob))
+
+        let afterBob = try await listed()
+        XCTAssertEqual(afterBob, [
+            StoredSession(sessionId: .default, label: nil, username: "bob", kind: .userPoolAndIdentityPool)
+        ])
+        XCTAssertNil(try harness.storedRecord(.default)?.label)
+        let restored = try makeClient()
+        let restoredState = await restored.currentSessionState()
+        XCTAssertEqual(restoredState, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
+        live.scriptRefresh("bob", version: 3)
+        _ = try await restored.fetchAuthSession(options: .init(forceRefresh: true))
+        let sidecar = try XCTUnwrap(harness.keychain.value(sidecarAccount))
+        guard case .meta(let meta) = DefaultSessionMeta.decode(sidecar) else {
+            return XCTFail("the sidecar must be readable")
+        }
+        XCTAssertEqual(meta.userId, "sub-bob")
+        XCTAssertEqual(meta.username, "bob")
+        XCTAssertNil(meta.label)
+    }
+
+    /// A client sign-out is read by every plugin as signed out (G2 `session-noCredentials.json`).
+    ///
+    /// - Given: The client signs alice in on `.default` and labels her, then signs her out
+    /// - When:
+    ///    - Each plugin binary's credential store, over the same keychain, retrieves its credentials
+    /// - Then:
+    ///    - The record equals G2's `session-noCredentials.json` after decoding, and byte for byte:
+    ///      `JSONEncoder().encode(AmplifyCredentials.noCredentials)`
+    ///    - Each binary reads `.noCredentials`, reading no client record
+    ///
+    func testMatrix_clientSignOut_readByEveryPluginAsSignedOut() async throws {
+        let client = try makeClient()
+        try await signInAlice(client)
+        try await client.setSessionLabel("Work")
+        live.scriptSignOut()
+
+        let signedOut = await client.signOut()
+        XCTAssertEqual(signedOut, .complete, "\(signedOut)")
+
+        let stored = try XCTUnwrap(harness.keychain.value(pluginAccount))
+        let golden = try PluginTestResources.goldenStoredFormat("session-noCredentials.json")
+        XCTAssertEqual(try AmplifyCredentials.decoded(stored), try AmplifyCredentials.decoded(golden))
+        XCTAssertEqual(stored, golden)
+        XCTAssertEqual(stored, try JSONEncoder().encode(AmplifyCredentials.noCredentials))
+        let hiddenReads = HiddenReads()
+        for binary in RollbackPluginBinary.allCases {
+            XCTAssertEqual(try pluginStore(binary, recording: hiddenReads).retrieveCredential(), .noCredentials, "\(binary)")
+        }
+        XCTAssertEqual(hiddenReads.accounts, [])
+    }
+
+    /// A development build's `$default` records are never listed: the only `.default` row is the shared record's.
+    ///
+    /// - Given: A leftover `$default.session` holding bob and a `$default` namespace marker, beside the plugin's
+    ///   record for alice
+    /// - When:
+    ///    - The saved sessions are listed, signed-out rows included
+    /// - Then:
+    ///    - The only row is alice's, from the plugin's record
+    ///
+    func testMatrix_oldDollarDefaultRecordsAreIgnoredByListing() async throws {
+        let leftover = SessionRecordEnvelope(
+            generation: 1,
+            lastWriteTimestamp: TestClock.start,
+            record: FakePayload.signedIn("bob").record()
+        )
+        harness.keychain.put(try leftover.encoded(), SessionRecordKey.account(for: .default, in: StorageFixtures.pools, kind: .session))
+        harness.keychain.put(
+            Data(#"{"copies":[],"poolNamespace":"us-east-1_Other","schemaVersion":1}"#.utf8),
+            SessionRecordKey.markerAccount(for: .default, scope: TestKeychain.markerScope)
+        )
+        let alice = try await live.signedInPayload("alice", on: live.engine())
+        try pluginStore().saveCredential(AmplifyCredentials.decoded(alice))
+
+        let rows = try await listed(includingSignedOut: true)
+        XCTAssertEqual(rows, [
+            StoredSession(sessionId: .default, label: nil, username: "alice", kind: .userPoolAndIdentityPool)
+        ])
+    }
+
+    // MARK: - Configuration changes: `.default` follows the plugin's rule and records `authConfiguration`
+
+    /// A configuration change, then a rollback to a plugin build: no stale overwrite.
+    ///
+    /// - Given: The plugin ran with an identity-pool-only configuration A and stored a guest under A's account
+    /// - When:
+    ///    - The client restores `.default` under C (a user pool added beside the same identity pool), which carries the
+    ///      guest, and signs alice in; then the plugin's store is built with C
+    /// - Then:
+    ///    - The client restored the guest, and recorded C; the plugin reads alice, since its carry branch does not run
+    ///      again
+    ///    - Negative control: with `authConfiguration` rewound to A, the plugin copies the stale guest over alice
+    ///
+    func testMatrix_configurationChangeThenPluginRollback_noStaleOverwrite() async throws {
+        let guest = try ChangePayloads.guest()
+        try pluginStore(ChangeConfigs.identityPoolOnly).saveCredential(AmplifyCredentials.decoded(guest))
+        var client: AmplifyCognitoClient? = try makeClient()
+
+        let carried = await client?.currentSessionState()
+        try await signInAlice(XCTUnwrap(client))
+        client = nil
+        await harness.waitForBaseline()
+
+        XCTAssertEqual(carried, .guest)
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: ClientFixtures.configuration))
+        let alice = try XCTUnwrap(harness.keychain.value(pluginAccount))
+        XCTAssertEqual(try pluginStore().retrieveCredential(), try AmplifyCredentials.decoded(alice))
+
+        harness.keychain.recordPluginConfiguration(ChangeConfigs.identityPoolOnly)
+        XCTAssertEqual(try pluginStore().retrieveCredential(), try AmplifyCredentials.decoded(guest))
+    }
+
+    /// A change the plugin does not carry deletes `.default`'s login, and keeps a named session's.
+    ///
+    /// - Given: `.default` and `.named("work")` both signed in through the client under user pool A
+    /// - When:
+    ///    - Both restore under user pool B; then both again under A
+    /// - Then:
+    ///    - Under B both are signed out: A's plugin record is gone, while work's record under A is kept
+    ///    - Back on A, `.default` is signed out and work is signed in
+    ///
+    func testMatrix_uncarriedChange_deletesUnderDefault_keepsUnderANamedSession() async throws {
         let work = ClientFixtures.id("work")
-        let home = ClientFixtures.id("home")
-        let workRecord = try writeOwnRecord(goldenSession("session-userPoolOnly"), for: work)
-        let homeRecord = try writeOwnRecord(EnginePayloadFixtures.data("identityPoolOnly"), for: home)
-        let workClient = try makeClient(work)
-        let homeClient = try makeClient(home)
+        var defaultClient: AmplifyCognitoClient? = try makeClient()
+        var workClient: AmplifyCognitoClient? = try makeClient(work)
+        try await signInAlice(XCTUnwrap(defaultClient))
+        try await signInAlice(XCTUnwrap(workClient))
+        defaultClient = nil
+        workClient = nil
+        await harness.waitForBaseline()
+        let workAccount = SessionRecordKey.account(for: work, in: StorageFixtures.pools, kind: .session)
+        let workRecord = try XCTUnwrap(harness.keychain.value(workAccount))
 
-        let workState = await workClient.currentSessionState()
-        let homeState = await homeClient.currentSessionState()
-        try await workClient.completeAdoption()
-        try await homeClient.completeAdoption()
+        var defaultUnderB: AmplifyCognitoClient? = try makeClient(configuration: ChangeConfigs.otherUserPool)
+        var workUnderB: AmplifyCognitoClient? = try makeClient(work, configuration: ChangeConfigs.otherUserPool)
+        let defaultStateUnderB = await defaultUnderB?.currentSessionState()
+        let workStateUnderB = await workUnderB?.currentSessionState()
+        defaultUnderB = nil
+        workUnderB = nil
+        await harness.waitForBaseline()
 
-        XCTAssertEqual(workState, .signedIn(goldenUser))
-        XCTAssertEqual(homeState, .guest)
-        XCTAssertFalse(harness.keychain.readAccounts.contains(pluginAccount))
-        XCTAssertEqual(harness.keychain.mutationOrder, [])
-
-        let defaultClient = try makeClient()
-        let defaultState = await defaultClient.currentSessionState()
-        try await defaultClient.completeAdoption()
-
-        XCTAssertEqual(defaultState, .signedIn(fixtureUser))
+        XCTAssertEqual(defaultStateUnderB, .signedOut)
+        XCTAssertEqual(workStateUnderB, .signedOut)
         XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(harness.keychain.value(account(work)), workRecord)
-        XCTAssertEqual(harness.keychain.value(account(home)), homeRecord)
+        XCTAssertEqual(harness.keychain.value(workAccount), workRecord)
+        let defaultBack = await (try makeClient()).currentSessionState()
+        let workBack = await (try makeClient(work)).currentSessionState()
+        XCTAssertEqual(defaultBack, .signedOut)
+        XCTAssertEqual(workBack, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
     }
 
-    // MARK: - Matrix 03 rows 2 and 3 (A2)
-
-    /// Matrix 03 rows 2 and 3 (A2): the first write in read-through, which leaves the plugin's record stale
+    /// A plugin build with the older configuration runs its own rule after the client recorded a newer one.
     ///
-    /// - Given: Only the plugin's record, with expired tokens (the stored-format golden)
+    /// - Given: For each pair of configurations, an older login saved by the plugin under the older configuration A;
+    ///   the client's `.default` then restored under the newer configuration C, alice signed in, and
+    ///   `authConfiguration` is C
     /// - When:
-    ///    - `.default` fetches its session, which refreshes, and Cognito rotates the refresh token
+    ///    - A plugin store is built with A over the same keychain
     /// - Then:
-    ///    - The refresh is sent with the plugin's refresh token and lands in `.default`'s own record
-    ///    - The plugin's record is byte-identical: stale, and with rotation on its refresh token is now dead,
-    ///      which is row 3's forced re-sign-in after a rollback
+    ///    - It runs exactly its own rule from C to A: a carried change copies alice's record to A's key, so the newest
+    ///      login wins; a deleting change deletes alice's record under C, and the plugin reads what A's key still holds
+    ///    - No pair writes an older copy over a newer login: C's account holds alice or nothing
     ///
-    func testMatrix03Rows2And3_A2_firstRefreshWritesOwnRecordAndKeepsThePluginRecord() async throws {
-        let pluginRecord = try goldenSession("session-userPoolAndIdentityPool")
-        harness.keychain.put(pluginRecord, pluginAccount)
-        live.scriptRefresh("fixture-user")
-        live.scriptIdentityPool()
-        let client = try makeClient()
-
-        let session = try await client.fetchAuthSession()
-
-        XCTAssertEqual(try session.userPoolTokensResult.get().refreshToken, "refresh-fixture-user-v2")
-        XCTAssertEqual(
-            live.cognito.inputs("GetTokensFromRefreshToken", as: GetTokensFromRefreshTokenInput.self).map(\.refreshToken),
-            ["fixture-refresh-token"]
-        )
-        let own = try XCTUnwrap(harness.storedRecord(.default)?.credentials)
-        XCTAssertEqual(try AmplifyCredentials.decoded(own).signedInData?.cognitoUserPoolTokens.refreshToken, "refresh-fixture-user-v2")
-        XCTAssertEqual(harness.keychain.value(pluginAccount), pluginRecord)
-        XCTAssertFalse(harness.keychain.removedAccounts.contains(pluginAccount))
-    }
-
-    // MARK: - Matrix 03 row 5 (A4)
-
-    /// Matrix 03 row 5 (A4): a sign-out on the client, after adoption and in read-through
-    ///
-    /// - Given: The plugin's record, adopted into `.default`; separately, the plugin's record in read-through
-    /// - When:
-    ///    - `.default` signs out
-    /// - Then:
-    ///    - The row is kept with no credentials and the plugin's record is gone, so a rolled-back plugin cannot
-    ///      bring the ended session back
-    ///
-    func testMatrix03Row5_A4_signOutKeepsASignedOutRowAndDeletesThePluginRecord() async throws {
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        for adopted in [true, false] {
-            if !adopted {
-                await harness.waitForBaseline()
-                harness = ClientHarness()
-                live = LiveEngineHarness()
+    func testMatrix_pluginBuildWithTheOldConfiguration_runsItsOwnRuleAfterTheClient() async throws {
+        let alice = try await live.signedInPayload("alice", on: live.engine())
+        for pair in ChangeConfigs.pairs {
+            guard let older = pair.previous else {
+                continue
             }
-            live.scriptSignOut()
-            harness.keychain.put(payload, pluginAccount)
-            let client = try makeClient()
-            if adopted {
-                try await client.completeAdoption()
+            let keychain = TestKeychain()
+            let pluginKeychain = keychain.itemStore(service: SessionRecordStore.unsharedService)
+            let olderLogin = older.getUserPoolConfiguration() == nil
+                ? try ChangePayloads.guest()
+                : try await live.signedInPayload("olderuser", on: live.engine())
+            try AWSCognitoAuthCredentialStore(authConfiguration: older, keychain: pluginKeychain, logger: DiscardingEngineLogger())
+                .saveCredential(AmplifyCredentials.decoded(olderLogin))
+            let client = keychain.recordStore(for: SessionStorageNamespace(pools: PoolNamespace(pair.current), accessGroup: nil))
+            _ = try client.applyPluginConfigurationRule(current: pair.current)
+            let version: RecordVersion? = if case .record(let held) = try client.read(.default) { held.version } else { nil }
+            let summary = PluginRecordSummary.peek(alice)
+            let record = SessionRecord(label: nil, username: summary.username, userId: summary.userId, kind: summary.kind, credentials: alice)
+            XCTAssertTrue(try client.write(record, for: .default, expecting: version).didCommit, pair.name)
+            let olderAccount = AWSCognitoAuthCredentialStore.sessionAccount(for: older)
+            let newerAccount = AWSCognitoAuthCredentialStore.sessionAccount(for: pair.current)
+            let leftAtOlder = keychain.value(olderAccount)
+
+            let retrieved = try? AWSCognitoAuthCredentialStore(authConfiguration: older, keychain: pluginKeychain, logger: DiscardingEngineLogger())
+                .retrieveCredential()
+
+            switch AWSCognitoAuthCredentialStore.configurationChange(from: pair.current, to: older) {
+            case .carry, .unchanged:
+                XCTAssertEqual(retrieved, try AmplifyCredentials.decoded(alice), pair.name)
+            case .clear:
+                XCTAssertNil(keychain.value(newerAccount), pair.name)
+                XCTAssertEqual(retrieved, try leftAtOlder.map(AmplifyCredentials.decoded), pair.name)
             }
-
-            let result = try await client.signOut()
-
-            XCTAssertEqual(result, .complete, "adopted: \(adopted)")
-            let row = try XCTUnwrap(harness.storedRecord(.default), "adopted: \(adopted)")
-            XCTAssertEqual(row.kind, SessionKind.signedOut, "adopted: \(adopted)")
-            XCTAssertNil(row.credentials, "adopted: \(adopted)")
-            XCTAssertNil(harness.keychain.value(pluginAccount), "adopted: \(adopted)")
-            XCTAssertEqual(
-                live.cognito.inputs("RevokeToken", as: RevokeTokenInput.self).map(\.token),
-                [EnginePayloadFixtures.refreshToken],
-                "adopted: \(adopted)"
-            )
+            let atNewer = keychain.value(newerAccount)
+            XCTAssertTrue(atNewer == nil || (try? AmplifyCredentials.decoded(XCTUnwrap(atNewer))) == (try? AmplifyCredentials.decoded(alice)), pair.name)
         }
-    }
-
-    // MARK: - Matrix 03 row 7 (A6)
-
-    /// Matrix 03 row 7 (A6): sessions created on the client
-    ///
-    /// - Given: No plugin record
-    /// - When:
-    ///    - A named session and `.default` each sign in
-    /// - Then:
-    ///    - Each writes only its own `amplify.1.` record and its namespace marker; the plugin's key is never
-    ///      written, so an `old` plugin finds nothing
-    ///
-    func testMatrix03Row7_A6_nativeSessionsNeverWriteThePluginRecord() async throws {
-        let work = ClientFixtures.id("work")
-        for sessionId in [work, SessionID.default] {
-            live.scriptSRP()
-            live.scriptIdentityPool()
-            let client = try makeClient(sessionId)
-
-            let result = try await client.signIn(username: "alice", password: "password")
-
-            XCTAssertEqual(result.nextStep, .done, "\(sessionId)")
-            XCTAssertNotNil(try harness.storedRecord(sessionId)?.credentials, "\(sessionId)")
-        }
-        XCTAssertFalse(harness.keychain.writtenAccounts.contains(pluginAccount))
-        XCTAssertNil(harness.keychain.value(pluginAccount))
-        XCTAssertEqual(
-            Set(harness.keychain.writtenAccounts),
-            [account(work), markerAccount(work), defaultAccount, markerAccount(.default)]
-        )
-    }
-
-    // MARK: - Matrix 03 row 9: the round trip
-
-    /// Matrix 03 row 9 (A2, rolled back, then forward again), the client's half, with refresh-token rotation on
-    ///
-    /// - Given: `.default`'s own record with expired tokens, and the plugin's record, which the rolled-back plugin
-    ///   refreshed and rotated, holding a newer session
-    /// - When:
-    ///    - `.default` reports its state and fetches its session, and Cognito rejects its refresh token as
-    ///      reused, since the plugin's refresh rotated it away
-    /// - Then:
-    ///    - It resumes from its own older record, not the plugin's newer one, which it reads only once, for the
-    ///      side-by-side check, and never writes. The plugin's record is the same user's, so nothing is logged
-    ///    - The refresh is sent with its own dead token. The first reuse fails the fields as retryable: another
-    ///      writer may still be saving the refresh that used the token. The second, `RefreshTokenReuse.minimumGap`
-    ///      later with its record's credentials still unchanged, means nobody did: every field fails with
-    ///      `sessionExpired`, so the app signs in again, and a third fetch sends no refresh (`docs/design/issues/rollback-behaviours.md` §3)
-    ///    - It stays signed in as its user, as an expired session does
-    ///
-    func testMatrix03Row9_roundTrip_resumesOnItsOwnOlderRecord() async throws {
-        let warningsBefore = SideBySideWarningCapture.shared.count
-        let own = try writeOwnRecord(goldenSession("session-userPoolAndIdentityPool"))
-        let rotated = try pluginRefreshed(goldenSession("session-userPoolAndIdentityPool"), refreshToken: "rotated-by-the-plugin")
-        harness.keychain.put(rotated, pluginAccount)
-        live.cognito.always("GetTokensFromRefreshToken") { (_: GetTokensFromRefreshTokenInput) -> GetTokensFromRefreshTokenOutput in
-            throw RefreshTokenReuseException(message: "Refresh token has been used")
-        }
-        let client = try makeClient()
-        let events = StreamRecorder(client.listenToAuthEvents())
-
-        let state = await client.currentSessionState()
-        let session = try await client.fetchAuthSession()
-        harness.advanceClock(by: RefreshTokenReuse.minimumGap)
-        let again = try await client.fetchAuthSession()
-        let third = try await client.fetchAuthSession()
-
-        XCTAssertEqual(state, .signedIn(goldenUser))
-        XCTAssertEqual(
-            live.cognito.inputs("GetTokensFromRefreshToken", as: GetTokensFromRefreshTokenInput.self).map(\.refreshToken),
-            ["fixture-refresh-token", "fixture-refresh-token"]
-        )
-        guard case .failure(.unknown(_, _, let underlying)) = session.userPoolTokensResult,
-              case .refreshTokenReused = underlying as? SessionEngineError else {
-            return XCTFail("Expected unknown caused by refreshTokenReused, got \(session.userPoolTokensResult)")
-        }
-        for fields in [again, third] {
-            let results = [
-                fields.userPoolTokensResult.map { _ in () },
-                fields.userSubResult.map { _ in () },
-                fields.identityIdResult.map { _ in () },
-                fields.awsCredentialsResult.map { _ in () }
-            ]
-            for result in results {
-                guard case .failure(let error) = result else {
-                    XCTFail("Expected sessionExpired, got a value")
-                    continue
-                }
-                XCTAssertEqual(error.kind, .sessionExpired)
-            }
-        }
-        await events.waitFor(1)
-        try await Task.sleep(nanoseconds: 200_000_000)
-        XCTAssertEqual(events.received, [.sessionExpired], "one event, and no late second one")
-        XCTAssertEqual(harness.keychain.value(defaultAccount), own, "its own record is kept")
-        let after = await client.currentSessionState()
-        await settlePluginPrincipalCheck(of: client)
-        XCTAssertEqual(after, .signedIn(goldenUser))
-        XCTAssertEqual(harness.keychain.readAccounts.count(where: { $0 == pluginAccount }), 1)
-        XCTAssertFalse(harness.keychain.writtenAccounts.contains(pluginAccount))
-        XCTAssertEqual(SideBySideWarningCapture.shared.count - warningsBefore, 0)
-        XCTAssertEqual(harness.keychain.value(pluginAccount), rotated)
-    }
-
-    // MARK: - Matrix 03 row 10: a newer schema
-
-    /// Matrix 03 row 10 (a record written by a newer schema)
-    ///
-    /// - Given: A schema-2 record under `.default`'s schema-1 key, beside the plugin's record
-    /// - When:
-    ///    - `.default` reports its state, is labelled, and completes adoption
-    /// - Then:
-    ///    - It fails as a record from a newer version; labelling and adoption throw; nothing is written or
-    ///      deleted, and the plugin's record is not adopted
-    ///
-    func testMatrix03Row10_newerSchemaUnderTheOwnKey_isLeftAlone() async throws {
-        let versionTwo = Data(#"{"schemaVersion":2,"generation":1,"lastWriteTimestamp":0,"kind":"passkey"}"#.utf8)
-        harness.keychain.put(versionTwo, defaultAccount)
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        await assertThrowsAsync({ try await client.setSessionLabel("Main") }) { _ in }
-        await assertThrowsAsync({ try await client.completeAdoption() }) { _ in }
-
-        guard case .failed = state else {
-            return XCTFail("Expected failed, got \(state)")
-        }
-        XCTAssertEqual(harness.keychain.value(defaultAccount), versionTwo)
-        XCTAssertEqual(harness.keychain.value(pluginAccount), payload)
-        XCTAssertEqual(harness.keychain.mutationOrder, [])
-    }
-
-    /// Matrix 03 row 10 (a record under a newer schema's key, `amplify.2.`)
-    ///
-    /// - Given: `.default`'s schema-1 record, and a record under the matching `amplify.2.` account
-    /// - When:
-    ///    - `.default` reports its state, and the saved sessions are listed
-    /// - Then:
-    ///    - The schema-1 record is used, the `amplify.2.` record is not listed, and it is never written or deleted
-    ///
-    func testMatrix03Row10_newerSchemaKey_isSkipped() async throws {
-        try writeOwnRecord(EnginePayloadFixtures.data("userPoolAndIdentityPool"))
-        let futureAccount = "amplify.2.\(StorageFixtures.pools.keyComponent).$default.session"
-        let versionTwo = Data(#"{"schemaVersion":2,"generation":1,"lastWriteTimestamp":0,"kind":"passkey"}"#.utf8)
-        harness.keychain.put(versionTwo, futureAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        await settlePluginPrincipalCheck(of: client)
-        let listed = try await AmplifyCognitoClient.storedSessions(
-            configuration: ClientFixtures.configuration,
-            accessGroup: nil,
-            includingSignedOut: true,
-            dependencies: dependencies
-        )
-
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-        XCTAssertEqual(listed.map(\.sessionId), [.default])
-        XCTAssertEqual(harness.keychain.value(futureAccount), versionTwo)
-        XCTAssertEqual(harness.keychain.mutationOrder, [])
-    }
-
-    // MARK: - The signed-out marker, rolled forward
-
-    /// The signed-out marker, rolled forward with no record of the client's own
-    ///
-    /// - Given: Only the plugin's signed-out marker, as the reader plugin writes it
-    /// - When:
-    ///    - `.default` reports its state and completes adoption
-    /// - Then:
-    ///    - It is signed out, nothing is adopted or written, and the marker is left as it is
-    ///
-    func testMarker_rolledForwardWithOnlyTheMarker_isSignedOut() async throws {
-        let marker = try EnginePayloadFixtures.data("noCredentials")
-        harness.keychain.put(marker, pluginAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        try await client.completeAdoption()
-
-        XCTAssertEqual(state, .signedOut)
-        XCTAssertEqual(harness.keychain.writtenAccounts, [])
-        XCTAssertEqual(harness.keychain.value(pluginAccount), marker)
-    }
-
-    /// The signed-out marker, rolled forward in front of the client's own signed-in record
-    ///
-    /// - Given: `.default`'s own signed-in record, and the marker the reader plugin wrote when the user signed out
-    ///   after a rollback
-    /// - When:
-    ///    - `.default` reports its state
-    /// - Then:
-    ///    - Its own record wins and it is signed in: the plugin's sign-out is not seen (pinned). The marker
-    ///      is read once, for the side-by-side check, which it does not warn on
-    ///
-    func testMarker_rolledForwardInFrontOfTheOwnRecord_ownRecordWins() async throws {
-        let warningsBefore = SideBySideWarningCapture.shared.count
-        try writeOwnRecord(EnginePayloadFixtures.data("userPoolAndIdentityPool"))
-        harness.keychain.put(try EnginePayloadFixtures.data("noCredentials"), pluginAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-        await settlePluginPrincipalCheck(of: client)
-
-        XCTAssertEqual(state, .signedIn(fixtureUser))
-        XCTAssertEqual(harness.keychain.readAccounts.count(where: { $0 == pluginAccount }), 1)
-        XCTAssertEqual(SideBySideWarningCapture.shared.count - warningsBefore, 0)
-        XCTAssertFalse(harness.keychain.writtenAccounts.contains(pluginAccount))
-    }
-
-    // MARK: - The plugin's record is read at first load only
-
-    /// `.default` reads the plugin's record only until it has its own
-    ///
-    /// - Given: `.default`'s own signed-out row (kept by an earlier sign-out), and a plugin record for a user the
-    ///   rolled-back plugin signed in afterwards
-    /// - When:
-    ///    - `.default` reports its state
-    /// - Then:
-    ///    - It is signed out: the plugin's record is never read or adopted, and is left as it is
-    ///
-    func testFirstLoad_ownSignedOutRowShadowsALaterPluginSignIn() async throws {
-        let signedOut = try harness.store().write(.signedOut(label: "Main", username: "fixture-user"), for: .default, expecting: nil)
-        XCTAssertTrue(signedOut.didCommit)
-        let payload = try EnginePayloadFixtures.data("userPoolAndIdentityPool")
-        harness.keychain.put(payload, pluginAccount)
-        let client = try makeClient()
-
-        let state = await client.currentSessionState()
-
-        XCTAssertEqual(state, .signedOut)
-        XCTAssertFalse(harness.keychain.readAccounts.contains(pluginAccount))
-        XCTAssertEqual(harness.keychain.value(pluginAccount), payload)
     }
 
     // MARK: - Helpers
 
-    private var defaultAccount: String { account(.default) }
-
-    /// The namespace marker a session's first signed-in record writes (`SessionRecordStore+CopyForward.swift`).
-    private func markerAccount(_ sessionId: SessionID) -> String {
-        SessionRecordKey.markerAccount(for: sessionId, scope: TestKeychain.markerScope)
+    /// The plugin's own credential store over the harness's keychain, with the client's configuration, as a plugin
+    /// build of the same app runs it.
+    func pluginStore() -> AWSCognitoAuthCredentialStore {
+        Self.pluginStore(over: harness.keychain.itemStore(service: SessionRecordStore.unsharedService))
     }
 
-    private func account(_ sessionId: SessionID) -> String {
-        SessionRecordKey.account(for: sessionId, in: StorageFixtures.pools, kind: .session)
+    /// The plugin's own credential store over the harness's keychain, with `configuration`.
+    func pluginStore(_ configuration: AuthClientConfiguration) -> AWSCognitoAuthCredentialStore {
+        AWSCognitoAuthCredentialStore(
+            authConfiguration: AuthConfiguration(client: configuration),
+            keychain: harness.keychain.itemStore(service: SessionRecordStore.unsharedService),
+            logger: DiscardingEngineLogger()
+        )
+    }
+
+    /// `binary`'s credential store over the harness's keychain, with `configuration`, recording its reads of client
+    /// records in `hiddenReads`.
+    func pluginStore(
+        _ binary: RollbackPluginBinary,
+        _ configuration: AuthClientConfiguration = ClientFixtures.configuration,
+        recording hiddenReads: HiddenReads
+    ) -> AWSCognitoAuthCredentialStore {
+        AWSCognitoAuthCredentialStore(
+            authConfiguration: AuthConfiguration(client: configuration),
+            keychain: binary.keychainStore(over: harness.keychain.itemStore(service: SessionRecordStore.unsharedService), recording: hiddenReads),
+            logger: DiscardingEngineLogger()
+        )
+    }
+
+    static func pluginStore(over keychain: any KeychainItemStoreBehavior) -> AWSCognitoAuthCredentialStore {
+        AWSCognitoAuthCredentialStore(
+            authConfiguration: AuthConfiguration(client: ClientFixtures.configuration),
+            keychain: keychain,
+            logger: DiscardingEngineLogger()
+        )
+    }
+
+    func signInAlice(_ client: AmplifyCognitoClient) async throws {
+        live.scriptSRP()
+        live.scriptIdentityPool()
+        let result = try await client.signIn(username: "alice", password: "password")
+        XCTAssertEqual(result.nextStep, .done)
+    }
+
+    func listed(includingSignedOut: Bool = false) async throws -> [StoredSession] {
+        try await AmplifyCognitoClient.storedSessions(
+            configuration: ClientFixtures.configuration,
+            accessGroup: nil,
+            includingSignedOut: includingSignedOut,
+            dependencies: dependencies
+        )
     }
 
     /// The harness's dependencies, with the live engine over scripted Cognito in place of the fake engine.
-    private var dependencies: SessionCoreDependencies {
+    var dependencies: SessionCoreDependencies {
         let base = harness.dependencies
         let live = live!
         var dependencies = SessionCoreDependencies(
@@ -641,63 +407,21 @@ final class RollbackMatrixClientTests: XCTestCase {
             bounds: base.bounds,
             now: base.now
         )
+        dependencies.makePreviousConfigurationRevoker = base.makePreviousConfigurationRevoker
         #if os(iOS) || os(macOS) || os(visionOS)
         dependencies.sheetLock = base.sheetLock
         #endif
         return dependencies
     }
 
-    private func makeClient(_ sessionId: SessionID = .default) throws -> AmplifyCognitoClient {
+    func makeClient(
+        _ sessionId: SessionID = .default,
+        configuration: AuthClientConfiguration = ClientFixtures.configuration
+    ) throws -> AmplifyCognitoClient {
         try AmplifyCognitoClient(
-            configuration: ClientFixtures.configuration,
+            configuration: configuration,
             options: .init(sessionId: sessionId),
             dependencies: dependencies
         )
-    }
-
-    /// Writes `payload` as `sessionId`'s own signed-in record, as the client stores a session it signed in or
-    /// adopted, then clears the keychain logs. Returns the stored bytes.
-    @discardableResult
-    private func writeOwnRecord(_ payload: Data, for sessionId: SessionID = .default) throws -> Data {
-        let summary = PluginRecordSummary.peek(payload)
-        let record = SessionRecord(
-            label: nil,
-            username: summary.username,
-            userId: summary.userId,
-            kind: summary.kind,
-            credentials: payload
-        )
-        XCTAssertTrue(try harness.store().write(record, for: sessionId, expecting: nil).didCommit)
-        harness.keychain.resetLogs()
-        return try XCTUnwrap(harness.keychain.value(account(sessionId)))
-    }
-
-    /// A stored-format golden from the plugin's test resources, without the file's trailing newline. Its tokens
-    /// expired in 2023.
-    private func goldenSession(_ name: String) throws -> Data {
-        var data = try Data(contentsOf: URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent() // UnitTests
-            .deletingLastPathComponent() // Tests
-            .deletingLastPathComponent() // AmplifyCognitoClient
-            .deletingLastPathComponent() // AmplifyClients
-            .deletingLastPathComponent() // repository root
-            .appendingPathComponent("AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat")
-            .appendingPathComponent("\(name).json"))
-        if data.last == UInt8(ascii: "\n") {
-            data.removeLast()
-        }
-        return data
-    }
-
-    /// The plugin's frozen payload with its refresh token replaced, as the plugin stores it after a refresh
-    /// that rotated the token: the same encoder, one value changed.
-    private func pluginRefreshed(_ payload: Data, refreshToken: String) throws -> Data {
-        let text = String(decoding: payload, as: UTF8.self)
-        let replaced = text.replacingOccurrences(
-            of: #""refreshToken":"\#(EnginePayloadFixtures.refreshToken)""#,
-            with: #""refreshToken":"\#(refreshToken)""#
-        )
-        XCTAssertNotEqual(replaced, text)
-        return Data(replaced.utf8)
     }
 }

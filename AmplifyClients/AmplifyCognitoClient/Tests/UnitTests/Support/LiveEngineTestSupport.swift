@@ -38,8 +38,8 @@ final class LiveEngineHarness: @unchecked Sendable {
         SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: nil)
     }
 
-    /// The engine's resources: device records in this harness's keychain, analytics that never reads, and
-    /// the scripted services for the configured pools only.
+    /// The engine's resources: device records in this harness's keychain, analytics that never reads, the
+    /// scripted services for the configured pools only, and a fixed device (`FixedDeviceASF`).
     func resources() throws -> EngineResources {
         let clients = try CognitoServiceClients(configuration: configuration, configureUserPoolClient: nil)
         return EngineResources(
@@ -55,8 +55,23 @@ final class LiveEngineHarness: @unchecked Sendable {
                 identity: configuration.identityPool == nil ? nil : ScriptedIdentity(cognito: cognito)
             ),
             makeHostedUIPresenter: { [hostedUIPresenter] in hostedUIPresenter ?? HostedUIASWebAuthenticationSession() },
-            makeHostedUIURLSession: hostedUIURLSession ?? EngineResources.makeURLSession
+            makeHostedUIURLSession: hostedUIURLSession ?? EngineResources.makeURLSession,
+            makeAdvancedSecurity: FixedDeviceASF.factory
         )
+    }
+
+    /// What the plugin's own credential store retrieves when `payload` is stored, as it is, under the
+    /// plugin's session account for this configuration, `amplify.<pool namespace>.session`: the record the
+    /// default session shares with the plugin. Runs over a keychain of its own.
+    func retrievedByThePlugin(_ payload: Data) throws -> AmplifyCredentials {
+        let itemStore = TestKeychain().itemStore(service: SessionRecordStore.unsharedService)
+        try itemStore.set(payload, key: SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace))
+        let store = AWSCognitoAuthCredentialStore(
+            authConfiguration: AuthConfiguration(client: configuration),
+            keychain: itemStore,
+            logger: DiscardingEngineLogger()
+        )
+        return try store.retrieveCredential()
     }
 
     func engine(

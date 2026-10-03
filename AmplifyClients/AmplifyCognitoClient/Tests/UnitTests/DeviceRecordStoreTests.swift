@@ -131,7 +131,7 @@ final class DeviceRecordStoreTests: XCTestCase {
     ///    - every one appears as a query's key, so the literals above are not merely self-consistent
     ///
     func testPinnedAccountsAppearInThePluginsKeychainBaseline() throws {
-        let baseline = try String(contentsOf: Self.pluginTestResource("GoldenKeychainQueries/queries.json"), encoding: .utf8)
+        let baseline = try String(contentsOf: PluginTestResources.url("GoldenKeychainQueries/queries.json"), encoding: .utf8)
         let baselinePools = [Self.baselineFixturePools, Self.baselineMockPools]
         let accounts = Self.pinnedAccounts.filter { baselinePools.contains($0.0) }.flatMap { [$0.2, $0.3] }
         XCTAssertEqual(accounts.count, 8)
@@ -214,9 +214,9 @@ final class DeviceRecordStoreTests: XCTestCase {
     ///      written as the same JSON tree (a default `JSONEncoder`'s key order is not pinned)
     ///
     func testValuesUseThePluginsStoredFormat() throws {
-        let metadataFixture = try Self.goldenStoredFormat("deviceMetadata-metadata.json")
-        let noDataFixture = try Self.goldenStoredFormat("deviceMetadata-noData.json")
-        let asfFixture = try Self.goldenStoredFormat("deviceASF.json")
+        let metadataFixture = try PluginTestResources.goldenStoredFormat("deviceMetadata-metadata.json")
+        let noDataFixture = try PluginTestResources.goldenStoredFormat("deviceMetadata-noData.json")
+        let asfFixture = try PluginTestResources.goldenStoredFormat("deviceASF.json")
         let expectedMetadata = MirrorDeviceMetadata.metadata(.init(
             deviceKey: "us-east-1_fixture-device-key",
             deviceGroupKey: "fixture-device-group-key",
@@ -248,8 +248,8 @@ final class DeviceRecordStoreTests: XCTestCase {
     ///    - both reads are `.undecodable`, and nothing is written
     ///
     func testUndecodableValuesArePresentNotAbsent() throws {
-        keychain.put(try Self.goldenStoredFormat("rejected-deviceMetadata-missing-secret.json"), store.deviceMetadataAccount(for: "alice"))
-        keychain.put(try Self.goldenStoredFormat("rejected-deviceASF-number.json"), store.asfDeviceAccount(for: "alice"))
+        keychain.put(try PluginTestResources.goldenStoredFormat("rejected-deviceMetadata-missing-secret.json"), store.deviceMetadataAccount(for: "alice"))
+        keychain.put(try PluginTestResources.goldenStoredFormat("rejected-deviceASF-number.json"), store.asfDeviceAccount(for: "alice"))
 
         XCTAssertEqual(try store.deviceMetadata(MirrorDeviceMetadata.self, for: "alice"), .undecodable)
         XCTAssertEqual(try store.asfDeviceId(for: "alice"), .undecodable)
@@ -383,7 +383,7 @@ final class DeviceRecordStoreTests: XCTestCase {
             XCTAssertFalse(account.hasSuffix(".session"), account)
             XCTAssertNotEqual(account, "authConfiguration")
             XCTAssertNil(SessionRecordKey.parse(account), account)
-            XCTAssertNotEqual(account, SessionRecordKey.legacySessionAccount(in: StorageFixtures.pools))
+            XCTAssertNotEqual(account, SessionRecordKey.pluginSessionAccount(in: StorageFixtures.pools))
         }
     }
 
@@ -516,26 +516,6 @@ final class DeviceRecordStoreTests: XCTestCase {
     }
 
     // MARK: Fixtures
-
-    private static func pluginTestResource(_ path: String) -> URL {
-        URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent() // UnitTests
-            .deletingLastPathComponent() // Tests
-            .deletingLastPathComponent() // AmplifyCognitoClient
-            .deletingLastPathComponent() // AmplifyClients
-            .deletingLastPathComponent() // repository root
-            .appendingPathComponent("AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources")
-            .appendingPathComponent(path)
-    }
-
-    /// A golden stored-format file, without the trailing newline the file ends with.
-    private static func goldenStoredFormat(_ name: String) throws -> Data {
-        var data = try Data(contentsOf: pluginTestResource("GoldenStoredFormat/\(name)"))
-        if data.last == UInt8(ascii: "\n") {
-            data.removeLast()
-        }
-        return data
-    }
 
     private static func tree(_ data: Data?) throws -> NSObject {
         try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(data), options: [.fragmentsAllowed]) as? NSObject)

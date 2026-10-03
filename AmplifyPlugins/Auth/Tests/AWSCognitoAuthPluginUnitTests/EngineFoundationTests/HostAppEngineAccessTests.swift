@@ -171,7 +171,8 @@ final class HostAppEngineAccessTests: XCTestCase {
         )
         let engineStore = AWSCognitoAuthCredentialStore(
             authConfiguration: configuration,
-            keychain: InMemoryPluginKeychainStore(keychain: InMemoryKeychain())
+            keychain: InMemoryPluginKeychainStore(keychain: InMemoryKeychain()),
+            logger: AmplifyEngineLogRouter()
         )
         let hostAppStore = HostAppCredentialStore(engineStore)
         for (label, credentials) in Self.everyCredential() {

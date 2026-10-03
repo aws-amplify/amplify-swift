@@ -79,14 +79,14 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
     ///      shared service
     ///    - a group-less `KeychainItemStore` read of that account returns it
     ///    - the plugin reports `alice` signed in, from storage
-    ///    - the client's group-less `storedSessions` lists `.default` from the plugin's moved record, as
-    ///      `alice` with both pools. (Its `currentSessionState()` would decode the record, which needs
-    ///      the engine, so it is not asserted here. The listing reads the
-    ///      plugin's format without one.)
+    ///    - the client's group-less `storedSessions` lists `.default` from the plugin's moved record, which is
+    ///      `.default`'s own session record, as `alice` with both pools
+    ///    - a group-less client on `.default` restores the moved record as `.signedIn(alice)`, with no user pool
+    ///      request, and released, leaves the record as the plugin moved it
     ///
     func testAccessGroupRemovedGroupLessReadFindsTheMovedSession() async throws {
         let configuration = try XCTUnwrap(configuration)
-        let sessionAccount = SessionRecordKey.legacySessionAccount(in: configuration.poolNamespace)
+        let sessionAccount = SessionRecordKey.pluginSessionAccount(in: configuration.poolNamespace)
 
         let alice = try await InteropEnvironment.signUpFreshUser()
         self.alice = alice
@@ -124,6 +124,23 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
         RealKeychain.report(self, "the client lists \(listed)")
         XCTAssertTrue(defaultRow?.username == alice.username, "the client's listing is \(listed)")
         XCTAssertEqual(defaultRow?.kind, .userPoolAndIdentityPool, "the client's listing is \(listed)")
+
+        do {
+            let recorder = UserPoolRequestRecorder()
+            let client = try AmplifyCognitoClient(
+                configuration: configuration,
+                options: .init(sessionId: .default, configureUserPoolClient: recorder.configureUserPoolClient)
+            )
+            let state = await client.currentSessionState()
+            guard case .signedIn(let user) = state else {
+                return XCTFail("the group-less `.default` did not restore the moved session: \(after)")
+            }
+            XCTAssertTrue(user.username == alice.username, "the group-less `.default` is signed in as another user")
+            XCTAssertEqual(recorder.operations, [], "restoring the moved session made user pool requests")
+        }
+        try await InteropEnvironment.waitUntilReleased(.default)
+        let restoredRead = try KeychainItemStore(service: unsharedService).getData(sessionAccount)
+        XCTAssertTrue(restoredRead == groupLessRead, "restoring the moved session changed the record")
     }
 
     // MARK: - Helpers

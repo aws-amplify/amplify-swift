@@ -201,7 +201,7 @@ final class DeleteUserTests: XCTestCase {
         let store = harness.store()
         let bob = FakePayload.signedIn("bob")
         if case .record(let envelope) = try store.read(work) {
-            try store.write(bob.record(), for: work, expecting: envelope.generation)
+            try store.write(bob.record(), for: work, expecting: envelope.version)
         }
 
         let error = await authClientError { try await client.deleteUser() }
@@ -258,7 +258,7 @@ final class DeleteUserTests: XCTestCase {
         let deletion = Task { try await workClient.deleteUser() }
         await latch.waitForArrivals(1)
         let held = await workClient.core.gate.isLocked
-        let homeResult = try await homeClient.signOut()
+        let homeResult = await homeClient.signOut()
         await latch.open()
         try await deletion.value
 

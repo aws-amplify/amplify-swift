@@ -194,7 +194,7 @@ final class LiveEngineBranchTests: XCTestCase {
     }
 
     /// Guest credentials fetched with a guest `current` refresh that guest, and the produced payload is
-    /// what the plugin's reader reads.
+    /// what the plugin's credential store reads.
     ///
     /// - Given: a guest payload
     /// - When:
@@ -202,7 +202,8 @@ final class LiveEngineBranchTests: XCTestCase {
     /// - Then:
     ///    - the only call is `GetCredentialsForIdentity` for its identity; the payload is the same guest with
     ///      new credentials
-    ///    - wrapped as the core stores it, the plugin's `DefaultSessionRecordReader` reads it unchanged
+    ///    - stored as it is under the plugin's session account, the plugin's `AWSCognitoAuthCredentialStore`
+    ///      reads it unchanged
     ///
     func testAGuestFetchWithAGuestRefreshesIt() async throws {
         let engine = try harness.engine()
@@ -216,11 +217,8 @@ final class LiveEngineBranchTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, ["GetCredentialsForIdentity"])
         XCTAssertEqual(try engine.describe(refreshed).identityId, "us-east-1:guest")
         XCTAssertEqual(try engine.awsCredentials(in: refreshed)?.accessKeyId, "AKID-v2")
-        let record = SessionRecord(label: nil, username: nil, userId: nil, kind: .guest, credentials: refreshed)
-        let stored = try SessionRecordEnvelope(generation: 1, lastWriteTimestamp: Date(), record: record).encoded()
-        guard case .signedIn(let read) = DefaultSessionRecordReader.decode(stored) else {
-            return XCTFail("the plugin's reader should read a refreshed guest payload")
-        }
+        let read = try harness.retrievedByThePlugin(refreshed)
+        XCTAssertNotEqual(read, .noCredentials, "the plugin should read a refreshed guest payload as signed in")
         XCTAssertEqual(read, try AmplifyCredentials.decoded(refreshed))
     }
 

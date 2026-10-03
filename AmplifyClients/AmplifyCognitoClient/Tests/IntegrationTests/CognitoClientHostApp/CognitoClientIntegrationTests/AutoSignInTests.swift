@@ -100,7 +100,7 @@ final class AutoSignInTests: ClientSignUpTestCase {
         }
         XCTAssertTrue(signedIn, "the first auto sign-in should sign the session in")
 
-        _ = try await client.signOut(options: .init(globalSignOut: true))
+        XCTAssertSignOutComplete(await client.signOut(options: .init(globalSignOut: true)))
         recorder.reset()
 
         do {

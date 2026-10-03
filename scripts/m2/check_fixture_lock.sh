@@ -30,12 +30,13 @@ HEAD_REF="${1:-HEAD}"
 BASE_REF="${2:-}"
 
 # directory  pinned tree hash (git rev-parse <capture commit>:<directory>; GoldenLogs was re-pinned when the
-# sign-out line's refresh token was masked)
+# sign-out line's refresh token was masked, and GoldenKeychainQueries when the plugin's reader of the client's
+# records was removed and the default session's sidecar and challenge began moving with the plugin's session)
 LOCKED_TREES=(
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenStoredFormat 00adb7ec49b1c25ad64bea2e2e30bbd2d818ad1c"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenErrors bd2e1e15435e04d3153beac98f8370729e8038d6"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs 14aefeb712286ee38af02d883a50f3bcc774a610"
-    "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries 3bc4e966268ff8e8f6f631e73f365b170c2e5682"
+    "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries c204e757e40de0b647999d2c792143ec93d4bcdd"
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration 5f07437e77f8c64dfe7b3a83c598e4be7c2475b7"
 )
 SELF_FILES=(

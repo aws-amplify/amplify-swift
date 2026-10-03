@@ -72,8 +72,8 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     /// stops at the update). On the default backend, where the update is applied before it is verified.
     ///
     /// It reads the code Cognito sends to the new address, so it needs a code API on the default backend.
-    /// The plugin's CI file for it names none (its README deploys no custom senders), and there it fails
-    /// naming the file.
+    /// The plugin's CI file for it names none (its README deploys no custom senders): on CI it skips
+    /// (`CISkipReason.defaultCodeAPI`), and elsewhere without one it fails naming the file.
     ///
     /// - Given: a fresh user with an email, signed in, on the default backend
     /// - When:
@@ -83,7 +83,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     ///    - fetching returns the new email before the confirmation; after it, `email_verified` is `true`
     ///
     func testUpdatedEmailIsVerifiedWithTheCodeSentToIt() async throws {
-        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard)
+        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip: .defaultCodeAPI)
         let (client, user) = try await makeSignedInFreshUser("at-2-verify")
         let sink = try CodeSink()
         let updatedEmail = SandboxSignUp.identity().email
@@ -229,7 +229,7 @@ final class UserAttributesTests: ClientIntegrationTestCase {
 
         let attributes = try await client.fetchUserAttributes()
         XCTAssertTrue(attributes.first { $0.key == .email }?.value == user.email, "the email is unchanged")
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         let signIn = try await client.signIn(username: user.username, password: newPassword)
         XCTAssertEqual(signIn.nextStep, .done)
         let signedIn = try await client.getCurrentUser()

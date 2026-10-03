@@ -401,6 +401,15 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         return CredentialSummary(kind: kind, username: decoded.username, userId: decoded.userId, identityId: decoded.identityId)
     }
 
+    /// Two `FakePayload`s hold the same credentials when they decode equal, however their keys were ordered, as the
+    /// live engine compares decoded `AmplifyCredentials`. Anything else is compared byte for byte.
+    func sameCredentials(_ lhs: Data, _ rhs: Data) -> Bool {
+        if let lhs = FakePayload.decode(lhs), let rhs = FakePayload.decode(rhs) {
+            return lhs == rhs
+        }
+        return lhs == rhs
+    }
+
     func awsCredentials(in payload: Data) throws -> CognitoAWSCredentials? {
         guard let decoded = FakePayload.decode(payload) else {
             throw FakeEngineError.unreadablePayload

@@ -311,7 +311,7 @@ final class ScopedWipeRealKeychainTests: XCTestCase {
         XCTAssertEqual(RealKeychain.add("shared", account: clientShared, service: source, group: sharedGroup), errSecSuccess)
         let expected = RealKeychain.rows(service: source).filter { $0.account.hasPrefix("amplify.1.") || $0.account.hasPrefix("amplify.2.") }
 
-        try KeychainItemStore(service: source).removeAllExceptSessionRecords(logger: AmplifyLogging.logger(for: Self.self))
+        try KeychainItemStore(service: source).removeAllExceptSessionRecords(logger: AmplifyLogging.logger(for: Self.self), sparingDefaultSessionItems: true)
 
         let after = RealKeychain.rows(service: source)
         RealKeychain.report(self, "scoped clear over two groups: left \(after)")
@@ -462,5 +462,101 @@ final class ScopedWipeRealKeychainTests: XCTestCase {
             ["amplify.us-east-1_Probe.session", "authConfiguration", "authConfiguration"],
             "Q6b: \(observed)"
         )
+    }
+}
+
+// MARK: - The Cognito client's default-session items
+
+extension ScopedWipeRealKeychainTests {
+
+    /// the plugin's own wipe also removes the client's default-session items, in every group; every other
+    /// client record stays. The sparing scoped clear (`sparingDefaultSessionItems: true`) still spares them.
+    ///
+    /// - Given: one service holding plugin accounts, the client's `$default.meta` and `$default.challenge`, a named
+    ///   session's records and a development leftover `$default.session` in the default group, plus copies of
+    ///   `$default.meta` and of the named session's record in the shared group
+    /// - When:
+    ///    - `removeAllExceptSessionRecords` runs on an unscoped store, first with
+    ///      `sparingDefaultSessionItems: true` (sparing the default-session items), then with `sparingDefaultSessionItems: false`, as the plugin's transition wipe
+    ///      and destination clear call it
+    /// - Then:
+    ///    - the first run removes only the plugin accounts, and keeps every client record, in its own group
+    ///    - the second removes both default-session items from both groups, and keeps the named session's
+    ///      records and the leftover, each in its own group, with its own data
+    ///
+    func testWipeOfThePluginsSessionRemovesTheDefaultSessionItemsInEveryGroup() throws {
+        let plugin = ["amplify.us-east-1_Probe.session", "amplify.us-east-1_Probe.alice.deviceMetadata", "authConfiguration"]
+        let defaultItems = ["amplify.1.us-east-1_Probe.$default.challenge", "amplify.1.us-east-1_Probe.$default.meta"]
+        let named = ["amplify.1.us-east-1_Probe.$default.session", "amplify.1.us-east-1_Probe.work.challenge", "amplify.1.us-east-1_Probe.work.session"]
+        for account in plugin + defaultItems + named {
+            XCTAssertEqual(RealKeychain.add("default", account: account, service: source), errSecSuccess)
+        }
+        XCTAssertEqual(RealKeychain.add("shared", account: defaultItems[1], service: source, group: sharedGroup), errSecSuccess)
+        XCTAssertEqual(RealKeychain.add("shared", account: named[2], service: source, group: sharedGroup), errSecSuccess)
+        let clientRows = RealKeychain.rows(service: source).filter { !plugin.contains($0.account) }
+        let namedRows = clientRows.filter { !defaultItems.contains($0.account) }
+        let store = KeychainItemStore(service: source)
+        let logger = AmplifyLogging.logger(for: Self.self)
+
+        try store.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: true)
+
+        let afterSparing = RealKeychain.rows(service: source)
+        RealKeychain.report(self, "scoped clear sparing the default-session items: left \(afterSparing)")
+        XCTAssertEqual(afterSparing, clientRows, "the sparing scoped clear: left \(afterSparing)")
+
+        try store.removeAllExceptSessionRecords(logger: logger, sparingDefaultSessionItems: false)
+
+        let afterWipe = RealKeychain.rows(service: source)
+        RealKeychain.report(self, "wipe of the plugin's session: left \(afterWipe)")
+        XCTAssertEqual(afterWipe, namedRows, "the wipe of the plugin's session: left \(afterWipe)")
+    }
+
+    /// The migrator moves the client's default-session items with the plugin's items, clears stale
+    /// ones from a non-empty destination first, and leaves named sessions' records where they are, on both sides.
+    ///
+    /// - Given: an unscoped source holding plugin accounts, the client's `$default.meta` and `$default.challenge`,
+    ///   and a named session's records in the default group; a destination under the shared group already
+    ///   holding a stale `$default.meta` and another named session's record
+    /// - When:
+    ///    - `KeychainItemMigrator.migrate()` over real stores migrates to (destination, shared group)
+    /// - Then:
+    ///    - the destination holds every plugin account and both default-session items, each with the source's
+    ///      data, the stale `$default.meta` gone, and its own named record, with its own data
+    ///    - the source keeps only its named session's records
+    ///
+    func testMigratorMovesTheDefaultSessionItemsAndClearsStaleOnes() throws {
+        let plugin = ["amplify.us-east-1_Probe.session", "authConfiguration"]
+        let defaultItems = ["amplify.1.us-east-1_Probe.$default.challenge", "amplify.1.us-east-1_Probe.$default.meta"]
+        let named = ["amplify.1.us-east-1_Probe.work.challenge", "amplify.1.us-east-1_Probe.work.session"]
+        let destinationNamed = "amplify.1.us-east-1_Probe.home.session"
+        for account in plugin + defaultItems + named {
+            XCTAssertEqual(RealKeychain.add("source", account: account, service: source), errSecSuccess)
+        }
+        XCTAssertEqual(RealKeychain.add("stale", account: defaultItems[1], service: destination, group: sharedGroup), errSecSuccess)
+        XCTAssertEqual(RealKeychain.add("destination", account: destinationNamed, service: destination, group: sharedGroup), errSecSuccess)
+
+        let logger = AmplifyLogging.logger(for: Self.self)
+        let sourceAttributes = KeychainItemAttributes(service: source)
+        let destinationAttributes = KeychainItemAttributes(service: destination, accessGroup: sharedGroup)
+        try KeychainItemMigrator(
+            source: sourceAttributes,
+            destination: destinationAttributes,
+            sourceStore: KeychainItemStore(attributes: sourceAttributes, logger: logger),
+            destinationStore: KeychainItemStore(attributes: destinationAttributes, logger: logger),
+            logger: logger
+        ).migrate()
+
+        let inSource = RealKeychain.rows(service: source)
+        let inDestination = RealKeychain.rows(service: destination)
+        let observed = "source \(inSource); destination \(inDestination)"
+        RealKeychain.report(self, "migrator with the default-session items: \(observed)")
+        let moved = (plugin + defaultItems).map { RealKeychain.Row(account: $0, group: sharedGroup, value: "source") }
+        let kept = RealKeychain.Row(account: destinationNamed, group: sharedGroup, value: "destination")
+        XCTAssertEqual(
+            inDestination,
+            (moved + [kept]).sorted { ($0.account, $0.group) < ($1.account, $1.group) },
+            "the migrator's destination: \(observed)"
+        )
+        XCTAssertEqual(inSource.map(\.account), named, "the migrator's source: \(observed)")
     }
 }

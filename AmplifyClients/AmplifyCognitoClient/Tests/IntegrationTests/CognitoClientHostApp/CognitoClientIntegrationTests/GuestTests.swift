@@ -34,9 +34,9 @@ final class GuestTests: ClientIntegrationTestCase {
         let guestState = await client.currentSessionState()
         XCTAssertState(guestState, .guest)
 
-        let signOut = try await client.signOut()
+        let signOut = await client.signOut()
 
-        XCTAssertEqual(signOut, .complete)
+        XCTAssertSignOutComplete(signOut)
         let signedOut = await client.currentSessionState()
         XCTAssertState(signedOut, .signedOut)
         let second = try await client.fetchAuthSession().identityIdResult.get()

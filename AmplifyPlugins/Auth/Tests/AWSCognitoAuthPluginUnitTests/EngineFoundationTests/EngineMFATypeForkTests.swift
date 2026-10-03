@@ -78,27 +78,31 @@ class EngineMFATypeForkTests: XCTestCase {
             let expected = Self.mfaTypes.first {
                 raw.caseInsensitiveCompare($0.challengeResponse) == .orderedSame
             }
-            XCTAssertEqual(EngineMFAType(rawValue: raw).map { MFAType($0) }, expected, raw)
+            XCTAssertEqual(EngineMFAType(rawValue: raw, logger: DiscardingEngineLogger()).map { MFAType($0) }, expected, raw)
         }
     }
 
     /// Test that an unsupported MFA string logs under the public type's category
     ///
-    /// - Given: A capturing engine log router
+    /// - Given: A capturing caller's logger, and a global router that must see nothing
     /// - When:
-    ///    - An unsupported MFA string is parsed, and then every supported one
+    ///    - An unsupported MFA string is parsed with the caller's logger, and then every supported one
     /// - Then:
-    ///    - One error is logged under category `MFAType` (never the fork's name), with the public
-    ///      extension's message; supported values log nothing
+    ///    - One error is logged through the caller's logger under category `MFAType` (never the fork's
+    ///      name), with the public extension's message; supported values log nothing; the global router
+    ///      sees nothing
     ///
     func testUnsupportedMFATypeLogsUnderTheMFATypeCategory() {
         let router = CapturingRouter()
-        EngineLog.install(router)
+        let global = CapturingRouter()
+        EngineLog.install(global)
+        let logger = router.scopedLogger()
 
-        XCTAssertNil(EngineMFAType(rawValue: "X"))
+        XCTAssertNil(EngineMFAType(rawValue: "X", logger: logger))
         for mfaType in Self.mfaTypes {
-            XCTAssertNotNil(EngineMFAType(rawValue: mfaType.challengeResponse))
+            XCTAssertNotNil(EngineMFAType(rawValue: mfaType.challengeResponse, logger: logger))
         }
+        XCTAssertEqual(global.entries, [])
         XCTAssertEqual(router.entries, [
             .init(
                 scope: .category("MFAType"),
@@ -149,7 +153,7 @@ class EngineMFATypeForkTests: XCTestCase {
             session: "session"
         )
 
-        let event = UserPoolSignInHelper.parseResponse(response, for: "user", signInMethod: .apiBased(.userSRP))
+        let event = UserPoolSignInHelper.parseResponse(response, for: "user", signInMethod: .apiBased(.userSRP), logger: AmplifyEngineLogRouter())
 
         guard let signInEvent = event as? SignInEvent,
               case .throwAuthError(.invalidServiceResponse(let message)) = signInEvent.eventType else {

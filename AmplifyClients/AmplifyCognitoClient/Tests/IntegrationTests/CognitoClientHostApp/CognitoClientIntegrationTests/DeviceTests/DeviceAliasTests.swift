@@ -21,9 +21,10 @@ import XCTest
 /// code API its outputs name. Where the file is not the sandbox's, names no code API and the plugin's setup
 /// promises no such trigger (the plugin's device-alias backend on CI), every test fails naming the file
 /// before any sign-up (`SandboxSignUp.requireNotKnownUnconfirmable`), so it sends no email and leaves no user
-/// it could not delete. The plugin's suite reads no code: it signs in one
-/// pre-created user from `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which the plugin's CI
-/// does not download, and it is only in the `AuthGen2IntegrationTests` target, which no CI workflow runs.
+/// it could not delete. On CI it skips there instead (`CISkipReason.deviceAliasConfirmation`). The
+/// plugin's suite reads no code: it signs in one pre-created user from
+/// `AWSCognitoAuthPluginDeviceAliasTests-credentials.json`, which the plugin's CI does not download, and it is
+/// only in the `AuthGen2IntegrationTests` target, which no CI workflow runs.
 final class DeviceAliasTests: DeviceTestCase {
 
     /// A fresh email-username user, signed in with SRP by email on a new session.
@@ -78,7 +79,7 @@ final class DeviceAliasTests: DeviceTestCase {
     ///
     func testTokenRefreshAfterReSignInWithEmailAlias() async throws {
         let (user, client) = try await signedInAliasUser("dv-12")
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         try await signInToDone(client, user, flow: .userSRP)
 
         try await forceRefresh(client, "the refresh after re-sign-in")
@@ -178,7 +179,7 @@ final class DeviceAliasTests: DeviceTestCase {
         let firstDeviceKey = try await thisDeviceKey(client)
         assertOnlyThisDevice(try await client.fetchDevices(), firstDeviceKey, "after the first sign-in")
 
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         try await signInToDone(client, user, flow: .userSRP)
 
         let secondDeviceKey = try await thisDeviceKey(client)
@@ -197,7 +198,7 @@ final class DeviceAliasTests: DeviceTestCase {
     func testTokenRefreshAfterDevicePersistenceWithEmailAlias() async throws {
         let (user, client) = try await signedInAliasUser("dv-18")
         try await client.rememberDevice()
-        _ = try await client.signOut()
+        XCTAssertSignOutComplete(await client.signOut())
         try await signInToDone(client, user, flow: .userSRP)
 
         try await forceRefresh(client, "the refresh after re-sign-in")

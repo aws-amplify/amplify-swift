@@ -317,7 +317,7 @@ final class KeychainModuleRealKeychainTests: ClientIntegrationTestCase {
         XCTAssertEqual(RealKeychain.add("shared", account: clientShared, service: source, group: sharedGroup), errSecSuccess)
         let expected = RealKeychain.rows(service: source).filter { $0.account.hasPrefix("amplify.1.") || $0.account.hasPrefix("amplify.2.") }
 
-        try KeychainItemStore(service: source).removeAllExceptSessionRecords(logger: AmplifyLogging.logger(for: Self.self))
+        try KeychainItemStore(service: source).removeAllExceptSessionRecords(logger: AmplifyLogging.logger(for: Self.self), sparingDefaultSessionItems: true)
 
         let after = RealKeychain.rows(service: source)
         RealKeychain.report(self, "scoped clear over two groups: left \(after)")

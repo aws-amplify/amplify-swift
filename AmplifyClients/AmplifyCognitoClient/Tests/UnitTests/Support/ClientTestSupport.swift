@@ -18,6 +18,8 @@ final class ClientHarness: @unchecked Sendable {
     let registry: SessionCoreDependencies.Registry
     let gates = SessionRecordGates()
     let revoker = FakeRevoker()
+    /// What revokes a login `.default`'s configuration-change rule deleted, so no test reaches Cognito.
+    let previousConfigurationRevoker = FakeRevoker()
     #if os(iOS) || os(macOS) || os(visionOS)
     /// This harness's own system-sheet lock, so no test touches `SystemSheetLock.shared`. A test may replace
     /// it, with seams, before it makes its clients.
@@ -80,6 +82,7 @@ final class ClientHarness: @unchecked Sendable {
             bounds: .init(restoreNanoseconds: bound),
             now: { [self] in TestClock.start.addingTimeInterval(withLock { clockOffset }) }
         )
+        dependencies.makePreviousConfigurationRevoker = { [previousConfigurationRevoker] _ in previousConfigurationRevoker }
         #if os(iOS) || os(macOS) || os(visionOS)
         dependencies.sheetLock = sheetLock
         #endif
@@ -151,13 +154,13 @@ final class ClientHarness: @unchecked Sendable {
         _ payload: FakePayload = .signedIn(),
         label: String? = nil,
         accessGroup: String? = nil
-    ) throws -> SessionRecordEnvelope {
+    ) throws -> VersionedSessionRecord {
         let outcome = try store(accessGroup: accessGroup).write(payload.record(label: label), for: sessionId, expecting: nil)
         keychain.resetLogs()
-        guard case .committed(let envelope) = outcome else {
+        guard case .committed(let committed) = outcome else {
             throw FixtureError(description: "fixture sign-in was discarded")
         }
-        return envelope
+        return committed
     }
 
     /// The stored record for `sessionId`, if readable.
@@ -166,6 +169,13 @@ final class ClientHarness: @unchecked Sendable {
             return nil
         }
         return envelope.record
+    }
+
+    /// The bytes stored under `sessionId`'s own record key, if any (for `.default`, the Auth plugin's record): what a
+    /// test compares with an envelope's `encoded()` to check every field of it, the schema version and timestamp
+    /// included.
+    func storedBytes(_ sessionId: SessionID, accessGroup: String? = nil) -> Data? {
+        keychain.value(store(accessGroup: accessGroup).sessionAccount(for: sessionId), accessGroup: accessGroup)
     }
 
     /// Reads of `sessionId`'s own record key since the logs were last cleared.
@@ -264,26 +274,6 @@ final class HandleHolder: @unchecked Sendable {
     }
 }
 
-/// Waits, bounded, for `client`'s check of the Auth plugin's record (the side-by-side check), if its core started one. The check
-/// runs detached after the restore, and its warning goes to a process-wide sink, so a test that can start one waits
-/// for it before it ends: otherwise the warning can land in a later test's count. Fails the test if the check never
-/// finishes.
-func settlePluginPrincipalCheck(
-    of client: AmplifyCognitoClient?,
-    file: StaticString = #filePath,
-    line: UInt = #line
-) async {
-    guard let check = await client?.core.pluginPrincipalCheck else {
-        return
-    }
-    let finished = Flag()
-    Task {
-        await check.value
-        finished.raise()
-    }
-    await waitUntil("the check of the Auth plugin's record finished", file: file, line: line) { finished.isRaised }
-}
-
 /// Blocks a thread until released: a keychain call that is stuck. The only way to simulate one, since
 /// the store is synchronous.
 final class Stall: @unchecked Sendable {
@@ -312,7 +302,7 @@ final class ConcurrentWriter: @unchecked Sendable {
     private let store: SessionRecordStore
     private let sessionId: SessionID
     private let budget: Int
-    private let change: @Sendable (SessionRecordEnvelope) -> SessionRecord
+    private let change: @Sendable (VersionedSessionRecord) -> SessionRecord
     private let lock = NSLock()
     private var moving = false
     private var commitCount = 0
@@ -321,7 +311,7 @@ final class ConcurrentWriter: @unchecked Sendable {
         store: SessionRecordStore,
         sessionId: SessionID,
         budget: Int = 1,
-        change: @escaping @Sendable (SessionRecordEnvelope) -> SessionRecord
+        change: @escaping @Sendable (VersionedSessionRecord) -> SessionRecord
     ) {
         self.store = store
         self.sessionId = sessionId
@@ -351,7 +341,7 @@ final class ConcurrentWriter: @unchecked Sendable {
         guard case .record(let envelope) = try? store.read(sessionId) else {
             return
         }
-        if case .committed? = try? store.write(change(envelope), for: sessionId, expecting: envelope.generation) {
+        if case .committed? = try? store.write(change(envelope), for: sessionId, expecting: envelope.version) {
             lock.lock()
             commitCount += 1
             lock.unlock()
@@ -445,6 +435,54 @@ func authClientError(
     } catch {
         XCTFail("expected an AuthClientError, got \(error)", file: file, line: line)
         return nil
+    }
+}
+
+/// The error of a `.failed` sign-out, expecting one: what a sign-out that used to throw now returns.
+func failedSignOutError(
+    _ result: AuthClientSignOutResult,
+    file: StaticString = #filePath,
+    line: UInt = #line
+) -> AuthClientError? {
+    guard case .failed(let error) = result else {
+        XCTFail("expected .failed, got \(result)", file: file, line: line)
+        return nil
+    }
+    XCTAssertFalse(result.signedOutLocally, file: file, line: line)
+    return error
+}
+
+extension AuthClientSignOutResult {
+
+    /// `.partial`, with each part `nil` unless given.
+    static func partialResult(
+        revokeTokenError: AuthClientError? = nil,
+        globalSignOutError: AuthClientError? = nil,
+        hostedUIError: AuthClientError? = nil,
+        storageError: AuthClientError? = nil
+    ) -> AuthClientSignOutResult {
+        .partial(
+            revokeTokenError: revokeTokenError,
+            globalSignOutError: globalSignOutError,
+            hostedUIError: hostedUIError,
+            storageError: storageError
+        )
+    }
+
+    /// The parts of a `.partial` result, by name.
+    struct PartialErrors {
+        let revokeTokenError: AuthClientError?
+        let globalSignOutError: AuthClientError?
+        let hostedUIError: AuthClientError?
+        let storageError: AuthClientError?
+    }
+
+    /// The parts, or `nil` for any other case.
+    var partialErrors: PartialErrors? {
+        guard case .partial(let revoke, let global, let hostedUI, let storage) = self else {
+            return nil
+        }
+        return PartialErrors(revokeTokenError: revoke, globalSignOutError: global, hostedUIError: hostedUI, storageError: storage)
     }
 }
 
