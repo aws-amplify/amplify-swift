@@ -132,6 +132,47 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), PluginRecordSummary.signedOutPayload)
     }
 
+    /// The source is signed out even when the revoke fails: the user asked to sign out and is signed out
+    /// on this device, so the record a carry came from must not bring them back. Only the server-side revoke failed.
+    ///
+    /// - Given: alice's record under X, the configuration the app last ran with, and `RevokeToken` failing
+    /// - When: `signOutStoredSession(.default)` runs under Y (X with an identity pool added, a carrying change); then a
+    ///   `.default` client restores under X; then, released, one restores under Y
+    /// - Then:
+    ///    - the result is `.partial(revokeTokenError:)` with the revoke's failure, and `signedOutLocally` is `true`
+    ///    - X's record and Y's record both hold `{"noCredentials":{}}`, and `authConfiguration` still names X
+    ///    - the restores under X and under Y are both `.signedOut`
+    func testStaticSignOutUnderACarryingConfiguration_withAFailedRevoke_stillSignsOutTheSource() async throws {
+        let appConfiguration = ChangeConfigs.userPoolOnly
+        let carryingConfiguration = ChangeConfigs.both
+        let before = try await pluginSignsIn("alice", under: appConfiguration)
+        let failure = AuthClientError.service(.network, "RevokeToken failed", "Retry later.")
+        harness.revoker.scriptRevokeOutcome { _ in EngineSignOutOutcome(revokeError: failure) }
+
+        let result = await AmplifyCognitoClient.signOutStoredSession(
+            sessionId: .default,
+            configuration: carryingConfiguration,
+            accessGroup: nil,
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(result, .partialResult(revokeTokenError: failure))
+        XCTAssertTrue(result.signedOutLocally)
+        XCTAssertEqual(harness.revoker.revokeCalls, [before])
+        XCTAssertEqual(harness.keychain.value(account(carryingConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.value(account(appConfiguration)), PluginRecordSummary.signedOutPayload)
+        XCTAssertEqual(harness.keychain.recordedPluginConfiguration(), AuthConfiguration(client: appConfiguration))
+
+        var underApp: AmplifyCognitoClient? = makeClient(appConfiguration)
+        let restoredUnderApp = await underApp?.currentSessionState()
+        underApp = nil
+        await harness.waitForBaseline()
+        XCTAssertEqual(restoredUnderApp, .signedOut)
+
+        let restoredUnderCarrying = await makeClient(carryingConfiguration).currentSessionState()
+        XCTAssertEqual(restoredUnderCarrying, .signedOut)
+    }
+
     /// The source is signed out only while it still holds the login just signed out.
     ///
     /// - Given: alice's record under X, and another writer saving bob under X while the static sign-out under Y revokes
