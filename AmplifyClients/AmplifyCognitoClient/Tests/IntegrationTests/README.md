@@ -244,6 +244,14 @@ AWS_PROFILE=<sandbox-profile> infra/self-sign-up.sh off [--force]   # recovery o
 AWS_PROFILE=<sandbox-profile> infra/teardown.sh                # destructive; removes only what provision made
 ```
 
+`provision.sh`, `prepare-run.sh` and `self-sign-up.sh on` refuse to start, before any AWS call, when the volume
+holding the state directory (`COGNITO_CLIENT_INTEG_DIR`, default `~/.amplify-cognito-client-integ`) has less than
+`COGNITO_CLIENT_INTEG_MIN_FREE_GIB` free: a whole number of GiB, **2** when unset or empty, and `0` skips the check.
+With a full disk the AWS CLI binary itself crashes part-way through a change, and says only that its launcher
+failed. `self-sign-up.sh off`, the recovery, never checks. When an AWS call does fail, `parity.py` prints the
+CLI's last stderr line and, when there is more, the last five lines, redacted (ids, ARNs, emails, the home
+directory and the user name masked).
+
 `provision.sh` creates one user pool with a public app client (SRP, password and refresh flows, token revocation
 on), one identity pool with unauthenticated identities enabled, and two IAM roles for it that **grant no
 permissions** (credentials are still vended, which is all the tests need). The pool's MFA is **optional** with
@@ -343,8 +351,14 @@ Before anything else, `prepare-run.sh` runs `parity.py preflight`, which is read
 - a parity pool is missing from `state.json` or the account (`MISSING`), has self sign-up on while no
   `infra/self-sign-up.sh` run holds a lease (`LEFT-ON`), or has it on against its template, or unstated
   (`DRIFT`). Self sign-up **off** is the resting state, never a gap;
-- a parity pool's MFA (`MfaConfiguration` and its methods) differs from its template as provisioned, degraded as
-  `state.json`'s `pending` list says (`MFA`). `provision.sh` re-applies it.
+- a parity pool's MFA (`MfaConfiguration`, its methods, and its WebAuthn relying party and user verification)
+  differs from its template as provisioned, degraded as `state.json`'s `pending` list says (`MFA`).
+  `provision.sh` re-applies it. The template's `${WEBAUTHN_RP_ID}` is resolved as provision resolves it, from the
+  WebAuthn harness's committed `webcredentials:` entitlement; when those files cannot be read, or disagree with
+  the plugin's, the gap is `WEBAUTHN`, and the fix is the files, not `provision.sh`. A pool whose template has no
+  WebAuthn accepts any answer Cognito gives for none (it leaves `WebAuthnConfiguration` out). `self-sign-up.sh on`
+  makes the same comparison; `off`, its release and `status` leave the WebAuthn settings out and never read the
+  harness's files, so a release always turns self sign-up off.
 
 `verify` reports the same and also exits non-zero.
 
@@ -424,33 +438,42 @@ is remembered for the rest of the run. Inside a run, which had turned self sign-
 that it was turned off during the run (an automated mitigation, another run's `off --force`, or a change by hand).
 The WebAuthn app reports the refusal as `SelfSignUpIsOff`.
 
-**The plugin's own suites on the sandbox need the wrapper too.** `infra/plugin-configs.py` (without `--dir`) writes
-their files into the plugin's `~/.aws-amplify/amplify-ios/testconfiguration`, backing up what it replaces
-(`--remove` puts it back), and their host apps copy that directory at build time. Without the wrapper, their
-sign-ups fail with `AuthError.notAuthorized` and Cognito's "SignUp is not permitted for this user pool". From the
-repository root, one wrapper per `xcodebuild`:
+**The plugin's own suites on the sandbox need the wrapper too.** Their host apps' copy phases (`AuthHostApp`'s
+"Copy Configuration folder", `AuthHostedUIApp`'s "Copy Integ test configuration folder", `AuthWebAuthnApp`'s "Copy
+Test Config") read `$COGNITO_CLIENT_INTEG_DIR` as the client's host app does, default
+`~/.aws-amplify/amplify-ios/testconfiguration`, so CI is unchanged. Point them at the same `--dir` file set, which
+leaves your own plugin configuration unread and untouched. Without the wrapper, their sign-ups fail with
+`AuthError.notAuthorized` and Cognito's "SignUp is not permitted for this user pool". From the repository root, one
+wrapper per `xcodebuild`, with `COGNITO_CLIENT_INTEG_DIR` after `--` ("Environment for the command goes after
+`--`", above):
 
 ```bash
 SSU="$PWD/AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/self-sign-up.sh"
 DEST='platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5'
-AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/plugin-configs.py
+DIR=$(mktemp -d /tmp/ccit-plugin-set.XXXXXX)
+AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/plugin-configs.py --dir "$DIR"
 cd AmplifyPlugins/Auth/Tests/AuthHostApp
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthHostApp.xcodeproj \
-  -scheme AuthIntegrationTests -destination "$DEST"                    # Gen1
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthHostApp.xcodeproj \
-  -scheme AuthGen2IntegrationTests -destination "$DEST"                # Gen2
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthHostApp.xcodeproj \
-  -scheme AuthStressTests -destination "$DEST"
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthHostApp.xcodeproj -scheme AuthIntegrationTests -destination "$DEST"          # Gen1
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthHostApp.xcodeproj -scheme AuthGen2IntegrationTests -destination "$DEST"      # Gen2
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthHostApp.xcodeproj -scheme AuthStressTests -destination "$DEST"
 cd ../AuthHostedUIApp
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthHostedUIApp.xcodeproj \
-  -scheme AuthHostedUIAppUITests -destination "$DEST"                  # Gen1
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthHostedUIApp.xcodeproj \
-  -scheme AuthHostedUIAppGen2UITests -destination "$DEST"              # Gen2
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppUITests -destination "$DEST"    # Gen1
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthHostedUIApp.xcodeproj -scheme AuthHostedUIAppGen2UITests -destination "$DEST" # Gen2
 cd ../AuthWebAuthnApp
 (cd LocalServer && npm install && npm start) &                          # the simulator server
-AWS_PROFILE=<sandbox-profile> "$SSU" on -- xcodebuild test -project AuthWebAuthnApp.xcodeproj \
-  -scheme AuthWebAuthnAppUITests -destination "$DEST"
+AWS_PROFILE=<sandbox-profile> "$SSU" on -- env COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild test \
+  -project AuthWebAuthnApp.xcodeproj -scheme AuthWebAuthnAppUITests -destination "$DEST"
+rm -rf "$DIR"
 ```
+
+The copy happens at build time, so rebuild after writing the file set again. `infra/plugin-configs.py` without
+`--dir` still writes the file set into `~/.aws-amplify/amplify-ios/testconfiguration` itself, backing up what it
+replaces (`--remove` puts it back), for a run that sets no `COGNITO_CLIENT_INTEG_DIR`.
 
 The hosted-UI and WebAuthn suites have the simulator constraints described under "Running the WebAuthn UI tests"
 and "Running the hosted-UI UI tests"; the same apply to the plugin's copies.
@@ -646,7 +669,7 @@ xcrun simctl uninstall "$UDID" com.aws.amplify.cognitoclient.CognitoClientHostAp
 **Configuration.** The test target's *Copy test configuration* build phase copies the plugin's file set
 ("Test configuration", above) from `$COGNITO_CLIENT_INTEG_DIR` (default
 `~/.aws-amplify/amplify-ios/testconfiguration`) into the built test bundle, which only exists in DerivedData. This
-is the same build-time copy `AuthHostApp` does from `~/.aws-amplify/amplify-ios/testconfiguration/`. If a file is
+is the same build-time copy `AuthHostApp` does, from the same directory and variable. If a file is
 missing, the build still succeeds with a warning naming it. The keychain probes still run, and every test that
 needs the file fails with a message naming it.
 
@@ -703,7 +726,7 @@ Simulator builds are signed ad hoc with these entitlements, so no team or provis
 | `PluginTestConfigurationTests` | The Gen1 translation, offline, over made-up documents: every mapped key reaches the client's configuration, absent keys get the plugin's Gen1 values, values the plugin tolerates are read as it reads them (an identity pool without a region, a non-string scope, an incomplete hosted UI, each MFA mode, a string minimum length, a REST API), what Gen2 cannot carry is refused with the file's name, and the Gen2 file wins over the Gen1 one |
 | `SandboxHelperTests` | The multi-pool helpers against every role's backend: every pool confirms a fresh user and cleanup deletes it (answering each pool's MFA); sign-up, resent, reset-password, attribute-verification, MFA and OTP codes reach the sink; `email-alias` codes are found by the generated username; TOTP-enrolled and unconfirmed users are cleaned up; sessions on several pools are cleaned up with their own pool. On the plugin's CI backends they check what those backends promise (SRP sign-ins, users confirmed with their code, the first code sent after a request); what only the sandbox provisions is a sandbox check ("Sandbox checks", above), which skips elsewhere |
 | `WebAuthnCredentialsIntegrationTests` | WebAuthn credential listing and deletion, headless, on the WebAuthn pool (U-WA): a fresh user with no passkey lists an empty page (default size and size 1); deleting a credential Cognito never issued is `.service(.resourceNotFound)` and leaves the session signed in; page sizes 0 and 21 are refused with `.validation(field: "pageSize")` and send nothing; a signed-out session is `.notSignedIn` with no request. Requests are checked with `RecordingHTTPClient`. No passkey is registered, so no simulator sheet is needed |
-| `PasswordlessSignInTests` | PL-1 … PL-23, the plugin's `PasswordlessSignInTests` with its method names: choice-based sign-in (`USER_AUTH`) on `passwordless` (U-PL: `PASSWORD`, `PASSWORD_SRP`, `EMAIL_OTP`, `SMS_OTP`). Each preferred first factor signs in (PL-1, PL-2, PL-6, PL-7) or reaches its one-time-code step with the code in the sink (PL-12, PL-13); with no preference, the first-factor selection and each choice (PL-3, PL-5, PL-8 … PL-10); wrong passwords (PL-4, PL-14 … PL-17; in `USER_AUTH` a wrong password ends the attempt); right and wrong email and SMS codes, a wrong code keeping the step pending (PL-18 … PL-23). PL-11 (WA-d), `testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`: `userAuth(preferredFirstFactor: .webAuthn)` through the anchored overload gets `.continueSignInWithFirstFactorSelection` without `.webAuthn` after one `InitiateAuth` `USER_AUTH` and no challenge answer, since U-PL offers no `WEB_AUTHN`; no sheet is shown, so no simulator server is needed. Each test signs up its own user with a password, an `@example.com` email and a fictional `+1555` number; codes come from the sink. Requests are checked with `RecordingHTTPClient.answered` |
+| `PasswordlessSignInTests` | PL-1 … PL-23, the plugin's `PasswordlessSignInTests` with its method names: choice-based sign-in (`USER_AUTH`) on `passwordless` (U-PL: `PASSWORD`, `PASSWORD_SRP`, `EMAIL_OTP`, `SMS_OTP`). Each preferred first factor signs in (PL-1, PL-2, PL-6, PL-7) or reaches its one-time-code step with the code in the sink (PL-12, PL-13); with no preference, the first-factor selection and each choice (PL-3, PL-5, PL-8 … PL-10); wrong passwords (PL-4, PL-14 … PL-17; in `USER_AUTH` a wrong password ends the attempt); right and wrong email and SMS codes, a wrong code keeping the step pending (PL-18 … PL-23). PL-11, `testSignInWithUnsupportedPreference_givenValidUser_expectSelectChallenge`: `userAuth(preferredFirstFactor: .webAuthn)` through the anchored overload gets `.continueSignInWithFirstFactorSelection` without `.webAuthn` after one `InitiateAuth` `USER_AUTH` and no challenge answer, since U-PL offers no `WEB_AUTHN`; no sheet is shown, so no simulator server is needed. Each test signs up its own user with a password, an `@example.com` email and a fictional `+1555` number; codes come from the sink. Requests are checked with `RecordingHTTPClient.answered` |
 | `MultiSessionFlowTests` | The multi-session flows over the live engine with `alice` and `bob`, two fresh users per test: MS-1 two users signed in at once, MS-3 a sign-out (`.complete`) keeps the stored row, MS-4 `storedSessions` lists every session, `.default` from the plugin's record, MS-5 a credentials provider per session; MS-2 (signing one session out leaves the other signed in, and the event goes to the signed-out session only) is in `MultiSessionFlowTests+SignOut`, and MS-6 (the same user in two independent sessions) in `MultiSessionFlowTests+SameUser` |
 | `KeychainModuleRealKeychainTests` | Parity KM-1 … KM-11: the plugin's `ScopedWipeRealKeychainTests` (Q1–Q3, Q5, Q6), with their names, over `InternalAmplifyKeychain` reached through the client's product. Services unique to each test |
 | `ChallengeTests` | CH-1 … CH-6: the new-password challenge of the first of the credentials file's new-password users still in `FORCE_CHANGE_PASSWORD` (moving on when another run takes one), a fresh TOTP user's challenge, a pending challenge is per session, a new sign-in supersedes it, a wrong code keeps it, an expired challenge session is `challengeExpired` (waits out the 3-minute validity, so about 3 minutes) |

@@ -1333,7 +1333,9 @@ let rows = try await AmplifyCognitoClient.storedSessions(
 
 One rollback caveat: a purge, or the plugin's own sign-out, after a configuration change that copied the login,
 then a rollback to the build with the earlier configuration: that build finds the earlier copy and signs the user
-back in. A sign-out through the client never does this. See [Rolling back and forward](#rolling-back-and-forward).
+back in. A sign-out through the client doesn't do this: it keeps the user signed out under the same configuration,
+and across rollbacks. The exception, as with the plugin, is a later configuration change onto an earlier
+configuration's copy. See [Rolling back and forward](#rolling-back-and-forward).
 
 ### Labels and the signed-out row after a plugin action
 
@@ -1375,7 +1377,8 @@ never log it. The warning is temporary: it goes when the plugin uses the client 
 | Case | What happens |
 |---|---|
 | Back to a plugin-only release | The plugin reads `.default`'s latest login, signed in or signed out. Named sessions are not seen, and come back on roll-forward, unless the released plugin's access-group transition wiped its keychain service |
-| A purge, or the plugin's own sign-out, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client never does this: it saves a signed-out login, which that build reads as signed out |
+| A purge, or the plugin's own sign-out, after a configuration change that copied the login, then a rollback to the build with the earlier configuration | **That build finds the earlier copy and signs the user back in.** The copy keeps its source, as the plugin's does, and a purge or the plugin's sign-out deletes only the current configuration's login. A sign-out through the client doesn't do this: it saves a signed-out login, which that build reads as signed out |
+| A sign-out through the client, then a later configuration change that the rule doesn't copy across, onto a configuration whose key still holds an earlier copy of the user | **That copy is restored signed in**, as with the plugin: the change deletes the signed-out login and lands on the old copy. For example: alice signs in under A; B adds an identity pool and copies her, keeping A's copy; she signs out under B; D (the same user pool with a new app client, and A's identity pool) deletes B's signed-out login, and its key is A's, which still holds her |
 | Back to a plugin release before 2.51.0, with refresh-token rotation on | That plugin can't refresh on the app client at all, whatever the client did |
 
 ## Changing the configuration
@@ -1410,14 +1413,22 @@ current one:
   revocation enabled. If the revoke fails, the warning "A login deleted by a configuration change could not be
   revoked; its refresh token stays valid until it expires." is logged under `AmplifyCognitoClient.DefaultSession`.
   A login of another user pool isn't revoked, and stays valid until it expires.
-- **The client records the configuration for the plugin**, in the plugin's own `authConfiguration` item, so a
-  plugin build started next compares with the client's configuration. A rollback to a plugin build after a
+- **The client records the configuration for the plugin** when it restores `.default`, in the plugin's own
+  `authConfiguration` item, so a plugin build started next compares with the client's configuration. A rollback to a plugin build after a
   configuration change never copies an older login over a newer one.
 - A label goes with a copied login, and is deleted with a deleted one: no signed-out row is left under the old
   configuration for a login the user never signed out of.
-- **`signOutStoredSession` and `purgeStoredSession` apply the rule only when it copies.** They may be called with a
-  configuration other than the app's, so when the rule would delete they leave everything as it is: no delete, no
-  revoke, and no configuration recorded. The next restore under the new configuration applies the rule.
+- **`signOutStoredSession` and `purgeStoredSession` apply the rule only when it copies, and never record a
+  configuration.** They may be called with a configuration other than the app's, so when the rule would delete they
+  leave everything as it is: no delete and no revoke. When it copies, they sign out or delete the copy, but the
+  recorded configuration stays the one the app last ran with: only a restore records one.
+  - `signOutStoredSession` then also signs out the login it copied from, while that still holds the user it just
+    signed out, so the user stays signed out under both configurations: a restore under the app's configuration
+    reads them signed out, and a later move to the new one copies the signed-out login. A login another writer has
+    changed meanwhile is left alone.
+  - `purgeStoredSession` revokes nothing, so it leaves the login it copied from as it was: the app's login under its
+    own configuration. The next restore under the new configuration copies it again, over the deleted copy. To end
+    that login, sign it out instead.
 - **An app and its extensions sharing an access group must use the same configuration for `.default`.** They share
   the plugin's saved login and its recorded configuration, so with two configurations each launch applies the rule
   against the other's. Where the rule deletes, each launch deletes the other's login, and on the same user pool

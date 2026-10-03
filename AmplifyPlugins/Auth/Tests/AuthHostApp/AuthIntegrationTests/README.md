@@ -90,6 +90,8 @@ amplify push
 
 This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`.
 
+To use another directory holding the same file names, set `COGNITO_CLIENT_INTEG_DIR` on the `xcodebuild` command, for example `COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing …`. The test targets' "Copy Configuration folder" build phase then copies that directory instead of `~/.aws-amplify/amplify-ios/testconfiguration/`, which it does not read. Unset, as on CI, it copies `~/.aws-amplify/amplify-ios/testconfiguration/`.
+
 For Auth Device tests:
 Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
 
