@@ -47,6 +47,10 @@ jobs:
       timeout-minutes: 180
       # The tests run inside the host app, so it is the only app to remove before the retry.
       uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+      # The tests whose resource the plugin's CI does not provide skip here, each naming it (the
+      # README's "Running in CI"). A local run never sets it, so local runs stay strict, and a sandbox file set
+      # never skips.
+      cognito_client_integ_ci_skips: '1'
     secrets: inherit
 
   auth-client-plugin-interop-tests:
@@ -60,6 +64,8 @@ jobs:
       timeout-minutes: 60
       # The tests run inside the host app, so it is the only app to remove before the retry.
       uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
+      # So RT-1 and RT-2, which skip without the rotation client's outputs, say the skip is CI's.
+      cognito_client_integ_ci_skips: '1'
     secrets: inherit
 
   auth-client-ui-integration-test-iOS:

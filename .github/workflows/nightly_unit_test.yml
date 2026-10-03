@@ -23,6 +23,7 @@ jobs:
           AWSAPIPlugin,
           AWSCloudWatchLoggingPlugin,
           AWSCognitoAuthPlugin,
+          AmplifyCognitoClient,
           AWSDataStorePlugin,
           AWSLocationGeoPlugin,
           AWSPredictionsPlugin,

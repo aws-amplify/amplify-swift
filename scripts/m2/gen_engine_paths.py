@@ -27,8 +27,6 @@ ENGINE = "AmplifyClients/Internal/InternalAWSCognitoAuth/Sources"
 # Directories that move whole, with the files kept back in the plugin. All of StateMachine/, Actions/
 # (Action+Logging included) and ASF/ has moved, so they are listed from Engine/.
 MOVED_DIRECTORIES = {
-    # DefaultSessionRecordReader.swift moves with the directory, so its
-    # `catch KeychainStoreError.itemNotFound` is engine-destined and is re-pointed at the engine's error.
     "CredentialStorage": ["CredentialStorage/AmplifyCredentials+CognitoSession.swift"],
     "Service": [
         "Service/ErrorMapping/AuthErrorConvertible.swift",        # the plugin keeps the protocol
