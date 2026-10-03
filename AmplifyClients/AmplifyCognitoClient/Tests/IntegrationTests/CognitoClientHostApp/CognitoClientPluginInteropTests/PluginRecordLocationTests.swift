@@ -52,6 +52,8 @@ final class PluginRecordLocationTests: XCTestCase {
         XCTAssertTrue(left.isEmpty, "setUp left \(left.map(RealKeychain.redact))")
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
         try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
+        // The test signs its user up through a client before the plugin's first call.
+        try await InteropEnvironment.settlePlugin()
     }
 
     /// Removes `.default`'s items first, whatever failed, then signs out only when Auth is configured:
@@ -310,6 +312,76 @@ enum InteropEnvironment {
                 throw InteropError("Session \(sessionId) was not released; is a client still held?")
             }
             try await Task.sleep(nanoseconds: 50_000_000)
+        }
+    }
+
+    /// Waits until the plugin `Amplify.configure` just configured has settled: it has built its credential store,
+    /// which writes the `authConfiguration` item, and loaded its session. Call it after every configure that a
+    /// client on `.default` follows.
+    ///
+    /// The plugin builds its credential store after `configure` returns, and a client's `.default` restore writes
+    /// the same `authConfiguration` item, so without this the two race for it. Running the plugin and a client
+    /// side by side is not supported (D-i), and a test must not rely on it.
+    ///
+    /// `getCurrentUser()` waits for the plugin to be configured, as every plugin call does, and then only reads.
+    /// It throws `signedOut` when no one is signed in, which is ignored. Not `fetchAuthSession()`: signed out, on
+    /// the default backend (whose identity pool allows guests) it fetches guest credentials and saves a guest record.
+    ///
+    /// Bounded: a plugin that never finishes configuring fails the test after `timeout` instead of hanging the run.
+    /// The call is not structured under the timer, so a call that ignores cancellation cannot hold the wait open.
+    static func settlePlugin(timeout: TimeInterval = 60) async throws {
+        let gate = SettleGate()
+        let call = Task {
+            _ = try? await Amplify.Auth.getCurrentUser()
+            gate.finish(settled: true)
+        }
+        let timer = Task {
+            try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+            gate.finish(settled: false)
+        }
+        let settled = await gate.wait()
+        timer.cancel()
+        guard settled else {
+            call.cancel()
+            throw InteropError("""
+            The plugin did not finish configuring within \(Int(timeout)) s: Amplify.Auth.getCurrentUser() never \
+            returned, so its credential store was never built.
+            """)
+        }
+    }
+
+    /// The first of `settlePlugin`'s call and timer to finish, waited for once.
+    private final class SettleGate: @unchecked Sendable {
+        private let lock = NSLock()
+        private var result: Bool?
+        private var waiter: CheckedContinuation<Bool, Never>?
+
+        /// Records the first outcome and resumes the waiter, if one is waiting. Later outcomes are ignored.
+        func finish(settled: Bool) {
+            lock.lock()
+            guard result == nil else {
+                lock.unlock()
+                return
+            }
+            result = settled
+            let waiter = waiter
+            self.waiter = nil
+            lock.unlock()
+            waiter?.resume(returning: settled)
+        }
+
+        /// The first outcome, waiting for it if neither has finished yet.
+        func wait() async -> Bool {
+            await withCheckedContinuation { continuation in
+                lock.lock()
+                if let result {
+                    lock.unlock()
+                    continuation.resume(returning: result)
+                } else {
+                    waiter = continuation
+                    lock.unlock()
+                }
+            }
         }
     }
 

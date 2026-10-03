@@ -52,7 +52,7 @@ final class PluginRotationTests: XCTestCase {
         }
         RealKeychain.wipe(SessionRecordStore.unsharedService)
         alice = try await InteropEnvironment.signUpFreshUser()
-        try configurePlugin()
+        try await configurePlugin()
     }
 
     /// Signs the plugin out (revoking the newest refresh token it holds), whatever failed, then deletes the user and
@@ -195,15 +195,18 @@ final class PluginRotationTests: XCTestCase {
         """)
     }
 
-    private func configurePlugin() throws {
+    /// Configures the plugin and waits until it has settled (`InteropEnvironment.settlePlugin()`), so a client on
+    /// `.default` created next does not race it for the `authConfiguration` item.
+    private func configurePlugin() async throws {
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
         try Amplify.configure(with: .data(outputsData))
+        try await InteropEnvironment.settlePlugin()
     }
 
     /// A new plugin over the same keychain, as at the app's next launch.
     private func relaunchPlugin() async throws {
         await Amplify.reset()
-        try configurePlugin()
+        try await configurePlugin()
     }
 
     /// The plugin's user pool tokens, optionally after a forced refresh. Never printed.

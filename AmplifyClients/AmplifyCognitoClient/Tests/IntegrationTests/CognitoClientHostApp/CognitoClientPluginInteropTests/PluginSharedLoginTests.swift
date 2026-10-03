@@ -58,7 +58,7 @@ final class PluginSharedLoginTests: XCTestCase {
         try InteropEnvironment.deleteSessionAccount(leftoverAccount)
         XCTAssertEqual(records(), "plugin: absent, sidecar: absent, leftover: absent", "setUp left a record")
         alice = try await InteropEnvironment.signUpFreshUser()
-        try configurePlugin()
+        try await configurePlugin()
     }
 
     /// Signs the plugin out first (which revokes the refresh token it holds, if any), then purges every session
@@ -453,16 +453,19 @@ final class PluginSharedLoginTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func configurePlugin() throws {
+    /// Configures the plugin and waits until it has settled (`InteropEnvironment.settlePlugin()`), so a client on
+    /// `.default` created next does not race it for the `authConfiguration` item.
+    private func configurePlugin() async throws {
         try Amplify.add(plugin: AWSCognitoAuthPlugin())
         try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
+        try await InteropEnvironment.settlePlugin()
     }
 
     /// A new plugin over the same keychain, as at the app's next launch: the plugin reads its record when it is
     /// configured, and keeps its tokens in memory after that.
     private func relaunchPlugin() async throws {
         await Amplify.reset()
-        try configurePlugin()
+        try await configurePlugin()
     }
 
     private func makeDefaultClient(_ recorder: UserPoolRequestRecorder) throws -> AmplifyCognitoClient {

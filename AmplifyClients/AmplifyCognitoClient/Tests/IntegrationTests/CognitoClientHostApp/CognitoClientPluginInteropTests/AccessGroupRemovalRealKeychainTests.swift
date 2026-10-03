@@ -150,6 +150,7 @@ final class AccessGroupRemovalRealKeychainTests: XCTestCase {
             secureStoragePreferences: AWSCognitoSecureStoragePreferences(accessGroup: accessGroup)
         ))
         try Amplify.configure(with: .data(InteropEnvironment.outputsData()))
+        try await InteropEnvironment.settlePlugin()
     }
 
     /// Both services' accounts and groups, never their data: the session record holds real tokens. The
