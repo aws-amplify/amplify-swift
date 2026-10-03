@@ -30,13 +30,14 @@ extension EngineMFAType: Sendable { }
 
 package extension EngineMFAType {
 
-    /// A static site (no environment in scope), so it logs through the global router. The category is
-    /// the public type's `DefaultLogger` category, written as a literal so the fork's name never shows.
-    private static var log: EngineLogger {
-        EngineLog.logger(.category("MFAType"))
-    }
+    /// The scope of the parser's line: the public type's `DefaultLogger` category, written as a literal so
+    /// the fork's name never shows.
+    static let logScope = EngineLogScope.category("MFAType")
 
-    init?(rawValue: String) {
+    /// Parses a Cognito MFA name, logging an unsupported one through `logger`, the caller's: the
+    /// plugin's resolves the scope to `Amplify.Logging.logger(forCategory: "MFAType")`, as before, and a
+    /// standalone client's to its own category.
+    init?(rawValue: String, logger: any EngineScopedLogger) {
         if rawValue.caseInsensitiveCompare("SMS_MFA") == .orderedSame {
             self = .sms
         } else if rawValue.caseInsensitiveCompare("SOFTWARE_TOKEN_MFA") == .orderedSame {
@@ -44,7 +45,7 @@ package extension EngineMFAType {
         } else if rawValue.caseInsensitiveCompare("EMAIL_OTP") == .orderedSame {
             self = .email
         } else {
-            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            logger.scoped(Self.logScope).error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil
         }
     }

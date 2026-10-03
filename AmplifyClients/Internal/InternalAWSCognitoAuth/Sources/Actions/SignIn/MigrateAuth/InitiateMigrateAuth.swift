@@ -57,7 +57,8 @@ package struct InitiateMigrateAuth: Action {
                 )
                 responseEvent = try await sendRequest(
                     request: request,
-                    environment: userPoolEnv
+                    environment: userPoolEnv,
+                    logger: environment.engineLogger
                 )
 
             } else {
@@ -71,7 +72,8 @@ package struct InitiateMigrateAuth: Action {
                 )
                 responseEvent = try await sendRequest(
                     request: request,
-                    environment: userPoolEnv
+                    environment: userPoolEnv,
+                    logger: environment.engineLogger
                 )
             }
 
@@ -95,7 +97,8 @@ package struct InitiateMigrateAuth: Action {
 
     private func sendRequest(
         request: RespondToAuthChallengeInput,
-        environment: UserPoolEnvironment
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
     ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
@@ -105,13 +108,15 @@ package struct InitiateMigrateAuth: Action {
         return UserPoolSignInHelper.parseResponse(
             response,
             for: username,
-            signInMethod: .apiBased(.userPassword)
+            signInMethod: .apiBased(.userPassword),
+            logger: logger
         )
     }
 
     private func sendRequest(
         request: InitiateAuthInput,
-        environment: UserPoolEnvironment
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
     ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
@@ -121,7 +126,8 @@ package struct InitiateMigrateAuth: Action {
         return UserPoolSignInHelper.parseResponse(
             response,
             for: username,
-            signInMethod: .apiBased(.userPassword)
+            signInMethod: .apiBased(.userPassword),
+            logger: logger
         )
     }
 

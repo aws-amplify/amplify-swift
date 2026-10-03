@@ -18,7 +18,7 @@ package struct InitializeResolveChallenge: Action {
     package func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let nextStep = try resolveNextSignInStep(for: challenge)
+            let nextStep = try resolveNextSignInStep(for: challenge, logger: environment.engineLogger)
             let event = SignInChallengeEvent(eventType: .waitForAnswer(challenge, signInMethod, nextStep))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
@@ -40,7 +40,10 @@ package struct InitializeResolveChallenge: Action {
         }
     }
 
-    private func resolveNextSignInStep(for challenge: RespondToAuthChallenge) throws -> EngineSignInStep {
+    private func resolveNextSignInStep(
+        for challenge: RespondToAuthChallenge,
+        logger: any EngineScopedLogger
+    ) throws -> EngineSignInStep {
         switch challenge.challenge.authChallengeType {
         case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
@@ -54,9 +57,9 @@ package struct InitializeResolveChallenge: Action {
         case .passwordRequired:
             return .confirmSignInWithPassword
         case .selectMFAType:
-            return .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection)
+            return .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection(logger: logger))
         case .setUpMFA:
-            var allowedMFATypesForSetup = challenge.getAllowedMFATypesForSetup
+            var allowedMFATypesForSetup = challenge.getAllowedMFATypesForSetup(logger: logger)
             // remove SMS, as it is not supported and should not be sent back to the customer, since it could be misleading
             allowedMFATypesForSetup.remove(.sms)
             if allowedMFATypesForSetup.count > 1 {

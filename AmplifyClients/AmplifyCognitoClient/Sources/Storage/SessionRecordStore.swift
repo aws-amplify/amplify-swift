@@ -20,10 +20,16 @@ import InternalAmplifyKeychain
 ///
 /// This type does not serialize callers. Exclusion is per session record and belongs to the session that
 /// owns it; the commit guard on `write` is what bounds a writer the process cannot exclude.
+///
+/// **`.default` uses the Auth plugin's saved login** (`SessionRecordStore+DefaultSession.swift`):
+/// its session record is the plugin's own item, `amplify.<poolNamespace>.session`, holding the plugin's
+/// `AmplifyCredentials` JSON, guarded on its stored bytes; a sidecar beside it holds what that format cannot (the label,
+/// and the last user for a signed-out row). Named sessions keep their own envelopes under
+/// `amplify.1.<poolNamespace>.<sessionId>.session`.
 struct SessionRecordStore: Sendable {
 
     /// The service the Auth plugin stores its records under with no access group. Session records are
-    /// siblings of the plugin's under the same service, so rollback and read-through adoption work.
+    /// siblings of the plugin's under the same service, and `.default`'s is the plugin's own.
     static let unsharedService = "com.amplify.awsCognitoAuthPlugin"
 
     /// The service the Auth plugin uses when an access group is configured.
@@ -55,6 +61,17 @@ struct SessionRecordStore: Sendable {
     /// Which app's namespace markers this store reads and writes (`SessionRecordStore+CopyForward.swift`): a
     /// digest of the bundle identifier, so an app and an extension sharing the access group keep their own.
     let markerScope: String
+    /// What `.default`'s shared record holds, read from its stored format without decoding the credentials
+    /// (`PluginRecordSummary.peek`). Injectable so tests can use their own payloads.
+    let summarizeSharedRecord: @Sendable (Data) -> PluginRecordSummary
+    /// Whether a read that finds `.default`'s shared record absent reads it once more before answering "absent".
+    /// On by default on macOS only, where the keychain's `set` deletes the item and adds it again, so a reader
+    /// in another process can find it missing in between; a property so tests can drive it on every platform.
+    let rereadsAbsentSharedRecord: Bool
+    /// Whether two payloads hold the same credentials, however they are encoded (`CredentialSlot.sameCredentials`):
+    /// what a sign-out compares, so the Auth plugin saving `.default`'s credentials again in other bytes is not
+    /// another writer's sign-in. The engine's format; injectable for tests' payloads.
+    let sameCredentials: @Sendable (Data, Data) -> Bool
 
     init(
         namespace: SessionStorageNamespace,
@@ -63,7 +80,10 @@ struct SessionRecordStore: Sendable {
         userPoolTokensOnly: @escaping @Sendable (Data) throws -> Data? = CredentialSlot.userPoolTokensOnly,
         identityIdOf: @escaping @Sendable (Data) -> String? = CredentialSlot.identityId,
         refreshTokenOf: @escaping @Sendable (Data) -> String? = CredentialSlot.refreshToken,
-        markerScope: String = SessionRecordStore.appMarkerScope
+        markerScope: String = SessionRecordStore.appMarkerScope,
+        summarizeSharedRecord: @escaping @Sendable (Data) -> PluginRecordSummary = PluginRecordSummary.peek,
+        rereadsAbsentSharedRecord: Bool = SessionRecordStore.rereadsAbsentSharedRecordByDefault,
+        sameCredentials: @escaping @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials
     ) {
         self.namespace = namespace
         self.keychain = keychain
@@ -72,6 +92,9 @@ struct SessionRecordStore: Sendable {
         self.identityIdOf = identityIdOf
         self.refreshTokenOf = refreshTokenOf
         self.markerScope = markerScope
+        self.summarizeSharedRecord = summarizeSharedRecord
+        self.rereadsAbsentSharedRecord = rereadsAbsentSharedRecord
+        self.sameCredentials = sameCredentials
     }
 
     /// A store over the real keychain.
@@ -80,25 +103,28 @@ struct SessionRecordStore: Sendable {
             namespace: namespace,
             keychain: KeychainItemStore(
                 service: Self.service(forAccessGroup: namespace.accessGroup),
-                accessGroup: namespace.accessGroup
+                accessGroup: namespace.accessGroup,
+                logger: ClientLog.logger(ClientLog.keychainItemStore)
             )
         )
     }
 
     // MARK: Accounts
 
+    /// The account of a session's record: for `.default` the Auth plugin's own (`pluginSessionAccount(for:)`), for a
+    /// named session its envelope's.
     func sessionAccount(for sessionId: SessionID) -> String {
-        SessionRecordKey.account(for: sessionId, in: namespace.pools, kind: .session)
+        pluginSessionAccount(for: sessionId) ?? SessionRecordKey.account(for: sessionId, in: namespace.pools, kind: .session)
     }
 
     func challengeAccount(for sessionId: SessionID) -> String {
         SessionRecordKey.account(for: sessionId, in: namespace.pools, kind: .challenge)
     }
 
-    /// The plugin's own record, for the one session that reads through to it: `.default`, which adopts
-    /// the plugin's signed-in user. Named sessions never read, write or delete it.
-    func legacyAccount(for sessionId: SessionID) -> String? {
-        sessionId == .default ? SessionRecordKey.legacySessionAccount(in: namespace.pools) : nil
+    /// The Auth plugin's own record, `amplify.<poolNamespace>.session`: `.default`'s session record, and no other
+    /// session's. `nil` for named sessions, which never read, write or delete it.
+    func pluginSessionAccount(for sessionId: SessionID) -> String? {
+        sessionId == .default ? SessionRecordKey.pluginSessionAccount(in: namespace.pools) : nil
     }
 
     // MARK: Read
@@ -107,11 +133,8 @@ struct SessionRecordStore: Sendable {
     enum ReadResult: Equatable, Sendable {
         /// Nothing is stored. The only result that means "no session".
         case absent
-        /// A record this build reads.
-        case record(SessionRecordEnvelope)
-        /// The Auth plugin's record, read in place for `.default`. The payload is the
-        /// plugin's serialized credentials, opaque here; label, username and kind are unknown.
-        case pluginRecord(Data)
+        /// A record this build reads, with the version a write over it must expect.
+        case record(VersionedSessionRecord)
         /// A record written by a newer schema. Present, so not "no session", and not corrupt: it is
         /// never overwritten by `write` or deleted except by an explicit sign-out or purge.
         case unsupportedSchema(version: Int)
@@ -119,38 +142,32 @@ struct SessionRecordStore: Sendable {
         case corrupt
     }
 
-    /// Reads a session's record.
+    /// Reads a session's record: for `.default`, the shared record and its sidecar (`readDefault()`).
     ///
-    /// Precedence: the session's own key first. Only if that key holds **no item** — not if reading it
-    /// fails, and not if it holds something unreadable — does `.default` fall through
-    /// to the plugin's record. Falling through on a failed read would pick up a stale plugin record and
-    /// then write it forward over a good one.
-    ///
-    /// - Throws: `AuthClientError.storageUnavailable` if either key could not be read.
+    /// - Throws: `AuthClientError.storageUnavailable` if the record (or `.default`'s sidecar) could not be read.
     func read(_ sessionId: SessionID) throws -> ReadResult {
+        if sessionId == .default {
+            return try readDefault()
+        }
         if let data = try fetch(sessionAccount(for: sessionId), operation: "read the session record") {
             switch SessionRecordEnvelope.decode(data) {
             case .envelope(let envelope):
-                return .record(envelope)
+                return .record(VersionedSessionRecord(envelope))
             case .unsupportedSchema(let version):
                 return .unsupportedSchema(version: version)
             case .corrupt:
                 return .corrupt
             }
         }
-        guard let legacyAccount = legacyAccount(for: sessionId),
-              let data = try fetch(legacyAccount, operation: "read the Auth plugin's session record") else {
-            return .absent
-        }
-        return .pluginRecord(data)
+        return .absent
     }
 
     // MARK: Write
 
     /// Whether a guarded write landed.
     enum CommitOutcome: Equatable, Sendable {
-        /// Written, as this envelope.
-        case committed(SessionRecordEnvelope)
+        /// Written: the record as a read would now return it, with the version a write over it must expect.
+        case committed(VersionedSessionRecord)
         /// Not written, because the record is no longer what the caller read. Not an error.
         case discarded
 
@@ -162,11 +179,11 @@ struct SessionRecordStore: Sendable {
 
     /// Writes `record` only if the stored record is still the one the caller read — the commit guard.
     ///
-    /// Re-reads the session's key and compares its generation with `expectedGeneration` (`nil` means
-    /// "I read no record"). If they match, writes the record one generation later, conditioned on the
-    /// stored bytes being unchanged; the first write goes through add-if-absent. Otherwise writes nothing
-    /// and returns `.discarded`. A record this build cannot read (newer schema, corrupt) is never
-    /// overwritten here, so it discards too.
+    /// Re-reads the session's key and compares its generation with `expected` (`nil` means "I read no
+    /// record"; a `.storedBytes` version never matches a generation). If they match, writes the record one
+    /// generation later, conditioned on the stored bytes being unchanged; the first write goes through
+    /// add-if-absent. Otherwise writes nothing and returns `.discarded`. A record this build cannot read
+    /// (newer schema, corrupt) is never overwritten here, so it discards too.
     ///
     /// **This is not atomic, and cannot be.** The keychain has no compare-and-swap, so a window remains
     /// between the re-read and the write in which another process sharing the access group can land.
@@ -178,8 +195,8 @@ struct SessionRecordStore: Sendable {
     /// concurrent refresh that already rotated the refresh token. Forcing the write restores the older
     /// token, which the server has already invalidated, and the session can never refresh again.
     ///
-    /// The plugin's record is never written, even for `.default`: the first write
-    /// lands on the session's own key and the plugin's copy is left as it was.
+    /// **`.default`** writes the Auth plugin's record instead, guarded on its stored bytes, and then its sidecar
+    /// (`writeDefault`, `SessionRecordStore+DefaultSession.swift`). No namespace marker is written for it.
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if the record could not be read or written.
     ///
@@ -190,9 +207,12 @@ struct SessionRecordStore: Sendable {
     func write(
         _ record: SessionRecord,
         for sessionId: SessionID,
-        expecting expectedGeneration: UInt64?,
+        expecting expected: RecordVersion?,
         recordingMarker: Bool = true
     ) throws -> CommitOutcome {
+        if sessionId == .default {
+            return try writeDefault(record, expecting: expected)
+        }
         let account = sessionAccount(for: sessionId)
         let current = try fetch(account, operation: "read the session record before writing it")
 
@@ -201,8 +221,7 @@ struct SessionRecordStore: Sendable {
         var starts = true
         if let current {
             guard case .envelope(let stored) = SessionRecordEnvelope.decode(current),
-                  let expectedGeneration,
-                  stored.generation == expectedGeneration else {
+                  expected == .generation(stored.generation) else {
                 return .discarded
             }
             starts = stored.record.isSignedOut
@@ -212,7 +231,7 @@ struct SessionRecordStore: Sendable {
             }
             nextGeneration = next
         } else {
-            guard expectedGeneration == nil else {
+            guard expected == nil else {
                 return .discarded
             }
             nextGeneration = 1
@@ -228,7 +247,7 @@ struct SessionRecordStore: Sendable {
             // (`SessionRecordStore+CopyForward.swift`). Best effort.
             recordStartedHere(sessionId, record: record)
         }
-        return committed ? .committed(envelope) : .discarded
+        return committed ? .committed(VersionedSessionRecord(envelope)) : .discarded
     }
 
     // MARK: Sign-out and purge
@@ -237,8 +256,7 @@ struct SessionRecordStore: Sendable {
     enum SignOutOutcome: Equatable, Sendable {
         /// The record now holds no credentials: this call wrote it signed out, or it already was.
         case signedOut
-        /// There is no record at either key — nothing was stored, or it was purged concurrently — and
-        /// none was created.
+        /// There is no record — nothing was stored, or it was purged concurrently — and none was created.
         case noRecord
         /// Another writer replaced the credentials this sign-out set out to remove — a sign-in, or a
         /// refresh in another process — so its record was left alone. The caller re-reads and decides.
@@ -248,8 +266,9 @@ struct SessionRecordStore: Sendable {
     /// Signs a session's record out, keeping the row.
     ///
     /// Writes a record with no credentials and `kind: .signedOut`, carrying the label and username forward so
-    /// a picker can still render the row as signed-out and resumable. A session with no record at either
-    /// key has no row to keep, so nothing is written.
+    /// a picker can still render the row as signed-out and resumable. A session with no record has no row to keep,
+    /// so nothing is written. For `.default` that is the sidecar first (the last user and the label), then the
+    /// plugin's `{"noCredentials":{}}` through the guard.
     ///
     /// **It removes only the credentials it read.** The first read fixes which credentials this sign-out
     /// is removing. It writes through the commit guard; on a lost race it re-reads, and:
@@ -260,10 +279,8 @@ struct SessionRecordStore: Sendable {
     ///   sign out a session this call never saw — possibly a different user, whose tokens nobody revoked.
     ///   It returns `.superseded` and leaves that record alone.
     ///
-    /// Afterwards, for `.default` only, it deletes the Auth plugin's record: left
-    /// behind, it would resurrect the ended session in a rolled-back app. Unless superseded, it also
-    /// deletes the session's interrupted-sign-in record; a superseded sign-out leaves it, since it may
-    /// belong to the newer sign-in.
+    /// Unless superseded, it also deletes the session's interrupted-sign-in record; a superseded sign-out leaves it,
+    /// since it may belong to the newer sign-in.
     ///
     /// A record this build cannot read is replaced by a signed-out row, since its credentials cannot be
     /// kept past sign-out; its generation cannot be read, so the row starts again at generation 1.
@@ -307,15 +324,15 @@ struct SessionRecordStore: Sendable {
         var removed: SessionRecord?
         let outcome = try signOutRecord(sessionId, removing: removing, removed: &removed)
         // A superseded sign-out left the session signed in, so nothing else of it is deleted: not the
-        // plugin's record, which would sign `Amplify.Auth` out behind the result's back, and not the
         // interrupted sign-in record, which may belong to the newer sign-in.
         guard outcome != .superseded else {
             return outcome
         }
-        if let legacyAccount = legacyAccount(for: sessionId) {
-            try perform("delete the Auth plugin's session record") { try keychain.remove(legacyAccount) }
-        }
         try perform("delete the interrupted sign-in record") { try keychain.remove(challengeAccount(for: sessionId)) }
+        guard sessionId != .default else {
+            // `.default` keeps no namespace marker, so it has no remembered copies or challenges to sweep.
+            return outcome
+        }
         // Its interrupted sign-ins under the namespaces its marker remembers, which no restore resumes: before the
         // copies below, whose sweep rewrites the marker. Best effort, as that sweep is.
         try removeRememberedChallenges(of: sessionId, reference: removed, throwing: false)
@@ -338,26 +355,22 @@ struct SessionRecordStore: Sendable {
             attempt += 1
             let credentials: Data?
             let record: SessionRecord
-            let expectedGeneration: UInt64?
+            let version: RecordVersion?
             switch try read(sessionId) {
             case .absent:
                 return .noRecord
-            case .record(let envelope):
-                if envelope.record.isSignedOut {
+            case .record(let stored):
+                if stored.record.isSignedOut {
                     return .signedOut
                 }
-                credentials = envelope.record.credentials
-                removed = envelope.record
+                credentials = stored.record.credentials
+                removed = stored.record
                 record = .signedOut(
-                    label: envelope.record.label,
-                    username: envelope.record.username,
-                    userId: envelope.record.userId
+                    label: stored.record.label,
+                    username: stored.record.username,
+                    userId: stored.record.userId
                 )
-                expectedGeneration = envelope.generation
-            case .pluginRecord(let payload):
-                credentials = payload
-                record = .signedOut(label: nil, username: nil)
-                expectedGeneration = nil
+                version = stored.version
             case .unsupportedSchema, .corrupt:
                 // Unreadable on the first read: replace it. Unreadable only after a lost race, or when the
                 // caller named the credentials it revoked: a newer writer put it there, and this call
@@ -370,11 +383,11 @@ struct SessionRecordStore: Sendable {
 
             if attempt == 1, case .firstRead = expected {
                 removing = credentials
-            } else if credentials != removing {
+            } else if !Self.holdSameCredentials(credentials, removing, sameCredentials) {
                 return .superseded
             }
 
-            if try write(record, for: sessionId, expecting: expectedGeneration).didCommit {
+            if try write(record, for: sessionId, expecting: version).didCommit {
                 return .signedOut
             }
             if attempt >= Self.maximumGuardedSignOutAttempts {
@@ -383,7 +396,10 @@ struct SessionRecordStore: Sendable {
         }
     }
 
-    /// Deletes, in this order: for `.default` only, the Auth plugin's record; the copies this app left under
+    /// For `.default`: deletes the Auth plugin's record (the shared saved login), then the sidecar, then the
+    /// interrupted-sign-in record (`purgeDefault`). It keeps no namespace marker, so nothing else is deleted.
+    ///
+    /// For a named session, deletes, in this order: the copies this app left under
     /// earlier namespaces of the purged record's user, each only while untouched since it was carried
     /// (`removePreviousCopies`, `SessionRecordStore+CopyForward.swift`), with that user's interrupted-sign-in records
     /// under the namespaces its marker remembers, deleted before the copies (`SessionRecordStore+Challenge.swift`);
@@ -408,11 +424,8 @@ struct SessionRecordStore: Sendable {
     /// - Throws: `AuthClientError.storageUnavailable` if a record could not be read or deleted, or the namespace
     ///   marker read, rewritten or deleted last.
     func purge(_ sessionId: SessionID) throws {
-        // The plugin's record goes first. While the session's own record exists it blocks read-through;
-        // deleting it first would leave a window — and, if the second delete failed, a lasting state — in
-        // which the purged session reads the plugin's record and is signed in again.
-        if let legacyAccount = legacyAccount(for: sessionId) {
-            try perform("delete the Auth plugin's session record") { try keychain.remove(legacyAccount) }
+        if sessionId == .default {
+            return try purgeDefault()
         }
         // Before the session's own record, so a failure leaves the session as it was: its interrupted sign-ins
         // under the namespaces its marker remembers (`SessionRecordStore+Challenge.swift`), read from the marker
@@ -442,36 +455,6 @@ struct SessionRecordStore: Sendable {
         try perform("delete the namespace marker") { try keychain.remove(markerAccount(for: sessionId)) }
     }
 
-    // MARK: Adoption
-
-    /// The Auth plugin's record, as stored, for `.default`; `nil` if there is none, and always `nil` for other
-    /// sessions. Read on its own, whatever `.default`'s own record holds, so adoption can check what it is
-    /// about to delete.
-    ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record could not be read.
-    func pluginRecord(for sessionId: SessionID) throws -> Data? {
-        guard let legacyAccount = legacyAccount(for: sessionId) else {
-            return nil
-        }
-        return try fetch(legacyAccount, operation: "read the Auth plugin's session record")
-    }
-
-    /// Deletes the Auth plugin's record, the last step of adopting it into `.default`. A no-op for every
-    /// other session, which never reads the plugin's record.
-    ///
-    /// The caller must already have committed `.default`'s own record, so there is never a moment with
-    /// neither. Afterwards, an app rolled back to a plugin release that predates the forward-compatible
-    /// reader no longer finds its signed-in user; releases with that reader fall back to `.default`'s own
-    /// record and still find it.
-    ///
-    /// - Throws: `AuthClientError.storageUnavailable` if the record could not be deleted.
-    func removePluginRecord(for sessionId: SessionID) throws {
-        guard let legacyAccount = legacyAccount(for: sessionId) else {
-            return
-        }
-        try perform("delete the Auth plugin's session record") { try keychain.remove(legacyAccount) }
-    }
-
     // MARK: Keychain access
 
     /// Reads an item, `nil` if none is stored. Every failure throws `storageUnavailable`.
@@ -486,6 +469,9 @@ struct SessionRecordStore: Sendable {
     /// Sign-out's last resort after repeated lost races: replaces the record unguarded, but only if it
     /// still holds the credentials being removed, carrying forward its current label and username.
     private func forceSignOut(_ sessionId: SessionID, removing credentials: Data?) throws -> SignOutOutcome {
+        if sessionId == .default {
+            return try forceSignOutDefault(removing: credentials)
+        }
         let account = sessionAccount(for: sessionId)
         guard let data = try fetch(account, operation: "read the session record before signing it out") else {
             return .noRecord
@@ -510,6 +496,9 @@ struct SessionRecordStore: Sendable {
     /// Replaces a record this build cannot read with a signed-out row, unless it has meanwhile become
     /// one it can read — another writer's, which is left alone.
     private func replaceUnreadable(_ sessionId: SessionID) throws -> SignOutOutcome {
+        if sessionId == .default {
+            return try replaceUnreadableDefault()
+        }
         let account = sessionAccount(for: sessionId)
         guard let data = try fetch(account, operation: "read the session record before signing it out") else {
             return .noRecord
@@ -535,7 +524,19 @@ struct SessionRecordStore: Sendable {
         }
     }
 
-    private func perform<Value>(_ operation: String, _ body: () throws -> Value) throws -> Value {
+    /// Whether two optional payloads hold the same credentials: both absent, or both present and the same decoded.
+    static func holdSameCredentials(_ lhs: Data?, _ rhs: Data?, _ same: (Data, Data) -> Bool) -> Bool {
+        switch (lhs, rhs) {
+        case (nil, nil):
+            return true
+        case (let lhs?, let rhs?):
+            return same(lhs, rhs)
+        default:
+            return false
+        }
+    }
+
+    func perform<Value>(_ operation: String, _ body: () throws -> Value) throws -> Value {
         do {
             return try body()
         } catch {

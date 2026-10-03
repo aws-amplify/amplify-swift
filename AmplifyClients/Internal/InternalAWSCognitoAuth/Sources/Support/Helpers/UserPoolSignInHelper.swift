@@ -17,7 +17,8 @@ package enum UserPoolSignInHelper {
         for username: String,
         signInMethod: SignInMethod,
         inputUsername: String? = nil,
-        environment: UserPoolEnvironment
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
     ) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
@@ -26,18 +27,21 @@ package enum UserPoolSignInHelper {
                 response,
                 for: username,
                 signInMethod: signInMethod,
-                inputUsername: inputUsername
+                inputUsername: inputUsername,
+                logger: logger
             )
             return event
         }
 
+    /// - Parameter logger: the caller's, which an unsupported MFA type in the response is logged through.
     package static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
         signInMethod: SignInMethod,
         presentationAnchor: EnginePresentationAnchor? = nil,
         srpStateData: SRPStateData? = nil,
-        inputUsername: String? = nil
+        inputUsername: String? = nil,
+        logger: any EngineScopedLogger
     ) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
@@ -103,7 +107,7 @@ package enum UserPoolSignInHelper {
                     )
                     return SignInEvent(eventType: .initiateWebAuthnSignIn(signInData, respondToAuthChallenge))
                 case .mfaSetup:
-                    let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
+                    let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup(logger: logger)
                     if allowedMFATypesForSetup.contains(.totp) && allowedMFATypesForSetup.contains(.email) {
                         return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                     } else if allowedMFATypesForSetup.contains(.totp) {

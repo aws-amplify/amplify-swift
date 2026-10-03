@@ -32,7 +32,7 @@ extension SessionRecordStore {
 
     /// Log lines of the challenge record, one place so tests can hold them.
     enum ChallengeLog {
-        static let category = "SessionRecordStore"
+        static let category = ClientLog.category(ClientLog.sessionRecordStore)
         static let writeFailed =
             "The interrupted sign-in could not be saved, so it does not survive the app being closed. The sign-in itself is unaffected."
         static let deleteFailed =
@@ -46,7 +46,7 @@ extension SessionRecordStore {
     }
 
     static var challengeLogger: any Logger {
-        AmplifyLogging.logger(for: ChallengeLog.category)
+        ClientLog.logger(ClientLog.sessionRecordStore)
     }
 
     // MARK: Read, write, delete

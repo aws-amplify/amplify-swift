@@ -24,7 +24,8 @@ import Foundation
 /// plugin's own factory before. None is called here, so construction timing is unchanged.
 ///
 /// **Built here, with the code `+Configure.swift` used.** These have no Amplify or host-option dependency:
-/// `CognitoUserPoolASF()`, `RandomStringGenerator()` and `HostedUIASWebAuthenticationSession()`.
+/// `CognitoUserPoolASF()`, `RandomStringGenerator()` and `HostedUIASWebAuthenticationSession()`. The
+/// first and the last are defaults a caller may replace.
 ///
 /// **Two outputs**, because the auth environment needs the credential-store client, and the host builds that
 /// client from a state machine over the credential environment:
@@ -46,6 +47,7 @@ package struct AuthEnvironmentFactory {
     let makeHostedUISession: HostedUIEnvironment.HostedUISessionFactory
     let hostedUIIdentityPolicy: HostedUIIdentityPolicy
     let hostedUIIssuedRefreshToken: HostedUIEnvironment.IssuedRefreshTokenObserver?
+    let makeAdvancedSecurity: UserPoolEnvironment.CognitoUserPoolASFFactory
 
     /// - Parameters:
     ///   - makeHostedUISession: The browser presenter of the hosted UI. The plugin keeps the default;
@@ -54,6 +56,8 @@ package struct AuthEnvironmentFactory {
     ///     The plugin keeps `.none`; the client passes one per operation.
     ///   - hostedUIIssuedRefreshToken: Told each refresh token the hosted UI's code exchange is issued. The plugin
     ///     keeps `nil`; the client hands it to the operation's issued-token tap.
+    ///   - makeAdvancedSecurity: The advanced-security client, which also describes the device to Cognito. The
+    ///     plugin and the client keep `CognitoUserPoolASF()`; a unit test fixes the device.
     package init(
         authConfiguration: AuthConfiguration,
         makeUserPool: @escaping @Sendable () throws -> CognitoUserPoolBehavior,
@@ -65,8 +69,10 @@ package struct AuthEnvironmentFactory {
         makeURLSession: @escaping @Sendable () -> URLSession,
         makeHostedUISession: @escaping HostedUIEnvironment.HostedUISessionFactory = { HostedUIASWebAuthenticationSession() },
         hostedUIIdentityPolicy: HostedUIIdentityPolicy = .none,
-        hostedUIIssuedRefreshToken: HostedUIEnvironment.IssuedRefreshTokenObserver? = nil
+        hostedUIIssuedRefreshToken: HostedUIEnvironment.IssuedRefreshTokenObserver? = nil,
+        makeAdvancedSecurity: @escaping UserPoolEnvironment.CognitoUserPoolASFFactory = { CognitoUserPoolASF() }
     ) {
+        self.makeAdvancedSecurity = makeAdvancedSecurity
         self.hostedUIIssuedRefreshToken = hostedUIIssuedRefreshToken
         self.authConfiguration = authConfiguration
         self.makeUserPool = makeUserPool
@@ -152,7 +158,7 @@ package struct AuthEnvironmentFactory {
         let userPoolEnvironment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfigData,
             cognitoUserPoolFactory: makeUserPool,
-            cognitoUserPoolASFFactory: { CognitoUserPoolASF() },
+            cognitoUserPoolASFFactory: makeAdvancedSecurity,
             cognitoUserPoolAnalyticsHandlerFactory: userPoolAnalytics
         )
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)

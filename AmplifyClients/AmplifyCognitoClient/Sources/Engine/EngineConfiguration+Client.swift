@@ -153,3 +153,18 @@ extension UserPoolConfigurationData.SignUpAttributeType {
         }
     }
 }
+
+extension PoolNamespace {
+
+    /// The pools of an engine configuration, whose session account is `amplify.<keyComponent>.session`.
+    init(_ configuration: AuthConfiguration) {
+        switch configuration {
+        case .userPools(let userPool):
+            self = .userPool(userPool.poolId)
+        case .identityPools(let identityPool):
+            self = .identityPool(identityPool.poolId)
+        case .userPoolsAndIdentityPools(let userPool, let identityPool):
+            self = .userPoolAndIdentityPool(userPoolId: userPool.poolId, identityPoolId: identityPool.poolId)
+        }
+    }
+}

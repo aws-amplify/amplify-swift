@@ -17,21 +17,26 @@ package struct AssertWebAuthnCredentials: Action {
     package let presentationAnchor: EnginePresentationAnchor?
 
     private let credentialAsserter: CredentialAsserterProtocol
+    private let logger: any EngineScopedLogger
 
+    /// - Parameters:
+    ///   - logger: the machine's, which the platform asserter and the caller's ceremony log through.
+    ///   - asserterFactory: makes the asserter of the plugin's path; `nil` makes `PlatformWebAuthnCredentials`.
     package init(
         username: String,
         options: CredentialAssertionOptions,
         respondToAuthChallenge: RespondToAuthChallenge,
         presentationAnchor: EnginePresentationAnchor?,
-        asserterFactory: (EnginePresentationAnchor?) -> CredentialAsserterProtocol = { anchor in
-            PlatformWebAuthnCredentials(presentationAnchor: anchor)
-        }
+        logger: any EngineScopedLogger,
+        asserterFactory: ((EnginePresentationAnchor?) -> CredentialAsserterProtocol)? = nil
     ) {
         self.username = username
         self.options = options
         self.respondToAuthChallenge = respondToAuthChallenge
         self.presentationAnchor = presentationAnchor
-        self.credentialAsserter = asserterFactory(presentationAnchor)
+        self.logger = logger
+        self.credentialAsserter = asserterFactory?(presentationAnchor)
+            ?? PlatformWebAuthnCredentials(presentationAnchor: presentationAnchor, logger: logger)
     }
 
     package func execute(
@@ -43,7 +48,7 @@ package struct AssertWebAuthnCredentials: Action {
             let payload: String
             if let ceremony = (environment as? AuthEnvironment)?.webAuthnSignInCeremony.ceremony {
                 // The caller runs the ceremony (AmplifyCognitoClient: its window, under its sheet lease).
-                payload = try await ceremony.assert(options)
+                payload = try await ceremony.assert(options, logger: logger)
             } else {
                 payload = try await credentialAsserter.assert(with: options).stringify()
             }

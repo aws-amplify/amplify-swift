@@ -64,25 +64,28 @@ struct SessionSignOut: Sendable {
             }
         }
 
-        /// The public result. Outcomes are returned; a sign-out that could not finish throws.
+        /// The public result. Never throws: a sign-out that could not finish is `.failed`, and the session is
+        /// still signed in on this device.
         ///
-        /// - Throws: `AuthClientError.storageUnavailable(.interrupted)` when every attempt lost its race,
-        ///   carrying the first server-side failure, if any, as its underlying error.
-        func result() throws -> AuthClientSignOutResult {
+        /// - `.superseded` is `.failed(.invalidState)`: another sign-in replaced the session, and that user stays
+        ///   signed in.
+        /// - `.contended` is `.failed(.storageUnavailable(.interrupted))`, carrying the first server-side failure,
+        ///   if any, as its underlying error.
+        func result() -> AuthClientSignOutResult {
             switch self {
             case .nothingToSignOut:
                 return .complete
             case .signedOut(let server):
-                return server.partial.map(AuthClientSignOutResult.partial) ?? .complete
+                return server.signedOutResult()
             case .superseded:
-                return .superseded
+                return .failed(SessionSignOut.supersededError())
             case .contended(let server):
-                throw AuthClientError.storageUnavailable(
+                return .failed(.storageUnavailable(
                     .interrupted,
                     "The session's saved record kept changing during sign-out, so it is still signed in on this device.",
                     "Retry the sign-out.",
                     server.firstError
-                )
+                ))
             }
         }
     }
@@ -97,6 +100,9 @@ struct SessionSignOut: Sendable {
     let store: SessionRecordIO
     /// Who a credentials payload belongs to, when the record's own metadata does not say.
     let describe: @Sendable (Data) -> CredentialSummary?
+    /// Whether two payloads hold the same credentials, however they are encoded (`SessionEngine.sameCredentials`):
+    /// the Auth plugin saving `.default`'s credentials again in other bytes during the revoke has not moved them.
+    var sameCredentials: @Sendable (Data, Data) -> Bool = CredentialSlot.sameCredentials
     /// One revoke attempt. `firstAttempt` is `true` for the first only: a sign-out shows the hosted UI's
     /// logout page on its first attempt at most, and its retries never do.
     let revoke: @Sendable (_ payload: Data, _ firstAttempt: Bool) async throws -> EngineSignOutOutcome
@@ -112,9 +118,10 @@ struct SessionSignOut: Sendable {
 
     /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written. A failed
     ///   revoke does not throw; it is reported in the outcome. A revoke that throws `CancellationError` before any
-    ///   attempt has revoked (after one has, it is a failed revoke and the record is cleared), or
-    ///   `AuthClientError.userCancelled` (the user closed the hosted UI's logout page), rethrows it before
-    ///   anything is cleared, so the session stays signed in, as the plugin's does.
+    ///   attempt has revoked (after one has, it is a failed revoke and the record is cleared),
+    ///   `AuthClientError.userCancelled` (the user closed the hosted UI's logout page), or a `SignOutRefusal`
+    ///   (no hosted UI to sign out of), rethrows it before anything is cleared, so the session stays signed in,
+    ///   as the plugin's does. The caller maps every throw to `.failed` with `failure(_:)`.
     func run() async throws -> Outcome {
         var target: (payload: Data, principal: CredentialSummary)
         switch try await held(store.read(sessionId)) {
@@ -152,9 +159,14 @@ struct SessionSignOut: Sendable {
                 // its outcome instead, `SessionCore.afterInterruptedLogout`); that is not a failed revoke. Clear
                 // nothing and report cancellation.
                 throw CancellationError()
-            } catch let error as AuthClientError where error.isUserCancelled {
-                // The user closed the logout page: they chose not to sign out. Clear nothing.
+            } catch let error as AuthClientError where error.isUserCancelled && !revokedOnce {
+                // The user closed the logout page: they chose not to sign out. Clear nothing. (Only a first attempt
+                // shows the page; after a revoke this is a failed revoke like any other, and the record is cleared.)
                 throw error
+            } catch let refusal as SignOutRefusal where !revokedOnce {
+                // The hosted UI's sign-out could not run or complete, before anything was revoked: the plugin's
+                // `.failed`, with the user still signed in. Clear nothing.
+                throw refusal
             } catch {
                 server.merge(EngineSignOutOutcome(revokeError: Self.revokeFailure(error)))
             }
@@ -167,6 +179,12 @@ struct SessionSignOut: Sendable {
                 return .superseded
             case .credentials(let payload, let principal):
                 if payload != target.payload {
+                    guard !sameCredentials(payload, target.payload) else {
+                        // The same credentials saved again in other bytes (the Auth plugin re-encoding `.default`'s
+                        // record): already revoked. Clear them as they are stored now.
+                        target = (payload, target.principal)
+                        break
+                    }
                     // The credentials moved during the revoke. Revoke the new ones too only if they are
                     // provably the same principal's.
                     guard principal.isSamePrincipal(as: target.principal) else {
@@ -191,7 +209,7 @@ struct SessionSignOut: Sendable {
                         revoked = nil
                     }
                     if revoked?.revokeError != nil || revoked == nil {
-                        AmplifyLogging.logger(for: SessionSignOut.self).warn(Self.copyRevokeFailedWarning)
+                        ClientLog.logger(ClientLog.sessionSignOut).warn(Self.copyRevokeFailedWarning)
                     }
                 }
             }
@@ -220,8 +238,8 @@ struct SessionSignOut: Sendable {
             return .nothing
         case .unsupportedSchema, .corrupt:
             return .unreadable
-        case .record(let envelope):
-            let record = envelope.record
+        case .record(let stored):
+            let record = stored.record
             guard let credentials = record.credentials, record.kind != .signedOut else {
                 return .nothing
             }
@@ -232,14 +250,45 @@ struct SessionSignOut: Sendable {
                 userId: record.userId ?? described?.userId,
                 identityId: described?.identityId
             ))
-        case .pluginRecord(let payload) where PluginRecordSummary.isSignedOutMarker(payload):
-            // The plugin's signed-out marker holds no session: nothing to revoke or clear.
-            return .nothing
-        case .pluginRecord(let payload):
-            // An unrecognised payload names no principal, so any change to it counts as another session.
-            let described = describe(payload) ?? CredentialSummary(kind: PluginRecordSummary.unrecognisedKind, username: nil, userId: nil)
-            return .credentials(payload, described)
         }
+    }
+
+    /// The `.failed` result's error for a sign-out that threw before it cleared anything, so the session is
+    /// still signed in: a `CancellationError` before any revoke is `.unknown`, verbatim.
+    static func failure(_ error: Error) -> AuthClientError {
+        switch error {
+        case is CancellationError:
+            return cancelledError()
+        case let refusal as SignOutRefusal:
+            return refusal.error
+        case let error as AuthClientError:
+            return error
+        case SessionEngineError.service(let error):
+            return error
+        default:
+            return .unknown(
+                "The sign-out failed before it cleared the session, so the session is still signed in.",
+                "Retry the sign-out.",
+                error
+            )
+        }
+    }
+
+    /// The task was cancelled before anything was revoked.
+    static func cancelledError() -> AuthClientError {
+        .unknown(
+            "The sign-out was cancelled before anything was revoked; the session is still signed in.",
+            "Retry the sign-out.",
+            CancellationError()
+        )
+    }
+
+    /// Another sign-in replaced the session while it was signing out.
+    static func supersededError() -> AuthClientError {
+        .invalidState(
+            "Another sign-in replaced this session while it was signing out; that user is still signed in.",
+            "Check the session's state, then sign out again if needed."
+        )
     }
 
     static func revokeFailure(_ error: Error) -> AuthClientError {
@@ -256,4 +305,12 @@ struct SessionSignOut: Sendable {
             )
         }
     }
+}
+
+/// A first sign-out attempt that stopped before revoking anything, so the user stays signed in: the plugin's
+/// `.failed` for a hosted-UI sign-out whose page could not be shown or completed: no hosted UI or sign-out redirect
+/// URI, the browser busy, the window gone, or the browser step failing. `SessionSignOut.run()` rethrows
+/// it, unlike a failed revoke, which it reports and clears past.
+struct SignOutRefusal: Error, Sendable {
+    let error: AuthClientError
 }

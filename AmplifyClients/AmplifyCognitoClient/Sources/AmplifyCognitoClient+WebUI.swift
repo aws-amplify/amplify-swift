@@ -72,26 +72,31 @@ public extension AmplifyCognitoClient {
     /// The sign-out page is shown at most once, while this session holds the system sheet. This session's
     /// refresh and other operations on its saved record wait until it closes; other sessions are unaffected.
     ///
-    /// Before showing it, this cancels this session's passkey registration, if one is in flight (its call
-    /// throws `invalidState`), even if the user then closes the page and stays signed in; and it waits up to
-    /// 10 seconds for that passkey sheet to close. A sheet that does not close in time is reported as a held
-    /// sheet, below.
+    /// If another session holds the system sheet, the sign-out is `.failed(.browserBusy(holder:))` at once, and
+    /// this session's passkey registration, if one is in flight, is left running. Otherwise, before showing the
+    /// page, this cancels that registration (its call throws `invalidState`), even if the user then closes the
+    /// page and stays signed in; and it waits up to 10 seconds for that passkey sheet to close. A sheet that does
+    /// not close in time is a held sheet, below.
     ///
-    /// - Returns: as `signOut(options:)`. `.partial` with `hostedUIError` when the page could not be shown (the
-    ///   sheet was held, the window closed, no hosted UI in the configuration, the browser failed): the session
-    ///   is signed out on this device, but the browser keeps its sign-in.
-    /// - Throws: `userCancelled` if the user closed the sign-out page: the session stays signed in, as with the
-    ///   plugin. (A session whose refresh token is already dead signs out anyway, and reports it in
-    ///   `.partial`.) Otherwise as `signOut(options:)`.
+    /// Never throws, as the plugin's `signOut` does not.
+    ///
+    /// - Returns: as `signOut(options:)`, and:
+    ///   - `.failed(.userCancelled)` if the user closed the sign-out page: the session stays signed in, as with
+    ///     the plugin. (A session whose refresh token is already dead signs out anyway, and reports it in
+    ///     `.partial`.)
+    ///   - `.failed` whenever the page could not be shown or completed, and the session stays signed in, with
+    ///     nothing revoked, as with the plugin: `.configuration` if the configuration has no hosted UI, or no
+    ///     sign-out redirect URI, to sign out of; `.browserBusy(holder:)` if another sheet holds the browser;
+    ///     `.validation` if the window has closed; or the browser's own failure.
     @MainActor
     @discardableResult
     func signOut(
         presentationAnchor: AuthClientPresentationAnchor,
         options: AuthClientSignOutOptions = AuthClientSignOutOptions()
-    ) async throws -> AuthClientSignOutResult {
+    ) async -> AuthClientSignOutResult {
         let window = SignOutWindow.anchor(EnginePresentationAnchorBox(presentationAnchor))
         let core = core
-        return try await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession, window: window)
+        return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession, window: window)
     }
 
     /// Cancels this session's hosted-UI sign-in, once it holds or is queued for the system sheet: the browser

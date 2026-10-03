@@ -106,10 +106,12 @@ package enum WebAuthnCredentialOperations {
         _ anchor: EnginePresentationAnchor?
     ) -> CredentialRegistrantProtocol
 
-    /// The platform registrant, `PlatformWebAuthnCredentials`.
+    /// The platform registrant, `PlatformWebAuthnCredentials`, logging through `logger`, the caller's.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-    package static let platformRegistrant: RegistrantFactory = { anchor in
-        PlatformWebAuthnCredentials(presentationAnchor: anchor)
+    package static func platformRegistrant(logger: any EngineScopedLogger) -> RegistrantFactory {
+        { anchor in
+            PlatformWebAuthnCredentials(presentationAnchor: anchor, logger: logger)
+        }
     }
 
     /// `StartWebAuthnRegistration`, the registration ceremony, then `CompleteWebAuthnRegistration` with
@@ -137,7 +139,7 @@ package enum WebAuthnCredentialOperations {
         userPool: UserPoolEnvironment.CognitoUserPoolFactory,
         anchor: EnginePresentationAnchorBox?,
         ceremony: CeremonyRunner,
-        registrant: @escaping RegistrantFactory = platformRegistrant
+        registrant: @escaping RegistrantFactory
     ) async throws {
         try await reexpressingErrors(failureMessage: associateFailureMessage) {
             let startToken = try await callerValue(accessToken)

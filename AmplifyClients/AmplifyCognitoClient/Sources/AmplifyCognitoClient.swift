@@ -60,8 +60,9 @@ public typealias AmplifyCognitoClientUserPoolConfigurationProvider = (
 ///
 /// Because saved sessions are scoped to the pools and the access group, a client with a different
 /// configuration reads a different set of them, and `storedSessions` lists only that configuration's. When
-/// the pools change, a session is carried forward the first time it is restored, as the plugin carries its
-/// record, from the configuration this app last kept that session under:
+/// the pools change, a named session is carried forward the first time it is restored, as the plugin carries its
+/// record, from the configuration this app last kept that session under (`.default`, the plugin's own record,
+/// follows the plugin's rule instead: see `SessionID.default`):
 ///
 /// - an identity pool only, then a user pool added beside it: the guest or federated identity, as it was;
 /// - a user pool only, then an identity pool added: signed in, with the identity fetched on first use;
@@ -89,11 +90,10 @@ public final class AmplifyCognitoClient: Sendable {
     public struct Options {
 
         /// The session this client is a handle onto. `.default` is the single-account session, and the
-        /// only one that reads an existing `AWSCognitoAuthPlugin` session: in place, until its first write
-        /// or `completeAdoption()`.
+        /// only one that uses `AWSCognitoAuthPlugin`'s saved login: it reads and writes the plugin's own record.
         ///
-        /// Running the plugin and this client side by side over the same session is not supported: see
-        /// `SessionID.default`, including the warning logged when the two hold different users.
+        /// Running the plugin and this client side by side over `.default` in one app is not supported: each keeps
+        /// its tokens in memory. See `SessionID.default`.
         public var sessionId: SessionID
 
         /// The keychain access group to store the session in, to share it between apps and extensions,

@@ -14,24 +14,32 @@ package struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
     package static let AWSPinpointContextKeychainUniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
     package let pinpointEndpoint: String?
 
+    /// - Parameter logger: the caller's, which the Pinpoint context's keychain store logs through.
     package init(
         _ configuration: UserPoolConfigurationData?,
-        credentialStoreEnvironment: CredentialStoreEnvironment
+        credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger
     ) throws {
 
         if let pinpointId = configuration?.pinpointAppId, !pinpointId.isEmpty {
             self.pinpointEndpoint = try UserPoolAnalytics.getInternalPinpointEndpoint(
-                credentialStoreEnvironment)
+                credentialStoreEnvironment,
+                logger: logger
+            )
         } else {
             self.pinpointEndpoint = nil
         }
     }
 
     package static func getInternalPinpointEndpoint(
-        _ credentialStoreEnvironment: CredentialStoreEnvironment) throws -> String {
+        _ credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger
+    ) throws -> String {
 
             let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(
-                AWSPinpointContextKeychainService)
+                AWSPinpointContextKeychainService,
+                logger: logger
+            )
 
             guard
                 let value = try? legacyKeychainStore._getString(

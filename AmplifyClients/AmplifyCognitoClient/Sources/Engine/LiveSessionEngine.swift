@@ -188,7 +188,7 @@ actor LiveSessionEngine: SessionEngine {
     /// its credential machine is primed instead. Refused while an attempt or a step is live: those are newer.
     func resumeSignIn(from state: ChallengeRecord.State, epoch: UInt64) async -> AuthClientSignInStep? {
         guard attempt == nil, inFlight == nil, resources.authConfiguration.getUserPoolConfiguration() != nil,
-              let (machineState, step) = state.resumedState,
+              let (machineState, step) = state.resumedState(logger: resources.logger),
               let operation = try? resources.makeOperation(seed: nil, resuming: machineState) else {
             return nil
         }

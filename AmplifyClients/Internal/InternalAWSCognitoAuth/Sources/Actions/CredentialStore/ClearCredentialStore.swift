@@ -72,7 +72,7 @@ package struct ClearCredentialStore: Action {
         )
         for serviceKey in serviceKeys {
             do {
-                try credentialStoreEnvironment.legacyKeychainStore(serviceKey)._removeAll()
+                try credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: credentialEnvironment.logger)._removeAll()
             } catch {
                 let logger = (environment as? LoggerProvider)?.logger
                 logger?.warn("\(#fileID) Unable to clear a legacy credential store: \(error)")

@@ -16,6 +16,13 @@ package extension SignInState {
         package typealias StateType = SignInState
         package let defaultState = SignInState.notStarted
 
+        /// The logger the WebAuthn resolver logs through: the machine's (`AuthState.Resolver.logger`).
+        package let logger: any EngineScopedLogger
+
+        package init(logger: any EngineScopedLogger) {
+            self.logger = logger
+        }
+
         // swiftlint:disable:next cyclomatic_complexity function_body_length
         package func resolve(
             oldState: SignInState,
@@ -659,7 +666,7 @@ package extension SignInState {
                         )
                     }
 
-                    let resolution = WebAuthnSignInState.Resolver().resolve(
+                    let resolution = WebAuthnSignInState.Resolver(logger: logger).resolve(
                         oldState: webAuthnState,
                         byApplying: event
                     )

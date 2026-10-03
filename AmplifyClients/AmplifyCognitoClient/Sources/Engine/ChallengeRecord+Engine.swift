@@ -90,10 +90,13 @@ extension ChallengeRecord.State {
     /// The authorization state is `.configured`: a completed sign-in's `signInCompleted` starts the session fetch
     /// from any authorization state, and the guest identity, if the session is a guest, is in the operation's
     /// credential slot (`confirmSignIn`'s reseed), as for a sign-in that never stopped.
-    var resumedState: (AuthState, AuthClientSignInStep)? {
+    ///
+    /// - Parameter logger: the engine's, which a spelling this build does not know is logged through.
+    func resumedState(logger: any EngineScopedLogger) -> (AuthState, AuthClientSignInStep)? {
         switch self {
         case .challenge(let saved):
-            guard let method = SignInMethod(saved.signInMethod), let step = EngineSignInStep(saved.step) else {
+            guard let method = SignInMethod(saved.signInMethod, logger: logger),
+                  let step = EngineSignInStep(saved.step, logger: logger) else {
                 return nil
             }
             let challenge = RespondToAuthChallenge(
@@ -111,7 +114,7 @@ extension ChallengeRecord.State {
             )
             return (.configured(.signingIn(signIn), .configured, .notStarted), AuthClientSignInStep(step))
         case .totpSetup(let saved):
-            guard let method = SignInMethod(saved.signInMethod) else {
+            guard let method = SignInMethod(saved.signInMethod, logger: logger) else {
                 return nil
             }
             let setup = SignInTOTPSetupData(secretCode: saved.secretCode, session: saved.session, username: saved.username)
@@ -156,7 +159,7 @@ extension ChallengeRecord.SignInMethod {
 
 extension SignInMethod {
 
-    init?(_ saved: ChallengeRecord.SignInMethod) {
+    init?(_ saved: ChallengeRecord.SignInMethod, logger: any EngineScopedLogger) {
         let flow: EngineAuthFlowType
         switch saved.authFlow {
         case "userSRP": flow = .userSRP
@@ -166,7 +169,7 @@ extension SignInMethod {
         case "userPassword": flow = .userPassword
         case "userAuth":
             if let preferred = saved.preferredFirstFactor {
-                guard let factor = EngineAuthFactorType(rawValue: preferred) else {
+                guard let factor = EngineAuthFactorType(rawValue: preferred, logger: logger) else {
                     return nil
                 }
                 flow = .userAuth(preferredFirstFactor: factor)
@@ -216,8 +219,9 @@ extension ChallengeRecord.Step {
 
 extension EngineSignInStep {
 
-    /// `nil` if a saved payload is missing, or names a type this build does not know.
-    init?(_ saved: ChallengeRecord.Step) {
+    /// `nil` if a saved payload is missing, or names a type this build does not know, which is logged through
+    /// `logger`.
+    init?(_ saved: ChallengeRecord.Step, logger: any EngineScopedLogger) {
         switch saved.kind {
         case .confirmSignInWithSMSMFACode:
             guard let delivery = saved.codeDelivery.flatMap(EngineCodeDeliveryDetails.init) else {
@@ -233,14 +237,14 @@ extension EngineSignInStep {
         case .confirmSignInWithTOTPCode:
             self = .confirmSignInWithTOTPCode
         case .continueSignInWithMFASelection:
-            guard let types = Self.mfaTypes(saved.mfaTypes) else {
+            guard let types = Self.mfaTypes(saved.mfaTypes, logger: logger) else {
                 return nil
             }
             self = .continueSignInWithMFASelection(types)
         case .continueSignInWithEmailMFASetup:
             self = .continueSignInWithEmailMFASetup
         case .continueSignInWithMFASetupSelection:
-            guard let types = Self.mfaTypes(saved.mfaTypes) else {
+            guard let types = Self.mfaTypes(saved.mfaTypes, logger: logger) else {
                 return nil
             }
             self = .continueSignInWithMFASetupSelection(types)
@@ -255,7 +259,7 @@ extension EngineSignInStep {
             }
             var factors = Set<EngineAuthFactorType>()
             for spelling in spellings {
-                guard let factor = EngineAuthFactorType(rawValue: spelling) else {
+                guard let factor = EngineAuthFactorType(rawValue: spelling, logger: logger) else {
                     return nil
                 }
                 factors.insert(factor)
@@ -264,13 +268,13 @@ extension EngineSignInStep {
         }
     }
 
-    private static func mfaTypes(_ spellings: [String]?) -> Set<EngineMFAType>? {
+    private static func mfaTypes(_ spellings: [String]?, logger: any EngineScopedLogger) -> Set<EngineMFAType>? {
         guard let spellings else {
             return nil
         }
         var types = Set<EngineMFAType>()
         for spelling in spellings {
-            guard let type = EngineMFAType(rawValue: spelling) else {
+            guard let type = EngineMFAType(rawValue: spelling, logger: logger) else {
                 return nil
             }
             types.insert(type)

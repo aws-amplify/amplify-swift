@@ -58,12 +58,14 @@ package struct MigrateLegacyCredentialStore: Action {
         var awsCredentials: EngineAWSCredentials?
         let deviceDetails = getDeviceDetails(
             from: credentialStoreEnvironment,
+            logger: credentialEnvironment.logger,
             with: authConfiguration,
             migration: migration
         )
         let userPoolTokens = migration.read {
             try getUserPoolTokens(
                 from: credentialStoreEnvironment,
+                logger: credentialEnvironment.logger,
                 with: authConfiguration,
                 migration: migration
             )
@@ -76,6 +78,7 @@ package struct MigrateLegacyCredentialStore: Action {
         ) = migration.read({
             try getIdentityIdAndAWSCredentials(
                 from: credentialStoreEnvironment,
+                logger: credentialEnvironment.logger,
                 with: authConfiguration,
                 migration: migration
             )
@@ -83,10 +86,11 @@ package struct MigrateLegacyCredentialStore: Action {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
-        let loginsMap = getCachedLoginMaps(from: credentialStoreEnvironment, migration: migration)
+        let loginsMap = getCachedLoginMaps(from: credentialStoreEnvironment, logger: credentialEnvironment.logger, migration: migration)
         let signInMethod = migration.read {
             try getSignInMethod(
                 from: credentialStoreEnvironment,
+                logger: credentialEnvironment.logger,
                 with: authConfiguration,
                 migration: migration
             )
@@ -178,6 +182,7 @@ package struct MigrateLegacyCredentialStore: Action {
 
     private func getUserPoolTokens(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger,
         with authConfiguration: AuthConfiguration,
         migration: LegacyStoreMigration
     ) throws -> EngineUserPoolTokens {
@@ -190,7 +195,7 @@ package struct MigrateLegacyCredentialStore: Action {
             }
 
             let serviceKey = "\(bundleIdentifier).\(UserPoolClassKey)"
-            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey)
+            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: logger)
             migration.clearAfterMigration(legacyKeychainStore)
             let currentUser = try legacyKeychainStore._getString(
                 userPoolNamespace(
@@ -235,11 +240,12 @@ package struct MigrateLegacyCredentialStore: Action {
 
     private func getCachedLoginMaps(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger,
         migration: LegacyStoreMigration
     ) -> [String: String] {
 
         let serviceKey = "\(String.init(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
-        let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey)
+        let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: logger)
 
         guard let data = migration.read({ try legacyKeychainStore._getData(LoginsMapKey) }) else {
             return [:]
@@ -253,12 +259,13 @@ package struct MigrateLegacyCredentialStore: Action {
 
     private func getSignInMethod(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger,
         with authConfiguration: AuthConfiguration,
         migration: LegacyStoreMigration
     ) throws -> SignInMethod {
 
             let serviceKey = "\(String.init(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
-            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey)
+            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: logger)
             migration.clearAfterMigration(legacyKeychainStore)
 
             let federationProvider = try legacyKeychainStore._getString(FederationProviderKey)
@@ -304,6 +311,7 @@ package struct MigrateLegacyCredentialStore: Action {
 
     private func getIdentityIdAndAWSCredentials(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger,
         with authConfiguration: AuthConfiguration,
         migration: LegacyStoreMigration
     ) throws
@@ -318,7 +326,7 @@ package struct MigrateLegacyCredentialStore: Action {
 
         let poolId = identityPoolConfig.poolId
         let serviceKey = "\(bundleIdentifier).\(AWSCredentialsProviderClassKey).\(poolId)"
-        let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey)
+        let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: logger)
         migration.clearAfterMigration(legacyKeychainStore)
         let accessKey = try legacyKeychainStore._getString(
             AWSCredentialsProviderKeychainAccessKeyId)
@@ -359,6 +367,7 @@ extension MigrateLegacyCredentialStore {
 
     private func getDeviceDetails(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
+        logger: any EngineScopedLogger,
         with authConfiguration: AuthConfiguration,
         migration: LegacyStoreMigration
     ) -> LegacyDeviceDetails? {
@@ -369,7 +378,7 @@ extension MigrateLegacyCredentialStore {
             }
 
             let serviceKey = "\(bundleIdentifier).\(UserPoolClassKey)"
-            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey)
+            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStore(serviceKey, logger: logger)
 
             guard let currentUsername = migration.read({ try legacyKeychainStore._getString(
                 userPoolNamespace(

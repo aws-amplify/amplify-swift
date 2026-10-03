@@ -36,10 +36,15 @@ import InternalAWSCognitoAuth
 ///   `AuthClientError.unknown`.
 protocol SessionEngine: Sendable {
 
-    // MARK: Pure: no network, no storage. Used by restore, state projection and adoption.
+    // MARK: Pure: no network, no storage. Used by restore and state projection.
 
     /// Who and what a credentials payload holds.
     func describe(_ payload: Data) throws -> CredentialSummary
+
+    /// Whether two payloads hold the same credentials, however they are encoded: another writer (the Auth plugin,
+    /// over `.default`'s shared record) may save the same credentials again with other bytes. Never the network.
+    /// `SessionEngine`'s default compares decoded `AmplifyCredentials`, or the bytes when either does not decode.
+    func sameCredentials(_ lhs: Data, _ rhs: Data) -> Bool
 
     /// The AWS credentials in a payload, or `nil` if it holds none.
     func awsCredentials(in payload: Data) throws -> CognitoAWSCredentials?
@@ -160,17 +165,19 @@ protocol SessionEngine: Sendable {
     ///
     /// **After a failed global sign-out, `RevokeToken` is not called**, as in the plugin
     /// (`SignOutGlobally.invokeNextStep` → `.globalSignOutError`). The outcome then has
-    /// `globalSignOutError` set to the real, mapped `GlobalSignOut` error, and `revokeError` **`nil`**:
-    /// the plugin's placeholder revoke error (`BuildRevokeTokenError`'s `.service("", "", nil)`) never
-    /// crosses the seam. The core reports that as `.partial` with only the global failure; the refresh
-    /// token then stays valid until it expires, which the global failure already implies.
+    /// `globalSignOutError` set to the real, mapped `GlobalSignOut` error, and `revokeError` set to the
+    /// plugin's placeholder revoke error (`BuildRevokeTokenError`'s `.service("", "", nil)`), mapped, as the
+    /// plugin's result carries it. The refresh token then stays valid until it expires.
     ///
     /// **The hosted UI's sign-out.** With `.skip` no browser is shown,
     /// whatever the sign-in was. With `.present(anchor)`, after a sign-in that shared the browser's cookies,
     /// the logout page is shown in the anchor's window first, with the sign-in's own cookie jar:
     /// - the user closing it throws `AuthClientError.userCancelled`, with nothing revoked;
-    /// - any other failure of the browser step (the window gone, a failed start, a bad redirect URI) reruns
-    ///   the sign-out with `.skip` and returns that failure, mapped, as `hostedUIError`.
+    /// - any other `HostedUIError` of the browser step (no hosted UI or sign-out redirect URI, a failed start, an
+    ///   invalid context, ...), or the window gone, throws a `SignOutRefusal`, with nothing revoked: the plugin's
+    ///   `.failed`;
+    /// - a failure the engine continues past (one that is not a `HostedUIError`, as in the plugin) is returned as
+    ///   `hostedUIError`, beside the revoke's outcome.
     /// `.present` for a sign-in that did not share cookies shows nothing, as `.skip`.
     func revoke(_ payload: Data, global: Bool, hostedUI: EngineHostedUISignOut) async throws -> EngineSignOutOutcome
 
@@ -356,6 +363,10 @@ protocol SessionEngine: Sendable {
 
 extension SessionEngine {
 
+    func sameCredentials(_ lhs: Data, _ rhs: Data) -> Bool {
+        CredentialSlot.sameCredentials(lhs, rhs)
+    }
+
     // The pure reads, with any engine error wrapped per the error contract.
 
     func checkedDescribe(_ payload: Data) throws -> CredentialSummary {
@@ -485,14 +496,15 @@ struct EngineConfirmSignInRequest: Sendable, Equatable {
 
 /// What a sign-out achieved server-side. Sign-out continues locally past both failures.
 struct EngineSignOutOutcome: Sendable, Equatable {
-    /// Revoking the refresh token failed. `nil` when it succeeded, and when it was not attempted because
-    /// the global sign-out failed first: never a placeholder error.
+    /// Revoking the refresh token failed. `nil` when it succeeded. After a failed global sign-out the engine
+    /// does not call `RevokeToken` and this holds its placeholder error, as the plugin's result does.
     var revokeError: AuthClientError?
     /// The global sign-out failed: the real error. Only ever set when a global sign-out was asked for.
     var globalSignOutError: AuthClientError?
     /// The hosted UI's sign-out did not run, so its cookie survives in the browser:
-    /// the lease was busy, there was no window or no hosted UI configuration, or the browser failed.
-    /// A device-side failure, reported beside the server-side ones.
+    /// there was no window (`signOut(options:)`), the user closed the page of an expired session, or the
+    /// engine continued past a failure that is not a `HostedUIError`. A device-side failure, reported beside the
+    /// server-side ones.
     var hostedUIError: AuthClientError?
 
     static let complete = EngineSignOutOutcome()
@@ -508,9 +520,18 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         hostedUIError = hostedUIError ?? other.hostedUIError
     }
 
-    /// The public partial result, or `nil` if nothing failed.
-    var partial: AuthClientPartialSignOut? {
-        isComplete ? nil : publicForm
+    /// The public result of a sign-out that cleared the session locally: `.complete` if nothing failed, else
+    /// `.partial`. `storageError` is the purge's failure, when it ran after the sign-out and failed.
+    func signedOutResult(storageError: AuthClientError? = nil) -> AuthClientSignOutResult {
+        guard !isComplete || storageError != nil else {
+            return .complete
+        }
+        return .partial(
+            revokeTokenError: revokeError,
+            globalSignOutError: globalSignOutError,
+            hostedUIError: hostedUIError,
+            storageError: storageError
+        )
     }
 
     /// The first failure of any kind: what a sign-out that could not finish carries as its underlying error.
@@ -518,13 +539,11 @@ struct EngineSignOutOutcome: Sendable, Equatable {
         revokeError ?? globalSignOutError ?? hostedUIError
     }
 
-    private var publicForm: AuthClientPartialSignOut {
-        AuthClientPartialSignOut(revokeError: revokeError, globalSignOutError: globalSignOutError, hostedUIError: hostedUIError)
-    }
-
-    /// Errors compare as `AuthClientPartialSignOut` compares them.
+    /// Errors compare as `AuthClientSignOutResult` compares them.
     static func == (lhs: EngineSignOutOutcome, rhs: EngineSignOutOutcome) -> Bool {
-        lhs.publicForm == rhs.publicForm
+        AuthClientSignOutResult.equivalent(lhs.revokeError, rhs.revokeError)
+            && AuthClientSignOutResult.equivalent(lhs.globalSignOutError, rhs.globalSignOutError)
+            && AuthClientSignOutResult.equivalent(lhs.hostedUIError, rhs.hostedUIError)
     }
 }
 

@@ -103,9 +103,27 @@ final class CredentialSlot: @unchecked Sendable {
         }
     }
 
-    /// The plugin store's decoder: a default `JSONDecoder()`.
+    /// The plugin store's decoder: a default `JSONDecoder()`, carrying the client's logger, so a value the
+    /// engine logs while decoding (an unknown preferred first factor) is logged under `AmplifyCognitoClient.<scope>`
+    /// and never through the global router. The logger changes no decoded value.
     static func decode(_ payload: Data) throws -> AmplifyCredentials {
-        try JSONDecoder().decode(AmplifyCredentials.self, from: payload)
+        let decoder = JSONDecoder()
+        decoder.userInfo[.engineLogger] = ClientEngineLogger()
+        return try decoder.decode(AmplifyCredentials.self, from: payload)
+    }
+
+    /// Whether two payloads hold the same credentials, however they are encoded: equal decoded `AmplifyCredentials`,
+    /// or equal bytes when either does not decode. Another writer (the Auth plugin, over `.default`'s shared record)
+    /// may save the same credentials again with other bytes.
+    @Sendable
+    static func sameCredentials(_ lhs: Data, _ rhs: Data) -> Bool {
+        if lhs == rhs {
+            return true
+        }
+        guard let lhs = try? decode(lhs), let rhs = try? decode(rhs) else {
+            return false
+        }
+        return lhs == rhs
     }
 
     /// The plugin store's encoder: a default `JSONEncoder()`.

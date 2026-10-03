@@ -7,6 +7,7 @@
 
 @_spi(AmplifyExperimental) import AmplifyFoundation
 import Foundation
+import InternalAWSCognitoAuth
 
 @_spi(AmplifyExperimental)
 public extension AmplifyCognitoClient {
@@ -25,35 +26,6 @@ public extension AmplifyCognitoClient {
         try await core.setSessionLabel(label)
     }
 
-    /// Completes the migration of an existing `AWSCognitoAuthPlugin` session into `.default`.
-    ///
-    /// Until its first write or this call, `.default` reads the plugin's saved session in place. Its first
-    /// write lands on its own record, leaving the plugin's untouched, so rolling back to a plugin-only
-    /// release still finds the user. This copies the plugin's record into `.default`'s own and then deletes
-    /// the plugin's. Idempotent, and a no-op for every session other than `.default`.
-    ///
-    /// Running the plugin and this client side by side over the same session is not supported: see
-    /// `SessionID.default`, including the warning logged when the two hold different users.
-    ///
-    /// **One refresh token.** After adoption `.default` and the plugin share one refresh token. Signing out
-    /// through `Amplify.Auth` revokes it, and `.default` finds out at its next refresh.
-    ///
-    /// **Rollback.** Deleting the plugin's record is irreversible for plugin releases that predate its
-    /// forward-compatible reader: rolled back to one of those, the app no longer finds its user. Releases
-    /// with that reader fall back to `.default`'s record, so they still find the user.
-    ///
-    /// It deletes only what it adopted: a plugin record holding a different user, or rewritten while this
-    /// call was copying it, is kept, and the call throws.
-    ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage failed; `AuthClientError.unknown` if a
-    ///   record cannot be read, or the plugin's record holds a session that was not adopted. In each case
-    ///   the plugin's record is kept. `CancellationError` if the calling task is cancelled while it waits for
-    ///   the session's restore or record.
-    func completeAdoption() async throws {
-        let core = core
-        try await core.completeAdoption()
-    }
-
     // MARK: Saved sessions, without a client
 
     /// The sessions saved on this device under `configuration` and `accessGroup`, for an account picker.
@@ -62,7 +34,9 @@ public extension AmplifyCognitoClient {
     /// Only the sessions saved under this configuration's pools and this access group are listed: see
     /// "Changing the configuration" on `AmplifyCognitoClient`. After a pool configuration change, a session
     /// saved under the previous configuration that the client carries forward is listed once, as it will be
-    /// restored. `.default` is listed from the plugin's record while it reads through to it.
+    /// restored. `.default` is listed from the plugin's saved login, which it uses, with its label, as the plugin's
+    /// configuration-change rule will leave it at its next restore: a login that rule carries here is listed, and one
+    /// it deletes is not.
     ///
     /// An interrupted sign-in is not a row: a session whose first sign-in stopped on a challenge is not listed
     /// until that sign-in completes, though a client built with its ID reports `.awaitingChallenge`. The listing
@@ -101,10 +75,10 @@ public extension AmplifyCognitoClient {
     /// revocation is reported in `.partial`; the session is still cleared on this device.
     ///
     /// Never signs out a different user: if another process signed someone else in to this session ID
-    /// meanwhile, they are left signed in and the result is `.superseded`.
+    /// meanwhile, they are left signed in and the result is `.failed(.invalidState)`.
     ///
-    /// Outcomes are returned and failures are thrown: a thrown error means the session may still be
-    /// signed in on this device.
+    /// Never throws, as `signOut(options:)` does not: `.failed` means the session is still signed in on this
+    /// device; `.complete` and `.partial` that it is signed out here.
     ///
     /// A session saved under a previous pool configuration that a restore would carry forward is carried
     /// first, then signed out, so it is revoked here and not restored signed in later. The copies of it this app
@@ -113,20 +87,25 @@ public extension AmplifyCognitoClient {
     /// its configuration), under this user pool, is revoked first. With each copy deleted, the interrupted sign-in
     /// saved under its configuration is deleted too (not revoked: a saved challenge holds no token). A session saved under a
     /// configuration this one does not carry from (another user pool, say) is not touched: sign it out with that
-    /// configuration.
+    /// configuration. For `.default`, a login the Auth plugin's configuration-change rule carries here is carried first,
+    /// then signed out; a change the rule would delete on is left alone, the app's login and its recorded
+    /// configuration included, so a call with a configuration other than the app's never deletes the app's login: the
+    /// next restore under the new configuration applies the rule.
     ///
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written, or
-    ///   `storageUnavailable(.interrupted)` if the record kept changing under the sign-out (the first revoke
-    ///   failure, if any, is its underlying error); `AuthClientError.sessionConfigurationMismatch` if a client
-    ///   for this session is live in this process with a different user pool or identity pool, whose records
-    ///   this call would change (sign it out through that client); `CancellationError` if the revoke was
-    ///   cancelled, in which case nothing was cleared.
+    /// - Returns: `.complete`, or `.partial` with the revoke's failure or the hosted UI's cookie left behind,
+    ///   when the session is signed out on this device. `.failed`, and the session is still signed in:
+    ///   `storageUnavailable` if storage could not be read or written, or `storageUnavailable(.interrupted)` if
+    ///   the record kept changing under the sign-out (the first revoke failure, if any, is its underlying
+    ///   error); `sessionConfigurationMismatch` if a client for this session is live in this process with a
+    ///   different user pool or identity pool, whose records this call would change (sign it out through that
+    ///   client); `invalidState` if a different user signed in meanwhile; `unknown` with an underlying
+    ///   `CancellationError` if the calling task was cancelled before anything was revoked.
     static func signOutStoredSession(
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
         accessGroup: String? = nil
-    ) async throws -> AuthClientSignOutResult {
-        try await signOutStoredSession(
+    ) async -> AuthClientSignOutResult {
+        await signOutStoredSession(
             sessionId: sessionId,
             configuration: configuration,
             accessGroup: accessGroup,
@@ -139,7 +118,9 @@ public extension AmplifyCognitoClient {
     ///
     /// If a client for that session is live in this process, the purge goes through it: it moves to
     /// `.signedOut`, sends `.signedOut` if it held credentials, and its providers throw `notSignedIn`.
-    /// For `.default`, the plugin's record is deleted too, so nothing resurrects the session. So are the copies
+    /// For `.default`, the plugin's record is deleted too, so nothing resurrects the session; a login the Auth plugin's
+    /// configuration-change rule carries here is carried first, and a change it would delete on is left alone, the
+    /// previous configuration's login included. For a named session, so are the copies
     /// of it this app left under earlier pool configurations (each only while untouched since it was carried, if it
     /// provably holds the same user and is not a guest's; their refresh tokens are not revoked), each with the
     /// interrupted sign-in saved under its configuration; and so is the session's record of which configuration
@@ -183,7 +164,11 @@ extension AmplifyCognitoClient {
         // Live sessions are not overlaid; the listing is what is saved.
         let namespace = SessionStorageNamespace(pools: configuration.poolNamespace, accessGroup: accessGroup)
         let io = SessionRecordIO(store: dependencies.makeStore(namespace), queue: SessionRecordIO.listingQueue)
-        return try await io.storedSessions(includingSignedOut: includingSignedOut, sweepingChallengesAt: dependencies.now())
+        return try await io.storedSessions(
+            includingSignedOut: includingSignedOut,
+            sweepingChallengesAt: dependencies.now(),
+            pluginConfiguration: AuthConfiguration(client: configuration)
+        )
     }
 
     static func purgeStoredSession(
@@ -205,6 +190,8 @@ extension AmplifyCognitoClient {
             if let live = liveSession(sessionId, in: namespace, dependencies: dependencies) {
                 return live
             }
+            // `.default`: the Auth plugin's configuration-change rule first, when it carries.
+            try await applyPluginConfigurationRule(sessionId, configuration, store, dependencies)
             try await store.purge(sessionId)
             dependencies.gates.memory(for: namespace, sessionId: sessionId).reset()
             return nil
@@ -215,6 +202,27 @@ extension AmplifyCognitoClient {
     }
 
     static func signOutStoredSession(
+        sessionId: SessionID,
+        configuration: AuthClientConfiguration,
+        accessGroup: String?,
+        dependencies: SessionCoreDependencies
+    ) async -> AuthClientSignOutResult {
+        do {
+            return try await routedSignOutStoredSession(
+                sessionId: sessionId,
+                configuration: configuration,
+                accessGroup: accessGroup,
+                dependencies: dependencies
+            )
+        } catch {
+            // Thrown before anything was cleared: the session is still signed in. For `.default` the plugin's
+            // configuration-change rule may have copied a login here first, but it never deletes in this call.
+            return .failed(SessionSignOut.failure(error))
+        }
+    }
+
+    /// `signOutStoredSession`, throwing what happened before anything was cleared; the caller maps it to `.failed`.
+    private static func routedSignOutStoredSession(
         sessionId: SessionID,
         configuration: AuthClientConfiguration,
         accessGroup: String?,
@@ -239,7 +247,9 @@ extension AmplifyCognitoClient {
                 return .live(live)
             }
             // A record a restore would carry forward from a previous configuration is carried now, so it is
-            // signed out (and revoked) here, not restored signed in later.
+            // signed out (and revoked) here, not restored signed in later: for `.default`, by the Auth plugin's rule,
+            // which is applied only when it carries.
+            try await applyPluginConfigurationRule(sessionId, configuration, store, dependencies)
             _ = try await store.perform { try $0.readCarryingForward(sessionId) }
             let outcome = try await SessionSignOut(
                 sessionId: sessionId,
@@ -271,11 +281,11 @@ extension AmplifyCognitoClient {
             if outcome.endedSession {
                 dependencies.gates.memory(for: namespace, sessionId: sessionId).reset()
             }
-            return try .done(outcome.result())
+            return .done(outcome.result())
         }
         switch routed {
         case .live(let core):
-            return try await core.signOut()
+            return await core.signOut()
         case .done(let result):
             return result
         }
@@ -300,9 +310,17 @@ extension AmplifyCognitoClient {
     ) async throws -> T {
         let reader = SessionRecordIO(store: dependencies.makeStore(namespace), queue: SessionRecordIO.listingQueue)
         @Sendable func named() async throws -> Set<SessionStorageNamespace> {
-            let marker = try await reader.perform { try $0.marker(for: sessionId) }
-            let components = (marker?.copies.map(\.poolNamespace) ?? []) + [marker?.poolNamespace].compactMap { $0 }
-            return Set(components.compactMap(PoolNamespace.init(keyComponent:)).map {
+            let pools: [PoolNamespace]
+            if sessionId == .default {
+                // `.default` keeps no marker: the namespace of the Auth plugin's last configuration, which its rule
+                // carries from or deletes in.
+                pools = try await reader.perform { try $0.pluginConfigurationSource() }.map { [$0] } ?? []
+            } else {
+                let marker = try await reader.perform { try $0.marker(for: sessionId) }
+                let components = (marker?.copies.map(\.poolNamespace) ?? []) + [marker?.poolNamespace].compactMap { $0 }
+                pools = components.compactMap(PoolNamespace.init(keyComponent:))
+            }
+            return Set(pools.map {
                 SessionStorageNamespace(pools: $0, accessGroup: namespace.accessGroup)
             }).union([namespace])
         }
@@ -332,6 +350,28 @@ extension AmplifyCognitoClient {
             .interrupted,
             "Session \"\(sessionId)\"'s namespace marker kept changing.",
             "Retry the operation."
+        )
+    }
+
+    /// For `.default`, the Auth plugin's configuration-change rule (`SessionCore.applyPluginConfigurationRule`), under
+    /// the gates `withSessionGates` holds, **only when it carries**: this call may be made with a configuration
+    /// other than the app's, so it never deletes the app's login, revokes it, or records a configuration; the next
+    /// restore under the new configuration applies the rule in full. Nothing for a named session.
+    private static func applyPluginConfigurationRule(
+        _ sessionId: SessionID,
+        _ configuration: AuthClientConfiguration,
+        _ store: SessionRecordIO,
+        _ dependencies: SessionCoreDependencies
+    ) async throws {
+        guard sessionId == .default else {
+            return
+        }
+        try await SessionCore.applyPluginConfigurationRule(
+            through: store,
+            current: AuthConfiguration(client: configuration),
+            heldSource: nil,
+            onlyIfCarrying: true,
+            makeRevoker: dependencies.makePreviousConfigurationRevoker
         )
     }
 

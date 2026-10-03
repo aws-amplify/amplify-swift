@@ -174,7 +174,10 @@ extension EngineAuthFlowType: Codable {
         case "USER_PASSWORD_AUTH":
             self = .userPassword
         case "USER_AUTH":
-            self = try .userAuth(preferredFirstFactor: Self.decodePreferredFirstFactor(from: container))
+            self = try .userAuth(preferredFirstFactor: Self.decodePreferredFirstFactor(
+                from: container,
+                logger: decoder.userInfo[.engineLogger] as? any EngineScopedLogger
+            ))
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: container, debugDescription: "Invalid AuthFlowType value")
         }
@@ -182,13 +185,19 @@ extension EngineAuthFlowType: Codable {
 
     /// The `userAuth` case's preferred first factor: `nil` when none was encoded, and a `dataCorrupted` error
     /// for a value that is not an `EngineAuthFactorType`.
+    ///
+    /// - Parameter logger: the decoder's `CodingUserInfoKey.engineLogger`, which an unsupported factor is logged
+    ///   through; without one (the plugin's public decode) it is logged through the global router.
     private static func decodePreferredFirstFactor(
-        from container: KeyedDecodingContainer<CodingKeys>
+        from container: KeyedDecodingContainer<CodingKeys>,
+        logger: (any EngineScopedLogger)?
     ) throws -> EngineAuthFactorType? {
         guard let preferredFirstFactorString = try container.decodeIfPresent(String.self, forKey: .preferredFirstFactor) else {
             return nil
         }
-        guard let preferredFirstFactor = EngineAuthFactorType(rawValue: preferredFirstFactorString) else {
+        let parsed = logger.map { EngineAuthFactorType(rawValue: preferredFirstFactorString, logger: $0) }
+            ?? EngineAuthFactorType(decodingRawValue: preferredFirstFactorString)
+        guard let preferredFirstFactor = parsed else {
             throw DecodingError.dataCorruptedError(
                 forKey: .preferredFirstFactor,
                 in: container,

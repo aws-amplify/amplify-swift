@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// The picker's view of the Auth plugin's stored record, read without depending on the plugin's types
-/// and without decoding its credentials.
+/// The view of the Auth plugin's stored record, `.default`'s session record, read without depending on the
+/// plugin's types and without decoding its credentials: what `.default`'s reads and the picker take from it.
 ///
 /// The plugin stores `AmplifyCredentials` with a plain `JSONEncoder` and synthesized `Codable`, and
 /// existing users' sign-ins depend on that format, so it is frozen. An enum with associated values
@@ -41,16 +41,19 @@ struct PluginRecordSummary: Equatable, Sendable {
 
     /// The kind reported for a plugin record whose shape is not recognised.
     ///
-    /// Not `.signedOut`: the read path treats any plugin record as present, so hiding the row could show
+    /// Not `.signedOut`: a plugin record is present, so hiding the row could show
     /// sign-in to a signed-in user — the outcome the listing exists to prevent. Not `.guest` or
     /// `.federated`: apps branch on those to render a guest row or skip sign-in, and nothing says the
     /// record is either. `.userPoolOnly` is the smallest signed-in claim: a user, with nothing asserted
     /// about identity-pool credentials. Using the session then confirms or corrects it.
     static let unrecognisedKind = SessionKind.userPoolOnly
 
-    /// Whether `data` is the plugin's signed-out marker, `{"noCredentials":{}}`: a record that is present
-    /// but holds no session. The plugin writes it on sign-out while a client record exists.
-    static func isSignedOutMarker(_ data: Data) -> Bool {
+    /// The signed-out record, `{"noCredentials":{}}`: what `.default` writes on sign-out. The bytes equal
+    /// `JSONEncoder().encode(AmplifyCredentials.noCredentials)`, which every plugin release reads as signed out.
+    static let signedOutPayload = Data(#"{"noCredentials":{}}"#.utf8)
+
+    /// Whether `data` is a signed-out record, `{"noCredentials":{}}`: present, but holding no session.
+    static func isSignedOut(_ data: Data) -> Bool {
         let summary = peek(data)
         return summary.isRecognised && summary.kind == .signedOut
     }

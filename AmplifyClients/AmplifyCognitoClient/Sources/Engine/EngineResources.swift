@@ -36,6 +36,10 @@ struct EngineResources: Sendable {
     let makeHostedUIPresenter: @Sendable () -> any HostedUISessionBehavior
     /// The hosted UI's token endpoint session. `makeURLSession`, unless a test scripts the endpoint.
     let makeHostedUIURLSession: @Sendable () -> URLSession
+    /// The advanced-security client, which also describes the device to Cognito (the context data, a confirmed
+    /// device's name, the sign-up validation data). `CognitoUserPoolASF()` over the system's device, unless a
+    /// unit test fixes the device so it never reads `UIDevice` or `UIScreen`.
+    let makeAdvancedSecurity: UserPoolEnvironment.CognitoUserPoolASFFactory
 
     init(
         authConfiguration: AuthConfiguration,
@@ -45,7 +49,8 @@ struct EngineResources: Sendable {
         logger: ClientEngineLogger = ClientEngineLogger(),
         services: EngineServices? = nil,
         makeHostedUIPresenter: @escaping @Sendable () -> any HostedUISessionBehavior = { HostedUIASWebAuthenticationSession() },
-        makeHostedUIURLSession: @escaping @Sendable () -> URLSession = EngineResources.makeURLSession
+        makeHostedUIURLSession: @escaping @Sendable () -> URLSession = EngineResources.makeURLSession,
+        makeAdvancedSecurity: @escaping UserPoolEnvironment.CognitoUserPoolASFFactory = { CognitoUserPoolASF() }
     ) {
         self.authConfiguration = authConfiguration
         self.clients = clients
@@ -55,6 +60,7 @@ struct EngineResources: Sendable {
         self.services = services ?? EngineServices(clients: clients)
         self.makeHostedUIPresenter = makeHostedUIPresenter
         self.makeHostedUIURLSession = makeHostedUIURLSession
+        self.makeAdvancedSecurity = makeAdvancedSecurity
     }
 
     /// The resources of a session engine: device records over the real keychain, in the session's access
@@ -117,7 +123,7 @@ struct EngineResources: Sendable {
         let credentialsClient = CredentialStoreOperationClient(credentialStoreStateMachine: credentialMachine)
         let authEnvironment = factory.makeAuthEnvironment(credentialsClient: credentialsClient)
         let authMachine = StateMachine(
-            resolver: AuthState.Resolver().eraseToAnyResolver(),
+            resolver: AuthState.Resolver(logger: authEnvironment.logger).eraseToAnyResolver(),
             environment: authEnvironment,
             initialState: resuming
         )
@@ -162,7 +168,8 @@ struct EngineResources: Sendable {
             makeURLSession: makeHostedUIURLSession,
             makeHostedUISession: { presenter },
             hostedUIIdentityPolicy: identityPolicy,
-            hostedUIIssuedRefreshToken: Self.issuedRefreshTokenObserver(tap: tap, userPool: services.userPool)
+            hostedUIIssuedRefreshToken: Self.issuedRefreshTokenObserver(tap: tap, userPool: services.userPool),
+            makeAdvancedSecurity: makeAdvancedSecurity
         )
     }
 

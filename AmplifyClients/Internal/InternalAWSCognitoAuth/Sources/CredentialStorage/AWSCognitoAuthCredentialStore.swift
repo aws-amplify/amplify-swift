@@ -14,10 +14,11 @@ package struct AWSCognitoAuthCredentialStore {
     // because the access-group handling in `AWSCognitoAuthCredentialStore+AccessGroup.swift` reads them.
     let service = "com.amplify.awsCognitoAuthPlugin"
     let sharedService = "com.amplify.awsCognitoAuthPluginShared"
-    private let sessionKey = "session"
+    /// The last segment of a session account (`sessionAccount(for:)`, `+ConfigurationChange.swift`).
+    static let sessionKey = "session"
     private let deviceMetadataKey = "deviceMetadata"
     private let deviceASFKey = "deviceASF"
-    private let authConfigurationKey = "authConfiguration"
+    private var authConfigurationKey: String { Self.authConfigurationAccount }
 
     // User defaults constants
     private let userDefaultsNameSpace = "amplify_secure_storage_scopes.awsCognitoAuthPlugin"
@@ -38,39 +39,46 @@ package struct AWSCognitoAuthCredentialStore {
     let userDefaults: UserDefaults
     let accessGroup: String?
     let makeKeychainStore: KeychainStoreFactory
+    /// The caller's logger: every line of this store, and of its keychain stores, goes through it.
+    let logger: any EngineScopedLogger
 
+    /// - Parameter logger: the caller's. The plugin passes its own, so its lines keep their categories.
     package init(
         authConfiguration: AuthConfiguration,
         accessGroup: String? = nil,
-        migrateKeychainItemsOfUserSession: Bool = false
+        migrateKeychainItemsOfUserSession: Bool = false,
+        logger: any EngineScopedLogger
     ) {
         self.init(
             authConfiguration: authConfiguration,
             accessGroup: accessGroup,
             migrateKeychainItemsOfUserSession: migrateKeychainItemsOfUserSession,
             userDefaults: .standard,
-            makeKeychainStore: { EngineKeychainStore.makeItemStore(service: $0, accessGroup: $1) }
+            makeKeychainStore: { EngineKeychainStore.makeItemStore(service: $0, accessGroup: $1, logger: logger) },
+            logger: logger
         )
     }
 
     /// A test seam: `userDefaults` and `makeKeychainStore` are always `.standard` and
-    /// `EngineKeychainStore.makeItemStore(service:accessGroup:)` outside tests. `makeKeychainStore` also
+    /// `EngineKeychainStore.makeItemStore(service:accessGroup:logger:)` outside tests. `makeKeychainStore` also
     /// reaches the access-group migration.
     package init(
         authConfiguration: AuthConfiguration,
         accessGroup: String?,
         migrateKeychainItemsOfUserSession: Bool,
         userDefaults: UserDefaults,
-        makeKeychainStore: @escaping KeychainStoreFactory
+        makeKeychainStore: @escaping KeychainStoreFactory,
+        logger: any EngineScopedLogger
     ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = accessGroup
         self.userDefaults = userDefaults
         self.makeKeychainStore = makeKeychainStore
+        self.logger = logger
         if let accessGroup {
-            self.keychain = Self.keychainStore(sharedService, accessGroup, makeKeychainStore)
+            self.keychain = Self.keychainStore(sharedService, accessGroup, makeKeychainStore, logger: logger)
         } else {
-            self.keychain = Self.keychainStore(service, nil, makeKeychainStore)
+            self.keychain = Self.keychainStore(service, nil, makeKeychainStore, logger: logger)
         }
 
         let oldAccessGroup = retrieveStoredAccessGroup()
@@ -83,9 +91,11 @@ package struct AWSCognitoAuthCredentialStore {
             // UserDefaults is not shared between app and extensions.
             //
             // Standalone clients keep their session records (`amplify.<digits>.…`) in this same service, so only
-            // the plugin's own items are removed. If they cannot be listed, nothing is removed.
+            // the plugin's own items are removed, with the Cognito client's default-session sidecar and
+            // challenge items, which belong to the plugin's session. If they cannot be listed, nothing is removed.
             if !sharedKeychainHasItems(accessGroup: accessGroup) {
-                try? Self.keychainStore(service, nil, makeKeychainStore).removeAllExceptSessionRecords()
+                try? Self.keychainStore(service, nil, makeKeychainStore, logger: logger)
+                    .removeAllExceptSessionRecords(sparingDefaultSessionItems: false)
             }
         }
 
@@ -107,105 +117,67 @@ package struct AWSCognitoAuthCredentialStore {
         saveAuthConfiguration(authConfig: authConfiguration)
     }
 
-    // The method is responsible for migrating any old credentials to the new namespace
+    // The method is responsible for migrating any old credentials to the new namespace. The decision is
+    // `configurationChange(from:to:)` (`AWSCognitoAuthCredentialStore+ConfigurationChange.swift`), which the Cognito
+    // client's default session also runs; this runs the same `_getData`, `_set` and `_remove` calls, in the same
+    // order, with the same `try?`, as before it was extracted.
     private func restoreCredentialsOnConfigurationChanges(currentAuthConfig: AuthConfiguration) {
-
-        guard let oldAuthConfigData = getAuthConfiguration() else {
+        switch Self.configurationChange(from: getAuthConfiguration(), to: currentAuthConfig) {
+        case .unchanged:
             return
-        }
-        let oldNameSpace = generateSessionKey(for: oldAuthConfigData)
-        let newNameSpace = generateSessionKey(for: currentAuthConfig)
-
-        let oldUserPoolConfiguration = oldAuthConfigData.getUserPoolConfiguration()
-        let oldIdentityPoolConfiguration = oldAuthConfigData.getIdentityPoolConfiguration()
-        let newIdentityConfigData = currentAuthConfig.getIdentityPoolConfiguration()
-        let newUserPoolConfiguration = currentAuthConfig.getUserPoolConfiguration()
-
-        /// Migrate if
-        ///  - Old User Pool Config didn't exist
-        ///  - New Identity Config Data exists
-        ///  - Old Identity Pool Config == New Identity Pool Config
-        if oldUserPoolConfiguration == nil &&
-            newIdentityConfigData != nil &&
-            oldIdentityPoolConfiguration == newIdentityConfigData {
+        case .carry(let fromAccount, let toAccount):
             // retrieve data from the old namespace and save with the new namespace
-            if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
-                try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
+            if let oldCognitoCredentialsData = try? keychain._getData(fromAccount) {
+                try? keychain._set(oldCognitoCredentialsData, key: toAccount)
             }
-        /// Migrate if
-        ///  - Old config and new config are different
-        ///  - Old Userpool Existed
-        ///  - Old and new user pool namespacing is the same
-        } else if oldAuthConfigData != currentAuthConfig &&
-                    oldUserPoolConfiguration != nil &&
-                    UserPoolConfigurationData.isNamespacingEqual(
-                        lhs: oldUserPoolConfiguration,
-                        rhs: newUserPoolConfiguration
-                    ) {
-            // retrieve data from the old namespace and save with the new namespace
-            if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
-                try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
-            }
-        } else if oldAuthConfigData != currentAuthConfig &&
-                    oldNameSpace != newNameSpace {
-            // Clear the old credentials. Not a bare `_remove(oldNameSpace)`: that would leave the old
-            // namespace's default-session record, if the Cognito client wrote one, as the only record
-            // there, and returning to that configuration would then sign its user back in from it.
-            try? removeSession(for: oldAuthConfigData)
+        case .clear(_, let previous):
+            // Clear the old credentials
+            try? removeSession(for: previous)
         }
     }
 
-    private func storeKey(for authConfiguration: AuthConfiguration) -> String {
+    /// `amplify.<pools>`: the prefix of every account of a configuration (`+ConfigurationChange.swift`).
+    static func storeKey(for authConfiguration: AuthConfiguration) -> String {
         let prefix = "amplify"
-        let suffix = poolNamespace(for: authConfiguration)
+        var suffix = ""
+
+        switch authConfiguration {
+        case .userPools(let userPoolConfigurationData):
+            suffix = userPoolConfigurationData.poolId
+        case .identityPools(let identityPoolConfigurationData):
+            suffix = identityPoolConfigurationData.poolId
+        case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
+            suffix = "\(userPoolConfigurationData.poolId).\(identityPoolConfigurationData.poolId)"
+        }
 
         return "\(prefix).\(suffix)"
     }
 
-    /// The pool IDs every key for this configuration is scoped by.
-    private func poolNamespace(for authConfiguration: AuthConfiguration) -> String {
-        switch authConfiguration {
-        case .userPools(let userPoolConfigurationData):
-            return userPoolConfigurationData.poolId
-        case .identityPools(let identityPoolConfigurationData):
-            return identityPoolConfigurationData.poolId
-        case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
-            return "\(userPoolConfigurationData.poolId).\(identityPoolConfigurationData.poolId)"
-        }
-    }
-
     private func generateSessionKey(for authConfiguration: AuthConfiguration) -> String {
-        return "\(storeKey(for: authConfiguration)).\(sessionKey)"
-    }
-
-    // Internal rather than private so unit tests can pin the generated key.
-    /// The account of the Cognito client's default-session record for this configuration,
-    /// `amplify.1.<pool namespace>.$default.session`. Read only; see `DefaultSessionRecordReader`.
-    package func generateDefaultSessionRecordKey(for authConfiguration: AuthConfiguration) -> String {
-        DefaultSessionRecordReader.account(forPoolNamespace: poolNamespace(for: authConfiguration))
+        Self.sessionAccount(for: authConfiguration)
     }
 
     // The device metadata key lowercases the username and the ASF device key does not. Existing
     // device records are stored under both keys as they are, so neither may change.
     // Internal rather than private so unit tests can pin the generated keys.
     package func generateDeviceMetadataKey(for username: String) -> String {
-            return "\(storeKey(for: authConfiguration)).\(username.lowercased()).\(deviceMetadataKey)"
+            return "\(Self.storeKey(for: authConfiguration)).\(username.lowercased()).\(deviceMetadataKey)"
     }
 
     // Internal rather than private so unit tests can pin the generated keys.
     package func generateASFDeviceKey(for username: String) -> String {
-            return "\(storeKey(for: authConfiguration)).\(username).\(deviceASFKey)"
+            return "\(Self.storeKey(for: authConfiguration)).\(username).\(deviceASFKey)"
     }
 
     private func saveAuthConfiguration(authConfig: AuthConfiguration) {
-        if let encodedAuthConfigData = try? encode(object: authConfig) {
+        if let encodedAuthConfigData = try? Self.encodeAuthConfiguration(authConfig) {
             try? keychain._set(encodedAuthConfigData, key: authConfigurationKey)
         }
     }
 
     private func getAuthConfiguration() -> AuthConfiguration? {
         if let userPoolConfigData = try? keychain._getData(authConfigurationKey) {
-            return try? decode(data: userPoolConfigData)
+            return try? Self.decodeAuthConfiguration(userPoolConfigData)
         }
         return nil
     }
@@ -213,12 +185,17 @@ package struct AWSCognitoAuthCredentialStore {
     /// A test seam: a store over `keychain`, with no access group. Runs the configuration-change
     /// handling the other initializer runs, and none of its access-group handling — so
     /// `userDefaults` and `makeKeychainStore`, which only that handling uses, are never read.
-    package init(authConfiguration: AuthConfiguration, keychain: any KeychainItemStoreBehavior) {
+    package init(
+        authConfiguration: AuthConfiguration,
+        keychain: any KeychainItemStoreBehavior,
+        logger: any EngineScopedLogger
+    ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = nil
-        self.keychain = EngineKeychainStore(keychain)
+        self.logger = logger
+        self.keychain = EngineKeychainStore(keychain, logger: logger)
         self.userDefaults = .standard
-        self.makeKeychainStore = { EngineKeychainStore.makeItemStore(service: $0, accessGroup: $1) }
+        self.makeKeychainStore = { EngineKeychainStore.makeItemStore(service: $0, accessGroup: $1, logger: logger) }
         restoreCredentialsOnConfigurationChanges(currentAuthConfig: authConfiguration)
         saveAuthConfiguration(authConfig: authConfiguration)
     }
@@ -233,21 +210,9 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         try keychain._set(encodedCredentials, key: authCredentialStoreKey)
     }
 
-    /// Reads this plugin's session record and, only when there is no such item, the Cognito client's
-    /// default-session record for the same configuration.
-    ///
-    /// This plugin's record always wins when it exists, even if it cannot be decoded. Any failure to read
-    /// it other than "not found", such as a locked device, is thrown as it always was and never answered
-    /// from the client's record. The client's record only ever contributes a signed-in session: when it
-    /// is absent, signed out or unreadable, this throws `itemNotFound`, exactly as before it existed.
     package func retrieveCredential() throws -> AmplifyCredentials {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
-        let authCredentialData: Data
-        do {
-            authCredentialData = try keychain._getData(authCredentialStoreKey)
-        } catch EngineCredentialStoreError.itemNotFound {
-            return try retrieveDefaultSessionRecord()
-        }
+        let authCredentialData = try keychain._getData(authCredentialStoreKey)
         let amplifyCredential: AmplifyCredentials = try decode(data: authCredentialData)
         return amplifyCredential
     }
@@ -292,59 +257,8 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         try keychain._remove(key)
     }
 
-    /// The fallback read of `retrieveCredential()`, taken only when this plugin has no record.
-    private func retrieveDefaultSessionRecord() throws -> AmplifyCredentials {
-        let key = generateDefaultSessionRecordKey(for: authConfiguration)
-        switch try DefaultSessionRecordReader.read(key, from: keychain) {
-        case .signedIn(let credentials):
-            log.verbose("[AWSCognitoAuthCredentialStore] Read the session from the Cognito client's default session record")
-            return credentials
-        case .unreadable(let reason):
-            log.warn("[AWSCognitoAuthCredentialStore] Ignoring the Cognito client's default session record: \(reason)")
-            throw EngineCredentialStoreError.itemNotFound
-        case .signedOut, nil:
-            throw EngineCredentialStoreError.itemNotFound
-        }
-    }
-
-    /// Ends this plugin's session for a configuration so that no later read brings it back.
-    ///
-    /// While the Cognito client has a default-session record in the same namespace, deleting this
-    /// plugin's record would expose the client's to `retrieveCredential()`'s fallback, and the user just
-    /// signed out would be signed in again from it on the next launch. This plugin may not delete or
-    /// rewrite that record, so it writes `.noCredentials` over its own record instead: this plugin's own
-    /// stored format, read by every release as signed out, and present, so it takes precedence over the
-    /// client's record. Without a client record, the record is deleted exactly as it always was.
-    ///
-    /// If that write fails, the record is deleted anyway before the error is thrown: a live record left
-    /// in place would sign the user back in by itself, so deleting it is never worse. Without a client
-    /// record that is exactly the old behaviour.
     private func removeSession(for authConfiguration: AuthConfiguration) throws {
-        let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
-        guard defaultSessionRecordMayExist(for: authConfiguration) else {
-            try keychain._remove(authCredentialStoreKey)
-            return
-        }
-        do {
-            let signedOut = try encode(object: AmplifyCredentials.noCredentials)
-            try keychain._set(signedOut, key: authCredentialStoreKey)
-        } catch {
-            try? keychain._remove(authCredentialStoreKey)
-            throw error
-        }
-    }
-
-    /// Whether the Cognito client may have a default-session record for a configuration. `true` when
-    /// that cannot be determined: the `.noCredentials` record it leads to is harmless if unneeded.
-    private func defaultSessionRecordMayExist(for authConfiguration: AuthConfiguration) -> Bool {
-        do {
-            _ = try keychain._getData(generateDefaultSessionRecordKey(for: authConfiguration))
-            return true
-        } catch EngineCredentialStoreError.itemNotFound {
-            return false
-        } catch {
-            return true
-        }
+        try keychain._remove(generateSessionKey(for: authConfiguration))
     }
 
 }
@@ -354,9 +268,10 @@ package extension AWSCognitoAuthCredentialStore {
     static func keychainStore(
         _ service: String,
         _ accessGroup: String?,
-        _ makeKeychainStore: KeychainStoreFactory
+        _ makeKeychainStore: KeychainStoreFactory,
+        logger: any EngineScopedLogger
     ) -> EngineKeychainStore {
-        EngineKeychainStore(makeKeychainStore(service, accessGroup))
+        EngineKeychainStore(makeKeychainStore(service, accessGroup), logger: logger)
     }
 }
 
@@ -382,13 +297,14 @@ private extension AWSCognitoAuthCredentialStore {
 }
 
 package extension AWSCognitoAuthCredentialStore {
-    /// No environment is in scope, so these lines go through the global router.
-    static let log = EngineLog.logger(.category("AWSCognitoAuthCredentialStore"))
-
-    /// `KeychainStoreMigrator.log`, its `DefaultLogger` default: the category `KeychainStoreMigrator`.
-    static let migratorLog = EngineLog.logger(.category("KeychainStoreMigrator"))
-
+    /// This store's lines, at their pre-M2 category, through the caller's logger.
     var log: EngineLogger {
-        Self.log
+        logger.scoped(.category("AWSCognitoAuthCredentialStore"))
+    }
+
+    /// `KeychainStoreMigrator.log`, its `DefaultLogger` default: the category `KeychainStoreMigrator`, through the
+    /// caller's logger.
+    var migratorLog: EngineLogger {
+        logger.scoped(.category("KeychainStoreMigrator"))
     }
 }

@@ -16,6 +16,14 @@ package extension WebAuthnSignInState {
         package typealias StateType = WebAuthnSignInState
         package let defaultState = WebAuthnSignInState.notStarted
 
+        /// The machine's logger (`AuthState.Resolver.logger`): the retry's factor parse and the assertion's
+        /// platform delegate log through it.
+        package let logger: any EngineScopedLogger
+
+        package init(logger: any EngineScopedLogger) {
+            self.logger = logger
+        }
+
         package func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent
@@ -42,7 +50,8 @@ package extension WebAuthnSignInState {
                         username: input.username,
                         options: options,
                         respondToAuthChallenge: input.challenge,
-                        presentationAnchor: input.presentationAnchor
+                        presentationAnchor: input.presentationAnchor,
+                        logger: logger
                     )
                     return .init(newState: .assertingCredentials, actions: [action])
                 }
@@ -52,7 +61,8 @@ package extension WebAuthnSignInState {
                         username: input.username,
                         options: options,
                         respondToAuthChallenge: input.challenge,
-                        presentationAnchor: input.presentationAnchor
+                        presentationAnchor: input.presentationAnchor,
+                        logger: logger
                     )
                     return .init(newState: .assertingCredentials, actions: [action])
                 }
@@ -81,7 +91,7 @@ package extension WebAuthnSignInState {
                 // The WebAuthn flow can be retried on error state when confirming Sign In,
                 // so if we receive a new .verifyChallengeAnswer event for WebAuthn, we'll restart the flow
                 if case .verifyChallengeAnswer(let data) = event.isChallengeEvent,
-                   let authFactorType = EngineAuthFactorType(rawValue: data.answer),
+                   let authFactorType = EngineAuthFactorType(rawValue: data.answer, logger: logger),
                    case .webAuthn = authFactorType {
                     let action = VerifySignInChallenge(
                         challenge: challenge,

@@ -130,9 +130,13 @@ extension SessionCore {
     }
 
     /// A passkey registration a sign-out, purge or deletion of this session ended, as the hosted UI reports a
-    /// sign-in the session ended (`signInCancelled()`). Worded for both outcomes of a sign-out that shows the
-    /// hosted UI's logout page: it stops the registration first, and the user may then close the page and stay
-    /// signed in.
+    /// sign-in the session ended (`signInCancelled()`). A sign-out that shows the hosted UI's logout page stops
+    /// the registration only once it goes ahead (another session's sheet refuses it before), but it
+    /// may still leave the session signed in: the user may close the page, or the registration's own sheet may
+    /// not close within `passkeySheetClosingTimeout` (the busy refusal). Worded for both outcomes. One more
+    /// remainder: another session can take the sheet between that check and the page's lease, and the sign-out
+    /// is then refused as busy after stopping the registration. Taking the lease first would
+    /// close that window.
     static func passkeyRegistrationEnded() -> AuthClientError {
         .invalidState(
             "The passkey registration was cancelled by a sign-out, purge or deletion of this session.",

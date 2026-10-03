@@ -65,12 +65,14 @@ package extension RespondToAuthChallenge {
         )
     }
 
-    var getAllowedMFATypesForSelection: Set<EngineMFAType> {
-        return getMFATypes(forKey: "MFAS_CAN_CHOOSE")
+    /// The MFA types offered for selection. An unsupported one is logged through `logger`, the caller's.
+    func getAllowedMFATypesForSelection(logger: any EngineScopedLogger) -> Set<EngineMFAType> {
+        return getMFATypes(forKey: "MFAS_CAN_CHOOSE", logger: logger)
     }
 
-    var getAllowedMFATypesForSetup: Set<EngineMFAType> {
-        return getMFATypes(forKey: "MFAS_CAN_SETUP")
+    /// The MFA types offered for setup. An unsupported one is logged through `logger`, the caller's.
+    func getAllowedMFATypesForSetup(logger: any EngineScopedLogger) -> Set<EngineMFAType> {
+        return getMFATypes(forKey: "MFAS_CAN_SETUP", logger: logger)
     }
 
     var getAllowedAuthFactorsForSelection: Set<EngineAuthFactorType> {
@@ -78,7 +80,7 @@ package extension RespondToAuthChallenge {
     }
 
     /// Helper method to extract MFA types from parameters
-    private func getMFATypes(forKey key: String) -> Set<EngineMFAType> {
+    private func getMFATypes(forKey key: String, logger: any EngineScopedLogger) -> Set<EngineMFAType> {
         guard let mfaTypeParameters = parameters?[key],
               let mfaTypesArray = try? JSONDecoder().decode(
                   [String].self,
@@ -86,7 +88,7 @@ package extension RespondToAuthChallenge {
               )
         else { return .init() }
 
-        let mfaTypes = mfaTypesArray.compactMap(EngineMFAType.init(rawValue:))
+        let mfaTypes = mfaTypesArray.compactMap { EngineMFAType(rawValue: $0, logger: logger) }
         return Set(mfaTypes)
     }
 

@@ -142,15 +142,17 @@ extension SessionCore {
             }
             let summary = try engine.checkedDescribe(guest)
             let record = SessionRecord(
-                label: current.ownRecord?.label,
+                // A signed-out row left by a user keeps that user's label, which the guest must not take:
+                // only a label that names no user yet passes to the guest.
+                label: Self.label(keptFrom: current.ownRecord, for: summary),
                 username: summary.username,
                 userId: summary.userId,
                 kind: summary.kind,
                 credentials: guest
             )
-            switch try await store.write(record, for: sessionId, expecting: current.generation) {
-            case .committed(let envelope):
-                return await apply(SessionSnapshot(envelope), event: nil)
+            switch try await store.write(record, for: sessionId, expecting: current.version) {
+            case .committed(let committed):
+                return await apply(SessionSnapshot(committed), event: nil)
             case .discarded:
                 return try await apply(store.load(sessionId), event: nil)
             }
@@ -327,7 +329,7 @@ extension SessionCore {
             try await deleteUnderGate(payload: payload, principal: principal)
         }.value
         if case .userNotFound(let error) = deletion {
-            _ = try? await signOut(global: true, purge: true)
+            _ = await signOut(global: true, purge: true)
             throw error
         }
     }

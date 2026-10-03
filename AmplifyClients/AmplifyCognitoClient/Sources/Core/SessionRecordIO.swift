@@ -7,6 +7,7 @@
 
 import Dispatch
 import Foundation
+import InternalAWSCognitoAuth
 
 /// The session record store, with every blocking keychain call moved off Swift's cooperative thread pool.
 ///
@@ -36,6 +37,10 @@ struct SessionRecordIO: Sendable {
 
     let store: SessionRecordStore
     let queue: DispatchQueue
+    /// Told of every record this I/O reads, with the session it was read for: `.default`'s re-reads under its gate
+    /// (`SessionCore.recordIO()`), which `SessionCore+SharedRecordWarning.swift` compares with what the core holds.
+    /// `nil` everywhere else. TEMPORARY: goes with the plugin bridge, with the warning.
+    var observeRead: (@Sendable (SessionID, SessionRecordStore.ReadResult) async -> Void)?
 
     /// Runs `work` against the store on the I/O queue; the caller suspends until it returns.
     func perform<T: Sendable>(_ work: @escaping @Sendable (SessionRecordStore) throws -> T) async throws -> T {
@@ -44,7 +49,9 @@ struct SessionRecordIO: Sendable {
     }
 
     func read(_ sessionId: SessionID) async throws -> SessionRecordStore.ReadResult {
-        try await perform { try $0.read(sessionId) }
+        let result = try await perform { try $0.read(sessionId) }
+        await observeRead?(sessionId, result)
+        return result
     }
 
     func load(_ sessionId: SessionID) async throws -> SessionSnapshot {
@@ -60,9 +67,9 @@ struct SessionRecordIO: Sendable {
     func write(
         _ record: SessionRecord,
         for sessionId: SessionID,
-        expecting generation: UInt64?
+        expecting version: RecordVersion?
     ) async throws -> SessionRecordStore.CommitOutcome {
-        try await perform { try $0.write(record, for: sessionId, expecting: generation) }
+        try await perform { try $0.write(record, for: sessionId, expecting: version) }
     }
 
     func signOut(_ sessionId: SessionID) async throws -> SessionRecordStore.SignOutOutcome {
@@ -77,16 +84,23 @@ struct SessionRecordIO: Sendable {
         try await perform { try $0.purge(sessionId) }
     }
 
-    func pluginRecord(for sessionId: SessionID) async throws -> Data? {
-        try await perform { try $0.pluginRecord(for: sessionId) }
+    func setDefaultLabel(_ label: String?) async throws -> SessionRecordStore.DefaultLabelOutcome {
+        let outcome = try await perform { try $0.setDefaultLabel(label) }
+        if case .written(let result) = outcome {
+            // The label is bound to the shared record as the store just re-read it.
+            await observeRead?(.default, result)
+        }
+        return outcome
     }
 
-    func removePluginRecord(for sessionId: SessionID) async throws {
-        try await perform { try $0.removePluginRecord(for: sessionId) }
-    }
-
-    func storedSessions(includingSignedOut: Bool, sweepingChallengesAt now: Date? = nil) async throws -> [StoredSession] {
-        try await perform { try $0.storedSessions(includingSignedOut: includingSignedOut, sweepingChallengesAt: now) }
+    func storedSessions(
+        includingSignedOut: Bool,
+        sweepingChallengesAt now: Date? = nil,
+        pluginConfiguration: AuthConfiguration? = nil
+    ) async throws -> [StoredSession] {
+        try await perform {
+            try $0.storedSessions(includingSignedOut: includingSignedOut, sweepingChallengesAt: now, pluginConfiguration: pluginConfiguration)
+        }
     }
 
     // MARK: The challenge record
@@ -104,7 +118,10 @@ struct SessionRecordIO: Sendable {
         try await perform { try $0.deleteChallenge(sessionId) }
     }
 
-    func signedInUserIds(describe: @escaping @Sendable (Data) -> CredentialSummary?) async throws -> [SessionID: String] {
-        try await perform { try $0.signedInUserIds(describe: describe) }
+    func signedInUserIds(
+        describe: @escaping @Sendable (Data) -> CredentialSummary?,
+        pluginConfiguration: AuthConfiguration? = nil
+    ) async throws -> [SessionID: String] {
+        try await perform { try $0.signedInUserIds(describe: describe, pluginConfiguration: pluginConfiguration) }
     }
 }

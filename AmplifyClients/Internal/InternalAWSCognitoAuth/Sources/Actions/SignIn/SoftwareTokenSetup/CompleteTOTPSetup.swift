@@ -80,7 +80,8 @@ package struct CompleteTOTPSetup: Action {
                 request: input,
                 for: username,
                 signInMethod: signInEventData.signInMethod,
-                environment: userpoolEnv
+                environment: userpoolEnv,
+                logger: environment.engineLogger
             )
             logVerbose(
                 "\(#fileID) Sending event \(responseEvent)",

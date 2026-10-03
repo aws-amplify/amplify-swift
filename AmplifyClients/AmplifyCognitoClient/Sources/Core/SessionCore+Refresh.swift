@@ -204,8 +204,9 @@ extension SessionCore {
     /// it through the commit guard.
     ///
     /// 1. Re-read first. If another handle or process already refreshed — or signed out — adopt that.
-    /// 2. Otherwise refresh and write expecting the generation just read. A lost race (`.discarded`) is
-    ///    answered by re-reading. If the re-read record's credentials changed, it is newer: adopt it,
+    /// 2. Otherwise refresh and write expecting the version just read. A lost race (`.discarded`) is
+    ///    answered by re-reading. If the re-read record's credentials changed (decoded, `SessionEngine.sameCredentials`:
+    ///    the same credentials saved again in other bytes are not a change), it is newer: adopt it,
     ///    **never** write over it, which would restore a refresh token the server has already rotated
     ///    away. If only its metadata moved (a label), rebase: write the refreshed credentials onto the
     ///    fresh record, keeping its label, so the refreshed tokens are not thrown away. At most
@@ -253,7 +254,8 @@ extension SessionCore {
                 // `RefreshTokenReuse.minimumGap` later, with the record's credentials still exactly the ones sent,
                 // nobody did: the token is dead (a record rolled forward over a rotated token), and the session needs
                 // a fresh sign-in.
-                if reread.credentials == payload, refreshTokenReuse.repeated(payload, at: now()) {
+                if let held = reread.credentials, engine.sameCredentials(held, payload),
+                   refreshTokenReuse.repeated(payload, at: now(), same: engine.sameCredentials) {
                     await markExpired()
                     throw Self.sessionExpired(sessionId)
                 }
@@ -264,7 +266,7 @@ extension SessionCore {
                 )
             } catch SessionEngineError.refreshTokenInvalid {
                 let reread = try await store.load(sessionId)
-                if reread.credentials != payload {
+                if !reread.holdsCredentials(payload, engine: engine) {
                     return await apply(reread, event: nil)
                 }
                 await markExpired()
@@ -357,12 +359,15 @@ extension SessionCore {
         )
         var base = current
         for _ in 1 ... Self.maximumRecordWriteAttempts {
-            switch try await store.write(record, for: sessionId, expecting: base.generation) {
-            case .committed(let envelope):
-                return await .committed(apply(SessionSnapshot(envelope), event: nil))
+            switch try await store.write(record, for: sessionId, expecting: base.version) {
+            case .committed(let committed):
+                return await .committed(apply(SessionSnapshot(committed), event: nil))
             case .discarded:
                 let reread = try await store.load(sessionId)
-                guard reread.credentials == payload else {
+                // Decoded, not byte for byte: another writer (the Auth plugin, over `.default`'s shared record) may
+                // save the same credentials again in other bytes, which must be rebased onto, not adopted, or the
+                // refreshed tokens would be thrown away.
+                guard reread.holdsCredentials(payload, engine: engine) else {
                     return await .adopted(apply(reread, event: nil))
                 }
                 base = reread
@@ -521,9 +526,12 @@ final class RefreshTokenReuse: @unchecked Sendable {
 
     /// Records a reuse of `payload` with the record unchanged at `now`; `true` if an earlier one of the same payload
     /// was at least `minimumGap` before. A repeat sooner than that is not counted, and keeps the first's time.
-    func repeated(_ payload: Data, at now: Date) -> Bool {
+    ///
+    /// - Parameter same: Whether two payloads hold the same credentials (`SessionEngine.sameCredentials`), so a
+    ///   record another writer only re-encoded in between still counts as unchanged.
+    func repeated(_ payload: Data, at now: Date, same: (Data, Data) -> Bool = { $0 == $1 }) -> Bool {
         lock.withLock {
-            guard let first, first.payload == payload else {
+            guard let first, same(first.payload, payload) else {
                 self.first = (payload, now)
                 return false
             }

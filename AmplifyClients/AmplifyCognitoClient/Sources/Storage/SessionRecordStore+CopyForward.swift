@@ -9,7 +9,8 @@ import AmplifyFoundation
 import CryptoKit
 import Foundation
 
-// Carrying a session forward across a pool configuration change (the client copies forward, like the plugin).
+// Carrying a named session forward across a pool configuration change (decided 2026-09-26: copy forward
+// like the plugin). `.default` is the plugin's own record and takes no part in this (see the end of this comment).
 //
 // A record's key embeds the pool namespace (`SessionRecordKey`): the user pool ID, the identity pool ID, or
 // both. Adding a pool, or changing one, is a new namespace, which starts with no record.
@@ -19,7 +20,7 @@ import Foundation
 // (`AWSCognitoAuthCredentialStore.restoreCredentialsOnConfigurationChanges`). The client keeps the same fact per
 // session: a **namespace marker**, `amplify.1.<sessionId>.<app>.configuration`, recording the namespace this app
 // last kept the session's record under. It is written when a record with credentials is first created here, or
-// written over a signed-out row (a sign-in, a guest, an adoption, a carry), and when a restore finds a record here,
+// written over a signed-out row (a sign-in, a guest, a carry), and when a restore finds a record here,
 // not signed out, that the marker does not name. A session that never held a record writes none, so reading one writes nothing. `<app>` is
 // a digest of the bundle identifier, so an app and an extension sharing the access group and a session ID, with
 // different configurations, never act on each other's marker. The account ends in `configuration`, which is not a
@@ -44,8 +45,8 @@ import Foundation
 // under the namespace the marker names are read, never others. A session with no marker (none was ever written: a
 // record from an earlier build, or another app's) carries nothing.
 //
-// **A change the client does not carry keeps the old record** (a deliberate difference: the plugin's `:148-153` branch
-// deletes it). An app can switch its pool configuration at runtime under one session ID (an organisation picker),
+// **A change the client does not carry keeps the old record** (a deliberate difference for named sessions: the
+// plugin's `:148-153` branch deletes it). An app can switch its pool configuration at runtime under one session ID (an organisation picker),
 // which the plugin cannot; deleting there would delete the other configuration's live session, unrevoked, on every
 // switch. The first record started under the new namespace remembers the old one as a copy, with its digest and its
 // own user, whoever starts (`recordStartedHere`), so its user's sign-out or purge there sweeps it while it is
@@ -82,8 +83,9 @@ import Foundation
 //
 // If the old record **vanished or was signed out** between the carry's read and its re-read after the commit (a purge
 // or sign-out of the session under the old configuration raced the carry), the carry is undone: the new record is
-// deleted while it still holds exactly the committed bytes, and the session reads as absent. No re-read-then-delete
-// here is atomic (the keychain has no compare-and-delete): a writer that lands between the two calls loses its write.
+// deleted while it still holds exactly the committed record (its generation and contents), and the session reads as
+// absent. No re-read-then-delete here is atomic (the keychain has no compare-and-delete): a writer that lands between
+// the two calls loses its write.
 //
 // **A deliberate difference from the plugin's `:138` branch.** The plugin copies its record's bytes, so a changed
 // identity pool inherits an identity ID and AWS credentials from the old one. The client never carries an
@@ -100,9 +102,12 @@ import Foundation
 // can lose a concurrent writer's marker update (another process of the same app): the marker then names one of the
 // two namespaces, and the next carry or sweep acts on that.
 //
-// Device metadata and the ASF device ID are not carried, as the plugin does not carry them. Nor is the Auth
-// plugin's own record: `.default` adopted from the plugin in the same release as a configuration change has no
-// marker yet and carries nothing, and the plugin's record under the old namespace is left for the plugin.
+// Device metadata and the ASF device ID are not carried, as the plugin does not carry them.
+//
+// **Named sessions only.** `.default`'s record is the Auth plugin's own (`SessionRecordStore+DefaultSession.swift`):
+// it keeps no marker, so none is read, written or deleted for it, nothing is carried and nothing is swept here. It
+// follows the plugin's own rule instead (`SessionRecordStore+PluginConfiguration.swift`). A `$default` marker left by a
+// development build is never touched.
 extension SessionRecordStore {
 
     /// The marker scope of this process: the first 16 hex digits of the SHA-256 of its bundle identifier.
@@ -224,6 +229,10 @@ extension SessionRecordStore {
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if it could not be read.
     func readMarker(for sessionId: SessionID) throws -> MarkerRead {
+        // `.default` keeps no marker; a `$default` one is a development build's leftover, never read.
+        guard sessionId != .default else {
+            return .absent
+        }
         guard let data = try fetch(markerAccount(for: sessionId), operation: "read the session's namespace marker") else {
             return .absent
         }
@@ -249,6 +258,9 @@ extension SessionRecordStore {
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if it could not be written.
     func writeMarker(_ marker: NamespaceMarker, for sessionId: SessionID) throws {
+        guard sessionId != .default else {
+            return
+        }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(marker)
@@ -261,6 +273,9 @@ extension SessionRecordStore {
     /// failure is logged and leaves the marker as it was. A stale marker only matters after a later configuration
     /// change, and then carries at most the record it names, under the checks of every carry.
     func updateMarker(_ sessionId: SessionID, _ change: (NamespaceMarker?) -> NamespaceMarker) {
+        guard sessionId != .default else {
+            return
+        }
         do {
             let current: NamespaceMarker?
             switch try readMarker(for: sessionId) {
@@ -273,7 +288,7 @@ extension SessionRecordStore {
                 try writeMarker(next, for: sessionId)
             }
         } catch {
-            AmplifyLogging.logger(for: SessionRecordStore.self).warn(
+            ClientLog.logger(ClientLog.sessionRecordStore).warn(
                 "The session's namespace marker could not be written. A later configuration change may not carry the session forward."
             )
         }
@@ -286,7 +301,7 @@ extension SessionRecordStore {
         updateMarker(sessionId) { ($0 ?? NamespaceMarker(poolNamespace: own)).keptHere(own, user: user, remembering: copy) }
     }
 
-    /// Records that `record` started the session here (a sign-in, a guest, an adoption, over nothing or a signed-out
+    /// Records that `record` started the session here (a sign-in, a guest, over nothing or a signed-out
     /// row). If the marker named another namespace whose record is not signed out (a change the client does not
     /// carry, such as an app switching its pool configuration under one session ID), that record is remembered as a
     /// copy with its digest and **its own** user, whoever starts here: only that user's sign-out or purge sweeps it,
@@ -397,18 +412,23 @@ extension SessionRecordStore {
     ///
     /// - Parameter heldSource: For a caller that holds the gate of the namespace the marker names (a restore): the
     ///   namespace it expects. A marker naming another throws `CarrySourceChanged` instead. `nil` does not check.
+    /// `.default` keeps no marker: this is its plain `read`.
+    ///
     /// - Throws: `AuthClientError.storageUnavailable` if the marker or a record could not be read or written;
     ///   nothing is carried then.
     func readCarryingForward(_ sessionId: SessionID, heldSource: PoolNamespace?? = nil) throws -> ReadResult {
+        guard sessionId != .default else {
+            return try read(sessionId)
+        }
         let current = try read(sessionId)
         let markerRead = try readMarker(for: sessionId)
         let own = namespace.pools.keyComponent
         switch current {
-        case .record(let envelope):
-            return try readKept(envelope, of: sessionId, markerRead: markerRead, heldSource: heldSource)
+        case .record(let stored):
+            return try readKept(stored, of: sessionId, markerRead: markerRead, heldSource: heldSource)
         case .absent:
             break
-        case .pluginRecord, .unsupportedSchema, .corrupt:
+        case .unsupportedSchema, .corrupt:
             return current
         }
         guard case .marker(let marker) = markerRead else {
@@ -437,7 +457,7 @@ extension SessionRecordStore {
             return current
         }
         switch try write(source.record, for: sessionId, expecting: nil, recordingMarker: false) {
-        case .committed(let envelope):
+        case .committed(let committed):
             let copy = NamespaceMarker.Copy(
                 poolNamespace: marker.poolNamespace,
                 sha256: Self.digest(source.data),
@@ -445,7 +465,7 @@ extension SessionRecordStore {
             )
             let user = userKey(source.record)
             updateMarker(sessionId) { ($0 ?? marker).keptHere(own, user: user, remembering: copy) }
-            return undoIfTheSourceEnded(sessionId, source: source.account, committed: envelope)
+            return undoIfTheSourceEnded(sessionId, source: source.account, committed: committed)
         case .discarded:
             // Another writer stored a record meanwhile: that one is the session's.
             return try read(sessionId)
@@ -462,24 +482,24 @@ extension SessionRecordStore {
     ///   still on this configuration keeps its identity. Otherwise the session is kept here from now on, and the
     ///   record there, if not signed out, is remembered as a copy with its own user.
     private func readKept(
-        _ envelope: SessionRecordEnvelope,
+        _ stored: VersionedSessionRecord,
         of sessionId: SessionID,
         markerRead: MarkerRead,
         heldSource: PoolNamespace??
     ) throws -> ReadResult {
         let own = namespace.pools.keyComponent
         guard case .marker(let marker) = markerRead else {
-            if case .absent = markerRead, !envelope.record.isSignedOut, envelope.record.credentials != nil {
-                recordRunningHere(sessionId, record: envelope.record)
+            if case .absent = markerRead, !stored.record.isSignedOut, stored.record.credentials != nil {
+                recordRunningHere(sessionId, record: stored.record)
             }
-            return .record(envelope)
+            return .record(stored)
         }
-        if envelope.record.isSignedOut {
-            sweepQuietly(sessionId, marker: marker, reference: envelope.record)
-            return .record(envelope)
+        if stored.record.isSignedOut {
+            sweepQuietly(sessionId, marker: marker, reference: stored.record)
+            return .record(stored)
         }
         guard marker.poolNamespace != own else {
-            return .record(envelope)
+            return .record(stored)
         }
         if let heldSource, markerSource(marker) != heldSource {
             throw CarrySourceChanged()
@@ -493,7 +513,7 @@ extension SessionRecordStore {
         let ended = otherData == nil || other?.isSignedOut == true
         // Whose session ended there: the user the marker recorded for it, else the signed-out row's.
         let endedUser = marker.user ?? other.flatMap(userKey)
-        if ended, envelope.record.kind != .guest,
+        if ended, stored.record.kind != .guest,
            let kept = marker.copies.first(where: { $0.poolNamespace == own }),
            let keptUser = kept.user, keptUser == endedUser {
             let account = sessionAccount(for: sessionId)
@@ -514,33 +534,35 @@ extension SessionRecordStore {
         if let otherData, let other, !other.isSignedOut {
             copy = NamespaceMarker.Copy(poolNamespace: marker.poolNamespace, sha256: Self.digest(otherData), user: userKey(other))
         }
-        recordRunningHere(sessionId, record: envelope.record, remembering: copy)
-        return .record(envelope)
+        recordRunningHere(sessionId, record: stored.record, remembering: copy)
+        return .record(stored)
     }
 
     /// After the carried record committed: if the old record vanished, or was signed out, since it was read (a
     /// purge or sign-out under the old configuration raced the carry), undoes the carry, deleting the new record
-    /// while it still holds exactly the committed bytes. Best effort: a failure is logged, and the carried record
-    /// kept.
-    private func undoIfTheSourceEnded(_ sessionId: SessionID, source: String, committed envelope: SessionRecordEnvelope) -> ReadResult {
+    /// while it still holds exactly the committed record (its generation and contents). Best effort: a failure is
+    /// logged, and the carried record kept.
+    private func undoIfTheSourceEnded(_ sessionId: SessionID, source: String, committed: VersionedSessionRecord) -> ReadResult {
         do {
             if let data = try fetch(source, operation: "re-read the carried session record") {
                 guard case .envelope(let stored) = SessionRecordEnvelope.decode(data), stored.record.isSignedOut else {
-                    return .record(envelope)
+                    return .record(committed)
                 }
             }
             let account = sessionAccount(for: sessionId)
             // Not atomic: re-read, then delete. A writer that lands in between loses its write.
-            guard try fetch(account, operation: "re-read the session record carried here") == (try envelope.encoded()) else {
+            guard let current = try fetch(account, operation: "re-read the session record carried here"),
+                  case .envelope(let stored) = SessionRecordEnvelope.decode(current),
+                  VersionedSessionRecord(stored) == committed else {
                 return try read(sessionId)
             }
             try performStorage("undo the carry of a session ended meanwhile") { try keychain.remove(account) }
             return .absent
         } catch {
-            AmplifyLogging.logger(for: SessionRecordStore.self).warn(
+            ClientLog.logger(ClientLog.sessionRecordStore).warn(
                 "Could not check whether a session carried forward was signed out or purged under its previous configuration meanwhile."
             )
-            return .record(envelope)
+            return .record(committed)
         }
     }
 
@@ -576,7 +598,7 @@ extension SessionRecordStore {
         reference knownReference: SessionRecord? = nil,
         throwing: Bool = true
     ) throws {
-        let logger = AmplifyLogging.logger(for: SessionRecordStore.self)
+        let logger = ClientLog.logger(ClientLog.sessionRecordStore)
         let marker: NamespaceMarker
         let reference: SessionRecord?
         let referenceUser: String?
@@ -655,7 +677,7 @@ extension SessionRecordStore {
     ///
     /// - Throws: `AuthClientError.storageUnavailable` if the marker, the session's record or a copy could not be read.
     func copiesToRevoke(of sessionId: SessionID, revoking payload: Data) throws -> [Data] {
-        guard case .marker(let marker) = try readMarker(for: sessionId), !marker.copies.isEmpty,
+        guard sessionId != .default, case .marker(let marker) = try readMarker(for: sessionId), !marker.copies.isEmpty,
               let userPool = namespace.pools.userPoolId else {
             return []
         }

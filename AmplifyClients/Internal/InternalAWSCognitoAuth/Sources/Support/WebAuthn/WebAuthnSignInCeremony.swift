@@ -84,7 +84,7 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
     /// - Throws: `EngineAuthError.validation("presentationAnchor", …)` with no anchor, before the runner;
     ///   a `WebAuthnError` from the body; the runner's own error unchanged.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-    package func assert(_ options: CredentialAssertionOptions) async throws -> String {
+    package func assert(_ options: CredentialAssertionOptions, logger: any EngineScopedLogger) async throws -> String {
         guard let anchor else {
             throw EngineAuthError.validation(
                 WebAuthnCredentialOperations.presentationAnchorField,
@@ -96,7 +96,7 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
         let data = try await run {
             do {
                 let asserter = try await MainActor.run {
-                    try Self.asserter(from: anchor, makeAsserter)
+                    try Self.asserter(from: anchor, makeAsserter, logger: logger)
                 }
                 let payload = try await asserter.assert(with: options)
                 return try Data(payload.stringify().utf8)
@@ -115,7 +115,8 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
     @MainActor
     private static func asserter(
         from box: EnginePresentationAnchorBox,
-        _ makeAsserter: (@MainActor @Sendable (EnginePresentationAnchor) -> any WebAuthnCredentialsProtocol)?
+        _ makeAsserter: (@MainActor @Sendable (EnginePresentationAnchor) -> any WebAuthnCredentialsProtocol)?,
+        logger: any EngineScopedLogger
     ) throws -> CredentialAsserterProtocol {
         guard let window = box.anchor else {
             throw EngineAuthError.validation(
@@ -125,7 +126,7 @@ extension WebAuthnSignInCeremonySlot.Ceremony {
             )
         }
         guard let makeAsserter else {
-            return PlatformWebAuthnCredentials(presentationAnchor: window)
+            return PlatformWebAuthnCredentials(presentationAnchor: window, logger: logger)
         }
         guard let asserter = makeAsserter(window) as? CredentialAsserterProtocol else {
             throw WebAuthnError.unknown(message: "The ceremony's asserter cannot assert WebAuthn credentials")

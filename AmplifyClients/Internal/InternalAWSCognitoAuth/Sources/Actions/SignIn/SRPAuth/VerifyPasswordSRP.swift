@@ -85,7 +85,8 @@ package struct VerifyPasswordSRP: Action {
                 for: username,
                 signInMethod: .apiBased(.userSRP),
                 inputUsername: inputUsername,
-                environment: userPoolEnv
+                environment: userPoolEnv,
+                logger: environment.engineLogger
             )
             logVerbose(
                 "\(#fileID) Sending event \(responseEvent)",

@@ -7,15 +7,14 @@
 
 @_spi(AmplifyExperimental) import AmplifyFoundation
 import Foundation
+import InternalAWSCognitoAuth
 
 /// One live session: its in-memory state, its streams, its engine and its SDK clients.
 ///
 /// There is exactly one per session ID in a process. The registry holds it weakly; handles and
 /// providers hold it strongly, and so does any restore or refresh in flight. When the last of them goes
 /// it is released, which ends both streams, frees the engine and the SDK clients, and schedules the
-/// registry prune. One exception: `.default`'s check of the Auth plugin's record
-/// (`SessionCore+SideBySide.swift`) holds the engine, and through it the SDK clients, until its keychain read
-/// returns, so while that read is stalled they outlive the core.
+/// registry prune.
 ///
 /// **It never performs keychain I/O on itself, nor on the cooperative pool.** It holds in-memory state
 /// only. Every store call is serialized by the record's gate rather than by this actor, runs on the
@@ -59,7 +58,12 @@ actor SessionCore {
     nonisolated let guestFlight = SingleFlight<SessionSnapshot>()
     nonisolated let bounds: SessionCoreDependencies.Bounds
     nonisolated let now: @Sendable () -> Date
+    /// Revokes a login `.default`'s configuration-change rule deleted (`SessionCore+PluginConfiguration.swift`).
+    nonisolated let makePreviousConfigurationRevoker: @Sendable (AuthConfiguration) -> any SessionRevoker
     private nonisolated let registry: SessionCoreDependencies.Registry
+    /// Whether this core has logged the temporary warning that `.default`'s shared record holds another principal
+    /// (`SessionCore+SharedRecordWarning.swift`): once per core. Goes with the plugin bridge.
+    nonisolated let sharedRecordWarning = SharedRecordWarningLatch()
     #if os(iOS) || os(macOS) || os(visionOS)
     /// The process-wide system-sheet lock: held around this session's
     /// hosted-UI sign-in and the first attempt of a sign-out that shows the logout page.
@@ -109,11 +113,6 @@ actor SessionCore {
     private var passkeyRegistrations: [UInt64: @Sendable () -> Void] = [:]
     private var nextPasskeyRegistration: UInt64 = 0
 
-    /// This core's one look for the Auth plugin signed in as another principal beside `.default`'s own record
-    /// (`SessionCore+SideBySide.swift`), once started. At most one per core; not awaited by anything
-    /// but tests.
-    private(set) var pluginPrincipalCheck: Task<Void, Never>?
-
     /// Builds a core. Runs under the registry lock, inside the client's synchronous `init`: cheap, no
     /// `await`, no keychain call, no call back into the registry.
     init(
@@ -141,6 +140,7 @@ actor SessionCore {
         ))
         self.bounds = dependencies.bounds
         self.now = dependencies.now
+        self.makePreviousConfigurationRevoker = dependencies.makePreviousConfigurationRevoker
         self.registry = dependencies.registry
         #if os(iOS) || os(macOS) || os(visionOS)
         self.sheetLock = dependencies.sheetLock
@@ -219,11 +219,7 @@ actor SessionCore {
             return snapshot
         }
         let update: ChallengeUpdate = generation == challengeGeneration ? .set(pending) : .unchanged
-        let adopted = apply(restored, challenge: update, event: nil)
-        if pluginPrincipalCheck == nil {
-            pluginPrincipalCheck = startPluginPrincipalCheck(besides: restored)
-        }
-        return adopted
+        return apply(restored, challenge: update, event: nil)
     }
 
     /// Publishes a failed restore. Not cached: the snapshot stays `nil`, so the next operation tries a
@@ -379,7 +375,19 @@ actor SessionCore {
     /// store calls run on the record's I/O queue, so a blocking keychain call occupies neither the actor
     /// nor a cooperative-pool thread.
     nonisolated func withRecord<T: Sendable>(_ body: @Sendable (SessionRecordIO) async throws -> T) async throws -> T {
-        let io = SessionRecordIO(store: store, queue: gate.ioQueue)
+        let io = recordIO()
         return try await gate.withLock { try await body(io) }
+    }
+
+    /// The record's I/O for `withRecord`. For `.default` only, every record it reads is a re-read, which the core
+    /// compares with what it holds (`noteReread`). TEMPORARY: the observer goes with the plugin bridge,
+    /// with the warning of `SessionCore+SharedRecordWarning.swift`. A named session's I/O has none.
+    nonisolated func recordIO() -> SessionRecordIO {
+        guard sessionId == .default else {
+            return SessionRecordIO(store: store, queue: gate.ioQueue)
+        }
+        return SessionRecordIO(store: store, queue: gate.ioQueue, observeRead: { [self] sessionId, result in
+            await noteReread(SessionSnapshot(result), of: sessionId)
+        })
     }
 }

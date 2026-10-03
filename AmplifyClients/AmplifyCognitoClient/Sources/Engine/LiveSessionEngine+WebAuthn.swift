@@ -37,7 +37,7 @@ extension LiveSessionEngine {
         }
         let accessToken = try webAuthnAccessToken(in: payload, for: "associateWebAuthnCredential")
         let userPool = webAuthnUserPool
-        let registrant = webAuthnCeremonies.registrant
+        let registrant = webAuthnCeremonies.registrant(logger: resources.logger)
         try await Self.mappingSignedInFailures {
             try await WebAuthnCredentialOperations.associate(
                 accessToken: { accessToken },
@@ -147,11 +147,11 @@ struct LiveWebAuthnCeremonies: Sendable {
     }
 
     #if os(iOS) || os(macOS) || os(visionOS)
-    /// Associate's registrant factory, as the engine's operation takes it.
+    /// Associate's registrant factory, as the engine's operation takes it. The platform's logs through `logger`.
     @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
-    var registrant: WebAuthnCredentialOperations.RegistrantFactory {
+    func registrant(logger: any EngineScopedLogger) -> WebAuthnCredentialOperations.RegistrantFactory {
         guard let makeRegistrant else {
-            return WebAuthnCredentialOperations.platformRegistrant
+            return WebAuthnCredentialOperations.platformRegistrant(logger: logger)
         }
         return { anchor in
             guard let registrant = makeRegistrant(anchor) as? CredentialRegistrantProtocol else {

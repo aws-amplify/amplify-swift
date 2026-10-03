@@ -75,19 +75,25 @@ package final class PlatformWebAuthnCredentials: NSObject, WebAuthnCredentialsPr
 
     package let presentationAnchor: EnginePresentationAnchor?
     private let makeController: ControllerFactory
+    /// The caller's logger, at this delegate's scope.
+    let log: EngineLogger
 
     private let lock = NSLock()
     private var lastCeremonyId: UInt64 = 0
     private var assertion: Ceremony<CredentialAssertionPayload>?
     private var registration: Ceremony<CredentialRegistrationPayload>?
 
+    /// - Parameter logger: the caller's. The plugin's resolves this delegate's scope to
+    ///   `Amplify.Logging.logger(forCategory: "PlatformWebAuthnCredentials")`, as before.
     package init(
         presentationAnchor: EnginePresentationAnchor?,
+        logger: any EngineScopedLogger,
         makeController: @escaping ControllerFactory = { requests in
             ASAuthorizationController(authorizationRequests: requests)
         }
     ) {
         self.presentationAnchor = presentationAnchor
+        self.log = logger.scoped(Self.logScope)
         self.makeController = makeController
     }
 
@@ -258,12 +264,8 @@ extension PlatformWebAuthnCredentials: CredentialRegistrantProtocol {
 
 @available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 package extension PlatformWebAuthnCredentials {
-    /// No environment is in scope, so these lines go through the global router.
-    static let log = EngineLog.logger(.category("PlatformWebAuthnCredentials"))
-
-    var log: EngineLogger {
-        Self.log
-    }
+    /// The scope of this delegate's lines: the plugin's pre-M2 category, written as a literal.
+    static let logScope = EngineLogScope.category("PlatformWebAuthnCredentials")
 }
 
 // - MARK: ASAuthorizationControllerDelegate

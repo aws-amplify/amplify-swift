@@ -72,3 +72,19 @@ package protocol LoggerProvider {
 
     var logger: any EngineScopedLogger { get }
 }
+
+package extension Environment {
+
+    /// This environment's logger, or `DiscardingEngineLogger` when it carries none, as `logVerbose` and the
+    /// other `Action` helpers then log nothing. For a site that hands its caller's logger on.
+    ///
+    /// Every environment an action runs in, the plugin's and the client's, carries a logger, so the fallback
+    /// is a programming error: it fails in DEBUG builds, and logs nothing in release ones.
+    var engineLogger: any EngineScopedLogger {
+        guard let logger = (self as? LoggerProvider)?.logger else {
+            assertionFailure("An engine site was handed an environment with no logger: \(type(of: self))")
+            return DiscardingEngineLogger()
+        }
+        return logger
+    }
+}

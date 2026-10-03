@@ -33,9 +33,10 @@ package protocol CredentialStoreEnvironment: Environment {
 }
 
 package extension CredentialStoreEnvironment {
-    /// A legacy store for `service`, over the item store `legacyKeychainStoreFactory` builds for it.
-    func legacyKeychainStore(_ service: String) -> EngineKeychainStore {
-        EngineKeychainStore(legacyKeychainStoreFactory(service))
+    /// A legacy store for `service`, over the item store `legacyKeychainStoreFactory` builds for it, logging
+    /// through `logger`: the caller's, the credential environment's (`CredentialEnvironment.logger`).
+    func legacyKeychainStore(_ service: String, logger: any EngineScopedLogger) -> EngineKeychainStore {
+        EngineKeychainStore(legacyKeychainStoreFactory(service), logger: logger)
     }
 }
 

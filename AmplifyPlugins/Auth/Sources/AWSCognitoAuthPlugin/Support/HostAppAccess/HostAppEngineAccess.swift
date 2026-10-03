@@ -197,7 +197,8 @@ struct HostAppCredentialStore {
             AWSCognitoAuthCredentialStore(
                 authConfiguration: authConfiguration,
                 accessGroup: accessGroup,
-                migrateKeychainItemsOfUserSession: migrateKeychainItemsOfUserSession
+                migrateKeychainItemsOfUserSession: migrateKeychainItemsOfUserSession,
+                logger: AmplifyEngineLogRouter()
             )
         )
     }

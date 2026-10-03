@@ -13,12 +13,15 @@ import Foundation
 /// and the same messages. The plugin's type is reached as `underlyingError as? AWSCognitoAuthError`; the
 /// client carries its code in the error case itself, so `catch AuthClientError.service(.codeMismatch?, _, _, _)`
 /// needs no downcast. The client does not depend on the plugin, so it owns this type, and the plugin bridge
-/// maps the two case to case.
+/// will map the two case to case.
+///
+/// A plain value, not an `Error`: it is never thrown on its own, only carried by `AuthClientError.service`.
+/// `errorDescription` is a plain property that names the case and gives the plugin's message.
 ///
 /// May gain cases in a minor release, as Cognito adds exceptions: include `@unknown default` when you
 /// switch over it.
 @_spi(AmplifyExperimental)
-public enum AuthClientServiceErrorCode: Error, CaseIterable {
+public enum AuthClientServiceErrorCode: CaseIterable {
 
     /// User not found in the system.
     case userNotFound
@@ -135,9 +138,10 @@ extension AuthClientServiceErrorCode: Equatable {}
 
 extension AuthClientServiceErrorCode: Sendable {}
 
-extension AuthClientServiceErrorCode: LocalizedError {
+public extension AuthClientServiceErrorCode {
 
-    public var errorDescription: String? {
+    /// `"AuthClientServiceErrorCode.<case>: <the plugin's message>"`.
+    var errorDescription: String? {
         var message = ""
         switch self {
         case .userNotFound:

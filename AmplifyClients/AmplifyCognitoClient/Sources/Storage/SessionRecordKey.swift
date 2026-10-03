@@ -18,6 +18,16 @@ enum PoolNamespace: Hashable, Sendable {
     case identityPool(String)
     case userPoolAndIdentityPool(userPoolId: String, identityPoolId: String)
 
+    /// Whether this namespace has an identity pool: a configuration with one.
+    var hasIdentityPool: Bool {
+        switch self {
+        case .identityPool, .userPoolAndIdentityPool:
+            return true
+        case .userPool:
+            return false
+        }
+    }
+
     /// The user pool ID, if this namespace has a user pool.
     var userPoolId: String? {
         switch self {
@@ -58,9 +68,13 @@ enum PoolNamespace: Hashable, Sendable {
 /// The keychain account names session records are stored under.
 ///
 /// Format v1: `amplify.1.<poolNamespace>.<sessionId>.<kind>`. The `1` is a schema version, added
-/// while it is free. The session segment is an insertion relative to the plugin's
-/// `amplify.<poolNamespace>.session`, so the two records are siblings under one service rather
-/// than one replacing the other, and a rollback to a plugin-only release still finds its record.
+/// while it is free. Named sessions keep their records here, beside the plugin's
+/// `amplify.<poolNamespace>.session` under one service.
+///
+/// `.default`'s **session** record is the plugin's own, `pluginSessionAccount(in:)`: no
+/// `$default` session record is written. Its interrupted sign-in record and its sidecar
+/// (`metaAccount(in:)`) stay in this family, under `$default`. An `amplify.1.<ns>.$default.session` item is a
+/// leftover of development builds: it still parses, and every reader skips it.
 enum SessionRecordKey {
 
     enum Kind: String, CaseIterable, Sendable {
@@ -88,14 +102,15 @@ enum SessionRecordKey {
         "\(versionedPrefix)\(namespaceComponent).\(sessionId.stringValue).\(kind.rawValue)"
     }
 
-    /// The account `AWSCognitoAuthPlugin` stores its single session under today.
-    static func legacySessionAccount(in namespace: PoolNamespace) -> String {
+    /// The account `AWSCognitoAuthPlugin` stores its single session under: `.default`'s session record, which the
+    /// plugin and the client's `.default` both read and write.
+    static func pluginSessionAccount(in namespace: PoolNamespace) -> String {
         "amplify.\(namespace.keyComponent).session"
     }
 
     /// Recognises a v1 session-record account and splits it apart.
     ///
-    /// Returns `nil` for anything else in the keychain service — the plugin's legacy record,
+    /// Returns `nil` for anything else in the keychain service — the plugin's own record,
     /// device metadata, the stored configuration, a future schema version — so listing can run
     /// over the whole service without misreading any of them. Parsing anchors on the prefix and the
     /// suffix, and takes the session ID as the last segment before the suffix: a session ID cannot
@@ -119,6 +134,21 @@ enum SessionRecordKey {
             return nil
         }
         return Parsed(namespaceComponent: namespaceComponent, sessionId: sessionId, kind: kind)
+    }
+
+    // MARK: The default session's sidecar
+
+    /// The last segment of `.default`'s sidecar account (`DefaultSessionMeta`): not a `Kind`, so `parse` (and
+    /// so every listing, of this build and of earlier ones) never reads the sidecar as a session record.
+    static let metaSuffix = "meta"
+
+    /// The account of `.default`'s sidecar: `amplify.1.<poolNamespace>.$default.meta`. It sits in the client's
+    /// own key family beside `.default`'s interrupted-sign-in record (`SessionRecordAccount.isClientSessionRecord`),
+    /// and `parse` returns `nil` for it. Both items belong to the plugin's session
+    /// (`SessionRecordAccount.isDefaultSessionItem`): the plugin's access-group transition wipe removes them,
+    /// and its migration moves them.
+    static func metaAccount(in namespace: PoolNamespace) -> String {
+        "\(versionedPrefix)\(namespace.keyComponent).\(SessionID.default.stringValue).\(metaSuffix)"
     }
 
     // MARK: Namespace markers

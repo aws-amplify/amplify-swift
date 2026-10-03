@@ -80,7 +80,8 @@ package struct InitiateUserAuth: Action {
                 for: username,
                 signInMethod: signInEventData.signInMethod,
                 presentationAnchor: signInEventData.presentationAnchor,
-                srpStateData: srpStateData
+                srpStateData: srpStateData,
+                logger: environment.engineLogger
             )
 
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)

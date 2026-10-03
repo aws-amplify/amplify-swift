@@ -80,7 +80,8 @@ package struct AutoSignIn: Action {
             let responseEvent = try await sendRequest(
                 request: request,
                 username: username,
-                environment: userPoolEnv
+                environment: userPoolEnv,
+                logger: environment.engineLogger
             )
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
@@ -102,7 +103,8 @@ package struct AutoSignIn: Action {
     private func sendRequest(
         request: InitiateAuthInput,
         username: String,
-        environment: UserPoolEnvironment
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
     ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
@@ -113,7 +115,8 @@ package struct AutoSignIn: Action {
             response,
             for: username,
             signInMethod: signInEventData.signInMethod,
-            presentationAnchor: signInEventData.presentationAnchor
+            presentationAnchor: signInEventData.presentationAnchor,
+            logger: logger
         )
     }
 }

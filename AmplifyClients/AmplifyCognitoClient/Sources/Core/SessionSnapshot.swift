@@ -18,14 +18,8 @@ struct SessionSnapshot: Sendable, Equatable {
     enum Source: Sendable, Equatable {
         /// Nothing is stored.
         case absent
-        /// The session's own record.
+        /// The session's own record. For `.default`, the Auth plugin's record with the sidecar's label.
         case own(SessionRecord)
-        /// `.default` with no record of its own, reading the Auth plugin's record in place. The payload
-        /// is the plugin's serialized credentials.
-        case pluginReadThrough(Data)
-        /// `.default` with no record of its own, and the plugin's record is its signed-out marker,
-        /// `{"noCredentials":{}}`: present, but no session. Nothing to revoke, report or adopt.
-        case pluginSignedOut
         /// A record is present that this build cannot use.
         case unreadable(Unreadable)
     }
@@ -35,35 +29,37 @@ struct SessionSnapshot: Sendable, Equatable {
         case corrupt
     }
 
-    /// The stored generation, for the session's own record only.
-    let generation: UInt64?
+    /// The version a write over the stored record must expect: a named session's generation, or `.default`'s stored
+    /// bytes.
+    let version: RecordVersion?
     let source: Source
 
-    static let absent = SessionSnapshot(generation: nil, source: .absent)
+    static let absent = SessionSnapshot(version: nil, source: .absent)
 
-    init(generation: UInt64?, source: Source) {
-        self.generation = generation
+    init(version: RecordVersion?, source: Source) {
+        self.version = version
         self.source = source
     }
 
+    /// A named session's envelope, as just committed.
     init(_ envelope: SessionRecordEnvelope) {
-        self.init(generation: envelope.generation, source: .own(envelope.record))
+        self.init(VersionedSessionRecord(envelope))
+    }
+
+    init(_ stored: VersionedSessionRecord) {
+        self.init(version: stored.version, source: .own(stored.record))
     }
 
     init(_ result: SessionRecordStore.ReadResult) {
         switch result {
         case .absent:
             self = .absent
-        case .record(let envelope):
-            self.init(envelope)
-        case .pluginRecord(let payload) where PluginRecordSummary.isSignedOutMarker(payload):
-            self.init(generation: nil, source: .pluginSignedOut)
-        case .pluginRecord(let payload):
-            self.init(generation: nil, source: .pluginReadThrough(payload))
+        case .record(let stored):
+            self.init(stored)
         case .unsupportedSchema(let version):
-            self.init(generation: nil, source: .unreadable(.unsupportedSchema(version: version)))
+            self.init(version: nil, source: .unreadable(.unsupportedSchema(version: version)))
         case .corrupt:
-            self.init(generation: nil, source: .unreadable(.corrupt))
+            self.init(version: nil, source: .unreadable(.corrupt))
         }
     }
 
@@ -79,11 +75,18 @@ struct SessionSnapshot: Sendable, Equatable {
         switch source {
         case .own(let record):
             return record.credentials
-        case .pluginReadThrough(let payload):
-            return payload
-        case .absent, .unreadable, .pluginSignedOut:
+        case .absent, .unreadable:
             return nil
         }
+    }
+
+    /// Whether the session holds exactly `payload`'s credentials, however they are encoded
+    /// (`SessionEngine.sameCredentials`).
+    func holdsCredentials(_ payload: Data, engine: any SessionEngine) -> Bool {
+        guard let credentials else {
+            return false
+        }
+        return engine.sameCredentials(credentials, payload)
     }
 
     /// The session's own record, if it has one.
@@ -99,7 +102,7 @@ struct SessionSnapshot: Sendable, Equatable {
     /// holds no credentials.
     func summary(engine: any SessionEngine) throws -> CredentialSummary? {
         switch source {
-        case .absent, .unreadable, .pluginSignedOut:
+        case .absent, .unreadable:
             return nil
         case .own(let record):
             guard let credentials = record.credentials, record.kind != .signedOut else {
@@ -117,8 +120,6 @@ struct SessionSnapshot: Sendable, Equatable {
                 userId: record.userId ?? described.userId,
                 identityId: described.identityId
             )
-        case .pluginReadThrough(let payload):
-            return try engine.describe(payload)
         }
     }
 
@@ -140,7 +141,7 @@ struct SessionSnapshot: Sendable, Equatable {
 
     private func baseState(engine: any SessionEngine) -> AuthSessionState {
         switch source {
-        case .absent, .pluginSignedOut:
+        case .absent:
             return .signedOut
         case .unreadable(.unsupportedSchema(let version)):
             return .failed(.unknown(
@@ -159,7 +160,7 @@ struct SessionSnapshot: Sendable, Equatable {
                 "This session's saved record is inconsistent: it has kind \(record.kind) but no credentials.",
                 "Sign the session out to reset it."
             ))
-        case .own, .pluginReadThrough:
+        case .own:
             let summary: CredentialSummary?
             do {
                 summary = try self.summary(engine: engine)

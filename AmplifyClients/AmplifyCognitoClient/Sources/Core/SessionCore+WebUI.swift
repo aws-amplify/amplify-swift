@@ -25,11 +25,13 @@ extension SessionCore {
     /// | Condition | Lease | Engine | Reported |
     /// |---|---|---|---|
     /// | the sign-in did not share cookies (an API sign-in, an ephemeral hosted UI) | none | `.skip` | as before |
-    /// | no window | none | `.skip` | `hostedUIError` `.validation(field: "presentationAnchor")` |
-    /// | no hosted UI in the configuration | none | `.skip` | `hostedUIError` `.configuration` |
-    /// | this session's passkey registration holds the sheet | stopped first, then waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; if the sheet does not close in time, the busy row |
-    /// | the sheet is busy (another session, or this session's passkey sheet that did not close in time) | none | `.skip` | `hostedUIError` `.browserBusy(holder:)` |
-    /// | lease taken | around this attempt | `.present` | the engine's outcome |
+    /// | no window (`signOut(options:)`) | none | `.skip` | `hostedUIError` `.validation(field: "presentationAnchor")`: the one documented difference from the plugin, which shows a window of its own |
+    /// | no hosted UI, or no sign-out redirect URI, in the configuration | none | — | throws `SignOutRefusal(noHostedUIForSignOut)`: nothing cleared, the plugin's `.failed` |
+    /// | the engine finds no hosted UI or sign-out redirect URI (`HostedUIError.pluginConfiguration`, `.signOutRedirectURI`) | released | `.present` | the same refusal, the engine's error underneath |
+    /// | another session holds the sheet | none | — | throws `SignOutRefusal(.browserBusy(holder:))` at once, before anything is stopped: nothing cleared, and this session's passkey registration left running |
+    /// | this session's passkey registration holds the sheet, or is still before its sheet | stopped first, then waits up to `passkeySheetClosingTimeout` for its sheet to close | as below | as below; if the sheet does not close in time, the busy row |
+    /// | the sheet is busy (another session took it meanwhile, or this session's passkey sheet did not close in time) | none | — | throws `SignOutRefusal(.browserBusy(holder:))`: nothing cleared |
+    /// | lease taken | around this attempt | `.present` | the engine's outcome; a page that could not be shown or completed (the window gone, the browser failed) is the engine's `SignOutRefusal`: nothing cleared |
     /// | the user closed the page | released | — | rethrows `.userCancelled`: nothing cleared, unless the session is expired, which reruns `.skip` and reports it |
     /// | `cancelWebUISignIn()` or `resetSystemSheet()` interrupted the lease | released | — | waits for the sign-out's own result: the row above if that closed the page, else what it did (signed out, or its failure reported as the revoke's) |
     /// | the interrupt came before the body began (between the grant and the start; the body is abandoned, never runs) | released | — | the closed-page row, at once: nothing ran |
@@ -51,19 +53,33 @@ extension SessionCore {
             return try await skippingHostedUI(payload, global: global, reporting: Self.noSignOutWindow())
         }
         guard configuration.hasHostedUI else {
-            return try await skippingHostedUI(payload, global: global, reporting: Self.noHostedUIForSignOut())
+            // The plugin's `.failed`, with the user still signed in: nothing is revoked or cleared.
+            throw SignOutRefusal(error: Self.noHostedUIForSignOut())
+        }
+        // Another session's sheet refuses the page whatever this session does, so that comes first: a sign-out
+        // that does nothing must not stop this session's passkey registration.
+        if let holder = await sheetLock.currentHolder, holder != sessionId {
+            throw SignOutRefusal(error: Self.signOutBrowserBusy(
+                .browserBusy(heldBy: holder, requestedBy: sessionId, reason: .heldByAnotherSession)
+            ))
         }
         let engine = engine
         let body = LeaseBodyResult<EngineSignOutOutcome>()
         // A passkey registration of this session holding the sheet would make the page `browserBusy(self)`: it is
         // stopped first, as the sign-out would stop it anyway, and the page waits for its sheet to close. Stopped
-        // even if the user then closes the page and stays signed in.
+        // even if the user then closes the page and stays signed in, or if its sheet does not
+        // close within `passkeySheetClosingTimeout`.
         var policy: WebUIOptions.BrowserBusyPolicy = .fail
         if await stopPasskeyRegistrations() {
             // Also for a registration whose lease the lock has granted but whose flow has not attached yet, which
             // the flow's own cancel cannot reach: the lock then refuses it as it attaches.
             await sheetLock.cancel(for: sessionId)
-            // Wait only for this session's own closing sheet; another session's is the busy row, at once.
+            // Wait only for this session's own closing sheet; another session's is the busy row, at once. Since
+            // the check above, another session holds the sheet here only if it took it in between (when this
+            // session's sheet closed, or the lock was free): without this guard the page would queue behind it
+            // for up to `passkeySheetClosingTimeout`. No unit test reaches that window: nothing between the check
+            // and this line can be held from a test without a seam in the sign-out itself, and the fix that
+            // removes the window (acquire first) is still open. The own-sheet tests cover the `true` branch.
             if await sheetLock.currentHolder == sessionId {
                 policy = .wait(timeout: Self.passkeySheetClosingTimeout)
             }
@@ -85,7 +101,8 @@ extension SessionCore {
                 }
             }
         } catch let error as AuthClientError where error.isBrowserBusy {
-            return try await skippingHostedUI(payload, global: global, reporting: error)
+            // The user asked for the page and it cannot be shown: they stay signed in.
+            throw SignOutRefusal(error: Self.signOutBrowserBusy(error))
         } catch let error as AuthClientError where error.isUserCancelled {
             return try await afterClosedLogout(payload, global: global, error)
         } catch is CancellationError {
@@ -111,7 +128,8 @@ extension SessionCore {
     /// | never started (the interrupt came between the grant and the start) | `CancellationError`, nothing cleared | the closed-page row |
     /// | ended with the page closed (`.userCancelled`, `CancellationError`) | `CancellationError`, nothing cleared | the closed-page row |
     /// | signed out | its outcome: the session is cleared | the same |
-    /// | failed after the page | its failure, as the revoke's: the session is cleared | the same |
+    /// | refused (the page could not be shown or completed, `SignOutRefusal`) | the refusal: nothing cleared, `.failed` | the same |
+    /// | failed otherwise | its failure, as the revoke's: the session is cleared | the same |
     ///
     /// A body that never started is abandoned under the claim's lock, so it can no longer start: waiting for it
     /// would wait forever while this sign-out holds the record gate (verification blocker).
@@ -133,7 +151,8 @@ extension SessionCore {
             case .failure(is CancellationError):
                 closedPage = Self.logoutClosed()
             case .failure(let error):
-                // The sign-out ran and failed: reported as the revoke's failure, and the session is cleared.
+                // A `SignOutRefusal` stops the sign-out with nothing cleared (`SessionSignOut.run()` rethrows it,
+                // `.failed`); any other failure is reported as the revoke's, and the session is cleared.
                 throw error
             }
         }
@@ -177,14 +196,30 @@ extension SessionCore {
         )
     }
 
-    static func noHostedUIForSignOut() -> AuthClientError {
+    /// The hosted UI's sign-out cannot run: the configuration has no hosted UI, or no sign-out redirect URI. The
+    /// sign-out is `.failed` and the session stays signed in, as with the plugin. One value whether the core
+    /// or the engine finds it; the engine's own error, when it found it, is `underlying`.
+    static func noHostedUIForSignOut(_ underlying: Error? = nil) -> AuthClientError {
         .configuration(
-            "The session was signed out, but not from the hosted UI: its sign-in shared the browser's cookies, and "
-                + "the configuration has no hosted UI to sign it out of, so the browser still holds its sign-in.",
-            "Add the hosted UI (oauth) settings to the configuration, or sign in to the hosted UI with "
-                + "prompt: [.login] or prefersEphemeralSession: true."
+            "The session is still signed in: its sign-in shared the browser's cookies, and the configuration has no "
+                + "hosted UI, with a sign-out redirect URI, to sign it out of.",
+            "Add the hosted UI (oauth) settings, with a sign-out redirect URI, to the configuration, then sign out "
+                + "again. To sign out on this device only, leaving the browser's sign-in, call signOut(options:).",
+            underlying
         )
     }
+
+    /// The sheet lock's `browserBusy`, with a suggestion for a sign-out: the lock's own suggestions name
+    /// `whenBrowserBusy`, which `AuthClientSignOutOptions` does not have. The holder and description are kept.
+    static func signOutBrowserBusy(_ busy: AuthClientError) -> AuthClientError {
+        guard case .browserBusy(let holder, let description, _, let underlying) = busy else {
+            return busy
+        }
+        return .browserBusy(holder: holder, description, signOutBrowserBusySuggestion, underlying)
+    }
+
+    static let signOutBrowserBusySuggestion =
+        "Retry the sign-out when the other sheet has closed; the session is still signed in."
 
     static func logoutClosed() -> AuthClientError {
         .userCancelled(
@@ -376,7 +411,7 @@ extension SessionCore {
     /// holds each excluded user (for the error's description).
     ///
     /// The excluded users are the other signed-in sessions' of this configuration: their records' user IDs,
-    /// read through `describe` where a record has none (a `.default` read through from the plugin's record).
+    /// read through `describe` where a record has none, and always for `.default`, the plugin's record.
     /// This session's own user is never excluded.
     nonisolated func identityPolicy(
         for expectation: WebUIOptions.IdentityExpectation
@@ -389,7 +424,8 @@ extension SessionCore {
         case .distinctFromOtherSessions:
             let engine = engine
             let io = SessionRecordIO(store: store, queue: SessionRecordIO.listingQueue)
-            let userIds = try await io.signedInUserIds { try? engine.describe($0) }
+            // `.default`'s login as its restore would read it, after the Auth plugin's configuration-change rule.
+            let userIds = try await io.signedInUserIds(describe: { try? engine.describe($0) }, pluginConfiguration: pluginConfiguration)
             var holders: [String: SessionID] = [:]
             for (holder, userId) in userIds.sorted(by: { $0.key.stringValue < $1.key.stringValue })
                 where holder != sessionId && holders[userId] == nil {

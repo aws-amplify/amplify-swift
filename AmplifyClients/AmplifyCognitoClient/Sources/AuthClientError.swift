@@ -71,10 +71,10 @@ public enum AuthClientError {
     /// Amplify core's `AuthError.invalidState`.
     case invalidState(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// The user dismissed a system sheet the operation needed: the passkey sheet of a WebAuthn ceremony, the
-    /// hosted UI's sign-in browser, or its sign-out page (the session then stays signed in). Also thrown when
-    /// `cancelWebUISignIn()` or `resetSystemSheet()` closes the sheet. Nothing was changed; retrying is the
-    /// user's choice.
+    /// The user dismissed a system sheet the operation needed: the passkey sheet of a WebAuthn ceremony, or the
+    /// hosted UI's sign-in browser. Also thrown when `cancelWebUISignIn()` or `resetSystemSheet()` closes the
+    /// sheet. Nothing was changed; retrying is the user's choice. For the hosted UI's sign-out page it is not
+    /// thrown but returned, in `AuthClientSignOutResult.failed`, and the session stays signed in.
     case userCancelled(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A local WebAuthn ceremony failed before Cognito was asked anything. The underlying error is the

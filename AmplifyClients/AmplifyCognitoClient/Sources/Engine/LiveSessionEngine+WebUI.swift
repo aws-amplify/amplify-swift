@@ -82,11 +82,13 @@ extension LiveSessionEngine {
     ///
     /// | The machine reaches | Result |
     /// |---|---|
-    /// | signed out | the outcome, with any hosted-UI failure the engine continued past |
+    /// | signed out | the outcome, with any hosted-UI failure the engine continued past (one that is not a `HostedUIError`, as the plugin continues past it) |
     /// | the hosted-UI step failed, `.cancelled` (the user closed the sheet) | throws `.userCancelled`, nothing revoked |
-    /// | the hosted-UI step failed otherwise | reruns with the step skipped, and reports the failure in `hostedUIError` |
+    /// | the hosted-UI step failed, no hosted UI or sign-out redirect URI (`.pluginConfiguration`, `.signOutRedirectURI`) | throws a `SignOutRefusal` with `SessionCore.noHostedUIForSignOut`, the engine's error underneath, nothing revoked |
+    /// | the hosted-UI step failed otherwise (`.invalidContext`, `.unknown`, a failed start, `.serviceMessage`, `.signOutURI`, ...) | throws a `SignOutRefusal` with the mapped failure, nothing revoked |
     ///
-    /// A window that has gone is the last row without a browser: skipped, and `.validation` reported.
+    /// Every refusal is the plugin's `.failed`: the user asked for the page, it could not be shown or completed,
+    /// so they stay signed in. A window that has gone is a refusal too, with `.validation`, before any browser.
     nonisolated func revokePresenting(
         _ payload: Data,
         global: Bool,
@@ -101,13 +103,12 @@ extension LiveSessionEngine {
         let presenter = resources.makeHostedUIPresenter()
         let flow = Task { [self] () -> EngineSignOutOutcome in
             guard let anchor = await MainActor.run(body: { box.anchor }) else {
-                var outcome = try await revokeSkippingHostedUI(payload, global: global)
-                outcome.hostedUIError = outcome.hostedUIError ?? Self.presentationAnchorGone()
-                return outcome
+                // The page cannot be shown: the user stays signed in, nothing revoked.
+                throw SignOutRefusal(error: Self.presentationAnchorGone())
             }
             let operation = try resources.makeOperation(seed: payload, presenter: presenter)
             try await operation.configure(resources.authConfiguration)
-            let presented = try await operation.firstState(
+            return try await operation.firstState(
                 after: AuthenticationEvent(eventType: .signOutRequested(SignOutEventData(
                     globalSignOut: global,
                     presentationAnchor: anchor,
@@ -115,14 +116,6 @@ extension LiveSessionEngine {
                 )))
             ) { state in
                 try Self.presentedSignOutResult(at: state)
-            }
-            switch presented {
-            case .signedOut(let outcome):
-                return outcome
-            case .hostedUIFailed(let failure):
-                var outcome = try await revokeSkippingHostedUI(payload, global: global)
-                outcome.hostedUIError = outcome.hostedUIError ?? failure
-                return outcome
             }
         }
         return try await withTaskCancellationHandler {
@@ -135,27 +128,33 @@ extension LiveSessionEngine {
         #endif
     }
 
-    /// Where a sign-out that showed the logout page ended.
-    enum PresentedSignOut: Sendable {
-        case signedOut(EngineSignOutOutcome)
-        /// The browser step failed with something other than the user closing it.
-        case hostedUIFailed(AuthClientError)
-    }
-
-    /// A presenting sign-out's result at `state`, or `nil` while it runs.
-    static func presentedSignOutResult(at state: AuthState) throws -> PresentedSignOut? {
+    /// A presenting sign-out's outcome at `state`, or `nil` while it runs.
+    ///
+    /// Every `HostedUIError` of the logout step stops the sign-out before anything is revoked, as the plugin's
+    /// `.failed` does (`SignOutState.error(.hostedUI)`): `.cancelled` throws `.userCancelled`, which the core keeps
+    /// for its expired-session rule; every other one throws a `SignOutRefusal`.
+    static func presentedSignOutResult(at state: AuthState) throws -> EngineSignOutOutcome? {
         guard case .configured(let authentication, _, _) = state else {
             return nil
         }
         switch authentication {
         case .signedOut(let signedOut):
-            return .signedOut(outcome(of: signedOut))
+            // Its `hostedUIError` is a non-`HostedUIError` failure the engine continued past, as the plugin's
+            // `ShowHostedUISignOut` does; unreachable with the shipped presenter, which only throws `HostedUIError`.
+            return outcome(of: signedOut)
         case .signingOut(.error(.hostedUI(let error))):
             let mapped = AuthClientError(engine: error.engineError)
-            if case .cancelled = error {
+            switch error {
+            case .cancelled:
                 throw mapped
+            case .pluginConfiguration, .signOutRedirectURI:
+                // No hosted UI, or no sign-out redirect URI, to sign out of: one value for this refusal, whether the
+                // core or the engine finds it, with the engine's own error underneath.
+                throw SignOutRefusal(error: SessionCore.noHostedUIForSignOut(mapped))
+            default:
+                // The page could not be shown or completed.
+                throw SignOutRefusal(error: mapped)
             }
-            return .hostedUIFailed(mapped)
         case .signingOut(.error(let error)):
             throw AuthClientError(engine: error.engineError)
         default:

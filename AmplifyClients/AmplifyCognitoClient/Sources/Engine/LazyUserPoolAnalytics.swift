@@ -79,7 +79,10 @@ final class LazyUserPoolAnalytics: UserPoolAnalyticsBehavior, @unchecked Sendabl
     /// `UserDefaults.standard`, and the user domain's Application Support directory.
     init(
         pinpointAppId: String?,
-        keychain: any KeychainItemStoreBehavior = KeychainItemStore(service: LazyUserPoolAnalytics.pinpointContextService),
+        keychain: any KeychainItemStoreBehavior = KeychainItemStore(
+            service: LazyUserPoolAnalytics.pinpointContextService,
+            logger: ClientLog.logger(ClientLog.keychainItemStore)
+        ),
         userDefaults: UserDefaults = .standard,
         applicationSupportDirectory: @escaping @Sendable () -> URL? = {
             FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first

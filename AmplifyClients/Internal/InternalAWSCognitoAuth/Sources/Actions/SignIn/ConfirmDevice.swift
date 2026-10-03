@@ -36,7 +36,9 @@ package struct ConfirmDevice: Action {
                 password: deviceMetadata.deviceSecret
             )
 
-            let deviceName = await EngineDeviceInfo.current.name
+            let deviceName = await userpoolEnv.cognitoUserPoolASFFactory()
+                .device(id: deviceMetadata.deviceKey)
+                .name
 
             let base64EncodedVerifier = passwordVerifier.passwordVerifier.base64EncodedString()
             let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()

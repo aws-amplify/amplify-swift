@@ -84,8 +84,8 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
-        let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = environmentFactory.makeAuthEnvironment(credentialsClient: credentialsClient)
+        let authResolver = AuthState.Resolver(logger: authEnvironment.logger).eraseToAnyResolver()
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
 
@@ -94,7 +94,8 @@ extension AWSCognitoAuthPlugin {
         let analyticsHandler = try EngineCredentialStoreError.rethrowingPublicError {
             try UserPoolAnalytics(
                 authConfiguration.getUserPoolConfiguration(),
-                credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment
+                credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment,
+                logger: credentialEnvironment.logger
             )
         }
 
@@ -236,13 +237,14 @@ extension AWSCognitoAuthPlugin {
         return AWSCognitoAuthCredentialStore(
             authConfiguration: authConfiguration,
             accessGroup: accessGroup,
-            migrateKeychainItemsOfUserSession: migrateKeychainItems
+            migrateKeychainItemsOfUserSession: migrateKeychainItems,
+            logger: AmplifyEngineLogRouter()
         )
     }
 
     /// What `KeychainStore(service:)` operates on: no access group, logging under `KeychainStore`.
     private static func makeLegacyKeychainStore(service: String) -> any KeychainItemStoreBehavior {
-        EngineKeychainStore.makeItemStore(service: service)
+        EngineKeychainStore.makeItemStore(service: service, logger: AmplifyEngineLogRouter())
     }
 
     /// The analytics fallback for a released plugin: no Pinpoint metadata.

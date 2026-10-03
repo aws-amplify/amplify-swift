@@ -14,7 +14,7 @@ import InternalAmplifyKeychain
 ///
 /// **Per user, not per session.** Every session in one storage namespace reads and writes the same
 /// user's records: one person signed in on two sessions is one device to Cognito, with one ASF ID
-/// (design §6, "three levels of scoping"). Session-level operations — sign-out, purge, adoption,
+/// (design §6, "three levels of scoping"). Session-level operations — sign-out, purge,
 /// listing — never touch these records; only the engine does, through this store.
 ///
 /// | Record | Account |
@@ -65,7 +65,8 @@ struct DeviceRecordStore: Sendable {
             namespace: namespace,
             keychain: KeychainItemStore(
                 service: SessionRecordStore.service(forAccessGroup: namespace.accessGroup),
-                accessGroup: namespace.accessGroup
+                accessGroup: namespace.accessGroup,
+                logger: ClientLog.logger(ClientLog.keychainItemStore)
             )
         )
     }

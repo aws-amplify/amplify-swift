@@ -12,6 +12,9 @@ let platforms: [SupportedPlatform] = [
 ]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.60"),
+    // Declared for the Smithy products AmplifyCognitoClient imports directly. Exactly the version
+    // aws-sdk-swift 1.7.60 requires (its `clientRuntimeVersion`), so resolution does not move: bump the two together.
+    .package(url: "https://github.com/smithy-lang/smithy-swift", exact: "0.242.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
@@ -278,8 +281,8 @@ let authTargets: [Target] = [
             "AmplifyTestCommon",
             "InternalAmplifyKeychain",
             "AmplifyKeychainTestCommon",
-            // Tests only: the plugin's reader of the client's session records is checked against the
-            // client's own writer. The plugin itself must never depend on the client.
+            // Tests only: the rollback matrix drives the client's real storage beside the plugin's, over
+            // one keychain. The plugin itself must never depend on the client.
             "AmplifyCognitoClient"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
@@ -717,6 +720,10 @@ let cognitoClientTargets: [Target] = [
             .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),
+            // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`).
+            .product(name: "Smithy", package: "smithy-swift"),
+            .product(name: "SmithyIdentity", package: "smithy-swift"),
+            .product(name: "SmithyHTTPAPI", package: "smithy-swift"),
         ],
         path: "AmplifyClients/AmplifyCognitoClient/Sources",
         resources: [

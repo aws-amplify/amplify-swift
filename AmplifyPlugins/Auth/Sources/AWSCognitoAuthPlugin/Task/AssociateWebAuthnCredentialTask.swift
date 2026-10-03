@@ -28,7 +28,7 @@ final class AssociateWebAuthnCredentialTask: NSObject, AuthAssociateWebAuthnCred
         authStateMachine: AuthStateMachine,
         userPoolFactory: @escaping UserPoolEnvironment.CognitoUserPoolFactory,
         registrantFactory: (AuthUIPresentationAnchor?) -> CredentialRegistrantProtocol = { anchor in
-            PlatformWebAuthnCredentials(presentationAnchor: anchor)
+            PlatformWebAuthnCredentials(presentationAnchor: anchor, logger: AmplifyEngineLogRouter())
         }
     ) {
         self.request = request

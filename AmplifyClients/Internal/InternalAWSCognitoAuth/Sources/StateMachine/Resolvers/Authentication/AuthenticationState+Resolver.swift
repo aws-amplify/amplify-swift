@@ -12,7 +12,12 @@ package extension AuthenticationState {
         package typealias StateType = AuthenticationState
         package let defaultState = AuthenticationState.notConfigured
 
-        package init() { }
+        /// The logger the sign-in resolver logs through: the machine's (`AuthState.Resolver.logger`).
+        package let logger: any EngineScopedLogger
+
+        package init(logger: any EngineScopedLogger) {
+            self.logger = logger
+        }
 
         // swiftlint:disable:next cyclomatic_complexity
         package func resolve(
@@ -276,7 +281,7 @@ package extension AuthenticationState {
                 return .init(newState: .signedIn(signedInData))
             }
 
-            let resolution = SignInState.Resolver().resolve(
+            let resolution = SignInState.Resolver(logger: logger).resolve(
                 oldState: signInState,
                 byApplying: event
             )

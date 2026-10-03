@@ -81,7 +81,11 @@ extension LiveSessionEngine {
         let output = try await Self.mappingMFAErrors {
             try await call.userPool.getUser(input: GetUserInput(accessToken: call.accessToken))
         }
-        return Self.preference(settingList: output.userMFASettingList, preferred: output.preferredMfaSetting)
+        return Self.preference(
+            settingList: output.userMFASettingList,
+            preferred: output.preferredMfaSetting,
+            logger: resources.logger
+        )
     }
 
     /// Sets the user's MFA settings (`UpdateMFAPreferenceTask.updateMFAPreference`): reads the preferred
@@ -100,7 +104,8 @@ extension LiveSessionEngine {
         let current = try await Self.mappingMFAErrors {
             try await call.userPool.getUser(input: GetUserInput(accessToken: call.accessToken))
         }
-        let preferred = current.preferredMfaSetting.flatMap(EngineMFAType.init(rawValue:))
+        let logger = resources.logger
+        let preferred = current.preferredMfaSetting.flatMap { EngineMFAType(rawValue: $0, logger: logger) }
         let input = SetUserMFAPreferenceInput(
             accessToken: call.accessToken,
             emailMfaSettings: email.map { .init($0.mfaSetting(isCurrentlyPreferred: preferred == .email)) },
@@ -149,18 +154,23 @@ extension LiveSessionEngine {
         }
     }
 
-    /// `GetUser`'s MFA fields as the plugin reads them.
-    static func preference(settingList: [String]?, preferred: String?) -> AuthClientUserMFAPreference {
+    /// `GetUser`'s MFA fields as the plugin reads them. A name Cognito does not map to a type is logged through
+    /// `logger`.
+    static func preference(
+        settingList: [String]?,
+        preferred: String?,
+        logger: any EngineScopedLogger
+    ) -> AuthClientUserMFAPreference {
         var enabled: Set<AuthClientMFAType>?
         for name in settingList ?? [] {
-            guard let type = EngineMFAType(rawValue: name) else {
+            guard let type = EngineMFAType(rawValue: name, logger: logger) else {
                 continue
             }
             enabled = (enabled ?? []).union([AuthClientMFAType(type)])
         }
         return AuthClientUserMFAPreference(
             enabled: enabled,
-            preferred: preferred.flatMap(EngineMFAType.init(rawValue:)).map(AuthClientMFAType.init)
+            preferred: preferred.flatMap { EngineMFAType(rawValue: $0, logger: logger) }.map(AuthClientMFAType.init)
         )
     }
 }

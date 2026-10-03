@@ -47,7 +47,8 @@ package struct InitiateCustomAuth: Action {
 
             let responseEvent = try await sendRequest(
                 request: request,
-                environment: userPoolEnv
+                environment: userPoolEnv,
+                logger: environment.engineLogger
             )
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
@@ -69,7 +70,8 @@ package struct InitiateCustomAuth: Action {
 
     private func sendRequest(
         request: InitiateAuthInput,
-        environment: UserPoolEnvironment
+        environment: UserPoolEnvironment,
+        logger: any EngineScopedLogger
     ) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
@@ -79,7 +81,8 @@ package struct InitiateCustomAuth: Action {
         return UserPoolSignInHelper.parseResponse(
             response,
             for: username,
-            signInMethod: .apiBased(.customWithoutSRP)
+            signInMethod: .apiBased(.customWithoutSRP),
+            logger: logger
         )
     }
 

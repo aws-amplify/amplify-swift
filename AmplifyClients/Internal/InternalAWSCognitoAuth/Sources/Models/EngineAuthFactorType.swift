@@ -40,13 +40,26 @@ extension EngineAuthFactorType: Sendable { }
 
 package extension EngineAuthFactorType {
 
-    /// A static site (no environment in scope), so it logs through the global router. The category is
-    /// the public type's `DefaultLogger` category, written as a literal so the fork's name never shows.
-    private static var log: EngineLogger {
-        EngineLog.logger(.category("AuthFactorType"))
+    /// The scope of the parser's lines: the public type's `DefaultLogger` category, written as a literal so
+    /// the fork's name never shows.
+    static let logScope = EngineLogScope.category("AuthFactorType")
+
+    /// Parses a Cognito factor name, logging an unsupported one through `logger`, the caller's: the
+    /// plugin's resolves the scope to `Amplify.Logging.logger(forCategory: "AuthFactorType")`, as before,
+    /// and a standalone client's to its own category.
+    init?(rawValue: String, logger: any EngineScopedLogger) {
+        self.init(rawValue: rawValue, log: logger.scoped(Self.logScope))
     }
 
-    init?(rawValue: String) {
+    /// The parse of the `AuthFlowType` decode (`EngineAuthFlowType.init(from:)`) when the decoder carries no
+    /// `CodingUserInfoKey.engineLogger`: the one engine site with no caller's logger. It logs through the
+    /// process-global router (`EngineLog`), as it always has. That is the plugin's decode, public and stored,
+    /// and the accepted leak documented on `EngineLog`. The client's decodes set the key.
+    init?(decodingRawValue rawValue: String) {
+        self.init(rawValue: rawValue, log: EngineLog.logger(Self.logScope))
+    }
+
+    private init?(rawValue: String, log: EngineLogger) {
         switch rawValue {
         case "PASSWORD": self = .password
         case "PASSWORD_SRP": self = .passwordSRP
@@ -57,15 +70,15 @@ package extension EngineAuthFactorType {
             if #available(iOS 17.4, macOS 13.5, *) {
                 self = .webAuthn
             } else {
-                Self.log.error("WEB_AUTHN is not supported in this OS version.")
+                log.error("WEB_AUTHN is not supported in this OS version.")
                 return nil
             }
         #else
-            Self.log.error("WEB_AUTHN is only available in iOS and macOS.")
+            log.error("WEB_AUTHN is only available in iOS and macOS.")
             return nil
         #endif
         default:
-            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil
         }
     }

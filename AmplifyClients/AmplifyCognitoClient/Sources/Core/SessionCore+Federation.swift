@@ -18,7 +18,7 @@ import Foundation
 /// session's `signInLock`, so it never interleaves with a sign-in step; a federation queued before a
 /// sign-out, purge or deletion never starts (the session-ending count); one those ran during never commits
 /// (the sign-in epoch, checked under the record's gate); and its write is a compare-before-write against the
-/// generation it started from. A lost race re-reads, and never overwrites a user another writer signed in.
+/// record version it started from. A lost race re-reads, and never overwrites a user another writer signed in.
 /// The network step and the commit run in one unstructured task, so a caller's cancellation cannot drop a
 /// federation Cognito completed.
 ///
@@ -106,7 +106,7 @@ extension SessionCore {
 
     // MARK: Commit
 
-    /// Commits a federation's payload under the record's gate, expecting the generation it started from.
+    /// Commits a federation's payload under the record's gate, expecting the record version it started from.
     ///
     /// When the record moved meanwhile (`.discarded`) it re-reads, then writes again over an absent, signed-out
     /// or guest record, over the same identity as ours, or over the federation this one replaces (another
@@ -133,8 +133,8 @@ extension SessionCore {
                     kind: summary.kind,
                     credentials: payload
                 )
-                if case .committed(let envelope) = try await store.write(record, for: sessionId, expecting: current.generation) {
-                    await apply(SessionSnapshot(envelope), event: nil)
+                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
+                    await apply(SessionSnapshot(committed), event: nil)
                     return
                 }
                 let reread = try await store.load(sessionId)

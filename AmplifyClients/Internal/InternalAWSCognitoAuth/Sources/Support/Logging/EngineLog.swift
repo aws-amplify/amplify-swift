@@ -10,10 +10,13 @@ import Foundation
 
 // The engine's logging seam.
 //
-// Engine code logs through `AmplifyFoundation.Logger`, never through `Amplify.Logging`. Where an
-// environment is in scope, a site logs through that environment's `EngineScopedLogger`, so routing
-// is decided per instance. Sites with no environment (static helpers, `init?(rawValue:)` logs) log
-// through `EngineLog.logger(_:)`, which goes through the process-global router.
+// Engine code logs through `AmplifyFoundation.Logger`, never through `Amplify.Logging`. Every site logs
+// through its caller's `EngineScopedLogger`: the environment's where one is in scope, and otherwise one
+// the caller passes in (value parsers such as `EngineMFAType(rawValue:logger:)`, the keychain store, the
+// credential store, the WebAuthn delegate, the resolvers). So routing is decided per instance, and a
+// standalone client's lines never take a plugin's categories. One site still goes through the
+// process-global router: the public `AuthFlowType` decode (`EngineAuthFactorType(decodingRawValue:)`),
+// which has no caller to ask. See `EngineLog`.
 //
 // Every site names its scope with a literal (`.categoryNamespace("Authentication", "InitiateAuthSRP")`,
 // `.category("AuthFactorType")`), never with `String(describing: self)`, so that renaming a type does
@@ -59,7 +62,7 @@ package protocol EngineLogRouter: Sendable {
     func logger(_ scope: EngineLogScope) -> EngineLogger
 }
 
-/// Entry point for engine log sites that have no environment in scope.
+/// Entry point for the one engine log site that has no caller's logger: the public `AuthFlowType` decode.
 ///
 /// **Ordering rule for the process-global router (static sites only).** A host installs its router
 /// with `installIfDefault(_:)`, which only replaces the default `FoundationEngineLogRouter`, so the
@@ -141,6 +144,40 @@ package struct FoundationEngineLogRouter: EngineLogRouter {
             return namespace
         }
     }
+}
+
+package extension CodingUserInfoKey {
+
+    /// The caller's `EngineScopedLogger`, for a decode that logs: set it on the decoder's `userInfo`, and the
+    /// engine's `Decodable` types log through it. Without it they log through the global router, as the
+    /// plugin's public decode always has.
+    static let engineLogger = CodingUserInfoKey(rawValue: "com.amplify.engineLogger")!
+}
+
+/// A logger that logs nothing, at every scope.
+///
+/// What a site gets when its environment carries no logger (an environment that is not a `LoggerProvider`,
+/// where `logVerbose` and the other `Action` helpers log nothing either). Production environments always
+/// carry a logger.
+package struct DiscardingEngineLogger: EngineScopedLogger {
+
+    package init() {}
+
+    package func scoped(_ scope: EngineLogScope) -> EngineLogger {
+        self
+    }
+
+    package func error(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
+
+    package func warn(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
+
+    package func info(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
+
+    package func debug(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
+
+    package func verbose(_ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
+
+    package func log(_ logLevel: AmplifyFoundation.LogLevel, _ message: @autoclosure () -> String, _ error: @autoclosure () -> Error?) {}
 }
 
 /// A logger for a fixed scope that asks `EngineLog.router` for the real logger on every message.

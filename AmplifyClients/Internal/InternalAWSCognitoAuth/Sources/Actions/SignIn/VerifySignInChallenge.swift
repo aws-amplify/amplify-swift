@@ -34,7 +34,10 @@ package struct VerifySignInChallenge: Action {
                 )
                 return
             } else if case .continueSignInWithFirstFactorSelection = currentSignInStep,
-                      let authFactorType = EngineAuthFactorType(rawValue: confirmSignEventData.answer) {
+                      let authFactorType = EngineAuthFactorType(
+                          rawValue: confirmSignEventData.answer,
+                          logger: environment.engineLogger
+                      ) {
                 if authFactorType == .password || authFactorType == .passwordSRP {
                     try await handleContinueSignInWithPassword(
                         withDispatcher: dispatcher,
@@ -100,7 +103,8 @@ package struct VerifySignInChallenge: Action {
                 for: username,
                 signInMethod: signInMethod,
                 inputUsername: challenge.inputUsername,
-                environment: userpoolEnv
+                environment: userpoolEnv,
+                logger: environment.engineLogger
             )
             logVerbose(
                 "\(#fileID) Sending event \(responseEvent)",
@@ -188,7 +192,7 @@ package struct VerifySignInChallenge: Action {
         authFactorType: EngineAuthFactorType
     ) async throws {
 
-        let authFactorType = EngineAuthFactorType(rawValue: confirmSignEventData.answer)
+        let authFactorType = EngineAuthFactorType(rawValue: confirmSignEventData.answer, logger: environment.engineLogger)
         var challengeType: CognitoIdentityProviderClientTypes.ChallengeNameType? = nil
 
         if case .password = authFactorType {
@@ -234,7 +238,7 @@ package struct VerifySignInChallenge: Action {
         )
 
         let event: SignInEvent
-        guard let mfaType = EngineMFAType(rawValue: confirmSignEventData.answer) else {
+        guard let mfaType = EngineMFAType(rawValue: confirmSignEventData.answer, logger: environment.engineLogger) else {
             throw SignInError.inputValidation(field: "Unknown MFA type")
         }
 

@@ -122,23 +122,29 @@ public extension AmplifyCognitoClient {
     ///
     /// A server-side failure (`RevokeToken`, or `GlobalSignOut` with `globalSignOut`) never keeps the session
     /// signed in here: it is reported in `.partial`. After a failed global sign-out the refresh token is not
-    /// revoked either, as in the plugin.
+    /// revoked either, and `revokeTokenError` holds a placeholder error, as in the plugin.
     ///
     /// After a hosted-UI sign-in that shared the browser's cookies, this sign-out has no window to clear the
     /// hosted UI's cookie in, and reports that in `.partial` as `hostedUIError`; use
     /// `signOut(presentationAnchor:options:)` for such a session.
     ///
-    /// - Returns: `.complete`; `.partial` if the revoke or the global sign-out failed, or the hosted UI's
-    ///   sign-out could not run, when the session is still signed out on this device; `.superseded` if a
-    ///   different user signed in to the session meanwhile and was left signed in. Sends `.signedOut` if
-    ///   credentials were removed.
-    /// - Throws: `AuthClientError.storageUnavailable` if storage could not be read or written, or the
-    ///   record kept changing; the session may then still be signed in. `CancellationError` if the calling
-    ///   task is cancelled before anything was revoked: nothing is cleared, and the session stays signed in.
+    /// Never throws, as the plugin's `signOut` does not. Check `signedOutLocally`, or switch over the result.
+    ///
+    /// - Returns:
+    ///   - `.complete` when the session is signed out and nothing failed. Sends `.signedOut` if credentials
+    ///     were removed.
+    ///   - `.partial` when the session is signed out on this device but the revoke, the global sign-out or
+    ///     the hosted UI's sign-out failed, or, with `purgeStoredSession`, the row could not be removed
+    ///     (`storageError`).
+    ///   - `.failed` when the session is still signed in: `storageUnavailable` if storage could not be read or
+    ///     written or the record kept changing; `invalidState` if a different user signed in to the session
+    ///     meanwhile and was left signed in; `unknown` with an underlying `CancellationError` if the calling
+    ///     task was cancelled before anything was revoked. Once a revoke has completed, cancellation never
+    ///     stops the local clear.
     @discardableResult
-    func signOut(options: AuthClientSignOutOptions = AuthClientSignOutOptions()) async throws -> AuthClientSignOutResult {
+    func signOut(options: AuthClientSignOutOptions = AuthClientSignOutOptions()) async -> AuthClientSignOutResult {
         let core = core
-        return try await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession)
+        return await core.signOut(global: options.globalSignOut, purge: options.purgeStoredSession)
     }
 
     /// This session's credentials, refreshed if they need it, each field with its own result.

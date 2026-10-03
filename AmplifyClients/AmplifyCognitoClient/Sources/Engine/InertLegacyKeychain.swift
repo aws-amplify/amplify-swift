@@ -11,9 +11,13 @@ import InternalAmplifyKeychain
 /// A keychain that holds nothing and keeps nothing: what the client hands the Cognito engine as its
 /// `legacyKeychainStoreFactory`, for every service it asks for.
 ///
-/// The engine's credential-store machine runs the AWSMobileClient legacy migration on its first event,
-/// and that migration reads the legacy keychain services and, on a partial read, wipes them. The client never migrates AWSMobileClient data — that stays the Auth plugin's job — so the engine
-/// must see empty legacy services and must not be able to change them:
+/// The engine's credential-store machine runs the AWSMobileClient legacy migration on its first event.
+/// That migration copies the legacy logins forward, and deletes the legacy services only after the copy is
+/// saved; it keeps them when a read fails (`c57dd1094`). When a newer saved session exists, it writes nothing
+/// and clears the legacy services without a copy; when reading that session fails with a keychain error it
+/// keeps them, and an undecodable session counts as absent (`f3b06afef`). The inert store is still needed:
+/// the client must never migrate, clear or rewrite AWSMobileClient data, which stays the Auth plugin's job.
+/// So the engine must see empty legacy services and must not be able to change them:
 /// - every read is `KeychainAccessError.itemNotFound`, and every listing is empty;
 /// - every write and removal succeeds and is dropped. `addIfAbsent` reports the add as accepted, as `set`
 ///   does; `replaceIfPresent` and `move` report that nothing was there.

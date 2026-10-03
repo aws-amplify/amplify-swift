@@ -36,7 +36,7 @@ package extension CognitoUserPoolASF {
         asfClient: AdvancedSecurityBehavior,
         userPoolConfiguration: UserPoolConfigurationData
     ) async -> String? {
-        let deviceInfo: ASFDeviceBehavior = ASFDeviceInfo(id: asfDeviceId)
+        let deviceInfo = asfClient.device(id: asfDeviceId)
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 
         do {

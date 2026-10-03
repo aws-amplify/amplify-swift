@@ -343,11 +343,11 @@ extension SessionCore {
         await setPendingChallenge(pending, ifEpoch: epoch)
     }
 
-    /// Commits a completed sign-in's payload under the record's gate, expecting the generation the
+    /// Commits a completed sign-in's payload under the record's gate, expecting the record version the
     /// sign-in started from.
     ///
     /// When the record moved meanwhile (`.discarded`) it re-reads, then:
-    /// - **absent, signed out, or guest:** writes again against the new generation;
+    /// - **absent, signed out, or guest:** writes again against the new version;
     /// - **the same principal:** writes ours. Both token sets are the same user's, and ours is the one
     ///   the caller asked for. Once ours is committed, the replaced tokens are revoked, best effort;
     /// - **a different principal, or credentials that cannot be described:** does not overwrite, and throws
@@ -378,11 +378,11 @@ extension SessionCore {
                     kind: summary.kind,
                     credentials: payload
                 )
-                if case .committed(let envelope) = try await store.write(record, for: sessionId, expecting: current.generation) {
+                if case .committed(let committed) = try await store.write(record, for: sessionId, expecting: current.version) {
                     // The sign-in is complete, so its challenge record goes, under the same gate. Best effort: a
                     // record left beside a signed-in session is deleted by the next restore, never resumed.
                     await deleteChallengeRecord(in: store)
-                    await apply(SessionSnapshot(envelope), challenge: .set(nil), event: .signedIn)
+                    await apply(SessionSnapshot(committed), challenge: .set(nil), event: .signedIn)
                     return replaced
                 }
                 let reread = try await store.load(sessionId)
@@ -408,12 +408,14 @@ extension SessionCore {
         }
     }
 
-    /// The label a sign-in's record keeps from the record it replaces.
+    /// The label a record keeps from the record it replaces: a sign-in's, a
+    /// guest's and a federation's.
     ///
-    /// A label names the user it was set for. It is kept when the replaced record names no user (absent,
-    /// a guest, a signed-out row that never had one) or the same user, and cleared when it names someone
-    /// else: a different user signing in over an expired session, or over a signed-out row left by
-    /// another user.
+    /// A label names the user it was set for, as `.default`'s sidecar is bound to one. It is kept
+    /// when the replaced record names no user (absent, a guest, a federated identity, a signed-out row that
+    /// never had one) or the same user, and cleared when it names someone else: a different user signing in
+    /// over an expired session, or a different user, a guest or a federated identity taking a signed-out row
+    /// left by another user. A guest or federated identity names no user, so it never matches one.
     static func label(keptFrom replaced: SessionRecord?, for signedIn: CredentialSummary) -> String? {
         guard let replaced, let label = replaced.label else {
             return nil

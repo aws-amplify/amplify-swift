@@ -9,6 +9,7 @@ import AmplifyFoundationBridge
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import Foundation
+import InternalAWSCognitoAuth
 import SmithyHTTPAPI
 
 /// The SDK clients one session owns, shared by its engine and returned by the escape hatches.
@@ -73,6 +74,28 @@ struct CognitoServiceClients: Sendable {
         } else {
             self.identity = nil
         }
+    }
+
+    /// The user pool client of a previous configuration, for the revoke of a login saved under it: its
+    /// region, unsigned, with the user agent, as `init(configuration:configureUserPoolClient:)` builds it, and its
+    /// custom endpoint if it recorded one (a Gen1 plugin configuration can), as the plugin's own client does. **No
+    /// escape hatch:** the app's `configureUserPoolClient` belongs to the current configuration's session and is not
+    /// applied here. No identity client: a revoke never calls one.
+    init(previous configuration: AuthConfiguration, baseHTTPClientEngine: (any HTTPClient)? = nil) throws {
+        if let userPool = configuration.getUserPoolConfiguration() {
+            var config = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(
+                awsCredentialIdentityResolver: CognitoUnsignedOperationResolver(for: .userPool),
+                region: userPool.region,
+                signingRegion: userPool.region,
+                endpointResolver: userPool.endpoint?.resolver,
+                httpClientEngine: baseHTTPClientEngine
+            )
+            config.httpClientEngine = Self.userAgentEngine(wrapping: config.httpClientEngine)
+            self.userPool = CognitoIdentityProviderClient(config: config)
+        } else {
+            self.userPool = nil
+        }
+        self.identity = nil
     }
 
     /// Appends `lib/amplify-swift#<version> md/amplify-cognito#<version>` to the `User-Agent`. The `lib/`

@@ -62,12 +62,20 @@ extension SessionCore {
     /// taken, and the marker read again; if it now names another namespace, the gates are taken again, at most
     /// `SessionRecordGates.maximumGateAttempts` times, and then the restore fails with
     /// `storageUnavailable(.interrupted)`, so a later call restores, and carries, again.
+    ///
+    /// `.default` keeps no marker. It runs the Auth plugin's configuration-change rule instead, first, in the same way:
+    /// the gate it also holds is the namespace of the plugin's last configuration (`authConfiguration`), and the rule
+    /// carries or deletes before the read (`SessionRecordStore+PluginConfiguration.swift`). A failed read of that item
+    /// fails the restore, and nothing is written.
     private nonisolated func restoreOnce() async throws -> SessionSnapshot {
         let reader = SessionRecordIO(store: store, queue: SessionRecordIO.listingQueue)
         let sessionId = sessionId
         for _ in 1 ... SessionRecordGates.maximumGateAttempts {
             // A failed read here is not the restore's answer: the read under the gates reports it, in order.
-            let source = try? await reader.perform { try $0.carrySource(for: sessionId) }
+            let source = try? await reader.perform { store in
+                // `.default` keeps no marker: the namespace the plugin's last configuration names.
+                try sessionId == .default ? store.pluginConfigurationSource() : store.carrySource(for: sessionId)
+            }
             let held = [namespace] + [source].compactMap { $0 }.map {
                 SessionStorageNamespace(pools: $0, accessGroup: namespace.accessGroup)
             }
@@ -78,6 +86,14 @@ extension SessionCore {
                 }
                 let loaded: SessionSnapshot
                 do {
+                    if sessionId == .default {
+                        try await Self.applyPluginConfigurationRule(
+                            through: store,
+                            current: pluginConfiguration,
+                            heldSource: .some(source ?? nil),
+                            makeRevoker: makePreviousConfigurationRevoker
+                        )
+                    }
                     loaded = try await store.loadCarryingForward(sessionId, heldSource: .some(source ?? nil))
                 } catch is SessionRecordStore.CarrySourceChanged {
                     return nil

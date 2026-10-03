@@ -135,8 +135,8 @@ extension LiveSessionEngine {
     ///   (The engine's `signOutGuest` path would only clear the operation's slot, which is discarded.)
     /// - The hosted-UI sign-out runs only for `.present`, after a sign-in that shared the browser's cookies
     ///   (`LiveSessionEngine+WebUI.swift`); otherwise it is skipped and the revoke still runs.
-    /// - After a failed global sign-out the engine does not call `RevokeToken`; its placeholder revoke error
-    ///   is dropped, so the outcome carries only the real global failure.
+    /// - After a failed global sign-out the engine does not call `RevokeToken`, and the outcome keeps the
+    ///   engine's placeholder revoke error beside the real global failure, as the plugin's result does.
     nonisolated func revoke(_ payload: Data, global: Bool, hostedUI: EngineHostedUISignOut) async throws -> EngineSignOutOutcome {
         switch try Self.credentials(in: payload) {
         case .noCredentials, .identityPoolOnly, .identityPoolWithFederation:
@@ -177,12 +177,13 @@ extension LiveSessionEngine {
         }
     }
 
-    /// The failures a sign-out reports. The revoke failure is only real when the global sign-out did not fail
-    /// first. The hosted-UI failure is one the engine continued past (`ShowHostedUISignOut` sends a non-hosted-UI
+    /// The failures a sign-out reports. After a failed global sign-out the revoke failure is the engine's
+    /// placeholder (`BuildRevokeTokenError`, `.service` with empty texts), kept as the plugin keeps it.
+    /// The hosted-UI failure is one the engine continued past (`ShowHostedUISignOut` sends a non-hosted-UI
     /// error on to the revoke).
     static func outcome(of signedOut: SignedOutData) -> EngineSignOutOutcome {
         EngineSignOutOutcome(
-            revokeFailure: signedOut.globalSignOutError == nil ? signedOut.revokeTokenError : nil,
+            revokeFailure: signedOut.revokeTokenError,
             globalSignOutFailure: signedOut.globalSignOutError,
             hostedUIFailure: signedOut.hostedUIError
         )

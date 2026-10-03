@@ -17,10 +17,16 @@ package extension AuthState {
 
         package var defaultState: AuthState = .notConfigured
 
+        /// The machine's logger, which the nested resolvers log through: the plugin's for the plugin's
+        /// machine, a standalone client's for its own. It is the logger of the machine's environment.
+        package let logger: any EngineScopedLogger
+
         package init(
-            defaultState: AuthState = .notConfigured
+            defaultState: AuthState = .notConfigured,
+            logger: any EngineScopedLogger
         ) {
             self.defaultState = defaultState
+            self.logger = logger
         }
 
         package func resolve(oldState: AuthState, byApplying event: StateMachineEvent) -> Resolution {
@@ -64,7 +70,7 @@ package extension AuthState {
                 }
 
             case .configuringAuthentication(let authenticationState):
-                let resolver = AuthenticationState.Resolver()
+                let resolver = AuthenticationState.Resolver(logger: logger)
                 let resolution = resolver.resolve(oldState: authenticationState, byApplying: event)
                 guard case .authenticationConfigured(_, let credentials) = isAuthEvent(event)?.eventType else {
                     let newState = AuthState.configuringAuthentication(resolution.newState)
@@ -76,7 +82,7 @@ package extension AuthState {
                 return .init(newState: newState, actions: resolution.actions + [action])
 
             case .configuringAuthorization(let authenticationState, let authorizationState):
-                let authenticationResolver = AuthenticationState.Resolver()
+                let authenticationResolver = AuthenticationState.Resolver(logger: logger)
                 let authorizationResolver = AuthorizationState.Resolver()
                 let authNresolution = authenticationResolver.resolve(oldState: authenticationState, byApplying: event)
                 let authZresolution = authorizationResolver.resolve(oldState: authorizationState, byApplying: event)
@@ -97,7 +103,7 @@ package extension AuthState {
                     let action = InitializeAuthConfiguration(authConfiguration: authConfiguration)
                     return .init(newState: newState, actions: [action])
                 }
-                let authenticationResolver = AuthenticationState.Resolver()
+                let authenticationResolver = AuthenticationState.Resolver(logger: logger)
                 let authorizationResolver = AuthorizationState.Resolver()
                 let signUpResolver = SignUpState.Resolver()
                 let authNresolution = authenticationResolver.resolve(oldState: authenticationState, byApplying: event)

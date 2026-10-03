@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import InternalAWSCognitoAuth
 
 /// Everything a session core, and the static session-management calls, are built from. `live` in the
 /// app; tests inject their own registry, gate table, keychain, engine and bounds.
@@ -31,6 +32,12 @@ struct SessionCoreDependencies: Sendable {
     ) throws -> CognitoServiceClients
     let makeEngine: @Sendable (SessionEngineContext) throws -> any SessionEngine
     let makeRevoker: @Sendable (AuthClientConfiguration) -> any SessionRevoker
+    /// Revokes a login `.default` deleted on a configuration change, with the previous configuration's region and app
+    /// client ID: `RevokeToken` refuses a token from another app client. `LiveSessionRevoker(previous:)` in
+    /// `live`; inert by default, so dependencies a test builds never reach Cognito.
+    var makePreviousConfigurationRevoker: @Sendable (AuthConfiguration) -> any SessionRevoker = { _ in
+        InertSessionRevoker()
+    }
 
     /// Starts a new core's restore. Must only spawn work, never perform it: it runs inside the
     /// client's synchronous `init`, under the registry lock.
@@ -45,17 +52,33 @@ struct SessionCoreDependencies: Sendable {
     var sheetLock: SystemSheetLock = .shared
     #endif
 
-    static let live = SessionCoreDependencies(
-        registry: SessionCoreRegistry.shared,
-        gates: .shared,
-        makeStore: { SessionRecordStore(namespace: $0) },
-        makeClients: { try CognitoServiceClients(configuration: $0, configureUserPoolClient: $1) },
-        makeEngine: { LiveSessionEngine(context: $0) },
-        makeRevoker: { LiveSessionRevoker(configuration: $0) },
-        scheduleRestore: { core in
-            Task { await core.warmRestore() }
-        },
-        bounds: .live,
-        now: { Date() }
-    )
+    static let live: SessionCoreDependencies = {
+        var live = SessionCoreDependencies(
+            registry: SessionCoreRegistry.shared,
+            gates: .shared,
+            makeStore: { SessionRecordStore(namespace: $0) },
+            makeClients: { try CognitoServiceClients(configuration: $0, configureUserPoolClient: $1) },
+            makeEngine: { LiveSessionEngine(context: $0) },
+            makeRevoker: { LiveSessionRevoker(configuration: $0) },
+            scheduleRestore: { core in
+                Task { await core.warmRestore() }
+            },
+            bounds: .live,
+            now: { Date() }
+        )
+        live.makePreviousConfigurationRevoker = { LiveSessionRevoker(previous: $0) }
+        return live
+    }()
+}
+
+/// A revoker that revokes nothing and reports success: the default of `makePreviousConfigurationRevoker` outside
+/// `live`.
+struct InertSessionRevoker: SessionRevoker {
+    func revoke(_ payload: Data) async throws -> EngineSignOutOutcome {
+        .complete
+    }
+
+    func signOutPresentsBrowser(_ payload: Data) -> Bool {
+        false
+    }
 }
