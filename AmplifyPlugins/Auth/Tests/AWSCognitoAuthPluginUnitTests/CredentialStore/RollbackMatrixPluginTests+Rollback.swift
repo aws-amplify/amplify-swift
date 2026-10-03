@@ -28,7 +28,7 @@ extension RollbackMatrixPluginTests {
 
     // MARK: - Refresh-token rotation
 
-    /// Rotation rollback: the plugin is now signed in on the token the client rotated (§6.3 row 1)
+    /// Rotation rollback: the plugin is now signed in on the token the client rotated (the checklist's row 1)
     ///
     /// - Given: Refresh-token rotation on; alice signs in through the client on `.default`, and the client refreshes,
     ///   rotating her refresh token
@@ -190,7 +190,7 @@ extension RollbackMatrixPluginTests {
     ///    - Each plugin is signed out, reads no client record, and never writes or deletes one
     ///    - Rolled forward, the client lists work and home again, with their bytes unchanged
     ///    - After the transition, the current plugin's scoped wipe has kept them, and the released one has
-    ///      deleted them: the client lists neither (a documented caveat, and the reason for R1)
+    ///      deleted them: the client lists neither (a documented caveat)
     ///
     func testMatrix_namedSessionsDisappearOnRollbackAndReturnOnRollForward() async throws {
         for binary in RollbackPluginBinary.allCases {

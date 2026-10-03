@@ -59,7 +59,7 @@ extension AuthClientUserAttributeKey {
     /// and https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims.
     ///
     /// Internal, and deliberately not a `RawRepresentable` conformance: the client's model types map case
-    /// to case, never through a raw value (see `track-I-model-parity.md`).
+    /// to case, never through a raw value.
     var cognitoName: String {
         switch self {
         case .address: return "address"

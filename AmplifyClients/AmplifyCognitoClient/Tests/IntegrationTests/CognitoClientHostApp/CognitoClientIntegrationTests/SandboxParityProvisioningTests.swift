@@ -485,7 +485,7 @@ final class SandboxParityProvisioningTests: XCTestCase {
         let claims = try IntegrationTestEnvironment.jwtClaims(XCTUnwrap(tokens.accessToken))
         let lifetime = try XCTUnwrap(claims["exp"] as? Double) - XCTUnwrap(claims["iat"] as? Double)
         // Cognito's `exp` - `iat` is sometimes a second short of the validity (299 once in
-        // `client-final-3x.md`, run T2), so allow that one second. The default validity is an hour.
+        // a live run), so allow that one second. The default validity is an hour.
         XCTAssertTrue((299 ... 300).contains(lifetime), "The access token lives \(lifetime) s, not 5 minutes")
         XCTAssertFalse((claims["username"] as? String) == fresh.email, "The username is the email")
     }

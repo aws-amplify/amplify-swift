@@ -31,7 +31,7 @@ final class EngineMappingTests: XCTestCase {
 
     /// Test that every engine sign-in step maps to the client step of the same name and payload
     ///
-    /// - Given: one engine step per case, in `track-I-model-parity.md` line order, with every payload filled
+    /// - Given: one engine step per case, in declaration order, with every payload filled
     /// - When:
     ///    - each is mapped
     /// - Then:

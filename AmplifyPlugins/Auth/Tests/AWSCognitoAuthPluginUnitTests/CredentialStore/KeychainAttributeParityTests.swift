@@ -166,7 +166,7 @@ final class KeychainAttributeParityTests: XCTestCase {
         }
     }
 
-    /// The one difference (plan §1): the client's update keeps the item; the plugin's `set` re-creates it on macOS.
+    /// The one difference: the client's update keeps the item; the plugin's `set` re-creates it on macOS.
     ///
     /// - Given: the shared record, which the client's `.default` added
     /// - When:

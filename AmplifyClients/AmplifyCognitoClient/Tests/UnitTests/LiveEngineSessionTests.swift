@@ -325,7 +325,7 @@ final class LiveEngineSessionTests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, [])
     }
 
-    /// O-3: a hosted-UI session's sign-out skips the hosted-UI step and still revokes.
+    /// A hosted-UI session's sign-out skips the hosted-UI step and still revokes.
     ///
     /// - Given: a signed-in payload whose sign-in method is the hosted UI (not a private session), as an
     ///   adopted plugin record would have

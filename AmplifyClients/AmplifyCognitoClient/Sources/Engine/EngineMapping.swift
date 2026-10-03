@@ -16,14 +16,13 @@ import InternalAWSCognitoAuth
 //
 // Every mapper is an exhaustive `switch` with no `default:`, so a new engine case does not compile until it
 // is mapped. MFA, factor and flow types map **case to case, never through `rawValue`**: in the engine,
-// `rawValue` is the Cognito string (`SMS_MFA`), in the client it is the public name (`sms`)
-// (`track-I-model-parity.md`, "What is deliberately not mirrored").
+// `rawValue` is the Cognito string (`SMS_MFA`), in the client it is the public name (`sms`).
 
 // MARK: Sign-in steps
 
 extension AuthClientSignInStep {
 
-    /// Case for case, in `track-I-model-parity.md` line order. `.done` maps to `.done`; the engine adapter
+    /// Case for case, in declaration order. `.done` maps to `.done`; the engine adapter
     /// reports a finished sign-in as `EngineStepResult.done`, not as a step.
     init(_ step: EngineSignInStep) {
         switch step {

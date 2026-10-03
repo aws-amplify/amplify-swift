@@ -19,7 +19,7 @@ extension RollbackMatrixClientTests {
 
     // MARK: - Refresh-token rotation
 
-    /// Rotation rollback: the plugin is now signed in on the token the client rotated (§6.3 row 1).
+    /// Rotation rollback: the plugin is now signed in on the token the client rotated (the checklist's row 1).
     ///
     /// - Given: Refresh-token rotation on; alice signs in through the client on `.default`, and the client refreshes,
     ///   rotating her refresh token

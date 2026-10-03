@@ -429,8 +429,8 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     ///
     /// A probe shows a sheet when the simulator holds a passkey for the relying party, as it does after the
     /// other test of this class ran first on it (its passkey stays in the simulator's Passwords store). The
-    /// probe then cancels its controller, which answers, but the sheet can stay up: seen on 2026-09-27
-    /// (`client-final-3x.md`, run 1), where WA-0's warm-up finished with WA-1's passkey offered over the app and
+    /// probe then cancels its controller, which answers, but the sheet can stay up: seen on 2026-09-27,
+    /// where WA-0's warm-up finished with WA-1's passkey offered over the app and
     /// the flow's first tap landed on the sheet's dimming, not on the app. A sheet can also still be on its way
     /// in when the warm-up returns, so this looks for 2 s before deciding there is none.
     @MainActor
