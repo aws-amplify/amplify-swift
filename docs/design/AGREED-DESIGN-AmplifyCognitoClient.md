@@ -15,7 +15,42 @@ NOTE: Swift is used throughout the design doc showcasing API changes and a per p
 
 ## Changes since the previous revision
 
-These points were settled in review of the previous revision. Each links to where it landed.
+**Revision 2026-10-02.** What changed in this revision:
+
+- **The default session shares the plugin's own saved login**: key `amplify.<ns>.session`, payload
+  `AmplifyCredentials`, plus a sidecar for the label and last user (`amplify.1.<ns>.$default.meta`). No `$default` session record. → [§4.8](#48-migrating-an-existing-app) · [§6](#6-storage-model)
+- **Read-through, `completeAdoption()` and the "reader ships first" rule are removed**, with the plugin's
+  forward-compatible reader and signed-out marker (all unreleased). → [§4.8](#48-migrating-an-existing-app) · [§14.3](#143-managing-saved-sessions)
+- **Migration and rollback** are one section with a rollback matrix, each row pinned by a test; no separate document. A user signed out through the client is never signed back in by a rollback; the caveat is a purge, or the plugin's own sign-out, after a configuration carry. → [§4.8](#48-migrating-an-existing-app)
+- **Side by side**: the plugin and the client share one saved login at rest. Running both in one process over the
+  default session is not supported: the bridge, in which the plugin would use the client internally, is not built. → [§3](#3-the-auth-client-contract) · [§4.9](#49-plugin-and-auth-client-side-by-side)
+- **A configuration change on `.default` follows the plugin's rule**; named sessions keep "keep". → [§6](#6-storage-model)
+- **Storage corrections** found against the code: "all three read one key", "never delete", "byte-identical", and the
+  device-ID row. → [§6](#6-storage-model) · [A.3](#a3-where-the-session-lives)
+- **Sign-out takes the plugin's shape**: no throw; `.complete`, `.partial(...)` or `.failed(error)`, with
+  `signedOutLocally`. Two more cases follow the plugin: the placeholder `revokeTokenError` after a failed global
+  sign-out, and `.failed` for a hosted-UI sign-out page that could not be shown or completed. → [§4.7](#47-sign-out-variants) · [§14.8](#148-amendments-2026-09-27-public-api-review)
+- **One system sheet at a time** is library policy on iOS, macOS and visionOS, covering browser sign-in, the sign-out
+  page and the passkey sheet. → [§9.1](#91-one-browser-sign-in-at-a-time-and-how-the-api-says-so) · [§11](#11-limits) limit 1
+- **Decision 1** now states that the bridge is not built, with the shared login in its place for now. → [§12](#12-decisions)
+- **Concern 13.1**: Storage and Pinpoint are closed; the Kinesis and Firehose cache remains a stated concern. → [§13.1](#131-two-same-region-record-caching-clients-can-attribute-one-users-data-to-another)
+- **`CredentialsError`** lists the shipped `.notConfigured`. → [§15.2](#152-the-credential-provider-contract)
+- **The sidecar, the challenge record and the label**: the sidecar and challenge keys, and the sidecar's rules. A
+  signed-out row's label survives a sign-in only by the same user, or when no one had signed in yet. `.default`'s
+  sidecar and challenge record are the plugin session's items everywhere: the access-group transition wipe, the
+  access-group migration, the public `KeychainStoreMigrator` and the migration's destination clear remove or move
+  them, and the "does the shared service already hold items?" check ignores them. → [§4.8](#48-migrating-an-existing-app) · [§6](#6-storage-model)
+- **The temporary warning** for a different principal in `.default`'s saved login covers any different principal: a
+  guest replaced by a user, and a federated identity ID, included. → [§4.9](#49-plugin-and-auth-client-side-by-side)
+- **The carried cases, the macOS re-read, `identityPending` for `.default`, the plugin's `deleteUser`, and the
+  carried identity ID** are described. Only the app client changing deletes nothing. A deleted login of the same user
+  pool is revoked with the previous configuration's app client, and takes its sidecar with it. The static
+  `signOutStoredSession` and `purgeStoredSession` apply the configuration rule only when it would carry, so a call
+  with another configuration never deletes the app's login. → [§6](#6-storage-model)
+- **The `.wait(timeout:)` signature** matches the public API. → [§9.1](#91-one-browser-sign-in-at-a-time-and-how-the-api-says-so)
+- **Logging**: every client log line is under an `AmplifyCognitoClient.<area>` category, and the engine's six static log sites go through the caller's logger. → [§15.3](#153-logging)
+
+**Earlier revision.** These points were settled in review of the previous revision. Each links to where it landed.
 
 1. **Two clients with the same session ID** - divergence is structurally impossible in-process: sharing resolves through an internal table keyed by session ID, so there is one state machine per session. Cross-process gets a commit guard rather than a lock, and the residual risk is stated rather than claimed away. → D.1 handle model · C.6 · §6 storage · limit 5
 
@@ -23,9 +58,9 @@ These points were settled in review of the previous revision. Each links to wher
 
 3. **Sign out of *all* sessions** - deliberately not shipped in this revision, recorded as a limit so its absence reads as a decision. → limit 4
 
-4. **Plugin and client side by side** - the bridge model: the plugin owns a client and delegates, so there is one implementation underneath instead of two isolated stores. The "must not share a session ID" rule is gone. → 4.9
+4. **Plugin and client side by side** - the bridge model: the plugin owns a client and delegates, so there is one implementation underneath instead of two isolated stores. The "must not share a session ID" rule is gone. → 4.9 *(Revised 2026-10-02: the bridge is not built, and side by side over the default session in one process is not supported.)*
 
-5. **The downgrade path** - rollback is preserved. The session segment is an *insertion*, so old and new records are siblings; read-old/write-new, never delete, with an app-triggered take-over. → §6 key · 4.8
+5. **The downgrade path** - rollback is preserved. The session segment is an *insertion*, so old and new records are siblings; read-old/write-new, never delete, with an app-triggered take-over. → §6 key · 4.8 *(Superseded 2026-10-02: the default session is the plugin's own record, so there is no take-over; named sessions are still siblings.)*
 
 6. **`isSignedIn`** - dropped, with the reasoning in place of the code. → 14.2
 
@@ -47,13 +82,13 @@ Also stated in the doc: one user at a time per session, the same human *can* hol
 
 - **The registry is keyed by session ID alone**, with the storage namespace and a configuration fingerprint checked beside it. Keying by configuration would make the different-pool case a silent miss instead of a throw. → D.1
 
-- **The key format is `amplify.1.<poolNamespace>.<sessionId>.session`**, because apps with only one pool type have one fewer segment. **The default session is stored as `$default`**, which `named(_:)` cannot produce, so it cannot be spoofed. **It is also the session that adopts the plugin's record** - there is no separate adoption session ID, so the plugin, the bridge and the client all read one key. → §6 key
+- **The key format is `amplify.1.<poolNamespace>.<sessionId>.session`**, because apps with only one pool type have one fewer segment. **The default session is stored as `$default`**, which `named(_:)` cannot produce, so it cannot be spoofed. **It is also the session that adopts the plugin's record** - there is no separate adoption session ID, so the plugin, the bridge and the client all read one key. → §6 key *(Superseded 2026-10-02: `.default` is the plugin's own record, `amplify.<ns>.session`, and there is no `$default` session record; `.default`'s challenge record and sidecar stay under `$default`. The "one key" claim was also not true of the code: the plugin read `$default` only as a fallback.)*
 
 - **The providers are concrete `Sendable` types**, `CognitoCredentialsProvider` and `CognitoUserPoolTokenProvider`, not existentials. AmplifyFoundation's `AWSCredentialsProvider` is not `Sendable` and changing that would break every existing conformer; the token provider is new, since no Foundation protocol exists for it. → 14.4
 
 - **The client does not depend on Amplify core** - only on AmplifyFoundation and AmplifyFoundationBridge, like the CloudWatch and Kinesis clients. So `AuthSessionState` uses client-owned `AuthClientUser`, `AuthClientSignInStep` and `AuthClientError` in place of Amplify core's `AuthUser`, `AuthSignInStep` and `AuthError`, and the plugin bridge maps between them. It also means the extracted Cognito engine must itself be Amplify-free before the client can use it. → 14.2 · 14.6
 
-- **Release order.** A forward-compatible *reader* has to ship in the current plugin **before** the new client does, so that a released plugin version can read the new record format. → 4.9
+- **Release order.** A forward-compatible *reader* has to ship in the current plugin **before** the new client does, so that a released plugin version can read the new record format. → 4.9 *(Removed 2026-10-02: with the shared login there is no new format for the plugin to read.)*
 
 ## Contents
 
@@ -75,7 +110,7 @@ Also stated in the doc: one user at a time per session, the same human *can* hol
 | [12. Decisions](#12-decisions) | You are reviewing scope |
 | [13. Concerns](#13-concerns) | You want the problem we found while validating |
 | [14. API surface](#14-api-surface) | You want to see the actual API |
-| [15. Notes and callouts](#15-notes-and-callouts-optional-reading) | Optional. Lifecycle detail and the credential provider contract |
+| [15. Notes and callouts](#15-notes-and-callouts-optional-reading) | Optional. Lifecycle detail, the credential provider contract and logging |
 | [Appendix A](#appendix-a-swift-before-and-after) | You want concrete Swift, before and after |
 | [Appendix B](#appendix-b-the-alternative-in-full) | You are weighing the other design in depth |
 | [Appendix C](#appendix-c-investigation-notes-and-evidence) | You want the evidence behind the claims |
@@ -91,6 +126,21 @@ Three words carry the design.
 | **Session** | One signed-in (or guest, or federated) identity plus its credentials. The thing this design lets you have more than one of. |
 | **Session ID** | The identifier a session is saved under. App-chosen (`"work"`) or library-minted. |
 | **Auth Client** | A live `AmplifyCognitoClient` object: a handle to one session. Two Auth Clients built with the same session ID are two handles onto the same session. "Auth Client" stays the prose term for the concept; `AmplifyCognitoClient` is the type. |
+
+Other terms used below, one line each:
+
+| Term | Meaning |
+|---|---|
+| **Engine** | The Cognito logic (SRP, MFA, refresh, hosted UI, WebAuthn) that the plugin and the client both run: the `InternalAWSCognitoAuth` module. |
+| **Session core** | The one object (`SessionCore`) that holds a live session's state in a process. Every handle on that session shares it. |
+| **Sidecar** | A small client item beside the plugin's record (`amplify.1.<ns>.$default.meta`) that holds what the plugin's format has no room for: `.default`'s label and last user. |
+| **Principal** | Who a saved record belongs to: a user (the `sub`, else the username) or, with no user, a guest's or federated identity's identity ID. |
+| **Commit guard** | A write that succeeds only if the stored record has not changed since it was read: by generation for a named session, by the stored bytes for `.default`. |
+| **Gate** | The lock (`SessionRecordGate`) that runs one session record's operations one at a time: restore, refresh, sign-out, label, purge. |
+| **Carry** | Copying a session's login to the new configuration's record when the configuration changes, keeping the old record. "Carried forward" means the same. |
+| **Namespace marker** | A named session's per-app note (`amplify.1.<sessionId>.<app>.configuration`) of the configuration it was last kept under, and the copies a carry left, so the next restore knows where to carry from. |
+| **Bridge** | The plugin using the client internally for the default session (§4.9). Not built. |
+| **Golden** | A recorded fixture (stored format, errors, logs, keychain queries, configuration) that a test compares byte for byte, to prove the plugin's behaviour has not changed. |
 
 ## 1. Goals
 
@@ -139,7 +189,12 @@ let homeSession = try await home.fetchAuthSession()
 
 One deliberate difference: **auth takes no `credentialsProvider`, because auth is what produces one.** Every other client consumes credentials; auth sits at the root of that graph and vends providers to the rest. That is the only place the Auth Client differs from the family's parameter list, and it is inherent rather than a deviation. The rest of the family checklist - actors, strict concurrency, error protocol, escape hatches, privacy manifest - is adopted as-is and listed in Appendix D.
 
-**How the plugin and the Auth Client coexist:** two top layers over one shared core, following the CloudWatch Logging recipe in the table above. That is what makes running the plugin and an Auth Client side by side supportable.
+**How the plugin and the Auth Client coexist:** two top layers over one shared core, following the CloudWatch Logging recipe in the table above.
+
+> **As of 2026-10-02:**
+> - **At rest, they share one saved login.** The default session reads and writes the plugin's own keychain item (§4.8, §6).
+> - **In one process, over the default session, side by side is not supported.** The plugin keeps its tokens in memory, so with refresh-token rotation on a refresh by one side can break the other's token until relaunch.
+> - **The bridge, in which the plugin delegates to the client's session core, is not built** (§4.9).
 
 ## 4. Use cases
 
@@ -364,25 +419,72 @@ Note what this rules out: **keying a session by user id cannot work**, because t
 ```swift
 // Revokes tokens and clears credentials, but KEEPS work's saved row, so a picker can
 // still show it as signed-out-and-resumable. home is untouched and still signed in.
-try await work.signOut()
+// Sign-out does not throw: it returns .complete, .partial(...) or .failed(error).
+let result = await work.signOut()
+if !result.signedOutLocally { showRetry() }   // .failed: the session is still signed in
 try await home.getCurrentUser()   // still alice@personal
 
 // Sign out AND forget the row, in one call. Opt-in, because deleting is not recoverable.
-try await work.signOut(options: .init(purgeStoredSession: true))
+await work.signOut(options: .init(purgeStoredSession: true))
 
-// Signing out a session the app is not currently holding, straight from the picker:
-try await AmplifyCognitoClient.signOutStoredSession(sessionId: .named("work"), configuration: config)
+// Signing out a session the app is not currently holding, straight from the picker.
+// named(_:) throws for an invalid ID, so it needs `try`.
+let workID = try SessionID.named("work")
+await AmplifyCognitoClient.signOutStoredSession(sessionId: workID, configuration: config)
 
 // Removing a saved row entirely, without contacting Cognito. The refresh token stays
 // valid server-side until it expires, so prefer signOutStoredSession where you can.
-try await AmplifyCognitoClient.purgeStoredSession(sessionId: .named("work"), configuration: config)
+try await AmplifyCognitoClient.purgeStoredSession(sessionId: workID, configuration: config)
 ```
 
 **New API:** `signOut(options:)` with `AuthClientSignOutOptions.purgeStoredSession` (default `false`), plus the statics `signOutStoredSession(sessionId:configuration:)` and `purgeStoredSession(sessionId:configuration:)`. The statics take a session ID because a picker needs to offer "sign out" or "remove" on a row without first constructing a client for it, and they are named apart because only one of them revokes anything. All declared in 14.3.
 
 **Sign-out keeps the row by default; purging is opt-in.** Deleting a saved record is not recoverable, so the non-destructive behaviour is the default on every path.
 
-**Deliberately out of scope: there is no "sign out of all sessions".** An app that wants it loops over `storedSessions()`. We are not shipping a bulk operation in this revision — the precedents are uniformly bad (`aws sso logout` prints *"Successfully signed out of all SSO profiles"*; MSAL documents `wipeAccount` as *"a dangerous operation"*; Auth0's `clearAll()` warns it *"may delete non-Auth0 data as well"*), and doing it safely needs per-session result reporting that `AuthSignOutResult` cannot currently express. Noted in §11 so its absence reads as a decision rather than an oversight.
+**The result takes the plugin's shape.** The type is `AuthClientSignOutResult` (`Sources/Models/AuthClientSignOutResult.swift`).
+
+- **No sign-out throws.** `signOut(options:)`, `signOut(presentationAnchor:options:)` and `signOutStoredSession` return `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` or `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`.
+- **Another sign-in replacing the session during the sign-out is `.failed(.invalidState(…))`**, and that user stays signed in.
+- **These also return `.failed`**, with the session still signed in on this device:
+  - a storage failure before the local sign-out, or a saved record that kept changing (`storageUnavailable(.interrupted)`). A revoke may already have run;
+  - `sessionConfigurationMismatch`, and any other error before anything was revoked;
+  - a closed hosted-UI sign-out page, as `.failed(.userCancelled)`. One exception: if the session's refresh token was already dead, it signs out anyway and reports `.partial(hostedUIError: .userCancelled)`;
+  - a hosted-UI sign-out with no hosted-UI configuration or no sign-out redirect URI, as the plugin returns it. It is one `configuration` error whether the client or the engine finds it, with the engine's error underneath;
+  - any other hosted-UI sign-out page that could not be shown or completed: another sheet holds the browser (`browserBusy`), the window has gone (`validation`), or the browser's own failure. As with the two cases above, nothing is revoked;
+  - task cancellation before anything was revoked, as `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed in.", "Retry the sign-out.", CancellationError()))`.
+- **A purge that fails after the local sign-out succeeded returns `.partial`** with the client-only `storageError` field set, and `signedOutLocally == true`. The session is signed out; its saved row may still be listed.
+- **Once a revoke has completed, cancellation never stops the local clear.**
+- **A failed global sign-out reports the plugin's placeholder `revokeTokenError`**. As in the plugin, `RevokeToken` is then skipped, and `.partial` carries the global sign-out's error and the placeholder revoke error.
+- **Deliberate differences from the plugin, documented:**
+  - `.partial` carries no raw tokens (a security fix);
+  - `.partial` has the client-only `storageError`;
+  - a federated session can be signed out (the plugin refuses);
+  - `purgeStoredSession`;
+  - the window is required for the hosted-UI sign-out page (the plugin falls back to one of its own). Without one (`signOut(options:)`, `signOutStoredSession`), the session is signed out on this device, the browser keeps its cookie, and `.partial(hostedUIError: .validation(…))` says so.
+
+For example, an app that offers a retry only when the user is still signed in:
+
+```swift
+// The window overload is main-actor isolated, so call it from main-actor code (a view or view model).
+@MainActor
+func signOutOfWork(_ work: AmplifyCognitoClient, window: AuthClientPresentationAnchor) async {
+    switch await work.signOut(presentationAnchor: window) {
+    case .complete:
+        showSignedOut()
+    case .partial(_, _, let hostedUIError, _):
+        showSignedOut()                       // signed out here; some server-side step failed
+        if hostedUIError != nil { remindToUsePromptLogin() }
+    case .failed(let error):
+        showRetry(error)                      // still signed in on this device
+    @unknown default:
+        showSignedOut()
+    }
+}
+```
+
+The declaration is in 14.8.
+
+**Deliberately out of scope: there is no "sign out of all sessions".** An app that wants it loops over `storedSessions()`. We are not shipping a bulk operation in this revision — the precedents are uniformly bad (`aws sso logout` prints *"Successfully signed out of all SSO profiles"*; MSAL documents `wipeAccount` as *"a dangerous operation"*; Auth0's `clearAll()` warns it *"may delete non-Auth0 data as well"*), and doing it safely needs per-session result reporting that `AuthClientSignOutResult` cannot currently express. Noted in §11 so its absence reads as a decision rather than an oversight.
 
 Two caveats the design must state plainly:
 
@@ -394,44 +496,85 @@ Two caveats the design must state plainly:
 
 *An app that ships the plugin today adopts the Auth Client, and users do not notice.*
 
-The Auth Client **adopts** the plugin's existing session record: same storage, same serialized format, decoded by the same types. The user stays signed in across the upgrade.
+**The default session is the plugin's saved login** (`SessionRecordStore+DefaultSession.swift`). `SessionID.default` reads and writes the plugin's own keychain item:
 
-The record does have to stop existing in its old location eventually, so adoption is a two-mode operation and the app chooses when to cross that line:
+- service `com.amplify.awsCognitoAuthPlugin`, or `com.amplify.awsCognitoAuthPluginShared` with an access group;
+- account `amplify.<poolNamespace>.session`;
+- payload the plugin's `AmplifyCredentials` JSON, as the plugin writes it.
+
+So there is nothing to adopt and nothing to take over. An app that moves from the plugin to the client keeps its user, because both read the same item. An app that moves back keeps it for the same reason.
 
 ```swift
-// Default: read-through. The plugin's record is left where it is, so an app that
-// rolls back to a previous release finds its user still signed in.
-// The default session is the one that adopts the plugin's record: while its own
-// `$default` record does not exist yet, it reads the plugin's record in place.
+// No migration step. The default session is the plugin's saved login.
 let migrated = try AmplifyCognitoClient(configuration: config)   // sessionId: .default
-
-// Later, once the app is confident it will not roll back: take over. The record is
-// copied to the session-scoped key and the plugin's copy is deleted.
-try await migrated.completeAdoption()
 ```
 
-**New API:** `completeAdoption()`. The default session adopts the plugin's record - there is no separate adoption session ID, because two IDs over one record would be two state machines over one record, the exact divergence the registry prevents, and it keeps the plugin, the bridge and the client reading one key (`$default`). Read-through is automatic and non-destructive; `completeAdoption()` is the explicit, irreversible take-over, so the safe default and the irreversible step are still not the same line of code. Named sessions never read the plugin's record. Declared in 14.3.
+- **What the plugin's record cannot hold goes in a sidecar** (§6): the display label, and the last signed-in user's username and user ID for the signed-out picker row.
+- **Sign-out of `.default`** revokes, writes the sidecar for the signed-out row (the last user and the label), then writes the plugin's signed-out value, `{"noCredentials":{}}`, through the commit guard. Every plugin release reads that value as signed out. **Purge** deletes the record, then the sidecar, then the challenge record.
+- **A sign-out by the plugin is seen by the client.** Say the client holds alice, and the plugin signs out (or deletes its record). The client's next guarded write, a refresh say, is discarded, because the stored bytes changed. The re-read finds the plugin's signed-out value, or no record, so the session becomes `.signedOut`, listed as the sidecar's signed-out row naming alice. The client never writes alice's record back.
+- **A plugin `deleteUser` leaves the sidecar.** The plugin deletes its own record and does not know the sidecar, so the deleted user can show as a signed-out picker row (its last username and label) until the client writes the session again: a sign-in through the client, or a client refresh of another user the plugin signed in. A sign-in through the plugin doesn't replace it. This is documented.
+- **Named sessions never touch the plugin's item.** They keep the client's own records (§6).
 
-The tradeoff is worth stating explicitly, because it is the app's call and not ours:
+**Removed from the design, all unreleased:**
 
-| Mode | What happens | Cost |
-|---|---|---|
-| **Read-through** (default) | The plugin's record stays put and is read in place. | The record is readable by both the plugin and the Auth Client, so an app running both must not point them at the same session. |
-| **Take over** (`completeAdoption()`) | The record is copied to the session-scoped key, then the plugin's copy is deleted. | Rolling back to a plugin-only release signs the user out, because the record the plugin looks for is gone. |
+- read-through, and `completeAdoption()`;
+- the side-by-side check at first load;
+- read-through reconciliation;
+- the plugin's forward-compatible reader and its signed-out marker;
+- the rule that the plugin's reader must ship before the client.
 
-**Read-through lives in `.default`; take-over stays explicit.** An earlier draft kept adoption out of `.default` so a brand-new app could not silently inherit whatever the plugin left behind, which may be guest or federated credentials rather than a signed-in user. That is revised: the plugin's record only exists in an app that ran the plugin, where inheriting it is the migration the app wants, and a separate adoption ID would put two state machines over one record. What stays explicit is the irreversible part - `completeAdoption()`. An app that does not want the default session to see the plugin's record can use a named session instead.
+Development builds wrote `amplify.1.<ns>.$default.session` records. They exist only on development and sandbox devices. Listing ignores them (§6), so they never show as a ghost row.
+
+**What the client does not do: the plugin's migrations.** The plugin runs the AWSMobileClient legacy migration and the access-group migration at configure. The client does neither, so a client-only app gets no AWSMobileClient migration and no access-group migration. The plugin's access-group migration moves `.default`'s sidecar and challenge record (`amplify.1.<ns>.$default.meta` and `.challenge`) with its own record, because they now belong to the plugin's session. For the same reason, the migration's destination clear and a transition wipe without migration remove them, and the check "does the shared service already hold the plugin's items?" ignores them, so they alone never block a migration. It still leaves named sessions where they are.
+
+**Release order: the scoped wipe ships first.** The plugin's scoped wipe ships in a plugin release before the client writes records. Named sessions, the sidecar and the challenge record live in the plugin's keychain service, and a released plugin's access-group transition wipes the whole service. The rule removed above is a different one: that the plugin's forward-compatible *reader* ship first.
+
+**A configuration change** on `.default` follows the plugin's rule, and the client writes the plugin's `authConfiguration` item (§6). When only the app client changes, nothing is deleted: the key holds the pool IDs and no client ID, so the record stays where it is, and its next refresh gives `sessionExpired`, as in the plugin. A login deleted because the key changed is revoked when its user pool is the same, with the old app client ID that `authConfiguration` records. Otherwise, or if that revoke fails, its refresh token stays valid until it expires.
+
+#### Rolling back and forward
+
+Each row is pinned by a test in both rollback matrices (`RollbackMatrixPluginTests` and `RollbackMatrixClientTests`), named in brackets. They run the client, the current plugin store and a view of the released plugin (2.62.0, which knows no `amplify.<digits>.` item) over one keychain.
+
+| Case | What happens |
+|---|---|
+| Back to a plugin-only release, 2.51.0 or later | The plugin reads its own key, which holds the newest saved login, including a refresh token the client rotated: its refresh sends that token and succeeds (`testMatrix_rotationRollback_isNowSignedIn`). A client sign-in is seen by the plugin (`testMatrix_clientSignIn_isSeenByThePlugin`) |
+| A user signed out through the client, then a rollback | **Stays signed out**, because the record holds `{"noCredentials":{}}`, which every plugin release reads as signed out (`testMatrix_clientSignOut_readByEveryPluginAsSignedOut`). That holds on a build with the earlier configuration too, even when its key still holds a copy an earlier carry left: that build's own rule carries the signed-out record over the copy (`testMatrix_signedOutUserIsNeverSignedBackIn`). One caveat for guests: after a rollback, a plugin build with an identity pool that allows guests may start a guest session in the shared login on its first `fetchAuthSession`, as it does after its own sign-out. The guest then replaces the signed-out row. It is never the old user |
+| A purge, or the plugin's own sign-out, after a configuration carry, then a rollback to the build with the earlier configuration | **Caveat: that build signs the user back in.** A carry copies and keeps the source (the plugin's rule). A purge deletes only the current configuration's record, and the plugin's own sign-out deletes its record the same way, so the earlier configuration's copy survives and that build reads it (`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). So "never signed back in" holds for a **sign-out through the client**, which writes `noCredentials` instead of deleting |
+| Back to a plugin older than 2.51.0, with refresh-token rotation on | The plugin cannot refresh, whatever the client did: it refreshes with `REFRESH_TOKEN_AUTH`, which Cognito refuses on a rotation client. Without rotation, as the first row |
+| Back to a plugin-only release, with named sessions | **Named sessions disappear**, because the plugin never reads `amplify.1.` records. They stay in the keychain and **come back on roll-forward**. A released plugin's access-group transition wipes the whole service, client records included; the current plugin's scoped wipe spares them. The scoped wipe ships before the client writes records (`testMatrix_namedSessionsDisappearOnRollbackAndReturnOnRollForward`) |
+| A newer build's sidecar (`schemaVersion` 2) | Shown as absent (no label), never overwritten or deleted, except by a purge; the session itself still signs in, refreshes and signs out (`testMatrix_newerSchemaSidecar_isLeftAlone`) |
+| Back to the plugin after a configuration change, built with the same configuration | Safe. The client wrote the plugin's `authConfiguration` item, so a rolled-back plugin built with the configuration the client last used sees no change, and does not copy an older record over the newer login (`testMatrix_configurationChangeThenPluginRollback_noStaleOverwrite`) |
+| Back to a plugin build that carries the **old** configuration, after the client wrote a newer `authConfiguration` | The plugin sees a change from the client's configuration to its own, and runs its own rule. On a change it carries, it copies the newer login to the old key (`_set`), so the newest login wins. On a change it does not carry, it deletes the newer login and reads what its own key still holds: for the reverse of an added user pool, the guest the earlier carry kept there. It never writes an older copy over the newer login (`testMatrix_pluginBuildWithTheOldConfiguration_runsItsOwnRuleAfterTheClient`) |
+| Forward from the plugin to the client | `.default` reads the plugin's record in place. A token the plugin rotated is already in it, so the client refreshes with the newest token and there is no dead refresh token at rest (`testMatrix_rollForwardAfterAPluginRotation_resumesOnTheNewestToken`, replacing the old matrix row 9). A plugin sign-out is seen by the client (`testMatrix_oldPluginSignOut_isSeenByTheClient`) |
+| An app extension on the plugin and the app on the client, at rest | Each sees the other's latest login after a relaunch (`testMatrix_mixedBinaries_extensionOnThePluginAppOnTheClient_atRest`) |
+| The plugin and the client in one process, over `.default` | Not supported (§4.9). The plugin keeps its tokens in memory, so with rotation on a refresh by one side can break the other's token until relaunch |
+| A client-only app upgraded from AWSMobileClient, or changing its access group | No migration. That is the plugin's job |
+
+The bytes the client writes (each `AmplifyCredentials` shape, `noCredentials` and `authConfiguration`) decode with the released plugin's own types, and the client's items have the plugin's keychain attributes (`KeychainAttributeParityTests`).
+
+This solves rollback with rotation, and rollback past the reader, for the default session. The in-process rotation case, the plugin and the client together in one process, is not solved: running both there is not supported (§4.9).
 
 ### 4.9 Plugin and Auth Client side by side
 
 *A large app migrates gradually: existing screens use the categories, new features use the Auth Client.*
 
-**Supported, and as of this revision the plugin does not run beside a client — it owns one and delegates to it.** The plugin retains its entire public surface, but internally holds an Auth Client for its own session and forwards to it, exposing an accessor so an app can retrieve that client. There is therefore **one** implementation underneath, and a plugin call site and a client call site can refer to the *same* session rather than two deliberately isolated stores. This replaces the earlier "they must not share a session ID" rule, which was a footgun: it required apps to keep two stores apart and gave no way to migrate gradually without dual state.
+> **Revised 2026-10-02.** The previous revision described the bridge, the plugin owning a client and delegating to it, in the present tense. It is not built.
 
-What this buys is the real migration story: an app moves **call sites** one at a time instead of moving *storage* once. This is the bridge phase, and it is why §4.8's read-through mode and decision 1's interim step are framed the way they are.
+**Shared at rest; in one process, over the default session, not supported.**
 
-**Scheduling consequence, worth stating explicitly:** a forward-compatible *reader* has to ship in the current plugin **before** the new client does. Otherwise no released plugin version can read the new record format, and the bridge has nothing to bridge from. Categories continue resolving through the global, so from the categories' point of view the setup is still single-user; extra sessions remain visible only to code the app wired explicitly.
+- **At rest, one saved login.** The default session reads and writes the plugin's own item (§4.8, §6). There is no second login to fall out of sync, and either side can be rolled back to the other.
+- **In one process, two in-memory states.** The plugin reads the keychain only at configure, and on `fetchAuthSession` when an access group is set. Otherwise it keeps its tokens in memory. With refresh-token rotation on, a refresh by one side can break the other's in-memory token until the app relaunches. So running both over the default session in one process is not supported.
+- **Named sessions are unaffected.** The plugin never reads them.
+- **A temporary warning.** When `.default` re-reads the shared record and finds a **different principal** from the one it holds in memory, it logs one warning, naming no one. That happens when another writer, such as the plugin, signed someone else in, or a guest. As built (`SessionCore+SharedRecordWarning.swift`):
+  - **A principal** is a user (the `sub`, else the username) or, with no user, an identity ID: a guest's or a federated identity's. So it warns for another user, a guest over a user, a user over a guest in memory, and another guest or federated identity ID. It is silent for a signed-out or absent record, the same user refreshed, and the same guest with new credentials.
+  - **Every read of the shared record under the session's gate counts**, not only the refresh: a discarded write's re-read, sign-out's re-checks, setting the label, deleting the user, purging and clearing federation.
+  - **Logged once while the session is in memory.** All handles share it; after every handle and provider is released, a new handle can log it again. (Every handle of `.default` in a process shares one session core, which holds the flag.) It logs at `warn`, under `AmplifyCognitoClient.DefaultSession`.
+  - **Named sessions never log it.**
 
-**New API:** none. This works because of the coexistence pattern in Section 3, not because of anything added to the API.
+  The text is: "The default session's saved login now holds a different user or a guest than this client held. The Auth plugin may be running beside this client over the default session, which is not supported." The `DefaultSession` category also carries other `.default` warnings (§15.3).
+- Categories continue resolving through the global, so from the categories' point of view the setup is still single-user; extra sessions remain visible only to code the app wired explicitly.
+
+**New API:** none.
 
 ### 4.10 Reading a session's state
 
@@ -556,16 +699,17 @@ So the segment count varies, and the two single-pool shapes look identical.
 A listing parser must therefore anchor on the "amplify.1." prefix and the
 ".session" suffix, never on segment arity.
 
-The default session is stored under the sessionId "$default". '$' is outside
-the permitted charset below, so SessionID.named(_:) can never produce it: an app
-that happens to name a session "default" gets its own record rather than
-silently inheriting the default session - which is the one that adopts the
-migrated plugin credentials.
+The default session has no record of this shape (decided 2026-10-02): it is
+the plugin's own record, amplify.<poolNamespace>.session, below. Its stringValue
+is "$default". '$' is outside the permitted charset below, so
+SessionID.named(_:) can never produce it: an app that happens to name a session
+"default" gets its own record rather than the plugin's saved login.
 
-The sessionId segment is an INSERTION, not a move: old and new records are
-siblings under the same keychain service, differing only in kSecAttrAccount.
-That is what makes read-old/write-new/never-delete - and therefore rollback -
-structurally cheap. See 4.8.
+The sessionId segment is an INSERTION, not a move: named-session records are
+siblings of the plugin's record under the same keychain service, differing only
+in kSecAttrAccount. So the plugin never reads a named session, and a rollback to
+a plugin-only release leaves named sessions in place for the roll-forward.
+See 4.8.
 
 SessionID is validated eagerly at construction against [A-Za-z0-9_-], non-empty,
 and throws naming the offending character. That is what keeps a '.' or '/' from
@@ -576,7 +720,66 @@ silently merge .named("Work") and .named("work") into one session, which is a
 credential-crossover bug, and keychain accounts are case-sensitive anyway.
 ```
 
-**When the pool configuration changes (decided 2026-09-26: copy forward like the plugin).** Adding or
+**Two key families.**
+
+Both families live in the plugin's keychain service, `com.amplify.awsCognitoAuthPlugin` (or `…Shared` with an access group).
+
+| Item | Account | Payload |
+|---|---|---|
+| `.default`'s session record | the plugin's key, `amplify.<poolNamespace>.session` | the plugin's `AmplifyCredentials` JSON, exactly as the plugin writes it |
+| `.default`'s sidecar | `amplify.1.<poolNamespace>.$default.meta` | the label, and the last signed-in user's username and user ID |
+| `.default`'s challenge record | `amplify.1.<poolNamespace>.$default.challenge`, unchanged | as for a named session (4.11) |
+| a named session | `amplify.1.<poolNamespace>.<sessionId>.<kind>`, kind `session` or `challenge` | `SessionRecordEnvelope`: a schema version, a generation, the kind, the label, the username and user ID, and the same `AmplifyCredentials` JSON in its `credentials` field |
+
+- **No `$default` session record.** Only the **session** record of `.default` moves to the plugin's key. Its challenge record and its sidecar stay in the client's own family, under `$default`. `SessionID.default` stays in the API, and is still distinct from `.named("default")`.
+- **Development leftovers.** Listing ignores `amplify.1.<poolNamespace>.$default.session`, the session record development builds wrote.
+- **The sidecar** holds what the plugin's record cannot hold: the display label, and the last signed-in user (username and user ID). The plugin rewrites its record on every refresh and drops keys it does not know, so this metadata cannot live inside the record. The suffix `meta` is not a record kind, so no listing reads it as a session. It is bound to that user:
+  - **while the shared record holds that user**, the label is used;
+  - **while the shared record is signed out** (`noCredentials`) **or absent**, the picker shows a signed-out row with the sidecar's label and last username;
+  - **when the shared record holds a different user**, the sidecar's label is hidden. The sidecar is rewritten for the new user, without the label, only at the client's next write of the record: a plugin sign-in leaves it as it is, so after a later plugin sign-out the row names the sidecar's user and label again;
+  - **a sign-in over a signed-out row keeps its label only for the same user**, or when the sidecar has no user yet (a label set before anyone signed in). A different user drops it.
+- **The commit guard on `.default` compares the stored bytes.** `setIfUnchanged` already does this, so the default session has no generation number. The plugin itself writes unguarded (`_set`). That is one reason running both in one process is not supported (§4.9). Whether another writer changed the *credentials* is decided on the decoded value, not on the bytes, because the plugin may save the same credentials again with other bytes.
+- **macOS: absent once is not signed out.** There the keychain's `set` deletes the item and adds it again, so a reader in another process can find it absent in between. A `.default` read that finds the shared record absent reads it once more before concluding "signed out".
+- **Sign-out and purge of `.default`.** Sign-out revokes, writes the sidecar for the signed-out row, then writes `{"noCredentials":{}}` through the guard. Purge deletes the record, then the sidecar, then the challenge record.
+- **Named sessions are decode-compatible, not byte-identical.** Their envelope wraps the plugin's payload, and the payload bytes are not deterministic, so the code compares decoded values (`ClientCredentialStore.swift:18-21`). The earlier "byte-identical" wording (A.3) was wrong.
+- **Wipe protection.** The plugin's wipes skip `amplify.<digits>.` accounts, which are the client's records, the sidecar and challenge record included (`SessionRecordAccount.isClientSessionRecord`). Its access-group migration skips them too, **except** `.default`'s sidecar and challenge record (`amplify.1.<ns>.$default.meta` and `.challenge`). Those now belong to the plugin's session, so they are treated as the plugin's own items wherever the plugin moves or clears its session (`SessionRecordAccount.isDefaultSessionItem`):
+  - the access-group migration moves them, and so does the public `KeychainStoreMigrator.migrate()`;
+  - an access-group transition without migration wipes them;
+  - the migration's destination clear removes them.
+
+  One check deliberately ignores them: whether the shared service already holds items (`hasItemsExceptSessionRecords`). So a shared service holding only those two never blocks the migration and strands the signed-in record. The `.default` session record is the plugin's own, so it moves and is wiped as the plugin's record always has been. The scoped wipe ships before the client writes records.
+- **Corrected against the code.** The text before 2026-10-02 said this layout was "read-old/write-new/never-delete", and the beta guide said a client sign-out left the plugin's record untouched. Neither held. Now there is one record: sign-out writes the signed-out value, and purge deletes it.
+
+**When the configuration changes, `.default` follows the plugin's rule.**
+
+The default session follows the plugin's configuration-change rules exactly. The decision is the plugin's own code, extracted so both call it: `AWSCognitoAuthCredentialStore.configurationChange(from:to:)` (`AWSCognitoAuthCredentialStore+ConfigurationChange.swift`), which the plugin's `restoreCredentialsOnConfigurationChanges` runs at configure and the client runs for `.default` (`SessionRecordStore+PluginConfiguration.swift`). It compares the configuration with the plugin's `authConfiguration` item, which holds the last configuration the record was written under.
+
+| Change | The plugin, and `.default` |
+|---|---|
+| A user pool added to an identity-pool-only setup, with the same identity pool | The record is copied to the new namespace as it is (a guest stays that guest); the old one is kept |
+| An identity pool added, changed or removed, under the same user pool, app client and region | The same: copied as it is, the old one kept. On a changed identity pool the old identity ID goes along |
+| Only the app client changed, with the same pools | Nothing: the key has no client ID, so the record stays where it is. Its next refresh, with the new app client, gives `sessionExpired`, as in the plugin, and the user signs in again. Nothing to revoke |
+| Any other change of the key (another user pool, say) | The old record is deleted, and `.default` is signed out |
+
+For example: an app ships with a user pool only and alice signs in. The next release adds an identity pool. At the first restore, `.default` copies alice's record to the new key, unchanged; the identity is fetched on first use, because a `userPoolOnly` payload under a configuration with an identity pool is identity-pending (derived, since `.default` has no envelope to hold the flag). If the release had moved to another user pool instead, alice's record would be deleted and `.default` would start signed out.
+
+As built, beside the table:
+
+- **A changed identity pool keeps the old identity ID.** The carried session reports the old identity ID and the old pool's AWS credentials, with no Cognito call, until they expire. A refresh then sends that ID to `GetCredentialsForIdentity`, with no `GetId`. That call names no identity pool, so while the old pool exists Cognito keeps answering with the **old** pool's credentials. If Cognito refuses the ID with one of the two refusals the engine retries (`ResourceNotFoundException`, as once the old pool is deleted, or `NotAuthorizedException` "Access to Identity … is forbidden"), the engine calls `GetId` on the new pool and goes on with that identity, as the plugin does. Any other refusal is reported as an error until the user signs out and in again. Named sessions carry user-pool tokens only (below). Pinned with scripted Cognito, and against real Cognito by the integration suite (CS-D3).
+- **A deleted login is revoked, best effort, when its user pool is the current one**. With the same user pool, the key changes only through the identity pool, and the plugin then deletes only if the app client (or the region) changed too. So the revoke uses the **previous** configuration, which `authConfiguration` records: its region, app client ID (and secret, if one was recorded) and custom endpoint, without the app's `configureUserPoolClient` escape hatch, which belongs to the current configuration (`LiveSessionRevoker(previous:)`). It runs once, detached, after the delete, so the restore never waits on the network; nothing is persisted. A failure logs one warning under `AmplifyCognitoClient.DefaultSession`, naming no one: "A login deleted by a configuration change could not be revoked; its refresh token stays valid until it expires." A login of another user pool is not revoked, and stays valid until it expires.
+- **It writes `authConfiguration`, last.** Otherwise a rolled-back plugin would see a configuration change and run its unconditional carry (`_set(old, key: new)`), writing an older copy over a newer login. It is written only after the carry or delete succeeded, and only when it changes: the configuration is compared by value, not by bytes, because neither `authConfiguration` nor the session's bytes are stable across encodes.
+- **Unlike the plugin, a failed read is never "no previous configuration".** The plugin reads with `try?`, so a locked keychain at launch overwrites `authConfiguration` and loses a pending carry. The client fails the restore with `storageUnavailable` and changes nothing; the next restore applies the rule again. Bytes that are not a configuration are "no previous configuration", as in the plugin.
+- **Two writes the plugin makes are skipped**, since neither changes what is stored: a carry onto the same account (an identity-pool-only configuration started again, or a Gen1 plugin configuration that differs only outside the key), and `authConfiguration` rewritten with the configuration it already holds.
+- **The sidecar goes with the record.** A carried record takes its sidecar (label and last user) when the new namespace has none. A deleted record's sidecar is deleted too, so no signed-out row is left for a login the user never signed out of. Both are best effort. (The plugin's own deleting branch does not know the sidecar, so it leaves it.)
+- **Where the rule runs.** At `.default`'s restore, under the gates of the current namespace and of the one the previous configuration names, taken in the global order, as a named session does with its marker. `storedSessions` shows `.default` as the rule will leave it at the next restore (a preview that changes nothing), and a hosted-UI sign-in's `.distinctFromOtherSessions` counts the user a pending carry would bring.
+- **The static `signOutStoredSession` and `purgeStoredSession` apply the rule only when it would carry**. They may be called with a configuration other than the app's: say the app runs with A, and a settings screen signs out a stored session under B. Running the whole rule would delete (and, on the same user pool, revoke) alice's A login. So when the rule would delete, they change nothing at all, `authConfiguration` included; the next restore under the new configuration applies the rule in full.
+- **An app and its extensions sharing an access group must give `.default` the same configuration.** They share the plugin's record and its `authConfiguration`, so with two configurations each launch would apply the rule against the other's, and where it deletes, delete (and on the same user pool revoke) the other's login. Such an extension uses a named session.
+- **For runtime switching between backends, use named sessions.** They keep each configuration's login. This narrows the 2026-09-26 and 2026-09-27 rule ("never clear; switching configuration must work") to named sessions.
+- Two rules acting on one shared record would fight each other. That is why `.default` follows the plugin and not the client.
+
+**When the pool configuration changes, for named sessions (decided 2026-09-26: copy forward like the plugin;
+scoped to named sessions 2026-10-02).** Named sessions keep the rules below, including "keep the old record"; the
+default session follows the plugin's rule above. Adding or
 changing a pool is a new `<poolNamespace>`, which starts with no record. The plugin keeps the configuration it last
 ran with and compares it on start (`restoreCredentialsOnConfigurationChanges`). The client keeps the same fact per
 session and per app: a **namespace marker** `amplify.1.<sessionId>.<app>.configuration` (`<app>` a digest of the
@@ -604,8 +807,8 @@ holds the user, and records under namespaces the session is not recorded under a
 under the current namespace is the session's own answer too, so it also blocks carrying back on a rollback (the safe
 direction); a sign-in over it makes the marker name the current namespace again.
 
-**A change the client does not carry keeps the old record** (a deliberate difference: the plugin's `:148-153` branch
-clears it). An app can switch pool configuration at runtime under one session ID (an organisation picker), which the
+**For a named session, a change the client does not carry keeps the old record** (a deliberate difference: the
+plugin's `:149-155` branch clears it, and so does `.default`, which follows the plugin). An app can switch pool configuration at runtime under one session ID (an organisation picker), which the
 plugin cannot: clearing would delete the other configuration's live session, unrevoked, on every switch. The first
 record started under the new namespace remembers the old one as a copy, with its digest and its own user, whoever
 starts, so its user's sign-out or purge there sweeps it while it is untouched. Switching or rolling back reads the old
@@ -680,9 +883,9 @@ Only an identity-step failure keeps the tokens: a refused or expired refresh tok
 refresh, fail every field with `sessionExpired`. If the refresh's commit lost to another writer whose record has its
 identity, that record is the answer.
 `storedSessions` lists a session that would be carried, once, as it would be carried. Device metadata and the ASF
-device ID are not carried, as the plugin does not carry them. **`.default` adopted from the plugin in the same release
-as a configuration change** has no marker yet and carries nothing; the plugin's own record under the old namespace is
-left for the plugin. Implementation: `SessionRecordStore+CopyForward.swift`; the integration tests are
+device ID are not carried, as the plugin does not carry them. (Removed 2026-10-02: the rule for "`.default` adopted
+from the plugin in the same release as a configuration change". `.default` is the plugin's record, and follows the
+plugin's rule above.) Implementation: `SessionRecordStore+CopyForward.swift`; the integration tests are
 CS-1 … CS-3 (`StorageConfigurationTests`).
 
 **Proposed session is saved under a session ID, and the ID is part of the storage key.** The naming rule is universal, with no exceptions and no unnamed fallback:
@@ -691,7 +894,7 @@ CS-1 … CS-3 (`StorageConfigurationTests`).
 
 - **A session record is written atomically**, or at least becomes visible atomically. Free where a session is one blob; needs an explicit write-set where a session is many discrete keys.
 
-- **Only one writer per record, in one process.** Two Auth Clients built with the same session ID are two handles onto one session, so there is exactly one thing writing that record. Storage access for a session is mutually exclusive, so two writes to one record cannot interleave.
+- **Only one writer per record, in one process.** Two Auth Clients built with the same session ID are two handles onto one session, so there is exactly one thing writing that record. Storage access for a session is mutually exclusive, so two writes to one record cannot interleave. The exception is the plugin: its state machine is outside this exclusion, which is why the plugin and the client over `.default` in one process are unsupported until the bridge (§4.9).
 
 - **Per-session single-flight refresh is an explicit invariant, not an emergent one.** Today coalescing is an accident of there being one global state machine: a second concurrent fetch simply awaits the in-flight refresh. With N sessions that property has to be built deliberately, per session. Different sessions must never wait on each other, so per-record exclusion must not become a process-wide lock or it re-creates the serialization this design exists to remove.
 
@@ -701,19 +904,21 @@ CS-1 … CS-3 (`StorageConfigurationTests`).
 
 - **Device metadata survives sign-out.** Signing out clears that session's tokens but must leave the per-user device record intact, so a remembered device stays remembered and the next sign-in can still skip MFA. Only an explicit forget-device or delete-user removes it. All three platforms already do this correctly.
 
-- **The interrupted-sign-in record is per session too, and it is a second record.** 4.11 depends on a partly-completed sign-in outliving app death, so the challenge state is stored rather than held in memory. It gets its own key, `amplify.1.<userPoolId>.<identityPoolId>.<sessionId>.challenge`, at the **per-session** level - so one session sitting on an MFA prompt is invisible to every other session. Lifecycle: written on entering a challenge, deleted on success, on failure, and on being superseded by a new sign-in attempt for the same session. It holds a short-lived Cognito `Session` string and the pending step, so it goes in the same protected, device-only storage as tokens and **must not sync** to another device, where it would be useless and misleading. Nothing persists this today (C.11, C.17), so it is new storage rather than a re-keying. It is never carried to a new pool configuration: its session string belongs to the old configuration's app client. Sign-out and purge also delete it under the namespaces the session's namespace marker remembers, only with the copies they delete there (the same user's, unchanged since carried, not a guest's). As built: see 4.11.
+- **The interrupted-sign-in record is per session too, and it is a second record.** 4.11 depends on a partly-completed sign-in outliving app death, so the challenge state is stored rather than held in memory. It gets its own key, `amplify.1.<userPoolId>.<identityPoolId>.<sessionId>.challenge`, at the **per-session** level - so one session sitting on an MFA prompt is invisible to every other session. Lifecycle: written on entering a challenge, deleted on success, on failure, and on being superseded by a new sign-in attempt for the same session. It holds a short-lived Cognito `Session` string and the pending step, so it goes in the same protected, device-only storage as tokens and **must not sync** to another device, where it would be useless and misleading. Nothing persists this today (C.11, C.17), so it is new storage rather than a re-keying. It is never carried to a new pool configuration: its session string belongs to the old configuration's app client. Sign-out and purge also delete it under the namespaces the session's namespace marker remembers, only with the copies they delete there (the same user's, unchanged since carried, not a guest's). As built: see 4.11. The 2026-10-02 revision leaves the challenge record a separate client item for every session; `.default`'s stays at `amplify.1.<ns>.$default.challenge`. The plugin has no equivalent.
 
 **Three levels of scoping.** Every stored item belongs to exactly one level, and this is what prevents accidental sharing:
 
 | Level | Examples | Shared across sessions? |
 |---|---|---|
-| **Per session** | tokens, AWS credentials, sign-in method, identity id, including a guest session's identity id | No. This is what the session ID names |
-| **Per user** | device metadata, remembered-device keys | Yes, for the same username |
-| **Per device** | device id, configuration record | Yes, app-wide |
+| **Per session** | tokens, AWS credentials, sign-in method, identity id, including a guest session's identity id; the challenge record; for `.default`, the sidecar; for a named session, its namespace marker (per session and per app) | No. This is what the session ID names |
+| **Per user** | device metadata (`amplify.<ns>.<username, lower-cased>.deviceMetadata`), remembered-device keys, and the ASF device ID (`amplify.<ns>.<username>.deviceASF`, not lower-cased) | Yes, for the same username in a namespace, plugin and client alike |
+| **Per keychain service** | the plugin's `authConfiguration` item, the last configuration it ran with; since the 2026-10-02 revision the client also writes it for `.default` | Yes, app-wide, and shared with the plugin |
+
+*Corrected 2026-10-02:* the earlier table had a "per device" row with the device ID. The ASF device ID is keyed per username (`DeviceRecordStore.swift:11-28`; `AWSCognitoAuthCredentialStore.swift:188-198`), so it is per user.
 
 Every level above is already how the code works today. The two changes are adding the session ID to the per-session level, and adding the challenge record as a second per-session item.
 
-**Listing.** The account picker needs to enumerate saved sessions and read their display data with no network call. Whether the underlying store can list keys differs by platform.
+**Listing.** The account picker needs to enumerate saved sessions and read their display data with no network call. Whether the underlying store can list keys differs by platform. The `.default` row comes from the plugin's record and the sidecar. Listing ignores any old `amplify.1.<ns>.$default.session` record, a development leftover, so it never shows as a ghost row. For example, with alice signed in through the plugin and the sidecar labelled "Work" for alice, the picker shows one `.default` row, "Work", alice; if the plugin then signs bob in, the row is bob with no label.
 
 ## 7. Credential providers
 
@@ -772,7 +977,7 @@ for await event in work.listenToAuthEvents() {
 for await event in home.listenToAuthEvents() { ... }
 ```
 
-**New API:** `listenToAuthEvents()`, returning an `AsyncStream<AuthEvent>` per Auth Client. `AuthEvent` carries the same four cases the Hub sends today. The Hub path is unchanged for the plugin, so an app migrating one screen at a time can use both. Declared in 14.2 (`listenToAuthEvents()`) and 14.6 (`AuthEvent`).
+**New API:** `listenToAuthEvents()`, returning an `AsyncStream<AuthEvent>` per Auth Client. `AuthEvent` carries the same four cases the Hub sends today. The Hub path is unchanged for the plugin, so an app migrating one screen at a time can use both (over named sessions until the bridge; see 4.9). Declared in 14.2 (`listenToAuthEvents()`) and 14.6 (`AuthEvent`).
 
 **Events are delivered from the point of subscription.** The stream does not replay what happened before a subscriber attached, so an app that needs to know where a session stands asks for it rather than waiting for an event to arrive. That is the division of labour: `listenToAuthEvents()` says *what happened*, and `currentSessionState()` - with `listenToSessionStateChanges()` for updates, both in 14.2 - says *where things are now*. Both are per session.
 
@@ -788,7 +993,9 @@ For sign outs, some platforms already skip the browser round trip on sign-out wh
 
 ### 9.1 One browser sign-in at a time, and how the API says so
 
-**Only one browser sign-in is in flight at a time, per process. This is a deliberate library policy, not an OS guarantee.** The distinction matters because the doc previously claimed the latter and a reviewer can falsify it: Apple documents only a *per-instance* rule for `ASWebAuthenticationSession.start()`, its error taxonomy has no "already in progress" case, and no Apple platform enforces a device-wide limit. On Android the effective limit is also ours — the redirect-handling activity is `launchMode="singleTask"` and one redirect scheme cannot be disambiguated between two pending requests. What genuinely constrains us is **UI presentation**: a flow needs a foreground-active `presentationAnchor`, and an iPhone cannot provide two. Concurrent browser sign-ins are therefore out of scope by decision; sessions are established sequentially.
+> **Scope (2026-10-02).** The rule is our library's policy on the platforms that have hosted UI, **iOS, macOS and visionOS**. It covers **one system sheet**: browser sign-in, the browser sign-out page and the passkey sheet. This section stays because it documents public API: `whenBrowserBusy`, `browserBusy` and `resetSystemSheet`.
+
+**Only one system sheet is up at a time, per process, on iOS, macOS and visionOS: a browser sign-in, the browser sign-out page or the passkey sheet. This is a deliberate library policy, not an OS guarantee.** The distinction matters because the doc previously claimed the latter and a reviewer can falsify it: Apple documents only a *per-instance* rule for `ASWebAuthenticationSession.start()`, its error taxonomy has no "already in progress" case, and no Apple platform enforces a device-wide limit. On Android the effective limit is also ours — the redirect-handling activity is `launchMode="singleTask"` and one redirect scheme cannot be disambiguated between two pending requests. What genuinely constrains us is **UI presentation**: a flow needs a foreground-active `presentationAnchor`, and an iPhone cannot provide two. Concurrent browser sign-ins are therefore out of scope by decision; sessions are established sequentially.
 
 **This exclusivity cannot be inherited, and that is a risk to name rather than a detail.** The thing serializing browser flows today is the single global auth state machine — the session layer has no in-flight guard of its own. Splitting into N sessions removes the only serialization that exists, on a seam with a five-issue history (#3362 → PR #3466 → #3678 → PR #3715 → #3766). So the rule needs an explicit owner in the new architecture, plus a public cancel/reset: a guard left held by a flow the OS silently tore down otherwise blocks sign-in until the app restarts.
 
@@ -801,12 +1008,17 @@ public struct WebUIOptions: Sendable {
     /// Private or ephemeral browser session. The default for the Auth Client.
     public var prefersEphemeralSession: Bool = true
 
-    public enum BrowserBusyPolicy: Sendable {
+    // A struct with two constructors rather than an enum, so a timeout is checked
+    // when the policy is made (this matches the public API).
+    public struct BrowserBusyPolicy: Sendable {
         /// Throw `.browserBusy` immediately. The default.
-        case fail
-        /// Wait for the in-flight sign-in to finish, then proceed.
-        /// Throws `.browserBusy` if the wait expires.
-        case wait(timeout: Duration)
+        public static let fail: BrowserBusyPolicy
+        /// The longest a caller can wait: one hour.
+        public static let maximumWaitTimeout: TimeInterval   // 3_600
+        /// Wait for the in-flight sign-in to finish, then proceed. Throws `.browserBusy`
+        /// if `timeout` seconds pass first. Seconds rather than `Duration`, which needs
+        /// iOS 16; a longer timeout is capped at one hour, and zero or less gives `.fail`.
+        public static func wait(timeout: TimeInterval) -> BrowserBusyPolicy
     }
 }
 
@@ -904,7 +1116,7 @@ func uploadReceipt(_ data: Data) async throws {
 
 Restated together, because a design is judged partly on what it declines:
 
-1. No concurrent in-flight hosted-UI sign-ins. This is our policy rather than an OS rule, and 9.1 says why we keep it.
+1. **One system sheet at a time, per process, on iOS, macOS and visionOS**: browser sign-in, the browser sign-out page and the passkey sheet. This is our library's policy rather than an OS rule, and 9.1 says why we keep it.
 
 2. **No multi-user through the existing categories. Multi-session reaches the standalone clients, not the plugins.** Every client in the `AmplifyClients` family (Kinesis, Firehose, Connect, EventEnrichment, CloudWatch) already takes a credentials provider at construction, so handing one `client.credentialsProvider` binds it to that session with no further work. The category plugins - Storage, API, Analytics, Predictions, and the rest - resolve auth through the global, so they follow the plugin's session regardless of how many Auth Clients exist. DataStore is out of scope entirely: its local database is a single file shared by every identity.
 
@@ -912,7 +1124,7 @@ Restated together, because a design is judged partly on what it declines:
 
 3. Sessions are not free, so concurrent sessions are bounded in practice, though the supported number is not yet decided.
 
-4. **No "sign out of all sessions".** Decided, not overlooked: an app loops `storedSessions()`. A safe bulk operation needs per-session result reporting that `AuthSignOutResult` cannot express today, and every surveyed precedent for it is a footgun (see 4.7).
+4. **No "sign out of all sessions".** Decided, not overlooked: an app loops `storedSessions()`. A safe bulk operation needs per-session result reporting that `AuthClientSignOutResult` cannot express today, and every surveyed precedent for it is a footgun (see 4.7).
 
 5. **Cross-process record sharing has no concurrency guard.** An app and its extension sharing a keychain group are two state machines over one record. A commit guard bounds the damage; it does not eliminate it. Under Cognito refresh-token rotation this can leave a record that cannot refresh, so an app that shares a session ID across processes should expect to handle re-auth. Detail in §6.
 
@@ -924,13 +1136,15 @@ Settled, and recorded here.
 
 1. **The plugin eventually becomes a thin layer over the Auth Client. Yes.** One implementation, with the plugin as a compatibility shell. It requires full parity first, so it cannot be step one. The interim state follows CloudWatch Logging: extract the shared Cognito core into an internal module, keep the plugin working over it, and ship the Auth Client behind an experimental flag.
 
+    > **As of 2026-10-02:** the thin layer, in which the plugin delegates to the client's session core, is not built (§4.9). The plugin and the client keep separate in-memory state. **The default session shares the plugin's saved login** (§4.8).
+
 2. **The Auth Client must reach full parity with the plugin, in its entirety. Yes.** Every feature set, not a subset: federation, hosted UI, device tracking, MFA and TOTP, sign-up and confirmation, password reset, user attributes, delete-user, and the escape hatches. Federation needs no new design, being one of the five session kinds, so its inclusion is purely API scope. Parity is a release requirement, and decision 1 depends on it.
 
 3. **We ship one approach, not both. This design**, because it is the only one of the two that serves the primary goal and the only one that delivers genuinely concurrent sessions. Section 10 and Appendix B present the alternative in enough detail that another platform or team could implement it instead. What we will not do is ship both over one storage layout: the two want different layouts, and running both over one storage service would first require fixing pre-existing defects in the store's constructor side effects.
 
 4. **Two Auth Clients with the same session ID share one session. Yes.** Construction never fails for "already in use", and resources belong to the session rather than to a handle. A credential provider is a handle too, so it keeps its session alive.
 
-5. **Hosted UI is one browser sign-in at a time, and the API says so explicitly.** A process-wide browser lock, `.fail` by default, `.wait(timeout:)` opt-in.
+5. **Hosted UI is one browser sign-in at a time, and the API says so explicitly.** A process-wide browser lock, `.fail` by default, `.wait(timeout:)` opt-in. Scoped on 2026-10-02: one system sheet, covering browser sign-in, the sign-out page and the passkey sheet, as library policy on iOS, macOS and visionOS (9.1).
 
 6. **Session state stays close to today's surface.** One small enum over `isSignedIn`, adding only the two distinctions a Bool cannot make, and reusing the existing `AuthSignInStep`. No in-flight dimension in the type.
 
@@ -951,6 +1165,10 @@ The failure is silent, confirmed, and needs no unusual API call to trigger, whic
 Two smaller consequences from the same root: `clearCache()` deletes across users, and the cached-size counter sums the whole table, so one client mis-accounts its own budget.
 
 **A fix exists and is small.** The storage layer already takes an `identifier` parameter that the client hard-codes to the region. Exposing it, for example as `Options(cacheNamespace:)`, would let the caller scope the cache per session, with today's behaviour as the default. **Decided: it ships alongside and does not block this work** - it is a change to a shipped client, owned by that client rather than by auth. The reasoning, from the downstream-client side, is that an app supplying its own `credentialsProvider` implementation can already hit the discard-versus-retry ambiguity today, at one session, so it is a pre-existing gap rather than one multi-session introduces. Until it is resolved, this document uses Connect rather than Kinesis for the per-user wiring example in 4.5.
+
+> **As of 2026-10-02:**
+> - **Kinesis and Firehose are not scoped yet.** Their cache has no namespace per session, so this concern stands for them.
+> - **Storage and Pinpoint are closed.** They follow `Amplify.Auth`, so plugin-only apps are unaffected. The existing release note covers them (limit 2).
 
 ## 14. API surface
 
@@ -1044,49 +1262,62 @@ extension AmplifyCognitoClient {
 
 ### 14.3 Managing saved sessions
 
+Updated to the shipped API (2026-10-02); §14.8 lists what changed from the first revision.
+
 ```swift
 extension AmplifyCognitoClient {
     // Display text for a picker row. The library cannot invent this.
     public func setSessionLabel(_ label: String?) async throws
 
-    // Listing, and acting on a saved record the app is not holding, without a network call.
-    // All three are async and throwing: they take the same per-session storage lock
-    // every Auth Client does, and all three must be able to report a storage failure
-    // rather than silently reporting "nothing there".
+    // Listing, and acting on a saved record the app is not holding, without a network call
+    // (sign-out revokes, so it calls Cognito). Each takes the same per-session storage lock
+    // every Auth Client does, and each reports a storage failure rather than silently
+    // reporting "nothing there": the listing and the purge throw it, and the sign-out
+    // returns it as .failed.
+    //
+    // Saved sessions are scoped to the pools and the keychain access group, so each call
+    // names both. Pass the same accessGroup as the clients' Options.accessGroup.
     //
     // signOut() keeps the row, so a signed-out session is still listed and resumable.
     // Pass includingSignedOut: true to see those rows; the default hides them, matching
     // MSAL's returnOnlySignedInAccounts.
     public static func storedSessions(
         configuration: AuthClientConfiguration,
+        accessGroup: String? = nil,
         includingSignedOut: Bool = false
     ) async throws -> [StoredSession]
 
+    // Never throws: .complete, .partial(...) or .failed(error), as signOut (4.7, 14.8).
     public static func signOutStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration
-    ) async throws -> AuthSignOutResult      // today's type, unchanged
+        configuration: AuthClientConfiguration,
+        accessGroup: String? = nil
+    ) async -> AuthClientSignOutResult
 
     // LOCAL-ONLY: deletes the saved record without contacting Cognito, so the refresh
     // token stays valid server-side until it expires. Prefer signOutStoredSession,
     // which revokes first and then deletes.
     public static func purgeStoredSession(
         sessionId: SessionID,
-        configuration: AuthClientConfiguration
+        configuration: AuthClientConfiguration,
+        accessGroup: String? = nil
     ) async throws
 
-    // Migration. Read-through by default; completeAdoption() is the irreversible step.
-    public func completeAdoption() async throws
+    // Migration: no call. The default session is the plugin's saved login, so there
+    // is nothing to take over (4.8).
 }
 ```
 
 ### 14.4 Credentials, and the escape hatch
 
+Updated to the shipped API (2026-10-02; §14.8).
+
 ```swift
 extension AmplifyCognitoClient {
     // What auth vends that no other client does: it is the credentials source.
-    public nonisolated var credentialsProvider: CognitoCredentialsProvider { get }
-    public nonisolated var userPoolTokenProvider: CognitoUserPoolTokenProvider { get }
+    // The client is a Sendable final class, so these need no isolation.
+    public var credentialsProvider: CognitoCredentialsProvider { get }
+    public var userPoolTokenProvider: CognitoUserPoolTokenProvider { get }
 
     // Both are concrete, Sendable types bound to this session, rather than
     // existentials. CognitoCredentialsProvider conforms to AmplifyFoundation's
@@ -1105,8 +1336,9 @@ extension AmplifyCognitoClient {
     // AWSCredentialsProvider (method: fetchAWSCredentials()). This client uses
     // only the AmplifyFoundation one.
 
-    // Family convention.
-    public func getUserPoolClient() -> CognitoIdentityProviderClient
+    // Family convention. Each is nil without the matching pool: a configuration may have
+    // an identity pool only, or a user pool only.
+    public func getUserPoolClient() -> CognitoIdentityProviderClient?
     public func getIdentityClient() -> CognitoIdentityClient?
 }
 ```
@@ -1117,15 +1349,17 @@ Addressed per session, and required to reach full plugin parity: `signIn`, `conf
 
 ### 14.6 Types
 
-Every type this design adds, except the construction types 14.1 accounts for and two that are declared where the call explaining them lives: `AuthSessionState` is in 14.2, and `WebUIOptions` in 9.1.
+Every type this design adds, except the construction types 14.1 accounts for and two that are declared where the call explaining them lives: `AuthSessionState` is in 14.2, and `WebUIOptions` in 9.1. `StoredSession` and `SessionKind` are updated to the shipped API (2026-10-02; §14.8).
 
 ```swift
-public struct StoredSession {              // one row of the picker
+public struct StoredSession: Sendable, Equatable {   // one row of the picker
     public let sessionId: SessionID         // to construct the Auth Client the user picked
     public let label: String?               // the only name a user recognises
     public let username: String?            // fallback row title; nil for a guest row
     public let kind: SessionKind            // to render or filter rows
 
+    // For an app's test doubles.
+    public init(sessionId: SessionID, label: String?, username: String?, kind: SessionKind)
 }
 
 // The client depends only on AmplifyFoundation and AmplifyFoundationBridge - never on
@@ -1144,7 +1378,7 @@ public enum AuthClientSignInStep: Sendable, Equatable { /* case-for-case mirror 
 
 public struct SessionID: Hashable, Sendable, Codable {
     public var stringValue: String { get }                        // for app-side persistence
-    public static let `default`: SessionID                        // stable; stored as "$default", unforgeable via named(_:)
+    public static let `default`: SessionID                        // stable; stringValue "$default", unforgeable via named(_:); the plugin's saved login (4.8)
     public static func named(_ id: String) throws -> SessionID     // [A-Za-z0-9_-]{1,64}
     public static func new() -> SessionID                          // library-minted
 }
@@ -1152,7 +1386,7 @@ public struct SessionID: Hashable, Sendable, Codable {
 /// What a *saved* row is - the five combinations in Section 5. Distinct from
 /// `AuthSessionState` in 14.2, which is what a live session is right now.
 public enum SessionKind: Sendable, Equatable {
-    case userPoolOnly, userPoolAndIdentityPool, guest, federated, none
+    case userPoolOnly, userPoolAndIdentityPool, guest, federated, signedOut   // signedOut is stored as "none"
 }
 
 /// The same four events the Hub sends today, and nothing more.
@@ -1192,10 +1426,32 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 
 - **`getUserPoolClient()` is optional** (`CognitoIdentityProviderClient?`, `nil` without a user pool), like
   `getIdentityClient()`, since a configuration may have an identity pool only (14.4).
-- **Sign-outs return `AuthClientSignOutResult`**, not the plugin's `AuthSignOutResult` (14.3): `.complete`,
-  `.partial(AuthClientPartialSignOut)` (the revoke, global sign-out or hosted-UI sign-out that failed while the
-  session was still signed out here) and `.superseded` (another user signed in meanwhile and was left signed in).
-  Failures throw. The client does not depend on Amplify core, so it owns the type.
+- **Sign-outs return `AuthClientSignOutResult`, in the plugin's shape**, not the plugin's
+  `AuthSignOutResult` (14.3). The client does not depend on Amplify core, so it owns the type. §4.7 has the
+  full list of outcomes.
+  - **No throw.** `signOut(options:)`, `signOut(presentationAnchor:options:)` and
+    `signOutStoredSession(sessionId:configuration:accessGroup:)` are `async`, not `async throws`. The two
+    `signOut` calls are `@discardableResult`, as the plugin's is. `purgeStoredSession` still throws: the plugin
+    has no such call.
+  - **Cases.** `.complete`, `.partial(revokeTokenError:globalSignOutError:hostedUIError:storageError:)` and
+    `.failed(AuthClientError)`. `signedOutLocally` is false only for `.failed`. `storageError` is client-only.
+    `==` compares errors as `AuthSessionState.failed` does (`isEquivalent(to:)`).
+  - **`.failed`, with the session still signed in:** another sign-in replaced the session during the sign-out
+    (`.invalidState`); a storage failure before the local sign-out; `sessionConfigurationMismatch` and any other
+    error before anything was revoked; a closed hosted-UI sign-out page (`.userCancelled`), unless the session
+    was already expired; any hosted-UI sign-out page that could not be shown or completed, including no hosted-UI
+    configuration or sign-out redirect URI; task cancellation before anything was revoked, as
+    `.failed(.unknown("The sign-out was cancelled before anything was revoked; the session is still signed in.",
+    "Retry the sign-out.", CancellationError()))`.
+  - **A purge that fails after the local sign-out succeeded** returns `.partial` with `storageError` set, and
+    `signedOutLocally == true`.
+  - **As the plugin does:** a failed global sign-out adds the plugin's placeholder `revokeTokenError`.
+  - **Once a revoke has completed, cancellation never stops the local clear.**
+  - **Documented differences from the plugin:** `.partial` carries errors only, no raw tokens (a security fix),
+    and has the client-only `storageError`; a federated session can be signed out; `purgeStoredSession`; the
+    window is required for the hosted-UI sign-out page.
+  - *Earlier revision (2026-09-27):* sign-outs threw on failure, and returned a `.partial` struct or a separate
+    case for a sign-out that another sign-in overtook. Replaced on 2026-10-02.
 - **`AuthSessionState` has a separate `.federated(identityId:)`** (14.2). A federated session has no user pool
   user, so it is not `.signedIn(AuthClientUser)`.
 - **The static calls take `accessGroup:`**: `storedSessions(configuration:accessGroup:includingSignedOut:)`,
@@ -1224,7 +1480,7 @@ The shipped `@_spi(AmplifyExperimental)` surface differs from 14.1 to 14.7 as fo
 | `browserBusy(holder:)` | The process's one system sheet (hosted-UI sign-in or sign-out page, or passkey sheet) is held, or a `.wait(timeout:)` expired first. |
 | `sessionConfigurationMismatch(SessionID)` | A session ID already live under a different user pool, identity pool, keychain access group or settings. Thrown instead of silently attaching - see D.1. |
 | `validation(field:)` | An argument the caller passed is invalid. Names the offending field. |
-| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. |
+| `service(AuthClientServiceErrorCode?)` | Cognito rejected the request; the code when the client recognises the exception. `AuthClientServiceErrorCode` is a plain value this error carries: it is not an `Error`, so it is never thrown or caught on its own, and its `errorDescription` is an ordinary property. Match it inside the case: `catch AuthClientError.service(.userNotConfirmed?, _, _, _)`. |
 | `notAuthorized` | The caller is not allowed to perform the operation: a wrong password, a disabled user, a revoked token. |
 | `invalidState` | The operation is not valid in the session's state: signed in already, federated, no sign-in in progress, or cancelled by a sign-out. |
 | `userCancelled` | The user closed a system sheet, or `cancelWebUISignIn()` or `resetSystemSheet()` closed it. |
@@ -1268,7 +1524,7 @@ Keying on session ID alone is deliberate. Keying on the configuration would make
 
 One operation returning currently-valid credentials, refreshing on demand. Four rules, and rule 2 is the one with a security consequence:
 
-1. **Bound to its session for life.** No ambient lookup. Which session a provider resolves is fixed when it is handed over.
+1. **Bound to its session for life.** No ambient lookup. Which session a provider resolves is fixed when it is handed over. It is bound to the session, not to the user: after a sign-out and another user's sign-in on the same session ID, it serves the new user, and nothing tells the consumer the user changed.
 
 2. **Fail rather than fall back.** If the session is signed out, resolution *fails* with `notSignedIn`. It must not quietly return guest credentials. A consumer wired to an authenticated identity receiving unauthenticated credentials is a privilege bug dressed as graceful degradation.
 
@@ -1284,8 +1540,18 @@ One operation returning currently-valid credentials, refreshing on demand. Four 
 | `sessionExpired` | Recoverable by re-auth. Retain the buffer and retry the flush after sign-in. |
 | `storageUnavailable(.locked / .interrupted)` | Transient. Retry with backoff. |
 | `storageUnavailable(.denied)` | Permanent, and a misconfiguration. Fail loudly. |
+| `notConfigured` | Permanent, and a misconfiguration: the provider cannot vend this kind of credential in its configuration, for example AWS credentials from a session with no identity pool. Fail loudly (`.failLoudly`). **Already shipped.** |
 
-This lives in AmplifyFoundation rather than here, because `AWSCredentialsProvider` is shared and Kinesis, Firehose, Connect and EventEnrichment all consume it. **It is built:** `CredentialsError` (`notSignedIn`, `sessionExpired`, `storageUnavailable(StorageUnavailableReason)`, `unknown`), with the table above encoded on the error itself as `disposition` - `.discard`, `.retryAfterReauthentication`, `.retryWithBackoff`, `.failLoudly` - so consumers read one property instead of each re-deriving the mapping and getting one wrong. An unrecognised failure deliberately maps to retry rather than discard, so a case nobody anticipated can never cost buffered data.
+This lives in AmplifyFoundation rather than here, because `AWSCredentialsProvider` is shared and Kinesis, Firehose, Connect and EventEnrichment all consume it. **It is built:** `CredentialsError` (`notSignedIn`, `sessionExpired`, `storageUnavailable(StorageUnavailableReason)`, `notConfigured`, `unknown`), with the table above encoded on the error itself as `disposition` - `.discard`, `.retryAfterReauthentication`, `.retryWithBackoff`, `.failLoudly` - so consumers read one property instead of each re-deriving the mapping and getting one wrong. An unrecognised failure deliberately maps to retry rather than discard, so a case nobody anticipated can never cost buffered data.
+
+### 15.3 Logging
+
+The client logs through AmplifyFoundation's logging, as its siblings do (D.1).
+
+- **Every client log line is under an `AmplifyCognitoClient.<area>` category** (`Sources/Support/ClientLog.swift`). The client's own areas are `SessionRecordStore`, `SessionSignOut`, `KeychainItemStore` and `DefaultSession`, beside the engine resources' existing names, such as `AmplifyCognitoClient.InitiateAuthSRP`. No category holds a session ID, because an app-chosen ID can be an email address.
+- **The engine's six static log sites go through the caller's logger**: `MFAType`, `AuthFactorType`, `PlatformWebAuthnCredentials`, `KeychainStore`, and `AWSCognitoAuthCredentialStore` with `KeychainStoreMigrator`. Each takes a `logger:` from its caller, or the environment's (`environment.engineLogger`). So a client path never logs under a plugin category: an unknown MFA type parsed by the client logs under `AmplifyCognitoClient.MFAType`, not the plugin's `MFAType`. A plugin path logs exactly as before (the G5 golden is unchanged). One accepted leak stays: the plugin's public `AuthFlowType` decode, with no logger in its decoder, keeps the global router (`EngineAuthFactorType(decodingRawValue:)`); the client's decodes pass one.
+- **The temporary warning** (§4.9) is logged at `warn`, under `AmplifyCognitoClient.DefaultSession`, naming no one. Logged once while the session is in memory. All handles share it; after every handle and provider is released, a new handle can log it again. The category also carries the warning that a login deleted by a configuration change could not be revoked (§6).
+- **Verbose keychain lines name the record kind, not the keychain key**, because a key can hold a username or a session ID.
 
 ---
 
@@ -1336,7 +1602,7 @@ It appears verbatim at three sites. The Auth Client keeps the rule but scopes it
 
 ### A.3 Where the session lives
 
-One keychain blob under `amplify.<userPoolId>.<identityPoolId>.session`, pool ids only, no user component. The Auth Client adds the session ID to the key and **keeps the record format byte-identical**, which is precisely what makes migration a plain read rather than a conversion.
+One keychain blob under `amplify.<userPoolId>.<identityPoolId>.session`, pool ids only, no user component. The Auth Client adds the session ID to the key for named sessions. *Corrected 2026-10-02:* the record format is not byte-identical. A named session wraps the same `AmplifyCredentials` payload in an envelope, which is decode-compatible rather than byte-identical. The default session is the plugin's own record (decided 2026-10-02, §4.8), so it has nothing to migrate.
 
 ### A.4 How other code gets credentials
 
