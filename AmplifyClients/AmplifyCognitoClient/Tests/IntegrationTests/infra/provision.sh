@@ -25,6 +25,9 @@
 # Every mutating call on an existing resource is preceded by a tag check (infra/lib.sh), and no
 # secret or identifier is printed, and no secret is passed to the AWS CLI as an argument.
 #
+# It refuses to start with under 2 GiB free on the volume holding $STATE_DIR (COGNITO_CLIENT_INTEG_MIN_FREE_GIB
+# sets another minimum, 0 none): with a full disk the AWS CLI itself crashes, part-way through a change.
+#
 # Usage: AWS_PROFILE=<sandbox-profile> [COGNITO_CLIENT_INTEG_SES_DOMAIN=<domain> | COGNITO_CLIENT_INTEG_SES_EMAIL=<address>]
 #        ./provision.sh [region]
 set -euo pipefail
@@ -35,6 +38,8 @@ INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$INFRA_DIR/lib.sh"
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR"
+# Before any AWS call: enough free disk for the CLI (COGNITO_CLIENT_INTEG_MIN_FREE_GIB, lib.sh).
+require_free_disk
 # stderr passes through redact (lib.sh), so an error cannot print an account, pool or client id.
 aws() { command aws --region "$REGION" --output json "$@" 2> >(redact >&2); }
 

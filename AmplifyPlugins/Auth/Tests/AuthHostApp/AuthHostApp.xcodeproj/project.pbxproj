@@ -811,7 +811,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "# COGNITO_CLIENT_INTEG_DIR, when set, names the directory to copy instead of ~/.aws-amplify/amplify-ios/testconfiguration\n# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/README.md). Unset, as on CI, nothing changes.\nTEMP_FILE=${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		681B76C02A3CBBAE004B59D9 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -829,7 +829,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "# COGNITO_CLIENT_INTEG_DIR, when set, names the directory to copy instead of ~/.aws-amplify/amplify-ios/testconfiguration\n# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/README.md). Unset, as on CI, nothing changes.\nTEMP_FILE=${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		97914B4729550988002000EA /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -847,7 +847,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "# COGNITO_CLIENT_INTEG_DIR, when set, names the directory to copy instead of ~/.aws-amplify/amplify-ios/testconfiguration\n# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/README.md). Unset, as on CI, nothing changes.\nTEMP_FILE=${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		B4EBE94027BD417F0005AE5C /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -865,7 +865,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "# COGNITO_CLIENT_INTEG_DIR, when set, names the directory to copy instead of ~/.aws-amplify/amplify-ios/testconfiguration\n# (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/README.md). Unset, as on CI, nothing changes.\nTEMP_FILE=${COGNITO_CLIENT_INTEG_DIR:-$HOME/.aws-amplify/amplify-ios/testconfiguration}/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

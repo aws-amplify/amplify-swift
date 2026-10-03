@@ -270,7 +270,7 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private static let clientLabel = "W3 keychain port"
+    private static let clientLabel = "Keychain port"
 
     /// Writes a labelled, signed-out row for a new named session through the client's API, then drops
     /// the client and waits until the registry has released it.

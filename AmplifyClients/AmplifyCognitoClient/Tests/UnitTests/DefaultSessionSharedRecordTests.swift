@@ -771,6 +771,38 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
     }
 
+    /// A sign-out writes the sidecar only after its guarded commit: a commit another writer beat
+    /// leaves that writer's sidecar, never one naming the user who was signing out.
+    ///
+    /// - Given: alice's record with her sidecar labelled "Work", and another client signing bob in (his record, then
+    ///   his sidecar) between the sign-out's guard read of the shared record and its guarded write
+    /// - When: the store signs out the alice it read
+    /// - Then:
+    ///    - the sign-out is superseded; the shared record and the sidecar are bob's, as he wrote them
+    func testASupersededSignOutLeavesTheNewWritersSidecar() throws {
+        let alice = FakePayload.signedIn("alice")
+        harness.keychain.put(alice.data, pluginAccount)
+        let store = harness.store()
+        _ = try store.setDefaultLabel("Work")
+        XCTAssertEqual(sidecar()?.username, "alice")
+        let keychain = harness.keychain
+        let account = pluginAccount
+        let sidecar = sidecarAccount
+        let bob = FakePayload.signedIn("bob")
+        let bobsSidecar = try DefaultSessionMeta(lastWriteTimestamp: TestClock.start, label: nil, username: "bob", userId: "sub-bob").encoded()
+        // The sign-out reads the shared record, then the write reads it again for its guard.
+        harness.keychain.onceAfterReading(account, occurrence: 2) {
+            keychain.put(bob.data, account)
+            keychain.put(bobsSidecar, sidecar)
+        }
+
+        let outcome = try store.signOut(.default, removing: alice.data)
+
+        XCTAssertEqual(outcome, .superseded)
+        XCTAssertEqual(harness.keychain.value(account), bob.data)
+        XCTAssertEqual(harness.keychain.value(sidecar), bobsSidecar)
+    }
+
     /// The label binds to the user it read, never to one another writer signs in meanwhile.
     ///
     /// - Given: a live `.default` holding alice, and the plugin signing bob in between the label's read of the shared

@@ -332,6 +332,339 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 1)
     }
 
+    /// Taking the sheet is the sign-out's busy check, so another session that takes the sheet at the last moment,
+    /// just before the sign-out asks for it, still leaves this session's passkey registration alone.
+    ///
+    /// - Given: a shared-cookie session whose passkey registration is still at `StartWebAuthnRegistration` (no
+    ///   sheet yet), a free sheet, and a lock that holds the session's first call for the sheet at `beforeAcquire`
+    /// - When:
+    ///    - the session is signed out with a window, and another session takes the sheet while the sign-out is
+    ///      held there, just before it asks
+    ///    - then the other session lets the sheet go, and the registration's `StartWebAuthnRegistration` answers
+    /// - Then:
+    ///    - the sign-out is `.failed(.browserBusy(holder: home))` with the sign-out's suggestion: nothing queued,
+    ///      nothing revoked, and the session still signed in with its record unchanged
+    ///    - the registration was never stopped: it goes on to show its sheet and succeeds
+    func testASheetTakenJustBeforeTheSignOutAsksLeavesTheRegistrationAlone() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
+        let work = work
+        let home = home
+        let signOutAsks = Gate()
+        let firstCall = TestBox(true)
+        harness.sheetLock = SystemSheetLock(
+            sleep: { _ in XCTFail("the logout page queued behind another session") },
+            beforeAcquire: { session in
+                guard session == work, firstCall.with({ value -> Bool in
+                    defer { value = false }
+                    return value
+                }) else {
+                    return
+                }
+                await signOutAsks.pass()
+            }
+        )
+        let payload = HostedUIFixtures.hostedUIPayload()
+        try harness.signIn(work, payload)
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let window = window!
+        let lock = harness.sheetLock
+        let start = Gate()
+        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+            await start.pass()
+            return ()
+        }
+        let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await start.arrivals(1)
+
+        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        try await signOutAsks.arrivals(1)
+        let otherHolds = Gate(isOpen: true)
+        let otherRelease = Gate()
+        let other = Task {
+            try await lock.withLease(for: home, policy: .fail) { _ in
+                await otherHolds.pass()
+                await otherRelease.pass()
+            }
+        }
+        try await otherHolds.arrivals(1)
+        await signOutAsks.open()
+        let result = try await signOut.value(within: 10)
+
+        XCTAssertEqual(failedSignOutError(result)?.kind, .browserBusy(holder: home))
+        XCTAssertEqual(failedSignOutError(result)?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(engine.revokeCalls, [])
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 0)
+        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
+        let state = await client.currentSessionState()
+        XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
+        await otherRelease.open()
+        _ = try await other.value(within: 10)
+        await start.open()
+        do {
+            try await associate.value(within: 10)
+        } catch {
+            // Names the error, so a regression reads `passkeyRegistrationEnded()` rather than a bare throw.
+            XCTFail("the registration failed: \((error as? AuthClientError)?.errorDescription ?? "\(error)")")
+        }
+        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 1)
+    }
+
+    /// A lock whose `beforeRelease` holds the first release of a `work` lease, the passkey sheet's, at `held` until
+    /// `go` opens; and whose waits time out only when the test is long over.
+    private func lockHoldingThePasskeySheetsRelease(held: Gate, go: Gate) -> SystemSheetLock {
+        let work = work
+        let first = TestBox(true)
+        return SystemSheetLock(
+            sleep: { _ in try await Task.sleep(nanoseconds: 3_600_000_000_000) },
+            beforeRelease: { lease in
+                guard lease.holder == work, first.with({ value -> Bool in
+                    defer { value = false }
+                    return value
+                }) else {
+                    return
+                }
+                await held.pass()
+                await go.pass()
+            }
+        )
+    }
+
+    /// The page's lease is refused while the session's own passkey sheet is up: the sign-out stops the
+    /// registration, waits for that sheet to close, and only then shows the page.
+    ///
+    /// - Given: a shared-cookie session whose passkey registration's sheet is up, and a lock that holds that
+    ///   sheet's release at `beforeRelease`, once the sheet has closed
+    /// - When: the session is signed out with a window, and the release is then let go
+    /// - Then:
+    ///    - the registration is stopped and reports `passkeyRegistrationEnded()`, while the closing sheet is still
+    ///      the session's; the sign-out queues for it, without calling the engine
+    ///    - once the sheet is released, the page is presented under the session's lease: `.complete`, and the
+    ///      session is signed out
+    func testASignOutWaitsForItsOwnClosingPasskeySheetThenShowsThePage() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
+        let releaseHeld = Gate(isOpen: true)
+        let releaseGo = Gate()
+        harness.sheetLock = lockHoldingThePasskeySheetsRelease(held: releaseHeld, go: releaseGo)
+        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let lock = harness.sheetLock
+        let work = work
+        let window = window!
+        let held = HeldSheet()
+        engine.scriptCeremonyBody { _ in
+            try await held.answer()
+            return Data()
+        }
+        engine.scriptHostedUIRevoke { _, _, _ in
+            let holder = await lock.currentHolder
+            XCTAssertEqual(holder, work)
+            return .complete
+        }
+        let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await held.up()
+
+        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        try await releaseHeld.arrivals(1)
+        await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 1 }
+
+        let error = await authClientError { try await associate.value(within: 10) }
+        XCTAssertEqual(error?.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
+        let holderWhileClosing = await lock.currentHolder
+        XCTAssertEqual(holderWhileClosing, work)
+        XCTAssertEqual(plans(engine), [])
+        await releaseGo.open()
+        let result = try await signOut.value(within: 10)
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(plans(engine), ["present"])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
+    /// The page waits only for the session's own closing passkey sheet: when the lock passes from it to another
+    /// session queued behind it, the sign-out is refused at once, not after `passkeySheetClosingTimeout`.
+    ///
+    /// - Given: a shared-cookie session whose passkey registration's sheet is up, another session queued behind it
+    ///   with `.wait`, and a lock that holds the passkey sheet's release at `beforeRelease` and whose waits time out
+    ///   only when the test is long over
+    /// - When: the session is signed out with a window, so it stops the registration and queues; then the release
+    ///   is let go, and the lock passes to the other session
+    /// - Then:
+    ///    - the sign-out is `.failed(.browserBusy(holder: home))` at once, saying the other session holds the sheet,
+    ///      not that a wait timed out, with the sign-out's suggestion; the engine was never called, and the session
+    ///      is still signed in
+    ///    - the other session holds the sheet, and nothing is left queued
+    func testAnOwnSheetThatPassesToAnotherSessionAsItClosesIsRefusedAtOnce() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
+        let releaseHeld = Gate(isOpen: true)
+        let releaseGo = Gate()
+        harness.sheetLock = lockHoldingThePasskeySheetsRelease(held: releaseHeld, go: releaseGo)
+        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let lock = harness.sheetLock
+        let work = work
+        let home = home
+        let window = window!
+        let held = HeldSheet()
+        engine.scriptCeremonyBody { _ in
+            try await held.answer()
+            return Data()
+        }
+        let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await held.up()
+        let otherHolds = Gate(isOpen: true)
+        let otherRelease = Gate()
+        let other = Task {
+            try await lock.withLease(for: home, policy: .wait(timeout: 60)) { _ in
+                await otherHolds.pass()
+                await otherRelease.pass()
+            }
+        }
+        await waitUntil("the other session queues behind the passkey sheet") { await lock.waiterCount == 1 }
+
+        let signOut = Task { await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions()) }
+        try await releaseHeld.arrivals(1)
+        await waitUntil("the sign-out queues behind its own closing sheet") { await lock.waiterCount == 2 }
+        await releaseGo.open()
+        let result = try await signOut.value(within: 10)
+
+        let refusal = failedSignOutError(result)
+        XCTAssertEqual(refusal?.kind, .browserBusy(holder: home))
+        XCTAssertEqual(
+            refusal?.errorDescription,
+            AuthClientError.browserBusy(heldBy: home, requestedBy: work, reason: .heldByAnotherSession).errorDescription
+        )
+        XCTAssertEqual(refusal?.recoverySuggestion, SessionCore.signOutBrowserBusySuggestion)
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
+        try await otherHolds.arrivals(1)
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, home)
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 0)
+        let error = await authClientError { try await associate.value(within: 10) }
+        XCTAssertEqual(error?.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
+        await otherRelease.open()
+        _ = try await other.value(within: 10)
+    }
+
+    /// A sheet this session held at the first ask, with no passkey registration to stop by the time the sign-out
+    /// looks (one that ended and unregistered in between), is asked for once more, so a sheet that is free by then
+    /// shows the page rather than a busy refusal naming the session itself.
+    ///
+    /// - Given: a shared-cookie session that holds the sheet itself with no registration in flight, and a lock
+    ///   whose `beforeAcquire` lets that hold go just before the session's next ask after the sign-out's first
+    /// - When: it is signed out with a window
+    /// - Then:
+    ///    - the first ask is refused (the session holds the sheet) and nothing is stopped; the second ask, with
+    ///      `.fail`, finds the sheet free
+    ///    - the page is presented under the session's lease: `.complete`, and the session is signed out
+    func testASheetThisSessionFreesWithNothingToStopIsAskedForAgain() async throws {
+        let work = work
+        let calls = TestBox(0)
+        let release = Gate()
+        let hold = ResultBox<Task<Void, Error>>()
+        harness.sheetLock = SystemSheetLock(beforeAcquire: { session in
+            guard session == work else {
+                return
+            }
+            let call = calls.with { value -> Int in
+                value += 1
+                return value
+            }
+            // 1 is the hold below, 2 the sign-out's first ask, 3 its second.
+            guard call == 3 else {
+                return
+            }
+            await release.open()
+            _ = try? await hold.value?.get().value
+        })
+        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let lock = harness.sheetLock
+        let window = window!
+        engine.scriptHostedUIRevoke { _, _, _ in
+            let holder = await lock.currentHolder
+            XCTAssertEqual(holder, work)
+            return .complete
+        }
+        let holds = Gate(isOpen: true)
+        hold.set(.success(Task {
+            try await lock.withLease(for: work, policy: .fail) { _ in
+                await holds.pass()
+                await release.pass()
+            }
+        }))
+        try await holds.arrivals(1)
+
+        let result = try await withinTime(10, "the sign-out") {
+            await client.signOut(presentationAnchor: window, options: AuthClientSignOutOptions())
+        }
+
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(plans(engine), ["present"])
+        XCTAssertEqual(calls.value, 3)
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
+    /// With the sheet free, the sign-out takes it first and only then stops the session's passkey registration,
+    /// inside its lease and before the engine's sign-out.
+    ///
+    /// - Given: a shared-cookie session whose passkey registration is still at `StartWebAuthnRegistration` (no
+    ///   sheet yet), and a free sheet
+    /// - When: the session is signed out with a window; inside the engine's sign-out the registration's
+    ///   `StartWebAuthnRegistration` answers
+    /// - Then:
+    ///    - the engine is called while the session holds the sheet, and by then the registration has been stopped:
+    ///      it reports `passkeyRegistrationEnded()` without showing its sheet, before the engine's sign-out returns
+    ///    - the result is `.complete`, and the session is signed out
+    func testATakenSheetStopsTheRegistrationInsideTheLeaseBeforeTheRevoke() async throws {
+        guard #available(iOS 17.4, macOS 13.5, visionOS 1.0, *) else {
+            throw XCTSkip("WebAuthn is not available on this OS version")
+        }
+        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let lock = harness.sheetLock
+        let work = work
+        let window = window!
+        let start = Gate()
+        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+            await start.pass()
+            return ()
+        }
+        let associate = Task { try await client.associateWebAuthnCredential(presentationAnchor: window) }
+        try await start.arrivals(1)
+        let duringRevoke = ResultBox<AuthClientError?>()
+        engine.scriptHostedUIRevoke { _, _, _ in
+            let holder = await lock.currentHolder
+            XCTAssertEqual(holder, work)
+            await start.open()
+            let error = await authClientError { try await associate.value(within: 10) }
+            duringRevoke.set(.success(error))
+            return .complete
+        }
+
+        let result = await signOut(client)
+
+        let error = try XCTUnwrap(duringRevoke.value?.get(), "the registration had not ended inside the revoke")
+        XCTAssertEqual(error.errorDescription, SessionCore.passkeyRegistrationEnded().errorDescription)
+        XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
+        XCTAssertEqual(result, .complete)
+        XCTAssertEqual(plans(engine), ["present"])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
+    }
+
     /// A passkey lease the lock has granted but whose flow has not attached yet is still stopped, so the logout
     /// page shows (`sheetLock.cancel(for:)` after stopping the registration).
     ///
@@ -819,6 +1152,37 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(error.map { $0.isEquivalent(to: SessionSignOut.cancelledError()) }, true, "got \(result)")
         XCTAssertTrue(error?.underlyingError is CancellationError)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
+    }
+
+    /// An interrupt that lands inside the lease body, once it has stopped the passkey registrations and before it
+    /// shows the page: the body's cancellation check stops it there, so nothing is shown or revoked.
+    ///
+    /// - Given: a shared-cookie session, and a sign-out held at the `afterLogoutStop` seam inside its lease body
+    /// - When: `cancelWebUISignIn()` interrupts the lease there, and the body is then let go
+    /// - Then:
+    ///    - the sign-out is `.failed(.userCancelled)`, the closed-page row: the engine was never called, and the
+    ///      session is still signed in
+    ///    - the sheet is free afterwards
+    func testAnInterruptAfterTheRegistrationsAreStoppedShowsNoPage() async throws {
+        let held = Gate()
+        harness.afterLogoutStop = { _ in await held.pass() }
+        try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
+        let client = try client(work)
+        let engine = try XCTUnwrap(harness.engine(for: work))
+        let lock = harness.sheetLock
+        let window = window!
+        let signOut = Task { await client.signOut(presentationAnchor: window) }
+        await held.waitForArrivals(1)
+
+        await client.cancelWebUISignIn()
+        await held.open()
+        let result = try await signOut.value(within: 10)
+
+        XCTAssertEqual(failedSignOutError(result)?.kind, .userCancelled, "got \(result)")
+        XCTAssertEqual(plans(engine), [])
+        XCTAssertEqual(engine.revokeCalls, [])
+        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
+        await waitUntil("the sheet is free") { await lock.currentHolder == nil }
     }
 
     // MARK: An interrupt before the lease body starts (verification blocker)

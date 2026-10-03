@@ -104,11 +104,12 @@ final class SystemSheetLockTests: XCTestCase {
         _ session: SessionID,
         _ policy: WebUIOptions.BrowserBusyPolicy,
         after gate: Gate? = nil,
+        waitsOnlyForItself: Bool = false,
         _ body: @escaping @Sendable (BrowserLease) async throws -> T
     ) -> Task<T, Error> {
         Task {
             await gate?.pass()
-            return try await lock.withLease(for: session, policy: policy, body)
+            return try await lock.withLease(for: session, policy: policy, waitsOnlyForItself: waitsOnlyForItself, body)
         }
     }
 
@@ -586,6 +587,111 @@ final class SystemSheetLockTests: XCTestCase {
         XCTAssertEqual(retryResult, Self.alice)
     }
 
+    /// `waitsOnlyForItself` queues behind the session's own closing sheet, as a plain `.wait` does.
+    ///
+    /// - Given: alice holding the lock with a flow held at a gate, then cancelled, so it is closing
+    /// - When:
+    ///    - alice asks again with `.wait` and `waitsOnlyForItself`, and the old flow then unwinds
+    /// - Then:
+    ///    - the retry queues while the old flow closes, and is served once it has unwound
+    func testWaitingOnlyForItselfQueuesBehindItsOwnClosingSheet() async throws {
+        let lock = SystemSheetLock()
+        let closing = Gate()
+
+        let first = Self.start(lock, Self.alice, .fail, Self.heldBody(closing))
+        await closing.waitForArrivals(1)
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(first)
+
+        let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600), waitsOnlyForItself: true) { $0.holder }
+        await waitUntil("the retry is queued behind the closing flow") { await lock.waiterCount == 1 }
+
+        await closing.open()
+        let retryResult = try await retry.value
+        XCTAssertEqual(retryResult, Self.alice)
+        let holder = await lock.currentHolder
+        XCTAssertNil(holder)
+    }
+
+    /// `waitsOnlyForItself` never queues behind another session's sheet.
+    ///
+    /// - Given: alice holding the lock, and a lock whose waits would fail the test if they started a timer
+    /// - When:
+    ///    - bob asks for it with `.wait` and `waitsOnlyForItself`
+    /// - Then:
+    ///    - bob throws `browserBusy(holder: alice)` at once, saying another session holds it; nothing is queued
+    func testWaitingOnlyForItselfIsRefusedAtOnceByAnotherSession() async throws {
+        let lock = SystemSheetLock(sleep: { _ in XCTFail("bob queued behind another session") })
+        let gate = Gate()
+
+        let alice = Self.start(lock, Self.alice, .fail, Self.heldBody(gate))
+        await gate.waitForArrivals(1)
+
+        let bob = Self.start(lock, Self.bob, .wait(timeout: 3_600), waitsOnlyForItself: true) { $0.holder }
+        do {
+            let value = try await bob.value
+            XCTFail("Expected browserBusy, got \(value)")
+        } catch let error as AuthClientError {
+            let expected = AuthClientError.browserBusy(heldBy: Self.alice, requestedBy: Self.bob, reason: .heldByAnotherSession)
+            XCTAssertEqual(error.kind, .browserBusy(holder: Self.alice))
+            XCTAssertEqual(error.errorDescription, expected.errorDescription)
+        }
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 0)
+
+        await gate.open()
+        _ = try await alice.value
+    }
+
+    /// A waiter that waits only for its own closing sheet is refused once the lock passes to another session
+    /// queued ahead of it; plain waiters are left queued.
+    ///
+    /// - Given: alice holding the lock with a flow held at a gate, bob queued behind her with a plain `.wait`,
+    ///   alice cancelled and queued again with `waitsOnlyForItself`, then carol queued with a plain `.wait`, and a
+    ///   lock whose waits time out only when the test is long over
+    /// - When:
+    ///    - alice's old flow unwinds, so the lock passes to bob
+    /// - Then:
+    ///    - alice's retry throws `browserBusy(holder: bob)` at once, saying another session holds it
+    ///    - carol stays queued, and is served once bob has finished
+    func testWaitingOnlyForItselfIsRefusedWhenTheLockPassesToAnotherSession() async throws {
+        let lock = SystemSheetLock(sleep: { _ in try await Task.sleep(nanoseconds: 3_600_000_000_000) })
+        let closing = Gate()
+        let bobGate = Gate()
+
+        let first = Self.start(lock, Self.alice, .fail, Self.heldBody(closing))
+        await closing.waitForArrivals(1)
+        let bob = Self.start(lock, Self.bob, .wait(timeout: 3_600), Self.heldBody(bobGate))
+        await waitUntil("bob is queued") { await lock.waiterCount == 1 }
+        await lock.cancel(for: Self.alice)
+        await Self.assertCancelled(first)
+        let retry = Self.start(lock, Self.alice, .wait(timeout: 3_600), waitsOnlyForItself: true) { $0.holder }
+        await waitUntil("alice's retry is queued") { await lock.waiterCount == 2 }
+        let carol = Self.start(lock, Self.carol, .wait(timeout: 3_600)) { $0.holder }
+        await waitUntil("carol is queued") { await lock.waiterCount == 3 }
+
+        await closing.open()
+        do {
+            let value = try await retry.value(within: 10)
+            XCTFail("Expected browserBusy, got \(value)")
+        } catch let error as AuthClientError {
+            let expected = AuthClientError.browserBusy(heldBy: Self.bob, requestedBy: Self.alice, reason: .heldByAnotherSession)
+            XCTAssertEqual(error.kind, .browserBusy(holder: Self.bob))
+            XCTAssertEqual(error.errorDescription, expected.errorDescription)
+        }
+        await bobGate.waitForArrivals(1)
+        let holder = await lock.currentHolder
+        XCTAssertEqual(holder, Self.bob)
+        let waiters = await lock.waiterCount
+        XCTAssertEqual(waiters, 1)
+
+        await bobGate.open()
+        let bobResult = try await bob.value
+        XCTAssertEqual(bobResult, Self.bob)
+        let carolResult = try await carol.value
+        XCTAssertEqual(carolResult, Self.carol)
+    }
+
     /// A result that arrives after an interrupt is discarded, so a caller that commits only what
     /// `withLease` returns never commits a cancelled sign-in.
     ///
@@ -890,6 +996,44 @@ final class SystemSheetLockTests: XCTestCase {
         await waitUntil("the skipped flow releases") { await lock.currentHolder == nil }
         let journalEntries = await journal.entries
         XCTAssertEqual(journalEntries, [])
+    }
+
+    /// The `beforeAcquire` seam holds a caller before it asks for the lock, so a test can hand the lock to someone
+    /// else at that moment.
+    ///
+    /// - Given: alice held at `beforeAcquire`, as she calls `withLease` with `.fail`
+    /// - When:
+    ///    - bob takes the lock meanwhile, and alice is then let through
+    /// - Then:
+    ///    - the lock was free while alice was held: she had not asked for it yet
+    ///    - alice throws `browserBusy(holder: bob)` and her body never runs; bob's flow is untouched
+    func testBeforeAcquireHoldsTheCallerBeforeItAsks() async throws {
+        let seam = Gate()
+        let lock = SystemSheetLock(beforeAcquire: { session in
+            if session == Self.alice {
+                await seam.pass()
+            }
+        })
+        let journal = Journal()
+
+        let alice = Self.start(lock, Self.alice, .fail) { lease in
+            await journal.record(lease.holder)
+            return lease.holder
+        }
+        await seam.waitForArrivals(1)
+        let holderWhileHeld = await lock.currentHolder
+        XCTAssertNil(holderWhileHeld)
+        let bobGate = Gate()
+        let bob = Self.start(lock, Self.bob, .fail, Self.heldBody(bobGate))
+        await bobGate.waitForArrivals(1)
+        await seam.open()
+
+        await Self.assertBrowserBusy(alice, holder: Self.bob)
+        let journalEntries = await journal.entries
+        XCTAssertEqual(journalEntries, [])
+        await bobGate.open()
+        let bobResult = try await bob.value
+        XCTAssertEqual(bobResult, Self.bob)
     }
 
     /// A waiter granted the lock just as its task is cancelled gives it up without running its body.

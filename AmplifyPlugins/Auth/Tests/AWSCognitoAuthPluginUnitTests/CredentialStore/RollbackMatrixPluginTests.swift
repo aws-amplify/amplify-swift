@@ -320,7 +320,9 @@ final class RollbackMatrixPluginTests: XCTestCase, @unchecked Sendable {
         try pluginStore(identityPoolOnly).saveCredential(decoded(guest))
         let client = clientStore(for: both)
 
-        XCTAssertEqual(try client.applyPluginConfigurationRule(current: both), .carried)
+        guard case .carried = try client.applyPluginConfigurationRule(current: both) else {
+            return XCTFail("the client's rule should carry the guest to C")
+        }
         let alice = try RollbackMatrixBytes.pluginPayload("userPoolAndIdentityPool")
         try signIn(alice, through: client)
 

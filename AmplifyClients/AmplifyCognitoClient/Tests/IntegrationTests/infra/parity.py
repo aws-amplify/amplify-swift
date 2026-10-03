@@ -229,10 +229,70 @@ def fail(message):
 
 
 class AwsError(Exception):
-    def __init__(self, code, message):
+    """An AWS CLI call that failed. `message` is the CLI's last stderr line, redacted, which callers match on;
+    `detail` is the redacted tail of its stderr (AWS_ERROR_TAIL_LINES non-empty lines, `message` the last), which
+    keeps the cause when the CLI binary itself crashed and its last line is only the PyInstaller launcher's.
+    Without a tail, `detail` is `message`."""
+
+    def __init__(self, code, message, detail=None):
         super().__init__(message)
         self.code = code
         self.message = message
+        self.detail = message if detail is None else detail
+
+
+# The non-empty stderr lines AwsError.detail keeps, and the length each is cut to.
+AWS_ERROR_TAIL_LINES = 5
+AWS_ERROR_LINE_LENGTH = 400
+
+
+def mask_local(text):
+    """Masks the home directory ("~") and the user name ("<user>", whole words of three or more characters only),
+    which an AWS CLI traceback's paths carry."""
+    home = os.path.expanduser("~")
+    if len(home) > 1 and home != "/":
+        text = text.replace(home.rstrip("/"), "~")
+    user = os.environ.get("USER") or os.environ.get("LOGNAME") or ""
+    if len(user) >= 3:
+        text = re.sub(rf"(?<![A-Za-z0-9]){re.escape(user)}(?![A-Za-z0-9])", "<user>", text)
+    return text
+
+
+def continues(line, following):
+    """Pure. Whether `following` may continue an identifier `line` ends in: an ARN or path cut after "/", an ARN
+    cut after "arn:aws:…:" (a colon after a letter, digit or colon), a pool id cut after its "_", an email cut
+    before or after its "@", or a run of digits (an account id) cut in two."""
+    return (line.endswith(("/", "@", "_")) or following.startswith("@")
+            or re.search(r"[A-Za-z0-9:]:$", line) is not None
+            or (line[-1:].isdigit() and following[:1].isdigit()))
+
+
+def redacted_lines(stderr):
+    """Pure but for the environment mask_local reads. The non-empty lines of `stderr`, redacted. A line that may end
+    part-way through an identifier (continues) is joined with the next before anything is redacted, so an identifier
+    split across lines is masked whole; the home directory and user name are masked too."""
+    joined = []
+    for line in (line.rstrip() for line in stderr.splitlines() if line.strip()):
+        if joined and continues(joined[-1], line.lstrip()):
+            joined[-1] += line.lstrip()
+        else:
+            joined.append(line)
+    return [redact(mask_local(line)) for line in joined]
+
+
+def error_tail(stderr):
+    """The last AWS_ERROR_TAIL_LINES of redacted_lines(`stderr`), each cut to AWS_ERROR_LINE_LENGTH characters,
+    joined by newlines."""
+    return "\n".join(line[:AWS_ERROR_LINE_LENGTH] for line in redacted_lines(stderr)[-AWS_ERROR_TAIL_LINES:])
+
+
+def with_detail(line, error):
+    """`line`, then, when the error's tail says more than its message (a crash's traceback, say), that tail,
+    indented, so the cause is not lost. A one-line error stays one line."""
+    if error.detail == error.message:
+        return line
+    return line + "\n  AWS CLI stderr, last lines (redacted):\n" + "\n".join(
+        "    " + tail_line for tail_line in error.detail.splitlines())
 
 
 # --- AWS CLI ----------------------------------------------------------------------------------------
@@ -245,7 +305,7 @@ def aws(*args, stdin=None, region=True):
     """Runs one AWS CLI call and returns its JSON output. `region` is True for the sandbox's region,
     False for none (IAM), or another region's name. `stdin`, when given, is sent through
     --cli-input-json from a mode-600 file in STATE_DIR that is removed afterwards. Raises AwsError with
-    the service's error code and a redacted message."""
+    the service's error code, a redacted message (the last stderr line) and a redacted tail (error_tail)."""
     command = ["aws", "--output", "json"]
     if region:
         command += ["--region", REGION if region is True else region]
@@ -257,7 +317,7 @@ def aws(*args, stdin=None, region=True):
             with os.fdopen(fd, "w") as f:
                 json.dump(stdin, f)
             command += ["--cli-input-json", f"file://{path}"]
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, preexec_fn=child_preexec())
     finally:
         if path:
             os.unlink(path)
@@ -265,8 +325,12 @@ def aws(*args, stdin=None, region=True):
         stderr = result.stderr.strip()
         match = re.search(r"\(([A-Za-z.]+)\)", stderr)
         code = match.group(1) if match else "Unknown"
-        lines = stderr.splitlines()
-        raise AwsError(code, redact(lines[-1] if lines else str(result.returncode)))
+        # The message is the last line as the tail has it (joined with a line it continues, then redacted), so a
+        # split identifier cannot leak through it either. Callers match on it (run_with_iam_retry's "assume" and
+        # "role"): words, which redaction keeps.
+        lines = redacted_lines(stderr)
+        message = lines[-1].strip() if lines else str(result.returncode)
+        raise AwsError(code, message, error_tail(stderr) if len(lines) > 1 else None)
     return json.loads(result.stdout) if result.stdout.strip() else {}
 
 
@@ -285,7 +349,7 @@ def run_step(description, function, *args, **kwargs):
     try:
         return function(*args, **kwargs)
     except AwsError as error:
-        sys.exit(f"{description} failed ({error.code}): {error.message}")
+        sys.exit(with_detail(f"{description} failed ({error.code}): {error.message}", error))
 
 
 # --- State ------------------------------------------------------------------------------------------
@@ -359,7 +423,7 @@ def require_recorded_account(state):
     try:
         ACCOUNT = aws("sts", "get-caller-identity")["Account"]
     except AwsError as error:
-        sys.exit(f"Could not confirm the AWS account (STS refused): {error.message}")
+        sys.exit(with_detail(f"Could not confirm the AWS account (STS refused): {error.message}", error))
     if ACCOUNT != state["account"]:
         sys.exit("Refusing: the caller's account is not the one state.json records.")
 
@@ -783,6 +847,7 @@ def run_with_iam_retry(call, attempts=15):
         try:
             return call()
         except AwsError as error:
+            # `message` is the CLI's last stderr line (the service's own message), not the tail in `detail`.
             retryable = error.code in ("InvalidParameterValueException", "AccessDeniedException",
                                        "BadRequestException") and (
                 "assume" in error.message.lower() or "role" in error.message.lower())
@@ -1045,7 +1110,7 @@ def with_sms_role(label, call, parity, pool_ids):
                     ensure_sms_role(parity, pool_ids)
                     refusals = 0
                     continue
-            sys.exit(f"{label} failed ({error.code}): {error.message}")
+            sys.exit(with_detail(f"{label} failed ({error.code}): {error.message}", error))
     sys.exit(f"{label}: Cognito never accepted the SMS role")
 
 
@@ -1161,7 +1226,7 @@ LEASE_CLOCK = "C/UTC"
 def process_start(pid):
     """The start time `ps` reports for `pid` in LEASE_CLOCK, or None when no such process runs."""
     result = subprocess.run(["ps", "-o", "lstart=", "-p", str(pid)], capture_output=True, text=True,
-                            env=dict(os.environ, LC_ALL="C", TZ="UTC"))
+                            env=dict(os.environ, LC_ALL="C", TZ="UTC"), preexec_fn=child_preexec())
     started = result.stdout.strip()
     return started if result.returncode == 0 and started else None
 
@@ -1271,57 +1336,138 @@ def live_self_sign_up_gaps(state):
 
 
 # MFA: a toggle's UpdateUserPool can reset the pool's MFA configuration (provision's set_mfa follows every update),
-# so preflight and verify compare each pool's live MFA with its template as provision degraded it.
+# so preflight and verify compare each pool's live MFA with its template as provision degraded it, the WebAuthn
+# relying party included. `self-sign-up on` compares it too, before any change; `off`, `release` and
+# `status` compare the rest only, and never read the WebAuthn harness's files, so a release always turns self
+# sign-up off.
 
-def mfa_summary(mfa):
-    """Pure. What an MFA configuration (pools/*.json `mfa`, or GetUserPoolMfaConfig) enforces: MfaConfiguration
-    and the MFA methods it offers, sorted."""
+# The relying party an expected WebAuthnConfiguration names when the harness's cannot be resolved; never a real ID.
+UNRESOLVED_RP_ID = "<unresolved>"
+
+
+def webauthn_settings(config, rp_id):
+    """Pure. What a WebAuthnConfiguration (pools/*.json, substituted, or GetUserPoolMfaConfig's) sets: None when it
+    names no relying party, else (relying party, UserVerification), the relying party as "the harness's" (`rp_id`),
+    "an unresolved" (UNRESOLVED_RP_ID) or "another", so the domain itself is never printed. GetUserPoolMfaConfig
+    leaves WebAuthnConfiguration out for a pool without WebAuthn; None, an empty object, or one with only
+    UserVerification mean none too, so a pool whose template has no WebAuthn has no gap for any of them."""
+    if not isinstance(config, dict) or not config.get("RelyingPartyId"):
+        return None
+    relying_party = config["RelyingPartyId"]
+    if rp_id and relying_party == rp_id:
+        label = "the harness's"
+    elif relying_party == UNRESOLVED_RP_ID:
+        label = "an unresolved"
+    else:
+        label = "another"
+    return label, config.get("UserVerification")
+
+
+def mfa_summary(mfa, rp_id=None):
+    """Pure. What an MFA configuration (pools/*.json `mfa`, or GetUserPoolMfaConfig) enforces: MfaConfiguration,
+    the MFA methods it offers, sorted, and its WebAuthn settings (webauthn_settings, against relying party
+    `rp_id`)."""
     methods = [m for m, k in (("EMAIL", "EmailMfaConfiguration"), ("SMS", "SmsMfaConfiguration"),
                               ("TOTP", "SoftwareTokenMfaConfiguration"))
                if mfa.get(k) and (k != "SoftwareTokenMfaConfiguration" or mfa[k].get("Enabled"))]
-    return mfa.get("MfaConfiguration", "OFF"), methods
+    return mfa.get("MfaConfiguration", "OFF"), methods, webauthn_settings(mfa.get("WebAuthnConfiguration"), rp_id)
 
 
-def expected_mfa(key, pending):
+def expected_mfa(key, pending, rp_id=None):
     """The MFA summary provision applied to pool `key`: its template's, degraded as the `pending` list
-    state.json records for it says (degrade)."""
+    state.json records for it says (degrade), with ${WEBAUTHN_RP_ID} resolved to `rp_id` as provision resolves it
+    (UNRESOLVED_RP_ID when None)."""
     template = copy.deepcopy(load_template(key))
     pending = set(pending or [])
     degrade(template, ses_ready=not pending & {"ses-email-configuration", "email-mfa", "email-otp"},
             sms_ready=not pending & {"sms-mfa", "sms-otp"},
             webauthn_ready=not pending & {"webauthn-relying-party", "web-authn"})
-    return mfa_summary(template["mfa"])
+    mfa = template["mfa"]
+    if "WebAuthnConfiguration" in mfa:
+        mfa["WebAuthnConfiguration"] = substitute(mfa["WebAuthnConfiguration"],
+                                                  {"WEBAUTHN_RP_ID": rp_id or UNRESOLVED_RP_ID})
+    return mfa_summary(mfa, rp_id)
+
+
+def without_webauthn(summary):
+    """Pure. An MFA summary with its WebAuthn settings left out, for the comparisons that must not depend on the
+    WebAuthn harness's files."""
+    return summary[:2] + (None,)
+
+
+def describe_webauthn(settings):
+    """Pure. webauthn_settings in words, for a gap."""
+    if settings is None:
+        return "no WebAuthn"
+    relying_party, user_verification = settings
+    return f"WebAuthn with {relying_party} relying party and user verification {user_verification}"
 
 
 def mfa_gaps(expected, live):
     """Pure. `expected` and `live` map a pool key to its MFA summary (live None when the pool is gone, which
-    self_sign_up_gaps reports). Returns ("MFA", message) pairs."""
+    self_sign_up_gaps reports). Returns ("MFA", message) pairs, and ("WEBAUTHN", message) for a template whose
+    relying party could not be resolved: that is the harness's committed files, not the pool, so provision does not
+    fix it. The WebAuthn settings are named only when either side has any."""
     gaps = []
     for key in sorted(expected):
         if live.get(key) is not None and live[key] != expected[key]:
-            (want, want_methods), (have, have_methods) = expected[key], live[key]
-            gaps.append(("MFA", f"{key}: MFA is {have} {have_methods}, but pools/{key}.json (as provisioned) "
-                                f"has {want} {want_methods}; run infra/provision.sh"))
+            (want, want_methods, want_webauthn), (have, have_methods, have_webauthn) = expected[key], live[key]
+            if want_webauthn is not None and want_webauthn[0] == "an unresolved":
+                gaps.append(("WEBAUTHN", f"{key}: the relying party pools/{key}.json names cannot be resolved: the "
+                                         "WebAuthn harness's committed entitlements or project (CognitoClientHostApp) "
+                                         "cannot be read, or disagree with the plugin AuthWebAuthnApp's, so the pool's "
+                                         "WebAuthn settings were not compared"))
+                continue
+            have_text, want_text = f"{have} {have_methods}", f"{want} {want_methods}"
+            if want_webauthn is not None or have_webauthn is not None:
+                have_text += f", {describe_webauthn(have_webauthn)}"
+                want_text += f", {describe_webauthn(want_webauthn)}"
+            gaps.append(("MFA", f"{key}: MFA is {have_text}, but pools/{key}.json (as provisioned) "
+                                f"has {want_text}; run infra/provision.sh"))
     return gaps
 
 
-def live_mfa_summaries(state):
-    """Read-only. Each recorded pool's live MFA summary, None for a pool that is gone."""
+def harness_rp_id():
+    """The relying party ID provision resolves ${WEBAUTHN_RP_ID} to: the WebAuthn harness's committed
+    `webcredentials:` domain (webauthn_harness_identity), or None when it cannot be resolved, a file being missing or
+    malformed included (never an exception). Local files only: whether provision applied WebAuthn at all
+    (webauthn_relying_party's apple-app-site-association check) is what state.json's `pending` records. The domain is
+    masked in everything said from here on."""
+    import xml.parsers.expat
+    try:
+        domain, _, gap = webauthn_harness_identity()
+    except (OSError, ValueError, xml.parsers.expat.ExpatError):
+        # ValueError covers plistlib.InvalidFileException and a file that is not UTF-8.
+        return None
+    if gap or not domain:
+        return None
+    _LITERALS.add(domain)
+    return domain
+
+
+def live_mfa_summaries(state, webauthn=True):
+    """Read-only. Each recorded pool's live MFA summary, None for a pool that is gone. Without `webauthn`, the
+    summaries leave the WebAuthn settings out, and the WebAuthn harness's files are not read."""
+    rp_id = harness_rp_id() if webauthn else None
     summaries = {}
     for key, pool_id in pool_ids(state).items():
         mfa = aws_or_none("cognito-idp", "get-user-pool-mfa-config", "--user-pool-id", pool_id)
-        summaries[key] = None if mfa is None else mfa_summary(mfa)
+        summary = None if mfa is None else mfa_summary(mfa, rp_id)
+        summaries[key] = summary if webauthn or summary is None else without_webauthn(summary)
     return summaries
 
 
-def expected_mfa_summaries(state):
+def expected_mfa_summaries(state, webauthn=True):
+    """Each recorded pool's MFA summary as provisioned (expected_mfa). Without `webauthn`, as live_mfa_summaries."""
+    rp_id = harness_rp_id() if webauthn else None
     records = state.get("parity", {}).get("pools", {})
-    return {key: expected_mfa(key, records[key].get("pending")) for key in pool_ids(state)}
+    summaries = {key: expected_mfa(key, records[key].get("pending"), rp_id) for key in pool_ids(state)}
+    return summaries if webauthn else {key: without_webauthn(summary) for key, summary in summaries.items()}
 
 
-def live_mfa_gaps(state):
-    """Read-only. mfa_gaps for every recorded pool."""
-    return mfa_gaps(expected_mfa_summaries(state), live_mfa_summaries(state))
+def live_mfa_gaps(state, webauthn=True):
+    """Read-only. mfa_gaps for every recorded pool; without `webauthn`, leaving the WebAuthn settings out."""
+    return mfa_gaps(expected_mfa_summaries(state, webauthn), live_mfa_summaries(state, webauthn))
 
 
 def exit_on_gaps(command, unsafe, sign_up):
@@ -1347,6 +1493,9 @@ def exit_on_gaps(command, unsafe, sign_up):
             remedies.append("for MISSING or DRIFT, re-run infra/provision.sh")
         if "MFA" in kinds:
             remedies.append("for MFA, re-run infra/provision.sh, which re-applies each pool's MFA configuration")
+        if "WEBAUTHN" in kinds:
+            remedies.append("for WEBAUTHN, restore the WebAuthn harness's committed entitlements and project "
+                            "(CognitoClientHostApp; git status shows a local change), which provision reads too")
         sys.exit(f"{'Refusing' if command == 'preflight' else command}: {len(sign_up)} parity pool(s) missing, "
                  f"or with self sign-up or MFA in a state this run does not expect: {'; '.join(remedies)}.")
 
@@ -1382,7 +1531,8 @@ def preflight():
     exit_on_gaps("preflight", gaps, live_self_sign_up_gaps(state) + live_mfa_gaps(state))
     say("Preflight: every email- or SMS-enabled parity pool routes through the custom senders, the SES "
         "identity is still verified in an SES-sandbox region, the KMS encrypt, sender decrypt and SMS "
-        "role trust are scoped to the parity pools, each parity pool's MFA is its template's, and its self "
+        "role trust are scoped to the parity pools, each parity pool's MFA is its template's (its WebAuthn "
+        "relying party included), and its self "
         "sign-up was off when read, or on under a live self-sign-up.sh lease (a later mitigation can still turn "
         "it off)")
 
@@ -2177,11 +2327,13 @@ def changed_by_toggle(before, after):
     return sorted(changed)
 
 
-def toggle_self_sign_up(key, pool_id, pool, on, expected=None):
+def toggle_self_sign_up(key, pool_id, pool, on, expected=None, rp_id=None, webauthn=True):
     """Sets one tagged pool's self sign-up, sending its full live configuration through update_user_pool, then
     reads it back: any other field that changed is reported, and an MFA configuration the update reset (as
     provision's set_mfa follows every update) is restored. `expected` is the pool's MFA summary as provisioned;
-    an MFA configuration that differed from it before the change is reported too. Returns a problem, or None."""
+    an MFA configuration that differed from it before the change is reported too, compared against relying party
+    `rp_id`, or without the WebAuthn settings unless `webauthn` (as `expected` was made). Returns a problem, or
+    None."""
     name = POOLS[key]
     mode = "on" if on else "off"
     if admin_only(pool.get("AdminCreateUserConfig")) is (not on):
@@ -2203,7 +2355,8 @@ def toggle_self_sign_up(key, pool_id, pool, on, expected=None):
     changed = changed_by_toggle(pool, after)
     if changed:
         problems.append(f"{', '.join(changed)} changed as well; re-run infra/provision.sh")
-    if expected is not None and mfa_summary(mfa_before) != expected:
+    before = mfa_summary(mfa_before, rp_id)
+    if expected is not None and (before if webauthn else without_webauthn(before)) != expected:
         problems.append("its MFA configuration differs from its template's; re-run infra/provision.sh")
     if problems:
         return f"{name}: {'; '.join(problems)}"
@@ -2224,13 +2377,15 @@ def set_self_sign_up(state, on):
     ids = pool_ids(state)
     if not ids:
         sys.exit("No parity pool is recorded in state.json; run infra/provision.sh first.")
-    expected = expected_mfa_summaries(state)
+    # Only `on` compares the WebAuthn settings (and so reads the harness's files): off must work whatever they hold.
+    rp_id = harness_rp_id() if on else None
+    expected = expected_mfa_summaries(state, webauthn=on)
     problems, pools = [], {}
     for key, pool_id in sorted(ids.items()):
         try:
             pools[key] = require_user_pool_tag(pool_id, POOLS[key])
         except AwsError as error:
-            problems.append(f"{POOLS[key]}: could not be read ({error.code})")
+            problems.append(with_detail(f"{POOLS[key]}: could not be read ({error.code}): {error.message}", error))
         except SystemExit as refusal:
             problems.append(str(refusal.code))
     if on and not problems:
@@ -2242,9 +2397,9 @@ def set_self_sign_up(state, on):
             say(f"Skipped {POOLS[key]}: pools/{key}.json does not allow self sign-up")
             continue
         try:
-            problem = toggle_self_sign_up(key, ids[key], pool, on, expected.get(key))
+            problem = toggle_self_sign_up(key, ids[key], pool, on, expected.get(key), rp_id=rp_id, webauthn=on)
         except AwsError as error:
-            problem = f"{POOLS[key]}: {error.code}: {error.message}"
+            problem = with_detail(f"{POOLS[key]}: {error.code}: {error.message}", error)
         except SystemExit as refusal:
             problem = str(refusal.code)
         if problem:
@@ -2280,7 +2435,7 @@ def self_sign_up(mode, lease=None, force=False):
     require_cli_history_off()
     require_recorded_account(state)
     with self_sign_up_lock():
-        ignore_interrupts()
+        hold_interrupts()
         leases = [held for held in live_leases() if held["pid"] != lease]
         if mode == "on":
             started = process_start(lease)
@@ -2322,9 +2477,10 @@ def self_sign_up_status():
             # A pool that is gone has nothing on; one that does not state the flag is not known to be off.
             if pool is not None and admin_only(pool.get("AdminCreateUserConfig")) is not True:
                 on.append(POOLS[key])
-        gaps = live_mfa_gaps(state)
+        # Without the WebAuthn settings: status must answer whatever the harness's files hold.
+        gaps = live_mfa_gaps(state, webauthn=False)
     except AwsError as error:
-        sys.exit(f"Could not read the parity pools ({error.code}): {error.message}")
+        sys.exit(with_detail(f"Could not read the parity pools ({error.code}): {error.message}", error))
     for name in on:
         say(f"Self sign-up is still on: {name}")
     for _, gap in gaps:
@@ -2339,12 +2495,72 @@ def self_sign_up_status():
     say("Self sign-up: every parity pool has self sign-up off, and its MFA as provisioned")
 
 
-def ignore_interrupts():
-    """INT, TERM and HUP are ignored from the moment the lock is held to the end of the command, so a toggle is
-    never cut between its UpdateUserPool and its MFA restore. Before that, while `on` waits for the lock, they stop
-    it at once, with nothing changed and no lease taken. The wrapper's trap still runs once the command ends."""
-    for number in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
-        signal.signal(number, signal.SIG_IGN)
+HELD_SIGNALS = (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)
+# The signals hold_interrupts held off, in the order they arrived; None while nothing is held.
+held_signals = None
+
+
+def hold_interrupts():
+    """INT, TERM and HUP are held off from the moment the lock is held to the end of the command, so a toggle is
+    never cut between its UpdateUserPool and its MFA restore: each is recorded, not acted on, and the command, once
+    its change is done, exits 128 + the first one's number (exit_if_interrupted), so the wrapper stops the run
+    rather than lose it (bash 3.2 can drop a SIGINT that arrives as its foreground command, which held it, exits).
+    The child processes (the AWS CLI) start with all three ignored (child_preexec). A signal this process started
+    with ignored, as the wrapper's release runs it, stays ignored. Before the lock, while `on` waits for it, they
+    stop it at once, with nothing changed and no lease taken."""
+    global held_signals
+    held_signals = []
+    for number in HELD_SIGNALS:
+        if signal.getsignal(number) != signal.SIG_IGN:
+            signal.signal(number, lambda received, _frame: held_signals.append(received))
+
+
+def child_preexec():
+    """The preexec_fn for a child process: while hold_interrupts holds them, the child ignores INT, TERM and HUP,
+    as it did when they were ignored here (an ignored signal stays ignored across exec; a handler does not). None
+    otherwise."""
+    if held_signals is None:
+        return None
+
+    def ignore():
+        for number in HELD_SIGNALS:
+            signal.signal(number, signal.SIG_IGN)
+    return ignore
+
+
+def final_exit(code):
+    """Ends a `self-sign-up` command that held signals (hold_interrupts), with `code` (a SystemExit code): INT, TERM
+    and HUP are blocked first, and one that arrived since exit_if_interrupted looked, or is pending now, makes the
+    status 128 + its number; then the process ends at once (os._exit, after flushing), so no signal can arrive
+    unheeded during interpreter shutdown. Never returns."""
+    signal.pthread_sigmask(signal.SIG_BLOCK, HELD_SIGNALS)
+    if isinstance(code, str):
+        _write(sys.stderr, code)
+        code = 1
+    code = 0 if code is None else code
+    late = list(held_signals or []) + sorted(signal.sigpending() & set(HELD_SIGNALS))
+    if late and not (isinstance(code, int) and code > 128):
+        warn(f"{signal.Signals(late[0]).name} arrived as self-sign-up ended; the run stops now.")
+        code = 128 + late[0]
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.flush()
+        except (OSError, ValueError):
+            pass
+    os._exit(code if isinstance(code, int) else 1)
+
+
+def exit_if_interrupted(mode, outcome=None):
+    """After the command: if hold_interrupts held a signal, says so (and the command's own failure, `outcome`, first)
+    and exits 128 + its number. Returns otherwise."""
+    if not held_signals:
+        return
+    if outcome is not None and isinstance(outcome.code, str):
+        warn(outcome.code)
+    received = held_signals[0]
+    warn(f"{signal.Signals(received).name} arrived during self-sign-up {mode}; it was held until the change was "
+         "done, and the run stops now.")
+    sys.exit(128 + received)
 
 
 def self_sign_up_command(args):
@@ -2369,18 +2585,32 @@ def self_sign_up_command(args):
     try:
         self_sign_up(args[0], lease=lease, force=args[1:] == ["--force"])
     except KeyboardInterrupt:
-        # Only possible before the lock is held (ignore_interrupts), so before any change or lease.
+        # Only possible before the lock is held (hold_interrupts), so before any change or lease.
         warn(f"Interrupted before self-sign-up {args[0]} held the lock: nothing was changed, and no lease taken.")
         sys.exit(130)
+    except SystemExit as ended:
+        exit_if_interrupted(args[0], ended)
+        raise
+    except AwsError as error:
+        exit_if_interrupted(args[0], SystemExit(with_detail(
+            f"parity.py self-sign-up {args[0]}: an AWS call failed ({error.code}): {error.message}", error)))
+        raise
+    exit_if_interrupted(args[0])
 
 
 def webauthn_summary(mfa):
     """The pool's WebAuthnConfiguration as booleans: whether it is set, and whether its relying party is
-    the harness's (the domain itself is never printed)."""
+    the harness's (the domain itself is never printed); "unknown", without a traceback, when the WebAuthn harness's
+    files are missing or malformed."""
     config = mfa.get("WebAuthnConfiguration")
     if not config:
         return None
-    rp_id, _ = webauthn_relying_party()
+    import xml.parsers.expat
+    try:
+        rp_id, _ = webauthn_relying_party()
+    except (OSError, ValueError, xml.parsers.expat.ExpatError):
+        # The harness's files are missing or malformed: what the pool's relying party is cannot be told.
+        return "unknown"
     return {"harnessRelyingParty": config.get("RelyingPartyId") == rp_id,
             "userVerification": config.get("UserVerification")}
 
@@ -2622,14 +2852,28 @@ if __name__ == "__main__":
                 "teardown": teardown}
     # The command boundary: an AWS error no step handles ends the command with one redacted line, naming the
     # command and the error, and a non-zero exit, never a traceback. The message is the AWS CLI's own
-    # last line, which names the operation.
+    # last line, which names the operation. When the CLI's stderr had more lines (the CLI binary itself crashed,
+    # say), their redacted tail follows, indented.
     try:
         if len(sys.argv) >= 2 and sys.argv[1] == "self-sign-up":
-            self_sign_up_command(sys.argv[2:])
+            try:
+                self_sign_up_command(sys.argv[2:])
+            except SystemExit as ended:
+                if held_signals is None:
+                    raise
+                final_exit(ended.code)
+            except AwsError as error:
+                if held_signals is None:
+                    raise
+                final_exit(with_detail(f"parity.py {' '.join(sys.argv[1:3])}: an AWS call failed ({error.code}): "
+                                       f"{redact(error.message)}", error))
+            if held_signals is not None:
+                final_exit(0)
         elif len(sys.argv) != 2 or sys.argv[1] not in commands:
             sys.exit(f"Usage: {sys.argv[0]} {'|'.join(commands)}|self-sign-up on|release|off [--force]|require-idle"
                      "|status")
         else:
             commands[sys.argv[1]]()
     except AwsError as error:
-        sys.exit(f"parity.py {' '.join(sys.argv[1:3])}: an AWS call failed ({error.code}): {redact(error.message)}")
+        sys.exit(with_detail(f"parity.py {' '.join(sys.argv[1:3])}: an AWS call failed ({error.code}): "
+                             f"{redact(error.message)}", error))

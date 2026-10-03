@@ -1,4 +1,4 @@
-# Shared by provision.sh and prepare-run.sh. Source it; do not run it.
+# Shared by provision.sh, prepare-run.sh and self-sign-up.sh. Source it; do not run it.
 #
 # Every mutating call these scripts make is preceded by one of the require_*_tag guards, which read
 # the resource's tags and exit unless it carries purpose=amplify-cognito-client-integ. Secrets
@@ -41,6 +41,37 @@ require_cli_history_off() {
     if [[ "$history" == "enabled" ]]; then
         echo "Refusing: AWS CLI history is enabled (cli_history = enabled), and it would record the" \
             "secrets these scripts send. Turn it off for this profile first." >&2
+        exit 1
+    fi
+}
+
+# Exits if the volume holding $STATE_DIR (or, before it exists, its nearest existing parent) has less free space
+# than COGNITO_CLIENT_INTEG_MIN_FREE_GIB, a whole number of GiB, 2 when unset or empty; 0 skips the check. With a full disk
+# the AWS CLI binary itself crashes, part-way through a change, and says only that its launcher failed.
+# Run it before any AWS call. Prints a path, never an identifier.
+require_free_disk() {
+    local minimum="${COGNITO_CLIENT_INTEG_MIN_FREE_GIB:-2}" dir="$STATE_DIR" free_kib
+    if [[ ! "$minimum" =~ ^[0-9]{1,6}$ ]]; then
+        echo "Refusing: COGNITO_CLIENT_INTEG_MIN_FREE_GIB must be a whole number of GiB (0 skips the check)." >&2
+        exit 1
+    fi
+    minimum=$((10#$minimum))
+    (( minimum > 0 )) || return 0
+    while [[ ! -d "$dir" && "$dir" != "/" && "$dir" != "." ]]; do
+        dir=$(dirname "$dir")
+    done
+    free_kib=$(python3 -c "import shutil,sys;print(shutil.disk_usage(sys.argv[1]).free // 1024)" "$dir" 2>/dev/null \
+        || true)
+    if [[ ! "$free_kib" =~ ^[0-9]+$ ]]; then
+        echo "Refusing: could not read the free space on the volume holding $STATE_DIR. Set" \
+            "COGNITO_CLIENT_INTEG_MIN_FREE_GIB=0 to skip this check." >&2
+        exit 1
+    fi
+    if (( free_kib < minimum * 1024 * 1024 )); then
+        echo "Refusing: only $((free_kib / 1024)) MiB free on the volume holding $STATE_DIR, under the" \
+            "$minimum GiB minimum. With a full disk the AWS CLI itself crashes, part-way through a change. Free" \
+            "some space, or set COGNITO_CLIENT_INTEG_MIN_FREE_GIB to another whole number of GiB (0 skips the" \
+            "check)." >&2
         exit 1
     fi
 }

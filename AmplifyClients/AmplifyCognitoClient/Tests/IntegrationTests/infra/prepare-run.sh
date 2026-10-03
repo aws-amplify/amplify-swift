@@ -25,7 +25,8 @@
 # $STATE_DIR/state.json carries purpose=amplify-cognito-client-integ (checked before every mutating
 # call). Passwords come from $STATE_DIR/users.json, which provision.sh writes; they stay stable, so
 # nothing needs rebuilding (users.json is copied into the test bundle at build time). No secret is
-# printed or passed to the AWS CLI as an argument.
+# printed or passed to the AWS CLI as an argument. It refuses to start with under 2 GiB free on the volume holding
+# $STATE_DIR (COGNITO_CLIENT_INTEG_MIN_FREE_GIB sets another minimum, 0 none).
 #
 # Usage: AWS_PROFILE=<sandbox-profile> ./prepare-run.sh
 set -euo pipefail
@@ -33,6 +34,8 @@ set -euo pipefail
 INFRA_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 source "$INFRA_DIR/lib.sh"
+# Before any AWS call: enough free disk for the CLI (COGNITO_CLIENT_INTEG_MIN_FREE_GIB, lib.sh).
+require_free_disk
 
 STATE="$STATE_DIR/state.json"
 [[ -f "$STATE" ]] || { echo "No $STATE; run infra/provision.sh first." >&2; exit 1; }

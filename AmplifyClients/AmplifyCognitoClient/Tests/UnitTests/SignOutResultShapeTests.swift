@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(AmplifyExperimental) import AmplifyFoundation
+@_spi(AmplifyExperimental) @testable import AmplifyFoundation
 import AWSCognitoIdentityProvider
 import Foundation
 import InternalAWSCognitoAuth
@@ -18,9 +18,9 @@ import XCTest
 /// `signedOutLocally`.
 final class SignOutResultShapeTests: XCTestCase {
 
-    private var harness: ClientHarness!
-    private let work = ClientFixtures.id("work")
-    private let alice = AuthClientUser(username: "alice", userId: "sub-alice")
+    var harness: ClientHarness!
+    let work = ClientFixtures.id("work")
+    let alice = AuthClientUser(username: "alice", userId: "sub-alice")
 
     override func setUp() {
         harness = ClientHarness()
@@ -111,141 +111,6 @@ final class SignOutResultShapeTests: XCTestCase {
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "bob", userId: "sub-bob")))
         XCTAssertEqual(events.received, [])
-    }
-
-    /// - Given: a signed-in session whose revoke succeeds, and whose record cannot then be written
-    /// - When: it signs out
-    /// - Then:
-    ///    - the result is `.failed(.storageUnavailable(.locked))`: the session is still signed in, stored and
-    ///      in memory, and no `.signedOut` is sent
-    func testStorageFailureBeforeTheClearIsFailedAndTheSessionStaysSignedIn() async throws {
-        let payload = FakePayload.signedIn("alice")
-        try harness.signIn(work, payload)
-        let client = try harness.client(work)
-        _ = await client.currentSessionState()
-        let events = StreamRecorder(client.listenToAuthEvents())
-        harness.keychain.failing(.write, with: errSecInteractionNotAllowed)
-
-        let result = await client.signOut()
-
-        XCTAssertEqual(failedSignOutError(result)?.kind, .storageUnavailable(.locked))
-        XCTAssertEqual(harness.engine(for: work)?.revokeCalls, [payload.data])
-        harness.keychain.clearFailures()
-        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
-        let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(alice))
-        XCTAssertEqual(events.received, [])
-    }
-
-    /// - Given: a session whose same user keeps refreshing during every revoke
-    /// - When: it signs out
-    /// - Then:
-    ///    - after the last attempt the result is `.failed(.storageUnavailable(.interrupted))`, and the session is
-    ///      still signed in
-    func testContendedIsFailedInterrupted() async throws {
-        try harness.signIn(work, .signedIn("alice", version: 1))
-        let client = try harness.client(work)
-        let store = harness.store()
-        harness.engine(for: work)?.scriptRevoke { [work] _ in
-            if case .record(let envelope) = try store.read(work),
-               let current = envelope.record.credentials.flatMap(FakePayload.decode) {
-                try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
-            }
-        }
-
-        let result = await client.signOut()
-
-        XCTAssertEqual(failedSignOutError(result)?.storageUnavailableReason, .interrupted)
-        XCTAssertEqual(harness.engine(for: work)?.revokeCalls.count, SessionSignOut.maximumAttempts)
-        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, false)
-    }
-
-    /// - Given: a signed-in session whose first revoke attempt reports the user closing the hosted UI's page
-    /// - When: it signs out
-    /// - Then:
-    ///    - the result is `.failed(.userCancelled)`, and the session is still signed in
-    func testClosedHostedUIPageIsFailedUserCancelledAndStaysSignedIn() async throws {
-        let payload = FakePayload.signedIn("alice")
-        try harness.signIn(work, payload)
-        let client = try harness.client(work)
-        harness.engine(for: work)?.scriptRevoke { _ in throw AuthClientError.userCancelled("closed", "retry") }
-
-        let result = await client.signOut()
-
-        XCTAssertEqual(failedSignOutError(result)?.kind, .userCancelled)
-        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
-        let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(alice))
-    }
-
-    // MARK: Cancellation
-
-    /// - Given: a signed-in session, and a revoke cancelled before it revoked anything; then a sign-out from a
-    ///   task already cancelled when it starts
-    /// - When: each signs out
-    /// - Then:
-    ///    - each is `.failed(.unknown)` with exactly the decided description and suggestion, and a
-    ///      `CancellationError` as its underlying error; the session is still signed in
-    func testCancellationBeforeAnyRevokeIsFailedUnknownWithCancellationError() async throws {
-        let payload = FakePayload.signedIn("alice")
-        try harness.signIn(work, payload)
-        let client = try harness.client(work)
-        _ = await client.currentSessionState()
-        harness.engine(for: work)?.scriptRevoke { _ in throw CancellationError() }
-
-        let cancelledRevoke = await client.signOut()
-        let cancelledTask = await Task {
-            withUnsafeCurrentTask { $0?.cancel() }
-            return await client.signOut()
-        }.value
-
-        for result in [cancelledRevoke, cancelledTask] {
-            guard case .failed(.unknown(let description, let suggestion, let underlying)) = result else {
-                XCTFail("expected .failed(.unknown), got \(result)")
-                continue
-            }
-            XCTAssertEqual(description, "The sign-out was cancelled before anything was revoked; the session is still signed in.")
-            XCTAssertEqual(suggestion, "Retry the sign-out.")
-            XCTAssertTrue(underlying is CancellationError, "\(String(describing: underlying))")
-            XCTAssertFalse(result.signedOutLocally)
-        }
-        XCTAssertEqual(harness.engine(for: work)?.revokeCalls.count, 1, "the cancelled task revoked nothing")
-        XCTAssertEqual(try harness.storedRecord(work)?.credentials, payload.data)
-        let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedIn(alice))
-    }
-
-    /// Once a revoke has completed, cancellation never stops the local clear.
-    ///
-    /// - Given: a session whose first revoke succeeds while the same user refreshes, and whose retry is cancelled
-    /// - When: it signs out
-    /// - Then:
-    ///    - the result is `.partial(revokeTokenError:)`, signed out locally, and the session is cleared
-    func testCancellationAfterARevokeStillClears() async throws {
-        try harness.signIn(work, .signedIn("alice", version: 1))
-        let client = try harness.client(work)
-        let store = harness.store()
-        let revoked = Flag()
-        harness.engine(for: work)?.scriptRevoke { [work] _ in
-            guard !revoked.isRaised else {
-                throw CancellationError()
-            }
-            revoked.raise()
-            if case .record(let envelope) = try store.read(work),
-               let current = envelope.record.credentials.flatMap(FakePayload.decode) {
-                try store.write(current.refreshed.record(), for: work, expecting: envelope.version)
-            }
-        }
-
-        let result = await client.signOut()
-
-        XCTAssertTrue(result.signedOutLocally)
-        let partial = try XCTUnwrap(result.partialErrors, "\(result)")
-        XCTAssertNotNil(partial.revokeTokenError)
-        XCTAssertNil(partial.storageError)
-        XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
-        let state = await client.currentSessionState()
-        XCTAssertEqual(state, .signedOut)
     }
 
     // MARK: Purge
@@ -372,7 +237,7 @@ final class SignOutResultShapeTests: XCTestCase {
 
     // MARK: Helpers
 
-    private func signOutStored(_ sessionId: SessionID) async -> AuthClientSignOutResult {
+    func signOutStored(_ sessionId: SessionID) async -> AuthClientSignOutResult {
         await AmplifyCognitoClient.signOutStoredSession(
             sessionId: sessionId,
             configuration: ClientFixtures.configuration,
@@ -382,7 +247,7 @@ final class SignOutResultShapeTests: XCTestCase {
     }
 
     /// A client over the live engine and scripted Cognito, on `work`.
-    private func liveClient(_ live: LiveEngineHarness) throws -> AmplifyCognitoClient {
+    func liveClient(_ live: LiveEngineHarness) throws -> AmplifyCognitoClient {
         let base = harness.dependencies
         let dependencies = SessionCoreDependencies(
             registry: base.registry,
@@ -402,7 +267,7 @@ final class SignOutResultShapeTests: XCTestCase {
         )
     }
 
-    private func signInAlice(_ client: AmplifyCognitoClient, _ live: LiveEngineHarness) async throws {
+    func signInAlice(_ client: AmplifyCognitoClient, _ live: LiveEngineHarness) async throws {
         live.scriptSRP()
         live.scriptIdentityPool()
         let result = try await client.signIn(username: "alice", password: "password")

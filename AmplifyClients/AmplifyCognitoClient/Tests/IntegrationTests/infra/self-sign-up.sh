@@ -13,7 +13,9 @@
 #                     TEST_RUNNER_COGNITO_CLIENT_INTEG_SELF_SIGN_UP=on, which xcodebuild passes to the test
 #                     runner), then releases the lease through a trap on EXIT, INT, TERM and HUP, however the
 #                     command ends. Self sign-up is turned off when no other run's lease remains. INT, TERM and
-#                     HUP are forwarded to the command. It exits with the command's status, or 128 + the signal.
+#                     HUP are forwarded to the command (once; once more only if it came as the command was being
+#                     started, when a forward can be lost), and one that arrives while parity.py changes the pools
+#                     stops the run once the change is done. It exits with the command's status, or 128 + the signal.
 #                     The release needs neither stdout nor stderr: piping the output (`| xcbeautify`) is fine, and
 #                     so is a terminal that closes.
 #   off [--force]     turns it off. For recovery, after a run that could not release (a kill -9). It refuses while
@@ -21,12 +23,15 @@
 #
 # Rules:
 #   - It refuses to run on CI (CI or GITHUB_ACTIONS set): CI's backends are the plugin's, never this sandbox.
+#   - `on` refuses, before any call, with under 2 GiB free on the volume holding the state directory
+#     (COGNITO_CLIENT_INTEG_MIN_FREE_GIB sets another minimum, 0 none). `off` does not check it.
 #   - `on` refuses, before any change, unless every recorded parity pool carries purpose=amplify-cognito-client-integ.
 #     parity.py checks the tag again before each change, and `off` skips (and reports) any pool without it.
 #   - The flag changes only through `parity.py self-sign-up on|release|off`, under a lock, which sends each pool's
 #     full configuration back with only self sign-up changed (UpdateUserPool resets any field it is not sent). It
-#     ignores Ctrl-C once it holds the lock, so a toggle is never cut half-way; this script acts on the signal
-#     after it. A Ctrl-C while `on` still waits for the lock stops it at once, with nothing changed.
+#     holds Ctrl-C off once it holds the lock, so a toggle is never cut half-way, and exits 128 + the signal once
+#     the change is done; this script acts on the signal after it. A Ctrl-C while `on` still waits for the lock
+#     stops it at once, with nothing changed.
 #   - Overlapping runs share self sign-up: each holds a lease, and the last to end turns it off. provision.sh
 #     refuses while a lease is held.
 #
@@ -61,8 +66,9 @@ refuse_on_ci() {
 }
 
 # parity.py's `on` and `release` need this script's token: its PID, as the parent of the python process.
+SELF_SIGN_UP_WRAPPER_VARIABLE="COGNITO_CLIENT_INTEG_SELF_SIGN_UP_WRAPPER"
 parity() {
-    COGNITO_CLIENT_INTEG_SELF_SIGN_UP_WRAPPER=$$ python3 "$INFRA_DIR/parity.py" "$@"
+    env "$SELF_SIGN_UP_WRAPPER_VARIABLE=$$" python3 "$INFRA_DIR/parity.py" "$@"
 }
 
 refuse_on_ci
@@ -90,7 +96,9 @@ if [[ "${!RUN_VARIABLE:-}" == "on" ]]; then
     exit 1
 fi
 
-# Before any change: the caller's account, CLI history, and every recorded parity pool's tag.
+# Before any change: free disk for the AWS CLI (COGNITO_CLIENT_INTEG_MIN_FREE_GIB, lib.sh; `off`, the recovery, does
+# not check it), the caller's account, CLI history, and every recorded parity pool's tag.
+require_free_disk
 STATE="$STATE_DIR/state.json"
 [[ -f "$STATE" ]] || { echo "No $STATE; run infra/provision.sh first." >&2; exit 1; }
 REGION=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['region'])" "$STATE")
@@ -113,15 +121,24 @@ done <<< "$POOL_IDS"
 child=""
 signalled=""
 pending=""
+resend=""
+young=""
 
-# INT, TERM and HUP: remembered for the exit status, and forwarded to the command's process group if it runs. A
-# signal that arrives while parity.py runs is acted on once it returns (bash runs traps between commands). One that
-# arrives before the command's PID is known is kept in `pending`, and forwarded once the PID is known.
+# INT, TERM and HUP: remembered for the exit status, and forwarded to the process group of the job that runs (first
+# `parity.py self-sign-up on`, then the command; see launch). One that arrives before the job's PID is known is kept
+# in `pending`, and forwarded once the PID is known.
+# A forward can be lost: one that reaches the job's process after its fork but before its exec is dropped there. So a
+# forward made while the job may not have exec'd yet (from `pending`, or in its first second, while the `young` timer
+# runs) is sent once more, half a second later (wait_for_job). A later forward never is: a command that handles the
+# signal and takes time to stop (xcodebuild, whose second SIGINT aborts it hard) gets exactly one.
 # shellcheck disable=SC2329 # invoked by the INT, TERM and HUP traps
 on_signal() {
     signalled=$2
     if [[ -n "$child" ]]; then
         kill -"$1" -- "-$child" 2>/dev/null || true
+        if [[ -z "$young" ]] || kill -0 "$young" 2>/dev/null; then
+            resend=$1
+        fi
     else
         pending=$1
     fi
@@ -137,9 +154,10 @@ note() {
 
 # From here on, however the script ends, the run's lease is released, and self sign-up is turned off unless
 # another run still holds it. Set before `on`, which records the lease before any change, so that an `on` that
-# fails part-way is undone too. While it releases, INT, TERM and HUP are ignored, as parity.py ignores them, and
-# so is SIGPIPE. Nothing in it writes to stdout: parity.py writes to a log in $STATE_DIR, copied to stderr once it
-# has finished, so that no dead stdout or stderr can reach it.
+# fails part-way is undone too. While it releases, INT, TERM and HUP are ignored, and so is SIGPIPE; parity.py, which
+# starts with them ignored, keeps them ignored, so a signal cannot change its status. Nothing in it writes to stdout:
+# parity.py writes to a log in $STATE_DIR, copied to stderr once it has finished, so that no dead stdout or stderr can
+# reach it.
 # shellcheck disable=SC2329 # invoked by the EXIT trap
 release() {
     local status=$? log report checked kept=""
@@ -181,40 +199,78 @@ trap 'on_signal INT 130' INT
 trap 'on_signal TERM 143' TERM
 trap 'on_signal HUP 129' HUP
 
-parity self-sign-up on
-[[ -z "$signalled" ]] || exit "$signalled"
+# launch <hook> <command…>: runs the command in the background, as a job of its own (job control on just for the
+# launch), so that it starts with INT and QUIT at their defaults rather than ignored, in its own process group, and a
+# signal reaches this script's traps at once rather than when the job ends (Ctrl-C reaches this script, which forwards
+# it to the job's whole group). The job cannot read the terminal. Sets `child`, and starts the `young` timer: one
+# second, in a process group of its own, so that Ctrl-C does not end it early.
+# <hook> "command" arms COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL, a test-only hook, inert unless set:
+# test_self_sign_up.sh sets it to "before" or "after" to pin the forwarding, and the script then sends itself SIGTERM
+# just before or just after the command's `child=$!`. Unset, or any other value, it does nothing. Never set it outside
+# that test.
+launch() {
+    local hook=$1
+    shift
+    young=""
+    set -m
+    "$@" &
+    signal_self_at "$hook" before
+    child=$!
+    signal_self_at "$hook" after
+    sleep 1 >/dev/null 2>&1 &
+    young=$!
+    set +m
+    # A signal handled before `child=$!` was not forwarded: forward it now (and once more, as the job is young).
+    if [[ -n "$pending" ]]; then
+        kill -"$pending" -- "-$child" 2>/dev/null || true
+        resend=$pending
+        pending=""
+    fi
+}
 
-# The command runs in the background so that a signal reaches the traps at once, not when the command ends. It
-# runs as a job of its own (job control on just for the launch), so it starts with INT and QUIT at their defaults
-# rather than ignored, and in its own process group: Ctrl-C reaches this script, which forwards it to that whole
-# group. The command cannot read the terminal.
-# COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL is a test-only hook, inert unless set: test_self_sign_up.sh sets it
-# to "before" or "after" to pin the forwarding below, and the script then sends itself SIGTERM just before or just
-# after `child=$!`. Unset, or any other value, it does nothing. Never set it outside that test.
 signal_self_at() {
-    [[ "${COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL:-}" == "$1" ]] || return 0
+    [[ "$1" == command && "${COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL:-}" == "$2" ]] || return 0
     kill -TERM $$
 }
 
+# wait_for_job: waits until the job `launch` started has ended, and sets `status` to its exit status. A trapped
+# signal ends `wait` early (status > 128) while the job still runs: it waits again, after the one re-send a young
+# forward is owed.
+wait_for_job() {
+    local signal_name
+    while :; do
+        if [[ -n "$resend" ]]; then
+            signal_name=$resend
+            resend=""
+            sleep 0.5
+            if kill -0 "$child" 2>/dev/null; then
+                kill -"$signal_name" -- "-$child" 2>/dev/null || true
+            fi
+        fi
+        wait "$child"
+        status=$?
+        kill -0 "$child" 2>/dev/null || break
+    done
+    child=""
+    kill -TERM "$young" 2>/dev/null || true
+}
+
 set +e
-set -m
-env "$RUN_VARIABLE=on" "TEST_RUNNER_$RUN_VARIABLE=on" "$@" &
-signal_self_at before
-child=$!
-signal_self_at after
-set +m
-# A signal handled between the check above and `child=$!` was not forwarded: forward it now, once. One handled from
-# `child=$!` on is forwarded by on_signal itself, and never again here (it does not set `pending`).
-if [[ -n "$pending" ]]; then
-    kill -"$pending" -- "-$child" 2>/dev/null || true
-    pending=""
-fi
-while :; do
-    wait "$child"
-    status=$?
-    # A trapped signal ends `wait` early (status > 128) while the command still runs: wait again.
-    kill -0 "$child" 2>/dev/null || break
-done
-child=""
+
+# `parity.py self-sign-up on` runs as a job too, not in the foreground: bash 3.2 can drop a SIGINT that reaches it
+# just as its foreground command exits, while `wait` always lets the trap see it. parity.py must be this script's
+# child (its token), so it is launched as one simple command. It holds INT, TERM and HUP while it changes the pools,
+# then exits 128 + the first it held: that ends the run as the signal itself would.
+launch parity env "$SELF_SIGN_UP_WRAPPER_VARIABLE=$$" python3 "$INFRA_DIR/parity.py" self-sign-up on
+wait_for_job
+case $status in
+    0) ;;
+    129 | 130 | 143) signalled=${signalled:-$status} ;;
+    *) exit "$status" ;;
+esac
+[[ -z "$signalled" ]] || exit "$signalled"
+
+launch command env "$RUN_VARIABLE=on" "TEST_RUNNER_$RUN_VARIABLE=on" "$@"
+wait_for_job
 set -e
 exit "${signalled:-$status}"

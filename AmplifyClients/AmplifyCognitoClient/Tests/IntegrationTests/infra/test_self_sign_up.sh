@@ -19,8 +19,11 @@
 # configuration, when stdout is a pipe whose reader has died or a terminal that has hung up; that a Ctrl-C while
 # `on` waits for the lock stops it at once, with no change and no lease; that a release cut short says whether
 # self sign-up is still on, and one STS refuses says so in one line, not a traceback; that two overlapping runs
-# share self sign-up, whatever each one's locale and time zone; and that `off` is idempotent, refuses while a run
-# holds a lease, and skips an untagged pool.
+# share self sign-up, whatever each one's locale and time zone; that `off` is idempotent, refuses while a run
+# holds a lease, and skips an untagged pool; that a signal forwarded as the command starts stops it even when the
+# first forward is lost, but a later one reaches a command that stops slowly exactly once; that a SIGINT parity.py
+# holds while it changes the pools, or one the instant it exits, stops the run; and that a release and
+# `off` turn every pool off with the WebAuthn harness's files deleted.
 set -euo pipefail
 INFRA="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$INFRA/self-sign-up.sh"
@@ -31,6 +34,9 @@ mkdir -p "$BIN" "$WORK/state"
 export FAKE_POOLS="$WORK/pools.json" FAKE_LOG="$WORK/calls.log" FAKE_MARK="$WORK/interrupted"
 export COGNITO_CLIENT_INTEG_DIR="$WORK/state"
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null
+# No free-disk minimum: this test makes no real AWS call, so a nearly full disk must not fail it (test_free_disk.py
+# covers the check).
+export COGNITO_CLIENT_INTEG_MIN_FREE_GIB=0
 unset AWS_PROFILE CI GITHUB_ACTIONS COGNITO_CLIENT_INTEG_SELF_SIGN_UP TEST_RUNNER_COGNITO_CLIENT_INTEG_SELF_SIGN_UP
 unset FAKE_FAIL_ON FAKE_INTERRUPT FAKE_KILL_AT FAKE_FAIL_RELEASE
 LEASES="$WORK/state/self-sign-up-leases.json"
@@ -150,6 +156,17 @@ spec.loader.exec_module(parity)
 print(" ".join(parity.POOLS))
 PY
 )"
+# The relying party provision resolves ${WEBAUTHN_RP_ID} to (the harness's committed webcredentials domain), as
+# parity.py's MFA check expects it on the WebAuthn pool. Never printed.
+RP_ID=$(python3 - "$INFRA/parity.py" <<'PY'
+import importlib.util, sys
+spec = importlib.util.spec_from_file_location("parity", sys.argv[1])
+parity = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(parity)
+print(parity.harness_rp_id() or "")
+PY
+)
+[[ -n "$RP_ID" ]] || { echo "FAIL the WebAuthn harness's relying party cannot be resolved"; exit 1; }
 python3 - "$WORK/state/state.json" "${KEYS[@]}" <<'PY'
 import json, sys
 path, keys = sys.argv[1], sys.argv[2:]
@@ -157,15 +174,16 @@ json.dump({"account": "000000000000", "region": "xx-test-1", "userPoolId": "plac
            "parity": {"pools": {k: {"userPoolId": f"placeholder-{k}"} for k in keys}}}, open(path, "w"))
 PY
 
-# reset <on|off> [untagged key]: every fake pool tagged, in that state and with its template's MFA, except one
-# untagged; no lease, an empty call log.
+# reset <on|off> [untagged key]: every fake pool tagged, in that state and with its template's MFA as provision
+# applies it (${WEBAUTHN_RP_ID} resolved), except one untagged; no lease, an empty call log.
 reset() {
-    python3 - "$FAKE_POOLS" "$INFRA/pools" "$1" "${2:-}" "${KEYS[@]}" <<'PY'
+    python3 - "$FAKE_POOLS" "$INFRA/pools" "$RP_ID" "$1" "${2:-}" "${KEYS[@]}" <<'PY'
 import json, os, sys
-path, templates, state, untagged, keys = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5:]
+path, templates, rp_id, state, untagged, keys = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6:]
+def provisioned(k):
+    return json.loads(open(os.path.join(templates, f"{k}.json")).read().replace("${WEBAUTHN_RP_ID}", rp_id))["mfa"]
 json.dump({f"placeholder-{k}": {"name": f"amplify-cognito-client-integ-{k}", "tagged": k != untagged,
-                                "tags": {"owner": "placeholder"}, "on": state == "on",
-                                "mfa": json.load(open(os.path.join(templates, f"{k}.json")))["mfa"]}
+                                "tags": {"owner": "placeholder"}, "on": state == "on", "mfa": provisioned(k)}
            for k in keys}, open(path, "w"))
 PY
     : > "$FAKE_LOG"
@@ -176,15 +194,17 @@ all() {
     python3 -c "import json,sys;sys.exit(0 if all(p['on'] == (sys.argv[2] == 'on') for p in json.load(open(sys.argv[1])).values()) else 1)" \
         "$FAKE_POOLS" "$1"
 }
-# mfa_intact: whether every fake pool has its template's MFA configuration.
+# mfa_intact: whether every fake pool has its template's MFA configuration, as provision applies it. Names a pool
+# that differs, never its configuration (the relying party is a real domain).
 mfa_intact() {
-    python3 - "$FAKE_POOLS" "$INFRA/pools" <<'PY'
+    python3 - "$FAKE_POOLS" "$INFRA/pools" "$RP_ID" <<'PY'
 import json, os, sys
 pools = json.load(open(sys.argv[1]))
 for pool_id, pool in pools.items():
-    template = json.load(open(os.path.join(sys.argv[2], pool_id[len("placeholder-"):] + ".json")))["mfa"]
+    path = os.path.join(sys.argv[2], pool_id[len("placeholder-"):] + ".json")
+    template = json.loads(open(path).read().replace("${WEBAUTHN_RP_ID}", sys.argv[3]))["mfa"]
     if pool["mfa"] != template:
-        sys.exit(f"{pool_id}: {pool['mfa']}")
+        sys.exit(f"{pool_id}: MFA differs from its template's, keys {sorted(pool['mfa'])}")
 PY
 }
 updates() { grep -c "update-user-pool" "$FAKE_LOG" || true; }
@@ -300,31 +320,127 @@ for case in "INT 130 group" "TERM 143 script" "HUP 129 script"; do
 done
 
 # A signal handled just before `child=$!` (the command runs, its PID is not yet known) and one handled just after
-# (on_signal forwards it itself): each is forwarded to the command exactly once. The script signals itself there
-# through its test-only hook. Two signals sent back to back can merge into one on the way, so the command cannot
-# count them: the script's `kill` is replaced by an exported function that logs each forward, then forwards it.
+# (on_signal forwards it itself): each reaches the command, which ends at once, well before its 30 s. The script
+# signals itself there through its test-only hook. A forward that reaches the command's process between its fork and
+# its exec is lost, so the script sends one made then once more, half a second later: the script's `kill` is replaced
+# by an exported function that logs each forward (one or two), then forwards it.
 for point in before after; do
     reset off
     : >"$WORK/forwards"
+    rm -f "$WORK/finished"
     set +e
     (
         # shellcheck disable=SC2329,SC2317 # invoked by the script, as its `kill`
         kill() {
-            [[ "$1 $2" != "-TERM --" ]] || echo "$3" >>"$WORK/forwards"
+            [[ "$1 ${2:-}" != "-TERM --" ]] || echo "${3:-}" >>"$WORK/forwards"
             builtin kill "$@"
         }
         export -f kill
         export WORK
-        COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL=$point bash "$SCRIPT" on -- sleep 30 >"$WORK/out" 2>&1
+        # shellcheck disable=SC2016 # expanded by sh, not here
+        COGNITO_CLIENT_INTEG_SELF_SIGN_UP_TEST_SIGNAL=$point bash "$SCRIPT" on -- \
+            sh -c 'sleep 30 && touch "$0"' "$WORK/finished" >"$WORK/out" 2>&1
     )
     status=$?
     set -e
     [[ $status == 143 ]] || fail "signal $point child=\$!: exit $status, not 143 ($(tail -3 "$WORK/out"))"
-    [[ $(grep -c . "$WORK/forwards") == 1 ]] \
-        || fail "signal $point child=\$!: forwarded $(grep -c . "$WORK/forwards") time(s), not once"
+    # The command must have been stopped, not left to end by itself: it never finished. (Not timed: on a loaded
+    # machine the toggles alone can take longer than the command's 30 s.)
+    [[ ! -e "$WORK/finished" ]] || fail "signal $point child=\$!: the command ran to its end"
+    forwards=$(grep -c . "$WORK/forwards" || true)
+    (( forwards >= 1 && forwards <= 2 )) || fail "signal $point child=\$!: forwarded $forwards time(s)"
     all off || fail "signal $point child=\$!: left on"
 done
-pass "a signal just before or just after the command's PID is known is forwarded to it exactly once"
+pass "a signal just before or just after the command's PID is known stops the command at once"
+
+# A command that handles SIGINT and takes time to stop, as xcodebuild does (its second SIGINT aborts it hard): a
+# Ctrl-C after the command has started reaches it exactly once, however long it takes to stop.
+reset off
+rm -f "$WORK/ints" "$WORK/ready"
+# shellcheck disable=SC2016 # Python, not shell
+run_in_background "$WORK/out" on -- python3 -c '
+import os, signal, sys, time
+received, ready = sys.argv[1], sys.argv[2]
+def record(number, frame):
+    with open(received, "a") as f:
+        f.write("INT\n")
+signal.signal(signal.SIGINT, record)
+open(ready, "w").close()
+while not os.path.exists(received):
+    time.sleep(0.05)
+time.sleep(3)
+sys.exit(130)' "$WORK/ints" "$WORK/ready"
+ready() { [[ -e "$WORK/ready" ]]; }
+wait_until ready || { kill -TERM -- "-$PID" 2>/dev/null || true; fail "slow stop: the command never started"; }
+# Past the first second after the launch, when a forward can still be lost (and is sent once more).
+sleep 1.5
+kill -INT -- "-$PID"
+finish "$PID"
+[[ $STATUS == 130 ]] || fail "slow stop: exit $STATUS, not 130 ($(tail -3 "$WORK/out"))"
+[[ $(grep -c INT "$WORK/ints") == 1 ]] || fail "slow stop: the command got $(grep -c INT "$WORK/ints") SIGINTs, not 1"
+all off || fail "slow stop: left on"
+pass "a Ctrl-C after the command started reaches a command that stops slowly exactly once"
+
+# A Ctrl-C that reaches the run's process group the instant `parity.py self-sign-up on` has changed the pools, just
+# before it exits: parity.py holds it, then exits 130, so the run stops there, even where bash itself would drop the
+# signal. A `python3` shim first on PATH sends the SIGINT from inside parity.py, when self_sign_up returns.
+REAL_PYTHON=$(command -v python3)
+mkdir -p "$WORK/shim"
+cat > "$WORK/shim/python3" <<SH
+#!/usr/bin/env bash
+if [[ "\${1:-}" == *parity.py && "\${2:-} \${3:-}" == "self-sign-up on" ]]; then
+    exec "$REAL_PYTHON" -c '
+import os, runpy, signal, sys
+def hook(frame, event, arg):
+    if event == "return" and frame.f_code.co_name == "self_sign_up":
+        sys.setprofile(None)
+        os.killpg(os.getpgrp(), signal.SIGINT)
+sys.argv = sys.argv[1:]
+sys.setprofile(hook)
+runpy.run_path(sys.argv[0], run_name="__main__")
+' "\$@"
+fi
+exec "$REAL_PYTHON" "\$@"
+SH
+chmod +x "$WORK/shim/python3"
+reset off
+rm -f "$WORK/ran"
+set -m
+PATH="$WORK/shim:$PATH" bash "$SCRIPT" on -- touch "$WORK/ran" >"$WORK/out" 2>&1 &
+PID=$!
+set +m
+finish "$PID"
+[[ $STATUS == 130 ]] || fail "SIGINT as on exits: exit $STATUS, not 130 ($(tail -3 "$WORK/out"))"
+[[ ! -e "$WORK/ran" ]] || fail "SIGINT as on exits: the command ran"
+grep -q "SIGINT arrived during self-sign-up on" "$WORK/out" || fail "SIGINT as on exits: parity.py did not hold it"
+all off || fail "SIGINT as on exits: left on"
+mfa_intact || fail "SIGINT as on exits: MFA lost"
+[[ $(leases) == 0 ]] || fail "SIGINT as on exits: a lease is left"
+pass "a SIGINT as parity.py's on finishes is held, not dropped: the command never runs, and the run ends 130"
+
+# A Ctrl-C the instant `parity.py self-sign-up on` has exited, after it could hold it: the script waits for parity.py
+# as a job, not in the foreground (where bash 3.2 can drop the signal), so its trap sees it and the run ends 130,
+# never 0. The shim execs parity.py (it must stay the script's child) with one end of a pipe open; a watcher holding
+# the other end sees end-of-file the instant parity.py exits, and sends SIGINT to the script's process group.
+cat > "$WORK/shim/python3" <<SH
+#!/usr/bin/env bash
+if [[ "\${1:-}" == *parity.py && "\${2:-} \${3:-}" == "self-sign-up on" ]]; then
+    group=\$(ps -o pgid= -p \$PPID | tr -d ' ')
+    exec 9> >(trap '' INT; cat >/dev/null; kill -INT -- "-\$group")
+    exec "$REAL_PYTHON" "\$@"
+fi
+exec "$REAL_PYTHON" "\$@"
+SH
+reset off
+set -m
+PATH="$WORK/shim:$PATH" bash "$SCRIPT" on -- true >"$WORK/out" 2>&1 &
+PID=$!
+set +m
+finish "$PID"
+[[ $STATUS == 130 ]] || fail "SIGINT after on exits: exit $STATUS, not 130 ($(tail -3 "$WORK/out"))"
+all off || fail "SIGINT after on exits: left on"
+[[ $(leases) == 0 ]] || fail "SIGINT after on exits: a lease is left"
+pass "a SIGINT the instant parity.py's on has exited is not dropped: the run ends 130"
 
 reset off
 export FAKE_FAIL_ON=placeholder-passwordless
@@ -588,6 +704,64 @@ finish "$pid_d"
 [[ $STATUS == 0 ]] || fail "locale: the run's exit $STATUS"
 all off || fail "locale: left on after the run"
 pass "a run's lease taken under LANG=en_CA and one time zone holds under LC_ALL=C and another: off refuses"
+
+# --- the WebAuthn harness's files missing ----------------------------------------------------------------------
+
+# A copy of infra/ in the repository's layout, with the WebAuthn harness's committed files beside it, so that they
+# can really be deleted. `on` reads them (it compares the WebAuthn relying party), but a release and `off` must turn
+# every pool off without them.
+COPY="$WORK/repo"
+IT="AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests"
+HARNESS_FILES=("$IT/CognitoClientHostApp/CognitoClientWebAuthnApp.entitlements"
+               "$IT/CognitoClientHostApp/CognitoClientHostApp.xcodeproj/project.pbxproj"
+               "AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/AuthWebAuthnApp/AuthWebAuthnApp.entitlements")
+REPO="$(cd "$INFRA/../../../../.." && pwd)"
+mkdir -p "$COPY/$IT"
+cp -R "$INFRA" "$COPY/$IT/infra"
+rm -rf "$COPY/$IT/infra/__pycache__"
+copy_harness() {
+    local file
+    for file in "${HARNESS_FILES[@]}"; do
+        mkdir -p "$(dirname "$COPY/$file")"
+        cp "$REPO/$file" "$COPY/$file"
+    done
+}
+remove_harness() {
+    local file
+    for file in "${HARNESS_FILES[@]}"; do rm -f "$COPY/$file"; done
+}
+export COPY
+export HARNESS_FILES_LIST="${HARNESS_FILES[*]}"
+COPIED="$COPY/$IT/infra/self-sign-up.sh"
+
+copy_harness
+reset off
+# The command deletes the harness's files: the trap's release then runs without them.
+# shellcheck disable=SC2016 # expanded by the inner bash, not here
+bash "$COPIED" on -- bash -c 'for file in $HARNESS_FILES_LIST; do rm -f "$COPY/$file"; done' >"$WORK/out" 2>&1 \
+    || fail "harness removed during the run: exit $? ($(tail -3 "$WORK/out"))"
+[[ ! -e "$COPY/${HARNESS_FILES[0]}" ]] || fail "harness removed during the run: the files are still there"
+if grep -q "Traceback" "$WORK/out"; then fail "harness removed during the run: a traceback"; fi
+all off || fail "harness removed during the run: left on"
+mfa_intact || fail "harness removed during the run: MFA lost"
+[[ $(leases) == 0 ]] || fail "harness removed during the run: a lease is left"
+pass "a release with the WebAuthn harness's files deleted still turns every pool off, with its MFA"
+
+reset on
+remove_harness
+bash "$COPIED" off >"$WORK/out" 2>&1 || fail "off without the harness: exit $? ($(tail -3 "$WORK/out"))"
+all off || fail "off without the harness: left on"
+mfa_intact || fail "off without the harness: MFA lost"
+pass "off with the WebAuthn harness's files missing turns every pool off, with its MFA"
+
+reset off
+if bash "$COPIED" on -- touch "$WORK/ran" >"$WORK/out" 2>&1; then fail "on without the harness: succeeded"; fi
+[[ ! -e "$WORK/ran" ]] || fail "on without the harness: the command ran"
+[[ $(updates) == 0 ]] || fail "on without the harness: $(updates) updates"
+grep -q "webauthn: the relying party pools/webauthn.json names cannot be resolved" "$WORK/out" \
+    || fail "on without the harness: no WEBAUTHN gap ($(tail -3 "$WORK/out"))"
+if grep -q "Traceback" "$WORK/out"; then fail "on without the harness: a traceback"; fi
+pass "on with the WebAuthn harness's files missing refuses before any change, naming them, without a traceback"
 
 # --- off -----------------------------------------------------------------------------------------------------
 

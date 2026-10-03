@@ -21,6 +21,7 @@ points at a temporary directory with a fake state.json (placeholder ids only).
 import contextlib
 import copy
 import importlib.util
+import io
 import json
 import os
 import re
@@ -44,6 +45,19 @@ def described(admin_only):
     return {"AdminCreateUserConfig": {"AllowAdminCreateUserOnly": admin_only}}
 
 
+# The relying party the fakes stand the harness's for (parity.harness_rp_id is replaced to return it).
+RP_ID = "placeholder-rp.example"
+
+
+def provisioned_mfa(parity, key):
+    """Pool `key`'s MFA configuration as provision applies it, ${WEBAUTHN_RP_ID} resolved to RP_ID (the other
+    placeholders stay: only the WebAuthn relying party is compared by value)."""
+    mfa = copy.deepcopy(parity.load_template(key)["mfa"])
+    if "WebAuthnConfiguration" in mfa:
+        mfa["WebAuthnConfiguration"]["RelyingPartyId"] = RP_ID
+    return mfa
+
+
 class ParitySelfSignUpTests(unittest.TestCase):
     def setUp(self):
         self.saved_environment = {name: os.environ.pop(name, None)
@@ -63,6 +77,7 @@ class ParitySelfSignUpTests(unittest.TestCase):
         self.real_aws_or_none = self.parity.aws_or_none
         self.parity.aws_or_none = self.fake_describe
         self.parity.aws = self.fail_on_call
+        self.parity.harness_rp_id = lambda: RP_ID
 
     def tearDown(self):
         shutil.rmtree(self.state)
@@ -83,7 +98,7 @@ class ParitySelfSignUpTests(unittest.TestCase):
         if key in self.gone:
             return None
         if args[1] == "get-user-pool-mfa-config":
-            return self.mfa.get(key) or copy.deepcopy(self.parity.load_template(key)["mfa"])
+            return self.mfa.get(key) or provisioned_mfa(self.parity, key)
         return {"UserPool": dict(described(self.admin_only[key]), Name=key)}
 
     mfa = {}
@@ -145,9 +160,9 @@ class ParitySelfSignUpTests(unittest.TestCase):
     def test_expected_mfa_is_the_template_as_degraded(self):
         """Given: mfa-req-all's template (MFA on, EMAIL, SMS and TOTP). When: its expected MFA is computed with
         nothing pending, then with email pending. Then: all three methods, then SMS and TOTP only."""
-        self.assertEqual(self.parity.expected_mfa("mfa-req-all", []), ("ON", ["EMAIL", "SMS", "TOTP"]))
-        self.assertEqual(self.parity.expected_mfa("mfa-req-all", ["email-mfa"]), ("ON", ["SMS", "TOTP"]))
-        self.assertEqual(self.parity.expected_mfa("email-alias", None), ("OFF", []))
+        self.assertEqual(self.parity.expected_mfa("mfa-req-all", []), ("ON", ["EMAIL", "SMS", "TOTP"], None))
+        self.assertEqual(self.parity.expected_mfa("mfa-req-all", ["email-mfa"]), ("ON", ["SMS", "TOTP"], None))
+        self.assertEqual(self.parity.expected_mfa("email-alias", None), ("OFF", [], None))
 
     def test_an_mfa_reset_is_a_gap(self):
         """Given: one pool whose MFA was reset to OFF (an interrupted toggle, say), the others as provisioned.
@@ -383,11 +398,13 @@ class SelfSignUpCommandTests(unittest.TestCase):
             json.dump({"account": "000000000000", "region": "us-west-2",
                        "parity": {"pools": {k: {"userPoolId": v} for k, v in self.ids.items()}}}, f)
         self.live = {pool_id: self.live_pool(key) for key, pool_id in self.ids.items()}
-        self.mfa = {pool_id: copy.deepcopy(self.parity.load_template(key)["mfa"]) for key, pool_id in self.ids.items()}
+        self.mfa = {pool_id: provisioned_mfa(self.parity, key) for key, pool_id in self.ids.items()}
+        self.parity.harness_rp_id = lambda: RP_ID
         self.calls = []
         self.said = []
         self.reset_mfa_on_update = False
         self.parity.say = self.said.append
+        self.real_aws = self.parity.aws
         self.parity.aws = self.fake_aws
         self.parity.aws_or_none = self.fake_aws
         self.parity.require_cli_history_off = lambda: None
@@ -517,6 +534,52 @@ class SelfSignUpCommandTests(unittest.TestCase):
         self.assertIn("mfa-req-email: MFA is OFF", str(refused.exception.code))
         self.assertEqual(self.updates(), [])
 
+    def test_on_refuses_a_webauthn_pool_whose_relying_party_is_not_the_harnesss(self):
+        """Test that `on` refuses a WebAuthn relying party other than the one provision resolves
+
+        - Given: the WebAuthn pool's live WebAuthnConfiguration naming another relying party
+        - When:
+           - a run turns self sign-up on
+        - Then:
+           - it exits non-zero naming the WebAuthn gap, without the domain, and no pool is updated
+        """
+        self.mfa[self.ids["webauthn"]]["WebAuthnConfiguration"]["RelyingPartyId"] = "placeholder-other.example"
+        with self.assertRaises(SystemExit) as refused:
+            self.parity.self_sign_up("on", lease=self.run_pid())
+        self.assertIn("webauthn: MFA is", str(refused.exception.code))
+        self.assertIn("WebAuthn with another relying party", str(refused.exception.code))
+        self.assertNotIn("placeholder-other.example", str(refused.exception.code))
+        self.assertEqual(self.updates(), [])
+
+    def test_off_release_and_status_never_read_the_webauthn_harness(self):
+        """Test that off, release and status never depend on the WebAuthn harness's files
+
+        - Given: every pool on under a run's lease, and the harness's files unreadable (each read raising, as a
+          missing file does)
+        - When:
+           - the run releases; then, every pool on again, `off`; then `status`
+        - Then:
+           - the release and `off` each turn every pool off, with its MFA; status exits 0; none reads the files
+        """
+        run = self.run_pid()
+        self.parity.self_sign_up("on", lease=run)
+        self.assertEqual(set(self.flags().values()), {True})
+
+        def unreadable(*_):
+            raise FileNotFoundError("placeholder")
+        self.parity.webauthn_harness_identity = unreadable
+        self.parity.harness_rp_id = lambda: self.fail("harness_rp_id was called")
+        self.parity.self_sign_up("release", lease=run)
+        self.assertEqual(set(self.flags().values()), {False})
+        for pool_id, key in ((v, k) for k, v in self.ids.items()):
+            self.assertEqual(self.mfa[pool_id], provisioned_mfa(self.parity, key), key)
+        for flag in self.live.values():
+            flag["AdminCreateUserConfig"]["AllowAdminCreateUserOnly"] = False
+        self.parity.self_sign_up("off")
+        self.assertEqual(set(self.flags().values()), {False})
+        self.parity.self_sign_up_command(["status"])
+        self.assertTrue(any("every parity pool has self sign-up off" in line for line in self.said), self.said)
+
     def test_off_skips_an_untagged_pool_and_turns_off_the_rest(self):
         """Given: every pool on, one of them without the purpose tag. When: `self-sign-up off`.
         Then: every tagged pool is turned off, the untagged one is never updated, and it exits non-zero."""
@@ -608,6 +671,40 @@ class SelfSignUpCommandTests(unittest.TestCase):
         with self.assertRaises(SystemExit) as refused:
             self.parity.self_sign_up("on", lease=self.run_pid())
         self.assertIn("Policies, UserPoolTags changed as well; re-run infra/provision.sh", str(refused.exception.code))
+
+    def test_a_toggle_or_read_failure_keeps_the_cli_tail(self):
+        """Test that a failed toggle, and a pool that cannot be read, report the AWS CLI's redacted tail
+
+        - Given: `off` with every pool on, UpdateUserPool on one pool failing, and then DescribeUserPool on one pool
+          failing, each with a multi-line stderr whose last line is the launcher's
+        - When:
+           - `self-sign-up off` runs each time
+        - Then:
+           - it exits non-zero naming the pool, the code and the message, followed by the tail with the cause
+        """
+        real = self.fake_aws
+        for flag in self.live.values():
+            flag["AdminCreateUserConfig"]["AllowAdminCreateUserOnly"] = False
+        crash = self.parity.AwsError("Unknown", "[PYI-4242:ERROR] Failed to execute script 'aws'",
+                                     "OSError: [Errno 28] No space left on device\n"
+                                     "[PYI-4242:ERROR] Failed to execute script 'aws'")
+        for operation in ("update-user-pool", "describe-user-pool"):
+            with self.subTest(operation=operation):
+                failing = self.ids["passwordless"]
+
+                def failing_call(*args, stdin=None, **kwargs):
+                    pool_id = stdin["UserPoolId"] if stdin else args[args.index("--user-pool-id") + 1]
+                    if args[:2] == ("cognito-idp", operation) and pool_id == failing:
+                        raise crash
+                    return real(*args, stdin=stdin, **kwargs)
+                self.parity.aws = self.parity.aws_or_none = failing_call
+                with self.assertRaises(SystemExit) as failed:
+                    self.parity.self_sign_up("off")
+                report = str(failed.exception.code)
+                self.assertIn("passwordless", report)
+                self.assertIn("Unknown", report)
+                self.assertIn("AWS CLI stderr, last lines (redacted):\n    OSError: [Errno 28] No space left on device",
+                              report)
 
     def test_an_on_that_fails_part_way_stops_and_release_undoes_it(self):
         """Given: an UpdateUserPool that fails on the passwordless pool when turning on.
@@ -811,11 +908,11 @@ class SelfSignUpCommandTests(unittest.TestCase):
         os.environ.pop(self.parity.SELF_SIGN_UP_WRAPPER, None)
         self.assertEqual(self.calls, [])
 
-    def test_interrupts_are_ignored_once_the_lock_is_held(self):
+    def test_interrupts_are_held_once_the_lock_is_held(self):
         """Given: the toggle itself stubbed. When: `self-sign-up off --force` runs through the CLI.
         Then: INT, TERM and HUP are at their defaults until the lock is held (so a Ctrl-C can stop a run waiting
-        for it), and ignored from then on, so a Ctrl-C can never cut a toggle between its update and its MFA
-        restore; and the mode and force flag reach the toggle."""
+        for it), and held from then on by a handler that only records them, so a Ctrl-C can never cut a toggle
+        between its update and its MFA restore; and the mode and force flag reach the toggle."""
         seen = []
         real_lock = self.parity.self_sign_up_lock
 
@@ -830,11 +927,99 @@ class SelfSignUpCommandTests(unittest.TestCase):
         self.parity.self_sign_up_lock = lock
         self.parity.set_self_sign_up = toggle
         self.parity.self_sign_up_command(["off", "--force"])
-        self.assertEqual(seen, [("waiting", [signal.default_int_handler, signal.SIG_DFL, signal.SIG_DFL]),
-                                ("toggling", [signal.SIG_IGN] * 3)])
+        self.assertEqual(seen[0], ("waiting", [signal.default_int_handler, signal.SIG_DFL, signal.SIG_DFL]))
+        self.assertEqual(seen[1][0], "toggling")
+        for handler in seen[1][1]:
+            self.assertTrue(callable(handler))
+            self.assertNotIn(handler, (signal.default_int_handler, signal.SIG_DFL, signal.SIG_IGN))
         for bad in (["sideways"], ["on", "--force"], ["off", "--now"], ["status", "--force"], []):
             with self.assertRaises(SystemExit):
                 self.parity.self_sign_up_command(bad)
+
+    def test_a_signal_held_during_the_toggle_ends_the_command_with_its_status(self):
+        """Test that a signal held off during a toggle is not lost: the command finishes, then exits 128 + it
+
+        - Given: a run's `on` whose toggles each receive SIGINT and then SIGTERM part-way (a Ctrl-C, then a kill)
+        - When:
+           - `self-sign-up on` runs through the CLI
+        - Then:
+           - every pool is turned on, its MFA restored, as with no signal; the command then exits 130 (the first
+             signal's), saying it held SIGINT
+           - and a release of that run, with SIGINT again during its toggles, turns every pool off and exits 130
+        """
+        real = self.fake_aws
+
+        def interrupted(*args, stdin=None, **kwargs):
+            if args[:2] == ("cognito-idp", "update-user-pool"):
+                os.kill(os.getpid(), signal.SIGINT)
+                os.kill(os.getpid(), signal.SIGTERM)
+            return real(*args, stdin=stdin, **kwargs)
+        self.parity.aws = interrupted
+        warned = []
+        self.parity.warn = warned.append
+        run = self.run_pid()
+        # As the wrapper runs it: the run is the parent, and its PID the token.
+        with mock.patch.dict(os.environ, {self.parity.SELF_SIGN_UP_WRAPPER: str(run)}), \
+                mock.patch.object(self.parity.os, "getppid", lambda: run):
+            with self.assertRaises(SystemExit) as on:
+                self.parity.self_sign_up_command(["on"])
+            self.assertEqual(on.exception.code, 130)
+            self.assertEqual(set(self.flags().values()), {True})
+            self.assertTrue(any(line.startswith("SIGINT arrived during self-sign-up on") for line in warned), warned)
+            for key, pool_id in self.ids.items():
+                self.assertEqual(self.mfa[pool_id], provisioned_mfa(self.parity, key), key)
+            with self.assertRaises(SystemExit) as release:
+                self.parity.self_sign_up_command(["release"])
+            self.assertEqual(release.exception.code, 130)
+        self.assertEqual(set(self.flags().values()), {False})
+
+    def test_a_signal_ignored_at_start_stays_ignored(self):
+        """Test that a signal the command starts with ignored (the wrapper's release ignores INT, TERM and HUP) stays
+        ignored, and so does not change its status
+
+        - Given: INT, TERM and HUP ignored, and every pool on
+        - When:
+           - `self-sign-up off` runs, receiving SIGINT during its toggles
+        - Then:
+           - every pool is turned off, and the command returns normally
+        """
+        for number in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+            signal.signal(number, signal.SIG_IGN)
+        for flag in self.live.values():
+            flag["AdminCreateUserConfig"]["AllowAdminCreateUserOnly"] = False
+        real = self.fake_aws
+
+        def interrupted(*args, stdin=None, **kwargs):
+            if args[:2] == ("cognito-idp", "update-user-pool"):
+                os.kill(os.getpid(), signal.SIGINT)
+            return real(*args, stdin=stdin, **kwargs)
+        self.parity.aws = interrupted
+        self.parity.self_sign_up_command(["off"])
+        self.assertEqual(set(self.flags().values()), {False})
+        self.assertEqual(signal.getsignal(signal.SIGINT), signal.SIG_IGN)
+
+    def test_the_aws_cli_ignores_the_held_signals(self):
+        """Test that the AWS CLI calls made while signals are held start with INT, TERM and HUP ignored
+
+        - Given: a fake `aws` on PATH that reports how it starts with each of the three
+        - When:
+           - parity.aws runs it before hold_interrupts, then after
+        - Then:
+           - before, none is ignored; after, all three are, so a Ctrl-C to the run's process group cannot cut a call
+        """
+        self.parity.aws = self.real_aws
+        work = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, work)
+        fake = os.path.join(work, "aws")
+        with open(fake, "w") as f:
+            f.write("#!/usr/bin/env python3\nimport json, signal\nprint(json.dumps([signal.getsignal(n) == "
+                    "signal.SIG_IGN for n in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)]))\n")
+        os.chmod(fake, 0o755)
+        self.parity.REGION = "xx-test-1"
+        with mock.patch.dict(os.environ, {"PATH": work + os.pathsep + os.environ["PATH"]}):
+            self.assertEqual(self.parity.aws("sts", "get-caller-identity"), [False, False, False])
+            self.parity.hold_interrupts()
+            self.assertEqual(self.parity.aws("sts", "get-caller-identity"), [True, True, True])
 
     def test_a_ctrl_c_while_waiting_for_the_lock_changes_nothing(self):
         """Given: another process holding the toggle lock for 20 s. When: a run's `self-sign-up on` waits for it
@@ -1147,6 +1332,79 @@ class WebAuthnHarnessIdentityTests(unittest.TestCase):
             plistlib.dump({"com.apple.developer.associated-domains": []}, f)
         return path
 
+    def test_the_mfa_checks_relying_party_is_the_one_provision_resolves(self):
+        """Test that the MFA check resolves ${WEBAUTHN_RP_ID} as provision does
+
+        - Given: the committed harness files
+        - When:
+           - harness_rp_id runs, and webauthn_relying_party runs with its apple-app-site-association listing the
+             harness's app ID
+        - Then:
+           - both give the harness's webcredentials domain, and from then on it is masked in everything said
+           - with the harness's files unreadable, harness_rp_id gives None
+        """
+        domain, app_id, _ = self.parity.webauthn_harness_identity()
+        rp_id = self.parity.harness_rp_id()
+        self.assertTrue(rp_id == domain and bool(rp_id))
+        self.assertEqual(self.parity.redact(f"rp {rp_id}"), "rp <domain>")
+
+        class Response(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+        association = json.dumps({"webcredentials": {"apps": [app_id]}}).encode()
+        with mock.patch("urllib.request.urlopen", lambda *args, **kwargs: Response(association)):
+            provisioned, gap = self.parity.webauthn_relying_party()
+        self.assertIsNone(gap)
+        self.assertTrue(provisioned == rp_id)
+
+        self.parity.webauthn_harness_identity = lambda: (None, None, "the harness entitlements cannot be read")
+        self.assertIsNone(self.parity.harness_rp_id())
+
+    def test_missing_or_malformed_harness_files_give_no_relying_party_and_no_exception(self):
+        """Test that harness_rp_id returns None, never raising, when a harness file is missing or malformed
+
+        - Given: in turn, a missing harness entitlements file, a missing plugin entitlements file, a missing project,
+          an entitlements file that is not a property list, one that is truncated XML, and a project that is not UTF-8
+        - When:
+           - harness_rp_id runs
+        - Then:
+           - it returns None each time
+        """
+        missing = os.path.join(self.state, "missing")
+        not_a_plist = os.path.join(self.state, "not-a-plist.entitlements")
+        with open(not_a_plist, "w") as f:
+            f.write("placeholder, not a property list")
+        truncated = os.path.join(self.state, "truncated.entitlements")
+        with open(truncated, "w") as f:
+            f.write('<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict><key>')
+        not_utf8 = os.path.join(self.state, "project.pbxproj")
+        with open(not_utf8, "wb") as f:
+            f.write(b"\xff\xfe\x00 placeholder")
+        for name, path in (("WEBAUTHN_ENTITLEMENTS", missing), ("PLUGIN_WEBAUTHN_ENTITLEMENTS", missing),
+                           ("WEBAUTHN_PROJECT", missing), ("WEBAUTHN_ENTITLEMENTS", not_a_plist),
+                           ("WEBAUTHN_ENTITLEMENTS", truncated), ("WEBAUTHN_PROJECT", not_utf8)):
+            with self.subTest(name=name, path=os.path.basename(path)):
+                with mock.patch.object(self.parity, name, path):
+                    self.assertIsNone(self.parity.harness_rp_id())
+
+    def test_verify_reports_an_unreadable_harness_as_unknown(self):
+        """Test that verify's WebAuthn summary says "unknown", not a traceback, when the harness's files are unreadable
+
+        - Given: a live WebAuthnConfiguration, and the WebAuthn harness's entitlements missing
+        - When:
+           - webauthn_summary runs, as verify runs it
+        - Then:
+           - it returns "unknown"; a pool without WebAuthn is still None
+        """
+        live = {"WebAuthnConfiguration": {"RelyingPartyId": "placeholder-rp.example", "UserVerification": "preferred"}}
+        with mock.patch.object(self.parity, "WEBAUTHN_ENTITLEMENTS", os.path.join(self.state, "missing")):
+            self.assertEqual(self.parity.webauthn_summary(live), "unknown")
+            self.assertIsNone(self.parity.webauthn_summary({"MfaConfiguration": "OFF"}))
+
     def test_the_committed_files_give_the_plugins_relying_party_and_an_app_id(self):
         """With no local file anywhere, the harness's identity resolves offline: the plugin's domain and
         `<team>.<bundle id>` from the project."""
@@ -1379,6 +1637,225 @@ class CIShapeClientTests(unittest.TestCase):
 
 
 
+class WebAuthnMfaDriftTests(unittest.TestCase):
+    """Preflight's MFA comparison covers the WebAuthn relying-party settings the templates define, over
+    fakes shaped exactly as GetUserPoolMfaConfig answered for the sandbox's seven parity pools on 2026-10-02, values
+    replaced by placeholders: WebAuthnConfiguration ({RelyingPartyId, UserVerification}) on the WebAuthn pool only,
+    and left out altogether on the others; SmsMfaConfiguration with SmsConfiguration only. No AWS call is made."""
+
+    SMS = {"SmsConfiguration": {"SnsCallerArn": "arn:aws:iam::000000000000:role/placeholder-sms",
+                                "ExternalId": "placeholder-external-id", "SnsRegion": "xx-test-1"}}
+    TOTP = {"Enabled": True}
+    EMAIL = {"Message": "placeholder {####}", "Subject": "placeholder"}
+    LIVE = {
+        "default": {"SmsMfaConfiguration": SMS, "SoftwareTokenMfaConfiguration": TOTP, "MfaConfiguration": "OPTIONAL"},
+        "email-alias": {"MfaConfiguration": "OFF"},
+        "mfa-req-all": {"SmsMfaConfiguration": SMS, "SoftwareTokenMfaConfiguration": TOTP,
+                        "EmailMfaConfiguration": EMAIL, "MfaConfiguration": "ON"},
+        "mfa-req-email": {"SmsMfaConfiguration": SMS, "EmailMfaConfiguration": EMAIL, "MfaConfiguration": "ON"},
+        "mfa-req-totp-sms": {"SmsMfaConfiguration": SMS, "SoftwareTokenMfaConfiguration": TOTP,
+                             "MfaConfiguration": "ON"},
+        "passwordless": {"SmsMfaConfiguration": SMS, "SoftwareTokenMfaConfiguration": TOTP,
+                         "MfaConfiguration": "OPTIONAL"},
+        "webauthn": {"SmsMfaConfiguration": SMS, "SoftwareTokenMfaConfiguration": TOTP, "MfaConfiguration": "OPTIONAL",
+                     "WebAuthnConfiguration": {"RelyingPartyId": RP_ID, "UserVerification": "preferred"}},
+    }
+
+    def setUp(self):
+        self.state = tempfile.mkdtemp()
+        os.environ["COGNITO_CLIENT_INTEG_DIR"] = self.state
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        self.parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.parity)
+        self.ids = {key: f"placeholder-{key}" for key in self.parity.POOLS}
+        self.write_state({})
+        self.live = copy.deepcopy(self.LIVE)
+        self.parity.harness_rp_id = lambda: RP_ID
+        self.parity.aws_or_none = self.fake_mfa_config
+        self.parity.aws = self.fake_mfa_config
+
+    def tearDown(self):
+        shutil.rmtree(self.state)
+        del os.environ["COGNITO_CLIENT_INTEG_DIR"]
+
+    def write_state(self, pending):
+        with open(os.path.join(self.state, "state.json"), "w") as f:
+            json.dump({"account": "000000000000", "region": "us-west-2",
+                       "parity": {"pools": {k: {"userPoolId": v, "pending": pending.get(k, [])}
+                                            for k, v in self.ids.items()}}}, f)
+
+    def fake_mfa_config(self, *args, **kwargs):
+        self.assertEqual(args[:2], ("cognito-idp", "get-user-pool-mfa-config"))
+        key = next(k for k, v in self.ids.items() if v == args[-1])
+        return copy.deepcopy(self.live[key])
+
+    def gaps(self):
+        return self.parity.live_mfa_gaps(self.parity.load_state())
+
+    def test_the_fakes_cover_every_parity_pool(self):
+        """Test that the live-shaped fakes stand for every parity pool, and only the WebAuthn template has WebAuthn
+
+        - Given: the fakes and pools/*.json
+        - When:
+           - their keys and WebAuthnConfigurations are compared
+        - Then:
+           - the fakes name every POOLS key, and WebAuthnConfiguration appears in the WebAuthn template and fake only
+        """
+        self.assertEqual(set(self.LIVE), set(self.parity.POOLS))
+        for key in self.parity.POOLS:
+            has_webauthn = "WebAuthnConfiguration" in self.parity.load_template(key)["mfa"]
+            self.assertEqual(has_webauthn, key == "webauthn", key)
+            self.assertEqual("WebAuthnConfiguration" in self.LIVE[key], key == "webauthn", key)
+
+    def test_pools_as_provisioned_have_no_gap(self):
+        """Test that live-shaped MFA configurations as provisioned are no gap
+
+        - Given: every pool's GetUserPoolMfaConfig as the sandbox answered it, the WebAuthn pool naming the
+          harness's relying party
+        - When:
+           - the MFA check runs
+        - Then:
+           - there is no gap, and the WebAuthn pool's expected and live summaries carry the same WebAuthn settings
+        """
+        self.assertEqual(self.gaps(), [])
+        state = self.parity.load_state()
+        expected = self.parity.expected_mfa_summaries(state)["webauthn"]
+        self.assertEqual(expected, ("OPTIONAL", ["SMS", "TOTP"], ("the harness's", "preferred")))
+        self.assertEqual(self.parity.live_mfa_summaries(state)["webauthn"], expected)
+
+    def test_any_none_shape_is_no_gap_for_a_template_without_webauthn(self):
+        """Test that a pool whose template has no WebAuthn accepts whatever Cognito returns for none
+
+        - Given: every pool but the WebAuthn one answering WebAuthnConfiguration left out (as the sandbox does), then
+          null, an empty object, one with UserVerification only, and one with an empty RelyingPartyId
+        - When:
+           - the MFA check runs for each
+        - Then:
+           - there is no gap for any of them
+        """
+        for none in (None, {}, {"UserVerification": "preferred"}, {"UserVerification": "required"},
+                     {"RelyingPartyId": "", "UserVerification": "preferred"}):
+            with self.subTest(none=none):
+                for key in self.live:
+                    if key != "webauthn":
+                        self.live[key]["WebAuthnConfiguration"] = copy.deepcopy(none)
+                self.assertEqual(self.gaps(), [])
+
+    def test_relying_party_drift_on_the_webauthn_pool_is_a_gap(self):
+        """Test that the WebAuthn pool's relying-party settings are compared with its template's
+
+        - Given: the WebAuthn pool naming another relying party; then user verification "required"; then no
+          WebAuthnConfiguration; then one with UserVerification only
+        - When:
+           - the MFA check runs for each
+        - Then:
+           - each is one MFA gap on the WebAuthn pool naming what differs, and naming provision, never the domain
+        """
+        cases = (
+            ({"RelyingPartyId": "placeholder-other.example", "UserVerification": "preferred"},
+             "WebAuthn with another relying party and user verification preferred"),
+            ({"RelyingPartyId": RP_ID, "UserVerification": "required"},
+             "WebAuthn with the harness's relying party and user verification required"),
+            (None, "no WebAuthn"),
+            ({"UserVerification": "preferred"}, "no WebAuthn"),
+        )
+        for live, described in cases:
+            with self.subTest(described=described):
+                if live is None:
+                    self.live["webauthn"].pop("WebAuthnConfiguration", None)
+                else:
+                    self.live["webauthn"]["WebAuthnConfiguration"] = copy.deepcopy(live)
+                gaps = self.gaps()
+                self.assertEqual([kind for kind, _ in gaps], ["MFA"])
+                message = gaps[0][1]
+                self.assertTrue(message.startswith(f"webauthn: MFA is OPTIONAL ['SMS', 'TOTP'], {described}, but "
+                                                   "pools/webauthn.json (as provisioned) has OPTIONAL ['SMS', 'TOTP'], "
+                                                   "WebAuthn with the harness's relying party and user verification "
+                                                   "preferred; run infra/provision.sh"), message)
+                self.assertNotIn(RP_ID, message)
+                self.assertNotIn("placeholder-other.example", message)
+
+    def test_a_relying_party_on_a_pool_without_webauthn_is_a_gap(self):
+        """Test that WebAuthn on a pool whose template has none is drift
+
+        - Given: the default pool answering a WebAuthnConfiguration that names a relying party
+        - When:
+           - the MFA check runs
+        - Then:
+           - it is one MFA gap on that pool, saying its template has no WebAuthn
+        """
+        self.live["default"]["WebAuthnConfiguration"] = {"RelyingPartyId": RP_ID, "UserVerification": "preferred"}
+        gaps = self.gaps()
+        self.assertEqual([(kind, gap.split(":")[0]) for kind, gap in gaps], [("MFA", "default")])
+        self.assertIn("(as provisioned) has OPTIONAL ['SMS', 'TOTP'], no WebAuthn;", gaps[0][1])
+
+    def test_a_pending_relying_party_expects_no_webauthn(self):
+        """Test that a WebAuthn pool provisioned with its relying party pending expects no WebAuthn
+
+        - Given: state.json recording the WebAuthn pool with webauthn-relying-party and web-authn pending, as
+          provision degrades it when the relying party is not usable
+        - When:
+           - the MFA check runs with the pool answering no WebAuthnConfiguration, then the harness's
+        - Then:
+           - no gap, then one MFA gap on the WebAuthn pool
+        """
+        self.write_state({"webauthn": ["webauthn-relying-party", "web-authn"]})
+        del self.live["webauthn"]["WebAuthnConfiguration"]
+        self.assertEqual(self.gaps(), [])
+        self.live["webauthn"]["WebAuthnConfiguration"] = copy.deepcopy(self.LIVE["webauthn"]["WebAuthnConfiguration"])
+        self.assertEqual([(kind, gap.split(":")[0]) for kind, gap in self.gaps()], [("MFA", "webauthn")])
+
+    def test_an_unresolvable_harness_relying_party_is_a_gap(self):
+        """Test that a relying party the check cannot resolve is a gap, not a pass, and says where the fault is
+
+        - Given: the harness's relying party unresolvable (its entitlements unreadable, say), and the WebAuthn pool as
+          provisioned
+        - When:
+           - the MFA check runs, then exit_on_gaps for preflight
+        - Then:
+           - it is one WEBAUTHN gap on the WebAuthn pool, naming the harness's committed files, not provision, and no
+             other pool has a gap
+           - preflight refuses with the WEBAUTHN remedy, which restores the harness's files, and no MFA remedy
+        """
+        self.parity.harness_rp_id = lambda: None
+        gaps = self.gaps()
+        self.assertEqual([(kind, gap.split(":")[0]) for kind, gap in gaps], [("WEBAUTHN", "webauthn")])
+        self.assertIn("the relying party pools/webauthn.json names cannot be resolved", gaps[0][1])
+        self.assertIn("committed entitlements or project (CognitoClientHostApp)", gaps[0][1])
+        self.assertNotIn("provision", gaps[0][1])
+        self.assertNotIn(RP_ID, gaps[0][1])
+        self.parity.say = lambda *_: None
+        with self.assertRaises(SystemExit) as refused:
+            self.parity.exit_on_gaps("preflight", [], gaps)
+        self.assertIn("for WEBAUTHN, restore the WebAuthn harness's committed entitlements and project",
+                      str(refused.exception.code))
+        self.assertNotIn("for MFA", str(refused.exception.code))
+
+    def test_preflight_refuses_relying_party_drift_and_passes_as_provisioned(self):
+        """Test that preflight refuses WebAuthn relying-party drift, and passes the pools as provisioned
+
+        - Given: no other gap, and the WebAuthn pool naming another relying party
+        - When:
+           - preflight runs, then runs again with the pool as provisioned
+        - Then:
+           - it refuses, naming MFA and provision; then it passes
+        """
+        for name in ("require_cli_history_off", "require_recorded_account"):
+            setattr(self.parity, name, lambda *args: None)
+        for name in ("live_sender_gaps", "ses_gaps", "wildcard_gaps", "live_self_sign_up_gaps"):
+            setattr(self.parity, name, lambda *args: [])
+        said = []
+        self.parity.say = said.append
+        self.parity.aws = lambda *args, **kwargs: {"IsInSandbox": True}
+        self.live["webauthn"]["WebAuthnConfiguration"]["RelyingPartyId"] = "placeholder-other.example"
+        with self.assertRaises(SystemExit) as refused:
+            self.parity.preflight()
+        self.assertIn("for MFA, re-run infra/provision.sh", str(refused.exception.code))
+        self.assertTrue(any(line.startswith("MFA webauthn: ") for line in said), said)
+        self.live = copy.deepcopy(self.LIVE)
+        self.parity.preflight()
+
+
 class AwsErrorAtTheCommandBoundaryTests(unittest.TestCase):
     """parity.py run as the scripts run it, over a fake `aws` on PATH that refuses one call: an AWS error ends the
     command with one redacted line on stderr and a non-zero exit, never a traceback. No AWS call is
@@ -1424,9 +1901,10 @@ sys.exit(2)
     def tearDown(self):
         shutil.rmtree(self.work)
 
-    def run_parity(self, *args, refuse, code):
-        """parity.py <args…>, with the fake refusing the `refuse` call ("service operation") with `code`. As
-        infra/self-sign-up.sh runs it: this process, its parent, is the wrapper, and holds a lease."""
+    def run_parity(self, *args, refuse, code, refusal=None):
+        """parity.py <args…>, with the fake refusing the `refuse` call ("service operation") with `code`, or with
+        the stderr `refusal` when given. As infra/self-sign-up.sh runs it: this process, its parent, is the wrapper,
+        and holds a lease."""
         with open(os.path.join(self.state, "self-sign-up-leases.json"), "w") as f:
             json.dump([{"pid": os.getpid()}], f)
         operation = "".join(word.capitalize() for word in refuse.split()[1].split("-"))
@@ -1434,7 +1912,7 @@ sys.exit(2)
                        if name not in (RUN,) + CI_VARIABLES and not name.startswith("AWS_")}
         environment.update(PATH=self.bin + os.pathsep + os.environ["PATH"], COGNITO_CLIENT_INTEG_DIR=self.state,
                            AWS_CONFIG_FILE=os.devnull, AWS_SHARED_CREDENTIALS_FILE=os.devnull, FAKE_REFUSE=refuse,
-                           FAKE_REFUSAL=self.REFUSAL.format(code=code, operation=operation),
+                           FAKE_REFUSAL=refusal or self.REFUSAL.format(code=code, operation=operation),
                            COGNITO_CLIENT_INTEG_SELF_SIGN_UP_WRAPPER=str(os.getpid()))
         return subprocess.run([sys.executable, os.path.join(INFRA, "parity.py"), *args], env=environment,
                               stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=60)
@@ -1490,6 +1968,202 @@ sys.exit(2)
         """
         result = self.run_parity("verify", refuse="cognito-idp describe-user-pool", code="AccessDeniedException")
         self.assert_one_redacted_line(result, "parity.py verify: an AWS call failed (AccessDeniedException): ")
+
+    # The AWS CLI binary itself crashing (the disk was full): a traceback whose last line is only the
+    # PyInstaller launcher's, with placeholder identifiers in the lines before it. Seven non-empty lines, and a
+    # blank one.
+    CRASH_LINES = [
+        "first line, which the tail drops",
+        "second line, which the tail drops",
+        "Traceback (most recent call last):",
+        '  File "awscli/clidriver.py", line 92, in main, for arn:aws:sts::000000000000:assumed-role/'
+        "placeholder-role/placeholder-session",
+        '  File "botocore/client.py", line 1005, in _make_api_call, client abcdefghijklmnopqrstuvwxyz',
+        "OSError: [Errno 28] No space left on device: '/placeholder/cache/xx-test-1_PlaceHold3r/"
+        "placeholder@example.com'",
+        "",
+        "[PYI-4242:ERROR] Failed to execute script 'aws' due to unhandled exception!",
+    ]
+    CRASH_IDENTIFIERS = ("000000000000", "placeholder-role", "placeholder-session", "abcdefghijklmnopqrstuvwxyz",
+                         "xx-test-1_PlaceHold3r", "placeholder@example.com")
+
+    def test_a_crashed_cli_keeps_a_redacted_tail(self):
+        """Test that a crash of the AWS CLI binary keeps the cause, redacted, at the command boundary
+
+        - Given: STS accepting the caller, and the CLI crashing on DescribeUserPool with a multi-line traceback whose
+          last line is only the PyInstaller launcher's, and whose earlier lines name placeholder identifiers
+        - When:
+           - `parity.py verify` runs
+        - Then:
+           - it exits non-zero, without a traceback of its own, with its one line ending in the launcher's line,
+             followed by the last five non-empty lines of the CLI's stderr, indented, the cause among them
+           - no identifier survives, and the lines before the last five are dropped
+        """
+        result = self.run_parity("verify", refuse="cognito-idp describe-user-pool", code="unused",
+                                 refusal="\n".join(self.CRASH_LINES))
+        self.assertNotEqual(result.returncode, 0)
+        lines = result.stderr.splitlines()
+        self.assertTrue(lines[0].startswith("parity.py verify: an AWS call failed (Unknown): [PYI-4242:ERROR]"),
+                        lines[0])
+        self.assertEqual(lines[1], "  AWS CLI stderr, last lines (redacted):")
+        self.assertEqual(len(lines), 7, result.stderr)
+        self.assertTrue(all(line.startswith("    ") for line in lines[2:]), result.stderr)
+        self.assertEqual(lines[2], "    Traceback (most recent call last):")
+        self.assertTrue(lines[5].startswith("    OSError: [Errno 28] No space left on device"), lines[5])
+        self.assertEqual(lines[6], "    [PYI-4242:ERROR] Failed to execute script 'aws' due to unhandled exception!")
+        self.assertNotIn("which the tail drops", result.stderr)
+        for identifier in self.CRASH_IDENTIFIERS:
+            self.assertNotIn(identifier, result.stderr + result.stdout)
+
+    # Identifiers split across lines: an ARN cut after "assumed-role/", an account id cut in two, an email cut after
+    # "@"; and a home directory and user name in a traceback's path.
+    SPLIT_LINES = [
+        "Traceback (most recent call last):",
+        '  File "/Users/placeholder-alias/.local/aws/botocore/client.py", line 1005, in _make_api_call',
+        "botocore.exceptions.ClientError: refused for arn:aws:sts::000000000000:assumed-role/",
+        "placeholder-role/placeholder-session in account 000000",
+        "000000 for placeholder@",
+        "example.com by placeholder-alias",
+        "[PYI-4242:ERROR] Failed to execute script 'aws' due to unhandled exception!",
+    ]
+
+    def test_an_identifier_split_across_lines_is_masked_whole(self):
+        """Test that the tail masks identifiers split across lines, and the home directory and user name
+
+        - Given: the AWS CLI crashing with a traceback whose ARN is cut after "assumed-role/", whose account id is cut
+          in two, whose email is cut after "@", and whose path names the home directory and the user
+        - When:
+           - parity.aws makes the call
+        - Then:
+           - no part of any of them survives in the error's message or detail: the cut lines are joined, then
+             redacted, and the home directory reads "~" and the user "<user>"
+           - the traceback's own lines keep their indentation
+        """
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(parity)
+        parity.REGION = "xx-test-1"
+        environment = dict(PATH=self.bin + os.pathsep + os.environ["PATH"], FAKE_REFUSE="cognito-idp describe-user-pool",
+                           FAKE_REFUSAL="\n".join(self.SPLIT_LINES), AWS_CONFIG_FILE=os.devnull,
+                           AWS_SHARED_CREDENTIALS_FILE=os.devnull, HOME="/Users/placeholder-alias",
+                           USER="placeholder-alias")
+        with mock.patch.dict(os.environ, environment):
+            with self.assertRaises(parity.AwsError) as crashed:
+                parity.aws("cognito-idp", "describe-user-pool", "--user-pool-id", "placeholder")
+        text = crashed.exception.message + "\n" + crashed.exception.detail
+        for fragment in ("placeholder-role", "placeholder-session", "000000", "placeholder@", "example.com",
+                         "placeholder-alias", "/Users/"):
+            self.assertNotIn(fragment, text)
+        tail = crashed.exception.detail.splitlines()
+        self.assertEqual(tail[1], '  File "~/.local/aws/botocore/client.py", line 1005, in _make_api_call')
+        self.assertEqual(tail[2], "botocore.exceptions.ClientError: refused for arn:aws:sts::<account>:assumed-role/"
+                                  "<name> in account <account> for <email> by <user>")
+        self.assertEqual(tail[-1], crashed.exception.message)
+
+    def cli_error(self, stderr):
+        """The AwsError parity.aws raises for a CLI that fails with `stderr`, and that parity module."""
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(parity)
+        parity.REGION = "xx-test-1"
+        environment = dict(PATH=self.bin + os.pathsep + os.environ["PATH"], FAKE_REFUSE="cognito-idp describe-user-pool",
+                           FAKE_REFUSAL=stderr, AWS_CONFIG_FILE=os.devnull, AWS_SHARED_CREDENTIALS_FILE=os.devnull,
+                           HOME="/Users/placeholder-alias", USER="placeholder-alias")
+        with mock.patch.dict(os.environ, environment):
+            with self.assertRaises(parity.AwsError) as raised:
+                parity.aws("cognito-idp", "describe-user-pool", "--user-pool-id", "placeholder")
+        return raised.exception, parity
+
+    def test_the_message_is_the_last_joined_line_redacted(self):
+        """Test that the error's message, its main line, masks an identifier its last raw line only ends
+
+        - Given: stderr whose next-to-last line ends at "assumed-role/" and whose last line is the rest of the ARN;
+          then lines cut after a pool id's "_", and before an email's "@"
+        - When:
+           - parity.aws raises for each
+        - Then:
+           - the message is the joined line, redacted: no part of the role, session, pool id or email survives
+        """
+        error, _ = self.cli_error("An error occurred (AccessDeniedException) when calling the DescribeUserPool "
+                                  "operation: refused for arn:aws:sts::000000000000:assumed-role/\n"
+                                  "PlaceholderAdmin/placeholder-alias")
+        self.assertEqual(error.code, "AccessDeniedException")
+        # The user name is masked first, then the rest of the ARN.
+        self.assertTrue(error.message.endswith("refused for arn:aws:sts::<account>:assumed-role/<name>/<user>"),
+                        error.message)
+        for fragment in ("PlaceholderAdmin", "placeholder-alias", "000000000000"):
+            self.assertNotIn(fragment, error.message + error.detail)
+        error, _ = self.cli_error("refused for pool xx-test-1_\nPlaceHold3r by placeholder\n@example.com")
+        self.assertEqual(error.message, "refused for pool <user-pool> by <email>")
+        for fragment in ("PlaceHold3r", "placeholder@", "example.com"):
+            self.assertNotIn(fragment, error.message + error.detail)
+
+    def test_iam_retry_still_matches_a_joined_message(self):
+        """Test that run_with_iam_retry still recognises IAM's not-yet-assumable refusal
+
+        - Given: the CLI failing with IAM's "role … cannot be assumed" refusal, its operation line ending in a colon
+          (so it is joined with the refusal)
+        - When:
+           - run_with_iam_retry runs a call that raises that error once, then succeeds
+        - Then:
+           - the message names the role and "assumed", and the call is retried, then returns
+        """
+        error, parity = self.cli_error("An error occurred (InvalidParameterValueException) when calling the "
+                                       "CreateFunction operation:\nThe role defined for the function cannot be "
+                                       "assumed by Lambda.")
+        self.assertIn("role", error.message)
+        self.assertIn("assumed", error.message)
+        attempts = []
+
+        def call():
+            attempts.append(1)
+            if len(attempts) == 1:
+                raise error
+            return "created"
+        with mock.patch.object(parity.time, "sleep", lambda _: None):
+            self.assertEqual(parity.run_with_iam_retry(call), "created")
+        self.assertEqual(len(attempts), 2)
+
+    def test_a_crashed_cli_raises_its_last_line_as_message_and_the_tail_as_detail(self):
+        """Test that AwsError keeps `message` as the CLI's last line, so callers that match on it still work
+
+        - Given: the AWS CLI crashing with the multi-line traceback above, and a CLI refusing in one line
+        - When:
+           - parity.aws makes each call
+        - Then:
+           - the crash's AwsError has the launcher's line, redacted, as `message`, and the last five non-empty
+             lines, redacted, as `detail`, `message` last; no identifier survives in either
+           - the one-line refusal's `detail` is its `message`, and with_detail leaves its line unchanged
+        """
+        spec = importlib.util.spec_from_file_location("parity", os.path.join(INFRA, "parity.py"))
+        parity = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(parity)
+        parity.REGION = "xx-test-1"
+        environment = dict(PATH=self.bin + os.pathsep + os.environ["PATH"], FAKE_REFUSE="cognito-idp describe-user-pool",
+                           FAKE_REFUSAL="\n".join(self.CRASH_LINES), AWS_CONFIG_FILE=os.devnull,
+                           AWS_SHARED_CREDENTIALS_FILE=os.devnull)
+        with mock.patch.dict(os.environ, environment):
+            with self.assertRaises(parity.AwsError) as crashed:
+                parity.aws("cognito-idp", "describe-user-pool", "--user-pool-id", "placeholder")
+        error = crashed.exception
+        self.assertEqual(error.message, self.CRASH_LINES[-1])
+        tail = error.detail.splitlines()
+        self.assertEqual(len(tail), 5)
+        self.assertEqual(tail[0], "Traceback (most recent call last):")
+        self.assertEqual(tail[-1], error.message)
+        self.assertIn("<account>", error.detail)
+        self.assertIn("<user-pool>", error.detail)
+        self.assertIn("<email>", error.detail)
+        for identifier in self.CRASH_IDENTIFIERS:
+            self.assertNotIn(identifier, error.message + error.detail)
+
+        refusal = self.REFUSAL.format(code="AccessDeniedException", operation="DescribeUserPool")
+        with mock.patch.dict(os.environ, dict(environment, FAKE_REFUSAL=refusal)):
+            with self.assertRaises(parity.AwsError) as refused:
+                parity.aws("cognito-idp", "describe-user-pool", "--user-pool-id", "placeholder")
+        self.assertEqual(refused.exception.code, "AccessDeniedException")
+        self.assertEqual(refused.exception.detail, refused.exception.message)
+        self.assertEqual(parity.with_detail("line", refused.exception), "line")
 
 
 if __name__ == "__main__":

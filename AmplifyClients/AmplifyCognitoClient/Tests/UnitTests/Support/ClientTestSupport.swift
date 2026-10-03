@@ -24,6 +24,9 @@ final class ClientHarness: @unchecked Sendable {
     /// This harness's own system-sheet lock, so no test touches `SystemSheetLock.shared`. A test may replace
     /// it, with seams, before it makes its clients.
     var sheetLock = SystemSheetLock()
+    /// Runs inside a sign-out's logout-page lease body, once it has stopped the passkey registrations
+    /// (`SessionCoreDependencies.afterLogoutStop`). A test may replace it before it makes its clients.
+    var afterLogoutStop: @Sendable (SessionID) async -> Void = { _ in }
     #endif
 
     // `@unchecked Sendable`: the properties below are only touched while holding `lock`.
@@ -85,6 +88,7 @@ final class ClientHarness: @unchecked Sendable {
         dependencies.makePreviousConfigurationRevoker = { [previousConfigurationRevoker] _ in previousConfigurationRevoker }
         #if os(iOS) || os(macOS) || os(visionOS)
         dependencies.sheetLock = sheetLock
+        dependencies.afterLogoutStop = afterLogoutStop
         #endif
         return dependencies
     }

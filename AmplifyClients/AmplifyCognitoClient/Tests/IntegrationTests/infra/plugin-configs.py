@@ -30,9 +30,11 @@ this sandbox's parity backends, from the state provision.sh leaves in ~/.amplify
     plugin-configs.py --remove   put back what each written file replaced (or delete it), but only files
                                  still exactly as written; anything replaced or edited since is left
 
-The plugin's host apps (AuthHostApp, AuthHostedUIApp) copy ~/.aws-amplify/amplify-ios/testconfiguration/
-into their bundle in a "Copy Configuration folder" build phase; CI downloads prebuilt files into the same
-directory (run_integration_tests.yml). So the files go there: outside git, mode 600, never committed.
+The plugin's host apps (AuthHostApp, AuthHostedUIApp, AuthWebAuthnApp) copy
+~/.aws-amplify/amplify-ios/testconfiguration/ into their bundle in a "Copy Configuration folder" build phase (or
+the directory COGNITO_CLIENT_INTEG_DIR names, as the client's host app does, so a --dir file set serves them too);
+CI downloads prebuilt files into the same directory (run_integration_tests.yml). So the files go there: outside
+git, mode 600, never committed.
 AWS_AMPLIFY_TESTCONFIGURATION_DIR overrides the directory.
 
 Suite -> file -> sandbox backend:
