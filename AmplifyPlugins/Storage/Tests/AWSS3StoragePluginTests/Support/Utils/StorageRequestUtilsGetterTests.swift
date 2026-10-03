@@ -15,12 +15,16 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
 
     let testIdentityId = "TestIdentityId"
     let testTargetIdentityId = "TestTargetIdentityId"
+    @available(*, deprecated)
     let guestAccessLevel = StorageAccessLevel.guest
+    @available(*, deprecated)
     let protectedAccessLevel = StorageAccessLevel.protected
+    @available(*, deprecated)
     let privateAccessLevel = StorageAccessLevel.private
 
     // MARK: GetAccessLevelPrefix tests
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithPublic() {
         let expected = guestAccessLevel.serviceAccessPrefix + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(
@@ -31,6 +35,7 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result, expected)
     }
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithProtected() {
         let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(
@@ -41,6 +46,7 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result, expected)
     }
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithPrivate() {
         let expected = privateAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(
@@ -51,6 +57,7 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result, expected)
     }
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithPublicAndTargetIdentityId() {
         let expected = guestAccessLevel.serviceAccessPrefix + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(
@@ -61,6 +68,7 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result, expected)
     }
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithProtectedAndTargetIdentityId() {
         let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(
@@ -71,6 +79,7 @@ class StorageRequestUtilsGetterTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result, expected)
     }
 
+    @available(*, deprecated)
     func testGetAccessLevelPrefixWithPrivateAndTargetIdentityId() {
         let expected = privateAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(

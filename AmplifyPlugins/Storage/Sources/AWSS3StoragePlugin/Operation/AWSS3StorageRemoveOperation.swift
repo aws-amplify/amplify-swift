@@ -44,6 +44,7 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
     }
 
     /// Perform the task to remove item.
+    @available(*, deprecated, message: "Use `AWSS3StorageRemoveTask` instead")
     override func main() {
         if isCancelled {
             finish()
@@ -73,6 +74,7 @@ class AWSS3StorageRemoveOperation: AmplifyOperation<
         }
     }
 
+    @available(*, deprecated, message: "Use `AWSS3StorageRemoveTask` instead")
     private func onServiceEvent(event: StorageEvent<Void, Void, Void, StorageError>) {
         switch event {
         case .completed:

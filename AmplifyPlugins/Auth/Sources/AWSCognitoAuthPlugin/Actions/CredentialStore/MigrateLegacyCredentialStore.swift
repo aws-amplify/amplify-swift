@@ -273,7 +273,7 @@ struct MigrateLegacyCredentialStore: Action {
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                expiration: tokenExpiration
+                legacyExpiration: tokenExpiration
             )
         }
 

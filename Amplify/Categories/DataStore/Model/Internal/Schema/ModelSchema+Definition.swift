@@ -127,7 +127,12 @@ public struct ModelSchemaDefinition {
     let name: String
 
     @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
-    public var pluralName: String?
+    public var pluralName: String? {
+        get { legacyPluralName }
+        set { legacyPluralName = newValue }
+    }
+
+    var legacyPluralName: String?
 
     public var listPluralName: String?
     public var syncPluralName: String?
@@ -146,7 +151,7 @@ public struct ModelSchemaDefinition {
         attributes: [ModelAttribute] = []
     ) {
         self.name = name
-        self.pluralName = pluralName
+        self.legacyPluralName = pluralName
         self.listPluralName = listPluralName
         self.syncPluralName = syncPluralName
         self.fields = [:] as ModelFields
@@ -180,7 +185,7 @@ public struct ModelSchemaDefinition {
     func build() -> ModelSchema {
         return ModelSchema(
             name: name,
-            pluralName: pluralName,
+            pluralName: legacyPluralName,
             listPluralName: listPluralName,
             syncPluralName: syncPluralName,
             authRules: authRules,
@@ -231,13 +236,18 @@ public enum ModelFieldDefinition {
 
     @available(*, deprecated, message: "Use .primaryKey(fields:)")
     public static func id(_ name: String = "id") -> ModelFieldDefinition {
+        return legacyId(name)
+    }
+
+    /// Non-deprecated `id(_:)` for internal system schemas, whose SQLite tables must not change.
+    package static func legacyId(_ name: String = "id") -> ModelFieldDefinition {
         return .field(
             name: name,
             type: .string,
             nullability: .required,
             isReadOnly: false,
             association: nil,
-            attributes: [.primaryKey],
+            attributes: [.legacyPrimaryKey],
             authRules: []
         )
     }

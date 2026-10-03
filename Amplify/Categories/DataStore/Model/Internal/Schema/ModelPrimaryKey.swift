@@ -71,7 +71,7 @@ public struct ModelPrimaryKey: Sendable {
         /// if indexes aren't defined most likely the model has a default `id` as PK
         /// so we have to rely on the `.primaryKey` attribute of each individual field
         } else if attributes.indexes.filter(\.isPrimaryKeyIndex).isEmpty {
-            primaryKeyFields = allFields.values.filter(\.isPrimaryKey)
+            primaryKeyFields = allFields.values.filter(\.isLegacyPrimaryKey)
 
         /// Use the array of fields with a primary key index
         } else if let fieldNames = primaryFieldsFromIndexes(attributes: attributes) {

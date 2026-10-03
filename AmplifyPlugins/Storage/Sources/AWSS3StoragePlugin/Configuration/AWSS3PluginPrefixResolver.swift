@@ -38,16 +38,14 @@ public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
 ///
 /// - Tag: StorageAccessLevelAwarePrefixResolver
 @available(*, deprecated)
-struct StorageAccessLevelAwarePrefixResolver {
+struct StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     let authService: AWSAuthServiceBehavior
 
     /// - Tag: StorageAccessLevelAwarePrefixResolver.init
     init(authService: AWSAuthServiceBehavior) {
         self.authService = authService
     }
-}
 
-extension StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     func resolvePrefix(
         for accessLevel: StorageAccessLevel,
         targetIdentityId: String?

@@ -15,7 +15,7 @@ extension StorageRequestUtils {
     /// Validate `targetIdentityId` is specified only for `protected` accessLevel.
     static func validateTargetIdentityId(
         _ targetIdentityId: String?,
-        accessLevel: StorageAccessLevel
+        accessLevel: LegacyStorageAccessLevel
     ) -> StorageError? {
         if let targetIdentityId {
             if targetIdentityId.isEmpty {

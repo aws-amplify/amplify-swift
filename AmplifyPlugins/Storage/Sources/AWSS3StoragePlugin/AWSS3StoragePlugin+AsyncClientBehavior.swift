@@ -13,6 +13,7 @@ import AWSS3
 
 public extension AWSS3StoragePlugin {
 
+    @available(*, deprecated, message: "Use getURL(path:options:)")
     @discardableResult
     func getURL(
         key: String,
@@ -82,6 +83,7 @@ public extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    @available(*, deprecated, message: "Use downloadData(path:options:)")
     @discardableResult
     func downloadData(
         key: String,
@@ -101,6 +103,7 @@ public extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    @available(*, deprecated, message: "Use downloadFile(path:options:)")
     @discardableResult
     func downloadFile(
         key: String,
@@ -141,6 +144,7 @@ public extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    @available(*, deprecated, message: "Use uploadData(path:options:)")
     @discardableResult
     func uploadData(
         key: String,
@@ -181,6 +185,7 @@ public extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    @available(*, deprecated, message: "Use uploadFile(path:options:)")
     @discardableResult
     func uploadFile(
         key: String,
@@ -221,6 +226,7 @@ public extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    @available(*, deprecated, message: "Use remove(path:options:)")
     @discardableResult
     func remove(
         key: String,
@@ -257,6 +263,7 @@ public extension AWSS3StoragePlugin {
         return try await task.value
     }
 
+    @available(*, deprecated, message: "Use list(path:options:)")
     func list(
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
