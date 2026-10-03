@@ -33,6 +33,11 @@ public enum ModelAttribute: Equatable, Sendable {
 public enum ModelFieldAttribute: Sendable {
     @available(*, deprecated, message: "Use the primaryKey member of the schema")
     case primaryKey
+
+    /// Package alias for the deprecated `.primaryKey` case, used by internal legacy schemas.
+    package static var legacyPrimaryKey: ModelFieldAttribute {
+        .primaryKey
+    }
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -50,7 +55,12 @@ public struct ModelField: Sendable {
 
     @available(*, deprecated, message: "Use the primaryKey member of the schema")
     public var isPrimaryKey: Bool {
-        return attributes.contains { $0 == .primaryKey }
+        return isLegacyPrimaryKey
+    }
+
+    /// Non-deprecated `isPrimaryKey` for internal callers.
+    package var isLegacyPrimaryKey: Bool {
+        return attributes.contains { $0 == .legacyPrimaryKey }
     }
 
     public init(
@@ -89,7 +99,12 @@ public struct ModelSchema: Sendable {
     public let name: String
 
     @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
-    public let pluralName: String?
+    public var pluralName: String? {
+        legacyPluralName
+    }
+
+    /// Non-deprecated storage behind `pluralName`.
+    package let legacyPluralName: String?
 
     public let listPluralName: String?
     public let syncPluralName: String?
@@ -119,7 +134,7 @@ public struct ModelSchema: Sendable {
         primaryKeyFieldKeys: [ModelFieldName] = []
     ) {
         self.name = name
-        self.pluralName = pluralName
+        self.legacyPluralName = pluralName
         self.listPluralName = listPluralName
         self.syncPluralName = syncPluralName
         self.authRules = authRules

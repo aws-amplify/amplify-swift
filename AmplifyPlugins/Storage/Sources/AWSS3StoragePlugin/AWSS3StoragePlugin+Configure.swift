@@ -89,13 +89,13 @@ extension AWSS3StoragePlugin {
         defaultBucket: ResolvedStorageBucket,
         storageService: AWSS3StorageServiceBehavior,
         authService: AWSAuthCredentialsProviderBehavior,
-        defaultAccessLevel: StorageAccessLevel,
+        defaultAccessLevel: LegacyStorageAccessLevel,
         queue: OperationQueue = OperationQueue()
     ) {
         self.defaultBucket = defaultBucket
         self.authService = authService
         self.queue = queue
-        self.defaultAccessLevel = defaultAccessLevel
+        legacyDefaultAccessLevel = defaultAccessLevel
         storageServicesByBucket[defaultBucket.bucketInfo.bucketName] = storageService
     }
 
@@ -124,7 +124,7 @@ extension AWSS3StoragePlugin {
     private struct ConfigurationClosures {
         let retrieveRegion: () throws -> String
         let retrieveBucket: () throws -> String
-        let retrieveDefaultAccessLevel: () throws -> StorageAccessLevel
+        let retrieveDefaultAccessLevel: () throws -> LegacyStorageAccessLevel
     }
 
     private func retrieveConfiguration(_ configuration: AmplifyOutputsData) throws -> ConfigurationClosures {
@@ -248,7 +248,7 @@ extension AWSS3StoragePlugin {
 
     /// Checks if the access level is specified in the configurationand and retrieves it. Returns the default
     /// public access level if none is found in the configuration.
-    private static func getDefaultAccessLevel(_ configuration: [String: JSONValue]) throws -> StorageAccessLevel {
+    private static func getDefaultAccessLevel(_ configuration: [String: JSONValue]) throws -> LegacyStorageAccessLevel {
         if let defaultAccessLevelConfig = configuration[PluginConstants.defaultAccessLevel] {
             guard case let .string(defaultAccessLevelString) = defaultAccessLevelConfig else {
                 throw PluginError.pluginConfigurationError(
@@ -257,7 +257,7 @@ extension AWSS3StoragePlugin {
                 )
             }
 
-            let defaultAccessLevelOptional = StorageAccessLevel.init(rawValue: defaultAccessLevelString)
+            let defaultAccessLevelOptional = LegacyStorageAccessLevel(rawValue: defaultAccessLevelString)
             guard let defaultAccessLevel = defaultAccessLevelOptional else {
                 throw PluginError.pluginConfigurationError(
                     PluginErrorConstants.invalidDefaultAccessLevel.errorDescription,

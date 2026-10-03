@@ -69,6 +69,6 @@ extension StorageListResult.Item {
             throw StorageError.unknown("Missing lastModified in response")
         }
 
-        self.init(key: resultKey, size: s3Object.size, eTag: eTag, lastModified: lastModified)
+        self.init(legacyKey: resultKey, size: s3Object.size, eTag: eTag, lastModified: lastModified)
     }
 }

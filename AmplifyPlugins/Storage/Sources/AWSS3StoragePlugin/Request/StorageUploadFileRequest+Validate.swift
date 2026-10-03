@@ -17,7 +17,7 @@ extension StorageUploadFileRequest {
             return nil
         }
 
-        if let error = StorageRequestUtils.validateKey(key) {
+        if let error = StorageRequestUtils.validateKey(legacyKey) {
             return error
         }
 

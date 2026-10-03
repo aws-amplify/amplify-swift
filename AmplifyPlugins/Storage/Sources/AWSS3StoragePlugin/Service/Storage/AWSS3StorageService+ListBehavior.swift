@@ -18,16 +18,16 @@ extension AWSS3StorageService {
         options: StorageListRequest.Options
     ) async throws -> StorageListResult {
         if let error = StorageRequestUtils.validateTargetIdentityId(
-            options.targetIdentityId,
-            accessLevel: options.accessLevel
+            options.legacyTargetIdentityId,
+            accessLevel: options.legacyAccessLevel
         ) {
             throw error
         }
-        if let error = StorageRequestUtils.validatePath(options.path) {
+        if let error = StorageRequestUtils.validatePath(options.legacyPath) {
             throw error
         }
 
-        let finalPrefix: String = if let path = options.path {
+        let finalPrefix: String = if let path = options.legacyPath {
             prefix + path
         } else {
             prefix

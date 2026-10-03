@@ -118,7 +118,12 @@ public class AmplifyFirehoseClient {
             additionalMetadata: ["md/amplify-firehose"]
         )
 
-        self.firehoseClient = AWSFirehose.FirehoseClient(config: clientConfig)
+        // Inlined from the deprecated FirehoseClient.init(config:)
+        do {
+            self.firehoseClient = try AWSFirehose.FirehoseClient(config: clientConfig.toSendable())
+        } catch {
+            fatalError("Failed to convert deprecated configuration: \(error)")
+        }
 
         // Create RecordClient with Firehose-specific sender
         let sender = FirehoseRecordSender(

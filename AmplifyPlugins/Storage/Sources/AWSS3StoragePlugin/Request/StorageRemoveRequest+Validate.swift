@@ -11,7 +11,7 @@ import Foundation
 extension StorageRemoveRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
-        if let error = StorageRequestUtils.validateKey(key) {
+        if let error = StorageRequestUtils.validateKey(legacyKey) {
             return error
         }
 

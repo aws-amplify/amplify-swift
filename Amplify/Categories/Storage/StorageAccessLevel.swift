@@ -28,4 +28,34 @@ public enum StorageAccessLevel: String, Sendable {
     ///
     /// - Tag: StorageAccessLevel.private
     case `private`
+
+    // Bridges live in the type body: members don't inherit the type's deprecation.
+    package init(_ legacy: LegacyStorageAccessLevel) {
+        switch legacy {
+        case .guest:
+            self = .guest
+        case .protected:
+            self = .protected
+        case .private:
+            self = .private
+        }
+    }
+
+    package var legacyValue: LegacyStorageAccessLevel {
+        switch self {
+        case .guest:
+            return .guest
+        case .protected:
+            return .protected
+        case .private:
+            return .private
+        }
+    }
+}
+
+/// Non-deprecated mirror of `StorageAccessLevel`, used to carry legacy values without warnings.
+package enum LegacyStorageAccessLevel: String, Sendable {
+    case guest
+    case protected
+    case `private`
 }
