@@ -160,7 +160,8 @@ jobs:
         run: |
           cd ./AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer
           npm install
-          npm start &
+          # Its log is uploaded when a test attempt fails (below).
+          npm start > "$RUNNER_TEMP/localserver.log" 2>&1 &
         shell: bash
 
       # The time allowance fails a test that runs past 10 minutes (a passkey sheet that never appears or
@@ -198,6 +199,19 @@ jobs:
           other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
           # The app (it signs as the plugin's WebAuthn app) and the UI-test runner the first attempt installed.
           uninstall_bundle_ids: com.amazon.aws.amplify.swift.AuthWebAuthnApp com.aws.amplify.cognitoclient.CognitoClientWebAuthnUITests.xctrunner
+
+      # The first attempt's failures are the ones to diagnose, and its continue-on-error hides them
+      # from failure(), so this keys on each attempt's outcome. The log covers both attempts. Only this log
+      # is uploaded (the repository is public): it holds request paths, simctl commands (simulator UDIDs,
+      # the app's bundle ID, Face ID notification names), their durations and simctl's own errors.
+      - name: Upload the simulator server log
+        if: always() && (steps.run-tests.outcome == 'failure' || steps.retry-tests.outcome == 'failure')
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+        with:
+          name: CognitoClientWebAuthnUITests-localserver-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/localserver.log
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')
