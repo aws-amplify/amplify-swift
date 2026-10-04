@@ -146,15 +146,24 @@ enum HostedUIFixtures {
     /// Both pools and a hosted UI, in the same namespace as `ClientFixtures.configuration`.
     static let configuration = ClientFixtures.make(userPool: userPool, identityPool: ClientFixtures.identityPool)
 
-    /// A window to anchor sheets to. The fake engine never shows it.
+    /// The window to anchor sheets to: one per test process, made on first use. The fake engine and the
+    /// presenter spy never show it, and no test closes it, so the hosted-UI tests can share it.
+    ///
+    /// Made on first use, not up front: a process's first `UIWindow()` can block for minutes on a just-booted,
+    /// loaded simulator while SpringBoard bootstraps the test host.
     @MainActor
     static func window() -> AuthClientPresentationAnchor {
+        sharedWindow
+    }
+
+    @MainActor
+    private static let sharedWindow: AuthClientPresentationAnchor = {
         #if canImport(UIKit)
         return UIWindow()
         #else
         return NSWindow()
         #endif
-    }
+    }()
 
     /// A payload signed in through the hosted UI, sharing the browser's cookies unless `ephemeral`.
     static func hostedUIPayload(_ username: String = "alice", ephemeral: Bool = false, version: Int = 1) -> FakePayload {

@@ -37,7 +37,8 @@ enum SimulatorServer {
     }
 
     /// How long one request waits for the server's answer. The server answers once its `simctl` command
-    /// returns, and sends nothing before, so this bounds the whole request.
+    /// returns, and sends nothing before, so this bounds the whole request. The server bounds its commands
+    /// (18 s a request) and answers a hung one with HTTP 500 "Timed out …", which is retried like a time-out.
     static let requestTimeout: TimeInterval = 20
     /// How many times a request is sent, 2 s apart, before it fails: the server can be briefly slow to
     /// answer (as the plugin's `AuthWebAuthnAppUITests.sendLocalServerRequest` retries a single `-1001`).
@@ -53,23 +54,37 @@ enum SimulatorServer {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = requestTimeout
         var lastError: Error?
+        var serverTimeout: String?
         for attempt in 1 ... attempts {
             do {
-                let (_, response) = try await URLSession.shared.data(for: request)
-                guard let status = (response as? HTTPURLResponse)?.statusCode, status < 300 else {
-                    let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+                let (data, response) = try await URLSession.shared.data(for: request)
+                let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+                let body = String(bytes: data, encoding: .utf8) ?? ""
+                if status == 500, body.hasPrefix("Timed out") {
+                    // The server stopped a command that hung: as with a time-out, the next try can succeed.
+                    serverTimeout = body
+                    lastError = URLError(.timedOut)
+                } else if status < 300 {
+                    return
+                } else {
+                    // The server answered, and refused: its command failed, and sending it again will not help.
                     throw SimulatorServerError("POST \(path) failed: HTTP \(status)")
                 }
-                return
             } catch let error as SimulatorServerError {
-                // The server answered, and refused: its command failed, and sending it again will not help.
                 throw error
             } catch {
+                serverTimeout = nil
                 lastError = error
-                if attempt < attempts {
-                    try await Task.sleep(nanoseconds: 2_000_000_000)
-                }
             }
+            if attempt < attempts {
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+            }
+        }
+        if let serverTimeout {
+            throw SimulatorServerError("""
+            POST \(path): the simulator server's simctl command hung, \(attempts) times. Its last answer: \
+            \(serverTimeout). Check the server's log.
+            """)
         }
         let timedOut = (lastError as? URLError)?.code == .timedOut
         throw SimulatorServerError(timedOut ? """

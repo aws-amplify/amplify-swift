@@ -18,7 +18,11 @@ final class LiveEngineWebUITests: XCTestCase {
 
     private var presenter: PresenterSpy!
     private var harness: LiveEngineHarness!
-    private var window: AuthClientPresentationAnchor!
+    /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
+    /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
+    private var window: AuthClientPresentationAnchor {
+        get async { await HostedUIFixtures.window() }
+    }
 
     override func setUp() async throws {
         presenter = PresenterSpy()
@@ -27,7 +31,6 @@ final class LiveEngineWebUITests: XCTestCase {
             hostedUIPresenter: presenter,
             hostedUIURLSession: TokenEndpointStub.session
         )
-        window = await HostedUIFixtures.window()
         let presenter = presenter!
         TokenEndpointStub.respond { _ in TokenEndpointStub.tokens("alice", nonce: presenter.lastQueryItem("nonce")) }
         harness.scriptIdentityPool()
@@ -37,7 +40,6 @@ final class LiveEngineWebUITests: XCTestCase {
         TokenEndpointStub.reset()
         presenter = nil
         harness = nil
-        window = nil
     }
 
     private func request(
@@ -45,13 +47,13 @@ final class LiveEngineWebUITests: XCTestCase {
         identity: EngineIdentityPolicy = .none,
         nonce: String = "flow-nonce"
     ) async -> EngineWebUISignInRequest {
-        let window = window!
+        let window = await window
         let box = await MainActor.run { EnginePresentationAnchorBox(window) }
         return EngineWebUISignInRequest(anchor: box, options: EngineWebUIOptions(options, nonce: nonce), identity: identity)
     }
 
     private func box() async -> EnginePresentationAnchorBox {
-        let window = window!
+        let window = await window
         return await MainActor.run { EnginePresentationAnchorBox(window) }
     }
 
@@ -84,6 +86,7 @@ final class LiveEngineWebUITests: XCTestCase {
             XCTAssertEqual(try engine.signOutPresentsBrowser(payload), !ephemeral)
             let shown = try XCTUnwrap(presenter.shown.last)
             XCTAssertEqual(shown.inPrivate, ephemeral)
+            let window = await window
             XCTAssertTrue(shown.anchor === window)
         }
     }
@@ -279,6 +282,7 @@ final class LiveEngineWebUITests: XCTestCase {
         let logout = try XCTUnwrap(presenter.shown.last)
         XCTAssertEqual(logout.url.path, "/logout")
         XCTAssertFalse(logout.inPrivate)
+        let window = await window
         XCTAssertTrue(logout.anchor === window)
         XCTAssertEqual(harness.cognito.operations, ["RevokeToken"])
     }
@@ -347,7 +351,7 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertEqual(failed.revokeError?.errorDescription, "")
     }
 
-    /// a page the user asked for that cannot be shown is the plugin's `.failed`.
+    /// A page the user asked for that cannot be shown is the plugin's `.failed`.
     ///
     /// - Given: a shared-cookie payload, and a window that has closed
     /// - When: it is revoked with `.present`
@@ -389,7 +393,7 @@ final class LiveEngineWebUITests: XCTestCase {
         XCTAssertEqual(harness.cognito.operations, [])
     }
 
-    /// the engine's own refusals of the hosted UI's sign-out end it, as the plugin's `.failed` does,
+    /// The engine's own refusals of the hosted UI's sign-out end it, as the plugin's `.failed` does,
     /// instead of rerunning it without the page.
     ///
     /// - Given: a shared-cookie payload
@@ -418,7 +422,7 @@ final class LiveEngineWebUITests: XCTestCase {
         }
     }
 
-    /// as the plugin, every other `HostedUIError` of the logout step stops the sign-out, instead of rerunning
+    /// As the plugin, every other `HostedUIError` of the logout step stops the sign-out, instead of rerunning
     /// it without the page.
     ///
     /// - Given: a shared-cookie payload

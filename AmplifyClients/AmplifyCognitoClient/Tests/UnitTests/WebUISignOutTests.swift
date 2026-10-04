@@ -20,13 +20,16 @@ import XCTest
 final class WebUISignOutTests: XCTestCase {
 
     private var harness: ClientHarness!
-    private var window: AuthClientPresentationAnchor!
+    /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
+    /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
+    private var window: AuthClientPresentationAnchor {
+        get async { await HostedUIFixtures.window() }
+    }
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
 
     override func setUp() async throws {
         harness = ClientHarness()
-        window = await HostedUIFixtures.window()
     }
 
     override func tearDown() async throws {
@@ -34,7 +37,6 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertNil(holder, "a test left the sheet held")
         await harness.waitForBaseline()
         harness = nil
-        window = nil
     }
 
     private func client(
@@ -48,7 +50,7 @@ final class WebUISignOutTests: XCTestCase {
         _ client: AmplifyCognitoClient,
         options: AuthClientSignOutOptions = AuthClientSignOutOptions()
     ) async -> AuthClientSignOutResult {
-        let window = window!
+        let window = await window
         return await client.signOut(presentationAnchor: window, options: options)
     }
 
@@ -119,6 +121,7 @@ final class WebUISignOutTests: XCTestCase {
             return XCTFail("expected .present")
         }
         let anchor = await MainActor.run { box.anchor }
+        let window = await window
         XCTAssertTrue(anchor === window)
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
         let holder = await lock.currentHolder
@@ -144,7 +147,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
         let work = work
-        let window = window!
+        let window = await window
         let held = HeldSheet()
         let cancelledCeremony = TestBox(false)
         engine.scriptCeremonyBody { _ in
@@ -191,7 +194,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         let held = HeldSheet()
         engine.scriptCeremonyBody { _ in
             try await held.answer()
@@ -238,7 +241,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         let up = Gate(isOpen: true)
         let stuck = Gate()
         engine.scriptCeremonyBody { _ in
@@ -287,7 +290,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         let lock = harness.sheetLock
         let home = home
         let otherHolds = Gate(isOpen: true)
@@ -369,7 +372,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, payload)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         let lock = harness.sheetLock
         let start = Gate()
         engine.scriptPhase5(.associateWebAuthnCredential) { _ in
@@ -457,7 +460,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
         let work = work
-        let window = window!
+        let window = await window
         let held = HeldSheet()
         engine.scriptCeremonyBody { _ in
             try await held.answer()
@@ -513,7 +516,7 @@ final class WebUISignOutTests: XCTestCase {
         let lock = harness.sheetLock
         let work = work
         let home = home
-        let window = window!
+        let window = await window
         let held = HeldSheet()
         engine.scriptCeremonyBody { _ in
             try await held.answer()
@@ -592,7 +595,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
-        let window = window!
+        let window = await window
         engine.scriptHostedUIRevoke { _, _, _ in
             let holder = await lock.currentHolder
             XCTAssertEqual(holder, work)
@@ -637,7 +640,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
         let work = work
-        let window = window!
+        let window = await window
         let start = Gate()
         engine.scriptPhase5(.associateWebAuthnCredential) { _ in
             await start.pass()
@@ -696,7 +699,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         let lock = harness.sheetLock
         engine.scriptHostedUIRevoke { _, _, _ in .complete }
 
@@ -715,7 +718,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(engine.ceremonyAnchorCalls.count, 0)
     }
 
-    /// a page the user asked for that cannot be shown is the plugin's `.failed`.
+    /// A page the user asked for that cannot be shown is the plugin's `.failed`.
     ///
     /// - Given: a shared-cookie session, and another session holding the sheet with its hosted-UI sign-in
     /// - When: the first is signed out with a window
@@ -729,7 +732,7 @@ final class WebUISignOutTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let browser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: browser)
-        let window = window!
+        let window = await window
         let homeSignIn = Task { try await homeClient.signInWithWebUI(presentationAnchor: window) }
         await browser.shown.waitForArrivals(1)
 
@@ -788,7 +791,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// as the plugin, a hosted-UI sign-out with no hosted UI to sign out of fails, and the user stays
+    /// As the plugin, a hosted-UI sign-out with no hosted UI to sign out of fails, and the user stays
     /// signed in.
     ///
     /// - Given: a shared-cookie session (an adopted plugin record) under a configuration with no hosted UI
@@ -815,7 +818,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(events.received, [])
     }
 
-    /// the same for a hosted UI configured with no sign-out redirect URI.
+    /// The same for a hosted UI configured with no sign-out redirect URI.
     ///
     /// - Given: a shared-cookie session under a configuration whose `oauth` has no sign-out redirect URI
     /// - When: it is signed out with a window
@@ -849,7 +852,7 @@ final class WebUISignOutTests: XCTestCase {
         XCTAssertEqual(state, .signedIn(AuthClientUser(username: "alice", userId: "sub-alice")))
     }
 
-    /// the engine's own check of the hosted UI's configuration (`HostedUIError.pluginConfiguration`, or a
+    /// The engine's own check of the hosted UI's configuration (`HostedUIError.pluginConfiguration`, or a
     /// sign-out redirect URI it cannot use) is the same `.failed`.
     ///
     /// - Given: a shared-cookie session whose `.present` sign-out the engine refuses for its configuration
@@ -1024,7 +1027,7 @@ final class WebUISignOutTests: XCTestCase {
             await closed.pass()
             return try end(Task.isCancelled)
         }
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         await client.cancelWebUISignIn()
@@ -1108,7 +1111,7 @@ final class WebUISignOutTests: XCTestCase {
             await closed.pass()
             return try end(Task.isCancelled)
         }
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await opened.waitForArrivals(1)
         signOut.cancel()
@@ -1170,7 +1173,7 @@ final class WebUISignOutTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
         let lock = harness.sheetLock
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await held.waitForArrivals(1)
 
@@ -1215,7 +1218,7 @@ final class WebUISignOutTests: XCTestCase {
         try harness.signIn(work, HostedUIFixtures.hostedUIPayload())
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let anchor = self.window!
+        let anchor = await self.window
         let signOut = Task { await client.signOut(presentationAnchor: anchor) }
         await held.waitForArrivals(1)
 

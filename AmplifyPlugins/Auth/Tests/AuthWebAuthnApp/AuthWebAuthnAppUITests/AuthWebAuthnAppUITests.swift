@@ -87,36 +87,40 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     @MainActor
     func testWebAuthnAPIs() async throws {
         // 1. Associate new WebAuthn Credential
-        guard let associateContinueButton = await passkeySheetButton(after: associateButton) else {
-            XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential: \(lastResult)")
+        let associateDeadline = Date().addingTimeInterval(associateCeremonyWindow)
+        guard let associateContinueButton = await passkeySheetButton(
+            after: associateButton,
+            ceremonyDeadline: associateDeadline
+        ) else {
+            XCTFail("Failed to find the 'Continue' button to Associate new WebAuthn credential: \(redactedResult)")
             return
         }
         associateContinueButton.tap()
 
-        // Trigger a matching face
-        try await matchBiometrics()
-        guard waitForResult("WebAuthn credential was associated") else {
-            XCTFail("Failed to associate credential: \(lastResult)")
+        // Trigger a matching face, again while the ceremony runs
+        guard try await waitForResultMatchingBiometrics("WebAuthn credential was associated", until: associateDeadline) else {
+            XCTFail("Failed to associate credential: \(redactedResult)")
             return
         }
 
         // 2. List existing credentials
         listButton.tap()
         guard waitForResult("WebAuthn Credentials: 1") else {
-            XCTFail("Failed to list credentials: \(lastResult)")
+            XCTFail("Failed to list credentials: \(redactedResult)")
             return
         }
 
         // 3. Sign Out
         signOutButton.tap()
         guard waitForResult("User is signed out"), signInButton.exists else {
-            XCTFail("Failed to sign out user: \(lastResult)")
+            XCTFail("Failed to sign out user: \(redactedResult)")
             return
         }
 
         // 4. Sign in with WebAuthn
-        guard let signInContinueButton = await passkeySheetButton(after: signInButton) else {
-            XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn: \(lastResult)")
+        let signInDeadline = Date().addingTimeInterval(signInCeremonyWindow)
+        guard let signInContinueButton = await passkeySheetButton(after: signInButton, ceremonyDeadline: signInDeadline) else {
+            XCTFail("Failed to find the 'Continue' button to Sign In with WebAuthn: \(redactedResult)")
             return
         }
 
@@ -132,25 +136,23 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
         // Tap the "Continue" button
         signInContinueButton.tap()
 
-        // Trigger a matching face
-        try await matchBiometrics()
-
-        guard waitForResult("User is signed in") else {
-            XCTFail("Failed to Sign In with WebAuthn: \(lastResult)")
+        // Trigger a matching face, again while the ceremony runs
+        guard try await waitForResultMatchingBiometrics("User is signed in", until: signInDeadline) else {
+            XCTFail("Failed to Sign In with WebAuthn: \(redactedResult)")
             return
         }
 
         // 5. Delete credential
         deleteButton.tap()
         guard waitForResult("WebAuthn credential was deleted") else {
-            XCTFail("Failed to delete credential: \(lastResult)")
+            XCTFail("Failed to delete credential: \(redactedResult)")
             return
         }
 
         // 6. Verify deletion
         listButton.tap()
         guard waitForResult("WebAuthn Credentials: 0") else {
-            XCTFail("Failed to list credentials: \(lastResult)")
+            XCTFail("Failed to list credentials: \(redactedResult)")
             return
         }
     }
@@ -172,15 +174,21 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     }
 
     // The local biometrics-control server can be briefly slow/unresponsive; retry instead of
-    // failing the whole test on a single -1001 timeout.
+    // failing the whole test on a single -1001 timeout. The server bounds its `simctl` commands and
+    // answers HTTP 500 "Timed out …" when one hangs, before this request's 20 s: that is retried too.
     private func sendLocalServerRequest(_ server: LocalServer, description: String, attempts: Int = 3) async throws {
         var request = server.urlRequest
         request.timeoutInterval = 20
         var lastError: Error?
         for attempt in 1 ... attempts {
             do {
-                let (_, response) = try await URLSession.shared.data(for: request)
-                XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to \(description)")
+                let (data, response) = try await URLSession.shared.data(for: request)
+                let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+                let body = String(bytes: data, encoding: .utf8) ?? ""
+                if status == 500, body.hasPrefix("Timed out") {
+                    throw URLError(.timedOut, userInfo: [NSLocalizedDescriptionKey: "The server's \(body)"])
+                }
+                XCTAssertTrue(status < 300, "Failed to \(description): HTTP \(status) \(body)")
                 return
             } catch {
                 lastError = error
@@ -244,7 +252,7 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     private func signUpAndSignInUser() {
         signUpButton.tap()
         guard waitForResult("User is signed in"), signOutButton.exists else {
-            XCTFail("Failed to Sign Up and Sign In: \(lastResult)")
+            XCTFail("Failed to Sign Up and Sign In: \(redactedResult)")
             return
         }
     }
@@ -257,7 +265,7 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
         }
         deleteUserButton.tap()
         guard waitForResult("User was deleted"), signUpButton.exists else {
-            XCTFail("Failed to delete the user: \(lastResult)")
+            XCTFail("Failed to delete the user: \(redactedResult)")
             return
         }
     }
@@ -277,40 +285,96 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
         [springboard, XCUIApplication(bundleIdentifier: "com.apple.AuthenticationServicesUI")]
     }
 
-    /// Taps `button` and returns the passkey sheet's confirming button. On a freshly booted simulator
-    /// the first ceremony can fail before any sheet appears (the relying party's association is still
-    /// being fetched), so a failed ceremony is retried, up to 3 times. It taps again only once the
-    /// previous ceremony has reported its failure: tapping while a sheet is still coming up starts a
-    /// second ceremony, and the first one then never completes.
+    /// The time budget, against XCTest's 10-minute execution allowance, counting `setUp()` and `tearDown()`
+    /// in it to be safe. Every wait is bounded:
+    /// - a simulator-server request: 3 tries of at most 20 s, 2 s apart (64 s), and a request that fails
+    ///   all three ends the test (the server answers a hung command within 18 s);
+    /// - `setUp()`: `/boot` and `/enroll` (about 1 s each), the launch, then 30 s each for the username and
+    ///   the sign-up's sign-in, so about 72 s;
+    /// - the associate ceremony: `associateCeremonyWindow`, 150 s, plus its last `/match` (about 2 s);
+    /// - the sign-in ceremony: `signInCeremonyWindow`, 90 s, plus its last `/match`;
+    /// - list, sign out, delete and list again: 30 s each;
+    /// - `tearDown()`: closing a sheet (a few queries), 30 s to delete the user, terminating the app, and
+    ///   `/uninstall` (64 s), so about 105 s.
+    ///
+    /// So, with the simulator server answering promptly, a run in which every step passes just inside its
+    /// bound and the last fails at it ends within about 72 + 152 + 92 + 120 + 105 = 541 s, and a failing step
+    /// ends the test (`continueAfterFailure` is off) and skips the steps after it. With a slow server (each
+    /// request near its 64 s bound) the sum can pass 600 s; XCTest's allowance then ends the test, and
+    /// `tearDown()`'s delete and uninstall may not run. The XCUI queries have no timeout of their own (the client's harness bounds
+    /// them with a deadline that uninstalls the app; this test does not).
+    private let associateCeremonyWindow = TimeInterval(150)
+
+    /// Shorter than `associateCeremonyWindow`: the sign-in starts only after the association completed, so
+    /// the device has already verified the relying party's association and a `Code=1004` is not expected.
+    private let signInCeremonyWindow = TimeInterval(90)
+
+    /// How much of a ceremony's window is kept for its result after the sheet's confirming tap: the sheet
+    /// must be found by the window's end minus this.
+    private let ceremonyResultTime = TimeInterval(30)
+
+    /// A retry taps this long after the previous try's failure was seen.
+    private let ceremonyRetryDelay = TimeInterval(10)
+
+    /// A retry starts only while this much of the sheet's time remains after `ceremonyRetryDelay`, so it can
+    /// still wait for its sheet.
+    private let ceremonyMinimumTry = TimeInterval(30)
+
+    /// Taps `button` and returns the passkey sheet's confirming button, found before `ceremonyDeadline`
+    /// minus `ceremonyResultTime`; nil when there is none by then, or when the ceremony fails with anything
+    /// but a transient failure.
+    ///
+    /// The one transient failure is `Code=1004` in the result line: on a freshly booted simulator a ceremony
+    /// fails with it at once, before any sheet, until the device has verified the relying party's association
+    /// (the plugin reports "Unable to complete the association"). The client's WebAuthn UI test retries the
+    /// same failure; its other retries (a sheet that never appeared, and `browserBusy` right after that) follow
+    /// a cancel that this app has no way to make. Every other failure ends the ceremony at once.
+    ///
+    /// A retry taps `ceremonyRetryDelay` after the failure is seen. Seeing it takes from a moment to 10 s: a
+    /// failure that reads the same as the previous one is only told apart from it once the line has blanked
+    /// (the app clears it when the action starts) or 10 s have passed. So tries are 10 to 20 s apart, and a new
+    /// one starts only while `ceremonyRetryDelay` + `ceremonyMinimumTry` remain for the sheet.
+    ///
+    /// It taps again only once the previous ceremony has reported its failure, and never after the sheet's
+    /// button is returned: tapping while a sheet is still coming up starts a second ceremony, and the first
+    /// one then never completes; tapping again under the Face ID prompt hangs.
     @MainActor
-    private func passkeySheetButton(after button: XCUIElement, attempts: Int = 3) async -> XCUIElement? {
-        for attempt in 1 ... attempts {
+    private func passkeySheetButton(after button: XCUIElement, ceremonyDeadline: Date) async -> XCUIElement? {
+        let sheetDeadline = ceremonyDeadline.addingTimeInterval(-ceremonyResultTime)
+        var attempt = 1
+        while true {
             // The previous result (a failure, on a retry) stays up until the app starts the new action:
             // wait for it to change, so it is not read as this attempt's failure.
             let previousResult = lastResult
             button.tap()
             // Nothing to wait for when there was no result: the new one cannot be confused with it.
-            let deadline = Date().addingTimeInterval(previousResult.isEmpty ? 0 : 10)
-            while lastResult == previousResult, Date() < deadline {
+            let changeDeadline = min(Date().addingTimeInterval(previousResult.isEmpty ? 0 : 10), sheetDeadline)
+            while lastResult == previousResult, Date() < changeDeadline {
                 pause()
             }
-            if let sheetButton = passkeySheetButton() {
+            if let sheetButton = passkeySheetButton(until: sheetDeadline) {
                 return sheetButton
             }
-            guard attempt < attempts, lastResult.contains("failed") else {
+            // No failure reported means the ceremony is still running with no sheet found in time: tapping
+            // again would stack a second ceremony.
+            guard lastResult.contains("Code=1004"),
+                  Date().addingTimeInterval(ceremonyRetryDelay + ceremonyMinimumTry) < sheetDeadline
+            else {
                 return nil
             }
-            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            print("Passkey ceremony try \(attempt): the association is not verified yet (\(redactedResult)); trying again")
+            attempt += 1
+            try? await Task.sleep(nanoseconds: UInt64(ceremonyRetryDelay * 1_000_000_000))
         }
-        return nil
     }
 
     /// The passkey sheet's confirming button, by the identifier this test used to query SpringBoard's
     /// `otherElements` for, in any element type, else by its label ("Add Passkey" when saving one on
-    /// iOS 26). Waits up to 90 s, and returns nil early if the ceremony has already failed.
+    /// iOS 26). Waits up to 90 s and not past `deadline`, and returns nil early if the ceremony has already
+    /// failed.
     @MainActor
-    private func passkeySheetButton() -> XCUIElement? {
-        let deadline = Date().addingTimeInterval(90)
+    private func passkeySheetButton(until deadline: Date) -> XCUIElement? {
+        let deadline = min(Date().addingTimeInterval(90), deadline)
         let byLabel = NSPredicate(format: "label IN %@", ["Continue", "Add Passkey", "Sign In", "Save Passkey"])
         repeat {
             if lastResult.contains("failed") {
@@ -330,6 +394,49 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
             pause()
         } while Date() < deadline
         return nil
+    }
+
+    /// Presents a matching face, then waits for the result containing `containing`, presenting the face again
+    /// while the action is still running (its result line blank), until `deadline`. The simulator drops a
+    /// match that arrives before the Face ID prompt is armed, and the ceremony then waits for a face forever
+    /// (as the client's WA-1 found); a match with no prompt up is ignored, so presenting
+    /// it again is harmless. A face goes about every 6 s: the server takes about 1.5 s to present one, then
+    /// this waits 4 s for the result. The last `/match` can end up to its own bound past `deadline`.
+    @MainActor
+    private func waitForResultMatchingBiometrics(_ containing: String, until deadline: Date) async throws -> Bool {
+        repeat {
+            try await matchBiometrics()
+            if waitForResult(containing, timeout: max(0, min(4, deadline.timeIntervalSinceNow))) {
+                return true
+            }
+            guard lastResult.isEmpty else {
+                // The action ended with another result: no face will change it.
+                return waitForResult(containing, timeout: 1)
+            }
+        } while Date() < deadline
+        return false
+    }
+
+    /// The result line with nothing that identifies the run: the action, the error's type, and a platform
+    /// code if there is one (as the client's WebAuthn UI test redacts it). The full line can carry the
+    /// relying party's domain or a username.
+    @MainActor
+    private var redactedResult: String {
+        let result = lastResult
+        if let next = result.range(of: "Next step is: ") {
+            // A next step can carry code-delivery details (a masked email or phone number): keep its case only.
+            let step = result[next.upperBound...].prefix { $0.isLetter || $0.isNumber || $0 == "." || $0 == "_" }
+            return "\(result[..<next.lowerBound])Next step is: \(step)"
+        }
+        guard let failed = result.range(of: " failed: ") else {
+            // Success lines and the no-result placeholder carry no identifier.
+            return result
+        }
+        let action = result[..<failed.lowerBound]
+        let rest = result[failed.upperBound...]
+        let head = rest.prefix { $0.isLetter || $0.isNumber || $0 == "." || $0 == "_" }
+        let code = rest.range(of: #"Code=-?[0-9]+"#, options: .regularExpression).map { " (\(rest[$0]))" } ?? ""
+        return "\(action) failed: \(head)\(code)"
     }
 
     /// Half a second, letting the run loop turn (a blocking sleep gets the UI test runner killed). The

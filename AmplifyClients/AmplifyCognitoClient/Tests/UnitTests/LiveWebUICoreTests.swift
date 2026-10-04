@@ -20,7 +20,11 @@ final class LiveWebUICoreTests: XCTestCase {
     private var presenter: PresenterSpy!
     private var live: LiveEngineHarness!
     private var harness: ClientHarness!
-    private var window: AuthClientPresentationAnchor!
+    /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
+    /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
+    private var window: AuthClientPresentationAnchor {
+        get async { await HostedUIFixtures.window() }
+    }
     private let work = ClientFixtures.id("work")
 
     override func setUp() async throws {
@@ -31,7 +35,6 @@ final class LiveWebUICoreTests: XCTestCase {
             hostedUIURLSession: TokenEndpointStub.session
         )
         harness = ClientHarness()
-        window = await HostedUIFixtures.window()
         let presenter = presenter!
         TokenEndpointStub.respond { _ in TokenEndpointStub.tokens("alice", nonce: presenter.lastQueryItem("nonce")) }
         live.scriptIdentityPool()
@@ -45,7 +48,6 @@ final class LiveWebUICoreTests: XCTestCase {
         presenter = nil
         live = nil
         harness = nil
-        window = nil
     }
 
     /// A client whose session core runs the live engine.
@@ -93,7 +95,7 @@ final class LiveWebUICoreTests: XCTestCase {
             return TokenEndpointStub.tokens("alice", nonce: presenter.lastQueryItem("nonce"))
         }
         let client = try client(work)
-        let window = window!
+        let window = await window
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await waitUntil("the code exchange is held") { exchange.hasBeenReached }
 
@@ -123,7 +125,7 @@ final class LiveWebUICoreTests: XCTestCase {
         let held = Gate()
         harness.sheetLock = SystemSheetLock(beforeRelease: { _ in await held.pass() })
         let client = try client(work)
-        let window = window!
+        let window = await window
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await held.waitForArrivals(1)
 
@@ -155,7 +157,7 @@ final class LiveWebUICoreTests: XCTestCase {
             return TokenEndpointStub.tokens("alice", nonce: presenter.lastQueryItem("nonce"))
         }
         let client = try client(work)
-        let window = window!
+        let window = await window
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await waitUntil("the code exchange is held") { exchange.hasBeenReached }
 
@@ -177,7 +179,7 @@ final class LiveWebUICoreTests: XCTestCase {
     ///      revokes the tokens of a sign-in nobody stopped
     func testASuccessfulSignInRevokesNothing() async throws {
         let client = try client(work)
-        let window = window!
+        let window = await window
 
         _ = try await client.signInWithWebUI(presentationAnchor: window)
 
@@ -202,7 +204,7 @@ final class LiveWebUICoreTests: XCTestCase {
             return GetIdOutput(identityId: LiveEngineFixtures.identityId)
         }
         let client = try client(work)
-        let window = window!
+        let window = await window
         let signIn = Task { try await client.signInWithWebUI(presentationAnchor: window) }
         await identity.waitForArrivals(1)
 
@@ -230,7 +232,7 @@ final class LiveWebUICoreTests: XCTestCase {
     ) async throws {
         live.cognito.clearCalls()
         let client = try client(sessionId)
-        let window = window!
+        let window = await window
 
         let error = await authClientError({ try await client.signInWithWebUI(presentationAnchor: window, options: options) }, file: file, line: line)
 
@@ -310,7 +312,7 @@ final class LiveWebUICoreTests: XCTestCase {
     /// Signs `work` in through the hosted UI, sharing the browser's cookies.
     private func signedInSharingCookies() async throws -> AmplifyCognitoClient {
         let client = try client(work)
-        let window = window!
+        let window = await window
         _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
         live.cognito.clearCalls()
         return client
@@ -324,7 +326,7 @@ final class LiveWebUICoreTests: XCTestCase {
     func testAnInterruptThatClosesTheLogoutPageRevokesNothing() async throws {
         let client = try await signedInSharingCookies()
         presenter.behave(.hold)
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await presenter.showing.waitForArrivals(2)
 
@@ -359,7 +361,7 @@ final class LiveWebUICoreTests: XCTestCase {
     func testABrowserThatFailsToStartIsFailedAndRevokesNothing() async throws {
         let client = try await signedInSharingCookies()
         presenter.behave(.fail(.unableToStartASWebAuthenticationSession))
-        let window = window!
+        let window = await window
 
         let result = await client.signOut(presentationAnchor: window)
 
@@ -389,7 +391,7 @@ final class LiveWebUICoreTests: XCTestCase {
             }
         }
         await holds.waitForArrivals(1)
-        let window = window!
+        let window = await window
 
         let result = await client.signOut(presentationAnchor: window)
 
@@ -446,7 +448,7 @@ final class LiveWebUICoreTests: XCTestCase {
         live.scriptIdentityPool()
         live.scriptSignOut()
         let client = try client(work, configuration: configuration)
-        let window = window!
+        let window = await window
         _ = try await client.signInWithWebUI(presentationAnchor: window, options: WebUIOptions(prefersEphemeralSession: false))
         live.cognito.clearCalls()
 
@@ -471,7 +473,7 @@ final class LiveWebUICoreTests: XCTestCase {
             await revoking.pass()
             return RevokeTokenOutput()
         }
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 
@@ -495,7 +497,7 @@ final class LiveWebUICoreTests: XCTestCase {
             await revoking.pass()
             return RevokeTokenOutput()
         }
-        let window = window!
+        let window = await window
         let signOut = Task { await client.signOut(presentationAnchor: window) }
         await revoking.waitForArrivals(1)
 

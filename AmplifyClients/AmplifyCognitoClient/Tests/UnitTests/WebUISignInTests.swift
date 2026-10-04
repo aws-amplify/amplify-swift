@@ -11,18 +11,22 @@ import InternalAWSCognitoAuth
 import XCTest
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// `signInWithWebUI` over the fake engine and the harness's own sheet lock: the lease rules, the commit order, cancellation and its mappings, the request.
+/// `signInWithWebUI` over the fake engine and the harness's own sheet lock: the lease rules, the commit order,
+/// cancellation and its mappings, the request.
 final class WebUISignInTests: XCTestCase {
 
     private var harness: ClientHarness!
-    private var window: AuthClientPresentationAnchor!
+    /// The window to anchor sheets to, made on first use rather than in `setUp()`: a process's first `UIWindow()`
+    /// can block for minutes on a just-booted simulator, so a test that needs no window makes none.
+    private var window: AuthClientPresentationAnchor {
+        get async { await HostedUIFixtures.window() }
+    }
     private let work = ClientFixtures.id("work")
     private let home = ClientFixtures.id("home")
     private let webUser = AuthClientUser(username: "web-user", userId: "sub-web-user")
 
     override func setUp() async throws {
         harness = ClientHarness()
-        window = await HostedUIFixtures.window()
     }
 
     override func tearDown() async throws {
@@ -30,7 +34,6 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertNil(holder, "a test left the sheet held")
         await harness.waitForBaseline()
         harness = nil
-        window = nil
     }
 
     private func client(_ sessionId: SessionID) throws -> AmplifyCognitoClient {
@@ -41,8 +44,8 @@ final class WebUISignInTests: XCTestCase {
     private func startSignIn(
         _ client: AmplifyCognitoClient,
         options: WebUIOptions = WebUIOptions()
-    ) -> Task<AuthClientSignInResult, Error> {
-        let window = window!
+    ) async -> Task<AuthClientSignInResult, Error> {
+        let window = await window
         return Task { try await client.signInWithWebUI(presentationAnchor: window, options: options) }
     }
 
@@ -69,7 +72,7 @@ final class WebUISignInTests: XCTestCase {
         let events = StreamRecorder(client.listenToAuthEvents())
         _ = await client.currentSessionState()
 
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         let holder = await harness.sheetLock.currentHolder
@@ -105,7 +108,7 @@ final class WebUISignInTests: XCTestCase {
         engine.showWebUISignIns(in: browser)
         let events = StreamRecorder(client.listenToAuthEvents())
 
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         await client.cancelWebUISignIn()
 
@@ -140,7 +143,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await held.waitForArrivals(1)
         await client.cancelWebUISignIn()
 
@@ -167,7 +170,7 @@ final class WebUISignInTests: XCTestCase {
         let homeClient = try client(home)
         let browser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
-        let workSignIn = startSignIn(workClient)
+        let workSignIn = await startSignIn(workClient)
         await browser.shown.waitForArrivals(1)
 
         let error = await authClientError { try await startSignIn(homeClient).value }
@@ -189,10 +192,10 @@ final class WebUISignInTests: XCTestCase {
         let homeBrowser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: workBrowser)
         try XCTUnwrap(harness.engine(for: home)).showWebUISignIns(in: homeBrowser)
-        let workSignIn = startSignIn(workClient)
+        let workSignIn = await startSignIn(workClient)
         await workBrowser.shown.waitForArrivals(1)
 
-        let homeSignIn = startSignIn(homeClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let homeSignIn = await startSignIn(homeClient, options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         let lock = harness.sheetLock
         await waitUntil("home queues") { await lock.waiterCount == 1 }
         XCTAssertEqual(harness.engine(for: home)?.webUISignInCalls.count, 0)
@@ -227,11 +230,11 @@ final class WebUISignInTests: XCTestCase {
             browsers.append(browser)
         }
         let lock = harness.sheetLock
-        let first = startSignIn(clients[0])
+        let first = await startSignIn(clients[0])
         await browsers[0].shown.waitForArrivals(1)
-        let second = startSignIn(clients[1], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let second = await startSignIn(clients[1], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         await waitUntil("home queues") { await lock.waiterCount == 1 }
-        let third = startSignIn(clients[2], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
+        let third = await startSignIn(clients[2], options: WebUIOptions(whenBrowserBusy: .wait(timeout: 60)))
         await waitUntil("team queues") { await lock.waiterCount == 2 }
 
         for (index, signIn) in [first, second, third].enumerated() {
@@ -261,7 +264,7 @@ final class WebUISignInTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let browser = FakeBrowser(afterCancel: .keepRunning)
         engine.showWebUISignIns(in: browser)
-        let first = startSignIn(client)
+        let first = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         await client.cancelWebUISignIn()
         _ = await authClientError { try await first.value }
@@ -286,7 +289,7 @@ final class WebUISignInTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let browser = FakeBrowser()
         engine.showWebUISignIns(in: browser)
-        let first = startSignIn(client)
+        let first = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
@@ -328,7 +331,7 @@ final class WebUISignInTests: XCTestCase {
     func testAConfigurationWithoutAHostedUIIsRefused() async throws {
         let noHostedUI = try harness.client(work, configuration: ClientFixtures.configuration)
         let noUserPool = try harness.client(home, configuration: ClientFixtures.identityPoolOnlyConfiguration)
-        let window = window!
+        let window = await window
 
         let first = await authClientError { try await noHostedUI.signInWithWebUI(presentationAnchor: window) }
         let second = await authClientError { try await noUserPool.signInWithWebUI(presentationAnchor: window) }
@@ -363,7 +366,7 @@ final class WebUISignInTests: XCTestCase {
 
         let password = Task { try await client.signInForTest("alice") }
         await latch.waitForArrivals(1)
-        let webUI = startSignIn(client)
+        let webUI = await startSignIn(client)
         await client.cancelWebUISignIn()
         await latch.open()
         _ = try await password.value
@@ -389,7 +392,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let browser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         _ = await client.signOut()
@@ -413,7 +416,7 @@ final class WebUISignInTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let listing = Stall()
         harness.keychain.onceAfterReading(harness.store().sessionAccount(for: home)) { listing.block() }
-        let signIn = startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
+        let signIn = await startSignIn(client, options: WebUIOptions(identityExpectation: .distinctFromOtherSessions))
         await waitUntil("the listing is held") { listing.hasBeenReached }
 
         let signOut = Task { await client.signOut() }
@@ -444,7 +447,7 @@ final class WebUISignInTests: XCTestCase {
         await held.waitForArrivals(1)
         engine.holdCancels(on: nil)
 
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
         await held.open()
         _ = await signOut.value
@@ -467,7 +470,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let browser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         signIn.cancel()
@@ -495,7 +498,7 @@ final class WebUISignInTests: XCTestCase {
         let password = Task { try await client.signInForTest("alice") }
         await latch.waitForArrivals(1)
 
-        let webUI = startSignIn(client)
+        let webUI = await startSignIn(client)
         webUI.cancel()
         await latch.open()
         _ = try await password.value
@@ -509,7 +512,7 @@ final class WebUISignInTests: XCTestCase {
         XCTAssertEqual(engine.webUISignInCalls.count, 0)
     }
 
-    /// A caller cancelled after the sign-in lock but before the lease, while another session holds the sheet
+    /// A caller cancelled after the sign-in lock but before the lease, while another session holds the sheet.
     ///
     /// - Given: session "team" showing its hosted-UI sign-in; this session's call held while it reads the other
     ///   sessions' users, before the lease
@@ -523,7 +526,7 @@ final class WebUISignInTests: XCTestCase {
         let teamClient = try client(team)
         let teamBrowser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: team)).showWebUISignIns(in: teamBrowser)
-        let teamSignIn = startSignIn(teamClient)
+        let teamSignIn = await startSignIn(teamClient)
         await teamBrowser.shown.waitForArrivals(1)
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
@@ -532,7 +535,7 @@ final class WebUISignInTests: XCTestCase {
         for policy in [WebUIOptions.BrowserBusyPolicy.fail, .wait(timeout: 60)] {
             let listing = Stall()
             harness.keychain.onceAfterReading(homeAccount) { listing.block() }
-            let signIn = startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy, identityExpectation: .distinctFromOtherSessions))
+            let signIn = await startSignIn(client, options: WebUIOptions(whenBrowserBusy: policy, identityExpectation: .distinctFromOtherSessions))
             await waitUntil("the listing is held") { listing.hasBeenReached }
 
             signIn.cancel()
@@ -560,7 +563,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let browser = FakeBrowser()
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         await client.cancelWebUISignIn()
@@ -580,7 +583,7 @@ final class WebUISignInTests: XCTestCase {
         let client = try client(work)
         let browser = FakeBrowser(afterCancel: .keepRunning)
         try XCTUnwrap(harness.engine(for: work)).showWebUISignIns(in: browser)
-        let signIn = startSignIn(client)
+        let signIn = await startSignIn(client)
         await browser.shown.waitForArrivals(1)
 
         let reset = await harness.sheetLock.reset()
@@ -616,7 +619,7 @@ final class WebUISignInTests: XCTestCase {
     func testTheRequestCarriesTheOptions() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
 
         _ = await authClientError {
@@ -665,7 +668,7 @@ final class WebUISignInTests: XCTestCase {
     func testANonceIsMintedPerCallAndTheCallersIsKept() async throws {
         let client = try client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        let window = window!
+        let window = await window
         engine.scriptWebUISignIn { _, _ in throw AuthClientError.userCancelled("closed", "retry") }
 
         for options in [WebUIOptions(), WebUIOptions(), WebUIOptions(nonce: "caller-nonce"), WebUIOptions(nonce: "")] {
