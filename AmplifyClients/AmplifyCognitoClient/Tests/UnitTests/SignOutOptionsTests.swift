@@ -69,7 +69,7 @@ final class SignOutOptionsTests: XCTestCase {
         XCTAssertEqual(try harness.storedRecord(work)?.isSignedOut, true)
     }
 
-    /// the engine contract for a failed global sign-out is the plugin's — `RevokeToken` is skipped — and
+    /// The engine contract for a failed global sign-out is the plugin's — `RevokeToken` is skipped — and
     /// the outcome carries the real global error beside the plugin's placeholder revoke error.
     ///
     /// - Given: a signed-in session whose global sign-out fails at Cognito, reported as the contract says
@@ -132,7 +132,7 @@ final class SignOutOptionsTests: XCTestCase {
         XCTAssertEqual(events.received, [])
     }
 
-    /// when only the purge fails, the session is signed out, and the result keeps what the sign-out
+    /// When only the purge fails, the session is signed out, and the result keeps what the sign-out
     /// reported beside the purge's failure.
     ///
     /// - Given: a signed-in session whose revoke fails at Cognito, and whose keychain removals fail

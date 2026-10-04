@@ -469,7 +469,7 @@ final class ScopedWipeRealKeychainTests: XCTestCase {
 
 extension ScopedWipeRealKeychainTests {
 
-    /// the plugin's own wipe also removes the client's default-session items, in every group; every other
+    /// The plugin's own wipe also removes the client's default-session items, in every group; every other
     /// client record stays. The sparing scoped clear (`sparingDefaultSessionItems: true`) still spares them.
     ///
     /// - Given: one service holding plugin accounts, the client's `$default.meta` and `$default.challenge`, a named

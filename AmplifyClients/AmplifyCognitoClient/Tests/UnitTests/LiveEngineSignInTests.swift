@@ -123,7 +123,7 @@ final class LiveEngineSignInTests: XCTestCase {
         XCTAssertNil(pending)
     }
 
-    /// a payload the live engine produces is what the plugin's own credential store reads.
+    /// A payload the live engine produces is what the plugin's own credential store reads.
     ///
     /// - Given: a payload from a live sign-in, a refresh and a guest fetch
     /// - When:

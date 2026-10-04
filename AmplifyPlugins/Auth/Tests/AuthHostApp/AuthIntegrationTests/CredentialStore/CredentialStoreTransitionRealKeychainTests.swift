@@ -181,7 +181,7 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
         XCTAssertEqual(unshared.filter { !staysWithTheClient($0.account) }.map(\.account), [session], "Q7 migration, two-group account: \(observed)")
     }
 
-    /// the migration's clear of a non-empty destination removes the client's default-session items there,
+    /// The migration's clear of a non-empty destination removes the client's default-session items there,
     /// keeps named sessions' records, and is not blocked by either.
     ///
     /// - Given: the unshared service holding plugin items, the client's default-session items and client records

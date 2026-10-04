@@ -478,7 +478,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertNil(meta.userId)
     }
 
-    /// a label set before anyone signed in is kept by the first sign-in.
+    /// A label set before anyone signed in is kept by the first sign-in.
     ///
     /// - Given: nothing stored, and `.default` labelled "Home"
     /// - When: alice signs in
@@ -497,7 +497,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(sidecar()?.label, "Home")
     }
 
-    /// a signed-out row's label is kept when the same user signs in again.
+    /// A signed-out row's label is kept when the same user signs in again.
     ///
     /// - Given: alice signed in, labelled "Home", then signed out
     /// - When: alice signs in again
@@ -516,7 +516,7 @@ final class DefaultSessionSharedRecordTests: XCTestCase {
         XCTAssertEqual(sidecar()?.label, "Home")
     }
 
-    /// a signed-out row's label is dropped when another user signs in.
+    /// A signed-out row's label is dropped when another user signs in.
     ///
     /// - Given: alice signed in, labelled "Home", then signed out
     /// - When: bob signs in

@@ -94,7 +94,7 @@ final class SharedRecordWarningTests: XCTestCase {
         assertOneWarning(naming: ["alice", "sub-", "us-east-1:guest-1"])
     }
 
-    /// a guest in memory replaced by a user counts.
+    /// A guest in memory replaced by a user counts.
     ///
     /// - Given: `.default` restored as a guest
     /// - When:
@@ -110,7 +110,7 @@ final class SharedRecordWarningTests: XCTestCase {
         assertOneWarning(naming: ["bob", "sub-", "us-east-1:guest-1"])
     }
 
-    /// a guest replaced by a user counts even when the user keeps the guest's identity ID.
+    /// A guest replaced by a user counts even when the user keeps the guest's identity ID.
     ///
     /// - Given: `.default` restored as a guest
     /// - When:
@@ -131,7 +131,7 @@ final class SharedRecordWarningTests: XCTestCase {
         assertOneWarning(naming: ["bob", "sub-", LiveEngineFixtures.identityId])
     }
 
-    /// a different identity ID is a different guest.
+    /// A different identity ID is a different guest.
     ///
     /// - Given: `.default` restored as a guest
     /// - When:
@@ -147,7 +147,7 @@ final class SharedRecordWarningTests: XCTestCase {
         assertOneWarning(naming: ["us-east-1:guest-1", "us-east-1:guest-2"])
     }
 
-    /// a federated identity ID counts as a principal.
+    /// A federated identity ID counts as a principal.
     ///
     /// - Given: `.default` restored as a federated identity
     /// - When:
