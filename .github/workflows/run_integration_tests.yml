@@ -151,7 +151,8 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          # Boots the simulator while the dependencies resolve, so the tests do not start on one still booting.
+          # Boots the simulator while the dependencies resolve and waits for it before the build, so the tests do
+          # not start on one still booting.
           boot_simulator: true
           # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
           other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || format('-test-iterations {0} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES', inputs.test_iterations) }}

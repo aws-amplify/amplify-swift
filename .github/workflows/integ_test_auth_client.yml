@@ -181,7 +181,8 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
-          # Boots the simulator while the dependencies resolve, so the tests do not start on one still booting.
+          # Boots the simulator while the dependencies resolve and waits for it before the build, so the tests do
+          # not start on one still booting.
           boot_simulator: true
 
       - name: Retry iOS Integration Tests

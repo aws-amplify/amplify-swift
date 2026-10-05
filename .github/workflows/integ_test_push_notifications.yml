@@ -114,7 +114,8 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
-          # Boots the simulator while the dependencies resolve, so the tests do not start on one still booting.
+          # Boots the simulator while the dependencies resolve and waits for it before the build, so the tests do
+          # not start on one still booting.
           boot_simulator: true
 
       - name: Retry ${{ matrix.platform }} Integration Tests

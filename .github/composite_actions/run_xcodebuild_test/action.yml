@@ -60,7 +60,9 @@ runs:
     # runner image its first boot is long: the UI tests then start on a simulator still finishing it, and the
     # first app launch times out ("Timed out while launching application via Xcode", the hosted UI and push
     # jobs of run 37338053976) or the WebAuthn tests' simulator server is too slow to answer. Booted here, the
-    # simulator does that work while the dependencies resolve and the build runs.
+    # simulator does that work while the dependencies resolve (only that: the build and the tests are one
+    # xcodebuild invocation, and the step before it waits for the boot to finish, so the build does not share
+    # the runner with the boot). With the dependencies cached, most of the boot is that wait.
     - name: Boot the simulator for ${{ inputs.scheme }}
       id: boot-simulator
       if: ${{ inputs.boot_simulator == 'true' }}
@@ -186,8 +188,10 @@ runs:
         This is a dependency fetch problem, not a test failure."
         exit 1
 
-    # Bounded with a watchdog, as the resolution above is: a boot that never completes leaves the simulator
-    # to xcodebuild, as before, after a warning.
+    # Runs before the build, which shares the xcodebuild invocation with the tests, so the boot overlaps only
+    # the dependency resolution above; the build and the tests start on a booted simulator. Bounded with a
+    # watchdog, as the resolution is: a boot that never completes leaves the simulator to xcodebuild, as
+    # before, after a warning.
     - name: Wait for the simulator to finish booting for ${{ inputs.scheme }}
       if: ${{ inputs.boot_simulator == 'true' && steps.boot-simulator.outputs.udid != '' }}
       shell: bash
