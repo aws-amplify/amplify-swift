@@ -36,9 +36,10 @@ enum SimulatorServer {
         try await post("/uninstall", device)
     }
 
-    /// How long one request waits for the server's answer. The server answers once its `simctl` command
-    /// returns, and sends nothing before, so this bounds the whole request. The server bounds its commands
-    /// (18 s a request) and answers a hung one with HTTP 500 "Timed out …", which is retried like a time-out.
+    /// How long one request waits for the server's answer. The server answers once its job (its `simctl`
+    /// commands) has ended, or after 15 s with HTTP 500 "Timed out …" while the job goes on; it also answers
+    /// "Timed out …" for a job it stopped at its limit (45 s; 120 s for `/boot`). Either is retried like a
+    /// time-out, and a retry while the job runs waits for that job instead of starting another.
     static let requestTimeout: TimeInterval = 20
     /// How many times a request is sent, 2 s apart, before it fails: the server can be briefly slow to
     /// answer (as the plugin's `AuthWebAuthnAppUITests.sendLocalServerRequest` retries a single `-1001`).
@@ -61,7 +62,8 @@ enum SimulatorServer {
                 let status = (response as? HTTPURLResponse)?.statusCode ?? 0
                 let body = String(bytes: data, encoding: .utf8) ?? ""
                 if status == 500, body.hasPrefix("Timed out") {
-                    // The server stopped a command that hung: as with a time-out, the next try can succeed.
+                    // The server's job is still running, or hung and was stopped: as with a time-out, the next
+                    // try can succeed.
                     serverTimeout = body
                     lastError = URLError(.timedOut)
                 } else if status < 300 {
@@ -84,7 +86,7 @@ enum SimulatorServer {
             throw SimulatorServerError("""
             POST \(path): the simulator server's simctl command hung, \(attempts) times. Its last answer: \
             \(serverTimeout). Check the server's log.
-            """)
+            """, isTimeout: true)
         }
         let timedOut = (lastError as? URLError)?.code == .timedOut
         throw SimulatorServerError(timedOut ? """
@@ -93,7 +95,7 @@ enum SimulatorServer {
         """ : """
         The simulator server is not running at \(endpoint) (\(lastError?.localizedDescription ?? "no answer")). \
         Start it: cd AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer && npm install && npm start
-        """)
+        """, isTimeout: timedOut)
     }
 
     /// The UDID of the simulator the test runs on, from the test bundle's path
@@ -111,8 +113,12 @@ enum SimulatorServer {
 
 struct SimulatorServerError: Error, CustomStringConvertible {
     let description: String
+    /// Whether every try timed out (the server's command hung, or it did not answer), rather than the server
+    /// refusing the request or not running: sending the request again later can succeed.
+    let isTimeout: Bool
 
-    init(_ description: String) {
+    init(_ description: String, isTimeout: Bool = false) {
         self.description = description
+        self.isTimeout = isTimeout
     }
 }

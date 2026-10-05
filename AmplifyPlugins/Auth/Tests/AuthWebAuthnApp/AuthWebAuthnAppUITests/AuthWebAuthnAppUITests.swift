@@ -174,8 +174,9 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     }
 
     // The local biometrics-control server can be briefly slow/unresponsive; retry instead of
-    // failing the whole test on a single -1001 timeout. The server bounds its `simctl` commands and
-    // answers HTTP 500 "Timed out …" when one hangs, before this request's 20 s: that is retried too.
+    // failing the whole test on a single -1001 timeout. The server answers within 15 s, with HTTP 500
+    // "Timed out …" while its job is still running (or when it stopped a hung one), before this request's
+    // 20 s: that is retried too, and a retry waits for the running job instead of starting another.
     private func sendLocalServerRequest(_ server: LocalServer, description: String, attempts: Int = 3) async throws {
         var request = server.urlRequest
         request.timeoutInterval = 20
@@ -288,7 +289,8 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     /// The time budget, against XCTest's 10-minute execution allowance, counting `setUp()` and `tearDown()`
     /// in it to be safe. Every wait is bounded:
     /// - a simulator-server request: 3 tries of at most 20 s, 2 s apart (64 s), and a request that fails
-    ///   all three ends the test (the server answers a hung command within 18 s);
+    ///   all three ends the test (the server answers within 15 s, and ends a hung job at 45 s), except a
+    ///   `/match` timing out within a ceremony's window, which is sent again (`waitForResultMatchingBiometrics`);
     /// - `setUp()`: `/boot` and `/enroll` (about 1 s each), the launch, then 30 s each for the username and
     ///   the sign-up's sign-in, so about 72 s;
     /// - the associate ceremony: `associateCeremonyWindow`, 150 s, plus its last `/match` (about 2 s);
@@ -402,10 +404,20 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     /// (as the client's WA-1 found); a match with no prompt up is ignored, so presenting
     /// it again is harmless. A face goes about every 6 s: the server takes about 1.5 s to present one, then
     /// this waits 4 s for the result. The last `/match` can end up to its own bound past `deadline`.
+    ///
+    /// A `/match` that timed out (the simulator was too busy to run its `simctl spawn` within the server's
+    /// limit, as on a loaded CI runner in run 37338053976) does not end the wait while time is left: the result
+    /// is checked as after any other, and the next face goes in a new server job. Any other failure, or a
+    /// time-out at `deadline`, ends the test.
     @MainActor
     private func waitForResultMatchingBiometrics(_ containing: String, until deadline: Date) async throws -> Bool {
         repeat {
-            try await matchBiometrics()
+            do {
+                try await matchBiometrics()
+            } catch let error as URLError where error.code == .timedOut && Date() < deadline {
+                // Not the error's text: the server's answer names the simulator.
+                print("A /match timed out (\(error.code.rawValue)); the face is presented again")
+            }
             if waitForResult(containing, timeout: max(0, min(4, deadline.timeIntervalSinceNow))) {
                 return true
             }

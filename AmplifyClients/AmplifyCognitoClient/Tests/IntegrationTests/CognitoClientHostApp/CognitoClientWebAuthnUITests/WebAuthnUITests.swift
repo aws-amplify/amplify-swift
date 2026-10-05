@@ -278,11 +278,21 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     /// armed, and the ceremony then waits for a face forever (seen in WA-1 runs 1 and 2, 2026-09-26: the
     /// sheet's Continue was tapped, the match was posted, and the delegate never answered). A match with no
     /// prompt up is ignored, so presenting it again is harmless.
+    ///
+    /// A `/match` that timed out (the simulator was too busy to run its `simctl spawn` within the server's
+    /// limit, as on a loaded CI runner in run 37338053976) does not end the wait while time is left: the result
+    /// is checked as after any other, and the next face goes in a new server job. One the server refused, or
+    /// one that timed out at the deadline, fails.
     @MainActor
     private func waitForResultMatchingBiometrics(_ containing: String, timeout: TimeInterval) async throws -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
-            try await SimulatorServer.matchBiometrics(device)
+            do {
+                try await SimulatorServer.matchBiometrics(device)
+            } catch let error as SimulatorServerError where error.isTimeout && Date() < deadline {
+                // Not the error's text: the server's answer names the simulator.
+                XCTContext.runActivity(named: "A /match timed out; the face is presented again") { _ in }
+            }
             if waitForResult(containing, timeout: 4) {
                 return true
             }
