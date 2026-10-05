@@ -13,12 +13,32 @@ const deviceIdPattern = /^([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa
 
 const isValidDeviceId = (deviceId) => typeof deviceId === "string" && deviceIdPattern.test(deviceId)
 
-// Every command is time-bounded. A hung `simctl` (seen on CI runners) used to hold its request until the UI
-// test's own 20 s request timeout fired, with nothing in this log to say why. Now the request answers HTTP 500
-// with a "Timed out" message instead, so the test's retries see a fast, explained failure. A request's commands
-// share one budget, shorter than the test's 20 s timeout, so the answer always arrives before it; any one
-// command may use all that is left of it, so a slow command that still finishes in time succeeds.
-const requestBudgetMs = 18_000
+// A positive number from the environment, which only this server's tests set (`test/`), else `fallback`.
+const fromEnvironment = (name, fallback) => {
+    const value = Number(process.env[name])
+    return Number.isFinite(value) && value > 0 ? value : fallback
+}
+
+// Each request's work is a job, which runs its `simctl` commands for one simulator, and every job is
+// time-bounded. On a loaded CI runner a fresh simulator has taken 17 s to run one `simctl spawn`, and this
+// process's own timers have fired 10 to 35 s late. Killing such a command when its request's time ran out,
+// and starting it again on the UI test's retry, only stacked new commands onto the busy simulator: none
+// finished, and the test failed (run 37338053976). So a job is not tied to the request that started it:
+//  - a request waits at most `requestWaitMs` for its job, then answers HTTP 500 "Timed out …" while the job
+//    goes on. The UI tests retry that answer 2 s later, and the retry waits for the same job. The wait is
+//    well inside the tests' 20 s request timeout, so the answer arrives even when this process runs late;
+//  - a request for an action that a job of its simulator is already running, or waiting to run, joins that
+//    job instead of starting another: two `/boot`s run one `bootstatus`, a `/match` sent again presents the
+//    face once;
+//  - one simulator's jobs run one at a time, in the order they came, so its commands never overlap;
+//  - a job ends at its own limit, `jobLimitMs` (`bootLimitMs` for `/boot`): its command is then killed, and
+//    every request waiting for it answers "Timed out …". The UI tests send a request at most 3 times, about
+//    49 s of waiting here, which covers a whole job of `jobLimitMs`. A longer `/boot` goes on for the next
+//    request to join.
+const requestWaitMs = fromEnvironment("LOCALSERVER_REQUEST_WAIT_MS", 15_000)
+const jobLimitMs = fromEnvironment("LOCALSERVER_JOB_LIMIT_MS", 45_000)
+const bootLimitMs = fromEnvironment("LOCALSERVER_BOOT_LIMIT_MS", 120_000)
+const port = fromEnvironment("LOCALSERVER_PORT", 9294)
 
 class CommandTimeoutError extends Error {}
 
@@ -28,20 +48,21 @@ class CommandTimeoutError extends Error {}
 const log = (...items) => console.log(new Date().toISOString(), ...items)
 const logError = (...items) => console.error(new Date().toISOString(), ...items)
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
 // Run a command without invoking a shell. Arguments are passed as an array so
 // user-supplied values (e.g. deviceId) are never interpreted by /bin/sh,
 // preventing command injection.
 //
-// `deadline` is the end of the request's budget (a `Date.now()` value), and the command gets all that is left
-// of it. With nothing left it is not started. When the time runs out, the command's whole process group is
+// `deadline` is the end of the job's time (a `Date.now()` value), and the command gets all that is left of
+// it. With nothing left it is not started. When the time runs out, the command's whole process group is
 // killed, and the promise rejects with a `CommandTimeoutError`: xcrun may run simctl as its child or exec it in
 // place, and killing the group stops it either way. `spawn`, not `execFile`: only `spawn` takes `detached`,
 // which puts the command in a process group of its own. A failed command's error is logged here, once.
 const run = (file, args, deadline) => {
-    const timeoutMs = deadline - Date.now()
     const command = [file, ...args].join(" ")
-    if (timeoutMs <= 0) {
-        const message = `Timed out: the request's ${requestBudgetMs} ms were used up before ${command}`
+    if (deadline - Date.now() <= 0) {
+        const message = `Timed out: the job's time was used up before ${command}`
         logError(message)
         return Promise.reject(new CommandTimeoutError(message))
     }
@@ -67,6 +88,7 @@ const run = (file, args, deadline) => {
                 resolve(stdout)
             }
         }
+        // Set from the deadline after the spawn, which can itself take a while on a loaded runner.
         const timer = setTimeout(() => {
             if (settled) {
                 return
@@ -77,94 +99,109 @@ const run = (file, args, deadline) => {
             } catch {
                 child.kill("SIGKILL")
             }
-            const message = `Timed out after ${timeoutMs} ms: ${command}`
+            const message = `Timed out after ${Date.now() - started} ms: ${command}`
             logError(message)
             reject(new CommandTimeoutError(message))
-        }, timeoutMs)
+        }, Math.max(0, deadline - Date.now()))
         child.on("error", (error) => finish(error))
         child.on("close", (code, signal) => finish(code === 0 ? null : new Error(`exit ${code ?? signal}`)))
     })
 }
 
-// Answers a failed request: HTTP 500 either way, with the time-out's message as the body when a command hung.
-// `run` has already logged the command's error, so this logs only which request failed.
-const fail = (res, description, error) => {
-    if (error instanceof CommandTimeoutError) {
-        logError(`Failed to ${description}: timed out`)
-        res.status(500).send(error.message)
-    } else {
-        logError(`Failed to ${description}`)
-        res.sendStatus(500)
+// Per simulator: `queue`, which settles once its last job has ended (the next one starts then), and `jobs`, its
+// running or waiting job for each action, which a request for that action joins.
+const simulators = new Map()
+
+// The job running, or waiting to run, `action` on `deviceId`; with none, a new one, queued, that runs
+// `work(deadline)` with `limitMs` from its start. The promise settles when `work` ends.
+const job = (deviceId, action, limitMs, work) => {
+    let simulator = simulators.get(deviceId)
+    if (!simulator) {
+        simulator = { queue: Promise.resolve(), jobs: new Map() }
+        simulators.set(deviceId, simulator)
+    }
+    const current = simulator.jobs.get(action)
+    if (current) {
+        log(`POST ${action} joins the one already running or waiting`)
+        return current
+    }
+    const promise = simulator.queue.then(() => work(Date.now() + limitMs))
+    simulator.jobs.set(action, promise)
+    const ended = () => {
+        if (simulator.jobs.get(action) === promise) {
+            simulator.jobs.delete(action)
+        }
+    }
+    simulator.queue = promise.then(ended, ended)
+    return promise
+}
+
+// Answers a request once its job has ended, or after `requestWaitMs` while the job goes on: HTTP 200 "Done";
+// HTTP 500 with a "Timed out …" body when the job is still running or reached its limit; HTTP 500 alone when
+// its command failed. `run` has already logged the command's error, so this logs only which request failed.
+const answer = async (res, description, promise) => {
+    let timer
+    const waited = new Promise(resolve => { timer = setTimeout(() => resolve("waited"), requestWaitMs) })
+    try {
+        if (await Promise.race([promise.then(() => "done"), waited]) === "done") {
+            res.send("Done")
+        } else {
+            logError(`Failed to ${description}: still running after ${requestWaitMs} ms`)
+            res.status(500).send(`Timed out: still running after ${requestWaitMs} ms; a retry waits for it`)
+        }
+    } catch (error) {
+        if (error instanceof CommandTimeoutError) {
+            logError(`Failed to ${description}: timed out`)
+            res.status(500).send(error.message)
+        } else {
+            logError(`Failed to ${description}`)
+            res.sendStatus(500)
+        }
+    } finally {
+        clearTimeout(timer)
     }
 }
 
-const requestDeadline = () => Date.now() + requestBudgetMs
+// Validates the request's simulator, then answers with the job for `path` on it (`job`, `answer`).
+const route = (path, description, limitMs, work) => {
+    app.post(path, async (req, res) => {
+        log(`POST ${path}`)
+        const { deviceId } = req.body ?? {}
+        if (!isValidDeviceId(deviceId)) {
+            return res.status(400).send("Invalid deviceId")
+        }
+        await answer(res, description, job(deviceId, path, limitMs, (deadline) => work(deviceId, deadline)))
+    })
+}
 
-app.post('/uninstall', async (req, res) => {
-    log("POST /uninstall")
-    const { deviceId } = req.body
-    if (!isValidDeviceId(deviceId)) {
-        return res.status(400).send("Invalid deviceId")
-    }
-    const deadline = requestDeadline()
-    try {
-        await run("xcrun", ["simctl", "uninstall", deviceId, bundleId], deadline)
-        res.send("Done")
-    } catch (error) {
-        fail(res, "uninstall the app", error)
-    }
-})
+const spawnInSimulator = (deviceId, args, deadline) => run("xcrun", ["simctl", "spawn", deviceId, ...args], deadline)
 
-app.post('/boot', async (req, res) => {
-    log("POST /boot")
-    const { deviceId } = req.body
-    if (!isValidDeviceId(deviceId)) {
-        return res.status(400).send("Invalid deviceId")
-    }
-    const deadline = requestDeadline()
-    try {
-        await run("xcrun", ["simctl", "bootstatus", deviceId, "-b"], deadline)
-        res.send("Done")
-    } catch (error) {
-        fail(res, "boot the device", error)
-    }
-})
+route("/uninstall", "uninstall the app", jobLimitMs, (deviceId, deadline) =>
+    run("xcrun", ["simctl", "uninstall", deviceId, bundleId], deadline))
 
-app.post('/enroll', async (req, res) => {
-    log("POST /enroll")
-    const { deviceId } = req.body
-    if (!isValidDeviceId(deviceId)) {
-        return res.status(400).send("Invalid deviceId")
-    }
-    const deadline = requestDeadline()
-    try {
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-s", "com.apple.BiometricKit.enrollmentChanged", "1"], deadline)
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit.enrollmentChanged"], deadline)
-        res.send("Done")
-    } catch (error) {
-        fail(res, "enroll biometrics in the device", error)
-    }
-})
+route("/boot", "boot the device", bootLimitMs, (deviceId, deadline) =>
+    run("xcrun", ["simctl", "bootstatus", deviceId, "-b"], deadline))
 
+// `notifyutil` runs its commands in order, so one process sets the enrollment state, then posts its change.
+route("/enroll", "enroll biometrics in the device", jobLimitMs, (deviceId, deadline) =>
+    spawnInSimulator(deviceId, [
+        "notifyutil",
+        "-s", "com.apple.BiometricKit.enrollmentChanged", "1",
+        "-p", "com.apple.BiometricKit.enrollmentChanged"
+    ], deadline))
 
-app.post('/match', async (req, res) => {
-    log("POST /match")
-    const { deviceId } = req.body
-    if (!isValidDeviceId(deviceId)) {
-        return res.status(400).send("Invalid deviceId")
-    }
-    const deadline = requestDeadline()
-    try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.pearl.match"], deadline)
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"], deadline)
-        await new Promise(resolve => setTimeout(resolve, 500))
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.pearl.match"], deadline)
-        await run("xcrun", ["simctl", "spawn", deviceId, "notifyutil", "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"], deadline)
-        res.send("Done")
-    } catch (error) {
-        fail(res, "match biometrics", error)
-    }
+// Presents a matching face and finger, then again half a second later, each time from one `notifyutil`: one
+// `simctl spawn` where there were two, which is what a busy simulator is slow to run.
+route("/match", "match biometrics", jobLimitMs, async (deviceId, deadline) => {
+    const match = [
+        "notifyutil",
+        "-p", "com.apple.BiometricKit_Sim.pearl.match",
+        "-p", "com.apple.BiometricKit_Sim.fingerTouch.match"
+    ]
+    await sleep(1000)
+    await spawnInSimulator(deviceId, match, deadline)
+    await sleep(500)
+    await spawnInSimulator(deviceId, match, deadline)
 })
 
 // Replaces Express's default error handler, which logs the error's stack: for a body that is not JSON, that
@@ -174,6 +211,6 @@ app.use((error, req, res, next) => {
     res.sendStatus(error.status ?? 500)
 })
 
-app.listen(9294, () => {
+app.listen(port, () => {
     log("Simulator server started!")
 })
