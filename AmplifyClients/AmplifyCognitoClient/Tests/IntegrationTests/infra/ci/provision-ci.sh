@@ -40,6 +40,7 @@
 # (the folder that holds auth/); CCIT_CI_REGION, default us-east-1; the AWS credentials of the CI account.
 # Nothing printed names an account, pool, client, key, bucket or secret. Needs the AWS CLI 2.26.7 or later, jq,
 # python3, and for --apply node and npm (the custom sender's `npm ci`).
+# shellcheck source-path=SCRIPTDIR
 set -euo pipefail
 CI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA="$(cd "$CI_DIR/.." && pwd)"
