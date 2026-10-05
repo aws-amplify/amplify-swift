@@ -120,7 +120,8 @@ package struct AWSCognitoAuthCredentialStore {
     // The method is responsible for migrating any old credentials to the new namespace. The decision is
     // `configurationChange(from:to:)` (`AWSCognitoAuthCredentialStore+ConfigurationChange.swift`), which the Cognito
     // client's default session also runs; this runs the same `_getData`, `_set` and `_remove` calls, in the same
-    // order, with the same `try?`, as before it was extracted.
+    // order, with the same `try?`, as before it was extracted, and on a clear then removes the Cognito client's two
+    // default-session items of the old namespace (below).
     private func restoreCredentialsOnConfigurationChanges(currentAuthConfig: AuthConfiguration) {
         switch Self.configurationChange(from: getAuthConfiguration(), to: currentAuthConfig) {
         case .unchanged:
@@ -131,26 +132,43 @@ package struct AWSCognitoAuthCredentialStore {
                 try? keychain._set(oldCognitoCredentialsData, key: toAccount)
             }
         case .clear(_, let previous):
-            // Clear the old credentials
-            try? removeSession(for: previous)
+            // Clear the old credentials. If that fails, the old login stays, and so do the client's items below.
+            guard (try? removeSession(for: previous)) != nil else {
+                return
+            }
+            // This store also removes two items it does not write itself. The Cognito client's default session
+            // shares this store's saved login, and keeps two items beside it that describe that login: its label
+            // and last user (`amplify.1.<pools>.$default.meta`), and its unfinished sign-in
+            // (`amplify.1.<pools>.$default.challenge`). Once the old configuration's login is deleted here, they
+            // describe a login that no longer exists, and the client would list a signed-out session (the label and
+            // the last username) under the old configuration for a login nobody signed out of. The client removes
+            // the same two items when it applies the same change itself. A carry keeps the old login, so it keeps
+            // them too. Best effort: a missing item is not an error, and the keychain store logs a failure without
+            // the item's key.
+            let previousPools = Self.poolNamespace(of: previous)
+            for account in SessionRecordAccount.defaultSessionItemAccounts(poolNamespace: previousPools) {
+                try? keychain._remove(account)
+            }
         }
     }
 
     /// `amplify.<pools>`: the prefix of every account of a configuration (`+ConfigurationChange.swift`).
     static func storeKey(for authConfiguration: AuthConfiguration) -> String {
         let prefix = "amplify"
-        var suffix = ""
+        return "\(prefix).\(poolNamespace(of: authConfiguration))"
+    }
 
+    /// `<pools>` of `storeKey(for:)`: the user pool ID, the identity pool ID, or both joined by `.`. The Cognito
+    /// client names a configuration's records by the same string.
+    static func poolNamespace(of authConfiguration: AuthConfiguration) -> String {
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
-            suffix = userPoolConfigurationData.poolId
+            return userPoolConfigurationData.poolId
         case .identityPools(let identityPoolConfigurationData):
-            suffix = identityPoolConfigurationData.poolId
+            return identityPoolConfigurationData.poolId
         case .userPoolsAndIdentityPools(let userPoolConfigurationData, let identityPoolConfigurationData):
-            suffix = "\(userPoolConfigurationData.poolId).\(identityPoolConfigurationData.poolId)"
+            return "\(userPoolConfigurationData.poolId).\(identityPoolConfigurationData.poolId)"
         }
-
-        return "\(prefix).\(suffix)"
     }
 
     private func generateSessionKey(for authConfiguration: AuthConfiguration) -> String {

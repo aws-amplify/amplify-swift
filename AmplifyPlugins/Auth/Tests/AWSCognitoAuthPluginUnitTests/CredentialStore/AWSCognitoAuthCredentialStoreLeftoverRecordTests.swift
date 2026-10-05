@@ -97,6 +97,8 @@ final class AWSCognitoAuthCredentialStoreLeftoverRecordTests: XCTestCase {
     ///    - The plugin is configured with configuration B, which has another user pool
     /// - Then:
     ///    - The old record is removed, with no `noCredentials` written in its place
+    ///    - The only client accounts touched are A's default-session sidecar and interrupted sign-in, removed with
+    ///      the record
     ///    - The leftover is byte-identical, and was never read or written
     ///
     func testUnsupportedConfigurationChange_besideALeftover_removesTheOldRecord() throws {
@@ -120,7 +122,10 @@ final class AWSCognitoAuthCredentialStoreLeftoverRecordTests: XCTestCase {
         }
         XCTAssertEqual(oldAccountMutations, [.remove(service: pluginKeychainService, account: pluginAccount)])
         XCTAssertNil(keychain.value(service: pluginKeychainService, account: pluginAccount))
-        XCTAssertEqual(keychain.mutatedClientAccounts, [])
+        XCTAssertEqual(keychain.mutatedClientAccounts, [
+            SessionRecordKey.metaAccount(in: pools),
+            SessionRecordKey.account(for: .default, in: pools, kind: .challenge)
+        ])
         XCTAssertEqual(keychain.value(service: pluginKeychainService, account: leftoverAccount), leftover)
         XCTAssertFalse(pluginKeychain.readAccounts.contains(leftoverAccount))
     }

@@ -52,6 +52,21 @@ package enum SessionRecordAccount {
     /// own record: the sidecar (label and last user) and the interrupted sign-in.
     private static let defaultSessionItemSuffixes = [".$default.meta", ".$default.challenge"]
 
+    /// The schema version the Cognito client writes its default-session items under today.
+    private static let defaultSessionItemSchemaVersion = "1"
+
+    /// The accounts of the two items the Cognito client keeps for its **default** session under one pool
+    /// namespace, the sidecar then the interrupted sign-in: `amplify.1.<pool namespace>.$default.meta` and
+    /// `amplify.1.<pool namespace>.$default.challenge`.
+    ///
+    /// `poolNamespace` is the pools part of the plugin's own session account, `amplify.<pool namespace>.session`:
+    /// the user pool ID, the identity pool ID, or both joined by `.`. The client builds the same accounts for the
+    /// same namespace (its tests pin the two), so the plugin can remove them when it deletes that namespace's
+    /// login, without depending on the client.
+    package static func defaultSessionItemAccounts(poolNamespace: String) -> [String] {
+        defaultSessionItemSuffixes.map { "amplify.\(defaultSessionItemSchemaVersion).\(poolNamespace)\($0)" }
+    }
+
     /// Whether `account` is one of the two items the Cognito client keeps for its **default** session,
     /// `amplify.<digits>.<pool namespace>.$default.meta` or `amplify.<digits>.<pool namespace>.$default.challenge`.
     ///
