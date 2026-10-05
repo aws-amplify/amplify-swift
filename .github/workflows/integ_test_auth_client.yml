@@ -181,6 +181,8 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
+          # Boots the simulator while the dependencies resolve, so the tests do not start on one still booting.
+          boot_simulator: true
 
       - name: Retry iOS Integration Tests
         if: steps.run-tests.outcome=='failure'
@@ -197,6 +199,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           other_flags: -test-timeouts-enabled YES -default-test-execution-time-allowance 600
+          boot_simulator: true
           # The app (it signs as the plugin's WebAuthn app) and the UI-test runner the first attempt installed.
           uninstall_bundle_ids: com.amazon.aws.amplify.swift.AuthWebAuthnApp com.aws.amplify.cognitoclient.CognitoClientWebAuthnUITests.xctrunner
 
