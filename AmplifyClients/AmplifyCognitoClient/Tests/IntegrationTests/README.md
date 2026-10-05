@@ -736,6 +736,68 @@ needs nothing either but the rotation client's outputs, without which RT-1 and R
 since. Each `CognitoClientUITests`
 job runs one test, and fails when that test fails.
 
+### CI's additive resources (`infra/ci`)
+
+The I17 skips and RT-1 and RT-2 need resources the plugin's CI backends lack. Adding them to those backends would
+change them, so `infra/ci/provision-ci.sh` adds **new** ones beside them in the CI account instead, and changes
+nothing that exists: two pools from this directory's templates, with what they need, all named `ccit-ci-…` (the
+identity pool `ccit_ci_default`, the parameters `/ccit-ci/…`) and tagged `purpose=amplify-cognito-client-integ`.
+
+| New resource | From | Gives the client's CI |
+|---|---|---|
+| `ccit-ci-email-alias` pool and its `client` app client | `pools/email-alias.json` | the device-alias role: a pre-sign-up trigger that confirms test sign-ups, 5-minute tokens, and a code API (DV-10…19, the parity check, its pool in the every-pool check) |
+| `ccit-ci-default` pool, its `plugin` and `rotation` app clients, identity pool `ccit_ci_default` with two permissionless roles | `pools/default.json` | the default role: custom-auth triggers, a code API, email verified at sign-up (CA-1…3 and their parity check, AT-2's second half, RP-3), and the rotation client (RT-1, RT-2) |
+| `ccit-ci-new-password-1` … `-12` on `ccit-ci-default`, kept fresh every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule | | CH-1, P-3, and the fixture check with the credentials file |
+| The triggers and the custom email and SMS sender (`lambda/`), the KMS key `alias/ccit-ci-senders`, the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles and log groups (7 days), the SNS caller role for SMS MFA, and the custom-auth answer and the temporary password in SSM | | Cognito sends no email and no SMS for these pools: every code goes to the code sink |
+
+`provision-ci.sh` finds each resource by name, creates only what is missing, and refuses any resource with one of
+its names that lacks the tag. Every change it makes goes through one guard that refuses a name that is not
+`ccit-ci-`, and outside `--apply` only get, list, describe and head calls can be made at all. A dry run is the default
+and prints each call, masked; `--apply` runs that dry run first and stops before its first change if it refuses.
+`snapshot` and `verify-unchanged` prove the rest of the account is untouched (every user pool, its MFA settings and
+app clients, the Lambdas they name, every identity pool, role, function, KMS alias, AppSync API, table and rule, and
+the `auth/` objects with their ETags). `teardown` removes only these resources, and is a dry run by default.
+
+```bash
+cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
+export COGNITO_CLIENT_INTEG_CI_CONFIG_URL=s3://<bucket>/<path>   # CI's AWS_S3_BUCKET_INTEG_V2, the folder above auth/
+infra/ci/provision-ci.sh snapshot                       # read-only; /tmp/ci-disc/snapshot-<time>.json
+infra/ci/provision-ci.sh                                # dry run: every call it would make, masked
+infra/ci/provision-ci.sh --apply                        # creates what is missing; writes the four files, mode 600
+infra/ci/provision-ci.sh --apply --upload               # and uploads them to auth/cognito-client-ci/, new keys only
+infra/ci/provision-ci.sh snapshot
+infra/ci/provision-ci.sh verify-unchanged /tmp/ci-disc/snapshot-<before>.json /tmp/ci-disc/snapshot-<after>.json
+infra/ci/provision-ci.sh teardown [--apply]             # later, if ever
+```
+
+`--scope email-alias` provisions only the device-alias pool and what it needs. `bash infra/ci/test_provision_ci.sh`,
+`bash infra/ci/test_ci_overlay.sh` and `node --test infra/ci/lambda/new-password-reset/test_new_password_reset.mjs`
+test these offline, the first over a fake `aws`.
+
+**How CI uses them.** CI downloads `auth/` recursively for every auth job, so the files land in
+`testconfiguration/cognito-client-ci/` on the plugin's runners too. They are inert there: none has a plugin file name,
+the plugin's tests read their files by exact path (`testconfiguration/<name>.json`), and `AuthWebAuthnApp` copies
+only the top level. Only the client's jobs read them: `run_integration_tests.yml`'s `cognito_client_ci_overlay`
+input (`email-alias default` for the client suite, `default` for the interop suite) runs `infra/ci/ci-overlay.sh`,
+which copies the plugin's top-level files into a directory of its own, puts each overlaid role's file in under the
+name the client's build phase copies, and sets `COGNITO_CLIENT_INTEG_DIR` to it. Without the subfolder, or when a file
+there does not check out (no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation
+client on another pool), nothing is set and the tests skip as before, each with its I17 message. The files carry no
+sandbox mark, so the three sandbox checks stay skipped, and `requireSandbox`'s advice to write the sandbox set again
+is not given on CI. With the files, on the device-alias role a sign-up is confirmed by the trigger and, for
+`ccit-confirm-` users, with its code, so `SandboxSignUp.ciSkip(for:)` finds the resource present and no Swift change
+is needed for it.
+
+The default role then runs every client test on `.standard` against `ccit-ci-default` instead of the plugin's
+default backend: the custom-auth answer, the new-password users, the code API and the rotation client must share one
+pool with the rest of the role, and none of them can be added to the plugin's pool. The template is the one the full
+suite passes on in the sandbox. Locally, run `infra/ci/ci-overlay.sh <downloaded-dir> <new-dir> "email-alias default"`
+after `infra/fetch-ci-config.sh` and build with `COGNITO_CLIENT_INTEG_DIR=<new-dir>`.
+
+The code sink's API key lives 364 days. Before it expires, `--apply` makes a new one (it reuses a key only while it
+has 30 days left), and the four files must be replaced: `--upload` never overwrites, so replacing this script's own
+objects is a separate, later step. Until then the code-reading tests on these roles fail naming the code API.
+
 ## Optional: the sandbox (only for the tests CI can't run yet)
 
 This directory's own Cognito sandbox (`infra/`) is no longer the default for local runs: run on the plugin's CI
