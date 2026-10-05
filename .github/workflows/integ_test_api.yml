@@ -94,8 +94,9 @@ jobs:
     secrets: inherit
 
   graphql-lazy-load-test:
-    if: ${{ false }}
     name: GraphQL | Lazy Load Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.api == 'true' }}
     uses: ./.github/workflows/integ_test_api_graphql_lazy_load.yml
     secrets: inherit
 
@@ -124,6 +125,7 @@ jobs:
       - graphql-auth-directive-test
       - graphql-iam-test
       - graphql-lambda-auth-test
+      - graphql-lazy-load-test
       - rest-user-pool-test
       - rest-iam-test
     env:

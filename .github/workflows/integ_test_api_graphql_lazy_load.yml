@@ -23,8 +23,11 @@ jobs:
     name: API Integration Tests | GraphQL Lazy Load
     strategy:
       fail-fast: false
+      # Platforms share one provisioned backend; run one at a time so unfiltered subscriptions don't receive the other platform's events.
+      max-parallel: 1
       matrix:
-        platform: [iOS, tvOS, watchOS]
+        # The AWSAPIPluginLazyLoadTests target does not support watchOS.
+        platform: [iOS, tvOS]
         exclude:
           - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
           - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
