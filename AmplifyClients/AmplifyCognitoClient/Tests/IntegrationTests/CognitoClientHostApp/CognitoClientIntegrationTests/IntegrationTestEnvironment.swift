@@ -32,7 +32,10 @@ import XCTest
 /// only. The identity-only role is derived from the default backend's outputs without its user pool
 /// (`identityOnlyAuthSection()`). No user or secret is seeded: suites sign their own users up, read codes
 /// through each file's `data` API (`CodeSink`), and take the rest from the default backend's credentials file
-/// (`credentials()`), which the plugin's CI does not provide.
+/// (`credentials()`), which the plugin's CI does not provide. On CI, the client's jobs may point the default and
+/// device-alias roles at the client's own CI resources instead (`infra/ci/provision-ci.sh`, mapped onto these
+/// names by `infra/ci/ci-overlay.sh`), which bring a credentials file, a code API and a rotation client; the
+/// plugin's files are never changed.
 enum IntegrationTestEnvironment {
 
     /// The main configuration: the plugin's default backend (`SandboxPool.standard`). The resource name
@@ -209,16 +212,15 @@ enum IntegrationTestEnvironment {
 
     /// Skips a sandbox check (`isSandbox(_:)`) on a backend that is not the sandbox's, naming the file and
     /// what the check needs: it checks the sandbox's provisioning, which the plugin's backends do not have.
-    /// A set that looks like the sandbox's full set (it has the default credentials file, which the plugin's
-    /// CI and the CI shape do not) but carries no mark was written before the mark existed: the message says
-    /// to write it again.
+    /// Off CI, a set that looks like the sandbox's full set (it has the default credentials file, which the
+    /// plugin's CI files and the CI shape do not) but carries no mark was written before the mark existed: the
+    /// message says to write it again (`sandboxRewriteHint(isCIRun:hasCredentialsFile:)`).
     static func requireSandbox(_ pool: SandboxPool, _ needs: String) throws {
         guard isSandbox(pool) else {
-            let unmarkedFullSet = (try? credentials())?.isPresent == true
-            let rewrite = unmarkedFullSet
-                ? " This set has the default credentials file, as the sandbox's full set does: if it is one written "
-                + "before the mark existed, run infra/plugin-configs.py --dir again and rebuild."
-                : ""
+            let rewrite = sandboxRewriteHint(
+                isCIRun: isCIRun,
+                hasCredentialsFile: (try? credentials())?.isPresent == true
+            )
             throw XCTSkip("""
             A sandbox check: \(pool.sourceName) is not the sandbox's (no custom.amplify_cognito_client_integ \
             block), and this check needs \(needs), which only the sandbox provisions.\(rewrite)
@@ -226,7 +228,19 @@ enum IntegrationTestEnvironment {
         }
     }
 
-    // MARK: - CI skips
+    /// What `requireSandbox(_:_:)`'s skip adds for a set with the default credentials file: the advice to write
+    /// the sandbox's set again, which only an unmarked sandbox set needs. On CI the file comes from the client's
+    /// own CI resources (`infra/ci`, through `infra/ci/ci-overlay.sh`), which are not the sandbox's and carry no
+    /// mark by design, so the skip gives no such advice there.
+    static func sandboxRewriteHint(isCIRun: Bool, hasCredentialsFile: Bool) -> String {
+        guard !isCIRun, hasCredentialsFile else {
+            return ""
+        }
+        return " This set has the default credentials file, as the sandbox's full set does: if it is one written "
+            + "before the mark existed, run infra/plugin-configs.py --dir again and rebuild."
+    }
+
+    // MARK: - CI skips (I17)
 
     /// What the client's CI job sets to `1` in the test process, through `xcodebuild`'s
     /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS` (`run_integration_tests.yml`'s `cognito_client_integ_ci_skips`

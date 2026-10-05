@@ -405,6 +405,26 @@ extension HarnessHelperTests {
 
 extension HarnessHelperTests {
 
+    /// A sandbox check's skip advises writing the sandbox's set again only off CI, for a set with the default
+    /// credentials file (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.sandboxRewriteHint(isCIRun:hasCredentialsFile:)`, no request
+    /// - When:
+    ///    - It is asked for each of the four combinations of a CI run and a credentials file
+    /// - Then:
+    ///    - Off CI with a credentials file, it says to run infra/plugin-configs.py --dir again
+    ///    - On CI, where the client's own CI resources bring a credentials file with no sandbox mark, and
+    ///      without a credentials file, it adds nothing
+    ///
+    func testSandboxRewriteHintIsGivenOnlyOffCIForASetWithACredentialsFile() {
+        let local = IntegrationTestEnvironment.sandboxRewriteHint(isCIRun: false, hasCredentialsFile: true)
+        XCTAssertTrue(local.contains("run infra/plugin-configs.py --dir again"), local)
+        XCTAssertTrue(local.hasPrefix(" "), "the hint follows the skip's last sentence")
+        XCTAssertEqual(IntegrationTestEnvironment.sandboxRewriteHint(isCIRun: true, hasCredentialsFile: true), "")
+        XCTAssertEqual(IntegrationTestEnvironment.sandboxRewriteHint(isCIRun: false, hasCredentialsFile: false), "")
+        XCTAssertEqual(IntegrationTestEnvironment.sandboxRewriteHint(isCIRun: true, hasCredentialsFile: false), "")
+    }
+
     /// A fresh sign-up whose SDK retry met `UsernameExistsException` (CH-4) adopts the earlier attempt's user
     /// when it signs in with this call's password, confirming it first when it is unconfirmed and can be.
     ///
