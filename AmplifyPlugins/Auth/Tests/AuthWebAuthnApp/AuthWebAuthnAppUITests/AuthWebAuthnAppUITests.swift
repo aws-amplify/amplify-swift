@@ -186,10 +186,12 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
                 let (data, response) = try await URLSession.shared.data(for: request)
                 let status = (response as? HTTPURLResponse)?.statusCode ?? 0
                 let body = String(bytes: data, encoding: .utf8) ?? ""
+                // The server's answer can name the simulator: it is masked before it is reported.
+                let maskedBody = Self.maskingUUIDs(body)
                 if status == 500, body.hasPrefix("Timed out") {
-                    throw URLError(.timedOut, userInfo: [NSLocalizedDescriptionKey: "The server's \(body)"])
+                    throw URLError(.timedOut, userInfo: [NSLocalizedDescriptionKey: "The server's \(maskedBody)"])
                 }
-                XCTAssertTrue(status < 300, "Failed to \(description): HTTP \(status) \(body)")
+                XCTAssertTrue(status < 300, "Failed to \(description): HTTP \(status) \(maskedBody)")
                 return
             } catch {
                 lastError = error
@@ -197,6 +199,16 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
             }
         }
         throw try XCTUnwrap(lastError)
+    }
+
+    /// `text` with each UUID-shaped string in it, such as the simulator's UDID in the server's answers, replaced
+    /// by `<UDID>`: what this test reports goes to CI logs of a public repository.
+    private static func maskingUUIDs(_ text: String) -> String {
+        text.replacingOccurrences(
+            of: "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}",
+            with: "<UDID>",
+            options: .regularExpression
+        )
     }
 
     @MainActor
@@ -289,12 +301,14 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     /// The time budget, against XCTest's 10-minute execution allowance, counting `setUp()` and `tearDown()`
     /// in it to be safe. Every wait is bounded:
     /// - a simulator-server request: 3 tries of at most 20 s, 2 s apart (64 s), and a request that fails
-    ///   all three ends the test (the server answers within 15 s, and ends a hung job at 45 s), except a
-    ///   `/match` timing out within a ceremony's window, which is sent again (`waitForResultMatchingBiometrics`);
+    ///   all three ends the test (the server answers each try within 15 s, and ends a hung job at 45 s, or
+    ///   120 s for `/boot`). A `/match` that times out does not: its ceremony goes on to its window's end
+    ///   (`waitForResultMatchingBiometrics`);
     /// - `setUp()`: `/boot` and `/enroll` (about 1 s each), the launch, then 30 s each for the username and
     ///   the sign-up's sign-in, so about 72 s;
-    /// - the associate ceremony: `associateCeremonyWindow`, 150 s, plus its last `/match` (about 2 s);
-    /// - the sign-in ceremony: `signInCeremonyWindow`, 90 s, plus its last `/match`;
+    /// - the associate ceremony: `associateCeremonyWindow`, 150 s, plus its last `/match` (about 2 s; up to
+    ///   64 s and then a last 4 s for the result when the server times out);
+    /// - the sign-in ceremony: `signInCeremonyWindow`, 90 s, plus its last `/match`, as above;
     /// - list, sign out, delete and list again: 30 s each;
     /// - `tearDown()`: closing a sheet (a few queries), 30 s to delete the user, terminating the app, and
     ///   `/uninstall` (64 s), so about 105 s.
@@ -407,16 +421,28 @@ final class AuthWebAuthnAppUITests: XCTestCase, @unchecked Sendable {
     ///
     /// A `/match` that timed out (the simulator was too busy to run its `simctl spawn` within the server's
     /// limit, as on a loaded CI runner in run 37338053976) does not end the wait while time is left: the result
-    /// is checked as after any other, and the next face goes in a new server job. Any other failure, or a
-    /// time-out at `deadline`, ends the test.
+    /// is checked as after any other, and the next face goes in a new server job. When `deadline` has passed
+    /// with a timed-out `/match`, the result gets a last 4 s, and the test fails saying so. Any other failure
+    /// of the request throws.
     @MainActor
     private func waitForResultMatchingBiometrics(_ containing: String, until deadline: Date) async throws -> Bool {
         repeat {
             do {
                 try await matchBiometrics()
-            } catch let error as URLError where error.code == .timedOut && Date() < deadline {
-                // Not the error's text: the server's answer names the simulator.
-                print("A /match timed out (\(error.code.rawValue)); the face is presented again")
+            } catch let error as URLError where error.code == .timedOut {
+                guard Date() < deadline else {
+                    // The ceremony may still have finished with the face sent before.
+                    if waitForResult(containing, timeout: 4) {
+                        return true
+                    }
+                    // The error's text is the server's masked answer (`sendLocalServerRequest`).
+                    XCTFail("""
+                    The ceremony's window ended with the simulator server's /match timing out, and no \
+                    "\(containing)" result: \(redactedResult). \(error.localizedDescription)
+                    """)
+                    return false
+                }
+                print("A /match timed out; the face is presented again")
             }
             if waitForResult(containing, timeout: max(0, min(4, deadline.timeIntervalSinceNow))) {
                 return true

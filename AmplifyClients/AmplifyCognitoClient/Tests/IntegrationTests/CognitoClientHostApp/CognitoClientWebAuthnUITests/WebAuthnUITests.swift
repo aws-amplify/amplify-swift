@@ -281,16 +281,27 @@ final class WebAuthnUITests: XCTestCase, @unchecked Sendable {
     ///
     /// A `/match` that timed out (the simulator was too busy to run its `simctl spawn` within the server's
     /// limit, as on a loaded CI runner in run 37338053976) does not end the wait while time is left: the result
-    /// is checked as after any other, and the next face goes in a new server job. One the server refused, or
-    /// one that timed out at the deadline, fails.
+    /// is checked as after any other, and the next face goes in a new server job. When the window has ended
+    /// with a timed-out `/match`, the result gets a last 4 s, and the step fails saying so. A `/match` the
+    /// server refused throws.
     @MainActor
     private func waitForResultMatchingBiometrics(_ containing: String, timeout: TimeInterval) async throws -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
             do {
                 try await SimulatorServer.matchBiometrics(device)
-            } catch let error as SimulatorServerError where error.isTimeout && Date() < deadline {
-                // Not the error's text: the server's answer names the simulator.
+            } catch let error as SimulatorServerError where error.isTimeout {
+                guard Date() < deadline else {
+                    // The ceremony may still have finished with the face sent before.
+                    if waitForResult(containing, timeout: 4) {
+                        return true
+                    }
+                    XCTFail("""
+                    The ceremony's \(Int(timeout)) s ended with the simulator server's /match timing out, and no \
+                    "\(containing)" result: \(redactedResult). \(error)
+                    """)
+                    return false
+                }
                 XCTContext.runActivity(named: "A /match timed out; the face is presented again") { _ in }
             }
             if waitForResult(containing, timeout: 4) {

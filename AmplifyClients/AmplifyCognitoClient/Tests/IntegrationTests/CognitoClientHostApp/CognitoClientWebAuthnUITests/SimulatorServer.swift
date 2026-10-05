@@ -63,8 +63,8 @@ enum SimulatorServer {
                 let body = String(bytes: data, encoding: .utf8) ?? ""
                 if status == 500, body.hasPrefix("Timed out") {
                     // The server's job is still running, or hung and was stopped: as with a time-out, the next
-                    // try can succeed.
-                    serverTimeout = body
+                    // try can succeed. Its answer can name the simulator, so that is masked.
+                    serverTimeout = maskingUUIDs(body)
                     lastError = URLError(.timedOut)
                 } else if status < 300 {
                     return
@@ -84,8 +84,8 @@ enum SimulatorServer {
         }
         if let serverTimeout {
             throw SimulatorServerError("""
-            POST \(path): the simulator server's simctl command hung, \(attempts) times. Its last answer: \
-            \(serverTimeout). Check the server's log.
+            POST \(path): the simulator server's simctl command was still running or hung, \(attempts) times. Its \
+            last answer: \(serverTimeout). Check the server's log.
             """, isTimeout: true)
         }
         let timedOut = (lastError as? URLError)?.code == .timedOut
@@ -96,6 +96,16 @@ enum SimulatorServer {
         The simulator server is not running at \(endpoint) (\(lastError?.localizedDescription ?? "no answer")). \
         Start it: cd AmplifyPlugins/Auth/Tests/AuthWebAuthnApp/LocalServer && npm install && npm start
         """, isTimeout: timedOut)
+    }
+
+    /// `text` with each UUID-shaped string in it, such as the simulator's UDID in the server's answers, replaced
+    /// by `<UDID>`: what this harness reports goes to CI logs of a public repository.
+    static func maskingUUIDs(_ text: String) -> String {
+        text.replacingOccurrences(
+            of: "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}",
+            with: "<UDID>",
+            options: .regularExpression
+        )
     }
 
     /// The UDID of the simulator the test runs on, from the test bundle's path
