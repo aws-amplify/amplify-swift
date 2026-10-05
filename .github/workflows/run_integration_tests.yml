@@ -54,6 +54,11 @@ on:
         required: false
         type: string
         default: ''
+      cognito_client_ci_overlay:
+        description: 'Space-separated Cognito client roles (email-alias, default) to point at the client''s own CI resources, which CI downloads into the auth configuration''s cognito-client-ci/ subfolder (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci). The build then reads a directory of its own (COGNITO_CLIENT_INTEG_DIR); the downloaded files are not changed. Empty, or no subfolder, changes nothing. Only the client jobs set it.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
     id-token: write
@@ -97,6 +102,26 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
           destination: ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      # Only the Cognito client jobs set the input. ci-overlay.sh writes into a directory of its own, never into the
+      # downloaded one, and the plugin's jobs never run it, so they read exactly what they read before. When the
+      # subfolder is absent, or a file in it does not check out, nothing is set and the client suites skip on CI as
+      # before.
+      - name: Point the Cognito client suites at their own CI resources
+        if: inputs.cognito_client_ci_overlay != ''
+        env:
+          ROLES: ${{ inputs.cognito_client_ci_overlay }}
+        run: |
+          dest="$RUNNER_TEMP/cognito-client-integ-config"
+          if ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci/ci-overlay.sh \
+              "$HOME/.aws-amplify/amplify-ios/testconfiguration" "$dest" "$ROLES"; then
+            if [ -d "$dest" ]; then
+              echo "COGNITO_CLIENT_INTEG_DIR=$dest" >> "$GITHUB_ENV"
+            fi
+          else
+            echo "::warning::The Cognito client CI resources were not used (see this step's log); the suites run on the plugin's files, with CI's skips."
+          fi
+        shell: bash
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache

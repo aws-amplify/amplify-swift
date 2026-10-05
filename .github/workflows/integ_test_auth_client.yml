@@ -51,6 +51,10 @@ jobs:
       # README's "Running in CI"). CI sets it here, and the README's recommended local recipe on CI's file set
       # sets it too; a run without it stays strict, and a sandbox file set never skips.
       cognito_client_integ_ci_skips: '1'
+      # The client's own CI resources (infra/ci/provision-ci.sh), once uploaded to auth/cognito-client-ci/: the
+      # device-alias role (DV-10…19) and the default role (custom auth, new-password users, its code API). Without
+      # the subfolder this changes nothing, and those tests skip as above.
+      cognito_client_ci_overlay: 'email-alias default'
     secrets: inherit
 
   auth-client-plugin-interop-tests:
@@ -66,6 +70,9 @@ jobs:
       uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
       # So RT-1 and RT-2, which skip without the rotation client's outputs, say the skip is CI's.
       cognito_client_integ_ci_skips: '1'
+      # The default role on the client's own CI pool, whose rotation client RT-1 and RT-2 need (infra/ci). Without
+      # the subfolder this changes nothing, and they skip as above.
+      cognito_client_ci_overlay: 'default'
     secrets: inherit
 
   auth-client-ui-integration-test-iOS:
