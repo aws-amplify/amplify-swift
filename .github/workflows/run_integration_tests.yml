@@ -50,7 +50,7 @@ on:
         type: number
         default: 3
       cognito_client_integ_ci_skips:
-        description: 'Set to 1 to give the test process COGNITO_CLIENT_INTEG_CI_SKIPS=1 (as TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS), so the Cognito client suites skip on CI, naming the reason, the tests whose resource the plugin''s CI does not provide. Empty sets nothing.'
+        description: 'Set to 1 to give the test process COGNITO_CLIENT_INTEG_CI_SKIPS=1 (as TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS), so the Cognito client suites skip on CI, naming the reason, the tests whose resource the plugin''s CI does not provide. Empty sets nothing. CI sets it for the client jobs, and the client README''s recommended local recipe on CI''s file set sets it too.'
         required: false
         type: string
         default: ''

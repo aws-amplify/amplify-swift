@@ -230,7 +230,8 @@ enum IntegrationTestEnvironment {
 
     /// What the client's CI job sets to `1` in the test process, through `xcodebuild`'s
     /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS` (`run_integration_tests.yml`'s `cognito_client_integ_ci_skips`
-    /// input). A local run never sets it, so local runs stay strict.
+    /// input). CI sets it, and the README's recommended local recipe on CI's file set sets it too; a run without
+    /// it stays strict.
     static let ciSkipsVariable = "COGNITO_CLIENT_INTEG_CI_SKIPS"
 
     /// Whether this process runs in the client's CI job (`ciSkipsVariable` is `1`).
