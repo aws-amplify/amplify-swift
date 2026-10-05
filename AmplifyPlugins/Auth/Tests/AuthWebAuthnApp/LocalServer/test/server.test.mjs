@@ -183,7 +183,7 @@ test("a job is killed at its limit, its requests answer \"Timed out\", and the n
     LOCALSERVER_REQUEST_WAIT_MS: "3000",
     LOCALSERVER_JOB_LIMIT_MS: "800",
     FAKE_XCRUN_SLEEP_UNINSTALL: "5",
-    FAKE_XCRUN_SLOW_FIRST: "1"
+    FAKE_XCRUN_SLOW_CALL: "1"
 }, async (server) => {
     const first = await post(server, "/uninstall")
     assert.equal(first.status, 500)
@@ -207,4 +207,23 @@ test("a job that reaches its limit after its request was answered does not stop 
     await sleep(1200)
     assert.ok(server.isRunning(), server.output())
     assert.equal((await post(server, "/boot")).status, 200)
+}))
+
+test("a match whose second face runs out of time still answers Done: the first was presented", withServer({
+    LOCALSERVER_JOB_LIMIT_MS: "2500",
+    FAKE_XCRUN_SLEEP_SPAWN: "5",
+    FAKE_XCRUN_SLOW_CALL: "2"
+}, async (server) => {
+    const response = await post(server, "/match")
+    assert.equal(response.status, 200)
+    assert.match(server.output(), /The face was presented once: the second one timed out/)
+}))
+
+test("a match whose first face runs out of time answers \"Timed out\"", withServer({
+    LOCALSERVER_JOB_LIMIT_MS: "2000",
+    FAKE_XCRUN_SLEEP_SPAWN: "5"
+}, async (server) => {
+    const response = await post(server, "/match")
+    assert.equal(response.status, 500)
+    assert.match(response.body, /^Timed out after \d+ ms: xcrun simctl spawn/)
 }))

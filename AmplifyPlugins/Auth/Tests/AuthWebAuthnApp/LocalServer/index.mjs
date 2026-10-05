@@ -191,7 +191,8 @@ route("/enroll", "enroll biometrics in the device", jobLimitMs, (deviceId, deadl
     ], deadline))
 
 // Presents a matching face and finger, then again half a second later, each time from one `notifyutil`: one
-// `simctl spawn` where there were two, which is what a busy simulator is slow to run.
+// `simctl spawn` where there were two, which is what a busy simulator is slow to run. Once the first is
+// presented, the job succeeds even if the second does not finish in its time.
 route("/match", "match biometrics", jobLimitMs, async (deviceId, deadline) => {
     const match = [
         "notifyutil",
@@ -201,7 +202,14 @@ route("/match", "match biometrics", jobLimitMs, async (deviceId, deadline) => {
     await sleep(1000)
     await spawnInSimulator(deviceId, match, deadline)
     await sleep(500)
-    await spawnInSimulator(deviceId, match, deadline)
+    try {
+        await spawnInSimulator(deviceId, match, deadline)
+    } catch (error) {
+        if (!(error instanceof CommandTimeoutError)) {
+            throw error
+        }
+        log("The face was presented once: the second one timed out")
+    }
 })
 
 // Replaces Express's default error handler, which logs the error's stack: for a body that is not JSON, that

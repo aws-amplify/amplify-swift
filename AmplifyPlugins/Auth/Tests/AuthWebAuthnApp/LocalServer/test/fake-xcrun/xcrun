@@ -2,13 +2,13 @@
 # Stands in for `xcrun` in the server's tests (`server.test.mjs`): records each call in $FAKE_XCRUN_LOG,
 # as "<pid> start <arguments>" and then "<pid> end <arguments>", and takes $FAKE_XCRUN_SLEEP_<COMMAND>
 # seconds and exits with $FAKE_XCRUN_EXIT_<COMMAND> (0 by default), where <COMMAND> is the simctl
-# subcommand in capitals: BOOTSTATUS, SPAWN or UNINSTALL. With $FAKE_XCRUN_SLOW_FIRST set, only the first
-# call of a run sleeps.
+# subcommand in capitals: BOOTSTATUS, SPAWN or UNINSTALL. With $FAKE_XCRUN_SLOW_CALL set to a number, only
+# that call of a run (counting from 1) sleeps.
 command=$(printf '%s' "$2" | tr '[:lower:]' '[:upper:]')
 echo "$$ start $*" >> "$FAKE_XCRUN_LOG"
 eval "seconds=\${FAKE_XCRUN_SLEEP_$command:-0}"
 eval "status=\${FAKE_XCRUN_EXIT_$command:-0}"
-if [ -n "$FAKE_XCRUN_SLOW_FIRST" ] && [ "$(grep -c ' start ' "$FAKE_XCRUN_LOG")" -gt 1 ]; then
+if [ -n "$FAKE_XCRUN_SLOW_CALL" ] && [ "$(grep -c ' start ' "$FAKE_XCRUN_LOG")" != "$FAKE_XCRUN_SLOW_CALL" ]; then
     seconds=0
 fi
 sleep "$seconds"
