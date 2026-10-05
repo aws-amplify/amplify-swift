@@ -11,6 +11,12 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 final class PushNotificationHostAppUITests: XCTestCase, @unchecked Sendable {
     private let timeout = TimeInterval(6)
+    /// For what the system shows, which a busy CI simulator can take well over `timeout` to: the permission
+    /// alert, a notification's banner, and the app opened from it. A wait ends as soon as it appears, so this
+    /// only lengthens a failing one. With `timeout`, a banner slower than 6 s, or a permission alert shown after
+    /// the wait (left untapped, so no banner can show), fails "Failed to receive push notification", which CI
+    /// has reported on `main` and on PR #4349.
+    private let systemUITimeout = TimeInterval(20)
     private let app = XCUIApplication()
 
     private lazy var deviceIdentifier: String = {
@@ -157,13 +163,13 @@ final class PushNotificationHostAppUITests: XCTestCase, @unchecked Sendable {
         ))
 
         let notification = notificationElement()
-        if notification.waitForExistence(timeout: timeout) {
+        if notification.waitForExistence(timeout: systemUITimeout) {
             notification.tap()
         } else {
             XCTFail("Failed to receive push notification")
         }
 
-        if !app.wait(for: .runningForeground, timeout: timeout) {
+        if !app.wait(for: .runningForeground, timeout: systemUITimeout) {
             XCTFail("Failed to open App with push notification")
         }
 
@@ -195,13 +201,13 @@ final class PushNotificationHostAppUITests: XCTestCase, @unchecked Sendable {
         ))
 
         let notification = notificationElement()
-        if notification.waitForExistence(timeout: timeout) {
+        if notification.waitForExistence(timeout: systemUITimeout) {
             notification.tap()
         } else {
             XCTFail("Failed to receive push notification")
         }
 
-        if !app.wait(for: .runningForeground, timeout: timeout) {
+        if !app.wait(for: .runningForeground, timeout: systemUITimeout) {
             XCTFail("Failed to open App with push notification")
         }
 
@@ -286,7 +292,7 @@ final class PushNotificationHostAppUITests: XCTestCase, @unchecked Sendable {
     #else
         let alert = XCUIApplication.homeScreen.alerts.firstMatch
     #endif
-        if alert.waitForExistence(timeout: timeout) {
+        if alert.waitForExistence(timeout: systemUITimeout) {
             XCTAssertTrue(anyElementContains(text: "Would Like to Send You Notifications", scope: alert).exists)
         #if os(tvOS)
             alert.buttons["Allow"].firstMatch.select(direction: .horizontal)
