@@ -86,6 +86,39 @@ final class CredentialStoreDefaultSessionItemsTests: XCTestCase {
         }
     }
 
+    /// Test that a clear whose old login is already gone still removes the two items
+    ///
+    /// - Given: the same keychain, but with no plugin login under user pool A (already deleted, so its removal finds
+    ///   nothing), and A still recorded as the last configuration
+    /// - When:
+    ///    - the plugin's store starts under user pool B
+    /// - Then:
+    ///    - A's `$default.meta` and `$default.challenge` are removed, right after the login's removal
+    ///    - every other client item is left as it was
+    ///
+    func testClear_whoseLoginIsAlreadyAbsent_stillRemovesTheItems() throws {
+        let (keychain, store) = try Self.seeded(previous: Self.previous)
+        let loginAccount = AWSCognitoAuthCredentialStore.sessionAccount(for: Self.previous)
+        try store.remove(loginAccount)
+        XCTAssertNil(keychain.value(service: pluginKeychainService, account: loginAccount))
+        keychain.resetMutations()
+        let removed = Self.defaultSessionItems(of: Self.previous)
+
+        _ = AWSCognitoAuthCredentialStore(authConfiguration: Self.current, keychain: store, logger: DiscardingEngineLogger())
+
+        for account in removed {
+            XCTAssertNil(keychain.value(service: pluginKeychainService, account: account), account)
+        }
+        for account in Self.clientItems where !removed.contains(account) {
+            XCTAssertEqual(keychain.value(service: pluginKeychainService, account: account), Self.value(account), account)
+        }
+        XCTAssertEqual(Array(keychain.mutations.prefix(3)), [
+            .remove(service: pluginKeychainService, account: loginAccount),
+            .remove(service: pluginKeychainService, account: removed[0]),
+            .remove(service: pluginKeychainService, account: removed[1])
+        ])
+    }
+
     // MARK: - The carry
 
     /// Test that a carry keeps the old namespace's two default-session items, as it keeps the old login

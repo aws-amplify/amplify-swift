@@ -52,7 +52,10 @@ package enum SessionRecordAccount {
     /// own record: the sidecar (label and last user) and the interrupted sign-in.
     private static let defaultSessionItemSuffixes = [".$default.meta", ".$default.challenge"]
 
-    /// The schema version the Cognito client writes its default-session items under today.
+    /// The schema version the Cognito client writes its default-session items under today. The plugin removes
+    /// only accounts of this version (`defaultSessionItemAccounts(poolNamespace:)`), unlike the recognisers below,
+    /// which accept every version: a future client schema version must update this helper, or the plugin's
+    /// deleting configuration change leaves that version's two items behind.
     private static let defaultSessionItemSchemaVersion = "1"
 
     /// The accounts of the two items the Cognito client keeps for its **default** session under one pool

@@ -20,6 +20,8 @@ extension DefaultSessionConfigurationChangeTests {
 
     // MARK: - The plugin's clear
 
+    /// A plugin clear leaves the client no signed-out row under the old configuration.
+    ///
     /// - Given: the plugin under user pool A, holding alice, labelled through the client, with an interrupted sign-in
     ///   saved for `.default` under A
     /// - When: the plugin's store starts under user pool B, before any client restores
@@ -49,6 +51,8 @@ extension DefaultSessionConfigurationChangeTests {
         XCTAssertEqual(rowsThere, [])
     }
 
+    /// A plugin carry keeps the old configuration's row, with its label.
+    ///
     /// - Given: the plugin under a user-pool-only configuration, holding alice, labelled through the client
     /// - When: the plugin's store starts with an identity pool added under the same user pool, app client and region
     ///   (a carry), before any client restores
@@ -77,6 +81,8 @@ extension DefaultSessionConfigurationChangeTests {
 
     // MARK: - The accounts
 
+    /// The shared builder the plugin uses names exactly the client's default-session items.
+    ///
     /// - Given: a user-pool-only, an identity-pool-only and a two-pool namespace
     /// - When: the shared builder the plugin uses names `.default`'s two items under each
     /// - Then:
