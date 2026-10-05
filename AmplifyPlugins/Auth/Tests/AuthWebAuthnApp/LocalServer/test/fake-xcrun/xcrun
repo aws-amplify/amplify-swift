@@ -6,6 +6,8 @@
 # that call of a run (counting from 1) sleeps.
 command=$(printf '%s' "$2" | tr '[:lower:]' '[:upper:]')
 echo "$$ start $*" >> "$FAKE_XCRUN_LOG"
+seconds=0
+status=0
 eval "seconds=\${FAKE_XCRUN_SLEEP_$command:-0}"
 eval "status=\${FAKE_XCRUN_EXIT_$command:-0}"
 if [ -n "$FAKE_XCRUN_SLOW_CALL" ] && [ "$(grep -c ' start ' "$FAKE_XCRUN_LOG")" != "$FAKE_XCRUN_SLOW_CALL" ]; then
