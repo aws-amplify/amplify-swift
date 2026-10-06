@@ -211,6 +211,28 @@ struct SignInScreen: Screen {
         _ = app.keyboards.element.waitForExistence(timeout: 10)
         coordinate.tap()
         element.typeText(text)
+        // A character typeText drops in a web view on a loaded runner only shows later, as a sign-in
+        // that never completes. Clear and retype, at most twice, while the field shows other content.
+        for _ in 0 ..< 2 where !fieldHolds(element, text) {
+            let typed = (element.value as? String ?? "").count
+            element.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: typed) + text)
+        }
+    }
+
+    /// Whether `element` shows `text`, or true when its value cannot tell: an empty value or the
+    /// placeholder, which say nothing about the content, or for a secure field anything but one
+    /// bullet per character. So a retype never adds to a field whose content it cannot see.
+    private func fieldHolds(_ element: XCUIElement, _ text: String) -> Bool {
+        guard let value = element.value as? String, !value.isEmpty, value != element.placeholderValue else {
+            return true
+        }
+        guard element.elementType == .secureTextField else {
+            return value == text
+        }
+        guard value.allSatisfy({ $0 == "•" }) else {
+            return true
+        }
+        return value.count == text.count
     }
 
     func testSignInSucceeded() -> Self {
