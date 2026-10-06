@@ -1,0 +1,84 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import AWSCognitoIdentityProvider
+import Foundation
+
+package struct ConfirmSignUp: Action {
+
+    package var identifier: String = "ConfirmSignUp"
+    package let data: SignUpEventData
+    package let confirmationCode: String
+    package let forceAliasCreation: Bool?
+
+    package func execute(withDispatcher dispatcher: any EventDispatcher, environment: any Environment) async {
+        do {
+            let authEnvironment = try environment.authEnvironment()
+            let userPoolEnvironment = authEnvironment.userPoolEnvironment
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: data.username,
+                credentialStoreClient: authEnvironment.credentialsClient
+            )
+            let client = try userPoolEnvironment.cognitoUserPoolFactory()
+            let input = await ConfirmSignUpInput(
+                username: data.username,
+                confirmationCode: confirmationCode,
+                clientMetadata: data.clientMetadata,
+                asfDeviceId: asfDeviceId,
+                forceAliasCreation: forceAliasCreation,
+                session: data.session,
+                environment: userPoolEnvironment
+            )
+            let response = try await client.confirmSignUp(input: input)
+            let dataToSend = SignUpEventData(
+                username: data.username,
+                clientMetadata: data.clientMetadata,
+                validationData: data.validationData,
+                session: response.session
+            )
+            logVerbose("\(#fileID) ConfirmSignUp response succcess", environment: environment)
+
+            if let session = response.session {
+                await dispatcher.send(SignUpEvent(eventType: .signedUp(dataToSend, .init(.completeAutoSignIn(session)))))
+            } else {
+                await dispatcher.send(SignUpEvent(eventType: .signedUp(dataToSend, .init(.done))))
+            }
+        } catch let error as SignUpError {
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
+            await dispatcher.send(errorEvent)
+        } catch {
+            let error = SignUpError.service(error: error)
+            let errorEvent = SignUpEvent(eventType: .throwAuthError(error, data))
+            logVerbose(
+                "\(#fileID) Sending event \(errorEvent)",
+                environment: environment
+            )
+            await dispatcher.send(errorEvent)
+        }
+    }
+}
+
+extension ConfirmSignUp: CustomDebugDictionaryConvertible {
+    package var debugDictionary: [String: Any] {
+        [
+            "identifier": identifier,
+            "signUpEventData": data.debugDictionary,
+            "confirmationCode": confirmationCode.maskedForLog(),
+            "forceAliasCreation": forceAliasCreation as Any
+        ]
+    }
+}
+
+extension ConfirmSignUp: CustomDebugStringConvertible {
+    package var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -363,7 +364,7 @@ class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
             .notStarted
@@ -389,7 +390,7 @@ class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
             .notStarted
@@ -457,9 +458,9 @@ class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
         plugin = AWSCognitoAuthPlugin()
 
         let mockTokenResult = [
-            "id_token": AWSCognitoUserPoolTokens.testData.idToken,
-            "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
-            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
+            "id_token": EngineUserPoolTokens.testData.idToken,
+            "access_token": EngineUserPoolTokens.testData.accessToken,
+            "refresh_token": EngineUserPoolTokens.testData.refreshToken,
             "expires_in": 10
         ] as [String: Any]
         let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
@@ -536,6 +537,7 @@ class AuthHubEventHandlerTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: authHandler,
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
     override func tearDown() async throws {

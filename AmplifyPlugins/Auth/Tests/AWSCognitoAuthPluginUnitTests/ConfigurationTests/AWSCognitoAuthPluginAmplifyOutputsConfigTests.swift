@@ -13,7 +13,19 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase, @unchecked Sendable {
 
+    private var configureEvent: AuthConfigureEventWaiter!
+
+    override func setUp() async throws {
+        // These tests add a plugin to Amplify, which throws if a test that ran before them, in any module,
+        // left the Auth category configured.
+        await Amplify.reset()
+        configureEvent = AuthConfigureEventWaiter()
+    }
+
     override func tearDown() async throws {
+        // Resetting while the plugin is still configuring traps in its Hub dispatch.
+        await configureEvent.waitIfConfigureStarted()
+        configureEvent = nil
         await Amplify.reset()
     }
 

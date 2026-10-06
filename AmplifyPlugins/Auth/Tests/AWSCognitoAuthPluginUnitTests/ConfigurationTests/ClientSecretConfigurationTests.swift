@@ -13,6 +13,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+@testable import InternalAWSCognitoAuth
 
 /// - Note: `@unchecked Sendable` so the test body can be captured by the `@Sendable` closures the
 ///   production API now takes. `XCTestCase` is not `Sendable`, and each test runs alone.
@@ -28,7 +29,7 @@ class ClientSecretConfigurationTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData),
             .notStarted
@@ -76,6 +77,7 @@ class ClientSecretConfigurationTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
 

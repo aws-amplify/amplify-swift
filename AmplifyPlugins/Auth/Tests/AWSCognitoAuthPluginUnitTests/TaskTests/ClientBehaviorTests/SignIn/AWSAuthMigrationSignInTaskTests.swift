@@ -13,6 +13,7 @@ import XCTest
 
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -65,6 +66,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase, @unchecked Sendable {
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler()
         )
+        settleConfigureOperationOnTeardown(of: plugin)
     }
 
     override func tearDown() {

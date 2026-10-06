@@ -10,8 +10,9 @@
 import Amplify
 import Foundation
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
-@available(iOS 17.4, macOS 13.5, *)
+@available(iOS 17.4, macOS 13.5, visionOS 1.0, *)
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
 // by a single test at a time.
 class MockCredentialRegistrant: CredentialRegistrantProtocol, @unchecked Sendable {

@@ -8,7 +8,9 @@
 import Foundation
 
 import AWSPluginsCore
+import InternalAmplifyKeychain
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: the protocol it conforms to now requires `Sendable`. Test double driven
 
@@ -25,6 +27,8 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, @u
     let saveCredentialHandler: SaveCredentialHandler?
     let getCredentialHandler: GetCredentialHandler?
     let clearCredentialHandler: ClearCredentialHandler?
+    /// Called with the username whenever device metadata or an ASF device id is saved.
+    var saveDeviceHandler: ((String) -> Void)?
 
     init(
         migrationCompleteHandler: Migrationhandler? = nil,
@@ -44,7 +48,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, @u
 
     func retrieveCredential() throws -> AmplifyCredentials {
         guard let credentials = try getCredentialHandler?() else {
-            throw KeychainStoreError.unknown("", nil)
+            throw EngineCredentialStoreError.unknown("", nil)
         }
         return credentials as! AmplifyCredentials
     }
@@ -53,12 +57,12 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, @u
         try clearCredentialHandler?()
     }
 
-    func getCredentialStore() -> KeychainStoreBehavior {
+    func getCredentialStore() -> any KeychainItemStoreBehavior {
         return MockKeychainStoreBehavior(data: "mock")
     }
 
     func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
-
+        saveDeviceHandler?(username)
     }
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
@@ -70,7 +74,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, @u
     }
 
     func saveASFDevice(_ deviceId: String, for username: String) throws {
-
+        saveDeviceHandler?(username)
     }
 
     func retrieveASFDevice(for username: String) throws -> String {

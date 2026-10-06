@@ -7,7 +7,8 @@
 
 import Amplify
 import Foundation
-@_spi(KeychainStore) import AWSPluginsCore
+import AWSPluginsCore
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger, @unchecked Sendable {
@@ -100,7 +101,7 @@ final class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger, @unche
                 return credentials
             }
             return nil
-        } catch KeychainStoreError.itemNotFound {
+        } catch EngineCredentialStoreError.itemNotFound {
             return .noCredentials
         } catch {
             log.verbose("Could not read shared keychain credentials: \(error)")

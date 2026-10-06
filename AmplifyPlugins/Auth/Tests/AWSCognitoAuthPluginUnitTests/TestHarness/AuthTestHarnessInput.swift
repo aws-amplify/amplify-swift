@@ -13,6 +13,7 @@ import ClientRuntime
 import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: captured by the `@Sendable` mock closures the harness installs. Test
 // fixture built once per case.

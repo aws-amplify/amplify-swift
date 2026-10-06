@@ -8,6 +8,7 @@
 import Amplify
 @preconcurrency import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 public struct AWSAuthCognitoSession: AuthSession,
                                      AuthAWSCredentialsProvider,
@@ -123,7 +124,7 @@ extension AWSAuthCognitoSession: Equatable {
 }
 
 extension AWSAuthCognitoSession: CustomDebugDictionaryConvertible {
-    var debugDictionary: [String: Any] {
+    package var debugDictionary: [String: Any] {
         var dict = [
             "isSignedIn": isSignedIn.description
         ]

@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import InternalAWSCognitoAuth
 
 enum AuthCognitoSignedInSessionHelper {
 

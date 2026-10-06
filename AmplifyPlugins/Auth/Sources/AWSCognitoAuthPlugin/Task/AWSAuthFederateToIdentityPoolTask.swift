@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import InternalAWSCognitoAuth
 
 protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask where Request == AuthFederateToIdentityPoolRequest,
                                                                Success == FederateToIdentityPoolResult,
@@ -77,7 +78,7 @@ public final class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPool
     }
 
     func sendStartFederatingToIdentityPoolEvent() async {
-        let federatedToken = FederatedToken(token: request.token, provider: request.provider)
+        let federatedToken = FederatedToken(token: request.token, provider: EngineAuthProvider(request.provider))
         let identityId = request.options.developerProvidedIdentityID
         let event = AuthorizationEvent.init( eventType: .startFederationToIdentityPool(federatedToken, identityId))
         await authStateMachine.send(event)
@@ -107,7 +108,7 @@ public final class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPool
         switch result {
         case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             let federatedResult = FederateToIdentityPoolResult(
-                credentials: awsCredentials,
+                credentials: AuthAWSCognitoCredentials(awsCredentials),
                 identityId: identityId
             )
             return federatedResult
