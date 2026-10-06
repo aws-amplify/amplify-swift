@@ -54,6 +54,16 @@ on:
         required: false
         type: string
         default: ''
+      enforce_no_skips:
+        description: 'Fail the job when its last test run (the retry, when there was one) skipped more tests than allowed_skips, read from that run''s result bundle (xcresulttool). Off by default; only the Cognito client jobs turn it on.'
+        required: false
+        type: boolean
+        default: false
+      allowed_skips:
+        description: 'With enforce_no_skips, the most tests the last test run may skip.'
+        required: false
+        type: number
+        default: 0
       cognito_client_ci_overlay:
         description: 'Space-separated Cognito client roles (email-alias, extended) to give the client''s own CI resources, which CI downloads into the auth configuration''s cognito-client-ci/ subfolder (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci). The build then reads a directory of its own (COGNITO_CLIENT_INTEG_DIR); the downloaded files are not changed. Empty, or no subfolder, changes nothing. Only the client jobs set it.'
         required: false
@@ -105,21 +115,27 @@ jobs:
 
       # Only the Cognito client jobs set the input. ci-overlay.sh writes into a directory of its own, never into the
       # downloaded one, and the plugin's jobs never run it, so they read exactly what they read before. When the
-      # subfolder is absent, or a file in it does not check out, nothing is set and the client suites skip on CI as
-      # before.
+      # subfolder is absent, or a file in it does not check out, nothing is set and the client suites run on the
+      # plugin's files (the tests that need the client's own resources then fail, or skip, which their skip gate
+      # fails). A usage error (exit 2: a role the script does not know, such as a typo in the input) fails the step.
       - name: Point the Cognito client suites at their own CI resources
         if: inputs.cognito_client_ci_overlay != ''
         env:
           ROLES: ${{ inputs.cognito_client_ci_overlay }}
         run: |
           dest="$RUNNER_TEMP/cognito-client-integ-config"
-          if ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci/ci-overlay.sh \
-              "$HOME/.aws-amplify/amplify-ios/testconfiguration" "$dest" "$ROLES"; then
+          status=0
+          ./AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci/ci-overlay.sh \
+            "$HOME/.aws-amplify/amplify-ios/testconfiguration" "$dest" "$ROLES" || status=$?
+          if [ "$status" -eq 0 ]; then
             if [ -d "$dest" ]; then
               echo "COGNITO_CLIENT_INTEG_DIR=$dest" >> "$GITHUB_ENV"
             fi
+          elif [ "$status" -eq 2 ]; then
+            echo "::error::cognito_client_ci_overlay ('$ROLES') is not a list of the roles ci-overlay.sh knows (email-alias, extended)."
+            exit 2
           else
-            echo "::warning::The Cognito client CI resources were not used (see this step's log); the suites run on the plugin's files, with CI's skips."
+            echo "::warning::The Cognito client CI resources were not used (see this step's log); the suites run on the plugin's files."
           fi
         shell: bash
 
@@ -179,6 +195,8 @@ jobs:
           # Boots the simulator while the dependencies resolve and waits for it before the build, so the tests do
           # not start on one still booting.
           boot_simulator: true
+          # Kept outside DerivedData, so the skip gate below reads this run's bundle and no other.
+          result_bundle_path: ${{ inputs.enforce_no_skips && format('{0}/integration-tests.xcresult', runner.temp) || '' }}
           # One attempt when scoped: iOS 26 only presents the first web auth session per simulator.
           other_flags: ${{ inputs.only_testing != '' && format('-parallel-testing-enabled NO -only-testing:{0}', inputs.only_testing) || format('-test-iterations {0} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES', inputs.test_iterations) }}
 
@@ -200,6 +218,7 @@ jobs:
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
           uninstall_bundle_ids: ${{ inputs.uninstall_before_retry }}
           boot_simulator: true
+          result_bundle_path: ${{ inputs.enforce_no_skips && format('{0}/integration-tests-retry.xcresult', runner.temp) || '' }}
           other_flags: -test-iterations ${{ inputs.test_iterations }} -retry-tests-on-failure -parallel-testing-enabled NO -test-repetition-relaunch-enabled YES
 
       # A failed test run must fail the job. A scoped run (only_testing) is not retried, and an unscoped one is
@@ -209,6 +228,44 @@ jobs:
         run: |
           echo "::error::The integration tests failed; see the test run step above."
           exit 1
+
+      # Only where enforce_no_skips is on (the Cognito client jobs): a test that skips there means a resource CI
+      # should have is missing, so it fails the job, listing the skipped tests. It reads the last run's result bundle:
+      # the retry's when there was one, else the first run's.
+      - name: Fail when the ${{ inputs.platform }} Integration Tests skipped more than ${{ inputs.allowed_skips }}
+        if: ${{ !cancelled() && inputs.enforce_no_skips && steps.run-tests.outcome != 'skipped' }}
+        env:
+          ALLOWED_SKIPS: ${{ inputs.allowed_skips }}
+          FIRST_BUNDLE: ${{ runner.temp }}/integration-tests.xcresult
+          RETRY_BUNDLE: ${{ runner.temp }}/integration-tests-retry.xcresult
+          RETRIED: ${{ steps.retry-tests.outcome == 'success' || steps.retry-tests.outcome == 'failure' }}
+        run: |
+          bundle="$FIRST_BUNDLE"
+          if [ "$RETRIED" = "true" ]; then
+            bundle="$RETRY_BUNDLE"
+          fi
+          if [ ! -d "$bundle" ]; then
+            echo "::error::No result bundle at $bundle, so the skipped tests cannot be counted."
+            exit 1
+          fi
+          if ! summary=$(xcrun xcresulttool get test-results summary --path "$bundle" --compact); then
+            echo "::error::xcresulttool could not read the result bundle's summary."
+            exit 1
+          fi
+          skipped=$(jq -r '.skippedTests // empty' <<<"$summary")
+          if ! [[ "$skipped" =~ ^[0-9]+$ && "$ALLOWED_SKIPS" =~ ^[0-9]+$ ]]; then
+            echo "::error::The result bundle's summary has no skipped-test count, or allowed_skips is not a whole number."
+            exit 1
+          fi
+          jq -r '"\(.totalTestCount) tests: \(.passedTests) passed, \(.failedTests) failed, \(.skippedTests) skipped."' <<<"$summary"
+          if (( skipped > ALLOWED_SKIPS )); then
+            xcrun xcresulttool get test-results tests --path "$bundle" --compact \
+              | jq -r '[.. | objects | select(.nodeType? == "Test Case" and .result? == "Skipped") | .nodeIdentifier // .name]
+                  | unique[] | "  skipped: \(.)"' || true
+            echo "::error::$skipped tests skipped, more than the $ALLOWED_SKIPS allowed: each names the resource it needs (above)."
+            exit 1
+          fi
+        shell: bash
 
       - name: Save the build cache
         if: steps.build-cache.outputs.cache-hit != 'true' && (steps.run-tests.outcome == 'success' || steps.retry-tests.outcome == 'success')

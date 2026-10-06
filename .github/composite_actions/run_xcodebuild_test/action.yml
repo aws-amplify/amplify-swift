@@ -52,6 +52,11 @@ inputs:
     required: false
     type: boolean
     default: false
+  result_bundle_path:
+    description: 'Where xcodebuild writes the result bundle (-resultBundlePath), for a later step to read; one there already is removed first. Empty leaves it in DerivedData, as before.'
+    required: false
+    type: string
+    default: ''
 
 runs:
   using: "composite"
@@ -221,6 +226,7 @@ runs:
         XCODE_PATH: ${{ inputs.xcode_path }}
         CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
         DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
+        RESULT_BUNDLE_PATH: ${{ inputs.result_bundle_path }}
       run: |
         if [ ! -z "$PROJECT_PATH" ]; then
           cd $PROJECT_PATH
@@ -261,6 +267,13 @@ runs:
         echo "Disabling Automatic Package Resolution"
         clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
 
+        # xcodebuild refuses a result bundle path that exists.
+        resultBundlePath=""
+        if [ -n "$RESULT_BUNDLE_PATH" ]; then
+          rm -rf "$RESULT_BUNDLE_PATH"
+          resultBundlePath="-resultBundlePath $RESULT_BUNDLE_PATH"
+        fi
+
         action="test"
         if [ "${{ inputs.test_without_building }}" == "true" ]; then
           echo "Testing without building..."
@@ -269,7 +282,7 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild $action -scheme $SCHEME -destination '${{ inputs.destination }}' -skipPackagePluginValidation ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -destination '${{ inputs.destination }}' -skipPackagePluginValidation ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags $resultBundlePath | xcbeautify --renderer github-actions && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report

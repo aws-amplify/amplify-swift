@@ -47,15 +47,16 @@ jobs:
       timeout-minutes: 180
       # The tests run inside the host app, so it is the only app to remove before the retry.
       uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
-      # The tests whose resource the plugin's CI does not provide skip here, each naming it (the
-      # README's "Running in CI"). CI sets it here, and the README's recommended local recipe on CI's file set
-      # sets it too; a run without it stays strict, and a sandbox file set never skips.
-      cognito_client_integ_ci_skips: '1'
-      # The client's own CI resources (infra/ci/provision-ci.sh), once uploaded to auth/cognito-client-ci/. Phase 1:
-      # the device-alias role only (DV-10…19 and its parity check); every other role stays the plugin's. Phase 2 adds
-      # `extended` here (the client's own role beside the plugin's default one, for custom auth, the new-password
-      # users and its code API). Without the subfolder this changes nothing, and those tests skip as above.
-      cognito_client_ci_overlay: 'email-alias'
+      # The client's own CI resources (infra/ci/provision-ci.sh), uploaded to auth/cognito-client-ci/: the
+      # device-alias role (DV-10…19 and its parity check), and `extended`, the client's own roles beside the plugin's
+      # default and device-alias ones (custom auth, the new-password users and the code API; the alias-codes pool)
+      # with the capabilities file that lets the three sandbox checks run there. Every other role stays the plugin's.
+      cognito_client_ci_overlay: 'email-alias extended'
+      # Nothing skips: every resource the suite needs is provided above, so the I17 skips
+      # (cognito_client_integ_ci_skips, kept for local runs on the plugin's own files) are off, and a resource
+      # that goes missing fails its tests, naming it, instead of skipping them. The gate fails the job on any skip.
+      enforce_no_skips: true
+      allowed_skips: 0
     secrets: inherit
 
   auth-client-plugin-interop-tests:
@@ -69,9 +70,11 @@ jobs:
       timeout-minutes: 60
       # The tests run inside the host app, so it is the only app to remove before the retry.
       uninstall_before_retry: com.aws.amplify.cognitoclient.CognitoClientHostApp
-      # So RT-1 and RT-2, which skip without the rotation client's outputs, say the skip is CI's. Phase 2 of
-      # infra/ci adds `cognito_client_ci_overlay: 'extended'` here, whose rotation client they then run on.
-      cognito_client_integ_ci_skips: '1'
+      # The client's own extended role (infra/ci, phase 2), whose rotation client RT-1 and RT-2 run on. Without it
+      # they skip, which the gate below fails.
+      cognito_client_ci_overlay: 'extended'
+      enforce_no_skips: true
+      allowed_skips: 0
     secrets: inherit
 
   auth-client-ui-integration-test-iOS:
