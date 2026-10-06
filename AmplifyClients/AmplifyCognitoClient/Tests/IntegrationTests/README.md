@@ -224,7 +224,13 @@ default pool, and email-alias codes keyed by the generated username. `plugin-con
 of the full set as the sandbox's (`"custom": {"amplify_cognito_client_integ": {"sandbox": true}}`, which the plugin
 and the client ignore); each sandbox check runs where its role's file carries the mark
 (`IntegrationTestEnvironment.isSandbox`) and elsewhere skips, saying it is a sandbox check and what it needs. CI's
-files and the CI shape carry no mark.
+files and the CI shape carry no mark. A backend that is not the sandbox's can have what a check needs too: the
+capabilities file, `AmplifyCognitoClientIntegrationTests-capabilities.json` (`{"capabilities": {"<role>":
+["<capability>"]}}`, `IntegrationTestEnvironment.capabilitiesResource`), names it for one of the client's own roles,
+and the check then runs on that role (`requireCapability(_:on:)`, `SandboxCapability`): on CI, the refusal check
+(`refuses_non_test_users`) and the reset-code check (`reset_password_codes`) on `extended`, and the email-alias code
+check (`email_alias_codes`) on `email-alias-codes` ("CI's additive resources", below). A capability is no sandbox
+mark: the self sign-up gate and `isSandboxFileSet` read only the mark.
 
 ### Which backend a code-reading test runs on
 
@@ -245,8 +251,8 @@ code-capturing backend has the setting it asserts on; those are listed below as 
 | sandbox checks: sign-up and resent codes, attribute codes, the confirm-then-delete cleanup, the sign-up code check | sign-up and attribute codes | passwordless | (none) | leaves sign-ups to confirm (no pre-sign-up trigger in the plugin's; the sandbox's leaves `ccit-confirm-` users) |
 | sandbox checks: SMS MFA code, the raw sign-in's SMS answer | an SMS MFA code | all-MFA-required | (none) | as MF-14 |
 | AT-2's second half, `testUpdatedEmailIsVerifiedWithTheCodeSentToIt` (not counted; AT-2 itself, as the plugin's test, reads no code) | an attribute verification code | default | (none: the plugin's test stops at the update) | asserts the email is updated before it is verified: only the default backend's README empties `AttributesRequireVerificationBeforeUpdate` |
-| RP-3 `testSuccessfulResetPasswordEndToEnd`, the sandbox's reset-code check (a sandbox check) | a password-reset code | default | (none; not counted) | needs account recovery by verified email; the code-capturing backends' READMEs set account recovery to `NONE` |
-| the sandbox's `email-alias` code check (a sandbox check) | a sign-up code, by the generated username | device alias | (none) | only that backend signs in by email |
+| RP-3 `testSuccessfulResetPasswordEndToEnd`, the reset-code check (a sandbox check) | a password-reset code | default (on CI the client's own `extended`) | (none; not counted) | needs account recovery by verified email; the code-capturing backends' READMEs set account recovery to `NONE` |
+| the `email-alias` code check (a sandbox check) | a sign-up code, by the generated username | device alias (on CI the client's own `email-alias-codes`) | (none) | only that backend signs in by email |
 
 Only MF-4, MF-6, MF-10, MF-12 (passwordless, not default: no device tracking, account recovery `NONE`, no
 pre-sign-up trigger) and MF-14 (all-MFA-required, not TOTP-and-SMS-required: email MFA also on, and the user
@@ -610,11 +616,13 @@ green job makes one pass and no retry. Both limits stay as they are until a gree
 The tests that need a resource the plugin's CI does not provide skip on CI, each naming the resource, through one
 helper, `IntegrationTestEnvironment.skipOnCIIfMissing(_:present:)`. It throws `XCTSkip` only when all three hold:
 
-1. **The run is CI's.** The test process has `COGNITO_CLIENT_INTEG_CI_SKIPS=1`. The client job passes
-   `cognito_client_integ_ci_skips: '1'` to `run_integration_tests.yml`, whose step then sets
+1. **The run asks for the skips.** The test process has `COGNITO_CLIENT_INTEG_CI_SKIPS=1`. A job that passes
+   `cognito_client_integ_ci_skips: '1'` to `run_integration_tests.yml` gets
    `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS=1` for both test runs (xcodebuild passes it to the test process
-   without the prefix). The input is empty by default, so the plugin's jobs, and the client's other jobs, set nothing.
-   The recommended local run sets the same variable ("Run on the plugin's CI configuration (recommended)").
+   without the prefix). No job passes it any more: the client's jobs get every resource from the client's own CI
+   resources ("CI's additive resources", below), so a missing one fails its tests instead, and their skip gate
+   ("No skips on CI", below) fails the job on any skip. The input stays for a run on the plugin's own files, such as
+   the recommended local run ("Run on the plugin's CI configuration (recommended)"), which sets the same variable.
 2. **The file set is not the sandbox's**: no role's outputs carry the sandbox mark (`isSandboxFileSet`). A sandbox
    run never skips, even with the variable set by mistake.
 3. **The resource is in fact missing.** When CI gains it, the test runs there, with no code change, except for
@@ -644,15 +652,17 @@ Each reason is a case of `CISkipReason`, whose message is the skip's and names t
 | `defaultCodeAPIAndVerifiedEmail` | `IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip:)` | RP-3 `PasswordResetTests.testSuccessfulResetPasswordEndToEnd` |
 | `deviceAliasConfirmation` | `SandboxSignUp.requireNotKnownUnconfirmable(_:)` (`SandboxSignUp.ciSkip(for:)`), before any sign-up | DV-10…19 (`DeviceAliasTests`), `SandboxParityProvisioningTests.testEmailAliasPoolSignsInByEmailWithShortTokens`; and in `SandboxHelperTests.testEveryPoolAutoConfirmsAFreshUserAndCleanupDeletesIt` the device-alias pool is left out of the loop, the reason recorded as an `XCTContext` activity, so the test still checks every other pool and passes |
 
-So on CI `CognitoClientIntegrationTests` should run 245 tests with no failures: 222 passed, the every-pool check
-among them, and 23 skipped, 20 with these reasons and the 3 sandbox checks as today. That assumes CS-D1, CS-D2,
-CS-D3 and the static-call case (`StorageConfigurationTests+DefaultSession.swift`), added since the suite last ran on CI, pass there:
+On the plugin's own files with the variable set, `CognitoClientIntegrationTests` should run 245 tests with no failures:
+222 passed, the every-pool check among them, and 23 skipped, 20 with these reasons and the 3 sandbox checks. On CI,
+with the client's own resources overlaid and the variable off, none of the 23 skips. That assumes CS-D1, CS-D2,
+CS-D3 and C26 (`StorageConfigurationTests+DefaultSession.swift`), added since the suite last ran on CI, pass there:
 they need only what CS-2 and CS-3 used, which passed. The device-alias row is to be provided on CI instead (option A,
 "What the plugin's CI backends must provide", above); the default backend's rows stay skips.
 
-The interop job sets the variable too, for one thing only: `PluginRotationTests` (RT-1, RT-2) skip without the
-rotation client's outputs, which the plugin's CI has not, and the variable makes their message say it is CI. The
-interop suite is now 16 tests, rewritten for the shared saved login, and has not run on CI since; on CI it should pass 14 and skip RT-1 and
+On the plugin's own files, `PluginRotationTests` (RT-1, RT-2) skip without the rotation client's outputs, which the
+plugin's CI has not, and the variable makes their message say it is CI. The interop job overlays `extended`, whose
+rotation client they run on. The
+interop suite is now 16 tests, rewritten in I2, and has not run on CI since; on CI it should pass 14 and skip RT-1 and
 RT-2. HU-1, HU-2, WA-0 and WA-1 set nothing and are unchanged.
 
 ### CI's test configuration
@@ -772,9 +782,26 @@ but in `SandboxPool.optionalRoles`, and the build phases copy its files as optio
 | New resource | Gives |
 |---|---|
 | Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles | The extended role, and the rotation client (RT-1, RT-2) |
-| The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
+| The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (a SecureString under the key `alias/ccit-ci-senders`, as the temporary password is; the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
 | `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
 | The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2's second half, RP-3; Cognito sends nothing |
+| Pool `ccit-ci-email-alias-codes` (`pools/email-alias.json`, on **Lite**) and its `client` app client, with Lambda `ccit-ci-pre-sign-up-confirmable` (`triggers.mjs` without `REFUSE_CONFIRMATION_USERS`, so it leaves `ccit-confirm-` users to confirm) and the custom sender into the code sink | The client's own role `SandboxPool.emailAliasCodes` (optional, not in `allCases`): the email-alias code check; Cognito sends nothing |
+| `ccit-ci-capabilities.json`: `refuses_non_test_users` and `reset_password_codes` on `extended`, `email_alias_codes` on `email-alias-codes` | The three sandbox checks, on those roles ("Sandbox checks", above) |
+
+The alias-codes pool and the capabilities came after the first phase-2 run uploaded its four files, so they are new
+files beside them: `--upload` never rewrites a key, and a rerun of `--apply --scope all --upload` finds the four
+unchanged (`=`, byte for byte) and puts only the two new keys. That rerun creates the pool, its trigger, the
+trigger's log group and its app client, and updates, each after its tag check, only these of its own: the key
+`alias/ccit-ci-senders`'s policy (opened to the account's pools while the pool is made, as on a first run, then
+narrowed to the three pools), the inline policies of `ccit-ci-trigger-exec` (the new trigger's log group),
+`ccit-ci-sender-exec` (the decrypt, narrowed to `ccit-ci-default` and the new pool; never widened on a rerun) and
+`ccit-ci-reset-exec` (`kms:Decrypt` on that key, through SSM, for the temporary password's parameter only),
+`ccit-ci-custom-sender`'s resource policy (Cognito may invoke it for the new pool), and the two SSM parameters: the
+first phase 2 stored them under the account's AWS-managed `alias/aws/ssm`, so each is stored again
+(`put-parameter --overwrite`), with the same value, under `alias/ccit-ci-senders`. `verify-unchanged` lists a change
+to a `ccit-ci-` resource as the script's own, and an AWS-managed KMS alias (`alias/aws/*`) that appears as
+AWS-managed (AWS makes `alias/aws/ssm` the first time a SecureString uses SSM's default key, as that first phase 2
+did), and fails on any other change, removal or addition.
 
 `provision-ci.sh` finds each resource by name, creates only what is missing, and refuses any resource with one of
 its names that lacks the tag. Every change it makes goes through one guard that refuses a name that is not
@@ -783,7 +810,13 @@ and prints each call, masked; `--apply` runs that dry run first and stops before
 `--upload` puts new keys only. A key that exists is left alone when it holds the same bytes (so phase 2 leaves phase 1's
 file as it is), and any other existing key refuses the whole upload. `snapshot` and `verify-unchanged` prove the rest
 of the account is untouched (every user pool, its MFA settings and app clients, the Lambdas they name, every identity
-pool, role, function, KMS alias, AppSync API, table and rule, and the `auth/` objects with their ETags). `teardown`
+pool, role, function, KMS alias, AppSync API, table and rule, and the `auth/` objects with their ETags). The Cognito
+lists are read page by page to the last (`read_all_pages`: `--max-results` turns the CLI's own pagination off), and
+every other list is one the CLI pages itself. A snapshot (version 2) hashes each document normalized: lists AWS keeps
+in no order (a policy's principals, actions, resources and condition values, `"x"` read as `["x"]`, its statements;
+tags; Cognito's auth flows, attributes, URLs, OAuth settings, schema and identity providers) are sorted first, and a
+Lambda's `Layers` keep their order. Given both `.docs.json` files, `verify-unchanged` hashes both sides again that
+way, so a version-1 snapshot compares with a version-2 one. `teardown`
 removes only these resources, and is a dry run by default.
 
 ```bash
@@ -808,10 +841,21 @@ only the top level. Only the client's jobs read them, through `run_integration_t
 input, which runs `infra/ci/ci-overlay.sh`. That script copies the plugin's top-level files into a directory of its
 own and sets `COGNITO_CLIENT_INTEG_DIR` to it. The `email-alias` role puts in `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json`.
 The `extended` role adds `AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs.json`, its `-credentials.json`
-and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, and replaces nothing. Today the client suite
-passes `email-alias`, and the interop suite nothing. Phase 2 adds `extended` to both. Without the subfolder, or when a
-file there does not check out (no user pool, the sandbox's mark, a credentials file that is not all strings, a
-rotation client on another pool), nothing is set and the tests skip as before. Locally, run
+and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, and, when present,
+`AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs.json` and
+`AmplifyCognitoClientIntegrationTests-capabilities.json` (kept only for the roles the overlay gives), and replaces
+nothing. The client suite passes `email-alias extended`, and the interop suite `extended`. The plugin's jobs pass
+nothing and read the plugin's files only. Without the subfolder, or when a file there does not check out (no user
+pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another pool, an
+alias-codes file without email as the username or a code API, a capability the harness does not know), nothing is
+set, and the tests that need those files fail, or skip as sandbox checks, which the skip gate fails.
+
+**No skips on CI.** Both client jobs pass `enforce_no_skips: true` and `allowed_skips: 0` to
+`run_integration_tests.yml`. The test runs then write their result bundles to the runner's temporary directory
+(`run_xcodebuild_test`'s `result_bundle_path`), and a last step reads the last run's (the retry's, when there was
+one) with `xcrun xcresulttool get test-results summary`, lists the skipped tests, and fails the job when more than
+`allowed_skips` skipped. The plugin's jobs leave it off. Expected on CI, once every resource exists: 0 skipped in
+`CognitoClientIntegrationTests` and 0 in `CognitoClientPluginInteropTests`. Locally, run
 `infra/ci/ci-overlay.sh <downloaded-dir> <new-dir> "email-alias extended"` after `infra/fetch-ci-config.sh`, and build
 with `COGNITO_CLIENT_INTEG_DIR=<new-dir>`.
 
