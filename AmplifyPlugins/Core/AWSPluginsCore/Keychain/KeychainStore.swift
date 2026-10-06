@@ -223,6 +223,8 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// silent, such as the migrator's "does the destination hold items" check, so they do not start
     /// logging errors.
     var quietBackingStore: any KeychainItemStoreBehavior {
+        // A rebuilt store, so it uses `.system` `SecItem` calls, as `itemStore` does: only an injected store
+        // (a test's) is passed through.
         injectedItemStore ?? KeychainItemStore(
             attributes: attributes.itemAttributes,
             logger: VerboseOnlyLogger(AmplifyLoggerBridge<KeychainStore>())

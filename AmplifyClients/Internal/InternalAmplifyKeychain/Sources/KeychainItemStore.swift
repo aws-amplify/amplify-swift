@@ -18,10 +18,14 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
 
     package let attributes: KeychainItemAttributes
     private let logger: any Logger
+    /// `.system` outside tests.
+    private let secItem: SecItemCalls
 
-    package init(attributes: KeychainItemAttributes, logger: any Logger) {
+    /// - Parameter secItem: A test seam, the `SecItem` functions to call. `.system` everywhere else.
+    package init(attributes: KeychainItemAttributes, logger: any Logger, secItem: SecItemCalls = .system) {
         self.attributes = attributes
         self.logger = logger
+        self.secItem = secItem
     }
 
     package init(
@@ -37,26 +41,28 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         let query = attributes.getDataQuery(account: key)
 
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        let status = secItem.copyMatching(query as CFDictionary, &result)
         return try Self.data(fromStatus: status, result: result, key: key, logger: logger)
     }
 
+    /// A check, then an update, or an add (on macOS a delete and an add). If the add finds the item another
+    /// writer created since the check, it updates the item instead, once: `value` is what ends up stored.
     package func set(_ value: Data, key: String) throws {
         logger.verbose("[KeychainStore] Started setting `Data` for kind=\(Self.recordKind(of: key))")
         let getQuery = attributes.itemQuery(account: key)
         logger.verbose("[KeychainStore] Initialized fetching to decide whether update or add")
-        let fetchStatus = SecItemCopyMatching(getQuery as CFDictionary, nil)
+        let fetchStatus = secItem.copyMatching(getQuery as CFDictionary, nil)
         switch fetchStatus {
         case errSecSuccess:
             #if os(macOS)
             logger.verbose("[KeychainStore] Deleting item on MacOS to add an item.")
-            SecItemDelete(getQuery as CFDictionary)
+            _ = secItem.delete(getQuery as CFDictionary)
             fallthrough
             #else
             logger.verbose("[KeychainStore] Found existing item, updating")
             let attributesToUpdate = attributes.updateAttributes(value: value)
 
-            let updateStatus = SecItemUpdate(getQuery as CFDictionary, attributesToUpdate as CFDictionary)
+            let updateStatus = secItem.update(getQuery as CFDictionary, attributesToUpdate as CFDictionary)
             if updateStatus != errSecSuccess {
                 logger.error("[KeychainStore] Error updating item to keychain with status=\(updateStatus)")
                 throw KeychainAccessError.securityError(updateStatus)
@@ -67,22 +73,43 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
             logger.verbose("[KeychainStore] Unable to find an existing item, creating new item")
             let attributesToSet = attributes.addQuery(account: key, value: value)
 
-            let addStatus = SecItemAdd(attributesToSet as CFDictionary, nil)
-            if addStatus != errSecSuccess {
+            let addStatus = secItem.add(attributesToSet as CFDictionary, nil)
+            switch addStatus {
+            case errSecSuccess:
+                logger.verbose("[KeychainStore] Successfully added `Data` in keychain for kind=\(Self.recordKind(of: key))")
+            case errSecDuplicateItem:
+                // Another writer (the plugin beside a client, an app beside its extension) created the item
+                // after the check above, or on macOS after the delete. A set replaces whatever is stored, so
+                // this lost race ends as a set over an existing item would: one update, never a loop.
+                try updateAfterLosingTheAddRace(value, query: getQuery, key: key)
+            default:
                 logger.error("[KeychainStore] Error adding item to keychain with status=\(addStatus)")
                 throw KeychainAccessError.securityError(addStatus)
             }
-            logger.verbose("[KeychainStore] Successfully added `Data` in keychain for kind=\(Self.recordKind(of: key))")
         default:
             logger.error("[KeychainStore] Error occurred while retrieving data from keychain when deciding to update or add with status=\(fetchStatus)")
             throw KeychainAccessError.securityError(fetchStatus)
         }
     }
 
+    /// `set(_:key:)`'s update when its add found the item another writer created since its check.
+    ///
+    /// An update on every platform, as in `replaceIfPresent(_:key:)`: the item is never absent in between. If the
+    /// item is gone again by now, this throws rather than retrying.
+    private func updateAfterLosingTheAddRace(_ value: Data, query: [String: Any], key: String) throws {
+        logger.verbose("[KeychainStore] Another writer added the item since the check, updating it for kind=\(Self.recordKind(of: key))")
+        let updateStatus = secItem.update(query as CFDictionary, attributes.updateAttributes(value: value) as CFDictionary)
+        if updateStatus != errSecSuccess {
+            logger.error("[KeychainStore] Error updating item to keychain after a concurrent add with status=\(updateStatus)")
+            throw KeychainAccessError.securityError(updateStatus)
+        }
+        logger.verbose("[KeychainStore] Successfully updated `Data` in keychain for kind=\(Self.recordKind(of: key))")
+    }
+
     /// A single `SecItemAdd`. The keychain itself refuses a duplicate, so this never replaces an item.
     package func addIfAbsent(_ value: Data, key: String) throws -> Bool {
         logger.verbose("[KeychainStore] Adding `Data` only if absent for kind=\(Self.recordKind(of: key))")
-        let status = SecItemAdd(attributes.addQuery(account: key, value: value) as CFDictionary, nil)
+        let status = secItem.add(attributes.addQuery(account: key, value: value) as CFDictionary, nil)
         return try Self.writeOutcome(fromStatus: status, refusedBy: errSecDuplicateItem, key: key, logger: logger)
     }
 
@@ -93,7 +120,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     /// "signed out". An update never exposes that state.
     package func replaceIfPresent(_ value: Data, key: String) throws -> Bool {
         logger.verbose("[KeychainStore] Replacing `Data` only if present for kind=\(Self.recordKind(of: key))")
-        let status = SecItemUpdate(
+        let status = secItem.update(
             attributes.itemQuery(account: key) as CFDictionary,
             attributes.updateAttributes(value: value) as CFDictionary
         )
@@ -104,7 +131,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         logger.verbose("[KeychainStore] Starting to remove item from keychain with kind=\(Self.recordKind(of: key))")
         let query = attributes.itemQuery(account: key)
 
-        let status = SecItemDelete(query as CFDictionary)
+        let status = secItem.delete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
             logger.error("[KeychainStore] Error removing items from keychain with status=\(status)")
             throw KeychainAccessError.securityError(status)
@@ -115,7 +142,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     package func remove(_ entry: KeychainEntry) throws {
         // The account is never logged here: device-record accounts contain usernames.
         logger.verbose("[KeychainStore] Removing one listed item from keychain")
-        let status = SecItemDelete(attributes.itemQuery(for: entry) as CFDictionary)
+        let status = secItem.delete(attributes.itemQuery(for: entry) as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
             logger.error("[KeychainStore] Error removing an item from keychain with status=\(status)")
             throw KeychainAccessError.securityError(status)
@@ -125,7 +152,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     /// A single `SecItemUpdate` of one listed item's service and access group.
     package func move(_ entry: KeychainEntry, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
         logger.verbose("[KeychainStore] Moving one listed item to service=\(destination.service)")
-        let status = SecItemUpdate(
+        let status = secItem.update(
             attributes.itemQuery(for: entry) as CFDictionary,
             attributes.moveAttributes(to: destination) as CFDictionary
         )
@@ -136,7 +163,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
     package func move(_ key: String, to destination: KeychainItemAttributes) throws -> KeychainMoveOutcome {
         // The account is never logged here: device-record accounts contain usernames.
         logger.verbose("[KeychainStore] Moving an item to service=\(destination.service)")
-        let status = SecItemUpdate(
+        let status = secItem.update(
             attributes.itemQuery(account: key) as CFDictionary,
             attributes.moveAttributes(to: destination) as CFDictionary
         )
@@ -147,7 +174,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         logger.verbose("[KeychainStore] Starting to remove all items from keychain")
         let query = attributes.removeAllQuery()
 
-        let status = SecItemDelete(query as CFDictionary)
+        let status = secItem.delete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
             logger.error("[KeychainStore] Error removing all items from keychain with status=\(status)")
             throw KeychainAccessError.securityError(status)
@@ -159,7 +186,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         logger.verbose("[KeychainStore] Checking if keychain has any items")
         let query = attributes.hasItemsQuery()
 
-        let status = SecItemCopyMatching(query as CFDictionary, nil)
+        let status = secItem.copyMatching(query as CFDictionary, nil)
         switch status {
         case errSecSuccess:
             logger.verbose("[KeychainStore] Keychain has items")
@@ -178,7 +205,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         let query = attributes.listAccountsQuery()
 
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        let status = secItem.copyMatching(query as CFDictionary, &result)
         return try Self.accounts(fromStatus: status, result: result, logger: logger)
     }
 
@@ -187,7 +214,7 @@ package struct KeychainItemStore: KeychainItemStoreBehavior {
         let query = attributes.listAccountsQuery()
 
         var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        let status = secItem.copyMatching(query as CFDictionary, &result)
         return try Self.entries(fromStatus: status, result: result, logger: logger)
     }
 }

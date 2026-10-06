@@ -137,6 +137,8 @@ package extension EngineKeychainStore {
         guard let itemStore = store as? KeychainItemStore else {
             return store
         }
+        // Rebuilt with `.system` `SecItem` calls: a test's `SecItemCalls` seam is not carried over, which only
+        // tests could notice.
         return KeychainItemStore(attributes: itemStore.attributes, logger: VerboseOnlyLogger(logger.scoped(logScope)))
     }
 }
