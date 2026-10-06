@@ -7,7 +7,8 @@
 
 import Foundation
 
-enum KeychainStatus {
+/// Human-readable descriptions for the `OSStatus` values the keychain layer reports.
+package enum KeychainStatus: Equatable {
     case success
     case userCanceled
     case duplicateItem
@@ -18,7 +19,7 @@ enum KeychainStatus {
 
 extension KeychainStatus: CustomStringConvertible {
 
-    init(status: OSStatus) {
+    package init(status: OSStatus) {
         switch status {
         case 0:
             self = .success
@@ -35,7 +36,7 @@ extension KeychainStatus: CustomStringConvertible {
         }
     }
 
-    var description: String {
+    package var description: String {
         switch self {
         case .success:
             return "No error."

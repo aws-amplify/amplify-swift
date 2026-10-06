@@ -1,7 +1,8 @@
 {
   "InternalAWSPinpointUnitTests": { "targets": ["InternalAWSPinpointUnitTests"] },
   "Amplify": { "targets": ["Amplify"], "flags": "Amplify,unit_tests" },
-  "AWSPluginsCore": { "targets": ["AWSPluginsCore"], "paths": ["AmplifyPlugins/Core/AmplifyCredentialsTests/", "AmplifyPlugins/Core/AmplifyCredentials/AmplifyAWSServiceConfiguration.swift", "AmplifyFoundation/Sources/AmplifyMetadata.swift", "AmplifyFoundationBridge/Sources/UserAgentClientEngine.swift"], "flags": "AWSPluginsCore,unit_tests" },
+  "AWSPluginsCore": { "targets": ["AWSPluginsCore"], "paths": ["AmplifyClients/Internal/InternalAmplifyKeychain/Sources/", "AmplifyPlugins/Core/AmplifyCredentialsTests/", "AmplifyPlugins/Core/AmplifyCredentials/AmplifyAWSServiceConfiguration.swift", "AmplifyFoundation/Sources/AmplifyMetadata.swift", "AmplifyFoundationBridge/Sources/UserAgentClientEngine.swift", "AmplifyClients/Internal/AmplifyKeychainTestCommon/"], "flags": "AWSPluginsCore,unit_tests" },
+  "InternalAmplifyKeychain": { "targets": ["InternalAmplifyKeychain", "AmplifyKeychainTestCommon"],"flags": "Amplify_Keychain_unit_test,unit_tests" },
   "AWSAPIPlugin": { "targets": ["AWSAPIPlugin"], "flags": "API_plugin_unit_test,unit_tests" },
   "AWSCloudWatchLoggingPlugin": { "targets": ["AWSCloudWatchLoggingPlugin"], "flags": "Logging_plugin_unit_test,unit_tests" },
   "AWSCognitoAuthPlugin": { "targets": ["AWSCognitoAuthPlugin"], "flags": "Auth_plugin_unit_test,unit_tests" },

@@ -7,7 +7,7 @@
 
 import Amplify
 @preconcurrency import Foundation
-import Security
+import InternalAmplifyKeychain
 
 // swiftlint:disable identifier_name
 /// - Note: `Sendable` because keychain stores are shared across concurrency domains by the auth and
@@ -67,8 +67,12 @@ public struct KeychainStore: KeychainStoreBehavior {
 
     let attributes: KeychainStoreAttributes
 
+    /// Replaces the `SecItem` implementation, for tests only. `nil` in every store an app creates.
+    private let injectedItemStore: (any KeychainItemStoreBehavior)?
+
     private init(attributes: KeychainStoreAttributes) {
         self.attributes = attributes
+        self.injectedItemStore = nil
     }
 
     public init() {
@@ -84,11 +88,23 @@ public struct KeychainStore: KeychainStoreBehavior {
 
     public init(service: String, accessGroup: String? = nil) {
         self.attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
+        self.injectedItemStore = nil
         log.verbose(
             "[KeychainStore] Initialized keychain with service=\(service), " +
             "attributes=\(attributes), " +
             "accessGroup=\(attributes.accessGroup ?? "No access group specified")"
         )
+    }
+
+    /// A store whose items live in `itemStore` rather than the real keychain.
+    ///
+    /// A test seam: `swift test` runs unsigned, so the real data-protection keychain is unavailable, and
+    /// this lets code that creates `KeychainStore`s run over the in-memory fake in
+    /// `AmplifyKeychainTestCommon` while still exercising this type's own logic. `package`, so apps
+    /// cannot reach it.
+    package init(service: String, accessGroup: String? = nil, itemStore: any KeychainItemStoreBehavior) {
+        self.attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
+        self.injectedItemStore = itemStore
     }
 
     /// Get a string value from the Keychain based on the key.
@@ -97,7 +113,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: A string value
     @_spi(KeychainStore)
     public func _getString(_ key: String) throws -> String {
-        log.verbose("[KeychainStore] Started retrieving `String` from the store with key=\(key)")
+        log.verbose("[KeychainStore] Started retrieving `String` from the store with kind=\(KeychainItemStore.recordKind(of: key))")
         let data = try _getData(key)
         guard let string = String(data: data, encoding: .utf8) else {
             log.error("[KeychainStore] Unable to create String from Data retrieved")
@@ -114,32 +130,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: A data value
     @_spi(KeychainStore)
     public func _getData(_ key: String) throws -> Data {
-        log.verbose("[KeychainStore] Started retrieving `Data` from the store with key=\(key)")
-        var query = attributes.defaultGetQuery()
-
-        query[Constants.MatchLimit] = Constants.MatchLimitOne
-        query[Constants.ReturnData] = kCFBooleanTrue
-
-        query[Constants.AttributeAccount] = key
-
-        var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
-
-        switch status {
-        case errSecSuccess:
-            guard let data = result as? Data else {
-                log.error("[KeychainStore] The keychain item retrieved is not the correct type")
-                throw KeychainStoreError.unknown("The keychain item retrieved is not the correct type")
-            }
-            log.verbose("[KeychainStore] Successfully retrieved `Data` from the store with key=\(key)")
-            return data
-        case errSecItemNotFound:
-            log.verbose("[KeychainStore] No Keychain item found for key=\(key)")
-            throw KeychainStoreError.itemNotFound
-        default:
-            log.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve a Keychain item for key=\(key)")
-            throw KeychainStoreError.securityError(status)
-        }
+        try KeychainStoreError.mapping { try backingStore.getData(key) }
     }
 
     /// Set a key-value pair in the Keychain.
@@ -149,13 +140,13 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - key: A String key for the value to store in the Keychain
     @_spi(KeychainStore)
     public func _set(_ value: String, key: String) throws {
-        log.verbose("[KeychainStore] Started setting `String` for key=\(key)")
+        log.verbose("[KeychainStore] Started setting `String` for kind=\(KeychainItemStore.recordKind(of: key))")
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
-            log.error("[KeychainStore] Unable to create Data from String retrieved for key=\(key)")
+            log.error("[KeychainStore] Unable to create Data from String retrieved for kind=\(KeychainItemStore.recordKind(of: key))")
             throw KeychainStoreError.conversionError("Unable to create Data from String retrieved")
         }
         try _set(data, key: key)
-        log.verbose("[KeychainStore] Successfully added `String` for key=\(key)")
+        log.verbose("[KeychainStore] Successfully added `String` for kind=\(KeychainItemStore.recordKind(of: key))")
     }
 
     /// Set a key-value pair in the Keychain.
@@ -165,45 +156,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - key: A String key for the value to store in the Keychain
     @_spi(KeychainStore)
     public func _set(_ value: Data, key: String) throws {
-        log.verbose("[KeychainStore] Started setting `Data` for key=\(key)")
-        var getQuery = attributes.defaultGetQuery()
-        getQuery[Constants.AttributeAccount] = key
-        log.verbose("[KeychainStore] Initialized fetching to decide whether update or add")
-        let fetchStatus = SecItemCopyMatching(getQuery as CFDictionary, nil)
-        switch fetchStatus {
-        case errSecSuccess:
-            #if os(macOS)
-            log.verbose("[KeychainStore] Deleting item on MacOS to add an item.")
-            SecItemDelete(getQuery as CFDictionary)
-            fallthrough
-            #else
-            log.verbose("[KeychainStore] Found existing item, updating")
-            var attributesToUpdate = [String: Any]()
-            attributesToUpdate[Constants.ValueData] = value
-
-            let updateStatus = SecItemUpdate(getQuery as CFDictionary, attributesToUpdate as CFDictionary)
-            if updateStatus != errSecSuccess {
-                log.error("[KeychainStore] Error updating item to keychain with status=\(updateStatus)")
-                throw KeychainStoreError.securityError(updateStatus)
-            }
-            log.verbose("[KeychainStore] Successfully updated `Data` in keychain for key=\(key)")
-            #endif
-        case errSecItemNotFound:
-            log.verbose("[KeychainStore] Unable to find an existing item, creating new item")
-            var attributesToSet = attributes.defaultSetQuery()
-            attributesToSet[Constants.AttributeAccount] = key
-            attributesToSet[Constants.ValueData] = value
-
-            let addStatus = SecItemAdd(attributesToSet as CFDictionary, nil)
-            if addStatus != errSecSuccess {
-                log.error("[KeychainStore] Error adding item to keychain with status=\(addStatus)")
-                throw KeychainStoreError.securityError(addStatus)
-            }
-            log.verbose("[KeychainStore] Successfully added `Data` in keychain for key=\(key)")
-        default:
-            log.error("[KeychainStore] Error occurred while retrieving data from keychain when deciding to update or add with status=\(fetchStatus)")
-            throw KeychainStoreError.securityError(fetchStatus)
-        }
+        try KeychainStoreError.mapping { try backingStore.set(value, key: key) }
     }
 
     /// Remove key-value pair from Keychain based on the provided key.
@@ -211,34 +164,40 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Parameter key: A String key to delete the key-value pair
     @_spi(KeychainStore)
     public func _remove(_ key: String) throws {
-        log.verbose("[KeychainStore] Starting to remove item from keychain with key=\(key)")
-        var query = attributes.defaultGetQuery()
-        query[Constants.AttributeAccount] = key
-
-        let status = SecItemDelete(query as CFDictionary)
-        if status != errSecSuccess && status != errSecItemNotFound {
-            log.error("[KeychainStore] Error removing items from keychain with status=\(status)")
-            throw KeychainStoreError.securityError(status)
-        }
-        log.verbose("[KeychainStore] Successfully removed item from keychain")
+        try KeychainStoreError.mapping { try backingStore.remove(key) }
     }
 
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     @_spi(KeychainStore)
     public func _removeAll() throws {
-        log.verbose("[KeychainStore] Starting to remove all items from keychain")
-        var query = attributes.defaultGetQuery()
-        #if os(macOS)
-        query[Constants.MatchLimit] = Constants.MatchLimitAll
-        #endif
+        try KeychainStoreError.mapping { try backingStore.removeAll() }
+    }
 
-        let status = SecItemDelete(query as CFDictionary)
-        if status != errSecSuccess && status != errSecItemNotFound {
-            log.error("[KeychainStore] Error removing all items from keychain with status=\(status)")
-            throw KeychainStoreError.securityError(status)
+    /// Removes every item under this service and access group except the standalone clients' session
+    /// records (`amplify.<digits>.…` accounts), which may share the service.
+    ///
+    /// Use this, not `_removeAll()`, to clear a service a standalone client may also store in. With no
+    /// session records present it removes exactly what `_removeAll()` would. If the items cannot be
+    /// listed it logs a warning and removes nothing, never falling back to `_removeAll()`.
+    ///
+    /// - Parameter sparingDefaultSessionItems: `false` also removes the Cognito client's default-session
+    ///   sidecar and challenge items, which belong to the plugin's session. Other session records are
+    ///   spared either way. No default: every caller says which it wants.
+    package func removeAllExceptSessionRecords(sparingDefaultSessionItems: Bool) throws {
+        try KeychainStoreError.mapping {
+            try backingStore.removeAllExceptSessionRecords(
+                logger: AmplifyLoggerBridge<KeychainStore>(),
+                sparingDefaultSessionItems: sparingDefaultSessionItems
+            )
         }
-        log.verbose("[KeychainStore] Successfully removed all items from keychain")
+    }
+
+    /// Whether this service and access group hold at least one item other than the standalone clients'
+    /// session records. Use this, not `_hasItems()`, where a client record sharing the service must not
+    /// count as one of the caller's items.
+    package func hasItemsExceptSessionRecords() throws -> Bool {
+        try KeychainStoreError.mapping { try backingStore.hasItemsExceptSessionRecords() }
     }
 
     /// Checks if the Keychain contains any items for this service and access group.
@@ -246,60 +205,35 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Returns: `true` if at least one item exists, `false` otherwise
     @_spi(KeychainStore)
     public func _hasItems() throws -> Bool {
-        log.verbose("[KeychainStore] Checking if keychain has any items")
-        var query = attributes.defaultGetQuery()
-        query[Constants.MatchLimit] = Constants.MatchLimitOne
+        try KeychainStoreError.mapping { try backingStore.hasItems() }
+    }
 
-        let status = SecItemCopyMatching(query as CFDictionary, nil)
-        switch status {
-        case errSecSuccess:
-            log.verbose("[KeychainStore] Keychain has items")
-            return true
-        case errSecItemNotFound:
-            log.verbose("[KeychainStore] Keychain has no items")
-            return false
-        default:
-            log.error("[KeychainStore] Error checking keychain items with status=\(status)")
-            throw KeychainStoreError.securityError(status)
-        }
+    /// The shared implementation every member delegates to. Built per call from `attributes`, so this
+    /// type's stored layout is unchanged, and logging through `KeychainStore.log` as it always has.
+    var itemStore: KeychainItemStore {
+        KeychainItemStore(attributes: attributes.itemAttributes, logger: AmplifyLoggerBridge<KeychainStore>())
+    }
+
+    /// What every member actually operates on: the injected store in tests, `itemStore` otherwise.
+    var backingStore: any KeychainItemStoreBehavior {
+        injectedItemStore ?? itemStore
+    }
+
+    /// `backingStore`, but logging everything at verbose level. For checks whose failure has always been
+    /// silent, such as the migrator's "does the destination hold items" check, so they do not start
+    /// logging errors.
+    var quietBackingStore: any KeychainItemStoreBehavior {
+        injectedItemStore ?? KeychainItemStore(
+            attributes: attributes.itemAttributes,
+            logger: VerboseOnlyLogger(AmplifyLoggerBridge<KeychainStore>())
+        )
     }
 
 }
 
 extension KeychainStore {
-    enum Constants {
-        /** Class Key Constant */
-        static let Class = String(kSecClass)
-        static let ClassGenericPassword = String(kSecClassGenericPassword)
-
-        /** Attribute Key Constants */
-        static let AttributeAccessGroup = String(kSecAttrAccessGroup)
-        static let AttributeAccount = String(kSecAttrAccount)
-        static let AttributeService = String(kSecAttrService)
-        static let AttributeGeneric = String(kSecAttrGeneric)
-        static let AttributeLabel = String(kSecAttrLabel)
-        static let AttributeComment = String(kSecAttrComment)
-        static let AttributeAccessible = String(kSecAttrAccessible)
-
-        /** Attribute Accessible Constants */
-        static let AttributeAccessibleAfterFirstUnlockThisDeviceOnly = String(kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly)
-
-        /** Search Constants */
-        static let MatchLimit = String(kSecMatchLimit)
-        static let MatchLimitOne = kSecMatchLimitOne
-        static let MatchLimitAll = kSecMatchLimitAll
-
-        /** Return Type Key Constants */
-        static let ReturnData = String(kSecReturnData)
-        static let ReturnAttributes = String(kSecReturnAttributes)
-        static let ReturnRef = String(kSecReturnRef)
-
-        /** Value Type Key Constants */
-        static let ValueData = String(kSecValueData)
-
-        /** Indicates whether to treat macOS keychain items like iOS keychain items without setting kSecAttrSynchronizable */
-        static let UseDataProtectionKeyChain = String(kSecUseDataProtectionKeychain)
-    }
+    /// The `SecItem` constants, now defined once in `InternalAmplifyKeychain`.
+    typealias Constants = KeychainConstants
 }
 // swiftlint:enable identifier_name
 

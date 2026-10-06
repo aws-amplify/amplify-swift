@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import InternalAmplifyKeychain
 import Security
 
 public enum KeychainStoreError {
@@ -120,6 +121,32 @@ extension KeychainStoreError: Equatable {
             return true
         default:
             return false
+        }
+    }
+}
+
+extension KeychainStoreError {
+
+    /// Maps a failure from the shared keychain implementation one-to-one onto the case this type has
+    /// always reported for it.
+    init(_ error: KeychainAccessError) {
+        switch error {
+        case .itemNotFound:
+            self = .itemNotFound
+        case .securityError(let status):
+            self = .securityError(status)
+        case .unknown(let errorDescription, let underlyingError):
+            self = .unknown(errorDescription, underlyingError)
+        }
+    }
+
+    /// Runs `body`, rethrowing a `KeychainAccessError` as the equivalent `KeychainStoreError`. Any other
+    /// error passes through unchanged.
+    static func mapping<Value>(_ body: () throws -> Value) throws -> Value {
+        do {
+            return try body()
+        } catch let error as KeychainAccessError {
+            throw KeychainStoreError(error)
         }
     }
 }
