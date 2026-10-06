@@ -55,7 +55,7 @@ on:
         type: string
         default: ''
       cognito_client_ci_overlay:
-        description: 'Space-separated Cognito client roles (email-alias, default) to point at the client''s own CI resources, which CI downloads into the auth configuration''s cognito-client-ci/ subfolder (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci). The build then reads a directory of its own (COGNITO_CLIENT_INTEG_DIR); the downloaded files are not changed. Empty, or no subfolder, changes nothing. Only the client jobs set it.'
+        description: 'Space-separated Cognito client roles (email-alias, extended) to give the client''s own CI resources, which CI downloads into the auth configuration''s cognito-client-ci/ subfolder (AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests/infra/ci). The build then reads a directory of its own (COGNITO_CLIENT_INTEG_DIR); the downloaded files are not changed. Empty, or no subfolder, changes nothing. Only the client jobs set it.'
         required: false
         type: string
         default: ''
