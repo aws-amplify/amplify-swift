@@ -38,8 +38,17 @@ public final class AtomicDictionary<Key: Hashable, Value>: @unchecked Sendable {
         lock.execute { value[key] }
     }
 
+    // The mutators below hand what they replace back out of `lock.execute`, so it is released after the lock
+    // is dropped. A released value can run a `deinit` that uses this dictionary again (a Hub listener's
+    // captured object removing that listener, for example), and the lock is not reentrant.
+
     public func removeAll() {
-        lock.execute { value = [:] }
+        let removed = lock.execute {
+            let removed = value
+            value = [:]
+            return removed
+        }
+        _ = removed
     }
 
     @discardableResult
@@ -48,7 +57,8 @@ public final class AtomicDictionary<Key: Hashable, Value>: @unchecked Sendable {
     }
 
     public func set(value: Value, forKey key: Key) {
-        lock.execute { self.value[key] = value }
+        let replaced = lock.execute { self.value.updateValue(value, forKey: key) }
+        _ = replaced
     }
 
     public subscript(key: Key) -> Value? {
