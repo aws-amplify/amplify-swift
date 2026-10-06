@@ -459,25 +459,39 @@ extension HarnessHelperTests {
         )
     }
 
-    /// The extended role is optional, and none of the plugin's (offline).
+    /// The extended and alias-codes roles are optional, and none of the plugin's (offline).
     ///
     /// - Given: `SandboxPool`'s plugin roles (`allCases`), its optional roles and every role, no request
     /// - When:
-    ///    - Each list and the extended role's settings are read
+    ///    - Each list and the optional roles' settings are read
     /// - Then:
-    ///    - `allCases` holds the plugin's eight roles and not `.extended`, so every loop over the plugin's file set
-    ///      (the fixture check, the every-pool check, the parity file check) is unchanged; `optionalRoles` is
-    ///      `[.extended]`, and every role is the nine, each with its own outputs file
+    ///    - `allCases` holds the plugin's eight roles and neither optional one, so every loop over the plugin's file
+    ///      set (the fixture check, the every-pool check, the parity file check, `isSandboxFileSet`) is unchanged;
+    ///      `optionalRoles` is `[.extended, .emailAliasCodes]`, and every role is the ten, each with its own
+    ///      outputs file
     ///    - The extended role's file is a Gen2 file of the client's own name, with no Gen1 counterpart and none of
     ///      the plugin's names; it tracks devices and promises a confirming trigger, as the default template does,
     ///      and is not a code-capturing plugin role
+    ///    - The alias-codes role's file is one of the client's own names too; it signs in by email, as the
+    ///      device-alias template it is made from, tracks devices, and needs no device-alias CI skip
     ///
     func testExtendedRoleIsOptionalAndNoneOfThePluginRoles() {
         XCTAssertEqual(SandboxPool.allCases.count, 8)
         XCTAssertFalse(SandboxPool.allCases.contains(.extended))
-        XCTAssertEqual(SandboxPool.optionalRoles, [.extended])
-        XCTAssertEqual(SandboxPool.everyRole.count, 9)
-        XCTAssertEqual(Set(SandboxPool.everyRole.map(\.outputsResource)).count, 9)
+        XCTAssertFalse(SandboxPool.allCases.contains(.emailAliasCodes))
+        XCTAssertEqual(SandboxPool.optionalRoles, [.extended, .emailAliasCodes])
+        XCTAssertEqual(SandboxPool.everyRole.count, 10)
+        XCTAssertEqual(Set(SandboxPool.everyRole.map(\.outputsResource)).count, 10)
+        XCTAssertEqual(
+            SandboxPool.emailAliasCodes.outputsResource,
+            "AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs"
+        )
+        XCTAssertEqual(SandboxPool.emailAliasCodes.rawValue, "email-alias-codes")
+        XCTAssertNil(SandboxPool.emailAliasCodes.gen1Resource)
+        XCTAssertTrue(SandboxPool.emailAliasCodes.usesEmailAsUsername)
+        XCTAssertTrue(SandboxPool.emailAliasCodes.tracksDevices)
+        XCTAssertTrue(SandboxPool.emailAliasCodes.promisesConfirmingTrigger)
+        XCTAssertNil(SandboxSignUp.ciSkip(for: .emailAliasCodes))
         XCTAssertEqual(SandboxPool.extended.outputsResource, "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs")
         XCTAssertNil(SandboxPool.extended.gen1Resource)
         XCTAssertFalse(SandboxPool.extended.outputsResource.hasPrefix("AWSCognito"))
@@ -485,6 +499,108 @@ extension HarnessHelperTests {
         XCTAssertTrue(SandboxPool.extended.promisesConfirmingTrigger)
         XCTAssertFalse(SandboxPool.extended.capturesCodes)
         XCTAssertFalse(SandboxPool.extended.requiresMFA)
+    }
+
+    /// The email-alias code check runs on the client's own alias-codes role only when its file is there (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.emailAliasCodesRole(hasAliasCodesOutputs:)`, no request
+    /// - When:
+    ///    - The role is asked for with and without the alias-codes role's outputs
+    /// - Then:
+    ///    - With them it is `.emailAliasCodes`; without them `.emailAlias`, so on the plugin's CI (no such file) the
+    ///      check is the sandbox check it was, and on the sandbox it runs on its email-alias pool
+    ///    - The answer in this process follows whether the file is in the bundle
+    ///
+    func testEmailAliasCodesRoleIsTheClientsOwnOnlyWhenItsFileIsThere() {
+        XCTAssertEqual(IntegrationTestEnvironment.emailAliasCodesRole(hasAliasCodesOutputs: true), .emailAliasCodes)
+        XCTAssertEqual(IntegrationTestEnvironment.emailAliasCodesRole(hasAliasCodesOutputs: false), .emailAlias)
+        XCTAssertEqual(
+            IntegrationTestEnvironment.emailAliasCodesRole,
+            IntegrationTestEnvironment.hasOutputs(.emailAliasCodes) ? .emailAliasCodes : .emailAlias
+        )
+    }
+
+    /// A capabilities file names each role's capabilities by the role's name, and only the known ones (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.capabilities(in:of:)` over documents, no request
+    /// - When:
+    ///    - It reads the file `infra/ci/provision-ci.sh` writes, a role it does not name, an unknown capability,
+    ///      and documents of the wrong shape
+    /// - Then:
+    ///    - `extended` has the refusal and reset-code capabilities, `email-alias-codes` the alias-code one, and no
+    ///      other role any (the plugin's default and device-alias roles included)
+    ///    - An unknown name is dropped; a list that is not of strings, a block that is not an object, and no block
+    ///      give none
+    ///
+    func testCapabilitiesAreReadPerRoleAndOnlyWhereKnown() {
+        let provisioned: [String: Any] = ["capabilities": [
+            "extended": ["refuses_non_test_users", "reset_password_codes"],
+            "email-alias-codes": ["email_alias_codes"]
+        ]]
+        XCTAssertEqual(
+            IntegrationTestEnvironment.capabilities(in: provisioned, of: .extended),
+            [.refusesNonTestUsers, .resetPasswordCodes]
+        )
+        XCTAssertEqual(IntegrationTestEnvironment.capabilities(in: provisioned, of: .emailAliasCodes), [.emailAliasCodes])
+        for pool in SandboxPool.allCases {
+            XCTAssertEqual(IntegrationTestEnvironment.capabilities(in: provisioned, of: pool), [], "\(pool)")
+        }
+        let unknown: [String: Any] = ["capabilities": ["extended": ["sandbox", "reset_password_codes"]]]
+        XCTAssertEqual(IntegrationTestEnvironment.capabilities(in: unknown, of: .extended), [.resetPasswordCodes])
+        for document in [
+            ["capabilities": ["extended": [1, "reset_password_codes"]]],
+            ["capabilities": ["extended": "reset_password_codes"]],
+            ["capabilities": ["reset_password_codes"]],
+            [:]
+        ] as [[String: Any]] {
+            XCTAssertEqual(IntegrationTestEnvironment.capabilities(in: document, of: .extended), [], "\(document)")
+        }
+        XCTAssertEqual(SandboxCapability.allCases.map(\.rawValue).sorted(), [
+            "email_alias_codes", "refuses_non_test_users", "reset_password_codes"
+        ])
+    }
+
+    /// A sandbox check runs on the sandbox's file, or where a capability is named for a role whose file is there,
+    /// and skips as before otherwise (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.hasCapability(_:isSandbox:hasOutputs:capabilities:)`, no request
+    /// - When:
+    ///    - Every combination of the sandbox mark, the role's file and the capability is read
+    /// - Then:
+    ///    - It runs on the sandbox's file whatever the capabilities say, and elsewhere only with both the file and
+    ///      the capability; another capability is not enough
+    ///    - The skip a check takes without it is the sandbox check's, naming what it needs
+    ///
+    func testACapabilityRunsASandboxCheckOnlyWithTheRolesFile() {
+        for capability in SandboxCapability.allCases {
+            for isSandbox in [false, true] {
+                for hasOutputs in [false, true] {
+                    for named in [false, true] {
+                        let capabilities: Set<SandboxCapability> = named ? [capability] : []
+                        XCTAssertEqual(
+                            IntegrationTestEnvironment.hasCapability(
+                                capability,
+                                isSandbox: isSandbox,
+                                hasOutputs: hasOutputs,
+                                capabilities: capabilities
+                            ),
+                            isSandbox || (hasOutputs && named),
+                            "\(capability), sandbox \(isSandbox), file \(hasOutputs), named \(named)"
+                        )
+                    }
+                }
+            }
+            let others = Set(SandboxCapability.allCases).subtracting([capability])
+            XCTAssertFalse(IntegrationTestEnvironment.hasCapability(
+                capability,
+                isSandbox: false,
+                hasOutputs: true,
+                capabilities: others
+            ))
+        }
+        XCTAssertEqual(SandboxCapability.refusesNonTestUsers.needs, "a pre-sign-up trigger that refuses users who are not test users")
+        XCTAssertEqual(SandboxCapability.resetPasswordCodes.needs, "a code API on the default pool and emails verified at sign-up")
+        XCTAssertEqual(SandboxCapability.emailAliasCodes.needs, "a code API on the email-alias pool")
     }
 
     /// An outputs file's marks are read only where they are `true`, and the confirming-trigger mark is not the

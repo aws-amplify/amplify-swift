@@ -133,11 +133,13 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
 
     /// On the email-alias pool, codes are found by the username Cognito generated (U-ALIAS, P-5c).
     ///
-    /// A sandbox check: it needs the sandbox's code API on the email-alias pool. The plugin's device-alias
-    /// backend has none (its suite signs in a pre-created user and reads no code), so on a file set that
-    /// is not the sandbox's (`IntegrationTestEnvironment.isSandbox`) it skips, saying so.
+    /// A sandbox check: it needs a code API on an email-alias pool. It runs on
+    /// `IntegrationTestEnvironment.emailAliasCodesRole`: the sandbox's email-alias pool, or on CI the client's own
+    /// `ccit-ci-email-alias-codes`, which the capabilities file says so for (`SandboxCapability.emailAliasCodes`).
+    /// The plugin's device-alias backend has none (its suite signs in a pre-created user and reads no code), so
+    /// with neither it skips, saying so.
     ///
-    /// - Given: The sandbox's email-alias pool, where the email is the username attribute, and a fresh
+    /// - Given: That role's pool, where the email is the username attribute, and a fresh
     ///   `ccit-confirm-…@example.com` user
     /// - When:
     ///    - It signs up by email; `SandboxSignUp.confirm` reads the code by `sinkUsername` and confirms;
@@ -147,11 +149,12 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
     ///      token's `username` is that generated username, not the email
     ///
     func testEmailAliasCodesAreFoundByTheGeneratedUsername() async throws {
-        try IntegrationTestEnvironment.requireSandbox(.emailAlias, "a code API on the email-alias pool")
-        let pool = try SandboxPools.pool(.emailAlias)
+        let role = IntegrationTestEnvironment.emailAliasCodesRole
+        try IntegrationTestEnvironment.requireCapability(.emailAliasCodes, on: role)
+        let pool = try SandboxPools.pool(role)
         let sink = try CodeSink()
         let since = Date()
-        let user = try await makeFreshUser(on: .emailAlias, .init(needsConfirmation: true))
+        let user = try await makeFreshUser(on: role, .init(needsConfirmation: true))
         XCTAssertEqual(user.username, user.email)
 
         try await SandboxSignUp.confirm(user, sentSince: since, on: pool, sink: sink)
@@ -164,24 +167,24 @@ final class SandboxHelperTests: ClientIntegrationTestCase {
 
     /// A password-reset code reaches the sink, and cleanup uses the recorded new password (U-DEF).
     ///
-    /// A sandbox check: it needs the sandbox's code API on the default pool and emails its pre-sign-up
-    /// trigger verifies. The plugin's default backend has neither (its trigger only confirms), so on a file
-    /// set that is not the sandbox's (`IntegrationTestEnvironment.isSandbox`) it skips, saying so.
+    /// A sandbox check: it needs a code API on the default pool and emails its pre-sign-up trigger verifies. It
+    /// runs on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`): the sandbox's
+    /// default pool, or on CI the client's own `ccit-ci-default`, which the capabilities file says so for
+    /// (`SandboxCapability.resetPasswordCodes`). The plugin's default backend has neither (its trigger only
+    /// confirms), so with neither it skips, saying so.
     ///
-    /// - Given: A fresh, confirmed user on the sandbox's default pool (recovery by verified email)
+    /// - Given: A fresh, confirmed user on that role's pool (recovery by verified email)
     /// - When:
     ///    - `ForgotPassword` runs; the test reads the code and confirms a new password, and records it
     /// - Then:
     ///    - The code resets the password: the new one signs in, and tearDown deletes the user with it
     ///
     func testResetPasswordCodeReachesTheSink() async throws {
-        try IntegrationTestEnvironment.requireSandbox(
-            .standard,
-            "a code API on the default pool and emails verified at sign-up"
-        )
-        let pool = try SandboxPools.pool(.standard)
+        let role = IntegrationTestEnvironment.extrasRole
+        try IntegrationTestEnvironment.requireCapability(.resetPasswordCodes, on: role)
+        let pool = try SandboxPools.pool(role)
         let sink = try CodeSink()
-        let user = try await makeFreshUser(on: .standard)
+        let user = try await makeFreshUser(on: role)
         let since = Date()
 
         _ = try await pool.client.forgotPassword(input: ForgotPasswordInput(clientId: pool.clientId, username: user.username))

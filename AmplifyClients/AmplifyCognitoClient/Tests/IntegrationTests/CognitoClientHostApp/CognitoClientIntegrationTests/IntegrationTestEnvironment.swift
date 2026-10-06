@@ -66,6 +66,19 @@ enum IntegrationTestEnvironment {
         hasExtendedOutputs ? .extended : .standard
     }
 
+    /// The role the email-alias code check runs on: the client's own alias-codes role when its outputs file is in
+    /// the bundle (on CI, `infra/ci`'s `ccit-ci-email-alias-codes`, mapped in by `infra/ci/ci-overlay.sh`), and
+    /// otherwise the device-alias role itself: the sandbox's, which has a code API, or the plugin's on CI, which
+    /// has none, so the check skips there as a sandbox check, as before.
+    static var emailAliasCodesRole: SandboxPool {
+        emailAliasCodesRole(hasAliasCodesOutputs: hasOutputs(.emailAliasCodes))
+    }
+
+    /// `emailAliasCodesRole` over whether the alias-codes role's outputs are there, for the offline check.
+    static func emailAliasCodesRole(hasAliasCodesOutputs: Bool) -> SandboxPool {
+        hasAliasCodesOutputs ? .emailAliasCodes : .emailAlias
+    }
+
     static var bundle: Bundle {
         Bundle(for: BundleToken.self)
     }
@@ -272,6 +285,66 @@ enum IntegrationTestEnvironment {
             block), and this check needs \(needs), which only the sandbox provisions.\(rewrite)
             """)
         }
+    }
+
+    // MARK: - Capabilities (the sandbox checks a role that is not the sandbox's can run)
+
+    /// The file that names, per client role, the sandbox checks its backend can run although it is not the
+    /// sandbox's (`SandboxCapability`): on CI, `infra/ci`'s `ccit-ci-capabilities.json`, which
+    /// `infra/ci/ci-overlay.sh` keeps for the roles it gives. `{"capabilities": {"<role>": ["<capability>", …]}}`, by
+    /// `SandboxPool.rawValue` and `SandboxCapability.rawValue`. Absent, as on the plugin's CI and the sandbox, no
+    /// role has any.
+    static let capabilitiesResource = "AmplifyCognitoClientIntegrationTests-capabilities"
+
+    /// The capabilities the bundle's capabilities file names for `pool` (`capabilitiesResource`), or none.
+    static func capabilities(of pool: SandboxPool) -> Set<SandboxCapability> {
+        guard let data = try? data(forResource: capabilitiesResource),
+              let document = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
+            return []
+        }
+        return capabilities(in: document, of: pool)
+    }
+
+    /// The capabilities a capabilities document names for `pool`. A name the harness does not know, and anything
+    /// that is not a list of strings, is no capability.
+    static func capabilities(in document: [String: Any], of pool: SandboxPool) -> Set<SandboxCapability> {
+        guard let roles = document["capabilities"] as? [String: Any],
+              let names = roles[pool.rawValue] as? [String] else {
+            return []
+        }
+        return Set(names.compactMap(SandboxCapability.init(rawValue:)))
+    }
+
+    /// Whether a sandbox check that needs `capability` runs on `pool`: on the sandbox's file for it
+    /// (`isSandbox(_:)`), as before, or where the capabilities file names it for the role and the role's outputs
+    /// are in the bundle (`capabilities(of:)`).
+    static func hasCapability(_ capability: SandboxCapability, on pool: SandboxPool) -> Bool {
+        hasCapability(
+            capability,
+            isSandbox: isSandbox(pool),
+            hasOutputs: hasOutputs(pool),
+            capabilities: capabilities(of: pool)
+        )
+    }
+
+    /// `hasCapability(_:on:)` over what it reads, for the offline check.
+    static func hasCapability(
+        _ capability: SandboxCapability,
+        isSandbox: Bool,
+        hasOutputs: Bool,
+        capabilities: Set<SandboxCapability>
+    ) -> Bool {
+        isSandbox || (hasOutputs && capabilities.contains(capability))
+    }
+
+    /// Skips a sandbox check on `pool` unless it has `capability` (`hasCapability(_:on:)`), with the skip
+    /// `requireSandbox(_:_:)` gives, naming the file and what the check needs. The self sign-up gate and the
+    /// sandbox file set (`isSandboxFileSet`) are the sandbox mark's alone: a capability changes neither.
+    static func requireCapability(_ capability: SandboxCapability, on pool: SandboxPool) throws {
+        guard !hasCapability(capability, on: pool) else {
+            return
+        }
+        try requireSandbox(pool, capability.needs)
     }
 
     /// What `requireSandbox(_:_:)`'s skip adds for a set with the default credentials file: the advice to write
@@ -512,14 +585,19 @@ enum SandboxPool: String, CaseIterable, Sendable {
     /// `allCases` (every loop over the plugin's file set leaves it out) but in `optionalRoles`, and its absence is
     /// never a failure. Only the tests that need those extras use it, when its file is there.
     case extended
+    /// The client's own role beside the plugin's device-alias one (`IntegrationTestEnvironment.emailAliasCodesRole`):
+    /// on CI, `infra/ci`'s `ccit-ci-email-alias-codes`, a second pool from the device-alias template whose
+    /// pre-sign-up trigger leaves `ccit-confirm-` users to confirm and whose codes reach the code sink its outputs
+    /// name. Optional, as `extended`; only the email-alias code check uses it, when its file is there.
+    case emailAliasCodes = "email-alias-codes"
 
     /// The plugin's roles, each one of the plugin's files: every case but the optional ones.
     static let allCases: [SandboxPool] = [
         .standard, .hostedUI, .passwordless, .mfaRequiredTOTPSMS, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn
     ]
 
-    /// The roles whose files may be absent with no test failing for it (`extended`).
-    static let optionalRoles: [SandboxPool] = [.extended]
+    /// The roles whose files may be absent with no test failing for it (`extended`, `emailAliasCodes`).
+    static let optionalRoles: [SandboxPool] = [.extended, .emailAliasCodes]
 
     /// Every role, the plugin's and the optional ones.
     static var everyRole: [SandboxPool] {
@@ -540,7 +618,7 @@ enum SandboxPool: String, CaseIterable, Sendable {
     var gen1Resource: String? {
         switch self {
         case .standard, .hostedUI, .mfaRequiredTOTPSMS: PluginTestConfiguration.gen1Resource(for: outputsResource)
-        case .passwordless, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn, .extended: nil
+        case .passwordless, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn, .extended, .emailAliasCodes: nil
         }
     }
 
@@ -573,6 +651,29 @@ enum SandboxPool: String, CaseIterable, Sendable {
         case .emailAlias: "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs"
         case .webAuthn: "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
         case .extended: "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs"
+        case .emailAliasCodes: "AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs"
+        }
+    }
+}
+
+/// What a sandbox check needs that a backend which is not the sandbox's can have too: a capabilities file names it
+/// for a role (`IntegrationTestEnvironment.capabilitiesResource`), and the check then runs there
+/// (`IntegrationTestEnvironment.requireCapability(_:on:)`). On the sandbox's own files every check runs, as before.
+enum SandboxCapability: String, CaseIterable, Sendable {
+    /// A pre-sign-up trigger that refuses a sign-up that is not a test user.
+    case refusesNonTestUsers = "refuses_non_test_users"
+    /// A code API the pool's password-reset codes reach, and a pre-sign-up trigger that verifies the email they are
+    /// sent to.
+    case resetPasswordCodes = "reset_password_codes"
+    /// Email as the username, and a code API that publishes each code under the username Cognito generated.
+    case emailAliasCodes = "email_alias_codes"
+
+    /// What a check that needs it says it needs, in its skip.
+    var needs: String {
+        switch self {
+        case .refusesNonTestUsers: "a pre-sign-up trigger that refuses users who are not test users"
+        case .resetPasswordCodes: "a code API on the default pool and emails verified at sign-up"
+        case .emailAliasCodes: "a code API on the email-alias pool"
         }
     }
 }

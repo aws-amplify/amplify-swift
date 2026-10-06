@@ -48,11 +48,11 @@ enum SandboxPools {
 
 extension SandboxPool {
 
-    /// Whether the pool's username attribute is the email (U-ALIAS). There, the username a user signs
-    /// in with is the email, and Cognito generates the user's real username, which is what the code sink
-    /// is keyed by.
+    /// Whether the pool's username attribute is the email (U-ALIAS, and the client's own alias-codes pool made
+    /// from its template). There, the username a user signs in with is the email, and Cognito generates the
+    /// user's real username, which is what the code sink is keyed by.
     var usesEmailAsUsername: Bool {
-        self == .emailAlias
+        [.emailAlias, .emailAliasCodes].contains(self)
     }
 
     /// Whether the pool requires MFA at sign-in (U-REQ-*).

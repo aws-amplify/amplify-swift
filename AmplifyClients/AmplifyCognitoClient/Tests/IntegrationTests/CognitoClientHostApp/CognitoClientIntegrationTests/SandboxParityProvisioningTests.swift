@@ -99,23 +99,22 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// The pre-sign-up trigger refuses a sign-up that is not a test user (P-5b).
     ///
-    /// A sandbox check: the refusal is the sandbox's own safeguard. The plugin's default backend's trigger
-    /// only confirms (its README), so on a file set that is not the sandbox's
-    /// (`IntegrationTestEnvironment.isSandbox`) it skips, saying so, rather than sign such a user up there.
+    /// A sandbox check: the refusal is the sandbox's own safeguard. It runs on the role with the default
+    /// backend's extras (`IntegrationTestEnvironment.extrasRole`): the sandbox's default pool, or on CI the
+    /// client's own `ccit-ci-default`, whose trigger is the sandbox's and which the capabilities file says so for
+    /// (`SandboxCapability.refusesNonTestUsers`). The plugin's default backend's trigger only confirms (its
+    /// README), so with neither it skips, saying so, rather than sign such a user up there.
     ///
-    /// - Given: The sandbox's default pool, whose pre-sign-up Lambda accepts only `ccit-` and `confirm-`
-    ///   usernames
+    /// - Given: That role's pool, whose pre-sign-up Lambda accepts only `ccit-` and `confirm-` usernames
     /// - When:
     ///    - A user named without either prefix signs up
     /// - Then:
     ///    - Cognito rejects it with `UserLambdaValidationException`, so no such user is created
     ///
     func testPreSignUpRefusesUsersThatAreNotTestUsers() async throws {
-        try IntegrationTestEnvironment.requireSandbox(
-            .standard,
-            "a pre-sign-up trigger that refuses users who are not test users"
-        )
-        let pool = try ParityPool(.standard)
+        let role = IntegrationTestEnvironment.extrasRole
+        try IntegrationTestEnvironment.requireCapability(.refusesNonTestUsers, on: role)
+        let pool = try ParityPool(role)
         let fresh = ParityPool.freshUser()
         let outsider = TestUser(username: "outsider-" + fresh.username.dropFirst("ccit-".count), password: fresh.password)
 
