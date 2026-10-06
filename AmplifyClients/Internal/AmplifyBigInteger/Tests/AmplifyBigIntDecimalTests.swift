@@ -12,6 +12,10 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
 
+    /// - Given: the decimal strings "2", "3" and "-23233"
+    /// - When: each is parsed with radix 10 and printed with `asString`
+    /// - Then:
+    ///    - each prints as the string it was parsed from
     func testConversionDecimal() throws {
         guard let firstInt = AmplifyBigInt("2", radix: 10) else {
             XCTFail("Could not create integer")
@@ -30,6 +34,10 @@ final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual("-23233", thirdInt.asString)
     }
 
+    /// - Given: a positive 144-digit decimal string
+    /// - When: it is parsed with radix 10 and printed with `asString`
+    /// - Then:
+    ///    - it prints as the same string
     func testConversionLargeDecimal() throws {
         let largeNumber =
         "23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -41,6 +49,10 @@ final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
 
+    /// - Given: a negative 144-digit decimal string
+    /// - When: it is parsed with radix 10 and printed with `asString`
+    /// - Then:
+    ///    - it prints as the same string, sign included
     func testConversionLargeNegativeDecimal() throws {
         let largeNumber =
         "-23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -52,6 +64,10 @@ final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
 
+    /// - Given: a negative 225-digit decimal string
+    /// - When: it is parsed with radix 10 and printed with `asString`
+    /// - Then:
+    ///    - it prints as the same string, sign included
     func testConversionLargeNegativeDecimal_2() throws {
         let largeNumber =
         "-23842389473298759348759834759834759834759834759834759834759834759347895734584567" +
@@ -64,6 +80,10 @@ final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(largeNumber, largeInt.asString)
     }
 
+    /// - Given: the integers 23 and 67
+    /// - When: they are added
+    /// - Then:
+    ///    - the sum prints as "90"
     func testAddition() {
         let number1 = AmplifyBigInt(23)
         let number2 = AmplifyBigInt(67)
@@ -72,6 +92,10 @@ final class AmplifyBigIntDecimalTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(result.asString, "90")
     }
 
+    /// - Given: the integers 23 and 67
+    /// - When: 67 is subtracted from 23
+    /// - Then:
+    ///    - the difference prints as "-44"
     func testSubstraction() {
         let number1 = AmplifyBigInt(23)
         let number2 = AmplifyBigInt(67)
