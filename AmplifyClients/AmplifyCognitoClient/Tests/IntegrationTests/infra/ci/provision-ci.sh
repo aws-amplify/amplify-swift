@@ -6,15 +6,19 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Adds, beside the plugin's CI backends and never in place of them, the Cognito resources the client's
-# integration tests need on CI and the plugin's backends do not have (README, "CI's additive resources"):
+# integration tests need on CI and the plugin's backends do not have (README, "CI's additive resources"), in two
+# phases:
 #
-#   ccit-ci-email-alias   a device-alias pool (email as the username, devices always remembered, 5-minute tokens)
-#                         whose pre-sign-up trigger confirms test sign-ups, with the code sink: DV-10…19 and the
-#                         email-alias parity check
-#   ccit-ci-default       a default pool as the sandbox's (infra/pools/default.json): custom-auth triggers,
-#                         new-password users kept fresh by a scheduled Lambda, the code sink, a rotation client,
-#                         and an identity pool with guest access: CA-1…3, CH-1, P-3, the fixture check, AT-2's
-#                         second half, RP-3, RT-1 and RT-2
+#   phase 1 (--scope email-alias, the default)
+#     ccit-ci-email-alias   a device-alias pool on the Lite plan (email as the username, devices always remembered,
+#                           5-minute tokens) whose pre-sign-up trigger confirms test sign-ups and refuses
+#                           ccit-confirm- ones, with a custom email and SMS sender that discards every message, so
+#                           nothing is sent: DV-10…19 and the email-alias parity check
+#   phase 2 (--scope all, which keeps phase 1)
+#     ccit-ci-default       a default pool as the sandbox's (infra/pools/default.json): custom-auth triggers,
+#                           new-password users kept fresh by a scheduled Lambda, the code sink, a rotation client,
+#                           and an identity pool with guest access, read by the client's own `extended` role only:
+#                           CA-1…3, CH-1, P-3, the fixture check, AT-2's second half, RP-3, RT-1 and RT-2
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
@@ -22,11 +26,11 @@
 # call goes through `mutate` (lib-ci.sh), which refuses a name that is not ccit-ci-. Codes go to a custom email
 # and SMS sender, so Cognito sends no email and no SMS for these pools.
 #
-#   infra/ci/provision-ci.sh [--dry-run | --apply] [--upload] [--scope all|email-alias]
+#   infra/ci/provision-ci.sh [--dry-run | --apply] [--upload] [--scope email-alias|all]
 #       --dry-run (the default) reads the account and prints every call it would make, identifiers masked;
 #       --apply makes them, then writes the client's configuration files into a new private directory (mode 600
-#       files); --upload also uploads them to <config>/auth/cognito-client-ci/, refusing any key that exists.
-#       --scope email-alias provisions only the device-alias pool and what it needs.
+#       files); --upload also uploads them to <config>/auth/cognito-client-ci/: a key that exists is left alone when
+#       it holds the same bytes, and any other existing key refuses the whole upload. --scope picks the phase.
 #   infra/ci/provision-ci.sh snapshot
 #       read-only: hashes every existing resource the script must not touch into
 #       $CCIT_CI_DISCOVERY_DIR/snapshot-<time>.json (default /tmp/ci-disc), mode 600
@@ -52,7 +56,7 @@ source "$CI_DIR/lib-ci.sh"
 CI_REGION="${CCIT_CI_REGION:-us-east-1}"
 CI_MODE="plan"
 UPLOAD=0
-SCOPE="all"
+SCOPE="email-alias"
 COMMAND="provision"
 ALLOW_FOREIGN=0
 POSITIONAL=()
@@ -131,9 +135,9 @@ S3_FOLDER_KEY="$CI_PREFIX_PATH/auth/$CI_S3_FOLDER"
 
 # The functions in scope, with each one's handler, role and code.
 functions_in_scope() {
-    printf '%s\n' pre-sign-up custom-sender
+    printf '%s\n' pre-sign-up discard-sender
     if [[ "$SCOPE" == "all" ]]; then
-        printf '%s\n' define-auth-challenge create-auth-challenge verify-auth-challenge new-password-reset
+        printf '%s\n' custom-sender define-auth-challenge create-auth-challenge verify-auth-challenge new-password-reset
     fi
 }
 fn_handler() {
@@ -142,7 +146,7 @@ fn_handler() {
         define-auth-challenge) echo triggers.defineAuthChallenge ;;
         create-auth-challenge) echo triggers.createAuthChallenge ;;
         verify-auth-challenge) echo triggers.verifyAuthChallenge ;;
-        custom-sender|new-password-reset) echo index.handler ;;
+        custom-sender|discard-sender|new-password-reset) echo index.handler ;;
     esac
 }
 fn_role() {
@@ -269,7 +273,7 @@ sender_policy() {
 }
 
 trigger_policy() {
-    local suffixes=(pre-sign-up)
+    local suffixes=(pre-sign-up discard-sender)
     [[ "$SCOPE" == "all" ]] && suffixes+=(define-auth-challenge create-auth-challenge verify-auth-challenge)
     jq -n -c --argjson logs "$(logs_statement "${suffixes[@]}")" '{Version: "2012-10-17", Statement: [$logs]}'
 }
@@ -620,6 +624,7 @@ zip_for() {
     local suffix="$1" zip build
     case "$suffix" in
         custom-sender) zip="$CI_WORK/custom-sender.zip" ;;
+        discard-sender) zip="$CI_WORK/discard-sender.zip" ;;
         new-password-reset) zip="$CI_WORK/new-password-reset.zip" ;;
         *) zip="$CI_WORK/triggers.zip" ;;
     esac
@@ -634,8 +639,8 @@ zip_for() {
                     || die "npm ci for the custom sender failed."
                 (cd "$build" && rm -f node_modules/.package-lock.json && zip -q -X -r "$zip" index.mjs package.json node_modules)
                 ;;
-            new-password-reset)
-                (cd "$CI_DIR/lambda/new-password-reset" && zip -q -X "$zip" index.mjs) ;;
+            new-password-reset|discard-sender)
+                (cd "$CI_DIR/lambda/$suffix" && zip -q -X "$zip" index.mjs) ;;
             *)
                 (cd "$INFRA/lambda/triggers" && zip -q -X "$zip" triggers.mjs) ;;
         esac
@@ -645,6 +650,8 @@ zip_for() {
 
 fn_environment() {
     case "$1" in
+        # No code API can confirm a ccit-confirm- user on these pools, so the trigger refuses them (triggers.mjs).
+        pre-sign-up) printf '{"REFUSE_CONFIRMATION_USERS":"1"}' ;;
         create-auth-challenge)
             jq -n -c --arg s "$(printf '%s' "$ANSWER" | shasum -a 256 | cut -d' ' -f1)" \
                 '{CUSTOM_CHALLENGE_ANSWER_SHA256: $s}' ;;
@@ -702,17 +709,25 @@ ensure_invoke_permission() {
 
 # The pool template's userPool, with the placeholders filled in and this script's checks applied.
 pool_definition() {
-    local key="$1" variables
+    local key="$1" variables sender=custom-sender tier=""
+    # The device-alias pool discards its messages (no test there reads a code), and is on the Lite plan: DV-10…19
+    # and the short-token parity check use device tracking, custom token lifetimes and a pre-sign-up trigger, all
+    # of which Lite has. The default pool keeps its template's Essentials, the plan its rotation client was proven
+    # on in the sandbox.
+    if [[ "$key" == "email-alias" ]]; then
+        sender=discard-sender
+        tier=LITE
+    fi
     variables=$(jq -n -c --arg pre "$(fn_arn pre-sign-up)" --arg def "$(fn_arn define-auth-challenge)" \
         --arg cre "$(fn_arn create-auth-challenge)" --arg ver "$(fn_arn verify-auth-challenge)" \
-        --arg snd "$(fn_arn custom-sender)" --arg kms "$KMS_KEY_ARN" --arg sms "$(role_arn cognito-sms)" \
+        --arg snd "$(fn_arn "$sender")" --arg kms "$KMS_KEY_ARN" --arg sms "$(role_arn cognito-sms)" \
         --arg ext "$SMS_EXTERNAL_ID" --arg r "$CI_REGION" \
         '{PRE_SIGN_UP_ARN: $pre, DEFINE_AUTH_CHALLENGE_ARN: $def, CREATE_AUTH_CHALLENGE_ARN: $cre,
           VERIFY_AUTH_CHALLENGE_ARN: $ver, CUSTOM_SENDER_ARN: $snd, KMS_KEY_ARN: $kms, SMS_ROLE_ARN: $sms,
           SMS_EXTERNAL_ID: $ext, SMS_REGION: $r}')
     jq -c --argjson v "$variables" 'walk(if type == "string"
-        then gsub("\\$\\{(?<name>[A-Z_]+)\\}"; $v[.name] // error("unknown placeholder \(.name)")) else . end)' \
-        "$INFRA/pools/$key.json"
+        then gsub("\\$\\{(?<name>[A-Z_]+)\\}"; $v[.name] // error("unknown placeholder \(.name)")) else . end)
+        | if $tier != "" then .userPool.UserPoolTier = $tier else . end' --arg tier "$tier" "$INFRA/pools/$key.json"
 }
 
 ensure_pool() {
@@ -914,7 +929,11 @@ write_private_json() {
 write_config() {
     CONFIG_DIR=$(mktemp -d "${TMPDIR:-/tmp}/ccit-ci-config.XXXXXX")
     chmod 700 "$CONFIG_DIR"
-    outputs_document email-alias client | with_code_sink | write_private_json "$CONFIG_DIR/ccit-ci-email-alias-amplify_outputs.json"
+    # No code API: the file says instead that the pool's trigger confirms every sign-up it accepts, which the
+    # harness reads (IntegrationTestEnvironment.promisesConfirmingTrigger). It is no sandbox mark.
+    outputs_document email-alias client \
+        | jq -c '. + {custom: {amplify_cognito_client_integ: {confirming_trigger: true}}}' \
+        | write_private_json "$CONFIG_DIR/ccit-ci-email-alias-amplify_outputs.json"
     if [[ "$SCOPE" == "all" ]]; then
         outputs_document default plugin | with_code_sink \
             | jq -c --arg id "$IDENTITY_POOL_ID" '.auth += {identity_pool_id: $id, unauthenticated_identities_enabled: true}' \
@@ -935,19 +954,33 @@ config_files() {
     fi
 }
 
-# Uploads every file to <config>/auth/cognito-client-ci/, a folder no plugin test reads, only when none of the
-# keys exists (checked first, then again by S3 itself with If-None-Match), tagged.
+# Uploads every file to <config>/auth/cognito-client-ci/, a folder no plugin test reads, tagged, as a new key only.
+# A key that exists already is left alone when it holds exactly this file (downloaded and compared byte for byte:
+# phase 2 writes phase 1's file again, the same); any other existing key refuses the whole upload, before anything
+# is put. S3 checks again with If-None-Match.
 upload_config() {
-    local file key out existing=0
+    local file key out existing=0 remote
+    UPLOAD_SKIP=" "
     for file in $(config_files); do
         key="$S3_FOLDER_KEY/$file"
         if read_aws_or_missing out "404 NoSuchKey NotFound" s3api head-object --bucket "$CI_BUCKET" --key "$key"; then
-            say "  ! s3://<bucket>/…/auth/$CI_S3_FOLDER/$file exists"
-            existing=1
+            remote="$CI_WORK/.uploaded.$file"
+            if [[ -f "${CONFIG_DIR:-}/$file" ]] && read_aws out s3api get-object --bucket "$CI_BUCKET" --key "$key" "$remote" \
+                && cmp -s "$remote" "$CONFIG_DIR/$file"; then
+                say "  = auth/$CI_S3_FOLDER/$file (uploaded already, the same bytes)"
+                UPLOAD_SKIP+="$file "
+            elif [[ ! -f "${CONFIG_DIR:-}/$file" ]] && [[ "$CI_MODE" != "apply" ]]; then
+                say "  ? auth/$CI_S3_FOLDER/$file exists; --apply compares it with the file it writes"
+                UPLOAD_SKIP+="$file "
+            else
+                say "  ! auth/$CI_S3_FOLDER/$file exists with other contents"
+                existing=1
+            fi
         fi
     done
-    (( existing == 0 )) || die "a key already exists under auth/$CI_S3_FOLDER/; nothing was uploaded, and nothing is ever overwritten."
+    (( existing == 0 )) || die "a key under auth/$CI_S3_FOLDER/ holds other contents; nothing was uploaded, and nothing is ever overwritten."
     for file in $(config_files); do
+        [[ "$UPLOAD_SKIP" == *" $file "* ]] && continue
         key="$S3_FOLDER_KEY/$file"
         mutate "$key" "upload auth/$CI_S3_FOLDER/$file (new key only)" -- s3api put-object --bucket "$CI_BUCKET" \
             --key "$key" --body "${CONFIG_DIR:-<config-dir>}/$file" --content-type application/json \
@@ -958,7 +991,7 @@ upload_config() {
 # --- provision --------------------------------------------------------------------------------------------
 
 provision() {
-    local suffix key early policy out id
+    local suffix key policy out id
     if [[ "$CI_MODE" == "apply" ]]; then
         say "Applying (scope $SCOPE): every call below is made."
     else
@@ -972,26 +1005,28 @@ provision() {
         id=$(jq -r --arg n "$(pool_name "$key")" '[.UserPools[] | select(.Name == $n) | .Id][0] // empty' <<<"$out")
         [[ -n "$id" ]] && kv_set POOL_ID "$key" "$id"
     done
-    early=$(scoped_pool_arns early)
 
-    say "Logs, key and code sink:"
+    say "Logs and key:"
     while read -r suffix; do
         ensure_log_group "$suffix"
     done < <(functions_in_scope)
     ensure_kms_key
-    ensure_table
-    ensure_api
+    if [[ "$SCOPE" == "all" ]]; then
+        say "Code sink (the default pool's):"
+        ensure_table
+        ensure_api
+    fi
 
     say "Roles:"
     ensure_role trigger-exec "$(lambda_trust)" "$(trigger_policy)"
-    ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$early")"
-    ensure_role appsync-codes "$(appsync_trust)" "$(appsync_policy)"
     if [[ "$SCOPE" == "all" ]]; then
+        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(default_pool_arns early)")"
+        ensure_role appsync-codes "$(appsync_trust)" "$(appsync_policy)"
         ensure_sms_external_id
         ensure_role cognito-sms "$(sms_trust "$(default_pool_arns early)")" "$(sms_policy)"
+        ensure_api_resolvers
+        ensure_api_key
     fi
-    ensure_api_resolvers
-    ensure_api_key
 
     if [[ "$SCOPE" == "all" ]]; then
         say "Secrets:"
@@ -1009,11 +1044,13 @@ provision() {
         ensure_pool "$key"
     done
 
-    say "Narrowing the key, the sender's decrypt and the SMS role to the ccit-ci- pools:"
+    say "Narrowing the key (and the sender's decrypt and the SMS role) to the ccit-ci- pools:"
     policy=$(scoped_pool_arns final)
     ensure_kms_policy "$(kms_policy "$policy")"
-    ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$policy")"
-    [[ "$SCOPE" == "all" ]] && ensure_role cognito-sms "$(sms_trust "$(default_pool_arns final)")" "$(sms_policy)"
+    if [[ "$SCOPE" == "all" ]]; then
+        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(default_pool_arns final)")"
+        ensure_role cognito-sms "$(sms_trust "$(default_pool_arns final)")" "$(sms_policy)"
+    fi
 
     if [[ "$SCOPE" == "all" ]]; then
         say "Identity pool:"
@@ -1168,7 +1205,7 @@ teardown() {
                 cognito-idp delete-user-pool --user-pool-id "$id"
         done
     done
-    for suffix in "${TRIGGERS_ALL[@]}" custom-sender new-password-reset; do
+    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
         fn=$(fn_name "$suffix")
         if read_aws_or_missing out ResourceNotFoundException lambda get-function-configuration --function-name "$fn"; then
             require_ours lambda "$fn" "$fn"
@@ -1214,7 +1251,7 @@ teardown() {
         mutate "$CI_KMS_ALIAS" "schedule the key's deletion in 7 days" -- kms schedule-key-deletion --key-id "$id" \
             --pending-window-in-days 7
     fi
-    for suffix in "${TRIGGERS_ALL[@]}" custom-sender new-password-reset; do
+    for suffix in "${TRIGGERS_ALL[@]}" discard-sender custom-sender new-password-reset; do
         file=$(log_group "$suffix")
         read_aws out logs describe-log-groups --log-group-name-prefix "$file"
         if jq -e --arg n "$file" '.logGroups[] | select(.logGroupName == $n)' <<<"$out" >/dev/null; then

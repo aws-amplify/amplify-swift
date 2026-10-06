@@ -141,26 +141,46 @@ a_config_url_without_a_path_is_refused() {
     (( STATUS == 1 )) && [[ -z "$(calls)" ]] && [[ "$OUT" != *"$BUCKET"* ]]
 }
 
-a_dry_run_plans_everything_and_changes_nothing() {
+# Phase 1, the default scope: the device-alias pool and exactly what it needs.
+PHASE1_PLAN="create log group /aws/lambda/ccit-ci-pre-sign-up
+keep /aws/lambda/ccit-ci-pre-sign-up for 7 days
+create log group /aws/lambda/ccit-ci-discard-sender
+keep /aws/lambda/ccit-ci-discard-sender for 7 days
+create the KMS key for the custom senders' codes
+name it alias/ccit-ci-senders
+create role ccit-ci-trigger-exec
+set the one inline policy of ccit-ci-trigger-exec
+create Lambda ccit-ci-pre-sign-up (Node.js 22, no reserved concurrency)
+create Lambda ccit-ci-discard-sender (Node.js 22, no reserved concurrency)
+create user pool ccit-ci-email-alias (pools/email-alias.json, self sign-up on, custom senders)
+let cognito-idp.amazonaws.com invoke ccit-ci-discard-sender (cognito-email-alias)
+let cognito-idp.amazonaws.com invoke ccit-ci-pre-sign-up (cognito-email-alias)
+create app client ccit-ci-email-alias-client (public, pools/email-alias.json \`client\`)
+set the key policy of alias/ccit-ci-senders to the ccit-ci- pools"
+
+the_default_dry_run_plans_exactly_phase_1() {
     fresh_state
     local before
     before=$(jq -S . "$FAKE_STATE")
     run
     (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours \
         && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
-        && [[ "$OUT" == *"+ create user pool ccit-ci-default"* && "$OUT" == *"+ create user pool ccit-ci-email-alias"* ]] \
-        && [[ "$OUT" == *"+ create identity pool ccit_ci_default"* && "$OUT" == *"+ store /ccit-ci/custom-challenge-answer"* ]] \
-        && [[ "$OUT" == *"+ set the key policy of alias/ccit-ci-senders to the ccit-ci- pools"* ]] \
-        && [[ "$OUT" == *"Nothing was changed."* ]]
+        && [[ "$(sed -nE 's/^  \+ //p' <<<"$OUT")" == "$PHASE1_PLAN" ]] \
+        && [[ "$OUT" == *"Dry run (scope email-alias)"* && "$OUT" == *"Planned: 15 calls. Nothing was changed."* ]] \
+        || { echo "$OUT" | sed -nE 's/^  \+ //p'; return 1; }
 }
 
-the_email_alias_scope_plans_only_its_pool() {
+a_dry_run_of_both_phases_plans_everything() {
     fresh_state
-    run --scope email-alias
-    (( STATUS == 0 )) && only_reads && no_identifiers \
-        && [[ "$OUT" == *"+ create user pool ccit-ci-email-alias"* ]] \
-        && [[ "$OUT" != *"user pool ccit-ci-default"* && "$OUT" != *"+ create identity pool"* && "$OUT" != *"/ccit-ci/"* ]] \
-        && [[ "$OUT" != *"define-auth-challenge"* && "$OUT" != *"cognito-sms"* ]]
+    local before
+    before=$(jq -S . "$FAKE_STATE")
+    run --scope all
+    (( STATUS == 0 )) && only_reads && no_identifiers && plus_lines_are_ours \
+        && [[ "$(jq -S . "$FAKE_STATE")" == "$before" ]] \
+        && [[ "$OUT" == *"+ create user pool ccit-ci-default"* && "$OUT" == *"+ create user pool ccit-ci-email-alias"* ]] \
+        && [[ "$OUT" == *"+ create identity pool ccit_ci_default"* && "$OUT" == *"+ store /ccit-ci/custom-challenge-answer"* ]] \
+        && [[ "$OUT" == *"+ create AppSync API ccit-ci-codes"* && "$OUT" == *"+ create Lambda ccit-ci-custom-sender"* ]] \
+        && [[ "$OUT" == *"Nothing was changed."* ]]
 }
 
 untagged_name_is_refused() { # mode: "" (dry run) or --apply
@@ -175,16 +195,49 @@ untagged_name_is_refused() { # mode: "" (dry run) or --apply
 }
 
 CONFIG=""
-apply_creates_everything_and_leaves_the_plugin_alone() {
+config_dir_of() {
+    sed -nE 's#^Wrote the client.s CI configuration \(mode 600\) into (.*):$#\1#p' <<<"$1"
+}
+
+phase_1_creates_only_the_device_alias_pool() {
     fresh_state
+    local before alias
+    before=$(plugin_part)
+    run --apply --upload
+    (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
+    no_identifiers && plus_lines_are_ours && [[ "$(plugin_part)" == "$before" ]] || return 1
+    CONFIG=$(config_dir_of "$OUT")
+    [[ "$(find "$CONFIG" -type f -exec basename {} \;)" == ccit-ci-email-alias-amplify_outputs.json ]] || return 1
+    alias="$CONFIG/ccit-ci-email-alias-amplify_outputs.json"
+    jq -e '(.auth.username_attributes == ["email"]) and (.data == null)
+        and (.custom == {amplify_cognito_client_integ: {confirming_trigger: true}})' "$alias" >/dev/null || return 1
+    [[ "$(calls | grep -c 's3api put-object')" == 1 ]] || return 1
+    jq -e '([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-email-alias"])
+        and ([.pools[] | select(.UserPool.Name == "ccit-ci-email-alias") | .UserPool | .UserPoolTier == "LITE"
+              and (.LambdaConfig.CustomEmailSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+              and (.LambdaConfig.CustomSMSSender.LambdaArn | endswith(":function:ccit-ci-discard-sender"))
+              and (.LambdaConfig.PreSignUp | endswith(":function:ccit-ci-pre-sign-up"))
+              and (.UserPoolTags.purpose == "amplify-cognito-client-integ")] == [true])
+        and ([.lambdas | keys[]] | sort == ["ccit-ci-discard-sender", "ccit-ci-pre-sign-up", "plugin-pre-sign-up"])
+        and (.lambdas["ccit-ci-pre-sign-up"].config.Environment.Variables == {REFUSE_CONFIRMATION_USERS: "1"})
+        and ([.roles | keys[]] | sort == ["ccit-ci-trigger-exec", "plugin-role"])
+        and ((.tables // {}) == {}) and ((.apis // {}) == {}) and ((.ssm // {}) == {}) and ((.rules // {}) == {})
+        and ([.identity_pools[] | .IdentityPoolName] == ["plugin_identity"])
+        and ([.log_groups | keys[]] == ["/aws/lambda/ccit-ci-discard-sender", "/aws/lambda/ccit-ci-pre-sign-up"])
+        and ([.s3 | keys[] | select(contains("cognito-client-ci"))] == ["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-email-alias-amplify_outputs.json"])
+        and (([.pools[] | select(.UserPool.Name == "ccit-ci-email-alias") | .UserPool.Arn]) as $a
+             | [.kms.keys[] | .policy.Statement[1].Condition.ArnEquals["aws:SourceArn"]] == [$a])' "$FAKE_STATE" >/dev/null
+}
+
+phase_2_adds_the_default_pool_and_keeps_phase_1() {
     local before modes default rotation
     before=$(plugin_part)
-    run --apply
+    run --apply --scope all --upload
     (( STATUS == 0 )) || { echo "$OUT" | tail -5; return 1; }
-    no_identifiers || return 1
-    plus_lines_are_ours || return 1
-    [[ "$(plugin_part)" == "$before" ]] || return 1
-    CONFIG=$(sed -nE 's#^Wrote the client.s CI configuration \(mode 600\) into (.*):$#\1#p' <<<"$OUT")
+    no_identifiers && plus_lines_are_ours && [[ "$(plugin_part)" == "$before" ]] || return 1
+    [[ "$OUT" == *"= user pool ccit-ci-email-alias"* && "$OUT" == *"= auth/cognito-client-ci/ccit-ci-email-alias-amplify_outputs.json (uploaded already, the same bytes)"* ]] || return 1
+    [[ "$(calls | grep -c 's3api put-object')" == 3 ]] || return 1
+    CONFIG=$(config_dir_of "$OUT")
     [[ -d "$CONFIG" && "$(stat -f '%Lp' "$CONFIG")" == 700 ]] || return 1
     modes=$(find "$CONFIG" -type f -exec stat -f '%Lp' {} + | sort -u)
     [[ "$modes" == 600 && "$(find "$CONFIG" -type f | wc -l | tr -d ' ')" == 4 ]] || return 1
@@ -194,46 +247,38 @@ apply_creates_everything_and_leaves_the_plugin_alone() {
         and (.auth.mfa_methods == ["SMS", "TOTP"]) and (.custom == null)' "$default" >/dev/null || return 1
     [[ "$(jq -r .auth.user_pool_id "$rotation")" == "$(jq -r .auth.user_pool_id "$default")" ]] || return 1
     [[ "$(jq -r .auth.user_pool_client_id "$rotation")" != "$(jq -r .auth.user_pool_client_id "$default")" ]] || return 1
-    jq -e '(.auth.username_attributes == ["email"]) and .data.api_key' "$CONFIG/ccit-ci-email-alias-amplify_outputs.json" >/dev/null || return 1
     jq -e '(keys == ["custom_challenge_answer", "new_password_required_temporary_password", "new_password_required_usernames"])
         and all(.[]; type == "string" and length > 0)
         and (.new_password_required_usernames | split(",") | length == 12)' "$CONFIG/ccit-ci-default-credentials.json" >/dev/null || return 1
     # Everything created is ccit-ci- and tagged.
     jq -e '[.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.UserPoolTags.purpose] == ["amplify-cognito-client-integ", "amplify-cognito-client-integ"]
         and ([.pools[] | .UserPool.Name] | sort == ["amplify-plugin-default", "ccit-ci-default", "ccit-ci-email-alias"])
+        and ([.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.UserPoolTier] == ["ESSENTIALS"])
         and ([.roles | keys[] | select(startswith("ccit-ci-"))] | length == 7)
         and ([.roles[] | select(.Role.RoleName | startswith("ccit-ci-")) | .tags[0].Value] | unique == ["amplify-cognito-client-integ"])
-        and ([.lambdas[] | select(.config.FunctionName | startswith("ccit-ci-")) | .tags.purpose] | length == 6 and (unique == ["amplify-cognito-client-integ"]))
+        and ([.lambdas[] | select(.config.FunctionName | startswith("ccit-ci-")) | .tags.purpose] | length == 7 and (unique == ["amplify-cognito-client-integ"]))
         and ([.lambdas[] | .config.FunctionName] | all(startswith("ccit-ci-") or . == "plugin-pre-sign-up"))
         and ([.ssm | keys[]] == ["/ccit-ci/custom-challenge-answer", "/ccit-ci/new-password-temporary"])
         and ([.identity_pools[] | .IdentityPoolName] | sort == ["ccit_ci_default", "plugin_identity"])' "$FAKE_STATE" >/dev/null || return 1
-    # Narrowed to the two pools.
+    # The key is narrowed to both pools; the decrypt and the SMS role to the default pool, the only one that uses them.
     jq -e '([.pools[] | select(.UserPool.Name | startswith("ccit-ci-")) | .UserPool.Arn] | sort) as $arns
+        | ([.pools[] | select(.UserPool.Name == "ccit-ci-default") | .UserPool.Id]) as $default
         | [.kms.keys[] | .policy.Statement[1].Condition.ArnEquals["aws:SourceArn"]] == [$arns]
-        and (.roles["ccit-ci-sender-exec"].inline["ccit-ci-sender-exec-policy"].Statement[1].Condition.StringEquals["kms:EncryptionContext:userpool-id"] | length == 2)
+        and (.roles["ccit-ci-sender-exec"].inline["ccit-ci-sender-exec-policy"].Statement[1].Condition.StringEquals["kms:EncryptionContext:userpool-id"] == $default)
         and (.roles["ccit-ci-cognito-sms"].Role.AssumeRolePolicyDocument.Statement[0].Condition.ArnEquals["aws:SourceArn"] | length == 1)' \
         "$FAKE_STATE" >/dev/null || return 1
     [[ "$OUT" == *"new-password users: created 12"* ]]
 }
 
-a_second_apply_makes_no_call() {
-    run --apply
-    (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && only_reads && no_identifiers
+a_second_apply_makes_no_call_and_uploads_nothing() {
+    run --apply --scope all --upload
+    (( STATUS == 0 )) && [[ "$OUT" == *"Done: 0 calls made."* ]] && ! calls | grep -q 'put-object' && no_identifiers
 }
 
-upload_puts_new_keys_only() {
-    run --apply --upload
-    (( STATUS == 0 )) || return 1
-    [[ "$(calls | grep -c 's3api put-object')" == 4 ]] || return 1
-    jq -e '[.s3 | to_entries[] | select(.key | contains("/auth/cognito-client-ci/")) | .value.tags.purpose] | length == 4' \
-        "$FAKE_STATE" >/dev/null || return 1
-    jq -e '[.s3 | keys[] | select(contains("/auth/cognito-client-ci/"))] | all(test("/auth/cognito-client-ci/ccit-ci-"))' \
-        "$FAKE_STATE" >/dev/null || return 1
-    no_identifiers
-}
-
-a_second_upload_is_refused_with_nothing_uploaded() {
-    run --apply --upload
+a_key_with_other_contents_refuses_the_upload() {
+    jq '.s3["v2/testconfiguration/auth/cognito-client-ci/ccit-ci-default-credentials.json"].body = "{}"' "$FAKE_STATE" \
+        > "$WORK/s" && mv "$WORK/s" "$FAKE_STATE"
+    run --apply --scope all --upload
     (( STATUS == 1 )) && [[ "$OUT" == *"nothing is ever overwritten"* ]] && ! calls | grep -q 'put-object' \
         && only_reads && no_identifiers
 }
@@ -351,15 +396,18 @@ library_guards() {
 check "bad usage is refused" usage_is_refused
 check "a missing config URL is refused before any AWS call" a_missing_config_url_is_refused
 check "a config URL without a path is refused, unprinted" a_config_url_without_a_path_is_refused
-check "a dry run plans every resource, reads only, and prints no identifier" a_dry_run_plans_everything_and_changes_nothing
-check "--scope email-alias plans only the device-alias pool and what it needs" the_email_alias_scope_plans_only_its_pool
+check "the default dry run (phase 1) plans exactly the device-alias pool and what it needs" \
+    the_default_dry_run_plans_exactly_phase_1
+check "a dry run of both phases plans every resource, reads only, and prints no identifier" \
+    a_dry_run_of_both_phases_plans_everything
 check "a dry run refuses a ccit-ci- name without the tag" untagged_name_is_refused
 check "--apply refuses a ccit-ci- name without the tag before any change" untagged_name_is_refused --apply
-check "--apply creates everything tagged, narrowed, and leaves the plugin's resources alone" \
-    apply_creates_everything_and_leaves_the_plugin_alone
-check "a second --apply makes no call" a_second_apply_makes_no_call
-check "--upload puts the four new keys, tagged, under auth/cognito-client-ci/" upload_puts_new_keys_only
-check "a second --upload is refused, with nothing uploaded" a_second_upload_is_refused_with_nothing_uploaded
+check "phase 1 --apply --upload makes only the Lite device-alias pool, its trigger and discard sender, and one file" \
+    phase_1_creates_only_the_device_alias_pool
+check "phase 2 adds the default pool, narrowed, keeps phase 1, and uploads only the three new files" \
+    phase_2_adds_the_default_pool_and_keeps_phase_1
+check "a second --apply --upload makes no call and uploads nothing" a_second_apply_makes_no_call_and_uploads_nothing
+check "a key with other contents refuses the whole upload" a_key_with_other_contents_refuses_the_upload
 check "snapshot and verify-unchanged: a user count is no change; a change, a removal, a foreign addition fail" \
     snapshot_and_verify
 check "teardown is a dry run by default and names only ccit-ci- resources" teardown_is_a_dry_run_by_default

@@ -18,6 +18,7 @@ import sys
 import uuid
 
 STATE = os.environ["FAKE_STATE"]
+WORDS = []
 LOG = os.environ["FAKE_LOG"]
 
 
@@ -448,6 +449,10 @@ def handle(state, service, verb, o, data):
             return {"ETag": objects[key]["etag"]}
         if key not in objects:
             raise Fail("404", "Not Found")
+        if verb == "get-object":
+            with open(o["outfile"][0] if "outfile" in o else WORDS[-1], "w") as f:
+                f.write(objects[key].get("body", ""))
+            return {"ETag": objects[key]["etag"]}
         if verb == "head-object":
             return {"ETag": objects[key]["etag"], "ContentLength": objects[key]["size"]}
         if verb == "get-object-tagging":
@@ -467,7 +472,9 @@ def main():
         return 0
     if argv[:2] == ["configure", "get"]:
         return 1
+    global WORDS
     words, options, data = parse(argv)
+    WORDS = words
     service, verb = words[0], words[1]
     with open(STATE + ".lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
