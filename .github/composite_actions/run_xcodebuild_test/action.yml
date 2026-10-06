@@ -118,6 +118,13 @@ runs:
         # sized to absorb that while still being well short of the job timeout, so
         # a genuine stall surfaces as a fast, explicit failure.
         RESOLVE_TIMEOUT_SECONDS: '1500'
+        # git aborts a stalled fetch ("curl 28 Operation too slow"); xcodebuild passes these to its git
+        # processes. The attempt then fails and is retried within minutes instead of holding to its bound.
+        # The floor only stops a fetch that could not finish anyway: the aws-sdk-swift mirror, which 7 of the
+        # 8 stalled attempts of the jobs that timed out on 2026-10-06 were fetching, is 2.8 GiB, about 8 hours
+        # at 100 KiB/s. GitHub starts sending it about 11 s after the request, well inside the 120 s.
+        GIT_HTTP_LOW_SPEED_LIMIT: '102400'
+        GIT_HTTP_LOW_SPEED_TIME: '120'
       run: |
         set -o pipefail
         if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
@@ -158,6 +165,8 @@ runs:
           fi
           echo "::endgroup::"
           echo "Attempt $attempt failed or exceeded ${RESOLVE_TIMEOUT_SECONDS}s after $(( $(date +%s) - start ))s."
+          # What the attempt fetched: next to nothing for a stall, most of it for a slow fetch.
+          echo "Fetched: $(du -sh "${clonedDir:-.}/repositories" "$HOME/Library/Caches/org.swift.swiftpm/repositories" 2>/dev/null | tr '\t\n' ' ')"
 
           # Clear partial mirror state so the next attempt is not resuming a
           # half-written clone, which is a common way for this to wedge.
