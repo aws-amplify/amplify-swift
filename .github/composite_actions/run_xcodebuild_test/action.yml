@@ -123,9 +123,15 @@ runs:
         if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
         if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
 
+        # Callers pass a path under '~/'. xcodebuild expands that '~', but quoted here it stays a literal
+        # directory name, so the cleanup between attempts removed nothing: a retry resumed on what the
+        # failed attempt left ("Updating from" 30 of the 31 repositories). Expanded once, for both.
+        clonedDir="$CLONED_SOURCE_PACKAGES_PATH"
+        case "$clonedDir" in \~ | \~/*) clonedDir="$HOME${clonedDir:1}" ;; esac
+
         clonedPath=()
-        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
-          clonedPath=(-clonedSourcePackagesDirPath "$CLONED_SOURCE_PACKAGES_PATH")
+        if [ -n "$clonedDir" ]; then
+          clonedPath=(-clonedSourcePackagesDirPath "$clonedDir")
         fi
 
         resolve_bounded() {
@@ -155,8 +161,8 @@ runs:
 
           # Clear partial mirror state so the next attempt is not resuming a
           # half-written clone, which is a common way for this to wedge.
-          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
-            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          if [ -n "$clonedDir" ]; then
+            rm -rf "${clonedDir%/}/repositories" || true
           fi
         done
 
