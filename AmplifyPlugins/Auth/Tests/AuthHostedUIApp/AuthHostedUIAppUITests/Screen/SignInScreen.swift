@@ -25,20 +25,39 @@ struct SignInScreen: Screen {
     }
 
     func gotoSignUpView() -> SignUpScreen {
-        let signUpButton = app.buttons[Identifiers.signUpNav]
-        XCTAssertTrue(signUpButton.waitForExistence(timeout: 30))
-        signUpButton.tap()
-        return SignUpScreen(app: app)
+        let signUpLink = app.buttons[Identifiers.signUpNav]
+        XCTAssertTrue(signUpLink.waitForExistence(timeout: UITestTimeout.firstLoad), "Sign up link not found")
+        let signUpScreen = SignUpScreen(app: app)
+        // On a loaded runner a tap on the link can be lost, leaving the signed-out screen up, and
+        // the sign-up screen then never shows. Tap again while the link is still on screen; once the
+        // link is gone the push happened and only the wait goes on. Ends when the screen shows.
+        var taps = 0
+        let deadline = Date().addingTimeInterval(60)
+        repeat {
+            if signUpLink.exists, signUpLink.isHittable {
+                signUpLink.tap()
+                taps += 1
+            }
+            if signUpScreen.waitUntilShown(timeout: 10) {
+                return signUpScreen
+            }
+        } while Date() < deadline
+        let state = signUpLink.exists ? "the signed-out screen is still shown" : "the Sign Up link is gone"
+        XCTFail("Sign up screen not shown after \(taps) taps on the Sign Up link; \(state)")
+        return signUpScreen
     }
 
     func tapSignIn() -> Self {
         let button = app.buttons[Identifiers.signInButton]
+        // Back from the sign-up screen, wait for the pop to bring this button back before tapping.
+        XCTAssertTrue(button.waitForExistence(timeout: 30), "Sign in button not found")
         button.tap()
         return self
     }
 
     func tapSignInWithoutPresentationAnchor() -> Self {
         let button = app.buttons[Identifiers.signInWithoutWindowButton]
+        XCTAssertTrue(button.waitForExistence(timeout: 30), "Sign in without window button not found")
         button.tap()
         return self
     }

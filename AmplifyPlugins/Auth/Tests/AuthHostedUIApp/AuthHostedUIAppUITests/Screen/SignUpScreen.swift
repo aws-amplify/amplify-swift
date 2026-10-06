@@ -19,6 +19,11 @@ struct SignUpScreen: Screen {
         static let errorLabel = "hostedUI_error_text"
     }
 
+    /// Whether the sign-up screen shows within `timeout`. Ends as soon as it does.
+    func waitUntilShown(timeout: TimeInterval) -> Bool {
+        app.textFields[Identifiers.usernameField].waitForExistence(timeout: timeout)
+    }
+
     func enterFields(username: String, password: String) -> Self {
         let usernameField = app.textFields[Identifiers.usernameField]
         // Wait for the field to render before tapping; tapping immediately races the
