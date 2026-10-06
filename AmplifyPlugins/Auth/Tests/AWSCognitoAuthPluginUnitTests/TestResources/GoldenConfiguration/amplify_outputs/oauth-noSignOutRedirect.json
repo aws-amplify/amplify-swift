@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "us-west-2",
+    "user_pool_id": "us-west-2_oauth0002",
+    "user_pool_client_id": "oauthclientid9876543210",
+    "oauth": {
+      "identity_providers": [],
+      "domain": "no-sign-out.auth.us-west-2.amazoncognito.com",
+      "scopes": ["openid"],
+      "redirect_sign_in_uri": ["myapp://signin/"],
+      "redirect_sign_out_uri": [],
+      "response_type": "code"
+    }
+  }
+}

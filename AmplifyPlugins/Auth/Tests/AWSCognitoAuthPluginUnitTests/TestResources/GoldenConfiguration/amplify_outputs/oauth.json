@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "auth": {
+    "aws_region": "us-west-2",
+    "user_pool_id": "us-west-2_oauth0001",
+    "user_pool_client_id": "oauthclientid0123456789",
+    "oauth": {
+      "identity_providers": ["GOOGLE", "SIGN_IN_WITH_APPLE"],
+      "domain": "example-app.auth.us-west-2.amazoncognito.com",
+      "scopes": ["openid", "email", "profile", "aws.cognito.signin.user.admin"],
+      "redirect_sign_in_uri": ["myapp://signin/", "https://example.com/signin"],
+      "redirect_sign_out_uri": ["myapp://signout/", "https://example.com/signout"],
+      "response_type": "code"
+    }
+  }
+}

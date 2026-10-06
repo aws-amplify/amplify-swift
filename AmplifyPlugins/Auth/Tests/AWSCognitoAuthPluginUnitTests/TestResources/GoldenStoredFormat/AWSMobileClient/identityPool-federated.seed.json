@@ -1,0 +1,29 @@
+{
+  "authConfiguration": "identityPools",
+  "existingSession": "absent",
+  "services": {
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff": {
+      "accessKey": {
+        "string": "LEGACYACCESSKEYID"
+      },
+      "expiration": {
+        "string": "1700007200"
+      },
+      "identityId": {
+        "string": "us-east-1:00000000-0000-4000-8000-00000000abcd"
+      },
+      "secretKey": {
+        "string": "legacy/secret+key"
+      },
+      "sessionKey": {
+        "string": "legacy-session-token"
+      }
+    },
+    "Optional(\"<bundle>\").AWSMobileClient": {
+      "loginsMap": {
+        "data": "{\"graph.facebook.com\":\"legacy-facebook-token\"}"
+      }
+    }
+  },
+  "summary": "Identity pool records plus a loginsMap: a federated session (graph.facebook.com)"
+}

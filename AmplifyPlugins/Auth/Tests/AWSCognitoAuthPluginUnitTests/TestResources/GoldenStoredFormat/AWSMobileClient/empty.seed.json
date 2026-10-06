@@ -1,0 +1,6 @@
+{
+  "authConfiguration": "userPoolsAndIdentityPools-minimal",
+  "existingSession": "absent",
+  "services": {},
+  "summary": "No legacy records at all"
+}
