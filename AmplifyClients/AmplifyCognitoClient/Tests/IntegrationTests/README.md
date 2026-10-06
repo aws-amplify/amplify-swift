@@ -16,17 +16,18 @@ only a Gen1 file for a backend, the harness translates it to Gen2 before the cli
 Run on the same file set as the plugin's CI, with CI's skips, from a copy of your own. No backend of your own is needed.
 The files go into a **temporary directory**, never into `~/.aws-amplify/amplify-ios/testconfiguration`, which holds
 your own plugin configuration. The download is the command `.github/composite_actions/download_test_configuration`
-runs for `resource_subfolder: auth`, `aws s3 cp <bucket>/auth/ <destination> --recursive`. `<ci-config-bucket>` is
-the bucket that CI's `AWS_S3_BUCKET_INTEG_V2` names. `<ci-config-profile>` is an AWS CLI profile that can read it
-(CI assumes `AWS_ROLE_TO_ASSUME`). Neither is in the repository.
+runs for `resource_subfolder: auth`, `aws s3 cp <AWS_S3_BUCKET_INTEG_V2>/auth/ <destination> --recursive`.
+`<ci-config>` is the value of CI's `AWS_S3_BUCKET_INTEG_V2`: a bucket with a path, `s3://<bucket>/<path>`, the folder
+that holds `auth/`. `<ci-config-profile>` is an AWS CLI profile that can read it (CI assumes `AWS_ROLE_TO_ASSUME`).
+Neither is in the repository.
 
 ```bash
 cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
 DIR=$(mktemp -d /tmp/ccit-ci-set.XXXXXX)
-aws s3 cp s3://<ci-config-bucket>/auth/ "$DIR" --recursive --profile <ci-config-profile>
+aws s3 cp s3://<bucket>/<path>/auth/ "$DIR" --recursive --profile <ci-config-profile>
 # Or the same command behind checks: it refuses a directory inside ~/.aws-amplify or one that is not empty,
 # writes the files mode 600, masks identifiers in errors, and has --dry-run (no AWS call).
-COGNITO_CLIENT_INTEG_CI_BUCKET=<ci-config-bucket> COGNITO_CLIENT_INTEG_CI_PROFILE=<ci-config-profile> \
+COGNITO_CLIENT_INTEG_CI_BUCKET=s3://<bucket>/<path> COGNITO_CLIENT_INTEG_CI_PROFILE=<ci-config-profile> \
   infra/fetch-ci-config.sh "$DIR"
 ```
 
@@ -740,63 +741,83 @@ job runs one test, and fails when that test fails.
 
 The I17 skips and RT-1 and RT-2 need resources the plugin's CI backends lack. Adding them to those backends would
 change them, so `infra/ci/provision-ci.sh` adds **new** ones beside them in the CI account instead, and changes
-nothing that exists: two pools from this directory's templates, with what they need, all named `ccit-ci-…` (the
-identity pool `ccit_ci_default`, the parameters `/ccit-ci/…`) and tagged `purpose=amplify-cognito-client-integ`.
+nothing that exists. Everything is named `ccit-ci-…` (the identity pool `ccit_ci_default`, the parameters
+`/ccit-ci/…`) and tagged `purpose=amplify-cognito-client-integ`. It comes in two phases.
 
-| New resource | From | Gives the client's CI |
-|---|---|---|
-| `ccit-ci-email-alias` pool and its `client` app client | `pools/email-alias.json` | the device-alias role: a pre-sign-up trigger that confirms test sign-ups, 5-minute tokens, and a code API (DV-10…19, the parity check, its pool in the every-pool check) |
-| `ccit-ci-default` pool, its `plugin` and `rotation` app clients, identity pool `ccit_ci_default` with two permissionless roles | `pools/default.json` | the default role: custom-auth triggers, a code API, email verified at sign-up (CA-1…3 and their parity check, AT-2's second half, RP-3), and the rotation client (RT-1, RT-2) |
-| `ccit-ci-new-password-1` … `-12` on `ccit-ci-default`, kept fresh every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule | | CH-1, P-3, and the fixture check with the credentials file |
-| The triggers and the custom email and SMS sender (`lambda/`), the KMS key `alias/ccit-ci-senders`, the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles and log groups (7 days), the SNS caller role for SMS MFA, and the custom-auth answer and the temporary password in SSM | | Cognito sends no email and no SMS for these pools: every code goes to the code sink |
+**Phase 1, the device-alias role** (`--scope email-alias`, the default). It replaces the plugin's device-alias file
+in the client's CI job only.
+
+| New resource | Why |
+|---|---|
+| Pool `ccit-ci-email-alias` (`pools/email-alias.json`) and its `client` app client, on the **Lite** plan | DV-10…19 and the short-token parity check need email as the username, devices always remembered, 5-minute tokens and a confirming pre-sign-up trigger, all of which Lite has |
+| Lambda `ccit-ci-pre-sign-up` (`lambda/triggers/triggers.mjs` with `REFUSE_CONFIRMATION_USERS=1`) | Confirms and verifies every `ccit-` sign-up; refuses others, and refuses `ccit-confirm-` users, which no code API could confirm, so no sign-up code is ever sent |
+| Lambda `ccit-ci-discard-sender` (`infra/ci/lambda/discard-sender`), the pool's custom email and SMS sender, and the KMS key `alias/ccit-ci-senders` that Cognito encrypts codes with | Cognito sends nothing for the pool, so its runs can never reach the account's daily email limit. No test there reads a code, so there is no code sink |
+| Role `ccit-ci-trigger-exec` (its own log streams only) and the two log groups (7 days) | |
+
+The outputs file names no code API. Instead it carries `"custom": {"amplify_cognito_client_integ":
+{"confirming_trigger": true}}`, which the harness reads (`IntegrationTestEnvironment.promisesConfirmingTrigger`):
+no user is signed up on a role that cannot confirm one, so without the mark the tests would skip. The mark is not the
+sandbox's, so the sandbox checks stay skipped.
+
+**Phase 2, the extended role** (`--scope all`, which keeps phase 1). The plugin's default role is not replaced:
+the client gains a role of its own, `SandboxPool.extended`, backed by `ccit-ci-default` (`pools/default.json`, on
+Essentials). Only the tests that need the default backend's extras use it, through `IntegrationTestEnvironment.extrasRole`:
+CA-1…3 and the stored-answer check, CH-1, P-3, the fixture check, AT-2's second half and RP-3. RT-1 and RT-2 sign
+their user up through it too (`InteropEnvironment.rotationBaseResource`), and still require the rotation client to
+be on that user's pool. Every other test on the default role keeps the plugin's pool. When the extended file is
+absent, `extrasRole` is the default role, so on the plugin's CI those tests skip with their I17 messages as before,
+and on the sandbox they run on its default pool. `.extended` is not in `SandboxPool.allCases`, the plugin's roles,
+but in `SandboxPool.optionalRoles`, and the build phases copy its files as optional.
+
+| New resource | Gives |
+|---|---|
+| Pool `ccit-ci-default`, its `plugin` and `rotation` app clients, and identity pool `ccit_ci_default` with two permissionless roles | The extended role, and the rotation client (RT-1, RT-2) |
+| The define, create and verify custom-auth triggers, and the answer in SSM `/ccit-ci/custom-challenge-answer` (the Lambda holds only its SHA-256) | CA-1…3 and the stored-answer check |
+| `ccit-ci-new-password-1` … `-12`, kept in `FORCE_CHANGE_PASSWORD` every 10 minutes by `ccit-ci-new-password-reset` (`infra/ci/lambda/new-password-reset`) and an EventBridge rule; the temporary password in SSM | CH-1, P-3, and the fixture check with the credentials file |
+| The custom sender (`lambda/custom-sender`), the code sink (AppSync API and table `ccit-ci-codes`, `codesink/`), their roles, and the SNS caller role for SMS MFA | AT-2's second half, RP-3; Cognito sends nothing |
 
 `provision-ci.sh` finds each resource by name, creates only what is missing, and refuses any resource with one of
 its names that lacks the tag. Every change it makes goes through one guard that refuses a name that is not
 `ccit-ci-`, and outside `--apply` only get, list, describe and head calls can be made at all. A dry run is the default
 and prints each call, masked; `--apply` runs that dry run first and stops before its first change if it refuses.
-`snapshot` and `verify-unchanged` prove the rest of the account is untouched (every user pool, its MFA settings and
-app clients, the Lambdas they name, every identity pool, role, function, KMS alias, AppSync API, table and rule, and
-the `auth/` objects with their ETags). `teardown` removes only these resources, and is a dry run by default.
+`--upload` puts new keys only. A key that exists is left alone when it holds the same bytes (so phase 2 leaves phase 1's
+file as it is), and any other existing key refuses the whole upload. `snapshot` and `verify-unchanged` prove the rest
+of the account is untouched (every user pool, its MFA settings and app clients, the Lambdas they name, every identity
+pool, role, function, KMS alias, AppSync API, table and rule, and the `auth/` objects with their ETags). `teardown`
+removes only these resources, and is a dry run by default.
 
 ```bash
 cd AmplifyClients/AmplifyCognitoClient/Tests/IntegrationTests
 export COGNITO_CLIENT_INTEG_CI_CONFIG_URL=s3://<bucket>/<path>   # CI's AWS_S3_BUCKET_INTEG_V2, the folder above auth/
 infra/ci/provision-ci.sh snapshot                       # read-only; /tmp/ci-disc/snapshot-<time>.json
-infra/ci/provision-ci.sh                                # dry run: every call it would make, masked
-infra/ci/provision-ci.sh --apply                        # creates what is missing; writes the four files, mode 600
-infra/ci/provision-ci.sh --apply --upload               # and uploads them to auth/cognito-client-ci/, new keys only
+infra/ci/provision-ci.sh                                # phase 1 dry run: every call it would make, masked
+infra/ci/provision-ci.sh --apply --upload               # phase 1; then CI's client job overlays email-alias
 infra/ci/provision-ci.sh snapshot
 infra/ci/provision-ci.sh verify-unchanged /tmp/ci-disc/snapshot-<before>.json /tmp/ci-disc/snapshot-<after>.json
+infra/ci/provision-ci.sh --scope all [--apply --upload] # phase 2, later
 infra/ci/provision-ci.sh teardown [--apply]             # later, if ever
 ```
 
-`--scope email-alias` provisions only the device-alias pool and what it needs. `bash infra/ci/test_provision_ci.sh`,
-`bash infra/ci/test_ci_overlay.sh` and `node --test infra/ci/lambda/new-password-reset/test_new_password_reset.mjs`
-test these offline, the first over a fake `aws`.
+`bash infra/ci/test_provision_ci.sh` (over a fake `aws`), `bash infra/ci/test_ci_overlay.sh`, and `node --test` on
+`infra/ci/lambda/test_pre_sign_up_refusal.mjs` and each `infra/ci/lambda/*/test_*.mjs` test these offline.
 
 **How CI uses them.** CI downloads `auth/` recursively for every auth job, so the files land in
 `testconfiguration/cognito-client-ci/` on the plugin's runners too. They are inert there: none has a plugin file name,
 the plugin's tests read their files by exact path (`testconfiguration/<name>.json`), and `AuthWebAuthnApp` copies
-only the top level. Only the client's jobs read them: `run_integration_tests.yml`'s `cognito_client_ci_overlay`
-input (`email-alias default` for the client suite, `default` for the interop suite) runs `infra/ci/ci-overlay.sh`,
-which copies the plugin's top-level files into a directory of its own, puts each overlaid role's file in under the
-name the client's build phase copies, and sets `COGNITO_CLIENT_INTEG_DIR` to it. Without the subfolder, or when a file
-there does not check out (no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation
-client on another pool), nothing is set and the tests skip as before, each with its I17 message. The files carry no
-sandbox mark, so the three sandbox checks stay skipped, and `requireSandbox`'s advice to write the sandbox set again
-is not given on CI. With the files, on the device-alias role a sign-up is confirmed by the trigger and, for
-`ccit-confirm-` users, with its code, so `SandboxSignUp.ciSkip(for:)` finds the resource present and no Swift change
-is needed for it.
+only the top level. Only the client's jobs read them, through `run_integration_tests.yml`'s `cognito_client_ci_overlay`
+input, which runs `infra/ci/ci-overlay.sh`. That script copies the plugin's top-level files into a directory of its
+own and sets `COGNITO_CLIENT_INTEG_DIR` to it. The `email-alias` role puts in `AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs.json`.
+The `extended` role adds `AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs.json`, its `-credentials.json`
+and `AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json`, and replaces nothing. Today the client suite
+passes `email-alias`, and the interop suite nothing. Phase 2 adds `extended` to both. Without the subfolder, or when a
+file there does not check out (no user pool, the sandbox's mark, a credentials file that is not all strings, a
+rotation client on another pool), nothing is set and the tests skip as before. Locally, run
+`infra/ci/ci-overlay.sh <downloaded-dir> <new-dir> "email-alias extended"` after `infra/fetch-ci-config.sh`, and build
+with `COGNITO_CLIENT_INTEG_DIR=<new-dir>`.
 
-The default role then runs every client test on `.standard` against `ccit-ci-default` instead of the plugin's
-default backend: the custom-auth answer, the new-password users, the code API and the rotation client must share one
-pool with the rest of the role, and none of them can be added to the plugin's pool. The template is the one the full
-suite passes on in the sandbox. Locally, run `infra/ci/ci-overlay.sh <downloaded-dir> <new-dir> "email-alias default"`
-after `infra/fetch-ci-config.sh` and build with `COGNITO_CLIENT_INTEG_DIR=<new-dir>`.
-
-The code sink's API key lives 364 days. Before it expires, `--apply` makes a new one (it reuses a key only while it
-has 30 days left), and the four files must be replaced: `--upload` never overwrites, so replacing this script's own
-objects is a separate, later step. Until then the code-reading tests on these roles fail naming the code API.
+The code sink's API key (phase 2) lives 364 days. Before it expires, `--apply` makes a new one (it reuses a key only
+while it has 30 days left), and the default file must be replaced: `--upload` never overwrites, so replacing this
+script's own objects is a separate, later step.
 
 ## Optional: the sandbox (only for the tests CI can't run yet)
 
