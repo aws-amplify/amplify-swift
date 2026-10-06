@@ -26,8 +26,11 @@ import XCTest
 /// skip on CI and on backends other than the sandbox, which have no such client, and fail on the sandbox, asking
 /// for it to be provisioned.
 ///
-/// Both sides use the rotation outputs. The fresh user is signed up through the default outputs, on the same user
-/// pool. The plugin's keychain service is wiped before and after each test, as the interop suite's other
+/// Both sides use the rotation outputs. The fresh user is signed up through the outputs of the role that holds the
+/// rotation client (`InteropEnvironment.rotationBaseResource`): the client's own extended role when its file is
+/// there (on CI, `infra/ci`'s `ccit-ci-default`), else the default backend (the sandbox's). The rotation outputs must
+/// name that role's user pool, so the user is the rotation client's. The plugin's keychain service is wiped before
+/// and after each test, as the interop suite's other
 /// keychain tests do. Tokens are compared with booleans and never printed.
 final class PluginRotationTests: XCTestCase {
 
@@ -46,12 +49,18 @@ final class PluginRotationTests: XCTestCase {
         }
         outputsData = try Data(contentsOf: url)
         configuration = try AuthClientConfiguration(from: Self.outputsResource, bundle: InteropEnvironment.bundle)
-        let standard = try AuthClientConfiguration(from: InteropEnvironment.outputsResource, bundle: InteropEnvironment.outputsBundle())
-        guard configuration.userPool?.poolId == standard.userPool?.poolId else {
-            throw InteropError("The rotation outputs name another user pool than the default backend's: the fresh user is signed up there.")
+        let baseResource = InteropEnvironment.rotationBaseResource
+        let base = try AuthClientConfiguration(from: baseResource, bundle: InteropEnvironment.outputsBundle(baseResource))
+        guard InteropEnvironment.signsUpOnTheRotationPool(
+            rotationPoolId: configuration.userPool?.poolId,
+            basePoolId: base.userPool?.poolId
+        ) else {
+            throw InteropError("""
+            The rotation outputs name another user pool than \(baseResource).json's: the fresh user is signed up there.
+            """)
         }
         RealKeychain.wipe(SessionRecordStore.unsharedService)
-        alice = try await InteropEnvironment.signUpFreshUser()
+        alice = try await InteropEnvironment.signUpFreshUser(through: baseResource)
         try await configurePlugin()
     }
 
@@ -229,5 +238,68 @@ final class PluginRotationTests: XCTestCase {
         }
         let described = String(describing: error.kind)
         return described.firstIndex(of: "(").map { String(described[..<$0]) } ?? described
+    }
+}
+
+extension InteropEnvironment {
+
+    /// The outputs the rotation tests sign their fresh user up through, the role whose user pool the rotation
+    /// client must be on: the extended role's when its file is in the bundle, else the default backend's.
+    static var rotationBaseResource: String {
+        rotationBaseResource(extendedPresent: bundle.url(forResource: extendedOutputsResource, withExtension: "json") != nil)
+    }
+
+    /// `rotationBaseResource` over whether the extended role's file is there, for the offline check.
+    static func rotationBaseResource(extendedPresent: Bool) -> String {
+        extendedPresent ? extendedOutputsResource : outputsResource
+    }
+
+    /// Whether the rotation client is on the user pool the fresh user is signed up on: both named, and the same.
+    /// A file that names no user pool never passes, so the tests can only prove rotation on the pool their user is in.
+    static func signsUpOnTheRotationPool(rotationPoolId: String?, basePoolId: String?) -> Bool {
+        guard let rotationPoolId, let basePoolId else {
+            return false
+        }
+        return rotationPoolId == basePoolId
+    }
+}
+
+/// The rotation tests' choice of role and their same-pool rule, offline: no backend, no keychain.
+final class RotationBaseRoleTests: XCTestCase {
+
+    /// The rotation tests sign their user up on the role that holds the rotation client.
+    ///
+    /// - Given: `InteropEnvironment.rotationBaseResource(extendedPresent:)`
+    /// - When:
+    ///    - It is asked with and without the extended role's file
+    /// - Then:
+    ///    - With it, the extended role's outputs (the client's own CI pool, which holds the rotation client); without
+    ///      it, the default backend's (the sandbox's default pool holds it there)
+    ///
+    func testTheUserIsSignedUpOnTheExtendedRoleWhenItsFileIsThere() {
+        XCTAssertEqual(
+            InteropEnvironment.rotationBaseResource(extendedPresent: true),
+            "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs"
+        )
+        XCTAssertEqual(
+            InteropEnvironment.rotationBaseResource(extendedPresent: false),
+            "AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
+        )
+    }
+
+    /// The rotation client must be on the fresh user's pool, and a missing pool never passes.
+    ///
+    /// - Given: `InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId:basePoolId:)`
+    /// - When:
+    ///    - It compares the same pool, two different pools, and a missing pool on either side or both
+    /// - Then:
+    ///    - Only the same, named pool passes
+    ///
+    func testTheRotationClientMustBeOnTheUsersPool() {
+        XCTAssertTrue(InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId: "pool-a", basePoolId: "pool-a"))
+        XCTAssertFalse(InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId: "pool-a", basePoolId: "pool-b"))
+        XCTAssertFalse(InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId: nil, basePoolId: "pool-a"))
+        XCTAssertFalse(InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId: "pool-a", basePoolId: nil))
+        XCTAssertFalse(InteropEnvironment.signsUpOnTheRotationPool(rotationPoolId: nil, basePoolId: nil))
     }
 }

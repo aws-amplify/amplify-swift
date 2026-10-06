@@ -347,8 +347,8 @@ enum SandboxSignUp {
 
     /// Whether `pool` is known, before any sign-up, not to be able to confirm a fresh user: its file is not
     /// the sandbox's (no sandbox mark, `IntegrationTestEnvironment.isSandbox`), it names no code API to
-    /// confirm one with its sign-up code, and the plugin's setup for its backend promises no pre-sign-up
-    /// trigger that confirms one (`SandboxPool.promisesConfirmingTrigger`). The plugin's device-alias backend
+    /// confirm one with its sign-up code, and neither the plugin's setup for its backend nor its file promises a
+    /// pre-sign-up trigger that confirms one (`IntegrationTestEnvironment.promisesConfirmingTrigger(_:)`). The plugin's device-alias backend
     /// on CI is such a role: a user signed up there is left unconfirmed, and so can be neither signed in
     /// nor deleted (the cleanup signs the user in to delete it), and each sign-up sends Cognito's own
     /// confirmation email, which counts against the account's daily email limit.
@@ -356,7 +356,7 @@ enum SandboxSignUp {
         IntegrationTestEnvironment.hasOutputs(pool)
             && !IntegrationTestEnvironment.isSandbox(pool)
             && (try? IntegrationTestEnvironment.codeSinkAPI(pool)) == nil
-            && !pool.promisesConfirmingTrigger
+            && !IntegrationTestEnvironment.promisesConfirmingTrigger(pool)
     }
 
     /// Fails, naming the file, before any sign-up on a role that cannot confirm a fresh user: one known not

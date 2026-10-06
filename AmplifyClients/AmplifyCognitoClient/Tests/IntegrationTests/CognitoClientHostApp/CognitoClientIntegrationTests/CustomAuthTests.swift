@@ -12,7 +12,9 @@ import XCTest
 /// `AuthCustomSignInTests`, which run on a backend with the custom-auth triggers and their answer in the
 /// credentials file.
 ///
-/// The default backend (`SandboxPool.standard`) carries the custom-auth triggers (the sandbox's P-5b):
+/// The backend with the default backend's extras (`IntegrationTestEnvironment.extrasRole`: the client's own
+/// `extended` role when its file is there, else the default backend) carries the custom-auth triggers (the
+/// sandbox's P-5b):
 /// define-auth-challenge answers `SRP_A → PASSWORD_VERIFIER → CUSTOM_CHALLENGE`, or `CUSTOM_CHALLENGE`
 /// alone, create-auth-challenge publishes `challenge: fixed-answer`, and the verify trigger accepts the
 /// answer the plugin's test takes from the default credentials file, `custom_challenge_answer`. Each test
@@ -20,7 +22,9 @@ import XCTest
 /// challenge answer.
 final class CustomAuthTests: ClientIntegrationTestCase {
 
-    private static let pool = SandboxPool.standard
+    private static var pool: SandboxPool {
+        IntegrationTestEnvironment.extrasRole
+    }
 
     /// What the create-auth-challenge trigger publishes with every custom challenge (not a secret).
     private static let publicChallenge = ["challenge": "fixed-answer"]
@@ -29,7 +33,7 @@ final class CustomAuthTests: ClientIntegrationTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        answer = try IntegrationTestEnvironment.credentials().requireCustomChallengeAnswer().value
+        answer = try IntegrationTestEnvironment.credentials(for: Self.pool).requireCustomChallengeAnswer().value
     }
 
     /// `customWithSRP`: SRP, then the custom challenge (CA-1; the plugin's

@@ -45,6 +45,27 @@ enum IntegrationTestEnvironment {
     /// second identity pool.
     static let credentialsResource = "AWSCognitoAuthPluginIntegrationTests-credentials"
 
+    /// The credentials file of `role`: the extended role's own (`SandboxPool.extended`), or else the default
+    /// backend's (`credentialsResource`).
+    static func credentialsResource(for role: SandboxPool) -> String {
+        role == .extended ? "AmplifyCognitoClientExtendedIntegrationTests-credentials" : credentialsResource
+    }
+
+    /// The role the tests that need the default backend's extras run on: custom auth and its answer, the
+    /// new-password users, a code API and a verified email at sign-up (CA-1…3 and the stored-answer check, CH-1,
+    /// P-3, the fixture check, AT-2's second half, RP-3). That is the extended role when its outputs file is in the
+    /// bundle (on CI, `infra/ci`'s `ccit-ci-default`, mapped in by `infra/ci/ci-overlay.sh`), and otherwise the
+    /// default role itself: the sandbox's, which has them all, or the plugin's on CI, which has none, so the tests
+    /// skip there with their I17 reasons as before. Every other test on the default role keeps the default role.
+    static var extrasRole: SandboxPool {
+        extrasRole(hasExtendedOutputs: hasOutputs(.extended))
+    }
+
+    /// `extrasRole` over whether the extended role's outputs are there, for the offline check.
+    static func extrasRole(hasExtendedOutputs: Bool) -> SandboxPool {
+        hasExtendedOutputs ? .extended : .standard
+    }
+
     static var bundle: Bundle {
         Bundle(for: BundleToken.self)
     }
@@ -202,12 +223,37 @@ enum IntegrationTestEnvironment {
     /// no plugin test uses, such as a pre-sign-up trigger that refuses users who are not test users) runs
     /// only where this is true, and elsewhere skips, saying so (`requireSandbox(_:_:)`).
     static func isSandbox(_ pool: SandboxPool) -> Bool {
-        guard hasOutputs(pool), let document = try? outputsDocument(pool),
-              let custom = document["custom"] as? [String: Any],
-              let marker = custom["amplify_cognito_client_integ"] as? [String: Any] else {
+        guard hasOutputs(pool), let document = try? outputsDocument(pool) else {
             return false
         }
-        return marker["sandbox"] as? Bool == true
+        return isMarked("sandbox", in: document)
+    }
+
+    /// Whether an outputs document's `custom.amplify_cognito_client_integ` block sets `mark` to `true`: `sandbox`
+    /// (`isSandbox(_:)`), or `confirming_trigger` (`promisesConfirmingTrigger(_:)`). Anything else, a missing block or
+    /// a value that is not `true`, reads as unmarked. The plugin and the client ignore the block.
+    static func isMarked(_ mark: String, in document: [String: Any]) -> Bool {
+        guard let custom = document["custom"] as? [String: Any],
+              let marks = custom["amplify_cognito_client_integ"] as? [String: Any] else {
+            return false
+        }
+        return marks[mark] as? Bool == true
+    }
+
+    /// Whether a role's backend confirms every test sign-up it accepts with a pre-sign-up trigger: the plugin's
+    /// setup for it promises one (`SandboxPool.promisesConfirmingTrigger`), or its outputs say so with
+    /// `custom.amplify_cognito_client_integ.confirming_trigger: true`. The client's own CI device-alias pool
+    /// (`infra/ci`, `ccit-ci-email-alias`) writes that mark: its trigger confirms every sign-up it accepts and refuses
+    /// `ccit-confirm-` ones, and it has no code API. The mark is not the sandbox's, so the file stays out of the
+    /// sandbox checks and the self sign-up gate.
+    static func promisesConfirmingTrigger(_ pool: SandboxPool) -> Bool {
+        guard !pool.promisesConfirmingTrigger else {
+            return true
+        }
+        guard hasOutputs(pool), let document = try? outputsDocument(pool) else {
+            return false
+        }
+        return isMarked("confirming_trigger", in: document)
     }
 
     /// Skips a sandbox check (`isSandbox(_:)`) on a backend that is not the sandbox's, naming the file and
@@ -297,15 +343,16 @@ enum IntegrationTestEnvironment {
     /// the plugin's `AWSAuthBaseTest` reads it (the plugin's CI provides no credentials file); a test that
     /// needs a key fails naming the file and the key (`PluginCredentials.requireCustomChallengeAnswer()`,
     /// `requireNewPasswordUsers()`).
-    static func credentials() throws -> PluginCredentials {
-        guard bundle.url(forResource: credentialsResource, withExtension: "json") != nil else {
-            return PluginCredentials(fields: [:], isPresent: false)
+    static func credentials(for role: SandboxPool = .standard) throws -> PluginCredentials {
+        let resource = credentialsResource(for: role)
+        guard bundle.url(forResource: resource, withExtension: "json") != nil else {
+            return PluginCredentials(fields: [:], isPresent: false, resource: resource)
         }
-        let object = try JSONSerialization.jsonObject(with: data(forResource: credentialsResource))
+        let object = try JSONSerialization.jsonObject(with: data(forResource: resource))
         guard let fields = object as? [String: String] else {
-            throw HarnessError.malformedFixture("\(credentialsResource).json is not an object of strings.")
+            throw HarnessError.malformedFixture("\(resource).json is not an object of strings.")
         }
-        return PluginCredentials(fields: fields, isPresent: true)
+        return PluginCredentials(fields: fields, isPresent: true, resource: resource)
     }
 
     private static func outputsDocument(_ pool: SandboxPool) throws -> [String: Any] {
@@ -459,6 +506,25 @@ enum SandboxPool: String, CaseIterable, Sendable {
     case emailAlias = "email-alias"
     /// U-WA: the plugin's WebAuthn backend, `WEB_AUTHN` with the plugin's relying party (P-10).
     case webAuthn = "webauthn"
+    /// The client's own role beside the plugin's default one (`IntegrationTestEnvironment.extrasRole`): on CI,
+    /// `infra/ci`'s `ccit-ci-default`, built from the sandbox's default template, with custom auth, new-password
+    /// users, a code API and a rotation client. Optional: it is not one of the plugin's roles, so it is not in
+    /// `allCases` (every loop over the plugin's file set leaves it out) but in `optionalRoles`, and its absence is
+    /// never a failure. Only the tests that need those extras use it, when its file is there.
+    case extended
+
+    /// The plugin's roles, each one of the plugin's files: every case but the optional ones.
+    static let allCases: [SandboxPool] = [
+        .standard, .hostedUI, .passwordless, .mfaRequiredTOTPSMS, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn
+    ]
+
+    /// The roles whose files may be absent with no test failing for it (`extended`).
+    static let optionalRoles: [SandboxPool] = [.extended]
+
+    /// Every role, the plugin's and the optional ones.
+    static var everyRole: [SandboxPool] {
+        allCases + optionalRoles
+    }
 
     /// Whether the harness reads this role's codes from its plugin file's `data` block: the plugin backends
     /// that capture every email and SMS code (passwordless and the two email-MFA ones). Tests that read a
@@ -474,7 +540,7 @@ enum SandboxPool: String, CaseIterable, Sendable {
     var gen1Resource: String? {
         switch self {
         case .standard, .hostedUI, .mfaRequiredTOTPSMS: PluginTestConfiguration.gen1Resource(for: outputsResource)
-        case .passwordless, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn: nil
+        case .passwordless, .mfaRequiredEmail, .mfaRequiredAll, .emailAlias, .webAuthn, .extended: nil
         }
     }
 
@@ -506,6 +572,7 @@ enum SandboxPool: String, CaseIterable, Sendable {
         case .mfaRequiredAll: "AWSCognitoAuthEmailMFAWithAllMFATypesRequired-amplify_outputs"
         case .emailAlias: "AWSCognitoAuthPluginDeviceAliasTests-amplify_outputs"
         case .webAuthn: "AWSCognitoPluginWebAuthnIntegrationTests-amplify_outputs"
+        case .extended: "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs"
         }
     }
 }
@@ -525,9 +592,13 @@ struct PluginCredentials: Sendable {
     let secondIdentityPoolId: String?
     /// Whether the file was in the test bundle at all. The plugin's CI provides none.
     let isPresent: Bool
+    /// The file's resource name, without `.json`: the default backend's, or the extended role's
+    /// (`IntegrationTestEnvironment.credentialsResource(for:)`).
+    let resource: String
 
-    init(fields: [String: String], isPresent: Bool) {
+    init(fields: [String: String], isPresent: Bool, resource: String = IntegrationTestEnvironment.credentialsResource) {
         self.isPresent = isPresent
+        self.resource = resource
         func value(_ key: String) -> String? {
             fields[key].flatMap { $0.isEmpty ? nil : $0 }
         }
@@ -568,7 +639,7 @@ struct PluginCredentials: Sendable {
     /// Where the plugin's suite skips its equivalent test without the key, the client's fails, naming the file
     /// and the key.
     private func missing(_ keys: String, _ backend: String) -> String {
-        let file = "\(IntegrationTestEnvironment.credentialsResource).json"
+        let file = "\(resource).json"
         guard isPresent else {
             return """
             \(file) is not in the test bundle, so there is no \(keys): the default backend needs \(backend), \

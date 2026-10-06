@@ -73,7 +73,8 @@ final class PasswordResetTests: ClientIntegrationTestCase {
     /// A whole reset: the code Cognito sends resets the password, and the user signs in with the new one
     /// (extra, not counted: no plugin test runs a reset end to end).
     ///
-    /// It needs a code API on the default backend, checked first so that a backend without one fails
+    /// It runs on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`). It needs a
+    /// code API on the default backend, checked first so that a backend without one fails
     /// naming the file, and account recovery by an email verified at sign-up. The plugin's CI default
     /// backend has neither (its trigger only confirms): on CI it skips (`CISkipReason.defaultCodeAPIAndVerifiedEmail`).
     ///
@@ -85,9 +86,10 @@ final class PasswordResetTests: ClientIntegrationTestCase {
     ///    - the reset reports the code sent to the email; the sign-in is `.done` as that user
     ///
     func testSuccessfulResetPasswordEndToEnd() async throws {
-        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip: .defaultCodeAPIAndVerifiedEmail)
-        let user = try await makeFreshUser(on: .standard)
-        let client = try makeClient("rp-3", pool: .standard)
+        let role = IntegrationTestEnvironment.extrasRole
+        _ = try IntegrationTestEnvironment.codeSinkAPI(role, ciSkip: .defaultCodeAPIAndVerifiedEmail)
+        let user = try await makeFreshUser(on: role)
+        let client = try makeClient("rp-3", pool: role)
         let sink = try CodeSink()
         let newPassword = SandboxSignUp.freshPassword()
 

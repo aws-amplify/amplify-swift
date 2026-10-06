@@ -105,8 +105,10 @@ final class SandboxProvisioningTests: ClientMFATestCase {
     ///    - Otherwise, only after the attempt: the new password signs in, with no challenge, as that user
     ///
     func testForceChangePasswordUserIsAskedForANewPassword() async throws {
-        let sandbox = try Sandbox()
-        let (candidates, temporary) = try IntegrationTestEnvironment.credentials().requireNewPasswordUsers()
+        let role = IntegrationTestEnvironment.extrasRole
+        let sandbox = try Sandbox(role)
+        let credentials = try IntegrationTestEnvironment.credentials(for: role)
+        let (candidates, temporary) = try credentials.requireNewPasswordUsers()
 
         if let attempted = PerRunUsers.newPasswordAttempt {
             do {
@@ -133,7 +135,7 @@ final class SandboxProvisioningTests: ClientMFATestCase {
             do {
                 output = try await sandbox.initiatePasswordAuth(TestUser(username: username, password: temporary.value))
             } catch is NotAuthorizedException {
-                guard try await !PerRunUsers.stillAwaitsANewPassword(username, on: SandboxPools.pool(.standard)) else {
+                guard try await !PerRunUsers.stillAwaitsANewPassword(username, on: SandboxPools.pool(role)) else {
                     return XCTFail(PerRunUsers.wrongTemporaryPassword)
                 }
                 // Used up, by an earlier run or by one running now.
@@ -147,7 +149,7 @@ final class SandboxProvisioningTests: ClientMFATestCase {
             return
         }
         XCTFail("""
-        None of the \(candidates.count) new-password users in \(IntegrationTestEnvironment.credentialsResource).json \
+        None of the \(candidates.count) new-password users in \(credentials.resource).json \
         is still in FORCE_CHANGE_PASSWORD: the backend must reset them (or list new ones) before each run.
         """)
     }
@@ -179,8 +181,9 @@ private struct Sandbox {
     let appClientId: String
     let userPool: CognitoIdentityProviderClient
 
-    init() throws {
-        let pool = try XCTUnwrap(IntegrationTestEnvironment.configuration().userPool)
+    /// The role's pool: the default backend's, or for P-3 the role with its extras.
+    init(_ role: SandboxPool = .standard) throws {
+        let pool = try XCTUnwrap(IntegrationTestEnvironment.configuration(role).userPool)
         self.appClientId = pool.appClientId
         self.userPool = try CognitoIdentityProviderClient(
             config: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfig(region: pool.region)

@@ -71,7 +71,8 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     /// The code sent for an updated email verifies it (AT-2's second half, not counted: the plugin's test
     /// stops at the update). On the default backend, where the update is applied before it is verified.
     ///
-    /// It reads the code Cognito sends to the new address, so it needs a code API on the default backend.
+    /// It reads the code Cognito sends to the new address, so it needs a code API on the default backend: it runs
+    /// on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`).
     /// The plugin's CI file for it names none (its README deploys no custom senders): on CI it skips
     /// (`CISkipReason.defaultCodeAPI`), and elsewhere without one it fails naming the file.
     ///
@@ -83,8 +84,9 @@ final class UserAttributesTests: ClientIntegrationTestCase {
     ///    - fetching returns the new email before the confirmation; after it, `email_verified` is `true`
     ///
     func testUpdatedEmailIsVerifiedWithTheCodeSentToIt() async throws {
-        _ = try IntegrationTestEnvironment.codeSinkAPI(.standard, ciSkip: .defaultCodeAPI)
-        let (client, user) = try await makeSignedInFreshUser("at-2-verify")
+        let role = IntegrationTestEnvironment.extrasRole
+        _ = try IntegrationTestEnvironment.codeSinkAPI(role, ciSkip: .defaultCodeAPI)
+        let (client, user) = try await makeSignedInFreshUser("at-2-verify", on: role)
         let sink = try CodeSink()
         let updatedEmail = SandboxSignUp.identity().email
 

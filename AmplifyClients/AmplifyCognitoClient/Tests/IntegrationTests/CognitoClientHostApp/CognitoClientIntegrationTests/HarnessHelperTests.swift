@@ -425,6 +425,99 @@ extension HarnessHelperTests {
         XCTAssertEqual(IntegrationTestEnvironment.sandboxRewriteHint(isCIRun: true, hasCredentialsFile: false), "")
     }
 
+    /// The tests that need the default backend's extras run on the extended role only when its file is there, and
+    /// read that role's own credentials file (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.extrasRole(hasExtendedOutputs:)` and `credentialsResource(for:)`, no
+    ///   request
+    /// - When:
+    ///    - The role is asked for with and without the extended role's outputs, and each role's credentials file
+    /// - Then:
+    ///    - With the outputs it is `.extended`; without them `.standard`, so on the plugin's CI (no extended file)
+    ///      those tests take the default role's I17 skips as before, and on the sandbox its default pool
+    ///    - The extended role reads `AmplifyCognitoClientExtendedIntegrationTests-credentials`, never the plugin's
+    ///      file, and every other role the default backend's `AWSCognitoAuthPluginIntegrationTests-credentials`
+    ///    - The answer to `extrasRole` in this process follows whether the extended file is in the bundle
+    ///
+    func testExtrasRoleIsTheExtendedRoleOnlyWhenItsFileIsThere() {
+        XCTAssertEqual(IntegrationTestEnvironment.extrasRole(hasExtendedOutputs: true), .extended)
+        XCTAssertEqual(IntegrationTestEnvironment.extrasRole(hasExtendedOutputs: false), .standard)
+        XCTAssertEqual(
+            IntegrationTestEnvironment.credentialsResource(for: .extended),
+            "AmplifyCognitoClientExtendedIntegrationTests-credentials"
+        )
+        for pool in SandboxPool.allCases {
+            XCTAssertEqual(
+                IntegrationTestEnvironment.credentialsResource(for: pool),
+                "AWSCognitoAuthPluginIntegrationTests-credentials",
+                "\(pool)"
+            )
+        }
+        XCTAssertEqual(
+            IntegrationTestEnvironment.extrasRole,
+            IntegrationTestEnvironment.hasOutputs(.extended) ? .extended : .standard
+        )
+    }
+
+    /// The extended role is optional, and none of the plugin's (offline).
+    ///
+    /// - Given: `SandboxPool`'s plugin roles (`allCases`), its optional roles and every role, no request
+    /// - When:
+    ///    - Each list and the extended role's settings are read
+    /// - Then:
+    ///    - `allCases` holds the plugin's eight roles and not `.extended`, so every loop over the plugin's file set
+    ///      (the fixture check, the every-pool check, the parity file check) is unchanged; `optionalRoles` is
+    ///      `[.extended]`, and every role is the nine, each with its own outputs file
+    ///    - The extended role's file is a Gen2 file of the client's own name, with no Gen1 counterpart and none of
+    ///      the plugin's names; it tracks devices and promises a confirming trigger, as the default template does,
+    ///      and is not a code-capturing plugin role
+    ///
+    func testExtendedRoleIsOptionalAndNoneOfThePluginRoles() {
+        XCTAssertEqual(SandboxPool.allCases.count, 8)
+        XCTAssertFalse(SandboxPool.allCases.contains(.extended))
+        XCTAssertEqual(SandboxPool.optionalRoles, [.extended])
+        XCTAssertEqual(SandboxPool.everyRole.count, 9)
+        XCTAssertEqual(Set(SandboxPool.everyRole.map(\.outputsResource)).count, 9)
+        XCTAssertEqual(SandboxPool.extended.outputsResource, "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs")
+        XCTAssertNil(SandboxPool.extended.gen1Resource)
+        XCTAssertFalse(SandboxPool.extended.outputsResource.hasPrefix("AWSCognito"))
+        XCTAssertTrue(SandboxPool.extended.tracksDevices)
+        XCTAssertTrue(SandboxPool.extended.promisesConfirmingTrigger)
+        XCTAssertFalse(SandboxPool.extended.capturesCodes)
+        XCTAssertFalse(SandboxPool.extended.requiresMFA)
+    }
+
+    /// An outputs file's marks are read only where they are `true`, and the confirming-trigger mark is not the
+    /// sandbox's (offline).
+    ///
+    /// - Given: `IntegrationTestEnvironment.isMarked(_:in:)` over documents, no request
+    /// - When:
+    ///    - It reads `sandbox` and `confirming_trigger` from a document with neither, with each set to `true`,
+    ///      with one set to `false` or to a string, and with the block not an object
+    /// - Then:
+    ///    - A mark reads as set only when it is the boolean `true`
+    ///    - The client's own CI device-alias file (`confirming_trigger: true` alone) is not the sandbox's, so its
+    ///      role stays out of the sandbox checks and the self sign-up gate, while its sign-ups are taken as
+    ///      confirmed by its trigger
+    ///
+    func testOutputsMarksAreReadOnlyWhereTrue() {
+        func document(_ marks: Any?) -> [String: Any] {
+            var document: [String: Any] = ["version": "1.4", "auth": ["user_pool_id": "placeholder"]]
+            if let marks {
+                document["custom"] = ["amplify_cognito_client_integ": marks]
+            }
+            return document
+        }
+        let ciDeviceAlias = document(["confirming_trigger": true])
+        XCTAssertTrue(IntegrationTestEnvironment.isMarked("confirming_trigger", in: ciDeviceAlias))
+        XCTAssertFalse(IntegrationTestEnvironment.isMarked("sandbox", in: ciDeviceAlias))
+        XCTAssertTrue(IntegrationTestEnvironment.isMarked("sandbox", in: document(["sandbox": true])))
+        XCTAssertFalse(IntegrationTestEnvironment.isMarked("confirming_trigger", in: document(["sandbox": true])))
+        for marks in [nil, ["confirming_trigger": false], ["confirming_trigger": "true"], "confirming_trigger"] as [Any?] {
+            XCTAssertFalse(IntegrationTestEnvironment.isMarked("confirming_trigger", in: document(marks)), "\(String(describing: marks))")
+        }
+    }
+
     /// A fresh sign-up whose SDK retry met `UsernameExistsException` (CH-4) adopts the earlier attempt's user
     /// when it signs in with this call's password, confirming it first when it is unconfirmed and can be.
     ///

@@ -73,7 +73,9 @@ extension SandboxPool {
     /// WebAuthn one (`AuthWebAuthnAppUITests/README.md`). The passwordless backend's setup
     /// (`PasswordlessTests/README.md`) deploys no trigger, and the device-alias backend's none that is
     /// written down; on the plugin's CI a fresh sign-up there comes back unconfirmed. On the sandbox every
-    /// pool's trigger (P-5b) confirms all but `ccit-confirm-` users, whatever this says.
+    /// pool's trigger (P-5b) confirms all but `ccit-confirm-` users, whatever this says. A role's file can promise
+    /// one too (`IntegrationTestEnvironment.promisesConfirmingTrigger(_:)`), as the client's own CI device-alias
+    /// pool's does.
     var promisesConfirmingTrigger: Bool {
         ![.passwordless, .emailAlias].contains(self)
     }

@@ -62,7 +62,10 @@ final class CognitoBackendSmokeTests: XCTestCase {
     ///      and the two email-MFA backends, the plugin backends that capture them) names a code API (`data`,
     ///      with a URL and an API key). The other roles' files need none: a test that reads a code there
     ///      requires it itself, and fails naming the file
-    ///    - The credentials file is in the bundle and holds the keys the client suites use, each non-empty: the
+    ///    - The extended role's file, when it is there (`SandboxPool.optionalRoles`), loads too and names a code API
+    ///    - The credentials file of the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`:
+    ///      the extended role's own when its outputs are there, else the default backend's) is in the bundle and
+    ///      holds the keys the client suites use, each non-empty: the
     ///      custom-challenge answer (`custom_challenge_answer`), at least one new-password user
     ///      (`new_password_required_usernames`) and their temporary password
     ///      (`new_password_required_temporary_password`). Other keys, such as the plugin suites', are allowed
@@ -77,10 +80,14 @@ final class CognitoBackendSmokeTests: XCTestCase {
         for pool in SandboxPool.allCases where pool.capturesCodes {
             XCTAssertNoThrow(try IntegrationTestEnvironment.codeSinkAPI(pool), "\(pool.outputsResource).json has no code API")
         }
+        for pool in SandboxPool.optionalRoles where IntegrationTestEnvironment.hasOutputs(pool) {
+            XCTAssertNoThrow(try IntegrationTestEnvironment.configuration(pool), pool.fixtureName)
+            XCTAssertNoThrow(try IntegrationTestEnvironment.codeSinkAPI(pool), "\(pool.outputsResource).json has no code API")
+        }
 
-        let credentials = try IntegrationTestEnvironment.credentials()
+        let credentials = try IntegrationTestEnvironment.credentials(for: IntegrationTestEnvironment.extrasRole)
         try IntegrationTestEnvironment.skipOnCIIfMissing(.credentialsFile, present: credentials.isPresent)
-        XCTAssertTrue(credentials.isPresent, "\(IntegrationTestEnvironment.credentialsResource).json is not in the test bundle")
+        XCTAssertTrue(credentials.isPresent, "\(credentials.resource).json is not in the test bundle")
         XCTAssertFalse(credentials.customChallengeAnswer?.value.isEmpty ?? true, "No custom-challenge answer")
         XCTAssertFalse(credentials.newPasswordRequiredUsernames.isEmpty, "No new-password users")
         XCTAssertFalse(credentials.newPasswordRequiredTemporaryPassword?.value.isEmpty ?? true, "No temporary password")

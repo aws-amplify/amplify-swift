@@ -143,15 +143,19 @@ final class PluginRecordLocationTests: XCTestCase {
 /// configured with, so both see the same pools.
 enum InteropEnvironment {
     static let outputsResource = "AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
+    /// The client's own role beside the plugin's default one (the client suite's `SandboxPool.extended`): on CI,
+    /// `infra/ci`'s `ccit-ci-default`, which holds the rotation client. Optional; copied when it is there.
+    static let extendedOutputsResource = "AmplifyCognitoClientExtendedIntegrationTests-amplify_outputs"
 
     static var bundle: Bundle {
         Bundle(for: BundleToken.self)
     }
 
-    /// The bundle to load `outputsResource` from: the test bundle, or the Gen2 translation of the Gen1 file.
-    static func outputsBundle() throws -> Bundle {
+    /// The bundle to load `resource` (default: `outputsResource`) from: the test bundle, or the Gen2 translation
+    /// of the Gen1 file.
+    static func outputsBundle(_ resource: String = outputsResource) throws -> Bundle {
         try requireProvisioned()
-        return try PluginTestConfiguration.outputsBundle(outputsResource, in: bundle)
+        return try PluginTestConfiguration.outputsBundle(resource, in: bundle)
     }
 
     /// The Gen2 outputs document `outputsBundle()` holds, for `Amplify.configure(with: .data(_:))`.
@@ -204,12 +208,13 @@ enum InteropEnvironment {
     /// A user of the test's own on the default backend, never one another run could be using: a `ccit-`
     /// username, an `@example.com` email (RFC 2606, never delivered to) and a password meeting the backend's
     /// policy, signed up through the client on a session used for nothing else, which is purged at once.
-    /// The backend's pre-sign-up trigger confirms it. Delete it with `deleteFreshUser(_:)`.
-    static func signUpFreshUser() async throws -> InteropUser {
+    /// The backend's pre-sign-up trigger confirms it. Signed up through `resource` (default: the default backend's
+    /// outputs), which the user records. Delete it with `deleteFreshUser(_:)`.
+    static func signUpFreshUser(through resource: String = outputsResource) async throws -> InteropUser {
         try requireSelfSignUp()
         let hex = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(12).lowercased()
-        let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!")
-        let configuration = try AuthClientConfiguration(from: outputsResource, bundle: outputsBundle())
+        let user = InteropUser(username: "ccit-\(hex)", password: "Ccit-\(UUID().uuidString)-1!", outputsResource: resource)
+        let configuration = try AuthClientConfiguration(from: resource, bundle: outputsBundle(resource))
         let sessionId = try SessionID.named("interop-signup-\(hex.prefix(8))")
         do {
             let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
@@ -245,7 +250,10 @@ enum InteropEnvironment {
     /// else and calls `deleteUser()`, and the session is purged. Best effort, for teardown: a user already
     /// gone is fine. Never touches the plugin's record.
     static func deleteFreshUser(_ user: InteropUser) async {
-        guard let configuration = try? AuthClientConfiguration(from: outputsResource, bundle: outputsBundle()),
+        guard let configuration = try? AuthClientConfiguration(
+            from: user.outputsResource,
+            bundle: outputsBundle(user.outputsResource)
+        ),
               let sessionId = try? SessionID.named("interop-cleanup-\(UUID().uuidString.prefix(8).lowercased())") else {
             return
         }
@@ -392,6 +400,8 @@ enum InteropEnvironment {
 struct InteropUser: Sendable, CustomStringConvertible, CustomDebugStringConvertible, CustomReflectable {
     let username: String
     let password: String
+    /// The outputs the user was signed up through, and is deleted through.
+    var outputsResource: String = InteropEnvironment.outputsResource
 
     var description: String { "a fresh user" }
     var debugDescription: String { description }

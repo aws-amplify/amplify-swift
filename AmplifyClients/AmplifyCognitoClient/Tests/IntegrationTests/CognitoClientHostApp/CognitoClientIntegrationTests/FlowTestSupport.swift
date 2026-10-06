@@ -596,11 +596,13 @@ enum PerRunUsers {
 
     /// The failure when a new-password user refuses the credentials file's temporary password while Cognito
     /// still holds it in `FORCE_CHANGE_PASSWORD`: the temporary password is wrong, not the user used up.
-    static let wrongTemporaryPassword = """
-    A new-password user in \(IntegrationTestEnvironment.credentialsResource).json refuses \
-    new_password_required_temporary_password although it still waits for a new password: the temporary \
-    password in the credentials file is wrong.
-    """
+    static var wrongTemporaryPassword: String {
+        """
+        A new-password user in \(IntegrationTestEnvironment.credentialsResource(for: IntegrationTestEnvironment.extrasRole)).json \
+        refuses new_password_required_temporary_password although it still waits for a new password: the \
+        temporary password in the credentials file is wrong.
+        """
+    }
 
     /// Whether Cognito still holds `username` in `FORCE_CHANGE_PASSWORD`, asked without changing it:
     /// `ForgotPassword` refuses such a user with `NotAuthorizedException` (its password cannot be reset in

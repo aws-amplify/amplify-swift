@@ -129,17 +129,18 @@ final class SandboxParityProvisioningTests: XCTestCase {
 
     /// Custom auth without SRP completes with the stored answer (define/create/verify triggers, P-5b).
     ///
-    /// - Given: A fresh, auto-confirmed user on the default pool, and the credentials file's
-    ///   `custom_challenge_answer`
+    /// - Given: A fresh, auto-confirmed user on the pool with the default backend's extras
+    ///   (`IntegrationTestEnvironment.extrasRole`), and its credentials file's `custom_challenge_answer`
     /// - When:
     ///    - It starts `CUSTOM_AUTH` with its username only, and answers the challenge
     /// - Then:
     ///    - The start returns `CUSTOM_CHALLENGE`, and the answer returns tokens
     ///
     func testCustomAuthCompletesWithTheStoredAnswer() async throws {
-        let pool = try ParityPool(.standard)
+        let role = IntegrationTestEnvironment.extrasRole
+        let pool = try ParityPool(role)
         // Read before the sign-up, so a run without the answer (it skips on CI) signs no user up.
-        let answer = try IntegrationTestEnvironment.credentials().requireCustomChallengeAnswer()
+        let answer = try IntegrationTestEnvironment.credentials(for: role).requireCustomChallengeAnswer()
         let user = ParityPool.freshUser()
         _ = try await pool.signUp(user, deletingAtTeardownOf: self)
 

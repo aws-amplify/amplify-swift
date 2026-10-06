@@ -122,7 +122,7 @@ enum RealKeychain {
             ("user_pool_client_id", "<appClient>")
         ]
         var identifiers: [(String, String)] = []
-        for pool in SandboxPool.allCases where IntegrationTestEnvironment.hasOutputs(pool) {
+        for pool in SandboxPool.everyRole where IntegrationTestEnvironment.hasOutputs(pool) {
             guard let auth = try? IntegrationTestEnvironment.outputsAuthSection(pool) else {
                 continue
             }

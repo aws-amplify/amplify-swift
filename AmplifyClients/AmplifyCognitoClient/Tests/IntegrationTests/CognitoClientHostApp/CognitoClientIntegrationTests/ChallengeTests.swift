@@ -24,7 +24,8 @@ final class ChallengeTests: ClientIntegrationTestCase {
     /// the plugin's `testNewPasswordRequired`, which runs when its credentials file lists FORCE_CHANGE_PASSWORD
     /// users).
     ///
-    /// The user is the first of the default credentials file's `new_password_required_usernames` still in
+    /// It runs on the role with the default backend's extras (`IntegrationTestEnvironment.extrasRole`). The user
+    /// is the first of that role's credentials file's `new_password_required_usernames` still in
     /// `FORCE_CHANGE_PASSWORD`, as the plugin's test takes it: each is used once, and another run against the
     /// same backend (the plugin's suite, or this one) may take one at any time.
     /// - A candidate whose temporary password is refused (`.notAuthorized`) is skipped if Cognito no longer
@@ -48,10 +49,15 @@ final class ChallengeTests: ClientIntegrationTestCase {
     ///    - the confirmation returns `.done`, and the state is `.signedIn` as that user
     ///
     func testNewPasswordRequiredChallenge() async throws {
-        let (candidates, temporary) = try IntegrationTestEnvironment.credentials().requireNewPasswordUsers()
-        let raw = try SandboxPools.pool(.standard)
+        let role = IntegrationTestEnvironment.extrasRole
+        let credentials = try IntegrationTestEnvironment.credentials(for: role)
+        let (candidates, temporary) = try credentials.requireNewPasswordUsers()
+        let raw = try SandboxPools.pool(role)
         let sessionId = try makeSessionID("new-password")
-        let client = try AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: sessionId))
+        let client = try AmplifyCognitoClient(
+            configuration: IntegrationTestEnvironment.configuration(role),
+            options: .init(sessionId: sessionId)
+        )
 
         for username in candidates {
             let states = StreamRecorder(client.listenToSessionStateChanges())
@@ -101,7 +107,7 @@ final class ChallengeTests: ClientIntegrationTestCase {
             return
         }
         XCTFail("""
-        None of the \(candidates.count) new-password users in \(IntegrationTestEnvironment.credentialsResource).json \
+        None of the \(candidates.count) new-password users in \(credentials.resource).json \
         is still in FORCE_CHANGE_PASSWORD: each is used once, so the backend must reset them (or list new ones) \
         before the next run.
         """)
