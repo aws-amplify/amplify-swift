@@ -205,9 +205,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
 
-    /// Given: An empty batch
-    /// When: An attempt to consume it takes place
-    /// Then: No calls to the underlying client are made
+    /// - Given: An empty batch
+    /// - When: An attempt to consume it takes place
+    /// - Then: No calls to the underlying client are made
     func testEmptyFile() async throws {
         try await systemUnderTest.consume(batch: self)
         XCTAssertEqual(client.interactions, [])
@@ -217,9 +217,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
 
-    /// Given: an entry that results in a client error
-    /// When: An attempt to consume it takes place
-    /// Then: an exception is thrown
+    /// - Given: an entry that results in a client error
+    /// - When: An attempt to consume it takes place
+    /// - Then: an exception is thrown
     func testClientThrowsOnClientError() async throws {
         enum TestError: Error {
             case consumeError

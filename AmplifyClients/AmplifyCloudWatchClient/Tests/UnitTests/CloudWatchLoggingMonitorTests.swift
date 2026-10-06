@@ -28,9 +28,9 @@ final class CloudWatchLoggingMonitorTests: XCTestCase {
         invokedExpectation = nil
     }
 
-    /// Given: the logging monitor is configured with a 1 second interval
-    /// When: the monitor is enabled
-    /// Then: the delegate is automatically invoked
+    /// - Given: the logging monitor is configured with a 1 second interval
+    /// - When: the monitor is enabled
+    /// - Then: the delegate is automatically invoked
     func testDelegateIsInvokedOnInterval() async {
         monitor.setAutomaticFlushIntervals()
         await fulfillment(of: [invokedExpectation], timeout: 10)
