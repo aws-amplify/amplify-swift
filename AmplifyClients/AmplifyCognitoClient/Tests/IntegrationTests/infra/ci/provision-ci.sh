@@ -19,6 +19,18 @@
 #                           new-password users kept fresh by a scheduled Lambda, the code sink, a rotation client,
 #                           and an identity pool with guest access, read by the client's own `extended` role only:
 #                           CA-1…3, CH-1, P-3, the fixture check, AT-2's second half, RP-3, RT-1 and RT-2
+#     ccit-ci-email-alias-codes
+#                           a second device-alias pool on Lite, read by the client's own `email-alias-codes` role
+#                           only: its pre-sign-up trigger (ccit-ci-pre-sign-up-confirmable) leaves ccit-confirm-
+#                           users to confirm, and the custom sender publishes their codes to the code sink, so no
+#                           email is sent: the email-alias code check. With it, ccit-ci-capabilities.json names
+#                           the sandbox checks the client's own roles can run (README, "Sandbox checks")
+#
+#   A rerun over resources an earlier run made adds what is missing and updates, after their tag checks, only
+#   these of its own: the KMS key's policy and the sender's and triggers' role policies (each to name the new pool
+#   or log group), the invoke permissions of the Lambdas the new pool names, the reset Lambda's role policy (to
+#   decrypt its parameter with the key), and an SSM parameter stored under another key than the script's own,
+#   which it stores again, with the same value, under that key.
 #
 # Every resource is named ccit-ci-… (identity pool ccit_ci_default, parameters /ccit-ci/…) and tagged
 # purpose=amplify-cognito-client-integ. The script finds them by name, creates only what is missing, refuses any
@@ -111,9 +123,11 @@ require_caller
 # --- Names ------------------------------------------------------------------------------------------------
 
 POOL_KEYS=(email-alias)
-[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default)
-ALL_POOL_KEYS=(email-alias default)
-TRIGGERS_ALL=(pre-sign-up define-auth-challenge create-auth-challenge verify-auth-challenge)
+[[ "$SCOPE" == "all" ]] && POOL_KEYS=(email-alias default email-alias-codes)
+ALL_POOL_KEYS=(email-alias default email-alias-codes)
+TRIGGERS_ALL=(pre-sign-up pre-sign-up-confirmable define-auth-challenge create-auth-challenge verify-auth-challenge)
+# The pools whose codes the custom sender decrypts: the ones it is the sender of.
+SENDER_POOL_KEYS=(default email-alias-codes)
 
 pool_name() { printf '%s-%s' "$CI_PREFIX" "$1"; }
 fn_name() { printf '%s-%s' "$CI_PREFIX" "$1"; }
@@ -137,12 +151,13 @@ S3_FOLDER_KEY="$CI_PREFIX_PATH/auth/$CI_S3_FOLDER"
 functions_in_scope() {
     printf '%s\n' pre-sign-up discard-sender
     if [[ "$SCOPE" == "all" ]]; then
-        printf '%s\n' custom-sender define-auth-challenge create-auth-challenge verify-auth-challenge new-password-reset
+        printf '%s\n' pre-sign-up-confirmable custom-sender define-auth-challenge create-auth-challenge \
+            verify-auth-challenge new-password-reset
     fi
 }
 fn_handler() {
     case "$1" in
-        pre-sign-up) echo triggers.preSignUp ;;
+        pre-sign-up|pre-sign-up-confirmable) echo triggers.preSignUp ;;
         define-auth-challenge) echo triggers.defineAuthChallenge ;;
         create-auth-challenge) echo triggers.createAuthChallenge ;;
         verify-auth-challenge) echo triggers.verifyAuthChallenge ;;
@@ -181,9 +196,9 @@ preflight() {
     quota=$(jq -r '.SummaryMap.RolesQuota' <<<"$out")
     read_aws out appsync list-graphql-apis
     apis=$(jq -r '.graphqlApis | length' <<<"$out")
-    read_aws out cognito-idp list-user-pools --max-results 60
+    read_all_pages out UserPools cognito-idp list-user-pools
     pools=$(jq -r '.UserPools | length' <<<"$out")
-    read_aws out cognito-identity list-identity-pools --max-results 60
+    read_all_pages out IdentityPools cognito-identity list-identity-pools
     identity=$(jq -r '.IdentityPools | length' <<<"$out")
     read_aws out events list-rules
     rules=$(jq -r '.Rules | length' <<<"$out")
@@ -247,6 +262,24 @@ default_pool_arns() {
     jq -n -c --arg a "$(pool_arn "$id")" '[$a]'
 }
 
+# The ARNs of the pools the custom sender is the sender of (SENDER_POOL_KEYS), for its decrypt: `early`, those that
+# exist already, and `final`, a planned one too; [] when there is none, which sender_policy reads as the account's
+# pools, by pattern (a first run, before any is made). Unlike the key's (`scoped_pool_arns`), the early list is not
+# widened while a pool is about to be made: the sender decrypts only once a pool sends a code, after the final
+# narrowing, so a rerun that adds a pool never widens the decrypt.
+sender_pool_arns() {
+    local when="$1" key id arns=()
+    for key in "${SENDER_POOL_KEYS[@]}"; do
+        id=$(kv_get POOL_ID "$key")
+        [[ -n "$id" ]] || continue
+        if [[ "$when" == "final" ]] || ! is_new "$id"; then
+            arns+=("$(pool_arn "$id")")
+        fi
+    done
+    (( ${#arns[@]} > 0 )) || { printf '[]'; return; }
+    printf '%s\n' "${arns[@]}" | jq -R . | jq -s -c 'sort'
+}
+
 kms_policy() {
     jq -n -c --arg a "$CI_ACCOUNT" --arg r "$CI_REGION" --argjson arns "$1" '
         (if ($arns | length) > 0 then {ArnEquals: {"aws:SourceArn": $arns}}
@@ -274,7 +307,8 @@ sender_policy() {
 
 trigger_policy() {
     local suffixes=(pre-sign-up discard-sender)
-    [[ "$SCOPE" == "all" ]] && suffixes+=(define-auth-challenge create-auth-challenge verify-auth-challenge)
+    [[ "$SCOPE" == "all" ]] && suffixes+=(pre-sign-up-confirmable define-auth-challenge create-auth-challenge \
+        verify-auth-challenge)
     jq -n -c --argjson logs "$(logs_statement "${suffixes[@]}")" '{Version: "2012-10-17", Statement: [$logs]}'
 }
 
@@ -307,11 +341,15 @@ sms_policy() {
 
 reset_policy() {
     jq -n -c --arg pool "$(pool_arn "$(kv_get POOL_ID "default")")" --arg p "$(ssm_arn "$CI_SSM_TEMPORARY")" \
+        --arg key "$KMS_KEY_ARN" --arg r "$CI_REGION" \
         --argjson logs "$(logs_statement new-password-reset)" '{Version: "2012-10-17", Statement: [$logs,
         {Sid: "ResetNewPasswordUsers", Effect: "Allow", Action: ["cognito-idp:AdminGetUser",
             "cognito-idp:AdminCreateUser", "cognito-idp:AdminDeleteUser", "cognito-idp:AdminSetUserPassword"],
          Resource: $pool},
-        {Sid: "ReadTemporaryPassword", Effect: "Allow", Action: "ssm:GetParameter", Resource: $p}]}'
+        {Sid: "ReadTemporaryPassword", Effect: "Allow", Action: "ssm:GetParameter", Resource: $p},
+        {Sid: "DecryptTemporaryPassword", Effect: "Allow", Action: "kms:Decrypt", Resource: $key,
+         Condition: {StringEquals: {"kms:ViaService": "ssm.\($r).amazonaws.com",
+                                    "kms:EncryptionContext:PARAMETER_ARN": $p}}}]}'
 }
 
 identity_trust() {
@@ -392,7 +430,12 @@ ensure_kms_policy() {
     if ! same_json "$current" "$1"; then
         is_new "$KMS_KEY_ID" || require_ours kms "$KMS_KEY_ID" "$CI_KMS_ALIAS"
         KMS_PLANNED_POLICY="$1"
-        mutate "$CI_KMS_ALIAS" "set the key policy of $CI_KMS_ALIAS to the ccit-ci- pools" -- kms put-key-policy \
+        local description="set the key policy of $CI_KMS_ALIAS to the ccit-ci- pools"
+        if jq -e '.Statement[1].Condition.ArnLike' <<<"$1" >/dev/null; then
+            # A pool in scope is about to be made: its ARN is not known yet. Narrowed again after the pools.
+            description="open the key policy of $CI_KMS_ALIAS to the account's pools while a ccit-ci- pool is made"
+        fi
+        mutate "$CI_KMS_ALIAS" "$description" -- kms put-key-policy \
             --key-id "$KMS_KEY_ID" --policy-name default --policy "file://$(input_file "$1")"
     fi
 }
@@ -586,24 +629,39 @@ ensure_sms_external_id() {
 
 # --- Secrets (SSM SecureString parameters, the account itself as the script's state) ---------------------
 
-# Sets the variable named $1 to parameter $2's value, creating it from command $3 when missing.
+# Sets the variable named $1 to parameter $2's value, creating it from command $3 when missing. The parameter is a
+# SecureString encrypted with this script's own key (alias/ccit-ci-senders), not the account's AWS-managed
+# alias/aws/ssm: one that is (a first phase 2 stored them so) is stored again, with the same value, under the key.
 ensure_secret() {
-    local var="$1" name="$2" generator="$3" out value input
+    local var="$1" name="$2" generator="$3" out value input key
     if read_aws_or_missing out ParameterNotFound ssm get-parameter --name "$name"; then
         require_ours ssm "$name" "$name"
         read_aws out ssm get-parameter --name "$name" --with-decryption
         value=$(jq -r '.Parameter.Value' <<<"$out")
         say "  = parameter $name"
+        read_aws out ssm describe-parameters --parameter-filters "Key=Name,Values=$name"
+        key=$(jq -r --arg n "$name" '[.Parameters[] | select(.Name == $n) | .KeyId][0] // ""' <<<"$out")
+        if [[ "$key" != "$KMS_KEY_ARN" && "$key" != "$KMS_KEY_ID" && "$key" != "$CI_KMS_ALIAS" \
+            && "$key" != "arn:aws:kms:$CI_REGION:$CI_ACCOUNT:$CI_KMS_ALIAS" ]]; then
+            require_ours ssm "$name" "$name"
+            # --overwrite takes no tags; the parameter keeps its own.
+            input=$(jq -n -c --arg n "$name" --arg v "$value" --arg key "$KMS_KEY_ARN" \
+                '{Name: $n, Value: $v, Type: "SecureString", KeyId: $key, Overwrite: true,
+                  Description: "ccit-ci: Cognito client CI resources"}')
+            mutate "$name" "store $name again, the same value, encrypted with $CI_KMS_ALIAS" -- ssm put-parameter \
+                --cli-input-json "file://$(input_file "$input")"
+        fi
     else
         if [[ "$CI_MODE" == "apply" ]]; then
             value=$($generator)
         else
             value=$(new_id "secret")
         fi
-        input=$(jq -n -c --arg n "$name" --arg v "$value" --arg k "$CI_TAG_KEY" --arg t "$CI_TAG_VALUE" \
-            '{Name: $n, Value: $v, Type: "SecureString", Description: "ccit-ci: Cognito client CI resources",
-              Tags: [{Key: $k, Value: $t}]}')
-        mutate "$name" "store $name (SecureString)" -- ssm put-parameter --cli-input-json "file://$(input_file "$input")"
+        input=$(jq -n -c --arg n "$name" --arg v "$value" --arg key "$KMS_KEY_ARN" --arg k "$CI_TAG_KEY" \
+            --arg t "$CI_TAG_VALUE" '{Name: $n, Value: $v, Type: "SecureString", KeyId: $key,
+              Description: "ccit-ci: Cognito client CI resources", Tags: [{Key: $k, Value: $t}]}')
+        mutate "$name" "store $name (SecureString, encrypted with $CI_KMS_ALIAS)" -- ssm put-parameter \
+            --cli-input-json "file://$(input_file "$input")"
     fi
     printf -v "$var" '%s' "$value"
 }
@@ -707,18 +765,35 @@ ensure_invoke_permission() {
 
 # --- User pools -------------------------------------------------------------------------------------------
 
+# The template a pool is made from (infra/pools/<template>.json): its own, except the alias-codes pool, which is a
+# second device-alias pool.
+pool_template() {
+    case "$1" in
+        email-alias-codes) printf '%s/pools/email-alias.json' "$INFRA" ;;
+        *) printf '%s/pools/%s.json' "$INFRA" "$1" ;;
+    esac
+}
+
 # The pool template's userPool, with the placeholders filled in and this script's checks applied.
 pool_definition() {
-    local key="$1" variables sender=custom-sender tier=""
+    local key="$1" variables sender=custom-sender pre=pre-sign-up tier=""
     # The device-alias pool discards its messages (no test there reads a code), and is on the Lite plan: DV-10…19
     # and the short-token parity check use device tracking, custom token lifetimes and a pre-sign-up trigger, all
     # of which Lite has. The default pool keeps its template's Essentials, the plan its rotation client was proven
-    # on in the sandbox.
-    if [[ "$key" == "email-alias" ]]; then
-        sender=discard-sender
-        tier=LITE
-    fi
-    variables=$(jq -n -c --arg pre "$(fn_arn pre-sign-up)" --arg def "$(fn_arn define-auth-challenge)" \
+    # on in the sandbox. The alias-codes pool is the device-alias template on Lite too, but its trigger leaves
+    # ccit-confirm- users to confirm, and its codes go to the code sink: the email-alias code check reads one by the
+    # username Cognito generated.
+    case "$key" in
+        email-alias)
+            sender=discard-sender
+            tier=LITE
+            ;;
+        email-alias-codes)
+            pre="pre-sign-up-confirmable"
+            tier=LITE
+            ;;
+    esac
+    variables=$(jq -n -c --arg pre "$(fn_arn "$pre")" --arg def "$(fn_arn define-auth-challenge)" \
         --arg cre "$(fn_arn create-auth-challenge)" --arg ver "$(fn_arn verify-auth-challenge)" \
         --arg snd "$(fn_arn "$sender")" --arg kms "$KMS_KEY_ARN" --arg sms "$(role_arn cognito-sms)" \
         --arg ext "$SMS_EXTERNAL_ID" --arg r "$CI_REGION" \
@@ -727,7 +802,7 @@ pool_definition() {
           SMS_EXTERNAL_ID: $ext, SMS_REGION: $r}')
     jq -c --argjson v "$variables" 'walk(if type == "string"
         then gsub("\\$\\{(?<name>[A-Z_]+)\\}"; $v[.name] // error("unknown placeholder \(.name)")) else . end)
-        | if $tier != "" then .userPool.UserPoolTier = $tier else . end' --arg tier "$tier" "$INFRA/pools/$key.json"
+        | if $tier != "" then .userPool.UserPoolTier = $tier else . end' --arg tier "$tier" "$(pool_template "$key")"
 }
 
 ensure_pool() {
@@ -738,8 +813,8 @@ ensure_pool() {
     # Nothing is ever sent: both custom senders and the key, whenever the pool could send email or SMS.
     jq -e '.LambdaConfig.CustomEmailSender.LambdaArn and .LambdaConfig.CustomSMSSender.LambdaArn
         and .LambdaConfig.KMSKeyID and (.AdminCreateUserConfig.AllowAdminCreateUserOnly == false)' <<<"$pool" >/dev/null \
-        || die "pools/$key.json must name both custom senders and the KMS key."
-    read_aws out cognito-idp list-user-pools --max-results 60
+        || die "pools/$(basename "$(pool_template "$key")") must name both custom senders and the KMS key."
+    read_all_pages out UserPools cognito-idp list-user-pools
     ids=$(jq -c --arg n "$name" '[.UserPools[] | select(.Name == $n) | .Id]' <<<"$out")
     (( $(jq 'length' <<<"$ids") <= 1 )) || die "more than one user pool is named $name."
     kv_set POOL_ID "$key" "$(jq -r '.[0] // empty' <<<"$ids")"
@@ -748,7 +823,7 @@ ensure_pool() {
         say "  = user pool $name"
     else
         input=$(jq -c --arg n "$name" --argjson t "$(tags_json)" '. + {PoolName: $n, UserPoolTags: $t}' <<<"$pool")
-        mutate_with_retry 18 10 "$SMS_ROLE_CODES" "$name" "create user pool $name (pools/$key.json, self sign-up on, custom senders)" -- \
+        mutate_with_retry 18 10 "$SMS_ROLE_CODES" "$name" "create user pool $name (pools/$(basename "$(pool_template "$key")"), self sign-up on, custom senders)" -- \
             cognito-idp create-user-pool --cli-input-json "file://$(input_file "$input")"
         if [[ "$CI_MODE" == "apply" ]]; then
             kv_set POOL_ID "$key" "$(jq -r '.UserPool.Id' <<<"$MUTATE_OUT")"
@@ -778,7 +853,7 @@ ensure_pool() {
 
     out='{"UserPoolClients": []}'
     if ! is_new "$(kv_get POOL_ID "$key")"; then
-        read_aws out cognito-idp list-user-pool-clients --user-pool-id "$(kv_get POOL_ID "$key")" --max-results 60
+        read_all_pages out UserPoolClients cognito-idp list-user-pool-clients --user-pool-id "$(kv_get POOL_ID "$key")"
     fi
     for client in $(pool_clients "$key"); do
         client_name="$name-$client"
@@ -790,7 +865,7 @@ ensure_pool() {
         spec=$(jq -c --arg c "$client" --arg n "$client_name" --arg id "$(kv_get POOL_ID "$key")" \
             '.appClients[$c] + {ClientName: $n, UserPoolId: $id, GenerateSecret: false}' <<<"$template")
         is_new "$(kv_get POOL_ID "$key")" || require_ours user-pool "$(kv_get POOL_ID "$key")" "$name"
-        mutate "$client_name" "create app client $client_name (public, pools/$key.json \`$client\`)" -- \
+        mutate "$client_name" "create app client $client_name (public, pools/$(basename "$(pool_template "$key")") \`$client\`)" -- \
             cognito-idp create-user-pool-client --cli-input-json "file://$(input_file "$spec")"
         if [[ "$CI_MODE" == "apply" ]]; then
             kv_set CLIENT_ID "$key/$client" "$(jq -r '.UserPoolClient.ClientId' <<<"$MUTATE_OUT")"
@@ -804,7 +879,7 @@ ensure_pool() {
 pool_clients() {
     case "$1" in
         default) echo plugin rotation ;;
-        email-alias) echo client ;;
+        email-alias|email-alias-codes) echo client ;;
     esac
 }
 
@@ -814,7 +889,7 @@ ensure_identity_pool() {
     local out input providers current auth unauth
     providers=$(jq -n -c --arg p "cognito-idp.$CI_REGION.amazonaws.com/$(kv_get POOL_ID "default")" \
         --arg c "$(kv_get CLIENT_ID "default/plugin")" '[{ProviderName: $p, ClientId: $c, ServerSideTokenCheck: false}]')
-    read_aws out cognito-identity list-identity-pools --max-results 60
+    read_all_pages out IdentityPools cognito-identity list-identity-pools
     IDENTITY_POOL_ID=$(jq -r --arg n "$CI_IDENTITY_POOL" '[.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId]
         | if length > 1 then error("more than one") else .[0] // empty end' <<<"$out") \
         || die "more than one identity pool is named $CI_IDENTITY_POOL."
@@ -911,7 +986,7 @@ outputs_document() {
             password_policy: ($u.Policies.PasswordPolicy | {min_length: .MinimumLength,
                 require_lowercase: .RequireLowercase, require_uppercase: .RequireUppercase,
                 require_numbers: .RequireNumbers, require_symbols: .RequireSymbols}),
-            unauthenticated_identities_enabled: false}}' "$INFRA/pools/$key.json"
+            unauthenticated_identities_enabled: false}}' "$(pool_template "$key")"
 }
 
 with_code_sink() {
@@ -942,15 +1017,32 @@ write_config() {
         jq -n --arg a "$ANSWER" --arg u "$(new_password_users | paste -sd, -)" --arg t "$TEMPORARY" \
             '{custom_challenge_answer: $a, new_password_required_usernames: $u, new_password_required_temporary_password: $t}' \
             | write_private_json "$CONFIG_DIR/ccit-ci-default-credentials.json"
+        # Added after the four above were first uploaded, as files of their own: an uploaded key is never
+        # rewritten, so those four keep their bytes, and these are new keys.
+        outputs_document email-alias-codes client | with_code_sink \
+            | write_private_json "$CONFIG_DIR/ccit-ci-email-alias-codes-amplify_outputs.json"
+        capabilities_document | write_private_json "$CONFIG_DIR/ccit-ci-capabilities.json"
     fi
     say "Wrote the client's CI configuration (mode 600) into $CONFIG_DIR:"
     find "$CONFIG_DIR" -type f -exec basename {} \; | sort | sed 's/^/  /'
 }
 
+# The sandbox checks the client's own roles can run (the harness's SandboxCapability), by the client's role names
+# (ci-overlay.sh maps the files to them): on `extended` (ccit-ci-default), its pre-sign-up trigger refuses users
+# who are not test users, and a password reset's code reaches the code sink for an email the trigger verified at
+# sign-up; on `email-alias-codes`, a code is found by the username Cognito generated. No sandbox mark: the self
+# sign-up gate and every other sandbox check stay the sandbox's.
+capabilities_document() {
+    jq -n -c '{capabilities: {
+        extended: ["refuses_non_test_users", "reset_password_codes"],
+        "email-alias-codes": ["email_alias_codes"]}}'
+}
+
 config_files() {
     printf '%s\n' ccit-ci-email-alias-amplify_outputs.json
     if [[ "$SCOPE" == "all" ]]; then
-        printf '%s\n' ccit-ci-default-amplify_outputs.json ccit-ci-rotation-amplify_outputs.json ccit-ci-default-credentials.json
+        printf '%s\n' ccit-ci-default-amplify_outputs.json ccit-ci-rotation-amplify_outputs.json ccit-ci-default-credentials.json \
+            ccit-ci-email-alias-codes-amplify_outputs.json ccit-ci-capabilities.json
     fi
 }
 
@@ -1000,7 +1092,7 @@ provision() {
     preflight
 
     # Pools that exist already (read-only), so the policies are narrowed to them when nothing is to be created.
-    read_aws out cognito-idp list-user-pools --max-results 60
+    read_all_pages out UserPools cognito-idp list-user-pools
     for key in "${ALL_POOL_KEYS[@]}"; do
         id=$(jq -r --arg n "$(pool_name "$key")" '[.UserPools[] | select(.Name == $n) | .Id][0] // empty' <<<"$out")
         [[ -n "$id" ]] && kv_set POOL_ID "$key" "$id"
@@ -1020,7 +1112,7 @@ provision() {
     say "Roles:"
     ensure_role trigger-exec "$(lambda_trust)" "$(trigger_policy)"
     if [[ "$SCOPE" == "all" ]]; then
-        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(default_pool_arns early)")"
+        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(sender_pool_arns early)")"
         ensure_role appsync-codes "$(appsync_trust)" "$(appsync_policy)"
         ensure_sms_external_id
         ensure_role cognito-sms "$(sms_trust "$(default_pool_arns early)")" "$(sms_policy)"
@@ -1048,7 +1140,7 @@ provision() {
     policy=$(scoped_pool_arns final)
     ensure_kms_policy "$(kms_policy "$policy")"
     if [[ "$SCOPE" == "all" ]]; then
-        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(default_pool_arns final)")"
+        ensure_role sender-exec "$(lambda_trust)" "$(sender_policy "$(sender_pool_arns final)")"
         ensure_role cognito-sms "$(sms_trust "$(default_pool_arns final)")" "$(sms_policy)"
     fi
 
@@ -1099,7 +1191,7 @@ snapshot() {
     : > "$RAW"
     say "Snapshot (read-only) of the account's existing resources, region $CI_REGION:"
 
-    read_aws out cognito-idp list-user-pools --max-results 60
+    read_all_pages out UserPools cognito-idp list-user-pools
     pools=$(jq -r '.UserPools[] | "\(.Id) \(.Name)"' <<<"$out")
     lambdas=""
     while read -r pool name; do
@@ -1109,7 +1201,7 @@ snapshot() {
         lambdas+=$(jq -r '.UserPool.LambdaConfig // {} | .. | strings | select(startswith("arn:aws:lambda:"))' <<<"$describe")$'\n'
         read_aws out cognito-idp get-user-pool-mfa-config --user-pool-id "$pool"
         record user-pool-mfa "$pool" "$name" "$out"
-        read_aws out cognito-idp list-user-pool-clients --user-pool-id "$pool" --max-results 60
+        read_all_pages out UserPoolClients cognito-idp list-user-pool-clients --user-pool-id "$pool"
         clients=$(jq -r '.UserPoolClients[] | "\(.ClientId) \(.ClientName)"' <<<"$out")
         record user-pool-clients "$pool" "$name" "$(jq -c '[.UserPoolClients[].ClientId] | sort' <<<"$out")"
         while read -r client client_name; do
@@ -1137,7 +1229,7 @@ snapshot() {
         record trigger-lambda-policy "$arn" "${arn##*:function:}" "$doc"
     done
 
-    read_aws out cognito-identity list-identity-pools --max-results 60
+    read_all_pages out IdentityPools cognito-identity list-identity-pools
     identity_pools=$(jq -r '.IdentityPools[] | "\(.IdentityPoolId) \(.IdentityPoolName)"' <<<"$out")
     while read -r identity name; do
         [[ -n "$identity" ]] || continue
@@ -1178,8 +1270,7 @@ teardown() {
     else
         say "Teardown dry run: nothing is deleted. '-' is a call teardown --apply would make."
     fi
-    for file in ccit-ci-email-alias-amplify_outputs.json ccit-ci-default-amplify_outputs.json \
-        ccit-ci-rotation-amplify_outputs.json ccit-ci-default-credentials.json; do
+    for file in $(SCOPE=all config_files); do
         key="$S3_FOLDER_KEY/$file"
         if read_aws_or_missing out "404 NoSuchKey NotFound" s3api head-object --bucket "$CI_BUCKET" --key "$key"; then
             require_ours s3-object "$key" "$key"
@@ -1191,13 +1282,13 @@ teardown() {
         mutate "$RULE" "remove $RULE's target" -- events remove-targets --rule "$RULE" --ids new-password-reset
         mutate "$RULE" "delete schedule $RULE" -- events delete-rule --name "$RULE"
     fi
-    read_aws out cognito-identity list-identity-pools --max-results 60
+    read_all_pages out IdentityPools cognito-identity list-identity-pools
     for id in $(jq -r --arg n "$CI_IDENTITY_POOL" '.IdentityPools[] | select(.IdentityPoolName == $n) | .IdentityPoolId' <<<"$out"); do
         require_ours identity-pool "$id" "$CI_IDENTITY_POOL"
         mutate "$CI_IDENTITY_POOL" "delete identity pool $CI_IDENTITY_POOL" -- cognito-identity delete-identity-pool \
             --identity-pool-id "$id"
     done
-    read_aws out cognito-idp list-user-pools --max-results 60
+    read_all_pages out UserPools cognito-idp list-user-pools
     for key in "${ALL_POOL_KEYS[@]}"; do
         for id in $(jq -r --arg n "$(pool_name "$key")" '.UserPools[] | select(.Name == $n) | .Id' <<<"$out"); do
             require_ours user-pool "$id" "$(pool_name "$key")"

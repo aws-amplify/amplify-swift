@@ -119,6 +119,29 @@ read_aws() {
     aws_into "$__target" "$@" || die "aws $1 $2 failed (${AWS_ERR_CODE:-no code}): ${AWS_ERR:-no output}"
 }
 
+# Every page of a list call that pages with --next-token and NextToken, and must be given --max-results: the
+# Cognito list calls (ListUserPools requires it). Giving it turns the CLI's own pagination off, so this asks for
+# each page in turn, 60 items at a time, and puts in the variable named $1 one document, {"<$2>": [every page's
+# items]}. $2 is the response's list field (UserPools, IdentityPools, UserPoolClients); the call follows. Every
+# other list call the scripts make is one the CLI paginates itself (they give it no page size or token).
+read_all_pages() {
+    local __target="$1" __field="$2" __page="" __token="" __items="[]" __pages=0
+    shift 2
+    while :; do
+        if [[ -n "$__token" ]]; then
+            read_aws __page "$@" --max-results 60 --next-token "$__token"
+        else
+            read_aws __page "$@" --max-results 60
+        fi
+        __items=$(jq -c --argjson a "$__items" --arg f "$__field" '$a + (.[$f] // [])' <<<"$__page")
+        __token=$(jq -r '.NextToken // empty' <<<"$__page")
+        __pages=$((__pages + 1))
+        [[ -n "$__token" ]] || break
+        (( __pages < 1000 )) || die "aws $1 $2 returned more than 1000 pages."
+    done
+    printf -v "$__target" '%s' "$(jq -n -c --arg f "$__field" --argjson a "$__items" '{($f): $a}')"
+}
+
 # A read whose resource may not exist: returns 1, with the variable empty, when the error code is one of $2
 # (space-separated). Any other failure dies.
 read_aws_or_missing() {

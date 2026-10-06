@@ -40,3 +40,13 @@ test("without it, as on the sandbox, a ccit-confirm- user is left unconfirmed", 
     const result = await preSignUp(event("ccit-confirm-0123456789ab"));
     assert.notEqual(result.response.autoConfirmUser, true);
 });
+
+test("without it, as on the alias-codes pool, a ccit-confirm- email is left to confirm and outsiders are refused", async () => {
+    const generated = "00000000-0000-4000-8000-000000000000";
+    const confirm = await preSignUp(event(generated, "ccit-confirm-0123456789ab@example.com"));
+    assert.notEqual(confirm.response.autoConfirmUser, true);
+    const plain = await preSignUp(event(generated, "ccit-0123456789ab@example.com"));
+    assert.equal(plain.response.autoConfirmUser, true);
+    assert.equal(plain.response.autoVerifyEmail, true);
+    await assert.rejects(preSignUp(event(generated, "outsider-0123456789ab@example.com")), /limited to integration-test users/);
+});

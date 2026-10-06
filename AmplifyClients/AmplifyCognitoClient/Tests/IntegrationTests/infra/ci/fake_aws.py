@@ -84,6 +84,20 @@ def account(state):
     return state["account"]
 
 
+def page(o, field, items):
+    """One page of a Cognito list call, as the service pages it: --max-results items (1 to 60) from --next-token
+    on, and a NextToken while more are left. FAKE_PAGE_SIZE, when set, is the page size instead, so a test can put a
+    resource on a later page."""
+    size = int(os.environ.get("FAKE_PAGE_SIZE") or one(o, "max-results") or 0)
+    if not 1 <= size <= 60:
+        raise Fail("InvalidParameterException", "MaxResults must be between 1 and 60")
+    start = int(one(o, "next-token", "0"))
+    result = {field: items[start:start + size]}
+    if start + size < len(items):
+        result["NextToken"] = str(start + size)
+    return result
+
+
 def handle(state, service, verb, o, data):
     acct, region = account(state), "us-east-1"
     s = state
@@ -275,10 +289,22 @@ def handle(state, service, verb, o, data):
         params = s.setdefault("ssm", {})
         name = one(o, "name") or one(o, "resource-id") or data.get("Name")
         if verb == "put-parameter":
-            if name in params:
+            if name in params and not data.get("Overwrite"):
                 raise Fail("ParameterAlreadyExists")
-            params[name] = {"value": data["Value"], "tags": data.get("Tags", [])}
+            if data.get("Overwrite") and data.get("Tags"):
+                raise Fail("ValidationException", "Invalid request: tags and overwrite can't be used together.")
+            # As SSM: a SecureString without a KeyId is encrypted with the AWS-managed key, which it then creates.
+            key = data.get("KeyId") or "alias/aws/ssm"
+            if key == "alias/aws/ssm":
+                kms = s.setdefault("kms", {"keys": {}, "aliases": {}})
+                kms["aliases"].setdefault("alias/aws/ssm", "aws-managed-ssm-key")
+            tags = params[name]["tags"] if name in params else data.get("Tags", [])
+            params[name] = {"value": data["Value"], "tags": tags, "key": key}
             return {"Version": 1}
+        if verb == "describe-parameters":
+            wanted = shorthand(one(o, "parameter-filters"))["Values"]
+            return {"Parameters": [{"Name": n, "Type": "SecureString", "KeyId": p.get("key", "alias/aws/ssm")}
+                                   for n, p in sorted(params.items()) if n == wanted]}
         if name not in params:
             raise Fail("ParameterNotFound" if verb != "list-tags-for-resource" else "InvalidResourceId")
         if verb == "get-parameter":
@@ -323,6 +349,8 @@ def handle(state, service, verb, o, data):
         if verb == "add-permission":
             function["policy"].append({"Sid": one(o, "statement-id"), "Principal": {"Service": one(o, "principal")},
                                        "Condition": {"ArnLike": {"AWS:SourceArn": one(o, "source-arn")}}})
+            # As Lambda does: a change to the function's policy gives it a new revision.
+            function["config"]["RevisionId"] = new_id(s, "rev", 8)
             return {"Statement": "{}"}
         if verb == "invoke":
             outfile = o["payload"][-1]
@@ -366,7 +394,8 @@ def handle(state, service, verb, o, data):
     if service == "cognito-identity":
         pools = s.setdefault("identity_pools", {})
         if verb == "list-identity-pools":
-            return {"IdentityPools": [{"IdentityPoolId": i, "IdentityPoolName": p["IdentityPoolName"]} for i, p in pools.items()]}
+            return page(o, "IdentityPools", [{"IdentityPoolId": i, "IdentityPoolName": p["IdentityPoolName"]}
+                                             for i, p in pools.items()])
         if verb == "create-identity-pool":
             pool_id = f"{region}:{uuid.UUID(hashlib.md5(new_id(s, 'ip').encode()).hexdigest())}"
             pools[pool_id] = dict(data, IdentityPoolId=pool_id, roles={})
@@ -391,9 +420,9 @@ def handle(state, service, verb, o, data):
     if service == "cognito-idp":
         pools = s.setdefault("pools", {})
         if verb == "list-user-pools":
-            return {"UserPools": [{k: p["UserPool"][k] for k in ("Id", "Name", "LambdaConfig", "LastModifiedDate",
-                                                                 "CreationDate") if k in p["UserPool"]}
-                                  for p in pools.values()]}
+            return page(o, "UserPools", [{k: p["UserPool"][k] for k in ("Id", "Name", "LambdaConfig", "LastModifiedDate",
+                                                                        "CreationDate") if k in p["UserPool"]}
+                                         for p in pools.values()])
         if verb == "create-user-pool":
             pool_id = f"{region}_Fake{new_id(s, 'pool', 6)}"
             pool = {k: v for k, v in data.items() if k != "PoolName"}
@@ -414,8 +443,8 @@ def handle(state, service, verb, o, data):
             pool["mfa"] = {k: v for k, v in data.items() if k != "UserPoolId"}
             return pool["mfa"]
         if verb == "list-user-pool-clients":
-            return {"UserPoolClients": [{"ClientId": c, "ClientName": v["ClientName"], "UserPoolId": pool_id}
-                                        for c, v in pool["clients"].items()]}
+            return page(o, "UserPoolClients", [{"ClientId": c, "ClientName": v["ClientName"], "UserPoolId": pool_id}
+                                               for c, v in pool["clients"].items()])
         if verb == "create-user-pool-client":
             client_id = new_id(s, "client")
             pool["clients"][client_id] = dict({k: v for k, v in data.items() if k != "GenerateSecret"}, ClientId=client_id)
