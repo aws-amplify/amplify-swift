@@ -56,7 +56,7 @@ enum IntegrationTestEnvironment {
     /// P-3, the fixture check, AT-2's second half, RP-3). That is the extended role when its outputs file is in the
     /// bundle (on CI, `infra/ci`'s `ccit-ci-default`, mapped in by `infra/ci/ci-overlay.sh`), and otherwise the
     /// default role itself: the sandbox's, which has them all, or the plugin's on CI, which has none, so the tests
-    /// skip there with their I17 reasons as before. Every other test on the default role keeps the default role.
+    /// skip there with their CI-only skip reasons as before. Every other test on the default role keeps the default role.
     static var extrasRole: SandboxPool {
         extrasRole(hasExtendedOutputs: hasOutputs(.extended))
     }
@@ -359,7 +359,7 @@ enum IntegrationTestEnvironment {
             + "before the mark existed, run infra/plugin-configs.py --dir again and rebuild."
     }
 
-    // MARK: - CI skips (I17)
+    // MARK: - CI skips
 
     /// What the client's CI job sets to `1` in the test process, through `xcodebuild`'s
     /// `TEST_RUNNER_COGNITO_CLIENT_INTEG_CI_SKIPS` (`run_integration_tests.yml`'s `cognito_client_integ_ci_skips`

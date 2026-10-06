@@ -52,7 +52,7 @@ jobs:
       # default and device-alias ones (custom auth, the new-password users and the code API; the alias-codes pool)
       # with the capabilities file that lets the three sandbox checks run there. Every other role stays the plugin's.
       cognito_client_ci_overlay: 'email-alias extended'
-      # Nothing skips: every resource the suite needs is provided above, so the I17 skips
+      # Nothing skips: every resource the suite needs is provided above, so the CI-only skips
       # (cognito_client_integ_ci_skips, kept for local runs on the plugin's own files) are off, and a resource
       # that goes missing fails its tests, naming it, instead of skipping them. The gate fails the job on any skip.
       enforce_no_skips: true

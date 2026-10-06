@@ -655,14 +655,14 @@ Each reason is a case of `CISkipReason`, whose message is the skip's and names t
 On the plugin's own files with the variable set, `CognitoClientIntegrationTests` should run 245 tests with no failures:
 222 passed, the every-pool check among them, and 23 skipped, 20 with these reasons and the 3 sandbox checks. On CI,
 with the client's own resources overlaid and the variable off, none of the 23 skips. That assumes CS-D1, CS-D2,
-CS-D3 and C26 (`StorageConfigurationTests+DefaultSession.swift`), added since the suite last ran on CI, pass there:
+CS-D3 and the stored-session configuration tests (`StorageConfigurationTests+DefaultSession.swift`), added since the suite last ran on CI, pass there:
 they need only what CS-2 and CS-3 used, which passed. The device-alias row is to be provided on CI instead (option A,
 "What the plugin's CI backends must provide", above); the default backend's rows stay skips.
 
 On the plugin's own files, `PluginRotationTests` (RT-1, RT-2) skip without the rotation client's outputs, which the
 plugin's CI has not, and the variable makes their message say it is CI. The interop job overlays `extended`, whose
 rotation client they run on. The
-interop suite is now 16 tests, rewritten in I2, and has not run on CI since; on CI it should pass 14 and skip RT-1 and
+interop suite is now 16 tests, rewritten for the shared saved login, and has not run on CI since; on CI it should pass 14 and skip RT-1 and
 RT-2. HU-1, HU-2, WA-0 and WA-1 set nothing and are unchanged.
 
 ### CI's test configuration
@@ -749,7 +749,7 @@ job runs one test, and fails when that test fails.
 
 ### CI's additive resources (`infra/ci`)
 
-The I17 skips and RT-1 and RT-2 need resources the plugin's CI backends lack. Adding them to those backends would
+The CI-only skips and RT-1 and RT-2 need resources the plugin's CI backends lack. Adding them to those backends would
 change them, so `infra/ci/provision-ci.sh` adds **new** ones beside them in the CI account instead, and changes
 nothing that exists. Everything is named `ccit-ci-…` (the identity pool `ccit_ci_default`, the parameters
 `/ccit-ci/…`) and tagged `purpose=amplify-cognito-client-integ`. It comes in two phases.
@@ -775,7 +775,7 @@ Essentials). Only the tests that need the default backend's extras use it, throu
 CA-1…3 and the stored-answer check, CH-1, P-3, the fixture check, AT-2's second half and RP-3. RT-1 and RT-2 sign
 their user up through it too (`InteropEnvironment.rotationBaseResource`), and still require the rotation client to
 be on that user's pool. Every other test on the default role keeps the plugin's pool. When the extended file is
-absent, `extrasRole` is the default role, so on the plugin's CI those tests skip with their I17 messages as before,
+absent, `extrasRole` is the default role, so on the plugin's CI those tests skip with their CI-only skip messages as before,
 and on the sandbox they run on its default pool. `.extended` is not in `SandboxPool.allCases`, the plugin's roles,
 but in `SandboxPool.optionalRoles`, and the build phases copy its files as optional.
 

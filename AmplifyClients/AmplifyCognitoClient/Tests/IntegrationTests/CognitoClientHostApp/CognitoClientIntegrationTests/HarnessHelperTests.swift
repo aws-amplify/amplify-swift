@@ -434,7 +434,7 @@ extension HarnessHelperTests {
     ///    - The role is asked for with and without the extended role's outputs, and each role's credentials file
     /// - Then:
     ///    - With the outputs it is `.extended`; without them `.standard`, so on the plugin's CI (no extended file)
-    ///      those tests take the default role's I17 skips as before, and on the sandbox its default pool
+    ///      those tests take the default role's CI-only skips as before, and on the sandbox its default pool
     ///    - The extended role reads `AmplifyCognitoClientExtendedIntegrationTests-credentials`, never the plugin's
     ///      file, and every other role the default backend's `AWSCognitoAuthPluginIntegrationTests-credentials`
     ///    - The answer to `extrasRole` in this process follows whether the extended file is in the bundle
