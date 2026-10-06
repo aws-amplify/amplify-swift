@@ -235,9 +235,51 @@ struct SignInScreen: Screen {
         return value.count == text.count
     }
 
+    /// Waits for the app to show the sign-in succeeded, failing at once with the app's error or the
+    /// hosted UI's own message when either shows one.
+    ///
+    /// A submit tap lost on a loaded runner leaves the hosted UI's form up with no answer. Once the
+    /// hosted UI answers, the form goes (with a redirect the session closes) or shows a message, so
+    /// submit is tapped again only while the form is still up with no message, 20 s after the last
+    /// tap, and at most twice.
     func testSignInSucceeded() -> Self {
         let successText = app.staticTexts[Identifiers.successLabel]
-        XCTAssertTrue(successText.waitForExistence(timeout: 60), "SignIn operation failed")
+        let submitButton = app.webViews.buttons["submit"]
+        var submits = 1
+        var lastSubmit = Date()
+        let deadline = Date().addingTimeInterval(90)
+        while Date() < deadline {
+            if successText.waitForExistence(timeout: 2) {
+                return self
+            }
+            if let error = signInError() {
+                XCTFail("SignIn operation failed: the app shows \(error)")
+                return self
+            }
+            if let message = hostedUIMessage() {
+                XCTFail("SignIn operation failed: the hosted UI shows \"\(message)\"")
+                return self
+            }
+            if submits < 3, Date().timeIntervalSince(lastSubmit) >= 20, submitButton.exists, submitButton.isHittable {
+                submitButton.tap()
+                submits += 1
+                lastSubmit = Date()
+            }
+        }
+        let state = submitButton.exists
+            ? "the hosted UI form is still shown; \(webPageSummary())"
+            : "the hosted UI closed and the app shows no result"
+        XCTFail("SignIn operation failed after \(submits) submits: \(state)")
         return self
+    }
+
+    /// The hosted UI's error message, such as "Incorrect username or password.", when it shows one.
+    private func hostedUIMessage() -> String? {
+        let words = ["incorrect", "error", "not exist", "invalid", "try again"]
+        let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: words.map {
+            NSPredicate(format: "label CONTAINS[c] %@", $0)
+        })
+        let message = app.webViews.staticTexts.matching(predicate).firstMatch
+        return message.exists ? String(message.label.prefix(120)) : nil
     }
 }
