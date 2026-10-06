@@ -1,0 +1,34 @@
+{
+  "clearedServices" : [
+    "<bundle>.AWSCognitoIdentityUserPool",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff",
+    "Optional(\"<bundle>\").AWSMobileClient"
+  ],
+  "event" : "loadCredentialStore",
+  "reads" : [
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.currentUser",
+    "<bundle>.AWSCognitoIdentityUserPool | us-east-1_FixturePool.fixture-user.device.id",
+    "<bundle>.AWSCognitoIdentityUserPool | us-east-1_FixturePool.fixture-user.device.secret",
+    "<bundle>.AWSCognitoIdentityUserPool | us-east-1_FixturePool.fixture-user.device.group",
+    "<bundle>.AWSCognitoIdentityUserPool | us-east-1_FixturePool.fixture-user.asf.device.id",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.currentUser",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.fixture-user.idToken",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.fixture-user.accessToken",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.fixture-user.refreshToken",
+    "<bundle>.AWSCognitoIdentityUserPool | fixture-client-id.fixture-user.tokenExpiration",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | accessKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | secretKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | sessionKey",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | expiration",
+    "<bundle>.AWSCognitoCredentialsProvider.us-east-1:00000000-0000-4000-8000-00000000ffff | identityId",
+    "Optional(\"<bundle>\").AWSMobileClient | loginsMap",
+    "Optional(\"<bundle>\").AWSMobileClient | federationProvider"
+  ],
+  "savedASFDevices" : {
+
+  },
+  "savedCredentials" : "{\"userPoolAndIdentityPool\":{\"credentials\":{\"accessKeyId\":\"LEGACYACCESSKEYID\",\"expiration\":721700000,\"secretAccessKey\":\"legacy/secret+key\",\"sessionToken\":\"legacy-session-token\"},\"identityID\":\"us-east-1:00000000-0000-4000-8000-00000000abcd\",\"signedInData\":{\"cognitoUserPoolTokens\":{\"accessToken\":\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJleHAiOjE3MDAwMDM2MDB9.fixture-signature\",\"expiration\":721696400,\"idToken\":\"eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJmaXh0dXJlLXN1Yi0wMDAxIiwidXNlcm5hbWUiOiJmaXh0dXJlLXVzZXIiLCJ0b2tlbl91c2UiOiJpZCIsImV4cCI6MTcwMDAwMzYwMH0.fixture-signature\",\"refreshToken\":\"fixture-legacy-refresh-token\"},\"deviceMetadata\":{\"noData\":{}},\"isRefreshTokenExpired\":false,\"signedInDate\":-63114076800,\"signInMethod\":{\"apiBased\":{\"_0\":{\"type\":\"USER_SRP_AUTH\"}}},\"userId\":\"fixture-sub-0001\",\"username\":\"fixture-user\"}}}",
+  "savedDevices" : {
+
+  }
+}

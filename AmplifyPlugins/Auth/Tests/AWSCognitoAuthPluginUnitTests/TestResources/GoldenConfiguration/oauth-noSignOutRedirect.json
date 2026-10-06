@@ -1,0 +1,1 @@
+{"userPools":{"authFlowType":{"type":"USER_SRP_AUTH"},"clientId":"oauthclientid9876543210","poolId":"us-west-2_oauth0002","region":"us-west-2","signUpAttributes":[],"usernameAttributes":[],"verificationMechanisms":[]}}
