@@ -198,19 +198,22 @@ let apiTargets: [Target] = [
 ]
 
 let authTargets: [Target] = [
+    // AmplifyBigInteger, AmplifySRP, AmplifyAvailability and libtommathAmplify are Amplify-free internals
+    // shared by the plugin and the client, so they live under AmplifyClients/Internal/: the client
+    // never builds a target that lives in a plugin directory.
     .target(
         name: "AmplifyBigInteger",
         dependencies: [
             "libtommathAmplify"
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
+        path: "AmplifyClients/Internal/AmplifyBigInteger/Sources"
     ),
     .target(
         name: "AmplifySRP",
         dependencies: [
             .target(name: "AmplifyBigInteger")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
+        path: "AmplifyClients/Internal/AmplifySRP/Sources"
     ),
     .target(
         name: "AWSCognitoAuthPlugin",
@@ -231,12 +234,12 @@ let authTargets: [Target] = [
     ),
     .target(
         name: "AmplifyAvailability",
-        path: "AmplifyPlugins/Auth/Sources/AmplifyAvailability",
+        path: "AmplifyClients/Internal/AmplifyAvailability/Sources",
         publicHeadersPath: "include"
     ),
     .target(
         name: "libtommathAmplify",
-        path: "AmplifyPlugins/Auth/Sources/libtommath",
+        path: "AmplifyClients/Internal/libtommathAmplify/Sources",
         exclude: [
             "changes.txt",
             "LICENSE",
@@ -258,7 +261,7 @@ let authTargets: [Target] = [
         dependencies: [
             "AmplifyBigInteger"
         ],
-        path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
+        path: "AmplifyClients/Internal/AmplifyBigInteger/Tests"
     )
 ]
 
