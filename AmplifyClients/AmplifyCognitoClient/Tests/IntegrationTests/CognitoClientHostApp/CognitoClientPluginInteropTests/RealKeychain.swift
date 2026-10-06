@@ -38,6 +38,12 @@ enum RealKeychain {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
+    /// Replaces the data of the item under `account` in `service`, in whichever group it is, with `value`.
+    static func replace(_ value: String, account: String, service: String) -> OSStatus {
+        let query = KeychainItemAttributes(service: service).itemQuery(account: account)
+        return SecItemUpdate(query as CFDictionary, [kSecValueData as String: Data(value.utf8)] as CFDictionary)
+    }
+
     /// Every item under `service`, in every visible access group (or only `group`), sorted.
     static func rows(service: String, group: String? = nil) -> [Row] {
         var query = KeychainItemAttributes(service: service, accessGroup: group).defaultGetQuery()

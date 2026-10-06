@@ -293,12 +293,21 @@ final class CredentialStoreTransitionRealKeychainTests: XCTestCase {
     /// (`$default.meta`: nobody has signed in), then drops the client and waits until the registry has released
     /// it. Returns the sidecar's account. Called after the plugin's items are seeded, so a client that writes the
     /// plugin's `authConfiguration` for `.default` never collides with the seeded one.
+    ///
+    /// Then puts the seeded, unreadable `authConfiguration` back. The client's restore of `.default` recorded the
+    /// sandbox configuration there as the plugin's last one, and `configurePlugin` starts the plugin under
+    /// another user pool, so the plugin would apply a clearing configuration change from the sandbox: it deletes the
+    /// sandbox namespace's login and, with it, that namespace's `$default.meta` and `$default.challenge` (as the
+    /// client does on the same change), the very sidecar these tests follow. The plugin's own Q7 tests see no previous
+    /// configuration, and these must too: they test the access-group transition, not a configuration change.
     @discardableResult
     private func writeClientDefaultLabel() async throws -> String {
         let configuration = try XCTUnwrap(clientConfiguration)
         try await AmplifyCognitoClient(configuration: configuration, options: .init(sessionId: .default))
             .setSessionLabel(Self.clientLabel)
         try await InteropEnvironment.waitUntilReleased(.default)
+        let status = RealKeychain.replace("default", account: "authConfiguration", service: unsharedService)
+        XCTAssertEqual(status, errSecSuccess, "restore the seeded authConfiguration: \(RealKeychain.describe(status))")
         let account = SessionRecordKey.metaAccount(in: configuration.poolNamespace)
         XCTAssertTrue(
             RealKeychain.rows(service: unsharedService).contains { $0.account == account },
