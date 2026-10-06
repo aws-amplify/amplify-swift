@@ -32,7 +32,9 @@ let amplifyTargets: [Target] = [
     .target(
         name: "AWSPluginsCore",
         dependencies: [
-            "Amplify"
+            "Amplify",
+            "AmplifyFoundation",
+            "InternalAmplifyKeychain"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
@@ -41,6 +43,24 @@ let amplifyTargets: [Target] = [
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
+    ),
+    // The one keychain implementation, shared by `AWSPluginsCore` and the standalone clients. Depends
+    // only on `AmplifyFoundation`: clients must not depend on `Amplify` or `AWSPluginsCore`.
+    .target(
+        name: "InternalAmplifyKeychain",
+        dependencies: [
+            "AmplifyFoundation"
+        ],
+        path: "AmplifyClients/Internal/InternalAmplifyKeychain/Sources"
+    ),
+    // The in-memory keychain fake. Test targets only: keeping it out of `InternalAmplifyKeychain` keeps
+    // it out of every app that links the plugins.
+    .target(
+        name: "AmplifyKeychainTestCommon",
+        dependencies: [
+            "InternalAmplifyKeychain"
+        ],
+        path: "AmplifyClients/Internal/AmplifyKeychainTestCommon"
     ),
     .target(
         name: "InternalAmplifyCredentials",
@@ -114,12 +134,23 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCoreTests",
         dependencies: [
             "AWSPluginsCore",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
             "Info.plist"
         ]
+    ),
+    .testTarget(
+        name: "InternalAmplifyKeychainTests",
+        dependencies: [
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon",
+            "AmplifyFoundation"
+        ],
+        path: "AmplifyClients/Internal/InternalAmplifyKeychain/Tests"
     ),
     .testTarget(
         name: "InternalAmplifyCredentialsTests",
