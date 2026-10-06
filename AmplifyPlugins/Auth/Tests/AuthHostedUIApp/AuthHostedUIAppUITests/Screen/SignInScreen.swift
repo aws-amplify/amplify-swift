@@ -10,6 +10,8 @@ import XCTest
 struct SignInScreen: Screen {
 
     let app: XCUIApplication
+    /// The sign-in button last tapped, to tap again when the tap is lost.
+    var tappedSignInButton: String?
 
     var useGen2Configuration: Bool {
         ProcessInfo.processInfo.arguments.contains("GEN2")
@@ -22,6 +24,7 @@ struct SignInScreen: Screen {
 
         static let successLabel = "hostedUI_success_text"
         static let errorLabel = "hostedUI_error_text"
+        static let signInStartedLabel = "hostedUI_signIn_started_text"
     }
 
     func gotoSignUpView() -> SignUpScreen {
@@ -48,18 +51,21 @@ struct SignInScreen: Screen {
     }
 
     func tapSignIn() -> Self {
-        let button = app.buttons[Identifiers.signInButton]
         // Back from the sign-up screen, wait for the pop to bring this button back before tapping.
-        XCTAssertTrue(button.waitForExistence(timeout: 30), "Sign in button not found")
-        button.tap()
-        return self
+        tapSignInButton(Identifiers.signInButton, "Sign in button not found")
     }
 
     func tapSignInWithoutPresentationAnchor() -> Self {
-        let button = app.buttons[Identifiers.signInWithoutWindowButton]
-        XCTAssertTrue(button.waitForExistence(timeout: 30), "Sign in without window button not found")
+        tapSignInButton(Identifiers.signInWithoutWindowButton, "Sign in without window button not found")
+    }
+
+    private func tapSignInButton(_ identifier: String, _ notFound: String) -> Self {
+        let button = app.buttons[identifier]
+        XCTAssertTrue(button.waitForExistence(timeout: 30), notFound)
         button.tap()
-        return self
+        var screen = self
+        screen.tappedSignInButton = identifier
+        return screen
     }
 
     func dismissSignInAlert() -> Self {
@@ -68,28 +74,50 @@ struct SignInScreen: Screen {
         return self
     }
 
-
     func signIn(username: String, password: String) -> Self {
+        waitForHostedUI()
+
         // The hosted UI names this field after the user pool's sign-in attribute, not after the
         // configuration format: "Email Email" on a pool that signs in with email (the Gen2 README
         // backend), "Username" on one that signs in with a username (the Gen1 README backend, and
         // the one pool the integration sandbox serves to both schemes). So either is accepted, the
-        // configuration's usual one first.
+        // configuration's usual one first, then the field by its other labels or placeholders,
+        // then the page's only text field.
         let signInTextFieldNames = if useGen2Configuration {
             ["Email Email", "Username"]
         } else {
             ["Username", "Email Email"]
         }
-
-        let usernameField = waitForWebTextField(signInTextFieldNames.map { app.webViews.textFields[$0] })
+        let otherNames = signInTextFieldNames + ["Email", "Email address", "Username or email"]
+        let textFields = app.webViews.textFields
+        let usernameField = waitForWebField(
+            "username",
+            signInTextFieldNames.map { textFields[$0] } + [
+                textFields.matching(Self.labelOrPlaceholder(in: otherNames)).firstMatch,
+                textFields.firstMatch
+            ]
+        )
         focusAndType(usernameField, username)
-        // Route the password field through the same consent-clearing poll as the username
-        // field; a late consent sheet can otherwise hide it past `focusAndType`'s plain wait.
-        let passwordField = waitForWebTextField([app.webViews.secureTextFields["Password"]])
+
+        let secureFields = app.webViews.secureTextFields
+        let passwordField = waitForWebField(
+            "password",
+            [
+                secureFields["Password"],
+                secureFields.matching(Self.labelOrPlaceholder(in: ["Password"])).firstMatch,
+                secureFields.firstMatch
+            ]
+        )
         focusAndType(passwordField, password)
 
-        app.webViews.buttons["submit"].tap()
+        let submitButton = app.webViews.buttons["submit"]
+        XCTAssertTrue(submitButton.waitForExistence(timeout: 30), "Hosted UI submit button not found")
+        submitButton.tap()
         return self
+    }
+
+    private static func labelOrPlaceholder(in names: [String]) -> NSPredicate {
+        NSPredicate(format: "label IN %@ OR placeholderValue IN %@", names, names)
     }
 
     @discardableResult
@@ -103,20 +131,76 @@ struct SignInScreen: Screen {
         return false
     }
 
-    // Consent sheet can arrive late, so keep clearing it while polling. Returns the first of
-    // `elements` found (or the first, to fail on, if none is found in time).
-    private func waitForWebTextField(_ elements: [XCUIElement]) -> XCUIElement {
-        let deadline = Date().addingTimeInterval(60)
+    /// Waits for the authentication session's web view, clearing a late consent prompt while it
+    /// polls. A sign-in tap lost on a loaded runner never starts a session, so the button is tapped
+    /// again, but only while the app shows no sign-in started: a second sign-in would cancel the
+    /// first, and iOS 26 presents only the first session on a simulator.
+    private func waitForHostedUI() {
+        let webView = app.webViews.firstMatch
+        let signInStarted = app.staticTexts[Identifiers.signInStartedLabel]
+        var lastTap = Date()
+        var taps = 1
+        let deadline = Date().addingTimeInterval(UITestTimeout.firstLoad)
         while Date() < deadline {
-            tapConsentContinueIfPresent(timeout: 2)
-            if elements[0].waitForExistence(timeout: 3) {
-                return elements[0]
+            tapConsentContinueIfPresent(timeout: 1)
+            if webView.waitForExistence(timeout: 2) {
+                return
             }
-            if let element = elements.dropFirst().first(where: { $0.exists }) {
-                return element
+            if let error = signInError() {
+                XCTFail("Sign in failed before the hosted UI showed: \(error)")
+                return
+            }
+            if !signInStarted.exists, Date().timeIntervalSince(lastTap) >= 10,
+               let identifier = tappedSignInButton {
+                let button = app.buttons[identifier]
+                if button.exists, button.isHittable {
+                    button.tap()
+                    taps += 1
+                    lastTap = Date()
+                }
             }
         }
-        return elements[0]
+        XCTFail(
+            "Hosted UI web view not shown after \(taps) sign-in taps; the app "
+                + (signInStarted.exists ? "started the sign-in" : "shows no sign-in started")
+        )
+    }
+
+    /// Returns the first of `candidates` to exist, clearing a late consent prompt while it polls.
+    /// Ends as soon as one exists; fails naming the page's fields when none does.
+    private func waitForWebField(_ name: String, _ candidates: [XCUIElement]) -> XCUIElement {
+        let deadline = Date().addingTimeInterval(60)
+        repeat {
+            if let element = candidates.first(where: { $0.exists }) {
+                return element
+            }
+            tapConsentContinueIfPresent(timeout: 1)
+            _ = candidates[0].waitForExistence(timeout: 2)
+        } while Date() < deadline
+        if let element = candidates.first(where: { $0.exists }) {
+            return element
+        }
+        XCTFail("Hosted UI \(name) field not found; \(webPageSummary())")
+        return candidates[0]
+    }
+
+    /// The web views' text fields by label and placeholder (never their values), for a failure.
+    private func webPageSummary() -> String {
+        let fields = app.webViews.textFields.allElementsBoundByIndex
+            + app.webViews.secureTextFields.allElementsBoundByIndex
+        let described = fields.map { "\($0.elementType == .secureTextField ? "secure " : "")"
+            + "'\($0.label)'/'\($0.placeholderValue ?? "")'"
+        }
+        let error = signInError().map { "; sign-in error: \($0)" } ?? ""
+        return "\(app.webViews.count) web views, fields: [\(described.joined(separator: ", "))]\(error)"
+    }
+
+    private func signInError() -> String? {
+        let errorText = app.staticTexts[Identifiers.errorLabel]
+        guard errorText.exists else {
+            return nil
+        }
+        return errorText.value as? String ?? "unknown"
     }
 
     // iOS 26: first tap raises the keyboard, second moves focus to this field.
