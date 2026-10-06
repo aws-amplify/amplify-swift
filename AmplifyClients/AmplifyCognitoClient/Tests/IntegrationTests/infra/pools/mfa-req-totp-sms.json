@@ -1,0 +1,53 @@
+{
+  "comment": "U-REQ-TS, the plugin's MFA-required backend (AWSCognitoAuthPluginMFARequiredIntegrationTests): as U-DEF, but MFA required with TOTP and SMS, and no custom auth. `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH.",
+  "userPool": {
+    "UserPoolTier": "ESSENTIALS",
+    "DeletionProtection": "INACTIVE",
+    "Policies": {
+      "PasswordPolicy": {
+        "MinimumLength": 10,
+        "RequireUppercase": true,
+        "RequireLowercase": false,
+        "RequireNumbers": true,
+        "RequireSymbols": true,
+        "TemporaryPasswordValidityDays": 20
+      }
+    },
+    "UsernameConfiguration": { "CaseSensitive": false },
+    "AutoVerifiedAttributes": ["email"],
+    "AccountRecoverySetting": { "RecoveryMechanisms": [{ "Name": "verified_email", "Priority": 1 }] },
+    "UserAttributeUpdateSettings": { "AttributesRequireVerificationBeforeUpdate": [] },
+    "AdminCreateUserConfig": { "AllowAdminCreateUserOnly": false },
+    "DeviceConfiguration": { "ChallengeRequiredOnNewDevice": true, "DeviceOnlyRememberedOnUserPrompt": false },
+    "SmsConfiguration": { "SnsCallerArn": "${SMS_ROLE_ARN}", "ExternalId": "${SMS_EXTERNAL_ID}", "SnsRegion": "${SMS_REGION}" },
+    "LambdaConfig": {
+      "PreSignUp": "${PRE_SIGN_UP_ARN}",
+      "CustomEmailSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "CustomSMSSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "KMSKeyID": "${KMS_KEY_ARN}"
+    }
+  },
+  "mfa": {
+    "MfaConfiguration": "ON",
+    "SoftwareTokenMfaConfiguration": { "Enabled": true },
+    "SmsMfaConfiguration": {
+      "SmsAuthenticationMessage": "Your code is {####}",
+      "SmsConfiguration": { "SnsCallerArn": "${SMS_ROLE_ARN}", "ExternalId": "${SMS_EXTERNAL_ID}", "SnsRegion": "${SMS_REGION}" }
+    }
+  },
+  "appClients": {
+    "client": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED"
+    },
+    "ci": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED"
+    }
+  },
+  "outputs": {
+    "mfa-req-totp-sms": { "client": "client" }
+  }
+}

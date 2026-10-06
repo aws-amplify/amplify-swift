@@ -1,0 +1,9 @@
+## Only unexpired codes: DynamoDB's TTL deletes expired items lazily (up to about 48 hours later).
+#set($now = $util.time.nowEpochSeconds())
+#set($live = [])
+#foreach($item in $ctx.result.items)
+#if($item.expirationTime > $now)
+$util.qr($live.add($item))
+#end
+#end
+$util.toJson($live)
