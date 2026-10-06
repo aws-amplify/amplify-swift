@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.mjs",
   "scripts": {
-    "start": "node index.mjs"
+    "start": "node index.mjs",
+    "test": "node --test test/server.test.mjs"
   },
   "author": "Aws Amplify",
   "license": "Apache-2.0",

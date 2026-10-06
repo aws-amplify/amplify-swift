@@ -55,6 +55,8 @@ exports.handler = async (event, context) => {
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json
 ```
 
+To use another directory holding the same file names, set `COGNITO_CLIENT_INTEG_DIR` on the `xcodebuild` command, for example `COGNITO_CLIENT_INTEG_DIR="$DIR" xcodebuild build-for-testing …`. The `AuthHostedUIApp` target's "Copy Integ test configuration folder" build phase then copies that directory instead of `~/.aws-amplify/amplify-ios/testconfiguration/`, which it does not read. Unset, as on CI, it copies `~/.aws-amplify/amplify-ios/testconfiguration/`.
+
 ## Schema: AuthHostedUIAppGen2
 
 The following steps demonstrate how to setup the integration tests for auth plugin using Amplify CLI (Gen2).
