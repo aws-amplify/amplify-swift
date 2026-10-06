@@ -11,6 +11,7 @@ import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.

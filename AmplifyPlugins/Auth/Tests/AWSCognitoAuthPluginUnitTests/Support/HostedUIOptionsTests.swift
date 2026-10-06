@@ -6,6 +6,7 @@
 //
 
 import Amplify
+@testable import InternalAWSCognitoAuth
 import XCTest
 @testable import AWSCognitoAuthPlugin
 

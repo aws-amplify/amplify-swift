@@ -7,6 +7,7 @@
 
 import AWSClientRuntime
 import AWSCognitoIdentityProvider
+@testable import InternalAWSCognitoAuth
 import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 @testable import AWSCognitoAuthPlugin

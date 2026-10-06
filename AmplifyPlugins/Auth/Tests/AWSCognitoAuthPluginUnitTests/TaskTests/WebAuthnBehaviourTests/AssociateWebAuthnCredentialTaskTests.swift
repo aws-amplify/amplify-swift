@@ -13,6 +13,7 @@ import struct AWSCognitoIdentityProvider.WebAuthnNotEnabledException
 import Amplify
 import XCTest
 @testable import AWSCognitoAuthPlugin
+import InternalAWSCognitoAuth
 
 @available(iOS 17.4, macOS 13.5, *)
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
@@ -46,7 +47,7 @@ class AssociateWebAuthnCredentialTaskTests: XCTestCase, @unchecked Sendable {
                 SignedInData(
                     signedInDate: Date(),
                     signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
+                    cognitoUserPoolTokens: EngineUserPoolTokens.testData
                 )
             ),
             .sessionEstablished(AmplifyCredentials.testData),

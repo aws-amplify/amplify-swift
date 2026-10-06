@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import InternalAWSCognitoAuth
 
 extension AuthFactorType: DefaultLogger {
 
@@ -20,15 +21,15 @@ extension AuthFactorType: DefaultLogger {
             if #available(iOS 17.4, macOS 13.5, *) {
                 self = .webAuthn
             } else {
-                Self.log.error("WEB_AUTHN is not supported in this OS version.")
+                EngineLog.logger(.category("AuthFactorType")).error("WEB_AUTHN is not supported in this OS version.")
                 return nil
             }
         #else
-            Self.log.error("WEB_AUTHN is only available in iOS and macOS.")
+            EngineLog.logger(.category("AuthFactorType")).error("WEB_AUTHN is only available in iOS and macOS.")
             return nil
         #endif
         default:
-            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
+            EngineLog.logger(.category("AuthFactorType")).error("Tried to initialize an unsupported MFA type with value: \(rawValue)")
             return nil
         }
     }

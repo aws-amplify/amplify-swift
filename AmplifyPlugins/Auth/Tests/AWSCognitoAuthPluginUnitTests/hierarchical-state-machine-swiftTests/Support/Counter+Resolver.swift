@@ -6,6 +6,7 @@
 //
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 extension Counter {
     struct Resolver: StateMachineResolver {

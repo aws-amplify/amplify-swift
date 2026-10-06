@@ -9,6 +9,7 @@ import Amplify
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger, @unchecked Sendable {
@@ -40,9 +41,10 @@ final class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger, @u
             let accessToken = try await taskHelper.getAccessToken()
             try await changePassword(with: accessToken)
             log.verbose("Received success")
-        } catch let error as AuthErrorConvertible {
-            throw error.authError
         } catch {
+            if let authError = AuthError(converting: error) {
+                throw authError
+            }
             throw AuthError.configuration(
                 "Unable to execute auth task",
                 AuthPluginErrorConstants.configurationError,

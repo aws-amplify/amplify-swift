@@ -8,6 +8,7 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the task is constructed, run once, and discarded.
 final class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger, @unchecked Sendable {

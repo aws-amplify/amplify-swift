@@ -6,7 +6,9 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// A type that can be represented as an AuthError
 ///
@@ -20,3 +22,22 @@ extension AuthError: AuthErrorConvertible {
         return self
     }
 }
+
+/// Engine error types the glue reads with `.authError` get it from their `engineError`, through the
+/// plugin boundary (`AuthError(_:)` in `EngineBridge/AuthError+Engine.swift`). Each such type declares a
+/// one-line `AuthErrorConvertible` conformance in the plugin.
+extension AuthErrorConvertible where Self: EngineAuthErrorConvertible {
+    var authError: AuthError {
+        AuthError(engineError)
+    }
+}
+
+// The engine error types the glue reads with `.authError`.
+extension AuthenticationError: AuthErrorConvertible {}
+extension AuthorizationError: AuthErrorConvertible {}
+extension FetchSessionError: AuthErrorConvertible {}
+extension HostedUIError: AuthErrorConvertible {}
+extension SignInError: AuthErrorConvertible {}
+extension SignOutError: AuthErrorConvertible {}
+extension SignUpError: AuthErrorConvertible {}
+extension WebAuthnError: AuthErrorConvertible {}

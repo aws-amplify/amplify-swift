@@ -8,6 +8,7 @@
 import Foundation
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 // `@unchecked Sendable`: `HostedUISessionBehavior` is `Sendable` now. Test double with `let` state.
 final class MockHostedUISession: HostedUISessionBehavior, @unchecked Sendable {

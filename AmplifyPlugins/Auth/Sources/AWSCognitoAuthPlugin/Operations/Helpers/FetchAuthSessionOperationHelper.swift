@@ -9,6 +9,7 @@ import Amplify
 import Amplify
 import AWSPluginsCore
 import Foundation
+import InternalAWSCognitoAuth
 
 /// - Note: `final` and `@unchecked Sendable`: the helper is used from detached auth tasks and its
 ///   state is confined to a single fetch.
@@ -20,7 +21,7 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
     func fetch(
         _ authStateMachine: AuthStateMachine,
         forceRefresh: Bool = false
-    ) async throws -> AuthSession {
+    ) async throws -> AWSAuthCognitoSession {
         let state = await authStateMachine.currentState
         guard case .configured(_, let authorizationState, _) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
@@ -53,6 +54,16 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
                     underlyingError: error)
                 return session
             } else if case .sessionError(_, let credentials) = error {
+                // User-pool-only credentials with an identity pool configured mean the identity-pool step
+                // failed. Their tokens can be valid (a refresh that failed at that step keeps its refreshed
+                // tokens), so retry the refresh rather than returning a session without AWS credentials.
+                if case .userPoolOnly = credentials,
+                   (environment as? AuthEnvironment)?.identityPoolConfigData != nil {
+                    log.verbose("Session has no identity pool credentials, refreshing")
+                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                    await authStateMachine.send(event)
+                    return try await listenForSession(authStateMachine: authStateMachine)
+                }
                 return try await refreshIfRequired(
                     existingCredentials: credentials,
                     authStateMachine: authStateMachine,
@@ -74,7 +85,7 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
         existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
         forceRefresh: Bool
-    ) async throws -> AuthSession {
+    ) async throws -> AWSAuthCognitoSession {
 
             if forceRefresh || !credentials.areValid() {
                 let event = switch credentials {
@@ -92,7 +103,7 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
             }
         }
 
-    func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
+    func listenForSession(authStateMachine: AuthStateMachine) async throws -> AWSAuthCognitoSession {
 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for session to establish")
@@ -123,7 +134,7 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
     func sessionResultWithError(
         _ error: AuthorizationError,
         authenticationState: AuthenticationState
-    ) async throws -> AuthSession {
+    ) async throws -> AWSAuthCognitoSession {
         log.verbose("Received fetch auth session error - \(error)")
 
         var isSignedIn = false
@@ -191,7 +202,7 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
             }
 
             try await credentialStoreClient?.storeData(data: .amplifyCredentials(credentials))
-        } catch KeychainStoreError.itemNotFound {
+        } catch EngineCredentialStoreError.itemNotFound {
             let logger = (environment as? LoggerProvider)?.logger
             logger?.info("No existing credentials found.")
         } catch {
@@ -201,4 +212,11 @@ final class FetchAuthSessionOperationHelper: @unchecked Sendable {
     }
 }
 
-extension FetchAuthSessionOperationHelper: DefaultLogger { }
+extension FetchAuthSessionOperationHelper {
+    /// Routed through `environment` when it is set. `AWSAuthTaskHelper`'s helper has no environment,
+    /// so its lines go through the global router.
+    var log: EngineLogger {
+        let scope = EngineLogScope.category("FetchAuthSessionOperationHelper")
+        return (environment as? LoggerProvider)?.logger.scoped(scope) ?? EngineLog.logger(scope)
+    }
+}

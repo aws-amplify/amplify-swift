@@ -37,7 +37,9 @@ class AmplifyAuthCognitoPluginTests: XCTestCase, @unchecked Sendable {
                     subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)"
                 )
                 let authTestHarness = await AuthTestHarness(featureSpecification: specification)
-                await beginTest(for: authTestHarness.plugin, with: authTestHarness)
+                let plugin = authTestHarness.plugin
+                await beginTest(for: plugin, with: authTestHarness)
+                await plugin.waitForConfigureOperation()
             }
         }
     }

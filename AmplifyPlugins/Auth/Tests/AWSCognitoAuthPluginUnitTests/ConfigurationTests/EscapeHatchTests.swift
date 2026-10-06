@@ -43,6 +43,7 @@ class EscapeHatchTests: XCTestCase, @unchecked Sendable {
         ]
         let plugin = AWSCognitoAuthPlugin()
         try plugin.configure(using: configuration)
+        settleConfigureOperationOnTeardown(of: plugin, awaitingConfiguration: true)
         let escapeHatch = plugin.getEscapeHatch()
         guard case .userPoolAndIdentityPool = escapeHatch else {
             XCTFail("Expected .userPoolAndIdentityPool, got \(escapeHatch)")
@@ -71,6 +72,7 @@ class EscapeHatchTests: XCTestCase, @unchecked Sendable {
         ]
         let plugin = AWSCognitoAuthPlugin()
         try plugin.configure(using: configuration)
+        settleConfigureOperationOnTeardown(of: plugin, awaitingConfiguration: true)
         let escapeHatch = plugin.getEscapeHatch()
         guard case .identityPool = escapeHatch else {
             XCTFail("Expected .identityPool, got \(escapeHatch)")
@@ -99,6 +101,7 @@ class EscapeHatchTests: XCTestCase, @unchecked Sendable {
         ]
         let plugin = AWSCognitoAuthPlugin()
         try plugin.configure(using: configuration)
+        settleConfigureOperationOnTeardown(of: plugin, awaitingConfiguration: true)
         let escapeHatch = plugin.getEscapeHatch()
         guard case .userPool = escapeHatch else {
             XCTFail("Expected .userPool, got \(escapeHatch)")

@@ -47,9 +47,9 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
             phoneNumber: randomPhoneNumber
         )
 
-        // Retrieve the OTP sent to the email and confirm the sign-in
+        // Retrieve the sign-up confirmation code sent to the email
         guard let otp = try await otp(for: username) else {
-            XCTFail("Failed to retrieve the OTP code")
+            XCTFail("Failed to retrieve the sign-up confirmation code: \(otpDiagnostics)")
             return
         }
 
@@ -332,7 +332,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -380,7 +380,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -438,7 +438,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -496,7 +496,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -795,7 +795,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -872,7 +872,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the correct OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
             otpString = otp
@@ -921,7 +921,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the OTP sent to the phone and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 
@@ -1012,7 +1012,7 @@ class PasswordlessSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
             // Retrieve the correct OTP sent to the email and confirm the sign-in
             guard let otp = try await otp(for: username) else {
-                XCTFail("Failed to retrieve the OTP code")
+                XCTFail("Failed to retrieve the sign-in OTP code: \(otpDiagnostics)")
                 return
             }
 

@@ -9,6 +9,7 @@ import Amplify
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
+@testable import InternalAWSCognitoAuth
 
 typealias FetchAuthSessionStateSequence = StateSequence<FetchAuthSessionState, FetchAuthSessionEvent>
 
