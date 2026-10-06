@@ -1,0 +1,14 @@
+## Mutation.createMfaInfo: PutItem keyed as the plugin's table (username + code), with the username
+## lower-cased and a server-side createdAt.
+{
+    "version": "2018-05-29",
+    "operation": "PutItem",
+    "key": {
+        "username": $util.dynamodb.toDynamoDBJson($ctx.args.input.username.toLowerCase()),
+        "code": $util.dynamodb.toDynamoDBJson($ctx.args.input.code)
+    },
+    "attributeValues": {
+        "expirationTime": $util.dynamodb.toDynamoDBJson($ctx.args.input.expirationTime),
+        "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+    }
+}

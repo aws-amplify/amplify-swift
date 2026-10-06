@@ -1,0 +1,55 @@
+{
+  "comment": "U-ALIAS, the plugin's device-alias backend (AWSCognitoAuthPluginDeviceAliasTests): email as the username attribute (create-only), device tracking always, 5-minute access and id tokens, pre-sign-up, and the custom senders, so Cognito never mails anything and its codes reach the code sink. MFA off. `ci` is `client` as the plugin's CI backend has it (plugin-configs.py --ci-shape): no USER_PASSWORD_AUTH, and the pre-sign-up trigger leaves every sign-up through it unconfirmed (parity.py CI_SHAPE_UNCONFIRMED_POOLS).",
+  "userPool": {
+    "UserPoolTier": "ESSENTIALS",
+    "DeletionProtection": "INACTIVE",
+    "Policies": {
+      "PasswordPolicy": {
+        "MinimumLength": 10,
+        "RequireUppercase": true,
+        "RequireLowercase": false,
+        "RequireNumbers": true,
+        "RequireSymbols": true,
+        "TemporaryPasswordValidityDays": 20
+      }
+    },
+    "UsernameAttributes": ["email"],
+    "UsernameConfiguration": { "CaseSensitive": false },
+    "AutoVerifiedAttributes": ["email"],
+    "AccountRecoverySetting": { "RecoveryMechanisms": [{ "Name": "verified_email", "Priority": 1 }] },
+    "AdminCreateUserConfig": { "AllowAdminCreateUserOnly": false },
+    "DeviceConfiguration": { "ChallengeRequiredOnNewDevice": true, "DeviceOnlyRememberedOnUserPrompt": false },
+    "LambdaConfig": {
+      "PreSignUp": "${PRE_SIGN_UP_ARN}",
+      "CustomEmailSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "CustomSMSSender": { "LambdaVersion": "V1_0", "LambdaArn": "${CUSTOM_SENDER_ARN}" },
+      "KMSKeyID": "${KMS_KEY_ARN}"
+    }
+  },
+  "mfa": {
+    "MfaConfiguration": "OFF"
+  },
+  "appClients": {
+    "client": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "AccessTokenValidity": 5,
+      "IdTokenValidity": 5,
+      "RefreshTokenValidity": 30,
+      "TokenValidityUnits": { "AccessToken": "minutes", "IdToken": "minutes", "RefreshToken": "days" }
+    },
+    "ci": {
+      "ExplicitAuthFlows": ["ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"],
+      "EnableTokenRevocation": true,
+      "PreventUserExistenceErrors": "ENABLED",
+      "AccessTokenValidity": 5,
+      "IdTokenValidity": 5,
+      "RefreshTokenValidity": 30,
+      "TokenValidityUnits": { "AccessToken": "minutes", "IdToken": "minutes", "RefreshToken": "days" }
+    }
+  },
+  "outputs": {
+    "email-alias": { "client": "client" }
+  }
+}
