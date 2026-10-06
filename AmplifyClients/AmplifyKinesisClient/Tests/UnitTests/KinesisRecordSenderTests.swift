@@ -17,6 +17,10 @@ class KinesisRecordSenderTests: XCTestCase, @unchecked Sendable {
     private let testStreamName = "test-stream"
     private let maxRetries = 3
 
+    /// - Given: a record sender over a mock Kinesis client, and two records
+    /// - When: the records are sent to a stream
+    /// - Then:
+    ///    - the `PutRecordsInput` names the stream and carries both records' partition keys and data, in order
     func testCreateRequestShouldConstructCorrectPutRecordsInput() async throws {
         // Given
         let mockClient = MockKinesisClient()
@@ -48,6 +52,11 @@ class KinesisRecordSenderTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(captured.records?[1].data, Data([4, 5, 6]))
     }
 
+    /// - Given: three records, and a response that accepts the first, throttles the second (retry count 1) and
+    ///   fails the third, which is already at the maximum retry count
+    /// - When: the records are sent
+    /// - Then:
+    ///    - the response lists the first as successful, the second as retryable and the third as failed
     func testSplitResponseShouldCorrectlyCategorizeRecords() async throws {
         // Given
         let mockClient = MockKinesisClient()

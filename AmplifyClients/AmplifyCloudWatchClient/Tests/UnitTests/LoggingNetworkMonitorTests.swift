@@ -13,9 +13,9 @@ import XCTest
 
 final class LoggingNetworkMonitorTests: XCTestCase {
 
-    /// Given: a LoggingNetworkMonitor backed by NWPathMonitor
-    /// When: monitoring starts
-    /// Then: the monitor detects the device is online
+    /// - Given: a LoggingNetworkMonitor backed by NWPathMonitor
+    /// - When: monitoring starts
+    /// - Then: the monitor detects the device is online
     func testNetworkMonitorEvent() {
         let onlineExpectation = expectation(description: "Device is online")
         let loggingMonitor: LoggingNetworkMonitor = NWPathMonitor()

@@ -39,6 +39,10 @@ class RecordClientConcurrentFlushTests: XCTestCase, @unchecked Sendable {
         try await super.tearDown()
     }
 
+    /// - Given: five stored records and a sender that takes 500 ms to answer
+    /// - When: two flushes run concurrently, the second starting 50 ms after the first
+    /// - Then:
+    ///    - one flush sends the records, and the other returns at once reporting `flushInProgress`
     func testConcurrentFlushShouldReturnFlushInProgressForSecondCaller() async throws {
         // Given: Records in storage
         for i in 0 ..< 5 {

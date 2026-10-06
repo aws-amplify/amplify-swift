@@ -41,9 +41,9 @@ final class RotatingLoggerTests: XCTestCase {
         directory = nil
     }
 
-    /// Given: a rotating logger
-    /// When: a record is written
-    /// Then: a log file is created
+    /// - Given: a rotating logger
+    /// - When: a record is written
+    /// - Then: a log file is created
     func testRotatingLogRecordsToLogFile() async throws {
         let minimalSizeOfEachRecord = try LogEntry.minimumSizeForLogEntry(level: .error)
         let recordsPerFile = Int(fileSizeLimitInBytes) / minimalSizeOfEachRecord
@@ -56,9 +56,9 @@ final class RotatingLoggerTests: XCTestCase {
         ])
     }
 
-    /// Given: a rotating logger
-    /// When: error is recorded
-    /// Then: the error and error message is written
+    /// - Given: a rotating logger
+    /// - When: error is recorded
+    /// - Then: the error and error message is written
     func testLoggerLogsError() async throws {
         struct TestError: Error, CustomStringConvertible {
             var message: String = UUID().uuidString
@@ -71,9 +71,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: .error, message: error.message)
     }
 
-    /// Given: a rotating logger
-    /// When: error message is recorded
-    /// Then: the log level and message is written
+    /// - Given: a rotating logger
+    /// - When: error message is recorded
+    /// - Then: the log level and message is written
     func testLoggerLogsErrorMessage() async throws {
         let level = LogLevel.error
         let message = UUID().uuidString
@@ -81,9 +81,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
 
-    /// Given: a rotating logger
-    /// When: verbose message is recorded
-    /// Then: the log level and message is written
+    /// - Given: a rotating logger
+    /// - When: verbose message is recorded
+    /// - Then: the log level and message is written
     func testLoggerLogsVerboseMessage() async throws {
         let level = LogLevel.verbose
         let message = UUID().uuidString
@@ -91,9 +91,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
 
-    /// Given: a rotating logger
-    /// When: warn message is recorded
-    /// Then: the log level and message is written
+    /// - Given: a rotating logger
+    /// - When: warn message is recorded
+    /// - Then: the log level and message is written
     func testLoggerLogsWarnMessage() async throws {
         let level = LogLevel.warn
         let message = UUID().uuidString
@@ -101,9 +101,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
 
-    /// Given: a rotating logger
-    /// When: info message is recorded
-    /// Then: the log level and message is written
+    /// - Given: a rotating logger
+    /// - When: info message is recorded
+    /// - Then: the log level and message is written
     func testLoggerLogsInfoMessage() async throws {
         let level = LogLevel.info
         let message = UUID().uuidString
@@ -111,9 +111,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
 
-    /// Given: a rotating logger
-    /// When: debug message is recorded
-    /// Then: the log level and message is written
+    /// - Given: a rotating logger
+    /// - When: debug message is recorded
+    /// - Then: the log level and message is written
     func testLoggerLogsDebugMessage() async throws {
         let level = LogLevel.debug
         let message = UUID().uuidString
@@ -121,9 +121,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
 
-    /// Given: a rotating logger with 1 existing log batch
-    /// When: get log batch is called after writing and rotating to new log file
-    /// Then: a list of log batches with a count of 2 is returned
+    /// - Given: a rotating logger with 1 existing log batch
+    /// - When: get log batch is called after writing and rotating to new log file
+    /// - Then: a list of log batches with a count of 2 is returned
     func testRotatingLogReturnsLogBatches() async throws {
         var logBatches = try await systemUnderTest.getLogBatches()
         XCTAssertEqual(logBatches.count, 1)
@@ -137,11 +137,11 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(logBatches.count, 2)
     }
 
-    /// Given: an entry in the active log file
-    /// When: a flush batch is sealed, another entry is written before the sealed batch is completed
-    ///       (its file deleted), and the sealed batch is then completed
-    /// Then: the entry written after the seal is not deleted with the sealed file — it survives to the
-    ///       next flush. Guards the seal-before-ship fix for the concurrent-write-during-flush race.
+    /// - Given: an entry in the active log file
+    /// - When: a flush batch is sealed, another entry is written before the sealed batch is completed
+    ///   (its file deleted), and the sealed batch is then completed
+    /// - Then: the entry written after the seal is not deleted with the sealed file — it survives to the
+    ///   next flush. Guards the seal-before-ship fix for the concurrent-write-during-flush race.
     func testFlushDoesNotDropWritesArrivingBeforeBatchCompletion() async throws {
         try await systemUnderTest.record(level: .error, message: "A")
         try await systemUnderTest.synchronize()
@@ -164,9 +164,9 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(drained, ["B"], "An entry written after the seal must survive the flush")
     }
 
-    /// Given: a seeded active log file
-    /// When: many entries are written concurrently with a flush
-    /// Then: every entry is accounted for across the flushes — none is dropped
+    /// - Given: a seeded active log file
+    /// - When: many entries are written concurrently with a flush
+    /// - Then: every entry is accounted for across the flushes — none is dropped
     func testConcurrentWritesDuringFlushAreNotDropped() async throws {
         try await systemUnderTest.record(level: .error, message: "seed")
         try await systemUnderTest.synchronize()
