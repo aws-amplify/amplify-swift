@@ -12,6 +12,9 @@ let platforms: [SupportedPlatform] = [
 ]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift", exact: "1.7.60"),
+    // Declared for the Smithy products AmplifyCognitoClient imports directly. Exactly the version
+    // aws-sdk-swift 1.7.60 requires (its `clientRuntimeVersion`), so resolution does not move: bump the two together.
+    .package(url: "https://github.com/smithy-lang/smithy-swift", exact: "0.242.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.15.4"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
@@ -702,6 +705,33 @@ let cloudWatchLoggingClientTargets: [Target] = [
     ),
 ]
 
+let cognitoClientTargets: [Target] = [
+    .target(
+        name: "AmplifyCognitoClient",
+        dependencies: [
+            .target(name: "AmplifyFoundation"),
+            .target(name: "AmplifyFoundationBridge"),
+            .target(name: "InternalAmplifyKeychain"),
+            // The Cognito engine. Amplify-free: it never reaches `Amplify`,
+            // `AWSPluginsCore` or a plugin (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
+            .target(name: "InternalAWSCognitoAuth"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),
+            // Imported directly (`CognitoUnsignedOperationResolver`, `CognitoServiceClients`).
+            .product(name: "Smithy", package: "smithy-swift"),
+            .product(name: "SmithyIdentity", package: "smithy-swift"),
+            .product(name: "SmithyHTTPAPI", package: "smithy-swift"),
+        ],
+        path: "AmplifyClients/AmplifyCognitoClient/Sources",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ],
+        swiftSettings: [
+            .enableUpcomingFeature("StrictConcurrency")
+        ]
+    ),
+]
+
 let foundationTargets: [Target] = [
     .target(
         name: "AmplifyFoundation",
@@ -751,6 +781,7 @@ targets.append(contentsOf: internalPinpointTargets)
 targets.append(contentsOf: predictionsTargets)
 targets.append(contentsOf: loggingTargets)
 targets.append(contentsOf: cloudWatchLoggingClientTargets)
+targets.append(contentsOf: cognitoClientTargets)
 targets.append(contentsOf: foundationTargets)
 targets.append(contentsOf: foundationBridgeTargets)
 
@@ -825,6 +856,12 @@ let package = Package(
         .library(
             name: "AmplifyCloudWatchClient",
             targets: ["AmplifyCloudWatchClient"]
+        ),
+        // Experimental: the whole public surface is `@_spi(AmplifyExperimental)`, as with
+        // AmplifyCloudWatchClient. Its integration host app links it through this product.
+        .library(
+            name: "AmplifyCognitoClient",
+            targets: ["AmplifyCognitoClient"]
         ),
         .library(
             name: "AmplifyFoundation",
