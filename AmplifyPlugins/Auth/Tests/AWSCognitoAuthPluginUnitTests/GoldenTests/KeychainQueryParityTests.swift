@@ -39,7 +39,7 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
 
     /// SHA-256 of `queries.json`. Regenerating the baseline changes it, so a regeneration also has to
     /// edit this line, in review.
-    static let pinnedBaselineSHA256 = "5856aae1ac794cccb9bd16ba4ed035464507e82930877d3f51c32c85a9595b40"
+    static let pinnedBaselineSHA256 = "a15ab080c3d381328cb42a98b0366daeb5eac8755e1e4fba2cf8a73701464fe6"
 
     static var baselineURL: URL {
         GoldenFiles.directory("GoldenKeychainQueries").appendingPathComponent("queries.json")

@@ -15,7 +15,9 @@ import XCTest
 /// The plugin's configuration-change rule, extracted as `AWSCognitoAuthCredentialStore.configurationChange(from:to:)`
 /// so the Cognito client's `.default` runs the same decision. The extraction changes
 /// nothing the plugin does: the decision is each branch's, and the store's `init` issues the same keychain calls, in
-/// the same order, as the code before it (kept below as `PreExtractionRule`).
+/// the same order, as the code before it (kept below as `PreExtractionRule`). One call was added since: a clear then
+/// removes the Cognito client's two default-session items of the old namespace
+/// (`CredentialStoreDefaultSessionItemsTests`).
 final class AWSCognitoAuthCredentialStoreConfigurationChangeTests: XCTestCase {
 
     // MARK: - The decision table
@@ -50,7 +52,8 @@ final class AWSCognitoAuthCredentialStoreConfigurationChangeTests: XCTestCase {
     ///      the extraction runs
     /// - Then:
     ///    - both read the same accounts in the same order, make the same mutations in the same order, and leave the
-    ///      same items
+    ///      same items; except that on a clear the store then also removes the Cognito client's two default-session
+    ///      items of the previous configuration, right after its record
     ///
     func testInitIssuesTheSameQueriesAsBefore() throws {
         for row in ConfigurationChangeCase.table {
@@ -65,7 +68,11 @@ final class AWSCognitoAuthCredentialStoreConfigurationChangeTests: XCTestCase {
             PreExtractionRule.run(current: row.current, keychain: EngineKeychainStore(before.store, logger: DiscardingEngineLogger()))
 
             XCTAssertEqual(extracted.store.readAccounts, before.store.readAccounts, row.name)
-            XCTAssertEqual(extracted.keychain.mutations.map(Self.comparable), before.keychain.mutations.map(Self.comparable), row.name)
+            XCTAssertEqual(
+                extracted.keychain.mutations.map(Self.comparable),
+                Self.addingTheDefaultSessionItemRemovals(to: before.keychain.mutations, for: row.expected).map(Self.comparable),
+                row.name
+            )
             for account in ConfigurationChangeCase.accounts {
                 XCTAssertEqual(
                     extracted.keychain.value(service: pluginKeychainService, account: account).map { Self.comparable(account, $0) },
@@ -130,6 +137,23 @@ final class AWSCognitoAuthCredentialStoreConfigurationChangeTests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    /// `mutations`, the code before the extraction's, with the removals a clear has issued since: the Cognito
+    /// client's two default-session items of the previous configuration, right after the removal of its record.
+    private static func addingTheDefaultSessionItemRemovals(
+        to mutations: [InMemoryKeychain.Mutation],
+        for change: AWSCognitoAuthCredentialStore.ConfigurationChange
+    ) -> [InMemoryKeychain.Mutation] {
+        guard case .clear(let account, let previous) = change,
+              let index = mutations.firstIndex(of: .remove(service: pluginKeychainService, account: account)) else {
+            return mutations
+        }
+        var result = mutations
+        let removals = SessionRecordAccount.defaultSessionItemAccounts(poolNamespace: AWSCognitoAuthCredentialStore.poolNamespace(of: previous))
+            .map { InMemoryKeychain.Mutation.remove(service: pluginKeychainService, account: $0) }
+        result.insert(contentsOf: removals, at: index + 1)
+        return result
+    }
 
     /// A mutation or an item as two runs are compared: `JSONEncoder` does not fix the order of a configuration's keys,
     /// so `authConfiguration`'s bytes are compared by the configuration they hold.

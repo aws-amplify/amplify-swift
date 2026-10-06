@@ -178,6 +178,8 @@
       "queries" : [
         "store | getData | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.us-east-1_FixturePool.session -> ok",
+        "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.$default.meta -> ok",
+        "store | remove | com.amplify.awsCognitoAuthPlugin | - | amplify.1.us-east-1_FixturePool.$default.challenge -> ok",
         "store | set | com.amplify.awsCognitoAuthPlugin | - | authConfiguration -> ok",
         "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | other-client-id.currentUser -> itemNotFound",
         "legacy | getData | <bundle>.AWSCognitoIdentityUserPool | - | other-client-id.currentUser -> itemNotFound",

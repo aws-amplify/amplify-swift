@@ -342,6 +342,28 @@ final class RemoveAllExceptSessionRecordsTests: XCTestCase {
         }
     }
 
+    /// The default session's two accounts are built for one namespace, the sidecar first.
+    ///
+    /// - Given: a user pool, an identity pool and a two-pool namespace
+    /// - When: the accounts of the default session's two items are built for each
+    /// - Then:
+    ///    - they are `amplify.1.<namespace>.$default.meta` then `amplify.1.<namespace>.$default.challenge`, and both
+    ///      are recognised as default-session items
+    func testDefaultSessionItemAccountsAreBuiltForOneNamespace() {
+        let namespaces = [
+            "us-east-1_Pool",
+            "us-east-1:identity-pool",
+            "us-east-1_Pool.us-east-1:identity-pool"
+        ]
+        for namespace in namespaces {
+            let accounts = SessionRecordAccount.defaultSessionItemAccounts(poolNamespace: namespace)
+            XCTAssertEqual(accounts, ["amplify.1.\(namespace).$default.meta", "amplify.1.\(namespace).$default.challenge"])
+            for account in accounts {
+                XCTAssertTrue(SessionRecordAccount.isDefaultSessionItem(account), account)
+            }
+        }
+    }
+
     /// Every other account is not a default-session item.
     ///
     /// - Given: a development build's leftover `$default.session`, a named session's items, a marker, the
