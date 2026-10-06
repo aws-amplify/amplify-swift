@@ -22,12 +22,20 @@
 #                and with it, when present,
 #                ccit-ci-default-credentials.json           -> AmplifyCognitoClientExtendedIntegrationTests-credentials.json
 #                ccit-ci-rotation-amplify_outputs.json      -> AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json
+#                ccit-ci-email-alias-codes-amplify_outputs.json
+#                                                           -> AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs.json
+#                    the client's own role SandboxPool.emailAliasCodes, beside the device-alias one: a second
+#                    device-alias pool whose codes reach the code sink, for the email-alias code check
+#                ccit-ci-capabilities.json                  -> AmplifyCognitoClientIntegrationTests-capabilities.json
+#                    the sandbox checks the client's own roles can run (SandboxCapability), kept only for the roles
+#                    this overlay gives
 #
 # Exit 0 with <dest-dir> made (mode 700, files 600) when at least one role was overlaid, and exit 0 with no
 # <dest-dir> when there is nothing to overlay (no subfolder, or none of the roles' files): the caller then leaves
 # COGNITO_CLIENT_INTEG_DIR unset, and the suites skip on CI as before. A file that does not check out (not JSON,
 # no user pool, the sandbox's mark, a credentials file that is not all strings, a rotation client on another
-# pool) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
+# pool, an alias-codes pool without email as the username or a code API, capabilities that are not the known
+# ones) refuses the whole overlay: exit 1, no <dest-dir>. Prints file names and roles, never their contents.
 set -euo pipefail
 
 usage() {
@@ -75,8 +83,10 @@ check_outputs() {
         || refuse "$(basename "$1") is not a Gen2 outputs file with a user pool, an app client and a region, without the sandbox's mark."
 }
 
-# The overlay, as "source destination" lines.
+# The overlay, as "source destination" lines, and the client's roles it gives capabilities to.
 PLAN=()
+CAPABILITY_ROLES=()
+CAPABILITIES=""
 for role in $ROLES; do
     case "$role" in
         email-alias)
@@ -109,6 +119,28 @@ for role in $ROLES; do
                     || refuse "ccit-ci-rotation-amplify_outputs.json names another user pool than ccit-ci-default-amplify_outputs.json."
                 PLAN+=("ccit-ci-rotation-amplify_outputs.json AmplifyCognitoClientRotationIntegrationTests-amplify_outputs.json")
             fi
+            CAPABILITY_ROLES+=(extended)
+            codes="$SUB/ccit-ci-email-alias-codes-amplify_outputs.json"
+            if [[ -f "$codes" ]]; then
+                check_outputs "$codes"
+                jq -e '(.auth.username_attributes == ["email"]) and (.data.url | type) == "string"
+                    and (.data.api_key | type) == "string" and (.data.api_key | length) > 0' "$codes" >/dev/null 2>&1 \
+                    || refuse "ccit-ci-email-alias-codes-amplify_outputs.json does not sign in by email with a code API."
+                PLAN+=("ccit-ci-email-alias-codes-amplify_outputs.json AmplifyCognitoClientEmailAliasCodesIntegrationTests-amplify_outputs.json")
+                CAPABILITY_ROLES+=(email-alias-codes)
+            fi
+            if [[ -f "$SUB/ccit-ci-capabilities.json" ]]; then
+                jq -e '
+                    def known_role: . == "extended" or . == "email-alias-codes";
+                    def known_capability: . == "refuses_non_test_users" or . == "reset_password_codes"
+                        or . == "email_alias_codes";
+                    type == "object" and keys == ["capabilities"] and (.capabilities | type) == "object"
+                    and (.capabilities | keys | all(known_role))
+                    and (.capabilities | all(.[]; type == "array" and all(.[]; type == "string" and known_capability)))' \
+                    "$SUB/ccit-ci-capabilities.json" >/dev/null 2>&1 \
+                    || refuse "ccit-ci-capabilities.json is not {\"capabilities\": {<role>: [<capability>]}} with the client's known roles and capabilities."
+                CAPABILITIES="$SUB/ccit-ci-capabilities.json"
+            fi
             ;;
     esac
 done
@@ -134,5 +166,14 @@ for entry in "${PLAN[@]}"; do
     cp "$SUB/${entry%% *}" "$DEST/${entry#* }"
     echo "ci-overlay: ${entry#* } <- cognito-client-ci/${entry%% *}"
 done
+# Only the capabilities of a role given here: a mark for a role whose file is the plugin's, or absent, would let a
+# check run where its resource is not.
+if [[ -n "$CAPABILITIES" ]]; then
+    jq -S --args '.capabilities |= with_entries(select(.key as $k | $ARGS.positional | index($k)))' \
+        "${CAPABILITY_ROLES[@]}" < "$CAPABILITIES" > "$DEST/AmplifyCognitoClientIntegrationTests-capabilities.json"
+    echo "ci-overlay: AmplifyCognitoClientIntegrationTests-capabilities.json <- cognito-client-ci/ccit-ci-capabilities.json" \
+        "(for $(jq -r '.capabilities | keys | join(", ") | if . == "" then "no role" else . end' \
+            "$DEST/AmplifyCognitoClientIntegrationTests-capabilities.json"))"
+fi
 find "$DEST" -type f -exec chmod 600 {} +
 echo "ci-overlay: wrote $(find "$DEST" -type f | wc -l | tr -d ' ') files into $DEST"
