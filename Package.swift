@@ -730,6 +730,17 @@ let cognitoClientTargets: [Target] = [
             .enableUpcomingFeature("StrictConcurrency")
         ]
     ),
+    .testTarget(
+        name: "AmplifyCognitoClientTests",
+        dependencies: [
+            "AmplifyCognitoClient",
+            "AmplifyFoundation",
+            "InternalAmplifyKeychain",
+            "AmplifyKeychainTestCommon",
+            "InternalAWSCognitoAuth",
+        ],
+        path: "AmplifyClients/AmplifyCognitoClient/Tests/UnitTests"
+    ),
 ]
 
 let foundationTargets: [Target] = [
