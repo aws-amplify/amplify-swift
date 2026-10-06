@@ -50,6 +50,11 @@ export const preSignUp = async (event) => {
         throw new Error("Sign-up is limited to integration-test users");
     }
     if (needsConfirmation(event.userName) || needsConfirmation(attributes.email)) {
+        // Where no code can confirm them (infra/ci's pools: REFUSE_CONFIRMATION_USERS=1), such users are refused
+        // rather than left unconfirmed, so no sign-up code is ever sent for one.
+        if (process.env.REFUSE_CONFIRMATION_USERS === "1") {
+            throw new Error("Sign-up of users that need confirmation is refused on this pool");
+        }
         return event;
     }
     if (plugin && pluginConfirmPools().includes(event.userPoolId)) {
