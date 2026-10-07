@@ -67,7 +67,8 @@ public extension StorageListResult {
         ///
         /// - Tag: StorageListResultItem.key
         @available(*, deprecated, message: "Use `path` instead.")
-        public let key: String
+        public var key: String { legacyKey }
+        package let legacyKey: String
 
         /// Size in bytes of the object
         ///
@@ -102,7 +103,18 @@ public extension StorageListResult {
             lastModified: Date? = nil,
             pluginResults: Any? = nil
         ) {
-            self.key = key
+            self.init(legacyKey: key, size: size, eTag: eTag, lastModified: lastModified, pluginResults: pluginResults)
+        }
+
+        /// Non-deprecated `init(key:...)` for plugins serving key-based APIs.
+        package init(
+            legacyKey: String,
+            size: Int? = nil,
+            eTag: String? = nil,
+            lastModified: Date? = nil,
+            pluginResults: Any? = nil
+        ) {
+            self.legacyKey = legacyKey
             self.size = size
             self.eTag = eTag
             self.lastModified = lastModified
@@ -118,7 +130,7 @@ public extension StorageListResult {
             pluginResults: Any? = nil
         ) {
             self.path = path
-            self.key = path
+            self.legacyKey = path
             self.size = size
             self.eTag = eTag
             self.lastModified = lastModified

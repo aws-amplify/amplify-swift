@@ -32,7 +32,7 @@ public extension MutationEvent {
         definition.attributes(.isSystem)
 
         definition.fields(
-            .id(),
+            .legacyId(),
             .field(mutation.modelId, is: .required, ofType: .string),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),

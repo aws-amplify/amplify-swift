@@ -17,7 +17,10 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     public let refreshToken: String
 
     @available(*, deprecated, message: "Use of `expiration` is deprecated, use `exp` claim in the `idToken` or `accessToken` for expiries")
-    public let expiration: Date
+    public var expiration: Date { legacyExpiration }
+
+    // Non-deprecated storage for `expiration`; encoded under the same key
+    let legacyExpiration: Date
 
     // swiftlint:disable:next line_length
     @available(*, deprecated, message: "Use of `init(idToken,accessToken,refreshToken:expiresIn)` is deprecated, use `exp` claim in the `idToken` or `accessToken` instead")
@@ -30,7 +33,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
-        self.expiration = Date().addingTimeInterval(TimeInterval(expiresIn))
+        self.legacyExpiration = Date().addingTimeInterval(TimeInterval(expiresIn))
     }
 
     // swiftlint:disable:next line_length
@@ -41,10 +44,19 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         refreshToken: String,
         expiration: Date
     ) {
+        self.init(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, legacyExpiration: expiration)
+    }
+
+    init(
+        idToken: String,
+        accessToken: String,
+        refreshToken: String,
+        legacyExpiration: Date
+    ) {
         self.idToken = idToken
         self.accessToken = accessToken
         self.refreshToken = refreshToken
-        self.expiration = expiration
+        self.legacyExpiration = legacyExpiration
     }
 
     init(
@@ -59,7 +71,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         self.refreshToken = refreshToken
 
         if let expiresIn {
-            self.expiration = Date().addingTimeInterval(TimeInterval(expiresIn))
+            self.legacyExpiration = Date().addingTimeInterval(TimeInterval(expiresIn))
         } else {
             let expirationDoubleValue: Double
             let idTokenExpiration = try? AWSAuthService().getTokenClaims(tokenString: idToken).get()["exp"]?.doubleValue
@@ -76,7 +88,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
                 expirationDoubleValue = Date().timeIntervalSince1970
             }
 
-            self.expiration = Date(timeIntervalSince1970: TimeInterval(expirationDoubleValue))
+            self.legacyExpiration = Date(timeIntervalSince1970: TimeInterval(expirationDoubleValue))
         }
     }
 
@@ -84,7 +96,15 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
 extension AWSCognitoUserPoolTokens: Equatable { }
 
-extension AWSCognitoUserPoolTokens: Codable { }
+extension AWSCognitoUserPoolTokens: Codable {
+    // Keeps the persisted "expiration" key
+    private enum CodingKeys: String, CodingKey {
+        case idToken
+        case accessToken
+        case refreshToken
+        case legacyExpiration = "expiration"
+    }
+}
 
 extension AWSCognitoUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
@@ -92,7 +112,7 @@ extension AWSCognitoUserPoolTokens: CustomDebugDictionaryConvertible {
             "idToken": idToken.masked(interiorCount: 5),
             "accessToken": accessToken.masked(interiorCount: 5),
             "refreshToken": refreshToken.masked(interiorCount: 5),
-            "expiry": expiration
+            "expiry": legacyExpiration
         ]
     }
 }

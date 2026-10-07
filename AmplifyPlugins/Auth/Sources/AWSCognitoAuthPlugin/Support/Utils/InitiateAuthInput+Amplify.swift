@@ -26,8 +26,11 @@ extension InitiateAuthInput {
 
         // Using `custom` here to keep the legacy behaviour from V1 intact,
         // which is custom flow type will start with SRP_A flow.
-        if authFlowType == .customWithSRP || authFlowType == .custom {
+        switch authFlowType {
+        case .customWithSRP, .custom:
             authParameters["CHALLENGE_NAME"] = "SRP_A"
+        default:
+            break
         }
 
         return await buildInput(

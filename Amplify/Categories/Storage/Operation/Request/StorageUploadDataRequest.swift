@@ -22,7 +22,8 @@ public struct StorageUploadDataRequest: AmplifyOperationRequest {
     ///
     /// - Tag: StorageUploadDataRequest.key
     @available(*, deprecated, message: "Use `path` instead of `key`")
-    public let key: String
+    public var key: String { legacyKey }
+    package let legacyKey: String
 
     /// The data in memory to be uploaded
     ///
@@ -37,14 +38,14 @@ public struct StorageUploadDataRequest: AmplifyOperationRequest {
     /// - Tag: StorageUploadDataRequest.init
     @available(*, deprecated, message: "Use init(path:data:options)")
     public init(key: String, data: Data, options: Options) {
-        self.key = key
+        self.legacyKey = key
         self.data = data
         self.options = options
         self.path = nil
     }
 
     public init(path: any StoragePath, data: Data, options: Options) {
-        self.key = ""
+        self.legacyKey = ""
         self.data = data
         self.options = options
         self.path = path
@@ -62,13 +63,15 @@ public extension StorageUploadDataRequest {
         ///
         /// - Tag: StorageUploadDataRequestOptions.accessLevel
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let accessLevel: StorageAccessLevel
+        public var accessLevel: StorageAccessLevel { .init(legacyAccessLevel) }
+        package let legacyAccessLevel: LegacyStorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageUploadDataRequestOptions.targetIdentityId
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let targetIdentityId: String?
+        public var targetIdentityId: String? { legacyTargetIdentityId }
+        package let legacyTargetIdentityId: String?
 
         /// Metadata for the object to store
         ///
@@ -105,8 +108,8 @@ public extension StorageUploadDataRequest {
             pluginOptions: Any? = nil,
             progressStallTimeout: ProgressStallTimeout? = nil
         ) {
-            self.accessLevel = accessLevel
-            self.targetIdentityId = targetIdentityId
+            self.legacyAccessLevel = accessLevel.legacyValue
+            self.legacyTargetIdentityId = targetIdentityId
             self.metadata = metadata
             self.bucket = nil
             self.contentType = contentType
@@ -121,8 +124,8 @@ public extension StorageUploadDataRequest {
             pluginOptions: Any? = nil,
             progressStallTimeout: ProgressStallTimeout? = nil
         ) {
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
             self.metadata = metadata
             self.bucket = nil
             self.contentType = contentType
@@ -138,8 +141,8 @@ public extension StorageUploadDataRequest {
             pluginOptions: Any? = nil,
             progressStallTimeout: ProgressStallTimeout? = nil
         ) {
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
             self.metadata = metadata
             self.bucket = bucket
             self.contentType = contentType

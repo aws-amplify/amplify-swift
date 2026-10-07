@@ -100,10 +100,7 @@ class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
                 if let path = request.path {
                     serviceKey = try await path.resolvePath(authService: self.authService)
                 } else {
-                    let prefixResolver = storageConfiguration.prefixResolver ??
-                    StorageAccessLevelAwarePrefixResolver(authService: authService)
-                    let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
-                    serviceKey = prefix + request.key
+                    serviceKey = try await resolveLegacyServiceKey()
                 }
 
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
@@ -142,6 +139,14 @@ class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
             dispatch(error)
             finish()
         }
+    }
+
+    @available(*, deprecated, message: "Use `path` instead of `key`")
+    private func resolveLegacyServiceKey() async throws -> String {
+        let prefixResolver = storageConfiguration.prefixResolver ??
+            StorageAccessLevelAwarePrefixResolver(authService: authService)
+        let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+        return prefix + request.key
     }
 
     private func dispatch(_ progress: Progress) {

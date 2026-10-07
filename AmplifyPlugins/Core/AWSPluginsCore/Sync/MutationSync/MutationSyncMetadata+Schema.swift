@@ -29,7 +29,7 @@ public extension MutationSyncMetadata {
         definition.attributes(.isSystem)
 
         definition.fields(
-            .id(),
+            .legacyId(),
             .field(sync.deleted, is: .required, ofType: .bool),
             .field(sync.lastChangedAt, is: .required, ofType: .int),
             .field(sync.version, is: .required, ofType: .int)

@@ -27,7 +27,7 @@ public extension ModelSyncMetadata {
         definition.attributes(.isSystem)
 
         definition.fields(
-            .id(),
+            .legacyId(),
             .field(keys.lastSync, is: .optional, ofType: .int),
             .field(keys.syncPredicate, is: .optional, ofType: .string)
         )
