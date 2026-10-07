@@ -64,7 +64,7 @@ final class SignUpValidationTests: XCTestCase {
                 XCTAssertEqual(suggestion, expected.recoverySuggestion, name)
             }
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
     }
 
     /// The username is checked before the code, as the plugin checks them.

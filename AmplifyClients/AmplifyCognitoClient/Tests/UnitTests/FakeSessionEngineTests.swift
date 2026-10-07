@@ -228,7 +228,7 @@ final class FakeSessionEngineTests: XCTestCase {
     func testTheNewestSignUpDecidesTheAutoSignInSession() async throws {
         let engine = try makeEngine()
         let latch = Gate()
-        engine.scriptPhase5(.signUp) { call in
+        engine.scriptAccountOperation(.signUp) { call in
             guard case .signUp(let request) = call, request.username == "dave" else {
                 return AuthClientSignUpResult(.confirmUser())
             }

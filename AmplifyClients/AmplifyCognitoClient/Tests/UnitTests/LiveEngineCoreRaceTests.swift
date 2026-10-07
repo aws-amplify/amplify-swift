@@ -145,7 +145,7 @@ final class LiveEngineCoreRaceTests: XCTestCase {
 
 /// The live engine, with its first `cancelPendingSignIn` held on a gate: the moment between the core
 /// moving its epoch and the engine hearing of it.
-final class CancelHoldingEngine: SessionEngine, Phase5Forwarding, @unchecked Sendable {
+final class CancelHoldingEngine: SessionEngine, SessionEngineForwarding, @unchecked Sendable {
 
     let base: LiveSessionEngine
     let gate: Gate
@@ -156,7 +156,7 @@ final class CancelHoldingEngine: SessionEngine, Phase5Forwarding, @unchecked Sen
         self.gate = gate
     }
 
-    var phase5Base: any SessionEngine { base }
+    var forwardingBase: any SessionEngine { base }
 
     func describe(_ payload: Data) throws -> CredentialSummary { try base.describe(payload) }
     func awsCredentials(in payload: Data) throws -> CognitoAWSCredentials? { try base.awsCredentials(in: payload) }

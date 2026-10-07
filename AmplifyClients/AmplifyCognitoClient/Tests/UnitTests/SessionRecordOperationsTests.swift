@@ -292,7 +292,7 @@ final class SessionRecordOperationsTests: XCTestCase {
         try await client.signInForTest("alice")
         try await client.setSessionLabel("Alice's work")
         _ = await client.signOut()
-        engine.scriptPhase5(.federateToIdentityPool) { _ in FakePayload.federated(identityId: "us-east-1:fed").data }
+        engine.scriptAccountOperation(.federateToIdentityPool) { _ in FakePayload.federated(identityId: "us-east-1:fed").data }
 
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
 

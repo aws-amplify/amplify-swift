@@ -62,7 +62,7 @@ final class ResetPasswordValidationTests: XCTestCase {
                 XCTAssertEqual(suggestion, expected.recoverySuggestion, name)
             }
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
     }
 
     /// The arguments are checked in the plugin's order: username, new password, code.

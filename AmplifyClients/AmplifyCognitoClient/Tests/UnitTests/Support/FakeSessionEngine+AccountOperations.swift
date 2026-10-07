@@ -9,11 +9,11 @@ import Foundation
 import InternalAWSCognitoAuth
 @_spi(AmplifyExperimental) @testable import AmplifyCognitoClient
 
-/// Scripts one Phase 5 operation: gets the call, returns the operation's result (`Void()` for none).
-typealias FakePhase5Script = @Sendable (FakePhase5Call) async throws -> any Sendable
+/// Scripts one account operation: gets the call, returns the operation's result (`Void()` for none).
+typealias FakeAccountOperationScript = @Sendable (FakeAccountOperationCall) async throws -> any Sendable
 
-/// The Phase 5 operations on the seam, one per `SessionEngine` method.
-enum FakePhase5Operation: String, CaseIterable, Sendable {
+/// The account operations on the seam, one per `SessionEngine` method.
+enum FakeAccountOperation: String, CaseIterable, Sendable {
     case signUp, confirmSignUp, resendSignUpCode, autoSignIn
     case resetPassword, confirmResetPassword
     case fetchUserAttributes, updateUserAttributes, sendVerificationCode, confirmUserAttribute, changePassword
@@ -23,9 +23,9 @@ enum FakePhase5Operation: String, CaseIterable, Sendable {
     case associateWebAuthnCredential, listWebAuthnCredentials, deleteWebAuthnCredential
 }
 
-/// One Phase 5 call as the fake engine received it. `payload` is the session's credentials payload the
+/// One account-operation call as the fake engine received it. `payload` is the session's credentials payload the
 /// core handed over, so a test can tell which session's user it was.
-enum FakePhase5Call: Equatable, Sendable {
+enum FakeAccountOperationCall: Equatable, Sendable {
     case signUp(EngineSignUpRequest)
     case confirmSignUp(EngineConfirmSignUpRequest)
     case resendSignUpCode(username: String, clientMetadata: [String: String])
@@ -49,9 +49,9 @@ enum FakePhase5Call: Equatable, Sendable {
     case listWebAuthnCredentials(payload: Data, pageSize: Int, nextToken: String?)
     case deleteWebAuthnCredential(payload: Data, credentialId: String)
 
-    var operation: FakePhase5Operation {
+    var operation: FakeAccountOperation {
         guard let label = Mirror(reflecting: self).children.first?.label,
-              let operation = FakePhase5Operation(rawValue: label) else {
+              let operation = FakeAccountOperation(rawValue: label) else {
             preconditionFailure("no operation for \(self)")
         }
         return operation
@@ -83,38 +83,38 @@ enum FakePhase5Call: Equatable, Sendable {
     }
 }
 
-/// The Phase 5 seam methods: each records its call and returns its script's result, or a default. The
+/// The account-operation seam methods: each records its call and returns its script's result, or a default. The
 /// defaults are a plain success. `autoSignIn` is in the main file, because it follows the sign-in contract.
 extension FakeSessionEngine {
 
     static let delivery = AuthClientCodeDeliveryDetails(destination: .email("a***@example.com"), attributeKey: .email)
 
     func signUp(_ request: EngineSignUpRequest) async throws -> AuthClientSignUpResult {
-        try await phase5(.signUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
+        try await recordAccountOperation(.signUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
     }
 
     func confirmSignUp(_ request: EngineConfirmSignUpRequest) async throws -> AuthClientSignUpResult {
-        try await phase5(.confirmSignUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
+        try await recordAccountOperation(.confirmSignUp(request), default: AuthClientSignUpResult(.done, userId: "sub-\(request.username)"))
     }
 
     func resendSignUpCode(username: String, clientMetadata: [String: String]) async throws -> AuthClientCodeDeliveryDetails {
-        try await phase5(.resendSignUpCode(username: username, clientMetadata: clientMetadata), default: Self.delivery)
+        try await recordAccountOperation(.resendSignUpCode(username: username, clientMetadata: clientMetadata), default: Self.delivery)
     }
 
     func resetPassword(username: String, clientMetadata: [String: String]) async throws -> AuthClientResetPasswordResult {
-        try await phase5(
+        try await recordAccountOperation(
             .resetPassword(username: username, clientMetadata: clientMetadata),
             default: AuthClientResetPasswordResult(isPasswordReset: false, nextStep: .confirmResetPasswordWithCode(Self.delivery, nil))
         )
     }
 
     func confirmResetPassword(_ request: EngineConfirmResetPasswordRequest) async throws {
-        try await phase5(.confirmResetPassword(request), default: ())
+        try await recordAccountOperation(.confirmResetPassword(request), default: ())
     }
 
     func fetchUserAttributes(_ payload: Data) async throws -> [AuthClientUserAttribute] {
         let username = FakePayload.decode(payload)?.username ?? "unknown"
-        return try await phase5(.fetchUserAttributes(payload: payload), default: [AuthClientUserAttribute(.email, value: "\(username)@example.com")])
+        return try await recordAccountOperation(.fetchUserAttributes(payload: payload), default: [AuthClientUserAttribute(.email, value: "\(username)@example.com")])
     }
 
     func updateUserAttributes(
@@ -123,7 +123,7 @@ extension FakeSessionEngine {
         clientMetadata: [String: String]
     ) async throws -> [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult] {
         let done = AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
-        return try await phase5(
+        return try await recordAccountOperation(
             .updateUserAttributes(payload: payload, attributes: attributes, clientMetadata: clientMetadata),
             default: Dictionary(attributes.map { ($0.key, done) }, uniquingKeysWith: { _, last in last })
         )
@@ -134,31 +134,31 @@ extension FakeSessionEngine {
         attributeKey: AuthClientUserAttributeKey,
         clientMetadata: [String: String]
     ) async throws -> AuthClientCodeDeliveryDetails {
-        try await phase5(
+        try await recordAccountOperation(
             .sendVerificationCode(payload: payload, attributeKey: attributeKey, clientMetadata: clientMetadata),
             default: Self.delivery
         )
     }
 
     func confirmUserAttribute(_ payload: Data, attributeKey: AuthClientUserAttributeKey, confirmationCode: String) async throws {
-        try await phase5(.confirmUserAttribute(payload: payload, attributeKey: attributeKey, confirmationCode: confirmationCode), default: ())
+        try await recordAccountOperation(.confirmUserAttribute(payload: payload, attributeKey: attributeKey, confirmationCode: confirmationCode), default: ())
     }
 
     func changePassword(_ payload: Data, oldPassword: String, newPassword: String) async throws {
-        try await phase5(.changePassword(payload: payload, oldPassword: oldPassword, newPassword: newPassword), default: ())
+        try await recordAccountOperation(.changePassword(payload: payload, oldPassword: oldPassword, newPassword: newPassword), default: ())
     }
 
     func setUpTOTP(_ payload: Data) async throws -> AuthClientTOTPSetupDetails {
         let username = FakePayload.decode(payload)?.username ?? "unknown"
-        return try await phase5(.setUpTOTP(payload: payload), default: AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: username))
+        return try await recordAccountOperation(.setUpTOTP(payload: payload), default: AuthClientTOTPSetupDetails(sharedSecret: "SECRET", username: username))
     }
 
     func verifyTOTPSetup(_ payload: Data, code: String, friendlyDeviceName: String?) async throws {
-        try await phase5(.verifyTOTPSetup(payload: payload, code: code, friendlyDeviceName: friendlyDeviceName), default: ())
+        try await recordAccountOperation(.verifyTOTPSetup(payload: payload, code: code, friendlyDeviceName: friendlyDeviceName), default: ())
     }
 
     func fetchMFAPreference(_ payload: Data) async throws -> AuthClientUserMFAPreference {
-        try await phase5(.fetchMFAPreference(payload: payload), default: AuthClientUserMFAPreference(enabled: nil, preferred: nil))
+        try await recordAccountOperation(.fetchMFAPreference(payload: payload), default: AuthClientUserMFAPreference(enabled: nil, preferred: nil))
     }
 
     func updateMFAPreference(
@@ -167,23 +167,23 @@ extension FakeSessionEngine {
         totp: AuthClientMFAPreference?,
         email: AuthClientMFAPreference?
     ) async throws {
-        try await phase5(.updateMFAPreference(payload: payload, sms: sms, totp: totp, email: email), default: ())
+        try await recordAccountOperation(.updateMFAPreference(payload: payload, sms: sms, totp: totp, email: email), default: ())
     }
 
     func fetchDevices(_ payload: Data) async throws -> [AuthClientDevice] {
-        try await phase5(.fetchDevices(payload: payload), default: [AuthClientDevice(id: "device-1", name: "iPhone")])
+        try await recordAccountOperation(.fetchDevices(payload: payload), default: [AuthClientDevice(id: "device-1", name: "iPhone")])
     }
 
     func rememberDevice(_ payload: Data) async throws {
-        try await phase5(.rememberDevice(payload: payload), default: ())
+        try await recordAccountOperation(.rememberDevice(payload: payload), default: ())
     }
 
     func forgetDevice(_ payload: Data, deviceId: String?) async throws {
-        try await phase5(.forgetDevice(payload: payload, deviceId: deviceId), default: ())
+        try await recordAccountOperation(.forgetDevice(payload: payload, deviceId: deviceId), default: ())
     }
 
     func federateToIdentityPool(_ request: EngineFederationRequest, current: Data?) async throws -> Data {
-        try await phase5(
+        try await recordAccountOperation(
             .federateToIdentityPool(request, current: current),
             default: FakePayload.federated().data
         )
@@ -192,18 +192,18 @@ extension FakeSessionEngine {
     /// Records the call and runs its script (Cognito's `StartWebAuthnRegistration`, which may throw before any
     /// sheet), then runs the ceremony where the live engine does: through `context.ceremony`, the sheet lease.
     func associateWebAuthnCredential(_ payload: Data, context: EngineCeremonyContext) async throws {
-        try await phase5(.associateWebAuthnCredential(payload: payload, anchor: context.anchor), default: ())
+        try await recordAccountOperation(.associateWebAuthnCredential(payload: payload, anchor: context.anchor), default: ())
         _ = try await runCeremony(context, anchor: context.anchor)
     }
 
     func listWebAuthnCredentials(_ payload: Data, pageSize: Int, nextToken: String?) async throws -> EngineWebAuthnCredentialPage {
-        try await phase5(
+        try await recordAccountOperation(
             .listWebAuthnCredentials(payload: payload, pageSize: pageSize, nextToken: nextToken),
             default: EngineWebAuthnCredentialPage(credentials: [], nextToken: nil)
         )
     }
 
     func deleteWebAuthnCredential(_ payload: Data, credentialId: String) async throws {
-        try await phase5(.deleteWebAuthnCredential(payload: payload, credentialId: credentialId), default: ())
+        try await recordAccountOperation(.deleteWebAuthnCredential(payload: payload, credentialId: credentialId), default: ())
     }
 }

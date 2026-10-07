@@ -303,7 +303,7 @@ final class WebUISignOutTests: XCTestCase {
         }
         try await otherHolds.arrivals(1)
         let start = Gate()
-        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+        engine.scriptAccountOperation(.associateWebAuthnCredential) { _ in
             await start.pass()
             return ()
         }
@@ -375,7 +375,7 @@ final class WebUISignOutTests: XCTestCase {
         let window = await window
         let lock = harness.sheetLock
         let start = Gate()
-        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+        engine.scriptAccountOperation(.associateWebAuthnCredential) { _ in
             await start.pass()
             return ()
         }
@@ -642,7 +642,7 @@ final class WebUISignOutTests: XCTestCase {
         let work = work
         let window = await window
         let start = Gate()
-        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+        engine.scriptAccountOperation(.associateWebAuthnCredential) { _ in
             await start.pass()
             return ()
         }

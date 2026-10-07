@@ -64,7 +64,7 @@ final class AccountOperationRoutingTests: XCTestCase {
             options: .init(clientMetadata: metadata)
         )
 
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .signUp(EngineSignUpRequest(
                 username: "carol",
                 password: "Password1!",
@@ -91,7 +91,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         XCTAssertEqual(confirm, AuthClientSignUpResult(.done, userId: "sub-carol"))
         XCTAssertEqual(resend, FakeSessionEngine.delivery)
         XCTAssertEqual(reset.nextStep, .confirmResetPasswordWithCode(FakeSessionEngine.delivery, nil))
-        XCTAssertEqual(other.phase5Calls, [])
+        XCTAssertEqual(other.accountOperationCalls, [])
     }
 
     /// Sign-up acts on a username, so it runs on a signed-in session too, as with the plugin, and changes
@@ -108,7 +108,7 @@ final class AccountOperationRoutingTests: XCTestCase {
 
         _ = try await client.signUp(username: "carol")
 
-        XCTAssertEqual(engine.phase5Calls.map(\.operation), [.signUp])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.operation), [.signUp])
         XCTAssertEqual(harness.keychain.writtenAccounts, [])
     }
 
@@ -135,7 +135,7 @@ final class AccountOperationRoutingTests: XCTestCase {
                 return XCTFail("\(error)")
             }
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
     }
 
     // MARK: Signed-in operations
@@ -176,7 +176,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         _ = try await homeClient.fetchUserAttributes()
 
         let done = AuthClientUpdateAttributeResult(isUpdated: true, nextStep: .done)
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .fetchUserAttributes(payload: alice.data),
             .updateUserAttributes(payload: alice.data, attributes: [email], clientMetadata: metadata),
             .updateUserAttributes(payload: alice.data, attributes: [email, name], clientMetadata: metadata),
@@ -192,7 +192,7 @@ final class AccountOperationRoutingTests: XCTestCase {
             .forgetDevice(payload: alice.data, deviceId: nil),
             .forgetDevice(payload: alice.data, deviceId: "device-2")
         ])
-        XCTAssertEqual(other.phase5Calls, [.fetchUserAttributes(payload: bob.data)])
+        XCTAssertEqual(other.accountOperationCalls, [.fetchUserAttributes(payload: bob.data)])
         XCTAssertEqual(attributes, [AuthClientUserAttribute(.email, value: "alice@example.com")])
         XCTAssertEqual(single, done)
         XCTAssertEqual(several, [.email: done, .name: done])
@@ -225,7 +225,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         _ = try await (devices, attributes)
 
         XCTAssertEqual(engine.refreshCalls, [stale.data])
-        XCTAssertEqual(engine.phase5Calls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
     }
 
     /// A pending sign-in is not a signed-in user, and a signed-in operation must not disturb it.
@@ -246,7 +246,7 @@ final class AccountOperationRoutingTests: XCTestCase {
                 return XCTFail("\(error)")
             }
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
         let pending = await client.currentSessionState()
         XCTAssertEqual(pending, .awaitingChallenge(.confirmSignInWithTOTPCode))
 
@@ -271,7 +271,7 @@ final class AccountOperationRoutingTests: XCTestCase {
             }
         }
         XCTAssertEqual(engine.refreshCalls, [])
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
     }
 
     /// - Given: a signed-out session, and a guest session
@@ -290,8 +290,8 @@ final class AccountOperationRoutingTests: XCTestCase {
                 }
             }
         }
-        XCTAssertEqual(harness.engine(for: work)?.phase5Calls, [])
-        XCTAssertEqual(harness.engine(for: home)?.phase5Calls, [])
+        XCTAssertEqual(harness.engine(for: work)?.accountOperationCalls, [])
+        XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
     }
 
     /// - Given: a signed-in session whose engine fails a call
@@ -304,7 +304,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        engine.scriptPhase5(.rememberDevice) { _ in
+        engine.scriptAccountOperation(.rememberDevice) { _ in
             throw SessionEngineError.service(.service(.deviceNotTracked, "not tracked", "track it"))
         }
         await assertThrowsAsync({ try await client.rememberDevice() }) { error in
@@ -313,7 +313,7 @@ final class AccountOperationRoutingTests: XCTestCase {
             }
         }
 
-        engine.scriptPhase5(.fetchDevices) { _ in throw FixtureError(description: "boom") }
+        engine.scriptAccountOperation(.fetchDevices) { _ in throw FixtureError(description: "boom") }
         await assertThrowsAsync({ try await client.fetchDevices() }) { error in
             guard case .unknown(let description, _, let underlying) = authError(error) else {
                 return XCTFail("\(error)")
@@ -323,7 +323,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         }
 
         // Only the refresh path may report a dead refresh token (and mark the session expired).
-        engine.scriptPhase5(.setUpTOTP) { _ in throw SessionEngineError.refreshTokenInvalid }
+        engine.scriptAccountOperation(.setUpTOTP) { _ in throw SessionEngineError.refreshTokenInvalid }
         await assertThrowsAsync({ try await client.setUpTOTP() }) { error in
             guard case .unknown = authError(error) else {
                 return XCTFail("\(error)")
@@ -344,7 +344,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         try harness.signIn(work, .signedIn("alice"))
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptPhase5(.updateUserAttributes) { _ in [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult]() }
+        engine.scriptAccountOperation(.updateUserAttributes) { _ in [AuthClientUserAttributeKey: AuthClientUpdateAttributeResult]() }
 
         await assertThrowsAsync({ try await client.update(userAttribute: .init(.email, value: "a@example.com")) }) { error in
             guard case .unknown(let description, _, _) = authError(error) else {
@@ -372,7 +372,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         )
 
         XCTAssertEqual(result.identityId, "us-east-1:federated")
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .federateToIdentityPool(
                 EngineFederationRequest(token: "token", provider: .oidc("issuer"), developerProvidedIdentityId: "us-east-1:dev"),
                 current: nil
@@ -407,8 +407,8 @@ final class AccountOperationRoutingTests: XCTestCase {
                 XCTAssertEqual(description, "Clearing of federation failed.")
             }
         }
-        XCTAssertEqual(harness.engine(for: work)?.phase5Calls, [])
-        XCTAssertEqual(harness.engine(for: home)?.phase5Calls, [])
+        XCTAssertEqual(harness.engine(for: work)?.accountOperationCalls, [])
+        XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
     }
 
     /// - Given: a federated session
@@ -426,7 +426,7 @@ final class AccountOperationRoutingTests: XCTestCase {
         XCTAssertEqual(state, .federated(identityId: "us-east-1:fed"))
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
         try await client.clearFederationToIdentityPool()
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .federateToIdentityPool(
                 EngineFederationRequest(token: "token", provider: .google, developerProvidedIdentityId: nil),
                 current: federated.data
@@ -485,6 +485,6 @@ final class AccountOperationRoutingTests: XCTestCase {
                 return XCTFail("\(error)")
             }
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
     }
 }

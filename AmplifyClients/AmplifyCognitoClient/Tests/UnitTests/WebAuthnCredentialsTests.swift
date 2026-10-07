@@ -57,21 +57,21 @@ final class WebAuthnCredentialsTests: XCTestCase {
             ],
             nextToken: "page-2"
         )
-        engine.scriptPhase5(.listWebAuthnCredentials) { _ in page }
+        engine.scriptAccountOperation(.listWebAuthnCredentials) { _ in page }
 
         let result = try await client.listWebAuthnCredentials(options: .init(pageSize: 5, nextToken: "page-1"))
         try await client.deleteWebAuthnCredential(credentialId: "cred-1")
         XCTAssertEqual(other.refreshCalls, [], "work's calls refreshed bob")
-        XCTAssertEqual(other.phase5Calls, [])
+        XCTAssertEqual(other.accountOperationCalls, [])
         try await homeClient.deleteWebAuthnCredential(credentialId: "cred-9")
 
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .listWebAuthnCredentials(payload: alice.data, pageSize: 5, nextToken: "page-1"),
             .deleteWebAuthnCredential(payload: alice.data, credentialId: "cred-1")
         ])
         XCTAssertEqual(engine.refreshCalls, [])
         XCTAssertEqual(other.refreshCalls, [bob.data])
-        XCTAssertEqual(other.phase5Calls, [.deleteWebAuthnCredential(payload: bob.refreshed.data, credentialId: "cred-9")])
+        XCTAssertEqual(other.accountOperationCalls, [.deleteWebAuthnCredential(payload: bob.refreshed.data, credentialId: "cred-9")])
         XCTAssertEqual(result, AuthClientListWebAuthnCredentialsResult(
             credentials: [
                 AuthClientWebAuthnCredential(credentialId: "cred-1", createdAt: created, relyingPartyId: "rp.example", friendlyName: "Phone"),
@@ -98,9 +98,9 @@ final class WebAuthnCredentialsTests: XCTestCase {
         let result = try await client.listWebAuthnCredentials()
 
         XCTAssertEqual(AuthClientListWebAuthnCredentialsOptions(), .init(pageSize: 20, nextToken: nil))
-        XCTAssertEqual(engine.phase5Calls.map(\.operation), [.listWebAuthnCredentials])
-        guard case .listWebAuthnCredentials(_, let pageSize, let nextToken) = engine.phase5Calls.first else {
-            return XCTFail("\(engine.phase5Calls)")
+        XCTAssertEqual(engine.accountOperationCalls.map(\.operation), [.listWebAuthnCredentials])
+        guard case .listWebAuthnCredentials(_, let pageSize, let nextToken) = engine.accountOperationCalls.first else {
+            return XCTFail("\(engine.accountOperationCalls)")
         }
         XCTAssertEqual(pageSize, 20)
         XCTAssertNil(nextToken)
@@ -121,7 +121,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         let all = (1 ... 3).map {
             EngineWebAuthnCredential(credentialId: "cred-\($0)", createdAt: created, relyingPartyId: "rp.example", friendlyName: nil)
         }
-        engine.scriptPhase5(.listWebAuthnCredentials) { call in
+        engine.scriptAccountOperation(.listWebAuthnCredentials) { call in
             guard case .listWebAuthnCredentials(_, let pageSize, let nextToken) = call else {
                 throw FixtureError(description: "\(call)")
             }
@@ -137,7 +137,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         XCTAssertEqual(first.nextToken, "2")
         XCTAssertEqual(second.credentials.map(\.credentialId), ["cred-3"])
         XCTAssertNil(second.nextToken)
-        XCTAssertEqual(engine.phase5Calls.map(\.payload), [FakePayload.signedIn("alice").data, FakePayload.signedIn("alice").data])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.payload), [FakePayload.signedIn("alice").data, FakePayload.signedIn("alice").data])
     }
 
     // MARK: Page size
@@ -165,8 +165,8 @@ final class WebAuthnCredentialsTests: XCTestCase {
                 }
             }
         }
-        XCTAssertEqual(harness.engine(for: work)?.phase5Calls, [])
-        XCTAssertEqual(harness.engine(for: home)?.phase5Calls, [])
+        XCTAssertEqual(harness.engine(for: work)?.accountOperationCalls, [])
+        XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
     }
 
     /// - Given: a signed-in session
@@ -181,7 +181,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         _ = try await client.listWebAuthnCredentials(options: .init(pageSize: 1))
         _ = try await client.listWebAuthnCredentials(options: .init(pageSize: 20))
 
-        let sizes = engine.phase5Calls.compactMap { call -> Int? in
+        let sizes = engine.accountOperationCalls.compactMap { call -> Int? in
             guard case .listWebAuthnCredentials(_, let pageSize, _) = call else {
                 return nil
             }
@@ -215,7 +215,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
             }
         }
         for id in [work, home, federated] {
-            XCTAssertEqual(harness.engine(for: id)?.phase5Calls, [], "\(id)")
+            XCTAssertEqual(harness.engine(for: id)?.accountOperationCalls, [], "\(id)")
             XCTAssertEqual(harness.engine(for: id)?.refreshCalls, [], "\(id)")
         }
     }
@@ -239,7 +239,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         await assertThrowsAsync({ try await client.deleteWebAuthnCredential(credentialId: "cred-1") }) { error in
             XCTAssertEqual(authError(error)?.kind, .notSignedIn, "\(error)")
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
         let pending = await client.currentSessionState()
         XCTAssertEqual(pending, .awaitingChallenge(.confirmSignInWithTOTPCode))
 
@@ -267,7 +267,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         _ = try await (list, delete)
 
         XCTAssertEqual(engine.refreshCalls, [stale.data])
-        XCTAssertEqual(engine.phase5Calls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
     }
 
     // MARK: Errors
@@ -282,7 +282,7 @@ final class WebAuthnCredentialsTests: XCTestCase {
         let client = try harness.client(work)
         let engine = try XCTUnwrap(harness.engine(for: work))
 
-        engine.scriptPhase5(.listWebAuthnCredentials) { _ in
+        engine.scriptAccountOperation(.listWebAuthnCredentials) { _ in
             throw AuthClientError.service(.webAuthnNotEnabled, "not enabled", "enable it")
         }
         await assertThrowsAsync({ try await client.listWebAuthnCredentials() }) { error in
@@ -291,12 +291,12 @@ final class WebAuthnCredentialsTests: XCTestCase {
             }
         }
 
-        engine.scriptPhase5(.deleteWebAuthnCredential) { _ in throw CancellationError() }
+        engine.scriptAccountOperation(.deleteWebAuthnCredential) { _ in throw CancellationError() }
         await assertThrowsAsync({ try await client.deleteWebAuthnCredential(credentialId: "cred-1") }) { error in
             XCTAssertTrue(error is CancellationError, "\(error)")
         }
 
-        engine.scriptPhase5(.deleteWebAuthnCredential) { _ in throw FixtureError(description: "boom") }
+        engine.scriptAccountOperation(.deleteWebAuthnCredential) { _ in throw FixtureError(description: "boom") }
         await assertThrowsAsync({ try await client.deleteWebAuthnCredential(credentialId: "cred-1") }) { error in
             guard case .unknown(let description, _, let underlying) = authError(error) else {
                 return XCTFail("\(error)")

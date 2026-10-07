@@ -40,7 +40,7 @@ final class FederationTests: XCTestCase {
         let other = try harness.client(home)
         let federated = FakePayload.federated(identityId: "us-east-1:fed")
         let engine = try XCTUnwrap(harness.engine(for: work))
-        engine.scriptPhase5(.federateToIdentityPool) { _ in federated.data }
+        engine.scriptAccountOperation(.federateToIdentityPool) { _ in federated.data }
 
         let result = try await client.federateToIdentityPool(withProviderToken: "token", for: .google)
 
@@ -57,7 +57,7 @@ final class FederationTests: XCTestCase {
         XCTAssertEqual(try session.identityIdResult.get(), "us-east-1:fed")
         XCTAssertEqual(try session.awsCredentialsResult.get(), AuthClientAWSCredentials(federated.awsCredentials))
 
-        XCTAssertEqual(harness.engine(for: home)?.phase5Calls, [])
+        XCTAssertEqual(harness.engine(for: home)?.accountOperationCalls, [])
         XCTAssertNil(try harness.storedRecord(home))
         let otherState = await other.currentSessionState()
         XCTAssertEqual(otherState, .signedOut)
@@ -78,7 +78,7 @@ final class FederationTests: XCTestCase {
 
         _ = try await client.federateToIdentityPool(withProviderToken: "token", for: .facebook)
 
-        XCTAssertEqual(engine.phase5Calls, [
+        XCTAssertEqual(engine.accountOperationCalls, [
             .federateToIdentityPool(
                 EngineFederationRequest(token: "token", provider: .facebook, developerProvidedIdentityId: nil),
                 current: guest.data
@@ -97,7 +97,7 @@ final class FederationTests: XCTestCase {
         try harness.signIn(work, .federated(identityId: "us-east-1:old"))
         let client = try harness.client(work)
         let next = FakePayload.federated(identityId: "us-east-1:new", version: 2)
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in next.data }
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in next.data }
 
         let result = try await client.federateToIdentityPool(withProviderToken: "other", for: .apple)
 
@@ -115,7 +115,7 @@ final class FederationTests: XCTestCase {
     ///    - it throws `notAuthorized`; no record is written and the session stays signed out
     func testARejectedTokenIsNotAuthorizedAndCommitsNothing() async throws {
         let client = try harness.client(work)
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             throw SessionEngineError.service(.notAuthorized("Invalid login token.", "Check the token."))
         }
 
@@ -135,7 +135,7 @@ final class FederationTests: XCTestCase {
     ///    - it throws the plugin's `unknown`, and nothing is written
     func testAPayloadThatIsNotAFederationIsNeverCommitted() async throws {
         let client = try harness.client(work)
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in FakePayload.signedIn("mallory").data }
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in FakePayload.signedIn("mallory").data }
 
         await assertThrowsAsync({ try await client.federateToIdentityPool(withProviderToken: "token", for: .google) }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, "Unable to parse credentials to expected output")
@@ -158,7 +158,7 @@ final class FederationTests: XCTestCase {
         await assertThrowsAsync({ try await client.federateToIdentityPool(withProviderToken: "token", for: .google) }) { error in
             XCTAssertEqual(authError(error)?.errorDescription, "Federation could not be completed.")
         }
-        XCTAssertEqual(engine.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls, [])
         let state = await client.currentSessionState()
         XCTAssertEqual(state, .awaitingChallenge(.confirmSignInWithTOTPCode))
     }
@@ -176,7 +176,7 @@ final class FederationTests: XCTestCase {
         try harness.signIn(work, .guest(identityId: "us-east-1:guest"))
         let client = try harness.client(work)
         let gate = Gate()
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             await gate.pass()
             return FakePayload.federated().data
         }
@@ -207,7 +207,7 @@ final class FederationTests: XCTestCase {
         let client = try harness.client(work)
         let store = harness.store()
         let work = work
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             _ = try store.write(FakePayload.signedIn("alice").record(), for: work, expecting: nil)
             return FakePayload.federated().data
         }
@@ -238,7 +238,7 @@ final class FederationTests: XCTestCase {
         let next = FakePayload.federated(identityId: "us-east-1:new")
         let store = harness.store()
         let work = work
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             _ = try store.write(old.refreshed.record(), for: work, expecting: .generation(envelope.generation))
             return next.data
         }
@@ -251,7 +251,7 @@ final class FederationTests: XCTestCase {
 
     /// Holds `work`'s federations in the engine on `gate`, then answers `result`.
     private func holdFederations(on gate: Gate, answering result: @escaping @Sendable () throws -> Data) {
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             await gate.pass()
             return try result()
         }
@@ -369,7 +369,7 @@ final class FederationTests: XCTestCase {
 
         await assertThrowsAsync({ try await first.value }) { Self.assertCancelled($0) }
         await assertThrowsAsync({ try await second.value }) { Self.assertCancelled($0) }
-        XCTAssertEqual(engine.phase5Calls.count, 1)
+        XCTAssertEqual(engine.accountOperationCalls.count, 1)
         XCTAssertNotEqual(try harness.storedRecord(work)?.kind, .federated)
     }
 
@@ -387,7 +387,7 @@ final class FederationTests: XCTestCase {
         let other = FakePayload.federated(identityId: "us-east-1:c")
         let store = harness.store()
         let work = work
-        harness.engine(for: work)?.scriptPhase5(.federateToIdentityPool) { _ in
+        harness.engine(for: work)?.scriptAccountOperation(.federateToIdentityPool) { _ in
             _ = try store.write(other.record(), for: work, expecting: .generation(envelope.generation))
             return FakePayload.federated(identityId: "us-east-1:b").data
         }
@@ -462,7 +462,7 @@ final class FederationTests: XCTestCase {
         let gate = Gate()
         let first = FakePayload.federated(identityId: "us-east-1:first")
         let second = FakePayload.federated(identityId: "us-east-1:second")
-        engine.scriptPhase5(.federateToIdentityPool) { call in
+        engine.scriptAccountOperation(.federateToIdentityPool) { call in
             guard case .federateToIdentityPool(let request, _) = call else {
                 throw FixtureError(description: "unexpected \(call)")
             }
@@ -477,14 +477,14 @@ final class FederationTests: XCTestCase {
         await gate.waitForArrivals(1)
         let two = Task { try await client.federateToIdentityPool(withProviderToken: "second", for: .google) }
         await waitUntil("the second federation queues") { await client.core.signInLock.waiterCount == 1 }
-        XCTAssertEqual(engine.phase5Calls.count, 1)
+        XCTAssertEqual(engine.accountOperationCalls.count, 1)
         await gate.open()
 
         _ = try await one.value
         let result = try await two.value
 
         XCTAssertEqual(result.identityId, "us-east-1:second")
-        XCTAssertEqual(engine.phase5Calls.last, .federateToIdentityPool(
+        XCTAssertEqual(engine.accountOperationCalls.last, .federateToIdentityPool(
             EngineFederationRequest(token: "second", provider: .google, developerProvidedIdentityId: nil),
             current: first.data
         ))

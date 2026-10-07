@@ -171,8 +171,8 @@ final class WebAuthnCeremonyTests: XCTestCase {
         await held.letAnswer()
         try await associate.value(within: 10)
 
-        guard case .associateWebAuthnCredential(let payload, let anchor)? = engine.phase5Calls.last else {
-            return XCTFail("no associate reached the engine: \(engine.phase5Calls)")
+        guard case .associateWebAuthnCredential(let payload, let anchor)? = engine.accountOperationCalls.last else {
+            return XCTFail("no associate reached the engine: \(engine.accountOperationCalls)")
         }
         XCTAssertEqual(payload, alice.data)
         let holdsWindow = await anchor?.holds(window)
@@ -202,7 +202,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
             XCTAssertEqual(error?.kind, .notSignedIn)
         }
         for id in [work, home, pendingId] {
-            XCTAssertEqual(harness.engine(for: id)?.phase5Calls, [], "\(id)")
+            XCTAssertEqual(harness.engine(for: id)?.accountOperationCalls, [], "\(id)")
             XCTAssertEqual(harness.engine(for: id)?.refreshCalls, [], "\(id)")
             XCTAssertEqual(harness.engine(for: id)?.ceremonyAnchorCalls.count, 0, "\(id)")
         }
@@ -230,7 +230,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let outcomes = await [first.result, second.result]
 
         XCTAssertEqual(engine.refreshCalls, [stale.data])
-        XCTAssertEqual(engine.phase5Calls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.payload), [stale.refreshed.data, stale.refreshed.data])
         XCTAssertTrue(outcomes.contains { (try? $0.get()) != nil }, "one associate should succeed")
     }
 
@@ -255,8 +255,8 @@ final class WebAuthnCeremonyTests: XCTestCase {
 
         try await client.associateWebAuthnCredential(presentationAnchor: window)
 
-        XCTAssertEqual(engine.phase5Calls.map(\.payload), [alice.data])
-        XCTAssertEqual(other.phase5Calls, [])
+        XCTAssertEqual(engine.accountOperationCalls.map(\.payload), [alice.data])
+        XCTAssertEqual(other.accountOperationCalls, [])
         XCTAssertEqual(other.refreshCalls, [])
         XCTAssertEqual(try harness.storedRecord(home), homeBefore)
     }
@@ -582,7 +582,7 @@ final class WebAuthnCeremonyTests: XCTestCase {
         let engine = try XCTUnwrap(harness.engine(for: work))
         let window = await WebAuthnFixtures.window()
         let start = Gate()
-        engine.scriptPhase5(.associateWebAuthnCredential) { _ in
+        engine.scriptAccountOperation(.associateWebAuthnCredential) { _ in
             await start.pass()
             return ()
         }

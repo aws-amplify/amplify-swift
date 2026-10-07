@@ -230,8 +230,8 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     private var cancels = 0
     private var supersedes = 0
     private var guestFetches = 0
-    private var phase5: [FakePhase5Call] = []
-    private var phase5Scripts: [FakePhase5Operation: FakePhase5Script] = [:]
+    private var accountOperations: [FakeAccountOperationCall] = []
+    private var accountOperationScripts: [FakeAccountOperation: FakeAccountOperationScript] = [:]
     /// The user an `autoSignIn` signs in by default: the last one signed up or confirmed.
     private var signedUpUsername: String?
     /// Moves on every sign-up or confirmation that starts; only the newest one's result sets
@@ -778,17 +778,17 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
         withLock { stepCeremonies.removeAll { $0.id == id } }
     }
 
-    // MARK: Phase 5 (`FakeSessionEngine+Phase5.swift`)
+    // MARK: Account operations (`FakeSessionEngine+AccountOperations.swift`)
 
-    /// Every Phase 5 call, in order.
-    var phase5Calls: [FakePhase5Call] {
-        withLock { phase5 }
+    /// Every account-operation call, in order.
+    var accountOperationCalls: [FakeAccountOperationCall] {
+        withLock { accountOperations }
     }
 
     /// Replaces the default result of `operation` with `script`, which returns the operation's result type
     /// (or throws).
-    func scriptPhase5(_ operation: FakePhase5Operation, _ script: @escaping FakePhase5Script) {
-        withLock { phase5Scripts[operation] = script }
+    func scriptAccountOperation(_ operation: FakeAccountOperation, _ script: @escaping FakeAccountOperationScript) {
+        withLock { accountOperationScripts[operation] = script }
     }
 
     /// Records `call`, then runs its script, else returns `defaultResult`.
@@ -796,9 +796,9 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
     /// Every sign-up or confirmation moves the sign-up state, as the seam's contract says: it ends any earlier
     /// auto-sign-in session when it starts, and only a `.completeAutoSignIn` result of the newest one started
     /// leaves a new one.
-    func phase5<Result: Sendable>(_ call: FakePhase5Call, default defaultResult: @autoclosure () -> Result) async throws -> Result {
-        let (script, ticket) = withLock { () -> (FakePhase5Script?, UInt64) in
-            phase5.append(call)
+    func recordAccountOperation<Result: Sendable>(_ call: FakeAccountOperationCall, default defaultResult: @autoclosure () -> Result) async throws -> Result {
+        let (script, ticket) = withLock { () -> (FakeAccountOperationScript?, UInt64) in
+            accountOperations.append(call)
             switch call {
             case .signUp, .confirmSignUp:
                 signedUpUsername = nil
@@ -806,7 +806,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             default:
                 break
             }
-            return (phase5Scripts[call.operation], signUpTicket)
+            return (accountOperationScripts[call.operation], signUpTicket)
         }
         let typed: Result
         if let script {
@@ -862,7 +862,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             return (signedUpUsername, signInLatch, signInsHonourCancellation, cancels)
         }
         guard let username else {
-            withLock { phase5.append(.autoSignIn(current: current, epoch: epoch)) }
+            withLock { accountOperations.append(.autoSignIn(current: current, epoch: epoch)) }
             throw SessionCore.notSignedUp()
         }
         if let latch {
@@ -870,7 +870,7 @@ final class FakeSessionEngine: SessionEngine, @unchecked Sendable {
             try checkStillWanted(since: started, epoch: epoch, honouringCancellation: honours)
         }
         return try await settle(retryable: false) {
-            try await phase5(
+            try await recordAccountOperation(
                 .autoSignIn(current: current, epoch: epoch),
                 default: EngineStepResult.done(payload: Self.signedIn(username, keepingIdentityOf: current).data)
             )
