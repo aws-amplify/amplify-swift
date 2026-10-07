@@ -75,7 +75,7 @@ enum WebAuthnHarness {
                 return try .success(ClientWebAuthnDriver(configuration: configuration()))
                 #else
                 return .failure(HarnessAppError(
-                    "The client driver needs the Phase 5 WebAuthn API: build with COGNITO_CLIENT_WEBAUTHN_API (CognitoClientWebAuthn.xcconfig)."
+                    "The client driver needs AmplifyCognitoClient's WebAuthn API: build with COGNITO_CLIENT_WEBAUTHN_API (CognitoClientWebAuthn.xcconfig)."
                 ))
                 #endif
             default:
