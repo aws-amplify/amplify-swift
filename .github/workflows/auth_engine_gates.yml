@@ -7,10 +7,14 @@
 # - Privacy manifests: the engine is not a product and has no manifest, so every library product that links
 #   it must declare, with an accepted reason, each required-reason API category the engine uses, in the
 #   manifest of a target on its path to the engine (scripts/cognito-engine/check_engine_privacy_manifest.py).
+# - Error matches: no `catch`, cast or type test in the plugin or the engine matches an error type the engine no
+#   longer throws, which would compile and never match (scripts/cognito-engine/error_match_gate.sh check S9,
+#   over the file list in scripts/cognito-engine/engine_paths.txt).
 #
-# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. Both jobs run on ubuntu in
-# the official swift image, as unit_test.yml's detect job does: they need only python3 and
-# `swift package dump-package`, and the manifest has no host-OS conditionals. A missing script fails the job.
+# Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. The
+# first two jobs run on ubuntu in the official swift image, as unit_test.yml's detect job does: they need only
+# python3 and `swift package dump-package`, and the manifest has no host-OS conditionals. The error-match job
+# needs only bash and python3. A missing script fails the job.
 
 name: Auth | Shared Cognito Module
 
@@ -73,3 +77,20 @@ jobs:
           fi
           python3 scripts/cognito-engine/check_engine_privacy_manifest.py --self-test
           python3 scripts/cognito-engine/check_engine_privacy_manifest.py
+
+  error-matches:
+    name: No silent error matches in the plugin and the shared Cognito module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Check the error matches against the final rules
+        run: |
+          if [ ! -f scripts/cognito-engine/error_match_gate.sh ]; then
+            echo "error: scripts/cognito-engine/error_match_gate.sh is missing; the error matches cannot be checked" >&2
+            exit 1
+          fi
+          bash scripts/cognito-engine/error_match_gate.sh self-test
+          bash scripts/cognito-engine/error_match_gate.sh check S9
