@@ -424,6 +424,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		21F763022BD6B7410048845A /* Copy Test Config */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -442,6 +443,7 @@
 		};
 		6084F1BA2967CB3000434CBF /* Copy Test Config */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -460,6 +462,7 @@
 		};
 		6875F9A92A3CDB70001C9AAF /* Copy Test Config */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

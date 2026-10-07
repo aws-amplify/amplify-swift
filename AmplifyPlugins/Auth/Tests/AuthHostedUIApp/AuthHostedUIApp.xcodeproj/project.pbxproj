@@ -336,6 +336,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		B41080F0291AD05600297354 /* Copy Integ test configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

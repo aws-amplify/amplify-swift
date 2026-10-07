@@ -2522,6 +2522,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		213DBC7E28A6C49F00B30280 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2540,6 +2541,7 @@
 		};
 		2163D62E2BE974F3009689B1 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2558,6 +2560,7 @@
 		};
 		21698CC12889D5FE004BD994 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2576,6 +2579,7 @@
 		};
 		21EA887C28F9BC720000BA75 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2594,6 +2598,7 @@
 		};
 		395906B528AC4A22004B96B1 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2612,6 +2617,7 @@
 		};
 		395906C928AC63DA004B96B1 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2630,6 +2636,7 @@
 		};
 		39E0F148289DD78400939D9F /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2648,6 +2655,7 @@
 		};
 		39E0F2B028A4479B00939D9F /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2666,6 +2674,7 @@
 		};
 		681B35852A43962D0074F369 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2684,6 +2693,7 @@
 		};
 		681B359D2A4396CF0074F369 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2702,6 +2712,7 @@
 		};
 		681B35C12A43970A0074F369 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2720,6 +2731,7 @@
 		};
 		976836D52E7BBED3009CE583 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2738,6 +2750,7 @@
 		};
 		976836EA2E7BC015009CE583 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2756,6 +2769,7 @@
 		};
 		976837862E7BC117009CE583 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2774,6 +2788,7 @@
 		};
 		97914C142955872A002000EA /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -2792,6 +2807,7 @@
 		};
 		97D494692981A6E000397C75 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

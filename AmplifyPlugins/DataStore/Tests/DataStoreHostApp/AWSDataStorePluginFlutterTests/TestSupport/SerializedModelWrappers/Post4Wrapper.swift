@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AmplifyTestCommon
 import Foundation
 
 /**

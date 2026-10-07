@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /*
@@ -38,31 +37,31 @@ import XCTest
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
     /// TODO: Implement testGetBlogThenFetchPostsThenFetchComments
-    func testGetCommentThenFetchPostThenFetchBlog() throws {
-        try startAmplifyAndWaitForSync()
+    func testGetCommentThenFetchPostThenFetchBlog() async throws {
+        try await startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        guard let blog = try saveBlog(name: "name", plugin: plugin),
-              let post = try savePost(title: "title", blog: blog, plugin: plugin),
-              let comment = try saveComment(post: post, content: "content", plugin: plugin)
+        guard let blog = try await saveBlog(name: "name", plugin: plugin),
+              let post = try await savePost(title: "title", blog: blog, plugin: plugin),
+              let comment = try await saveComment(post: post, content: "content", plugin: plugin)
         else {
             XCTFail("Could not create blog, post, and comment")
             return
         }
         let getCommentCompleted = expectation(description: "get comment complete")
-        var resultComment: Comment6Wrapper?
+        let resultComment = AtomicValue<Comment6Wrapper?>(initialValue: nil)
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment6.schema, where: Comment6.keys.id.eq(comment.idString())) { result in
             switch result {
             case .success(let queriedCommentOptional):
                 let queriedComment = Comment6Wrapper(model: queriedCommentOptional[0])
                 XCTAssertEqual(queriedComment.id(), comment.id())
-                resultComment = queriedComment
+                resultComment.set(queriedComment)
                 getCommentCompleted.fulfill()
             case .failure(let response):
                 XCTFail("Failed with: \(response)")
             }
         }
         await fulfillment(of: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
-        guard let fetchedComment = resultComment else {
+        guard let fetchedComment = resultComment.get() else {
             XCTFail("Could not get comment")
             return
         }
@@ -81,54 +80,54 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
     }
 
     /// TODO: Include testGetPostThenFetchBlogAndComment when nested model lazy loading is implemented
-    func saveBlog(id: String = UUID().uuidString, name: String, plugin: AWSDataStorePlugin) throws -> Blog6Wrapper? {
+    func saveBlog(id: String = UUID().uuidString, name: String, plugin: AWSDataStorePlugin) async throws -> Blog6Wrapper? {
         let blog = try Blog6Wrapper(name: name)
-        var result: Blog6Wrapper?
+        let result = AtomicValue<Blog6Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(blog.model, modelSchema: Blog6.schema) { event in
             switch event {
             case .success(let data):
-                result = Blog6Wrapper(model: data)
+                result.set(Blog6Wrapper(model: data))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 
-    func savePost(id: String = UUID().uuidString, title: String, blog: Blog6Wrapper, plugin: AWSDataStorePlugin) throws -> Post6Wrapper? {
+    func savePost(id: String = UUID().uuidString, title: String, blog: Blog6Wrapper, plugin: AWSDataStorePlugin) async throws -> Post6Wrapper? {
         let post = try Post6Wrapper(title: title, blog: blog.model)
-        var result: Post6Wrapper?
+        let result = AtomicValue<Post6Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(post.model, modelSchema: Post6.schema) { event in
             switch event {
             case .success(let data):
-                result = Post6Wrapper(model: data)
+                result.set(Post6Wrapper(model: data))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 
-    func saveComment(id: String = UUID().uuidString, post: Post6Wrapper, content: String, plugin: AWSDataStorePlugin) throws -> Comment6Wrapper? {
+    func saveComment(id: String = UUID().uuidString, post: Post6Wrapper, content: String, plugin: AWSDataStorePlugin) async throws -> Comment6Wrapper? {
         let comment = try Comment6Wrapper(content: content, post: post.model)
-        var result: Comment6Wrapper?
+        let result = AtomicValue<Comment6Wrapper?>(initialValue: nil)
         let completeInvoked = expectation(description: "request completed")
         plugin.save(comment.model, modelSchema: Comment6.schema) { event in
             switch event {
             case .success(let data):
-                result = Comment6Wrapper(model: data)
+                result.set(Comment6Wrapper(model: data))
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed \(error)")
             }
         }
         await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return result.get()
     }
 }

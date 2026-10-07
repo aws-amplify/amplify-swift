@@ -9,16 +9,16 @@ import AWSPluginsCore
 import XCTest
 
 @testable import Amplify
-@testable import AmplifyTestCommon
+@testable import DataStoreHostApp
 @testable import AWSDataStorePlugin
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
 class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked Sendable {
 
-    func testCreateMutateDelete() throws {
+    func testCreateMutateDelete() async throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         let title = "This is a new post I created"
         let date = Temporal.DateTime.now().iso8601String
@@ -41,7 +41,9 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model, updatedPostModel = updatedPost.model] payload in
+                let newPost = PostWrapper(model: newPostModel)
+                let updatedPost = PostWrapper(model: updatedPostModel)
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -73,7 +75,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -96,9 +98,9 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
     ///    - attempt to update the existing post with a condition that matches existing data
     /// - Then:
     ///    - the update with condition that matches existing data will be applied and returned.
-    func testCreateThenMutateWithCondition() throws {
+    func testCreateThenMutateWithCondition() async throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         let title = "This is a new post I created"
         let date = Temporal.DateTime.now().iso8601String
@@ -124,7 +126,9 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model, updatedPostModel = updatedPost.model] payload in
+                let newPost = PostWrapper(model: newPostModel)
+                let updatedPost = PostWrapper(model: updatedPostModel)
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -152,7 +156,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -175,9 +179,9 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
     /// - Then:
     ///    - Saving a post should be successful
     ///
-    func testStopStart() throws {
+    func testStopStart() async throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let stopStartSuccess = expectation(description: "stop then start successful")
         plugin.stop { result in
             switch result {
@@ -195,7 +199,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
             }
         }
         await fulfillment(of: [stopStartSuccess], timeout: networkTimeout)
-        try validateSavePost(plugin: plugin)
+        try await validateSavePost(plugin: plugin)
 
     }
 
@@ -206,7 +210,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
     ///   - I call DataStore.query()
     /// - Then:
     ///   - DataStore is automatically started
-    func testQueryImplicitlyStarts() throws {
+    func testQueryImplicitlyStarts() async throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let dataStoreStarted = expectation(description: "dataStoreStarted")
         let sink = Amplify
@@ -238,9 +242,9 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
     /// - Then:
     ///    - Saving a post should be successful
     ///
-    func testClearStart() throws {
+    func testClearStart() async throws {
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let clearStartSuccess = expectation(description: "clear then start successful")
         plugin.clear { result in
             switch result {
@@ -258,11 +262,11 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
             }
         }
         await fulfillment(of: [clearStartSuccess], timeout: networkTimeout)
-        try validateSavePost(plugin: plugin)
+        try await validateSavePost(plugin: plugin)
     }
 
     // MARK: - Helpers
-    func validateSavePost(plugin: AWSDataStorePlugin) throws {
+    func validateSavePost(plugin: AWSDataStorePlugin) async throws {
         let date = Temporal.DateTime.now()
         let newPost = try PostWrapper(
             title: "This is a new post I created",
@@ -273,7 +277,8 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        ) { [newPostModel = newPost.model] payload in
+                let newPost = PostWrapper(model: newPostModel)
                 guard let mutationEvent = payload.data as? MutationEvent
                     else {
                         XCTFail("Can't cast payload as mutation event")
@@ -294,7 +299,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase, @unchecked S
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
