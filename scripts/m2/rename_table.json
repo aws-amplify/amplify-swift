@@ -1,5 +1,5 @@
 {
-  "note": "Which engine name replaces which public or plugin name, by the step of the engine move that introduced it. One source of truth for test_rename_check.py and for the G5 log-transcript normaliser, which applies it in reverse. Add an entry in the step that introduces the name.",
+  "note": "Which engine name replaces which public or plugin name, by the step of the engine move that introduced it. The log-transcript normaliser (LogTranscriptNormaliser) applies it in reverse. Add an entry in the step that introduces the name.",
   "renames": [
     { "step": "S1", "from": { "module": "Amplify", "name": "AuthUIPresentationAnchor" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EnginePresentationAnchor" } },
     { "step": "S1", "from": { "module": "Amplify", "name": "AmplifyErrorMessages" }, "to": { "module": "InternalAWSCognitoAuth", "name": "EngineErrorMessages" } },

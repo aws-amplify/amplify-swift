@@ -15,8 +15,7 @@
 #   scripts/m2/error_match_gate.sh check <step>           # enforce the rules in force at S3, S4 or later
 #   scripts/m2/error_match_gate.sh self-test
 #
-# The engine-destined set is scripts/m2/engine_paths.txt (scripts/m2/gen_engine_paths.py). The S0 baseline
-# report is scripts/m2/baselines/error_match_sites.txt.
+# The engine-destined set is scripts/m2/engine_paths.txt (scripts/m2/gen_engine_paths.py).
 #
 # Matched forms, for each of KeychainStoreError, AWSCognitoAuthError, AuthErrorConvertible and AuthError:
 # `catch T.case`, `catch let x as T`, `catch is T`, `as? T`, `as! T`, `is T` (each also with `any T`),

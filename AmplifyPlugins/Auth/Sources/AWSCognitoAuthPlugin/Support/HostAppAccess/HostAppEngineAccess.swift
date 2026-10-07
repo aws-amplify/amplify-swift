@@ -16,8 +16,8 @@ import InternalAWSCognitoAuth
 // it cannot name a `package` declaration of `InternalAWSCognitoAuth`: not the type, not a
 // case, not a member. It can still hold and compare engine values without naming them, and it can call the
 // plugin's internal declarations. So it goes through these helpers, which only convert, case for case.
-// `HostAppEngineAccessTests` round-trips every case, and `scripts/m2/host_app_probe.sh` type-checks the
-// host-app files against the plugin's build.
+// `HostAppEngineAccessTests` round-trips every case, and the AuthHostApp build of the integration
+// tests type-checks the host-app files against the plugin.
 
 /// `AmplifyCredentials` as the host app sees it: the same cases, labels and payloads. The signed-in data is
 /// wrapped in ``HostAppSignedInData`` so that its members can be read.
