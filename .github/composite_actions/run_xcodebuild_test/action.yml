@@ -48,7 +48,7 @@ inputs:
     type: string
     default: ''
   boot_simulator:
-    description: 'Boot the destination simulator before resolving and building, and wait for it to finish booting before testing. Does nothing for a destination that names no simulator.'
+    description: 'Boot the destination simulator once the dependencies resolve, and wait for it to finish booting before building and testing. Does nothing for a destination that names no simulator.'
     required: false
     type: boolean
     default: false
@@ -61,35 +61,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Left to xcodebuild, the simulator boots only once the build is done, right before the tests, and on a
-    # runner image its first boot is long: the UI tests then start on a simulator still finishing it, and the
-    # first app launch times out ("Timed out while launching application via Xcode", the hosted UI and push
-    # jobs of run 37338053976) or the WebAuthn tests' simulator server is too slow to answer. Booted here, the
-    # simulator does that work while the dependencies resolve (only that: the build and the tests are one
-    # xcodebuild invocation, and the step before it waits for the boot to finish, so the build does not share
-    # the runner with the boot). With the dependencies cached, most of the boot is that wait.
-    - name: Boot the simulator for ${{ inputs.scheme }}
-      id: boot-simulator
-      if: ${{ inputs.boot_simulator == 'true' }}
-      shell: bash
-      env:
-        DESTINATION: ${{ inputs.destination }}
-        XCODE_PATH: ${{ inputs.xcode_path }}
-      run: |
-        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
-        udid=$(bash "$GITHUB_ACTION_PATH/simulator_udid.sh" "$DESTINATION")
-        if [ -z "$udid" ]; then
-          echo "No simulator to boot for '$DESTINATION'."
-          exit 0
-        fi
-        echo "udid=$udid" >> "$GITHUB_OUTPUT"
-        # Starts the boot and returns; an already booted simulator is left as it is.
-        if xcrun simctl boot "$udid" 2>/dev/null; then
-          echo "Booting the simulator for '$DESTINATION'."
-        else
-          echo "The simulator for '$DESTINATION' is already booted, or could not boot (xcodebuild then boots it)."
-        fi
-
     # Callers set this for a retry on the simulator the first attempt used. When the app is still
     # installed, xcodebuild can launch the previous install while it installs the new one; the old
     # bundle is then moved aside and deleted mid-run, and later tests fail reading their resources.
@@ -147,14 +118,27 @@ runs:
         # sized to absorb that while still being well short of the job timeout, so
         # a genuine stall surfaces as a fast, explicit failure.
         RESOLVE_TIMEOUT_SECONDS: '1500'
+        # git aborts a stalled fetch ("curl 28 Operation too slow"); xcodebuild passes these to its git
+        # processes. The attempt then fails and is retried within minutes instead of holding to its bound.
+        # The floor only stops a fetch that could not finish anyway: the aws-sdk-swift mirror, which 7 of the
+        # 8 stalled attempts of the jobs that timed out on 2026-10-06 were fetching, is 2.8 GiB, about 8 hours
+        # at 100 KiB/s. GitHub starts sending it about 11 s after the request, well inside the 120 s.
+        GIT_HTTP_LOW_SPEED_LIMIT: '102400'
+        GIT_HTTP_LOW_SPEED_TIME: '120'
       run: |
         set -o pipefail
         if [ -n "$PROJECT_PATH" ]; then cd "$PROJECT_PATH"; fi
         if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
 
+        # Callers pass a path under '~/'. xcodebuild expands that '~', but quoted here it stays a literal
+        # directory name, so the cleanup between attempts removed nothing: a retry resumed on what the
+        # failed attempt left ("Updating from" 30 of the 31 repositories). Expanded once, for both.
+        clonedDir="$CLONED_SOURCE_PACKAGES_PATH"
+        case "$clonedDir" in \~ | \~/*) clonedDir="$HOME${clonedDir:1}" ;; esac
+
         clonedPath=()
-        if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
-          clonedPath=(-clonedSourcePackagesDirPath "$CLONED_SOURCE_PACKAGES_PATH")
+        if [ -n "$clonedDir" ]; then
+          clonedPath=(-clonedSourcePackagesDirPath "$clonedDir")
         fi
 
         resolve_bounded() {
@@ -181,11 +165,13 @@ runs:
           fi
           echo "::endgroup::"
           echo "Attempt $attempt failed or exceeded ${RESOLVE_TIMEOUT_SECONDS}s after $(( $(date +%s) - start ))s."
+          # What the attempt fetched: next to nothing for a stall, most of it for a slow fetch.
+          echo "Fetched: $(du -sh "${clonedDir:-.}/repositories" "$HOME/Library/Caches/org.swift.swiftpm/repositories" 2>/dev/null | tr '\t\n' ' ')"
 
           # Clear partial mirror state so the next attempt is not resuming a
           # half-written clone, which is a common way for this to wedge.
-          if [ -n "$CLONED_SOURCE_PACKAGES_PATH" ]; then
-            rm -rf "${CLONED_SOURCE_PACKAGES_PATH%/}/repositories" || true
+          if [ -n "$clonedDir" ]; then
+            rm -rf "${clonedDir%/}/repositories" || true
           fi
         done
 
@@ -193,10 +179,42 @@ runs:
         This is a dependency fetch problem, not a test failure."
         exit 1
 
-    # Runs before the build, which shares the xcodebuild invocation with the tests, so the boot overlaps only
-    # the dependency resolution above; the build and the tests start on a booted simulator. Bounded with a
-    # watchdog, as the resolution is: a boot that never completes leaves the simulator to xcodebuild, as
-    # before, after a warning.
+    # Left to xcodebuild, the simulator boots only once the build is done, right before the tests, and on a
+    # runner image its first boot is long: the UI tests then start on a simulator still finishing it, and the
+    # first app launch times out ("Timed out while launching application via Xcode", the hosted UI and push
+    # jobs of run 37338053976) or the WebAuthn tests' simulator server is too slow to answer. Booted here, after
+    # the dependencies resolve and before the build (the build and the tests are one xcodebuild invocation, and
+    # the next step waits for the boot to finish), the build and the tests start on a booted simulator.
+    #
+    # Not before the resolution: booted while the dependencies resolve, the boot competes with them for the
+    # runner. On runs 37431589664 and 37495827804 xcodebuild then took 71-80 s (median) to start resolving
+    # instead of 4-5 s, and a cold resolution took 611-706 s (median) on the integration jobs, which boot,
+    # against 388-397 s on the unit jobs of the same pushes and 341-380 s on main's integration jobs, which
+    # do not.
+    - name: Boot the simulator for ${{ inputs.scheme }}
+      id: boot-simulator
+      if: ${{ inputs.boot_simulator == 'true' }}
+      shell: bash
+      env:
+        DESTINATION: ${{ inputs.destination }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+      run: |
+        if [ -n "$XCODE_PATH" ]; then sudo xcode-select -s "$XCODE_PATH"; fi
+        udid=$(bash "$GITHUB_ACTION_PATH/simulator_udid.sh" "$DESTINATION")
+        if [ -z "$udid" ]; then
+          echo "No simulator to boot for '$DESTINATION'."
+          exit 0
+        fi
+        echo "udid=$udid" >> "$GITHUB_OUTPUT"
+        # Starts the boot and returns; an already booted simulator is left as it is.
+        if xcrun simctl boot "$udid" 2>/dev/null; then
+          echo "Booting the simulator for '$DESTINATION'."
+        else
+          echo "The simulator for '$DESTINATION' is already booted, or could not boot (xcodebuild then boots it)."
+        fi
+
+    # Bounded with a watchdog, as the resolution is: a boot that never completes leaves the simulator to
+    # xcodebuild, as before, after a warning.
     - name: Wait for the simulator to finish booting for ${{ inputs.scheme }}
       if: ${{ inputs.boot_simulator == 'true' && steps.boot-simulator.outputs.udid != '' }}
       shell: bash

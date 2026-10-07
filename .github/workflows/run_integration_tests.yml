@@ -192,7 +192,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          # Boots the simulator while the dependencies resolve and waits for it before the build, so the tests do
+          # Boots the simulator once the dependencies resolve and waits for it before the build, so the tests do
           # not start on one still booting.
           boot_simulator: true
           # Kept outside DerivedData, so the skip gate below reads this run's bundle and no other.
