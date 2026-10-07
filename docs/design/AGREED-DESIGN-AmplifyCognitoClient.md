@@ -4,7 +4,7 @@
 **Author:** Amplify Swift
 
 **Status:** Implemented as a beta. `AmplifyCognitoClient` ships behind `@_spi(AmplifyExperimental)`; the
-client's beta guide is the reference for using it, and the API docs in
+[beta guide](../../AmplifyClients/AmplifyCognitoClient/README.md) is the reference for using it, and the API docs in
 `AmplifyClients/AmplifyCognitoClient/Sources` for its exact surface. This document records the design and the
 decisions behind it ([auth-client-DECISIONS.md](auth-client-DECISIONS.md)).
 
