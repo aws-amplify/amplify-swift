@@ -684,7 +684,7 @@ final class CapturingLoggingPlugin: LoggingCategoryPlugin, @unchecked Sendable {
     private let lock = NSLock()
     private var recorded: [Line] = []
 
-    let key = "M2TranscriptCapturingLoggingPlugin"
+    let key = "TranscriptCapturingLoggingPlugin"
 
     var lines: [Line] {
         lock.lock()

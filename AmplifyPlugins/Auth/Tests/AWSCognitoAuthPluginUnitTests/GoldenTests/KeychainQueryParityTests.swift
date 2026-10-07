@@ -78,7 +78,7 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
     ///    - The scenario names, and each scenario's sequence of (origin, operation, service, access
     ///      group, key, outcome), equal `queries.json`
     ///
-    func testKeychainQueriesMatchTheS4qBaseline() async throws {
+    func testKeychainQueriesMatchTheRecordedBaseline() async throws {
         let bundle = try XCTUnwrap(Bundle.main.bundleIdentifier, "The legacy migration needs a bundle identifier")
         let current = try await Self.recordAll(bundle: bundle)
         let again = try await Self.recordAll(bundle: bundle)
@@ -93,7 +93,7 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
         if GoldenFiles.isGenerating {
             if FileManager.default.fileExists(atPath: Self.baselineURL.path),
                ProcessInfo.processInfo.environment["AMPLIFY_GOLDEN_OVERWRITE_FROZEN"] != "1" {
-                XCTFail("The keychain query baseline is frozen since S4q. Regenerating it defeats the parity gate.")
+                XCTFail("The keychain query baseline is frozen. Regenerating it defeats the parity gate.")
                 return
             }
             try GoldenFiles.write(GoldenFiles.snapshotData(baseline), to: Self.baselineURL)
@@ -111,7 +111,7 @@ final class KeychainQueryParityTests: XCTestCase, @unchecked Sendable {
             if scenario.queries != expected.queries {
                 XCTFail(
                     """
-                    \(scenario.name): the keychain queries drifted from the S4q baseline.
+                    \(scenario.name): the keychain queries drifted from the recorded baseline.
                     first difference: \(Self.firstDifference(scenario.queries, expected.queries))
                     recorded now:
                     \(scenario.queries.joined(separator: "\n"))
