@@ -175,8 +175,8 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest, @unchecked Send
         let savedNewTeam = try await mutate(.create(newTeam))
         var queriedProject = try await query(for: savedProject)!
         assertProject(queriedProject, hasTeam: savedTeam)
-        queriedProject.teamId = newTeam.teamId
-        queriedProject.teamName = newTeam.name
+        // Setting the FK fields directly doesn't change the team
+        queriedProject.setTeam(newTeam)
         let savedProjectWithNewTeam = try await mutate(.update(queriedProject))
         assertProject(savedProjectWithNewTeam, hasTeam: savedNewTeam)
     }
