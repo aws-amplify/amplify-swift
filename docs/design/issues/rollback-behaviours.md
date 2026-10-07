@@ -1,7 +1,8 @@
 # Rollback behaviours with refresh-token rotation and old plugin releases
 
 **Status:** §1 and §2 solved for the default session by the shared saved login (2026-10-02). §3 was resolved
-earlier. Earlier status: documented — for later discussion (2026-09-27).
+earlier. The caveats that remain are accepted for the beta, because the plugin behaves the same way (2026-10-05).
+Earlier status: documented — for later discussion (2026-09-27).
 **Source:** the executable rollback matrix (`RollbackMatrixPluginTests` and `RollbackMatrixClientTests`).
 
 ## 1. Rolling back to the plugin with refresh-token rotation on (matrix 03, row 3)
@@ -13,7 +14,9 @@ it sends no `sessionExpired` Hub event. The user still has to sign in again, but
 `sessionExpired` only sees failing calls.
 
 Options: map a reused refresh token to `sessionExpired` in the plugin (a behaviour change for every plugin user
-with rotation on), or keep it and say so in the release notes.
+with rotation on), or keep it and say so in the release notes. *Decided for the beta: the plugin's mapping is
+unchanged. With the shared saved login the case no longer arises for the default session, except in one process
+(below).*
 
 Confirmed against live Cognito (2026-09-27, rotation on, 5 s grace): a token re-presented after it was rotated
 away and the grace period passed returns HTTP 400 `RefreshTokenReuseException`, not `NotAuthorizedException`, so
@@ -51,7 +54,10 @@ shared record holds `{"noCredentials":{}}` (`testMatrix_signedOutUserIsNeverSign
 `testMatrix_clientSignOut_readByEveryPluginAsSignedOut`). One caveat remains, from the plugin's own rule: after a
 configuration change that copied the login, a purge (or the plugin's own sign-out, which deletes) leaves the earlier
 configuration's copy, which a rollback to the build with that configuration reads
-(`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`).
+(`testMatrix_purgeAfterACarry_leavesTheEarlierConfigurationsCopy_caveat`). A second caveat, also the plugin's own
+rule: a later configuration change that the rule does not carry deletes the signed-out record, and can land on an
+earlier configuration's key that still holds the user's old copy, which then restores the user signed in (design
+§4.8). Both caveats are accepted for the beta (2026-10-05).
 
 ## 3. Rolling forward to the client after 1 (matrix 03, row 9) — resolved
 

@@ -1,6 +1,7 @@
 # SDK does not retry a non-JSON service response
 
-**Status:** open — for later discussion (2026-09-27).
+**Status:** open (2026-09-27). The client's mitigation, option 2 below, is built; the plugin's error text is
+unchanged (2026-10-02).
 **Affects:** the Cognito Auth plugin and `AmplifyCognitoClient` equally (same engine, same SDK).
 
 ## What happens
@@ -27,5 +28,6 @@ Seen once in a full client integration run (`MultiSessionFlowTests.testSameUserI
    `UnknownHTTPServiceError(httpResponse:)` so the normal 5xx retry applies.
 2. **Library mitigation:** recognise an underlying decoding error in the engine's error mapping and give the
    `.service` error a "temporary service problem; retry" recovery suggestion instead of "report a bug" (the client
-   does this already; the plugin could do the same).
+   does this already; the plugin could do the same). *Decided 2026-10-02: the plugin's error text is not changed,
+   so the plugin keeps its "report a bug" suggestion for now.*
 3. **Library retry:** retry such a call once in the engine. Riskier for non-idempotent calls; not recommended.
