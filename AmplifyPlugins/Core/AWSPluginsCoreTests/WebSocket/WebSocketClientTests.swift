@@ -210,7 +210,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         let disconnected = expectation(description: "Dead ping disconnects the socket")
         let reconnected = expectation(description: "Client reconnects after recycling")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case let .disconnected(closeCode, _) where closeCode == .abnormalClosure:
                 disconnected.fulfill()
@@ -282,7 +282,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         let noDisconnect = expectation(description: "Superseded close must not publish .disconnected")
         noDisconnect.isInverted = true
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             if case .disconnected = event {
                 noDisconnect.fulfill()
             }
