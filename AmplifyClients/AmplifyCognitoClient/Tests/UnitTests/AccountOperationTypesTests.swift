@@ -15,7 +15,7 @@ import XCTest
 
 /// The public types of the operations beyond sign-in and the session operations: the two new error cases,
 /// and those operations' options and results.
-final class Phase5TypesTests: XCTestCase {
+final class AccountOperationTypesTests: XCTestCase {
 
     // MARK: Errors
 

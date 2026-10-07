@@ -12,7 +12,7 @@ import XCTest
 /// Every facade method beyond sign-in and the session operations reaches its seam method once, with
 /// its arguments mapped, on its own session's engine and with its own session's payload; and the core's
 /// routes refuse what they must before the engine is called.
-final class Phase5RoutingTests: XCTestCase {
+final class AccountOperationRoutingTests: XCTestCase {
 
     private var harness: ClientHarness!
     private let work = ClientFixtures.id("work")
