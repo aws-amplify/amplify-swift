@@ -11,7 +11,7 @@ import Foundation
 /// The plugin's configuration goldens, read in place from
 /// `AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration/`.
 ///
-/// They are read, not copied: the directory is locked (`scripts/m2/check_fixture_lock.sh`, CODEOWNERS), so
+/// They are read, not copied: the directory is locked (`scripts/cognito-engine/check_fixture_lock.sh`, CODEOWNERS), so
 /// one pinned source serves both tests, and a copy would need a lock of its own. `manifest.json` is pinned
 /// here to the SHA-256 the plugin's `ConfigurationGoldenTests` pins, and every file read is checked against
 /// the manifest.

@@ -222,7 +222,7 @@ let authTargets: [Target] = [
         name: "InternalAWSCognitoAuth",
         // The Cognito engine, shared by AWSCognitoAuthPlugin and AmplifyCognitoClient. Amplify-free: never
         // `Amplify`, `AWSPluginsCore`, `InternalAmplifyCredentials` or `AmplifyCognitoClient`, and nothing in
-        // its closure lives under AmplifyPlugins/ (gate G6, scripts/m2/check_engine_deps.py --stage final).
+        // its closure lives under AmplifyPlugins/ (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
         dependencies: [
             .target(name: "AmplifyAvailability"),
             // Declared, not only reached through AmplifySRP: SRP/AmplifySRPClient.swift imports it.
@@ -716,7 +716,7 @@ let cognitoClientTargets: [Target] = [
             .target(name: "AmplifyFoundationBridge"),
             .target(name: "InternalAmplifyKeychain"),
             // The Cognito engine. Amplify-free: it never reaches `Amplify`,
-            // `AWSPluginsCore` or a plugin (gate G6, scripts/m2/check_engine_deps.py --stage final).
+            // `AWSPluginsCore` or a plugin (gate G6, scripts/cognito-engine/check_engine_deps.py --stage final).
             .target(name: "InternalAWSCognitoAuth"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift"),

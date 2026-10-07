@@ -28,7 +28,7 @@ class EnginePayloadLogTextTests: XCTestCase {
     /// - When:
     ///    - Each public step and its engine conversion are interpolated into a string
     /// - Then:
-    ///    - The engine text, normalised with `scripts/m2/rename_table.json`, equals the public text
+    ///    - The engine text, normalised with `scripts/cognito-engine/rename_table.json`, equals the public text
     ///
     func testPrintedSignInStepsNormaliseToThePublicText() throws {
         let normaliser = try LogTranscriptNormaliser.fromRepository()

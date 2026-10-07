@@ -13,7 +13,7 @@ import Foundation
 /// Only the message is normalised. Category, namespace and level are compared exactly.
 ///
 /// 1. `(AWSCognitoAuthPlugin|InternalAWSCognitoAuth)/<File>.swift` (a `#fileID`) becomes `<module>/<File>.swift`.
-/// 2. `scripts/m2/rename_table.json` is applied in reverse: module-qualified names first, then bare names.
+/// 2. `scripts/cognito-engine/rename_table.json` is applied in reverse: module-qualified names first, then bare names.
 /// 3. The module qualifier `InternalAWSCognitoAuth.` becomes `AWSCognitoAuthPlugin.`, for types that moved
 ///    unchanged.
 /// 4. Values that differ from run to run: JWTs, UUIDs, printed dates, heap addresses, and the key order of
@@ -55,7 +55,7 @@ struct LogTranscriptNormaliser {
         for _ in 0 ..< 6 {
             root.deleteLastPathComponent()
         }
-        let url = root.appendingPathComponent("scripts/m2/rename_table.json")
+        let url = root.appendingPathComponent("scripts/cognito-engine/rename_table.json")
         let table = try JSONDecoder().decode(RenameTable.self, from: Data(contentsOf: url))
         return LogTranscriptNormaliser(renames: table.renames)
     }

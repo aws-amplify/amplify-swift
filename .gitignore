@@ -94,4 +94,4 @@ AmplifyClients/Tests/IntegrationTests/KinesisFirehoseClientHostApp/infra/
 .vscode/
 
 # Written by the fixture-lock workflow
-scripts/m2/.check_fixture_lock.run.sh
+scripts/cognito-engine/.check_fixture_lock.run.sh

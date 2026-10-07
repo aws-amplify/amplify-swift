@@ -7,9 +7,9 @@
 #
 """The privacy-manifest check of the Cognito engine (InternalAWSCognitoAuth).
 
-  scripts/m2/check_engine_privacy_manifest.py                        # over `swift package dump-package`
-  scripts/m2/check_engine_privacy_manifest.py --package-json p.json  # use a saved dump
-  scripts/m2/check_engine_privacy_manifest.py --self-test
+  scripts/cognito-engine/check_engine_privacy_manifest.py                        # over `swift package dump-package`
+  scripts/cognito-engine/check_engine_privacy_manifest.py --package-json p.json  # use a saved dump
+  scripts/cognito-engine/check_engine_privacy_manifest.py --self-test
 
 The engine target (InternalAWSCognitoAuth) is not a product and has no privacy manifest of its own. So
 every library product that links it must declare each required-reason API category the engine's sources

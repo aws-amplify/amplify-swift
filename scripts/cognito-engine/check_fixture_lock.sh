@@ -12,7 +12,7 @@
 # baseline and the configuration golden were captured the same way and are locked the same way: every later
 # change to the engine or the plugin must reproduce them exactly.
 #
-#   scripts/m2/check_fixture_lock.sh [head-ref] [base-ref]
+#   scripts/cognito-engine/check_fixture_lock.sh [head-ref] [base-ref]
 #
 # 1. Each locked directory's git tree at head-ref (default HEAD) must equal the tree hash pinned below,
 #    whatever the base. A PR based on an older branch, or a merge into another branch, cannot claim an
@@ -42,7 +42,7 @@ LOCKED_TREES=(
     "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration 5f07437e77f8c64dfe7b3a83c598e4be7c2475b7"
 )
 SELF_FILES=(
-    "scripts/m2/check_fixture_lock.sh"
+    "scripts/cognito-engine/check_fixture_lock.sh"
     ".github/workflows/auth_golden_fixture_lock.yml"
 )
 

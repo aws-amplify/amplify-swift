@@ -3,10 +3,10 @@
 #
 # - Dependencies: the engine's in-package target closure reaches none of Amplify, AWSPluginsCore,
 #   InternalAmplifyCredentials and AmplifyCognitoClient, and no engine source imports one of them
-#   (scripts/m2/check_engine_deps.py --stage final).
+#   (scripts/cognito-engine/check_engine_deps.py --stage final).
 # - Privacy manifests: the engine is not a product and has no manifest, so every library product that links
 #   it must declare, with an accepted reason, each required-reason API category the engine uses, in the
-#   manifest of a target on its path to the engine (scripts/m2/check_engine_privacy_manifest.py).
+#   manifest of a target on its path to the engine (scripts/cognito-engine/check_engine_privacy_manifest.py).
 #
 # Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. Both jobs run on ubuntu in
 # the official swift image, as unit_test.yml's detect job does: they need only python3 and
@@ -42,12 +42,12 @@ jobs:
 
       - name: Check the shared Cognito module's dependencies and imports
         run: |
-          if [ ! -f scripts/m2/check_engine_deps.py ]; then
-            echo "error: scripts/m2/check_engine_deps.py is missing; the shared Cognito module's dependencies cannot be checked" >&2
+          if [ ! -f scripts/cognito-engine/check_engine_deps.py ]; then
+            echo "error: scripts/cognito-engine/check_engine_deps.py is missing; the shared Cognito module's dependencies cannot be checked" >&2
             exit 1
           fi
-          python3 scripts/m2/check_engine_deps.py --self-test
-          python3 scripts/m2/check_engine_deps.py --stage final
+          python3 scripts/cognito-engine/check_engine_deps.py --self-test
+          python3 scripts/cognito-engine/check_engine_deps.py --stage final
 
   privacy-manifest:
     name: Privacy manifests cover the shared Cognito module
@@ -67,9 +67,9 @@ jobs:
 
       - name: Check every product that links the shared Cognito module declares its required-reason APIs
         run: |
-          if [ ! -f scripts/m2/check_engine_privacy_manifest.py ]; then
-            echo "error: scripts/m2/check_engine_privacy_manifest.py is missing; the privacy manifests cannot be checked" >&2
+          if [ ! -f scripts/cognito-engine/check_engine_privacy_manifest.py ]; then
+            echo "error: scripts/cognito-engine/check_engine_privacy_manifest.py is missing; the privacy manifests cannot be checked" >&2
             exit 1
           fi
-          python3 scripts/m2/check_engine_privacy_manifest.py --self-test
-          python3 scripts/m2/check_engine_privacy_manifest.py
+          python3 scripts/cognito-engine/check_engine_privacy_manifest.py --self-test
+          python3 scripts/cognito-engine/check_engine_privacy_manifest.py

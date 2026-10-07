@@ -7,12 +7,12 @@
 #
 """Gate G6: the engine's dependency direction.
 
-  scripts/m2/check_engine_deps.py                      # every step: the engine never reaches AmplifyCognitoClient
-  scripts/m2/check_engine_deps.py --stage final        # nor Amplify, AWSPluginsCore, InternalAmplifyCredentials;
+  scripts/cognito-engine/check_engine_deps.py                      # every step: the engine never reaches AmplifyCognitoClient
+  scripts/cognito-engine/check_engine_deps.py --stage final        # nor Amplify, AWSPluginsCore, InternalAmplifyCredentials;
                                                        # and AmplifyCognitoClient reaches none of them
                                                        # nor imports one
-  scripts/m2/check_engine_deps.py --package-json p.json   # use a saved `swift package dump-package`
-  scripts/m2/check_engine_deps.py --self-test
+  scripts/cognito-engine/check_engine_deps.py --package-json p.json   # use a saved `swift package dump-package`
+  scripts/cognito-engine/check_engine_deps.py --self-test
 
 Walks the transitive in-package target dependencies of InternalAWSCognitoAuth in `swift package
 dump-package`. With `--stage final` it also greps Engine/ for `import` of a forbidden module (including

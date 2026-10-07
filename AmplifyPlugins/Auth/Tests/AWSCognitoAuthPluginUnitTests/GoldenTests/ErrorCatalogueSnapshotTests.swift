@@ -210,7 +210,7 @@ final class ErrorCatalogueSnapshotTests: XCTestCase {
         let declared = declaration.matches(in: text, range: NSRange(text.startIndex..., in: text)).compactMap {
             Range($0.range(at: 1), in: text).map { String(text[$0]) }
         }
-        XCTAssertEqual(declared, Self.errorConstants.map(\.name), "rerun scripts/m2/gen_error_constants_list.py")
+        XCTAssertEqual(declared, Self.errorConstants.map(\.name), "rerun scripts/cognito-engine/gen_error_constants_list.py")
     }
 
     // MARK: The platform-dependent entry

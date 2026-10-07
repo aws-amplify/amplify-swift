@@ -1,13 +1,13 @@
 # Fails any change to the Auth plugin's behavior snapshots: recorded outputs of AWSCognitoAuthPlugin (stored format, error catalogue,
 # log transcript, keychain queries, configuration), or to this lock itself.
 # The snapshots were recorded once, before the shared Cognito code moved out of the plugin, so any change to
-# the plugin's behavior shows up as a diff. See scripts/m2/check_fixture_lock.sh.
+# the plugin's behavior shows up as a diff. See scripts/cognito-engine/check_fixture_lock.sh.
 #
 # Runs on every pull request and on every push to main (no paths filter), so it can be made a required check. It runs the base
 # branch's copy of the script when there is one, so a PR cannot weaken the check that judges it.
 #
-# A second job checks that scripts/m2/engine_paths.txt (the files that belong to the shared Cognito module) matches
-# what scripts/m2/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.
+# A second job checks that scripts/cognito-engine/engine_paths.txt (the files that belong to the shared Cognito module) matches
+# what scripts/cognito-engine/gen_engine_paths.py generates, so a hand edit or a move without a regeneration fails.
 # Unlike the first job it runs the head's generator: its lists are a reviewed input that each move updates.
 # The job itself is locked with this workflow; the generator and engine_paths.txt are protected by
 # CODEOWNERS (admin approval) instead. A missing generator fails the job.
@@ -38,13 +38,13 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          lock=scripts/m2/check_fixture_lock.sh
+          lock=scripts/cognito-engine/check_fixture_lock.sh
           base=""
           if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA^{commit}" 2> /dev/null; then
             base="$BASE_SHA"
           fi
           # Prefer the base branch's copy of the lock; fall back to the head's on the branch that adds it.
-          runner=scripts/m2/.check_fixture_lock.run.sh
+          runner=scripts/cognito-engine/.check_fixture_lock.run.sh
           if [ -n "$base" ] && git cat-file -e "$base:$lock" 2> /dev/null; then
             git show "$base:$lock" > "$runner"
           elif [ -f "$lock" ]; then
@@ -65,8 +65,8 @@ jobs:
 
       - name: Check engine_paths.txt against its generator
         run: |
-          if [ ! -f scripts/m2/gen_engine_paths.py ]; then
-            echo "error: scripts/m2/gen_engine_paths.py is missing; the shared Cognito module's file list cannot be checked" >&2
+          if [ ! -f scripts/cognito-engine/gen_engine_paths.py ]; then
+            echo "error: scripts/cognito-engine/gen_engine_paths.py is missing; the shared Cognito module's file list cannot be checked" >&2
             exit 1
           fi
-          python3 scripts/m2/gen_engine_paths.py --check
+          python3 scripts/cognito-engine/gen_engine_paths.py --check
