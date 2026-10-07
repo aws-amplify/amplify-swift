@@ -26,7 +26,7 @@ enum GoldenFiles {
     /// `AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources`
     static var testResources: URL {
         URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent() // M2Baselines
+            .deletingLastPathComponent() // GoldenTests
             .deletingLastPathComponent() // AWSCognitoAuthPluginUnitTests
             .appendingPathComponent("TestResources", isDirectory: true)
     }

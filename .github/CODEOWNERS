@@ -18,10 +18,10 @@ api-dump-test/* @aws-amplify/amplify-ios-admins
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenLogs/ @aws-amplify/amplify-ios-admins
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenKeychainQueries/ @aws-amplify/amplify-ios-admins
 /AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/TestResources/GoldenConfiguration/ @aws-amplify/amplify-ios-admins
-/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/M2Baselines/StoredFormat*.swift @aws-amplify/amplify-ios-admins
-/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/M2Baselines/LegacyMigrationGoldenTests.swift @aws-amplify/amplify-ios-admins
-/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/M2Baselines/KeychainQuery*.swift @aws-amplify/amplify-ios-admins
-/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/M2Baselines/ConfigurationGoldenTests.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/StoredFormat*.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/LegacyMigrationGoldenTests.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/KeychainQuery*.swift @aws-amplify/amplify-ios-admins
+/AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/ConfigurationGoldenTests.swift @aws-amplify/amplify-ios-admins
 /scripts/m2/check_fixture_lock.sh @aws-amplify/amplify-ios-admins
 /scripts/m2/gen_engine_paths.py @aws-amplify/amplify-ios-admins
 /scripts/m2/engine_paths.txt @aws-amplify/amplify-ios-admins

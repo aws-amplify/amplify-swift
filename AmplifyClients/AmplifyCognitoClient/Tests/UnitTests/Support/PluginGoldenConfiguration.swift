@@ -104,7 +104,7 @@ enum CanonicalJSON {
 @_silgen_name("swift_EnumCaseName")
 private func _swiftEnumCaseName<T>(_ value: T) -> UnsafePointer<CChar>?
 
-/// A copy of the plugin's `FieldDump` (`M2Baselines/GoldenFileSupport.swift`): a flat `path → leaf` view of a
+/// A copy of the plugin's `FieldDump` (`GoldenTests/GoldenFileSupport.swift`): a flat `path → leaf` view of a
 /// value's stored fields, by property and case name only, never type name. Values with the same shape and
 /// names dump identically, which is what lets the client's `EngineConfigurationInput` be compared with the
 /// `AuthConfiguration` fields the plugin recorded in the manifest.

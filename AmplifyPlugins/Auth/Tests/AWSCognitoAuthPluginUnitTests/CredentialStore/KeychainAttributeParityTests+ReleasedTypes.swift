@@ -13,7 +13,7 @@ import XCTest
 @testable import InternalAWSCognitoAuth
 
 /// The rollback matrix's released-types row: what the client writes for `.default` decodes with the types a released
-/// plugin decodes, as G2 captures them (`M2Baselines/StoredFormatForkCrossDecoders.swift`).
+/// plugin decodes, as G2 captures them (`GoldenTests/StoredFormatForkCrossDecoders.swift`).
 extension KeychainAttributeParityTests {
 
     /// The bytes the client writes decode with the released plugin's types.

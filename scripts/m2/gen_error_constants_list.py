@@ -9,7 +9,7 @@
 
 Usage:
   scripts/m2/gen_error_constants_list.py > \\
-    AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/M2Baselines/ErrorCatalogueConstants.swift
+    AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/GoldenTests/ErrorCatalogueConstants.swift
 
 The test also re-parses the constants file at run time and fails if a member is missing from the list,
 so a new constant cannot silently escape the snapshot. The constants file is looked up in the plugin

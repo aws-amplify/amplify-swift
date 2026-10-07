@@ -16,7 +16,7 @@ import XCTest
 /// Tests for the engine's flow-type forks: `EngineAuthFactorType`, `EngineAuthFlowType` and
 /// `EngineAuthProvider`, against the public types they mirror, and for the plugin's converters in
 /// `Support/EngineBridge/`. The stored format is gated separately, by `StoredFormatGoldenTests` and its
-/// cross-decoders (`StoredFormatForkCrossDecoders+S5b.swift`).
+/// cross-decoders (`StoredFormatForkCrossDecoders+FlowTypes.swift`).
 @available(*, deprecated, message: "Exercises the deprecated AuthFlowType.custom, on purpose")
 class EngineFlowTypeForkTests: XCTestCase {
 

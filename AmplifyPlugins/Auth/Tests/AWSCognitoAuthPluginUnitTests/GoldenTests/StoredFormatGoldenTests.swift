@@ -214,7 +214,7 @@ final class StoredFormatGoldenTests: XCTestCase {
     /// also decoded by the fork, in both directions.
     ///
     /// Tokens, credentials, `SignedInData` and `AmplifyCredentials`: `StoredFormatForkCrossDecoders`.
-    /// Flow type, factor type and provider: `StoredFormatForkCrossDecoders+S5b.swift`.
+    /// Flow type, factor type and provider: `StoredFormatForkCrossDecoders+FlowTypes.swift`.
     static var forkCrossDecoders: [ForkCrossDecoder] { StoredFormatForkCrossDecoders.all + flowTypeForkCrossDecoders }
 
     /// Test that every registered fork decodes the committed fixtures as the public type does

@@ -15,7 +15,7 @@ import XCTest
 /// (`Support/EngineBridge/`).
 ///
 /// The stored-format side (every stored-format fixture decoded by both, in both directions) is in
-/// `M2Baselines/StoredFormatForkCrossDecoders.swift`. This file covers the converters, equality and debug
+/// `GoldenTests/StoredFormatForkCrossDecoders.swift`. This file covers the converters, equality and debug
 /// output; `TokenTypesEngineHelpersTests` covers the copied helpers and the frozen session-record payloads.
 class TokenTypesBridgeTests: XCTestCase {
 
