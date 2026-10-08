@@ -15,7 +15,7 @@ import XCTest
 @testable import AWSPluginsCore
 
 // swiftlint:disable type_body_length
-class ModelCompareTests: BaseDataStoreTests {
+class ModelCompareTests: BaseDataStoreTests, @unchecked Sendable {
 
     func testPostsAreEqual() {
         let id = UUID().uuidString

@@ -28,6 +28,8 @@ jobs:
     name: DataStore Integration Tests | Lazy Load
     strategy:
       fail-fast: false
+      # Platforms share one provisioned backend; run one at a time to avoid cross-platform sync contamination.
+      max-parallel: 1
       matrix:
         platform: [iOS, tvOS, watchOS]
         exclude:

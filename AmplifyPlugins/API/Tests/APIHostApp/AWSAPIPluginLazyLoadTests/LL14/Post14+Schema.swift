@@ -32,7 +32,8 @@ public extension Post14 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Post14s"
+    model.listPluralName = "Post14s"
+    model.syncPluralName = "Post14s"
 
     model.attributes(
       .primaryKey(fields: [post14.id])

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSAPIPlugin
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
@@ -33,8 +33,8 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase, @unchecked Sendable {
 
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         await Amplify.reset()
@@ -78,7 +78,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase, @unchecked Sendable {
             Amplify.Hub.removeListener(token)
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
             XCTFail("Hub Listener not registered")
             return
         }

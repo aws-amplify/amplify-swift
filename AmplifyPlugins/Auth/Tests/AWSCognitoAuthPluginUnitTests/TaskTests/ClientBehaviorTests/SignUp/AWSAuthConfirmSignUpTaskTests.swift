@@ -21,7 +21,7 @@ import XCTest
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmSignUpTaskTests: BasePluginTest {
+class AWSAuthConfirmSignUpTaskTests: BasePluginTest, @unchecked Sendable {
 
     let signUpData = SignUpEventData(username: "jeffb")
     let signUpResult = AuthSignUpResult(.confirmUser())

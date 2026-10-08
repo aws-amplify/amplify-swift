@@ -29,7 +29,8 @@ public extension Post3V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Post3V2s"
+    model.listPluralName = "Post3V2s"
+    model.syncPluralName = "Post3V2s"
 
     model.fields(
       .id(),

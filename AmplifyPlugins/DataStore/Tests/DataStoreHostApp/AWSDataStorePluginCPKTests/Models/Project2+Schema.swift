@@ -27,7 +27,8 @@ public extension Project2 {
   static let schema = defineSchema { model in
     let project2 = Project2.keys
 
-    model.pluralName = "Project2s"
+    model.listPluralName = "Project2s"
+    model.syncPluralName = "Project2s"
 
     model.attributes(
       .index(fields: ["projectId", "name"], name: nil),

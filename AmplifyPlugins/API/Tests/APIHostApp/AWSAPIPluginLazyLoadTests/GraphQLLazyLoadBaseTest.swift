@@ -17,13 +17,27 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
 
     var amplifyConfig: AmplifyConfiguration!
 
+    /// Deletes for records created via `mutate`, so the shared backend stays small enough for filtered list scans.
+    private var createdModelCleanups: [@Sendable () async -> Void] = []
+
     override func setUp() {
         continueAfterFailure = false
     }
 
     override func tearDown() async throws {
+        await deleteCreatedModels()
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
+    }
+
+    private func deleteCreatedModels() async {
+        let cleanups = createdModelCleanups
+        createdModelCleanups.removeAll()
+        await withTaskGroup(of: Void.self) { group in
+            for cleanup in cleanups {
+                group.addTask { await cleanup() }
+            }
+        }
     }
 
     func setupConfig() {
@@ -70,6 +84,10 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             let graphQLResponse = try await Amplify.API.mutate(request: request)
             switch graphQLResponse {
             case .success(let model):
+                if request.document.hasPrefix("mutation Create") {
+                    // Errors ignored: the test may have already deleted it.
+                    createdModelCleanups.append { _ = try? await Amplify.API.mutate(request: .delete(model)) }
+                }
                 return model
             case .failure(let graphQLError):
                 XCTFail("Failed with error \(graphQLError)")
@@ -125,7 +143,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
                 XCTAssertEqual(identifiers, expectedIdentifiers)
             } else {
-                XCTFail("Should be not loaded with identifiers \(expectedIdentifiers)")
+                XCTFail("Should be not loaded with identifiers \(String(describing: expectedIdentifiers))")
             }
         case .loaded(let expectedModel):
             if case .loaded(let model) = lazyModel.modelProvider.getState() {
@@ -227,9 +245,19 @@ class GraphQLLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [connected], timeout: 10)
         return (eventReceived, subscription)
     }
+
+    /// Whether a subscription event is for another record, e.g. one created by a concurrent CI run sharing the backend.
+    func isFromAnotherRecord<M: Model>(_ result: GraphQLResponse<M>, expected model: M) -> Bool {
+        switch result {
+        case .success(let received), .failure(.partial(let received, _)):
+            return received.identifier != model.identifier
+        default:
+            return false
+        }
+    }
 }
 
-extension LazyReferenceIdentifier: Equatable {
+extension LazyReferenceIdentifier: @retroactive Equatable {
     public static func == (lhs: LazyReferenceIdentifier, rhs: LazyReferenceIdentifier) -> Bool {
         return lhs.name == rhs.name && lhs.value == rhs.value
     }

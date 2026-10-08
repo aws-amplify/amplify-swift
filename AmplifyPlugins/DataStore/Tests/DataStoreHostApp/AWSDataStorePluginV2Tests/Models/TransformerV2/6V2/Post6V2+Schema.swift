@@ -30,7 +30,8 @@ public extension Post6V2 {
       rule(allow: .public, operations: [.create, .update, .delete, .read])
     ]
 
-    model.pluralName = "Post6V2s"
+    model.listPluralName = "Post6V2s"
+    model.syncPluralName = "Post6V2s"
 
     model.attributes(
       .index(fields: ["blogID"], name: "byBlog")

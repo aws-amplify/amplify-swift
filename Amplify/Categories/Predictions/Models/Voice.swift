@@ -6,7 +6,7 @@
 //
 
 public extension Predictions {
-    struct Voice {
+    struct Voice: Sendable {
         public let id: String
 
         public init(id: String) {

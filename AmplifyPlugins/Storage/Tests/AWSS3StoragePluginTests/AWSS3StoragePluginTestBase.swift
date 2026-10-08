@@ -40,7 +40,7 @@ class AWSS3StoragePluginTests: XCTestCase, @unchecked Sendable {
             defaultBucket: .fromBucketInfo(.init(bucketName: testBucket, region: testRegion)),
             storageService: storageService,
             authService: authService,
-            defaultAccessLevel: defaultAccessLevel,
+            defaultAccessLevel: defaultAccessLevel.legacyValue,
             queue: queue
         )
     }
@@ -59,7 +59,7 @@ extension AWSS3StoragePlugin {
             defaultBucket: .fromBucketInfo(.init(bucketName: "test-bucket", region: "us-east-1")),
             storageService: storageService,
             authService: authService,
-            defaultAccessLevel: defaultAccessLevel,
+            defaultAccessLevel: defaultAccessLevel.legacyValue,
             queue: queue
         )
     }

@@ -70,7 +70,8 @@ extension AppSyncRealTimeRequest: Encodable {
 
 
 public extension AppSyncRealTimeRequest {
-    enum Error: Swift.Error, Equatable {
+    enum Error: Swift.Error, Equatable, @unchecked Sendable {
+        // `@unchecked`: `unknown` carries a `[String: Any]?` payload.
         case timeout
         case limitExceeded
         case maxSubscriptionsReached

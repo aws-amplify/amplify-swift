@@ -24,7 +24,8 @@ public extension TodoWithDefaultValueV2 {
   static let schema = defineSchema { model in
     let todoWithDefaultValueV2 = TodoWithDefaultValueV2.keys
 
-    model.pluralName = "TodoWithDefaultValueV2s"
+    model.listPluralName = "TodoWithDefaultValueV2s"
+    model.syncPluralName = "TodoWithDefaultValueV2s"
 
     model.fields(
       .id(),

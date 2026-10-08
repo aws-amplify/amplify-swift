@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AmplifyTestCommon
+import Foundation
 
 struct TestFlutterModelRegistration: AmplifyModelRegistration {
     var version: String = "1"

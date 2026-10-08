@@ -391,7 +391,10 @@ class AWSS3StorageServiceTests: XCTestCase, @unchecked Sendable {
             }
         )
 
-        await fulfillment(of: [expectation], timeout: 1)
+        // The `.initiated` event is dispatched after asynchronous upload setup (pre-signed URL
+        // build, task creation); 1s is too tight under CI load and flakes. The callback is
+        // registered synchronously, so a larger budget only adds slack and never slows the pass.
+        await fulfillment(of: [expectation], timeout: 5)
     }
 }
 
@@ -417,7 +420,7 @@ private class MockHttpClientEngineProxy: HttpClientEngineProxy, @unchecked Senda
 
 private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked Sendable {
 
-    func prepareForBackground(completion: (() -> Void)?) {
+    func prepareForBackground(completion: (@Sendable () -> Void)?) {
         completion?()
     }
 
@@ -463,7 +466,7 @@ private class StorageTransferDatabaseMock: StorageTransferDatabase, @unchecked S
     }
 }
 
-private class MockFileSystem: FileSystem {
+private class MockFileSystem: FileSystem, @unchecked Sendable {
     var moveFileError: Error?
     override func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
         if let moveFileError {

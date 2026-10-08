@@ -10,7 +10,7 @@ import Foundation
 public extension Predictions.Convert.TextToSpeech {
     /// Results are mapped to TextToSpeechResult when convert() API is
     /// called to convert a text to audio
-    struct Result {
+    struct Result: Sendable {
         /// Resulting audio from text to speech conversion
         public let audioData: Data
 

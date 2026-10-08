@@ -198,7 +198,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
             productId: product.productIdentifier,
             quantity: transaction.payment.quantity,
             itemPrice: product.price.doubleValue,
-            currencyCode: product.priceLocale.currencyCode,
+            currencyCode: (product.priceLocale as NSLocale).currencyCode,
             formattedItemPrice: numberFormatter.string(from: product.price),
             transactionId: transaction.transactionIdentifier
         )

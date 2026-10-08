@@ -249,7 +249,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
     func testUploadDataOperationStringStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return "/my/path" })
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let options = StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
         let operation = AWSS3StorageUploadDataOperation(
             request,
@@ -281,7 +281,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
     func testUploadDataOperationEmptyStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return " " })
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let options = StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
         let operation = AWSS3StorageUploadDataOperation(
             request,
@@ -313,7 +313,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
     func testUploadDataOperationIdentityIDStoragePathValidationError() async {
         let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let options = StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
         let operation = AWSS3StorageUploadDataOperation(
             request,
@@ -345,7 +345,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
     func testUploadDataOperationCustomStoragePathValidationError() async {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let options = StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
         let operation = AWSS3StorageUploadDataOperation(
             request,
@@ -387,7 +387,6 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
         let metadata = ["mykey": "Value"]
 
         let options = StorageUploadDataRequest.Options(
-            accessLevel: .protected,
             metadata: metadata,
             contentType: testContentType
         )
@@ -443,7 +442,6 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase, @unch
         let metadata = ["mykey": "Value"]
 
         let options = StorageUploadDataRequest.Options(
-            accessLevel: .protected,
             metadata: metadata,
             contentType: testContentType
         )

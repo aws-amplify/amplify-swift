@@ -10,7 +10,8 @@ import Foundation
 /// Defines the type of a `Model` field.
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public enum ModelFieldType: Sendable {
+public enum ModelFieldType: @unchecked Sendable {
+    // `@unchecked`: `embedded` and `embeddedCollection` carry `Codable.Type` metatypes, which can't be checked.
 
     case string
     case int
@@ -126,7 +127,12 @@ public struct ModelSchemaDefinition {
     let name: String
 
     @available(*, deprecated, message: "Use of pluralName is deprecated, use syncPluralName instead.")
-    public var pluralName: String?
+    public var pluralName: String? {
+        get { legacyPluralName }
+        set { legacyPluralName = newValue }
+    }
+
+    var legacyPluralName: String?
 
     public var listPluralName: String?
     public var syncPluralName: String?
@@ -145,7 +151,7 @@ public struct ModelSchemaDefinition {
         attributes: [ModelAttribute] = []
     ) {
         self.name = name
-        self.pluralName = pluralName
+        self.legacyPluralName = pluralName
         self.listPluralName = listPluralName
         self.syncPluralName = syncPluralName
         self.fields = [:] as ModelFields
@@ -179,7 +185,7 @@ public struct ModelSchemaDefinition {
     func build() -> ModelSchema {
         return ModelSchema(
             name: name,
-            pluralName: pluralName,
+            pluralName: legacyPluralName,
             listPluralName: listPluralName,
             syncPluralName: syncPluralName,
             authRules: authRules,
@@ -230,13 +236,18 @@ public enum ModelFieldDefinition {
 
     @available(*, deprecated, message: "Use .primaryKey(fields:)")
     public static func id(_ name: String = "id") -> ModelFieldDefinition {
+        return legacyId(name)
+    }
+
+    /// Non-deprecated `id(_:)` for internal system schemas, whose SQLite tables must not change.
+    package static func legacyId(_ name: String = "id") -> ModelFieldDefinition {
         return .field(
             name: name,
             type: .string,
             nullability: .required,
             isReadOnly: false,
             association: nil,
-            attributes: [.primaryKey],
+            attributes: [.legacyPrimaryKey],
             authRules: []
         )
     }

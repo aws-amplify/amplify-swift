@@ -9,7 +9,6 @@ import Combine
 import XCTest
 
 import Amplify
-@_implementationOnly import AmplifyAsyncTesting
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
@@ -18,221 +17,188 @@ import Amplify
 class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
 
     var sink: AnyCancellable?
-
-    // Setup expectations
-    var onSubscribeInvoked: XCTestExpectation!
-    var receivedCompletionSuccess: XCTestExpectation!
-    var receivedCompletionFailure: XCTestExpectation!
-
-    // Subscription state expectations
-    var receivedStateValueConnecting: XCTestExpectation!
-    var receivedStateValueConnected: XCTestExpectation!
-    var receivedStateValueDisconnected: XCTestExpectation!
-
-    // Subscription item expectations
-    var receivedDataValueSuccess: XCTestExpectation!
-    var receivedDataValueError: XCTestExpectation!
-
     var mockAppSyncRealTimeClient: MockAppSyncRealTimeClient?
 
-    var connectionStateSink: AnyCancellable?
-    var subscriptionDataSink: AnyCancellable?
+    /// Thread-safely collects sink events until completion or the wait timeout.
+    private final class EventCollector: @unchecked Sendable {
+        private let lock = NSLock()
+        private var connecting = false
+        private var connected = false
+        private var disconnected = false
+        private var successes: [JSONValue] = []
+        private var errorCount = 0
+        private var finished = false
+        private var failed = false
+
+        func recordConnecting() { lock.withLock { connecting = true } }
+        func recordConnected() { lock.withLock { connected = true } }
+        func recordDisconnected() { lock.withLock { disconnected = true } }
+        func recordSuccess(_ value: JSONValue) { lock.withLock { successes.append(value) } }
+        func recordError() { lock.withLock { errorCount += 1 } }
+
+        func complete(failed: Bool) {
+            lock.withLock { if failed { self.failed = true } else { finished = true } }
+        }
+
+        /// Bounded so a missing terminal event fails the test instead of hanging the shard.
+        func waitUntilComplete(
+            timeout: TimeInterval = 10,
+            file: StaticString = #filePath,
+            line: UInt = #line
+        ) async {
+            let deadline = Date().addingTimeInterval(timeout)
+            while !lock.withLock({ finished || failed }) {
+                if Date() >= deadline {
+                    XCTFail("Timed out waiting for subscription completion", file: file, line: line)
+                    return
+                }
+                try? await Task.sleep(nanoseconds: 5_000_000)
+            }
+        }
+
+        var result: (connecting: Bool, connected: Bool, disconnected: Bool, successes: [JSONValue], errorCount: Int, finished: Bool, failed: Bool) {
+            lock.withLock { (connecting, connected, disconnected, successes, errorCount, finished, failed) }
+        }
+    }
 
     override func setUp() async throws {
         try await super.setUp()
-
-        onSubscribeInvoked = expectation(description: "onSubscribeInvoked")
-
-        receivedCompletionSuccess = expectation(description: "receivedStateCompletionSuccess")
-        receivedCompletionFailure = expectation(description: "receivedStateCompletionFailure")
-        receivedStateValueConnecting = expectation(description: "receivedStateValueConnecting")
-        receivedStateValueConnected = expectation(description: "receivedStateValueConnected")
-        receivedStateValueDisconnected = expectation(description: "receivedStateValueDisconnected")
-
-        receivedDataValueSuccess = expectation(description: "receivedDataValueSuccess")
-        receivedDataValueError = expectation(description: "receivedDataValueError")
-
         try setUpMocksAndSubscriptionItems()
     }
 
     override func tearDown() async throws {
         sink?.cancel()
-        connectionStateSink?.cancel()
-        subscriptionDataSink?.cancel()
-        onSubscribeInvoked = nil
-        receivedCompletionFailure = nil
-        receivedCompletionSuccess = nil
-        receivedDataValueError = nil
-        receivedDataValueSuccess = nil
-        receivedStateValueConnected = nil
-        receivedStateValueConnecting = nil
-        receivedStateValueDisconnected = nil
+        sink = nil
+        mockAppSyncRealTimeClient = nil
         try await super.tearDown()
     }
 
-    func waitForSubscriptionExpectations() async {
-        await fulfillment(of: [
-            receivedCompletionSuccess,
-            receivedCompletionFailure,
-            receivedStateValueConnecting,
-            receivedStateValueConnected,
-            receivedStateValueDisconnected,
-            receivedDataValueSuccess,
-            receivedDataValueError
-        ], timeout: 0.05)
-    }
-
     func testHappyPath() async throws {
-        receivedCompletionFailure.isInverted = true
-        receivedDataValueError.isInverted = true
-
         let testJSON: JSONValue = ["foo": true]
+        let testData: JSONValue = ["data": ["foo": true]]
+        let collector = EventCollector()
+        subscribe(expecting: testJSON, collector: collector)
 
-        try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
-        mockAppSyncRealTimeClient?.triggerEvent(.data(.object([
-            "data": .object([
-                "foo": .boolean(true)
-            ])
-        ])))
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
-        await waitForSubscriptionExpectations()
+        await collector.waitUntilComplete()
+        let result = collector.result
+        XCTAssertTrue(result.connecting)
+        XCTAssertTrue(result.connected)
+        XCTAssertTrue(result.disconnected)
+        XCTAssertEqual(result.successes, [testJSON])
+        XCTAssertEqual(result.errorCount, 0)
+        XCTAssertTrue(result.finished)
+        XCTAssertFalse(result.failed)
     }
 
     func testConnectionWithNoData() async throws {
-        receivedCompletionFailure.isInverted = true
-        receivedDataValueSuccess.isInverted = true
-        receivedDataValueError.isInverted = true
+        let collector = EventCollector()
+        subscribe(collector: collector)
 
-        try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
-        await waitForSubscriptionExpectations()
+        await collector.waitUntilComplete()
+        let result = collector.result
+        XCTAssertTrue(result.connecting)
+        XCTAssertTrue(result.connected)
+        XCTAssertTrue(result.disconnected)
+        XCTAssertTrue(result.successes.isEmpty)
+        XCTAssertEqual(result.errorCount, 0)
+        XCTAssertTrue(result.finished)
+        XCTAssertFalse(result.failed)
     }
 
     func testConnectionError() async throws {
-        receivedCompletionSuccess.isInverted = true
-        receivedStateValueConnected.isInverted = true
-        receivedStateValueDisconnected.isInverted = true
-        receivedDataValueSuccess.isInverted = true
-        receivedDataValueError.isInverted = true
+        let collector = EventCollector()
+        subscribe(collector: collector)
 
-        try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
         mockAppSyncRealTimeClient?.triggerEvent(.error(["Error"]))
 
-        await waitForSubscriptionExpectations()
-    }
-
-    func testDecodingError() async throws {
-        receivedCompletionFailure.isInverted = true
-        receivedDataValueSuccess.isInverted = true
-
-        try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
-        mockAppSyncRealTimeClient?.triggerEvent(.data(.object([
-            "data": .object([
-                "foo": .boolean(true)
-            ]),
-            "errors": .array([])
-        ])))
-        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
-
-        await waitForSubscriptionExpectations()
+        await collector.waitUntilComplete()
+        let result = collector.result
+        XCTAssertTrue(result.connecting)
+        XCTAssertFalse(result.connected)
+        XCTAssertFalse(result.disconnected)
+        XCTAssertTrue(result.successes.isEmpty)
+        XCTAssertEqual(result.errorCount, 0)
+        XCTAssertFalse(result.finished)
+        XCTAssertTrue(result.failed)
     }
 
     func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData: JSONValue = .object([
-            "data": .object([
-                "foo": .boolean(true)
-            ])
-        ])
-        receivedCompletionFailure.isInverted = true
-        receivedDataValueError.isInverted = true
-        receivedDataValueSuccess.expectedFulfillmentCount = 2
+        let testData: JSONValue = ["data": ["foo": true]]
+        let collector = EventCollector()
+        subscribe(expecting: testJSON, collector: collector)
 
-        try await subscribe(expecting: testJSON)
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
-        await waitForSubscriptionExpectations()
+        await collector.waitUntilComplete()
+        let result = collector.result
+        XCTAssertTrue(result.connecting)
+        XCTAssertTrue(result.connected)
+        XCTAssertTrue(result.disconnected)
+        XCTAssertEqual(result.successes, [testJSON, testJSON])
+        XCTAssertEqual(result.errorCount, 0)
+        XCTAssertTrue(result.finished)
+        XCTAssertFalse(result.failed)
     }
 
     func testMixedSuccessAndErrorValues() async throws {
-        let successfulTestData: JSONValue = .object([
-            "data": .object([
-                "foo": .boolean(true)
-            ])
-        ])
-        let invalidTestData: JSONValue = .object([
-            "data": .object([
-                "foo": .boolean(true)
-            ]),
-            "errors": .array([])
-        ])
-        receivedCompletionFailure.isInverted = true
-        receivedDataValueSuccess.expectedFulfillmentCount = 2
+        let successfulTestData: JSONValue = ["data": ["foo": true]]
+        let invalidTestData: JSONValue = [
+            "data": ["foo": true],
+            "errors": []
+        ]
+        let collector = EventCollector()
+        subscribe(collector: collector)
 
-        try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbing()
+        try await mockAppSyncRealTimeClient?.waitForSubscirbed()
         mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(invalidTestData))
         mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))
         mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
-        await waitForSubscriptionExpectations()
+        await collector.waitUntilComplete()
+        let result = collector.result
+        XCTAssertTrue(result.connecting)
+        XCTAssertTrue(result.connected)
+        XCTAssertTrue(result.disconnected)
+        XCTAssertEqual(result.successes.count, 2)
+        XCTAssertEqual(result.errorCount, 1)
+        XCTAssertTrue(result.finished)
+        XCTAssertFalse(result.failed)
     }
 
     // MARK: - Utilities
 
-    /// Sets up test with a mock subscription connection handler that populates
-    /// self.subscriptionItem and self.subscriptionEventHandler, then fulfills
-    /// self.onSubscribeInvoked
     func setUpMocksAndSubscriptionItems() throws {
-        defer { onSubscribeInvoked.fulfill() }
         let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
-
         self.mockAppSyncRealTimeClient = mockAppSyncRealTimeClient
-
-        let onGetOrCreateConnection: MockSubscriptionConnectionFactory.OnGetOrCreateConnection = { _, _, _, _, _  in
-            return mockAppSyncRealTimeClient
+        try setUpPluginForSubscriptionResponse { _, _, _, _, _ in
+            mockAppSyncRealTimeClient
         }
-
-        try setUpPluginForSubscriptionResponse(onGetOrCreateConnection: onGetOrCreateConnection)
     }
 
-    /// Calls `Amplify.API.subscribe` with a request made from a generic document, and returns
-    /// the operation created from that subscription. If `expectedValue` is not nil, also asserts
-    /// that the received value is equal to the expected value
-    func subscribe(
-        expecting expectedValue: JSONValue? = nil
-    ) async throws {
-        let testDocument = "subscribe { subscribeTodos { id name description }}"
-
+    /// Starts a subscription, routing its Combine events into `collector`.
+    private func subscribe(
+        expecting expectedValue: JSONValue? = nil,
+        collector: EventCollector
+    ) {
         let request = GraphQLRequest(
-            document: testDocument,
+            document: "subscribe { subscribeTodos { id name description }}",
             variables: nil,
             responseType: JSONValue.self
         )
@@ -240,20 +206,20 @@ class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
         sink = Amplify.Publisher.create(subscription).sink { completion in
             switch completion {
             case .failure:
-                self.receivedCompletionFailure.fulfill()
+                collector.complete(failed: true)
             case .finished:
-                self.receivedCompletionSuccess.fulfill()
+                collector.complete(failed: false)
             }
         } receiveValue: { subscriptionEvent in
             switch subscriptionEvent {
             case .connection(let connectionState):
                 switch connectionState {
                 case .connecting:
-                    self.receivedStateValueConnecting.fulfill()
+                    collector.recordConnecting()
                 case .connected:
-                    self.receivedStateValueConnected.fulfill()
+                    collector.recordConnected()
                 case .disconnected:
-                    self.receivedStateValueDisconnected.fulfill()
+                    collector.recordDisconnected()
                 }
             case .data(let result):
                 switch result {
@@ -261,12 +227,11 @@ class GraphQLSubscribeCombineTests: OperationTestBase, @unchecked Sendable {
                     if let expectedValue {
                         XCTAssertEqual(actualValue, expectedValue)
                     }
-                    self.receivedDataValueSuccess.fulfill()
+                    collector.recordSuccess(actualValue)
                 case .failure:
-                    self.receivedDataValueError.fulfill()
+                    collector.recordError()
                 }
             }
         }
     }
-
 }

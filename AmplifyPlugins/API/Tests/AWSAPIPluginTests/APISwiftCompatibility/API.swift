@@ -219,7 +219,8 @@ public protocol JSONDecodable {
 public protocol JSONEncodable: GraphQLInputValue {
   var jsonValue: Any { get }
 }
-public enum JSONDecodingError: Error, LocalizedError {
+public enum JSONDecodingError: Error, LocalizedError, @unchecked Sendable {
+  // `@unchecked`: `couldNotConvert` carries `Any` and a metatype.
   case missingValue
   case nullValue
   case wrongType

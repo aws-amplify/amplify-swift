@@ -172,7 +172,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
 
     func printDBPath() {
         let dbPath = DataStoreDebugger.dbFilePath
-        print("DBPath: \(dbPath)")
+        print("DBPath: \(String(describing: dbPath))")
     }
 
     @discardableResult
@@ -274,7 +274,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase, @unchecked Sendable {
             if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
                 XCTAssertEqual(identifiers, expectedIdentifiers)
             } else {
-                XCTFail("Should be not loaded with identifiers \(expectedIdentifiers)")
+                XCTFail("Should be not loaded with identifiers \(String(describing: expectedIdentifiers))")
             }
         case .loaded(let expectedModel):
             if case .loaded(let model) = lazyModel.modelProvider.getState() {
@@ -366,7 +366,7 @@ enum DataStoreDebugger {
     }
 }
 
-extension LazyReferenceIdentifier: Equatable {
+extension LazyReferenceIdentifier: @retroactive Equatable {
     public static func == (lhs: LazyReferenceIdentifier, rhs: LazyReferenceIdentifier) -> Bool {
         lhs.name == rhs.name && lhs.value == rhs.value
     }

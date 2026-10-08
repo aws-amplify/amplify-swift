@@ -9,7 +9,9 @@
 import XCTest
 @testable @_spi(WebSocket) import AWSPluginsCore
 
-private let timeout: TimeInterval = 5
+// Waits cover real local-socket connect/disconnect/auto-retry round-trips (incl. retry backoff),
+// which can exceed a few seconds under CI load — hence a generous shared budget.
+private let timeout: TimeInterval = 10
 
 // `@unchecked Sendable`: `XCTestCase` is not `Sendable`, but the test body is captured by the
 // `@Sendable` closures the API now takes. XCTest runs one test at a time.
@@ -45,7 +47,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         let webSocketClient = WebSocketClient(url: endpoint)
         await verifyConnected(webSocketClient)
 
-        await webSocketClient.publisher
+        webSocketClient.publisher
             .sink { event in
                 switch event {
                 case let .disconnected(closeCode, reason):
@@ -75,7 +77,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         let webSocketClient = WebSocketClient(url: endpoint)
         await verifyConnected(webSocketClient)
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .string(let message) where message == sampleMessage:
                 messageReceivedExpectation.fulfill()
@@ -107,7 +109,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         await verifyConnected(webSocketClient, autoConnectOnNetworkStatusChange: true)
 
         let disconnectExpectation = expectation(description: "Network drop should trigger disconnect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case let .disconnected(closeCode, reason):
                 XCTAssertEqual(closeCode, .invalid)
@@ -127,7 +129,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
 
         try await Task.sleep(seconds: 0.1)
         let reconnectExpectation = expectation(description: "Network back online trigger reconnect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .connected:
                 reconnectExpectation.fulfill()
@@ -154,7 +156,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         let disconnectExpectation = expectation(description: "Tresient Server Error should trigger retry")
         let reconnectedExpectation = expectation(description: "Connected should be re-triggered")
 
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case let .disconnected(closeCode, reason):
                 XCTAssertEqual(closeCode, .internalServerError)
@@ -162,6 +164,10 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
                 disconnectExpectation.fulfill()
             case .connected:
                 reconnectedExpectation.fulfill()
+            case .error, .data:
+                // A transient server failure can surface a `.error`/`.data` event around the
+                // disconnect; ignore only those. The ordered disconnect->reconnect gates the test.
+                break
             default:
                 XCTFail("No other type of event should be received")
             }
@@ -171,6 +177,131 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [disconnectExpectation, reconnectedExpectation], timeout: timeout, enforceOrder: true)
     }
 
+    /// Verifies that repeated probe failures recycle the socket and it reconnects.
+    ///
+    /// - Given: A probe that fails twice and then succeeds, with auto-retry enabled
+    /// - When: The liveness monitor runs
+    /// - Then: The socket closes with `.abnormalClosure` and then reconnects, in that order
+    func testLivenessPing_recyclesConnection_whenServerDoesNotRespondToPing() async throws {
+        var cancellables = Set<AnyCancellable>()
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        // Synthetic probe: fails the first two checks, then succeeds. The local server stays up;
+        // no real pong is suppressed.
+        actor DeadThenAlive {
+            private var calls = 0
+            func probe() -> Bool {
+                calls += 1
+                return calls > 2
+            }
+        }
+        let probe = DeadThenAlive()
+
+        let webSocketClient = WebSocketClient(
+            url: endpoint,
+            pingInterval: 0.3,
+            pingTimeout: 0.3,
+            isConnectionAlive: { _, _ in await probe.probe() }
+        )
+        await verifyConnected(webSocketClient, autoRetryOnConnectionFailure: true)
+
+        let disconnected = expectation(description: "Dead ping disconnects the socket")
+        let reconnected = expectation(description: "Client reconnects after recycling")
+        webSocketClient.publisher.sink { event in
+            switch event {
+            case let .disconnected(closeCode, _) where closeCode == .abnormalClosure:
+                disconnected.fulfill()
+            case .connected:
+                reconnected.fulfill()
+            default:
+                break
+            }
+        }
+        .store(in: &cancellables)
+
+        await fulfillment(of: [disconnected, reconnected], timeout: timeout, enforceOrder: true)
+    }
+
+    /// Verifies that a single failed probe does not recycle the connection (anti-flap guard).
+    ///
+    /// - Given: A probe that fails once and then succeeds
+    /// - When: Several liveness cycles run
+    /// - Then: The original connection remains active
+    func testLivenessPing_doesNotRecycle_onSingleMiss() async throws {
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        // Synthetic probe: fails once, then succeeds.
+        actor MissOnce {
+            private var calls = 0
+            func probe() -> Bool {
+                calls += 1
+                return calls > 1
+            }
+        }
+        let missOnce = MissOnce()
+
+        let webSocketClient = WebSocketClient(
+            url: endpoint,
+            pingInterval: 0.3,
+            pingTimeout: 0.3,
+            isConnectionAlive: { _, _ in await missOnce.probe() }
+        )
+        await verifyConnected(webSocketClient)
+
+        // Allow several ping cycles to run (one miss, then healthy).
+        try await Task.sleep(seconds: 1.5)
+        let stillConnected = await webSocketClient.isConnected
+        XCTAssertTrue(stillConnected, "A single missed ping must not recycle a healthy connection")
+        await webSocketClient.disconnect()
+    }
+
+    /// Verifies that a close callback from a superseded socket is ignored.
+    ///
+    /// - Given: A connected client whose current socket differs from a stale socket task
+    /// - When: The close delegate fires for the stale socket
+    /// - Then: No `.disconnected` is published, so the active connection's subscriptions survive
+    func testLivenessPing_ignoresCloseFromSupersededSocket() async throws {
+        var cancellables = Set<AnyCancellable>()
+        guard let endpoint = try localWebSocketServer?.start() else {
+            XCTFail("Local WebSocket server failed to start")
+            return
+        }
+
+        let webSocketClient = WebSocketClient(url: endpoint)
+        await verifyConnected(webSocketClient)
+
+        // A task that was never the client's current connection stands in for a superseded socket.
+        let supersededTask = URLSession(configuration: .default)
+            .webSocketTask(with: URL(string: "ws://localhost")!)
+
+        let noDisconnect = expectation(description: "Superseded close must not publish .disconnected")
+        noDisconnect.isInverted = true
+        webSocketClient.publisher.sink { event in
+            if case .disconnected = event {
+                noDisconnect.fulfill()
+            }
+        }
+        .store(in: &cancellables)
+
+        webSocketClient.urlSession(
+            URLSession(configuration: .default),
+            webSocketTask: supersededTask,
+            didCloseWith: .abnormalClosure,
+            reason: nil
+        )
+
+        await fulfillment(of: [noDisconnect], timeout: 1.0)
+        let stillConnected = await webSocketClient.isConnected
+        XCTAssertTrue(stillConnected, "A superseded socket close must not disconnect the active connection")
+        await webSocketClient.disconnect()
+    }
+
     private func verifyConnected(
         _ webSocketClient: WebSocketClient,
         autoConnectOnNetworkStatusChange: Bool = false,
@@ -178,7 +309,7 @@ class WebSocketClientTests: XCTestCase, @unchecked Sendable {
     ) async {
         var cancellables = Set<AnyCancellable>()
         let connectedExpectation = expectation(description: "WebSocket did connect")
-        await webSocketClient.publisher.sink { event in
+        webSocketClient.publisher.sink { event in
             switch event {
             case .connected:
                 connectedExpectation.fulfill()

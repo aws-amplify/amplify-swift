@@ -12,7 +12,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
+class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests, @unchecked Sendable {
 
     func testDispatchModelSyncedEventToHub() {
 

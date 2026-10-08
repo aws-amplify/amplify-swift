@@ -8,7 +8,7 @@
 import Foundation
 @testable import Amplify
 
-extension String: Error {}
+extension String: @retroactive Error {}
 
 class TestConfigHelper {
 

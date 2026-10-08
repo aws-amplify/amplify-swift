@@ -10,7 +10,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-class SignedInAuthSessionTests: AWSAuthBaseTest {
+class SignedInAuthSessionTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
@@ -102,7 +102,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     ///    - I should get the signedin state as true but with token result as sessionExpired
     ///
     func testSessionExpired() async throws {
-        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
+        try XCTSkipIf(true, "TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
@@ -128,9 +128,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             _ = try authSession?.getCognitoTokens().get()
             XCTFail("Should not receive a valid token")
         } catch {
-            guard let authError = error as? AuthError,
-                  case .sessionExpired = authError
-            else {
+            guard case .sessionExpired = error else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }
@@ -146,7 +144,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     ///    - I should get the signedin state as false but with token result as seignedOut
     ///
     func testSessionCleared() async throws {
-        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
+        try XCTSkipIf(true, "TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
@@ -171,9 +169,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
             _ = try authSession?.getCognitoTokens().get()
             XCTFail("Should not receive a valid token")
         } catch {
-            guard let authError = error as? AuthError,
-                  case .signedOut = authError
-            else {
+            guard case .signedOut = error else {
                 XCTFail("Should receive a session expired error but received \(error)")
                 return
             }

@@ -9,7 +9,8 @@
 import Amplify
 import Foundation
 
-public class Project4bV2: Model {
+// `@unchecked Sendable`: test fixture class with `var` properties, driven by one test at a time.
+public class Project4bV2: Model, @unchecked Sendable {
   public let id: String
   public var name: String?
   public var team: Team4bV2?

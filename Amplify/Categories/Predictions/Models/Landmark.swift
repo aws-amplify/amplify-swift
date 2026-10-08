@@ -10,7 +10,7 @@ import CoreGraphics
 public extension Predictions {
     /// Describes the facial feature in a celebrity/entity
     /// identified as a result of identify() API
-    struct Landmark {
+    struct Landmark: Sendable {
         public let kind: Kind
         public let points: [CGPoint]
 

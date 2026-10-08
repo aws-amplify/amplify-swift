@@ -20,7 +20,7 @@ import SmithyHTTPAPI
         pendingRequests[api, default: []].insert(source)
     }
 
-    nonisolated func setCustomHttpEngine(on configuration: PinpointClient.PinpointClientConfiguration) {
+    nonisolated func setCustomHttpEngine(on configuration: inout PinpointClient.PinpointClientConfig) {
         let baseHTTPClientEngine = configuration.httpClientEngine
 
         configuration.httpClientEngine = CustomPinpointHttpClientEngine(

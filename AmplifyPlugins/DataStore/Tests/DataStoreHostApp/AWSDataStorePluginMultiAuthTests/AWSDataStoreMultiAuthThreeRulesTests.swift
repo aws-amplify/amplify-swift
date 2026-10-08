@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 
-class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
 
     // MARK: - owner/private/public - User Pools, IAM & API Key
     /// Given: a user signed in with CognitoUserPools

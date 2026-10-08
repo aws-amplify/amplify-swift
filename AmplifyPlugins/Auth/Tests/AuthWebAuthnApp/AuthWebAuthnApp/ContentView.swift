@@ -57,7 +57,17 @@ struct ContentView: View {
                     Task {
                         do {
                             lastResult = ""
+                            #if os(visionOS)
+                            // visionOS has no default presentation anchor, so pass the key window.
+                            guard let window = UIApplication.shared.connectedScenes
+                                .compactMap({ ($0 as? UIWindowScene)?.keyWindow }).first else {
+                                lastResult = "Associate WebAuthn Credential failed: no key window"
+                                return
+                            }
+                            try await Amplify.Auth.associateWebAuthnCredential(presentationAnchor: window)
+                            #else
                             try await Amplify.Auth.associateWebAuthnCredential()
+                            #endif
                             lastResult = "WebAuthn credential was associated"
                         } catch {
                             lastResult = "Associate WebAuthn Credential failed: \(error)"

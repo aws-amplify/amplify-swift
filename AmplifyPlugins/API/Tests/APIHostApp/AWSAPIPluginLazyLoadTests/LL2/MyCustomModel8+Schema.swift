@@ -24,7 +24,8 @@ public extension MyCustomModel8 {
   static let schema = defineSchema { model in
     let myCustomModel8 = MyCustomModel8.keys
 
-    model.pluralName = "MyCustomModel8s"
+    model.listPluralName = "MyCustomModel8s"
+    model.syncPluralName = "MyCustomModel8s"
 
     model.fields(
       .field(myCustomModel8.id, is: .required, ofType: .string),

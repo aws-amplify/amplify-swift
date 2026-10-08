@@ -28,7 +28,13 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy, @un
 
     /// - Tag: AWSS3StorageService.s3Client
     @available(*, deprecated, renamed: "client")
-    var s3Client: S3Client!
+    var s3Client: S3Client! {
+        get { escapeHatchClient }
+        set { escapeHatchClient = newValue }
+    }
+
+    /// Concrete client returned by `getEscapeHatch()`.
+    var escapeHatchClient: S3Client!
 
     /// - Tag: AWSS3StorageService.client
     var client: S3ClientProtocol
@@ -69,7 +75,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy, @un
     ) throws {
         let credentialsProvider = authService.getCredentialIdentityResolver()
         let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
-        let clientConfig = try S3Client.S3ClientConfiguration(
+        var clientConfig = try S3Client.S3ClientConfig(
             awsCredentialIdentityResolver: credentialsProvider,
             region: region,
             signingRegion: region
@@ -143,7 +149,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy, @un
         self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
 
         self.logger = logger
-        self.s3Client = s3Client
+        self.escapeHatchClient = s3Client
         self.client = s3Client
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3

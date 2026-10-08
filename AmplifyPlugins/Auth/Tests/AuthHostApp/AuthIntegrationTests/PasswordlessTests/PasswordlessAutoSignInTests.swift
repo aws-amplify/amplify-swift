@@ -10,7 +10,7 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 import XCTest
 
-class PasswordlessAutoSignInTests: AWSAuthBaseTest {
+class PasswordlessAutoSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         // Only run these tests with Gen2 configuration

@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Amplify
 
-final class GraphQLTodo6Tests: AWSAPIPluginGen2GraphQLBaseTest {
+final class GraphQLTodo6Tests: AWSAPIPluginGen2GraphQLBaseTest, @unchecked Sendable {
 
     // Code Snippet for
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/identifiers/#single-field-identifier

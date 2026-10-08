@@ -21,7 +21,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase, @unchecked Send
     /// When: An override is set through `withAccelerate(_:)`
     /// Then: The base configuration is not mutated.
     func testPropertyOverrides() async throws {
-        let baseConfiguration = try await configuration(accelerate: true)
+        let baseConfiguration = try configuration(accelerate: true)
         let sut = try baseConfiguration.withAccelerate(false)
         XCTAssertEqual(sut.accelerate, false)
         XCTAssertEqual(baseConfiguration.accelerate, true)
@@ -29,41 +29,44 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase, @unchecked Send
 
     /// Given: A client configuration.
     /// When: Calling `withAccelerate` with a `nil` value.
-    /// Then: The existing and new configurations should share a reference.
+    /// Then: The configuration is returned unchanged.
     func test_copySemantics_nilAccelerate() async throws {
         let baseAccelerate = Bool.random()
-        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+        let baseConfiguration = try configuration(accelerate: baseAccelerate)
 
         let nilAccelerate = try baseConfiguration.withAccelerate(nil)
-        XCTAssert(baseConfiguration === nilAccelerate)
+        XCTAssertEqual(nilAccelerate.accelerate, baseAccelerate)
+        assertSameSettings(nilAccelerate, baseConfiguration)
     }
 
     /// Given: A client configuration.
     /// When: Calling `withAccelerate` with a non-nil value equal to that of the existing config's.
-    /// Then: The existing and new configurations should share a reference.
+    /// Then: The configuration is returned unchanged.
     func test_copySemantics_equalAccelerate() async throws {
         let baseAccelerate = Bool.random()
-        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+        let baseConfiguration = try configuration(accelerate: baseAccelerate)
 
         let equalAccelerate = try baseConfiguration.withAccelerate(baseAccelerate)
-        XCTAssert(baseConfiguration === equalAccelerate)
+        XCTAssertEqual(equalAccelerate.accelerate, baseAccelerate)
+        assertSameSettings(equalAccelerate, baseConfiguration)
     }
 
     /// Given: A client configuration.
     /// When: Calling `withAccelerate` with a non-nil value **not** equal to that of the existing config's.
-    /// Then: The existing and new configurations should not share a reference.
+    /// Then: Only `accelerate` differs in the returned configuration, and the existing one is unchanged.
     func test_copySemantics_nonEqualAccelerate() async throws {
         let baseAccelerate = Bool.random()
-        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+        let baseConfiguration = try configuration(accelerate: baseAccelerate)
 
         let nonEqualAccelerate = try baseConfiguration.withAccelerate(!baseAccelerate)
-        XCTAssert(baseConfiguration !== nonEqualAccelerate)
+        XCTAssertEqual(nonEqualAccelerate.accelerate, !baseAccelerate)
+        XCTAssertEqual(baseConfiguration.accelerate, baseAccelerate)
+        assertSameSettings(nonEqualAccelerate, baseConfiguration)
     }
 
-
     // Helper configuration method
-    private func configuration(accelerate: Bool) async throws -> S3Client.S3ClientConfiguration {
-        let baseConfiguration = try await S3Client.S3ClientConfiguration(
+    private func configuration(accelerate: Bool) throws -> S3Client.S3ClientConfig {
+        let baseConfiguration = try S3Client.S3ClientConfig(
             useFIPS: .random(),
             useDualStack: .random(),
             appID: UUID().uuidString,
@@ -79,5 +82,23 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase, @unchecked Send
         )
 
         return baseConfiguration
+    }
+
+    private func assertSameSettings(
+        _ actual: S3Client.S3ClientConfig,
+        _ expected: S3Client.S3ClientConfig,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(actual.useFIPS, expected.useFIPS, file: file, line: line)
+        XCTAssertEqual(actual.useDualStack, expected.useDualStack, file: file, line: line)
+        XCTAssertEqual(actual.appID, expected.appID, file: file, line: line)
+        XCTAssertEqual(actual.region, expected.region, file: file, line: line)
+        XCTAssertEqual(actual.signingRegion, expected.signingRegion, file: file, line: line)
+        XCTAssertEqual(actual.forcePathStyle, expected.forcePathStyle, file: file, line: line)
+        XCTAssertEqual(actual.useArnRegion, expected.useArnRegion, file: file, line: line)
+        XCTAssertEqual(actual.disableMultiRegionAccessPoints, expected.disableMultiRegionAccessPoints, file: file, line: line)
+        XCTAssertEqual(actual.useGlobalEndpoint, expected.useGlobalEndpoint, file: file, line: line)
+        XCTAssertEqual(actual.endpoint, expected.endpoint, file: file, line: line)
     }
 }

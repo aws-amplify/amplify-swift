@@ -16,7 +16,8 @@ public struct StorageGetURLRequest: AmplifyOperationRequest {
     ///
     /// - Tag: StorageGetURLRequest.key
     @available(*, deprecated, message: "Use `path` in Storage API instead of `key`")
-    public let key: String
+    public var key: String { legacyKey }
+    package let legacyKey: String
 
     /// The unique path for the object in storage
     ///
@@ -31,14 +32,14 @@ public struct StorageGetURLRequest: AmplifyOperationRequest {
     /// - Tag: StorageGetURLRequest.init
     @available(*, deprecated, message: "Use init(path:options)")
     public init(key: String, options: Options) {
-        self.key = key
+        self.legacyKey = key
         self.options = options
         self.path = nil
     }
 
     /// - Tag: StorageGetURLRequest.init
     public init(path: any StoragePath, options: Options) {
-        self.key = ""
+        self.legacyKey = ""
         self.options = options
         self.path = path
     }
@@ -59,13 +60,15 @@ public extension StorageGetURLRequest {
         ///
         /// - Tag: StorageGetURLRequest.Options.accessLevel
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let accessLevel: StorageAccessLevel
+        public var accessLevel: StorageAccessLevel { .init(legacyAccessLevel) }
+        package let legacyAccessLevel: LegacyStorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageGetURLRequest.Options.targetIdentityId
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
-        public let targetIdentityId: String?
+        public var targetIdentityId: String? { legacyTargetIdentityId }
+        package let legacyTargetIdentityId: String?
 
         /// Number of seconds before the URL expires. Defaults to
         /// [defaultExpireInSeconds](x-source-tag://StorageListRequestOptions.defaultExpireInSeconds)
@@ -95,8 +98,8 @@ public extension StorageGetURLRequest {
             expires: Int = Options.defaultExpireInSeconds,
             pluginOptions: Any? = nil
         ) {
-            self.accessLevel = accessLevel
-            self.targetIdentityId = targetIdentityId
+            self.legacyAccessLevel = accessLevel.legacyValue
+            self.legacyTargetIdentityId = targetIdentityId
             self.expires = expires
             self.bucket = nil
             self.pluginOptions = pluginOptions
@@ -110,8 +113,8 @@ public extension StorageGetURLRequest {
             self.expires = expires
             self.bucket = nil
             self.pluginOptions = pluginOptions
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
         }
 
         /// - Tag: StorageGetURLRequest.Options.init
@@ -123,8 +126,8 @@ public extension StorageGetURLRequest {
             self.expires = expires
             self.bucket = bucket
             self.pluginOptions = pluginOptions
-            self.accessLevel = .guest
-            self.targetIdentityId = nil
+            self.legacyAccessLevel = .guest
+            self.legacyTargetIdentityId = nil
         }
     }
 }

@@ -11,6 +11,7 @@ import Foundation
 extension StorageRequestUtils {
     // MARK: Getter methods
 
+    @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
     static func getAccessLevelPrefix(
         accessLevel: StorageAccessLevel,
         identityId: String,

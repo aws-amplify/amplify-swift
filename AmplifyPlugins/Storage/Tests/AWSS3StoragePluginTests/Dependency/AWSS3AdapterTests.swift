@@ -22,7 +22,7 @@ final class AWSS3AdapterTests: XCTestCase, @unchecked Sendable {
         awsS3 = S3ClientMock()
         adapter = AWSS3Adapter(
             awsS3,
-            config: try! S3Client.S3ClientConfiguration(
+            config: try! S3Client.S3ClientConfig(
                 region: "us-east-1"
             )
         )

@@ -24,7 +24,8 @@ public extension TodoCustomTimestampV2 {
   static let schema = defineSchema { model in
     let todoCustomTimestampV2 = TodoCustomTimestampV2.keys
 
-    model.pluralName = "TodoCustomTimestampV2s"
+    model.listPluralName = "TodoCustomTimestampV2s"
+    model.syncPluralName = "TodoCustomTimestampV2s"
 
     model.fields(
       .id(),

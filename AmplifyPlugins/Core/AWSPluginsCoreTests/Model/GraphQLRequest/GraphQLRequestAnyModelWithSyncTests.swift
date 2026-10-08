@@ -29,7 +29,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase, @unchecked Sendable {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: post.id)]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -160,7 +160,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase, @unchecked Sendable {
             operationType: .mutation
         )
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: post.id)]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """

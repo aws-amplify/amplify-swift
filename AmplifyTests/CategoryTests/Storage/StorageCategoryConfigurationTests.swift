@@ -130,7 +130,7 @@ class StorageCategoryConfigurationTests: XCTestCase, @unchecked Sendable {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        _ = Amplify.Storage.downloadData(key: "", options: nil)
+        _ = Amplify.Storage.downloadData(path: .fromString(""), options: nil)
         await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
     }
 
@@ -172,7 +172,7 @@ class StorageCategoryConfigurationTests: XCTestCase, @unchecked Sendable {
         try Amplify.configure(amplifyConfig)
 
         _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
-            .downloadData(key: "", options: nil)
+            .downloadData(path: .fromString(""), options: nil)
 
         await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin], timeout: 10)
     }
@@ -200,7 +200,7 @@ class StorageCategoryConfigurationTests: XCTestCase, @unchecked Sendable {
         }
 
         // a precondition failure will happen since 2 plugins are added
-        _ = Amplify.Storage.downloadData(key: "", options: nil)
+        _ = Amplify.Storage.downloadData(path: .fromString(""), options: nil)
 
         XCTAssertGreaterThan(registry.messages.count, 0)
     }
@@ -245,7 +245,7 @@ class StorageCategoryConfigurationTests: XCTestCase, @unchecked Sendable {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
 
-        _ = Amplify.Storage.downloadData(key: "foo", options: nil)
+        _ = Amplify.Storage.downloadData(path: .fromString("foo"), options: nil)
 
         XCTAssertEqual(registry.messages.count, 1)
     }

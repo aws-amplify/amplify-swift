@@ -38,7 +38,7 @@ class GraphQLDeleteMutationTests: XCTestCase, @unchecked Sendable {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: post.id)]))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {
@@ -84,7 +84,7 @@ class GraphQLDeleteMutationTests: XCTestCase, @unchecked Sendable {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: [(name: "id", value: post.id)]))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5, graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """

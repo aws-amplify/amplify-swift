@@ -9,7 +9,7 @@ public extension Predictions.Identify.DocumentText {
     /// Results are mapped to IdentifyDocumentTextResult when .form, .table
     /// or .all is passed for .detectText in the type: field
     /// in identify() API
-    struct Result {
+    struct Result: Sendable {
         public let fullText: String
         public let words: [Predictions.IdentifiedWord]
         public let rawLineText: [String]

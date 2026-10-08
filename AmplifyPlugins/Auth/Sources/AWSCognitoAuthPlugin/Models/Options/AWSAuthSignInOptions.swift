@@ -24,7 +24,13 @@ public struct AWSAuthSignInOptions {
 
     /// You can pass data to your Lambda function using validation data during sign in
     @available(*, deprecated, renamed: "metadata")
-    public var validationData: [String: String]?
+    public var validationData: [String: String]? {
+        get { legacyValidationData }
+        set { legacyValidationData = newValue }
+    }
+
+    // Non-deprecated storage for `validationData`
+    var legacyValidationData: [String: String]?
 
     @available(*, deprecated, renamed: "init(metadata:authFlowType:)")
     public init(
@@ -32,7 +38,7 @@ public struct AWSAuthSignInOptions {
         metadata: [String: String]? = nil,
         authFlowType: AuthFlowType? = nil
     ) {
-        self.validationData = validationData
+        self.legacyValidationData = validationData
         self.metadata = metadata
         self.authFlowType = authFlowType
     }

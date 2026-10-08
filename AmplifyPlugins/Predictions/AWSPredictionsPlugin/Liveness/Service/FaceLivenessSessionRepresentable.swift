@@ -13,7 +13,7 @@ import Foundation
 public protocol LivenessService: Sendable {
     func send(
         _ event: LivenessEvent<some Any>,
-        eventDate: @escaping () -> Date
+        eventDate: @escaping @Sendable () -> Date
     )
 
     var onServiceException: (FaceLivenessSessionError) -> Void { get set }

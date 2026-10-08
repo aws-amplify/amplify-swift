@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthConfirmResetPasswordTests: AWSAuthBaseTest {
+class AuthConfirmResetPasswordTests: AWSAuthBaseTest, @unchecked Sendable {
 
     /// Test if confirmResetPassword returns userNotFound error for a non existing user
     ///

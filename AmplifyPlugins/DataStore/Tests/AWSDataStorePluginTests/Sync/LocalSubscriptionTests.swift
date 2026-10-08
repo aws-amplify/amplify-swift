@@ -131,8 +131,13 @@ class LocalSubscriptionTests: XCTestCase, @unchecked Sendable {
             comments: []
         )
 
+        // `observe` attaches to the mutation-event stream lazily when the Task above starts
+        // iterating. Give it a moment to attach before saving; otherwise the save's event is
+        // emitted before the subscriber is listening and is missed, so the wait times out no
+        // matter how long it is.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         _ = try await Amplify.DataStore.save(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
         subscription.cancel()
     }
 
@@ -168,8 +173,10 @@ class LocalSubscriptionTests: XCTestCase, @unchecked Sendable {
             comments: []
         )
 
+        // Let the observe Task attach before saving (see testObserve).
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         _ = try await Amplify.DataStore.save(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }
@@ -213,9 +220,11 @@ class LocalSubscriptionTests: XCTestCase, @unchecked Sendable {
             }
         }
 
+        // Let the observe Task attach before saving (see testObserve).
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         _ = try await Amplify.DataStore.save(newModel)
 
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }
@@ -248,9 +257,11 @@ class LocalSubscriptionTests: XCTestCase, @unchecked Sendable {
             createdAt: .now()
         )
 
+        // Let the observe Task attach before mutating (see testObserve).
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         _ = try await Amplify.DataStore.save(model)
         _ = try await Amplify.DataStore.delete(model)
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 5.0)
 
         subscription.cancel()
     }

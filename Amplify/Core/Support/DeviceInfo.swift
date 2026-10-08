@@ -135,7 +135,7 @@ public struct DeviceInfo {
 #if canImport(IOKit)
     private func value(forKey key: String) -> String? {
         let service = IOServiceGetMatchingService(
-            kIOMasterPortDefault,
+            kIOMainPortDefault,
             IOServiceMatching("IOPlatformExpertDevice")
         )
         var modelIdentifier: String?

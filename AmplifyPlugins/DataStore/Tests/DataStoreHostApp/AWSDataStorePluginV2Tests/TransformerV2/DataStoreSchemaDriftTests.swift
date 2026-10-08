@@ -49,7 +49,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase, @unchecked Sen
         try startAmplify {
             startSuccess.fulfill()
         }
-        await fulfillment(of: [startSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [startSuccess], timeout: networkTimeout)
         // Save some data with the missing enum case, do this by directly calling API
         // with a custom variables object. Later, decoding will fail.
         let saveSuccessWithTransformationError = expectation(description: "saved success with transformation error")
@@ -91,7 +91,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase, @unchecked Sen
             }
         }
 
-        await fulfillment(of: [saveSuccessWithTransformationError], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [saveSuccessWithTransformationError], timeout: networkTimeout)
 
         let dataStoreStartSuccess = expectation(description: "DataStore start success")
         Amplify.DataStore.start { result in
@@ -100,7 +100,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase, @unchecked Sen
             }
             dataStoreStartSuccess.fulfill()
         }
-        await fulfillment(of: [dataStoreStartSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [dataStoreStartSuccess], timeout: networkTimeout)
 
         // Assert that the sync engine does not retry on schema drift scenario
         guard let remoteSyncEngine = DataStoreInternal.getRemoteSyncEngine() else {
@@ -126,7 +126,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase, @unchecked Sen
                 syncEngineRestarting.fulfill()
             }
         }.store(in: &subscriptions)
-        await fulfillment(of: [syncEngineCleanedUp, syncEngineFailed], timeout: TestCommonConstants.networkTimeout)
-        await fulfillment(of: [syncEngineRestarting], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncEngineCleanedUp, syncEngineFailed], timeout: networkTimeout)
+        await fulfillment(of: [syncEngineRestarting], timeout: networkTimeout)
     }
 }

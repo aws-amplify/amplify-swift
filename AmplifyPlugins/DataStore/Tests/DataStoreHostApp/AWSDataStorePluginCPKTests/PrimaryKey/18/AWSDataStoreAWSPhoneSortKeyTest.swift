@@ -27,7 +27,7 @@ private struct TestModels: AmplifyModelRegistration {
 }
 
 
-class AWSDataStoreAWSPhoneSortKeyTest: AWSDataStoreSortKeyBaseTest {
+class AWSDataStoreAWSPhoneSortKeyTest: AWSDataStoreSortKeyBaseTest, @unchecked Sendable {
     func testCreateModel_withSortKeyInAWSPhoneType_success() async throws {
         try await setUp(models: TestModels())
         try await waitDataStoreReady()

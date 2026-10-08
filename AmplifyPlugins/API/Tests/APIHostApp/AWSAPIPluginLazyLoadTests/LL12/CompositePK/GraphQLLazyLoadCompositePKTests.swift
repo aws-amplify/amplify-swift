@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testConfigure() async throws {
         await setup(withModels: CompositePKModels())
@@ -44,8 +44,8 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
         }
         )
         let expectedDocument = """
-        query GetCompositePKParent($content: String!, $customId: ID!) {
-          getCompositePKParent(content: $content, customId: $customId) {
+        query GetCompositePKParent {
+          getCompositePKParent(content: "\(savedParent.content)", customId: "\(savedParent.customId)") {
             customId
             content
             createdAt

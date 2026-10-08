@@ -69,9 +69,10 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase, @unchecked Sendabl
         }
     }
 
-    func testCancelSendsCompletion() async {
+    func testCancelSendsCompletion() async throws {
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
-            MockAppSyncRealTimeClient()
+            mockAppSyncRealTimeClient
         })
         await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
@@ -108,6 +109,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase, @unchecked Sendabl
             valueListener: valueListener,
             completionListener: completionListener
         )
+        // Drive `.subscribing` once the operation's sink is attached, so `.connecting` is delivered.
+        try await mockAppSyncRealTimeClient.waitForSubscirbing()
         await fulfillment(of: [receivedValueConnecting], timeout: 5)
 
         let receivedCompletion = expectation(description: "Received completion")
@@ -197,11 +200,12 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase, @unchecked Sendabl
         XCTAssert(operation.isFinished)
     }
 
-    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
+    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async throws {
         let connectionCreation = expectation(description: "connection factory called")
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             connectionCreation.fulfill()
-            return MockAppSyncRealTimeClient()
+            return mockAppSyncRealTimeClient
         })
 
         await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
@@ -226,6 +230,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase, @unchecked Sendabl
             valueListener: valueListener,
             completionListener: nil
         )
+        // Drive `.subscribing` once the operation's sink is attached, so `.connecting` is delivered.
+        try await mockAppSyncRealTimeClient.waitForSubscirbing()
         await fulfillment(
             of: [receivedValue, connectionCreation],
             timeout: 5

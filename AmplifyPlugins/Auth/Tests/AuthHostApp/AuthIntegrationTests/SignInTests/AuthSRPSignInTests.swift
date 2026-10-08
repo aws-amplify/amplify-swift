@@ -10,7 +10,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-class AuthSRPSignInTests: AWSAuthBaseTest {
+class AuthSRPSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
@@ -249,7 +249,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///
     ///   DISABLED TEST, because it needs special setup
     func testNewPasswordRequired() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        try XCTSkipIf(true, "TODO: fix this test. Need custom resource")
 
         let username = "YOUR USERNAME CREATED IN COGNITO FOR TESTING TEMP PASSWORD FLOW"
         let tempPassword = "YOUR TEMP PASSWORD THAT WAS SET"

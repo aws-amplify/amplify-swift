@@ -79,7 +79,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase, @unc
             }
         }
 
-        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: networkTimeout)
     }
 
     func testSaveModelWithoutExplicitContentAndSync() async throws {
@@ -132,7 +132,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase, @unc
             }
         }
 
-        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: networkTimeout)
     }
 
     func saveTodo(content: String?) -> TodoWithDefaultValueV2? {
@@ -148,7 +148,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase, @unc
                 XCTFail("Failed \(error)")
             }
         }
-        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: networkTimeout)
         return result
     }
 }

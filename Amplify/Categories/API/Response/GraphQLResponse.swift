@@ -24,6 +24,11 @@ public enum GraphQLResponseError<ResponseType>: AmplifyError where ResponseType:
     /// A partially-successful response. The `ResponseType` associated value will contain as much of the payload as the
     /// service was able to fulfill, and the errors will be an array of GraphQLError that contain service-specific error
     /// messages.
+    ///
+    /// - Note: A mutation on a model with a relationship commonly lands here: the service redacts the related object,
+    ///   returning it as null, when it cannot determine that the related model shares the parent's authorization rules.
+    ///   The record itself is written and fully decoded, so the associated value is usable and the relationship can be
+    ///   loaded with a separate query.
     case partial(ResponseType, [GraphQLError])
 
     /// A successful, or partially-successful response from the server that could not be transformed into the specified

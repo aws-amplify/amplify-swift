@@ -12,7 +12,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 
-final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
+final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest, @unchecked Sendable {
 
     func testSave() async throws {
         await setup(withModels: PostComment4V2Models())
@@ -304,6 +304,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         try await mutate(.create(post))
+        let comment = Comment(content: "content", post: post)
         let connected = expectation(description: "subscription connected")
         let onCreatedComment = expectation(description: "onCreatedComment received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
@@ -317,6 +318,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: comment) else { continue }
                         switch result {
                         case .success(let createdComment):
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
@@ -333,7 +335,6 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         }
 
         await fulfillment(of: [connected], timeout: 10)
-        let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment))
         await fulfillment(of: [onCreatedComment], timeout: 10)
         subscription.cancel()
@@ -345,6 +346,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         try await mutate(.create(post))
+        let comment = Comment(content: "content", post: post)
         let connected = expectation(description: "subscription connected")
         let onCreatedComment = expectation(description: "onCreatedComment received")
         let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(
@@ -362,6 +364,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: comment) else { continue }
                         switch result {
                         case .success(let createdComment):
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
@@ -378,7 +381,6 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         }
 
         await fulfillment(of: [connected], timeout: 20)
-        let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment, includes: { comment in [comment.post] }))
         await fulfillment(of: [onCreatedComment], timeout: 20)
         subscriptionIncludes.cancel()
@@ -401,6 +403,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: post) else { continue }
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
@@ -443,6 +446,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                             connected.fulfill()
                         }
                     case .data(let result):
+                        guard !isFromAnotherRecord(result, expected: post) else { continue }
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")

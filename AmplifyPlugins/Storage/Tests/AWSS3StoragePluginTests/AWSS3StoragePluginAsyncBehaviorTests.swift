@@ -51,6 +51,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         queue = nil
     }
 
+    @available(*, deprecated)
     func testPluginDownloadDataAsync() async throws {
         let input = Data("AWS".utf8)
         storageService.storageServiceDownloadEvents = [.completed(input)]
@@ -61,6 +62,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
+    @available(*, deprecated)
     func testPluginDownloadFileAsync() async throws {
         storageService.storageServiceDownloadEvents = [.completed(nil)]
 
@@ -73,6 +75,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
+    @available(*, deprecated)
     func testPluginUploadDataAsync() async throws {
         storageService.storageServiceUploadEvents = [.completedVoid]
         let input = try XCTUnwrap(testKey)
@@ -86,6 +89,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(1, storageService.uploadCalled)
     }
 
+    @available(*, deprecated)
     func testPluginUploadFileAsync() async throws {
         storageService.storageServiceUploadEvents = [.completedVoid]
         let key = try XCTUnwrap(testKey)
@@ -104,6 +108,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(1, storageService.uploadCalled)
     }
 
+    @available(*, deprecated)
     func testPluginRemoveAsync() async throws {
         storageService.storageServiceDeleteEvents = [.completed(())]
         let key = try XCTUnwrap(testKey)
@@ -112,6 +117,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(1, storageService.deleteCalled)
     }
 
+    @available(*, deprecated)
     func testPluginListAsync() async throws  {
         let testKey = UUID().uuidString
         let item = StorageListResult.Item(key: testKey)
@@ -127,6 +133,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase, @unchecked Sendable {
     /// - Given: A plugin configured with a mocked service
     /// - When: The list API is invoked with subpathStrategy set to .exclude
     /// - Then: The list of excluded subpaths and the list of items should be populated
+    @available(*, deprecated)
     func testPluginListWithCommonPrefixesAsync() async throws  {
         storageService.listHandler = { _, _ in
             return .init(

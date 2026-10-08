@@ -38,9 +38,14 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase, @unchecked Sendable {
     }
 
     override func tearDown() async throws {
+        // Stop the sync engine and let any in-flight sync work unwind BEFORE `Amplify.reset()` nils
+        // the API plugin's `session`. Otherwise a late DataStore outgoing mutation reaches the
+        // force-unwrapped `session` and crashes with "Unexpectedly found nil while implicitly
+        // unwrapping an Optional value". (The prior settle sat after reset, where it did not help.)
+        try? await Amplify.DataStore.stop()
         try await Amplify.DataStore.clear()
+        try? await Task.sleep(seconds: 1)
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
     }
 
     // swiftlint:enable force_try

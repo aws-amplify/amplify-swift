@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 // Transaction body succeeds locally, then fails on close (the reporter's SQLite error).
-final class RollbackFailingStorageAdapter: MockSQLiteStorageEngineAdapter {
+final class RollbackFailingStorageAdapter: MockSQLiteStorageEngineAdapter, @unchecked Sendable {
     override func exists(
         _ modelSchema: ModelSchema,
         withIdentifier id: ModelIdentifierProtocol,
@@ -44,7 +44,7 @@ final class RollbackFailingStorageAdapter: MockSQLiteStorageEngineAdapter {
 }
 
 // Local write returns a failure without throwing.
-final class LocalSaveFailingStorageAdapter: MockSQLiteStorageEngineAdapter {
+final class LocalSaveFailingStorageAdapter: MockSQLiteStorageEngineAdapter, @unchecked Sendable {
     override func exists(
         _ modelSchema: ModelSchema,
         withIdentifier id: ModelIdentifierProtocol,
@@ -178,7 +178,7 @@ class StorageEngineTestsSaveDoubleResume: XCTestCase {
             return
         }
 
-        let queried = try await withCheckedContinuation { continuation in
+        let queried = await withCheckedContinuation { continuation in
             storageEngine.query(
                 Post.self,
                 modelSchema: Post.schema,

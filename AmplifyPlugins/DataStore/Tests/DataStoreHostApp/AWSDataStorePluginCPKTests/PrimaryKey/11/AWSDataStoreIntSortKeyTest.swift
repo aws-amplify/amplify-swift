@@ -92,7 +92,8 @@ class AWSDataStoreIntSortKeyTest: XCTestCase, @unchecked Sendable {
             }.store(in: &requests)
 
         try await Amplify.DataStore.save(post)
-        await fulfillment(of: [postCreated], timeout: 5)
+        // Live save -> syncReceived round-trip; 5s is far too tight, use the same budget as `.ready`.
+        await fulfillment(of: [postCreated], timeout: 60)
     }
 
     func testQueryCreatedModel_withSortKeyInIntegerType_success() async throws {
@@ -110,7 +111,8 @@ class AWSDataStoreIntSortKeyTest: XCTestCase, @unchecked Sendable {
             }.store(in: &requests)
 
         try await Amplify.DataStore.save(post)
-        await fulfillment(of: [postCreated], timeout: 5)
+        // Live save -> syncReceived round-trip; 5s is far too tight, use the same budget as `.ready`.
+        await fulfillment(of: [postCreated], timeout: 60)
 
         let queryResult = try await Amplify.API.query(
             request: .get(

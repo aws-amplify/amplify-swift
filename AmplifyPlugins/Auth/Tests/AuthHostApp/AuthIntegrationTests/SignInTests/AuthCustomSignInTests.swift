@@ -9,7 +9,7 @@ import AWSCognitoAuthPlugin
 import XCTest
 @testable import Amplify
 
-class AuthCustomSignInTests: AWSAuthBaseTest {
+class AuthCustomSignInTests: AWSAuthBaseTest, @unchecked Sendable {
 
     override func setUp() async throws {
         try await super.setUp()
@@ -53,7 +53,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///     }
     ///
     func testSuccessfulSignInWithCustomAuthSRP() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        try XCTSkipIf(true, "TODO: fix this test. Need custom resource")
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -118,7 +118,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///     }
     ///
     func testRuntimeAuthFlowSwitch() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        try XCTSkipIf(true, "TODO: fix this test. Need custom resource")
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -192,7 +192,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///        return event;
     ///    };
     func testSuccessfulSignInWithCustomAuth() async throws {
-        throw XCTSkip("TODO: fix this test. Need custom resource")
+        try XCTSkipIf(true, "TODO: fix this test. Need custom resource")
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"

@@ -101,11 +101,12 @@ struct UserPoolSignInHelper: DefaultLogger {
                let idToken = authenticationResult.idToken,
                let accessToken = authenticationResult.accessToken,
                let refreshToken = authenticationResult.refreshToken {
+                // `as Int?` selects the non-deprecated internal init
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
                     accessToken: accessToken,
                     refreshToken: refreshToken,
-                    expiresIn: authenticationResult.expiresIn
+                    expiresIn: authenticationResult.expiresIn as Int?
                 )
                 let signedInData = SignedInData(
                     signedInDate: Date(),

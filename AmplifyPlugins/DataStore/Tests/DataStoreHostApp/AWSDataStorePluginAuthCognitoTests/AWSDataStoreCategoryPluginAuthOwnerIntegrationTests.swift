@@ -9,7 +9,7 @@ import AWSPluginsCore
 import XCTest
 @testable import Amplify
 
-class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseTest {
+class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseTest, @unchecked Sendable {
 
     /// Given: a user signed in with CognitoUserPools, a model with a custom implicit owner
     /// When: DataStore query/mutation operations are sent with CognitoUserPools

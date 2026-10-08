@@ -182,7 +182,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase, @unchecked Sendable {
         await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         _ = try await createTodo(id: uuid, name: name)
         _ = try await createTodo(id: uuid2, name: name)
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Live create -> subscription round-trip; 10s (networkTimeout) is too tight.
+        await fulfillment(of: [progressInvoked], timeout: 30)
         subscription.cancel()
         await fulfillment(of: [disconnectedInvoked], timeout: TestCommonConstants.networkTimeout)
     }

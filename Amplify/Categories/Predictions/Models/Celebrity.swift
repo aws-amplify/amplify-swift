@@ -12,7 +12,7 @@ public extension Predictions {
     /// Describes a celebrity identified in an image
     /// with information about its location(bounding box) and
     /// facial features(landmarks)
-    struct Celebrity {
+    struct Celebrity: Sendable {
         public let metadata: Metadata
         public let boundingBox: CGRect
         public let landmarks: [Landmark]

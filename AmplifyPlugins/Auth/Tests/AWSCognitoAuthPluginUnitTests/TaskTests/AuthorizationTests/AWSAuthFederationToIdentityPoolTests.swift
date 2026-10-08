@@ -15,7 +15,7 @@ import XCTest
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
-class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
+class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests, @unchecked Sendable {
 
     /// Test federated to identity pool
     ///

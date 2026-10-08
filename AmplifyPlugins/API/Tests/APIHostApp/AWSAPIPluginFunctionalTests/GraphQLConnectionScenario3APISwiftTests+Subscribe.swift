@@ -87,6 +87,9 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        // Use a longer timeout than `networkTimeout` for the delivered events: AppSync can take a
+        // little while to fan mutation events out to a freshly-registered subscription, and the
+        // tvOS CI runners are the slowest lane. Matches `testOnCreateCommentSubscriptionWithModel`.
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 }

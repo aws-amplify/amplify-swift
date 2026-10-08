@@ -27,7 +27,8 @@ public extension Post8V2 {
   static let schema = defineSchema { model in
     let post8V2 = Post8V2.keys
 
-    model.pluralName = "Post8V2s"
+    model.listPluralName = "Post8V2s"
+    model.syncPluralName = "Post8V2s"
 
     model.attributes(
       .index(fields: ["blogId"], name: "postByBlog"),

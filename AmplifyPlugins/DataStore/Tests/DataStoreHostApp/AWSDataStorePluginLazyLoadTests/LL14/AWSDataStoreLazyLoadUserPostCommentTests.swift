@@ -11,7 +11,7 @@ import XCTest
 
 @testable import Amplify
 
-final class AWSDataStoreLazyLoadUserPostCommentTests: AWSDataStoreLazyLoadBaseTest {
+final class AWSDataStoreLazyLoadUserPostCommentTests: AWSDataStoreLazyLoadBaseTest, @unchecked Sendable {
 
     func testStart() async throws {
         await setup(withModels: UserPostCommentModels())

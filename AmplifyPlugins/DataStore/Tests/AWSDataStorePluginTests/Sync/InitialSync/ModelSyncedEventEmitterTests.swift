@@ -285,6 +285,8 @@ class ModelSyncedEventEmitterTests: XCTestCase, @unchecked Sendable {
             }
         }
 
+        // `UncheckedSendable`: this stress test reads `dispatchedModelSyncedEvent` concurrently on purpose (#1483).
+        let sendableEmitter = UncheckedSendable(emitter)
         DispatchQueue.concurrentPerform(iterations: 3_000) { _ in
             let index = Int.random(in: 1 ... 2)
             if index == 1 {
@@ -292,7 +294,7 @@ class ModelSyncedEventEmitterTests: XCTestCase, @unchecked Sendable {
             } else if index == 2 {
                 reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
             }
-            _ = emitter.dispatchedModelSyncedEvent
+            _ = sendableEmitter.value.dispatchedModelSyncedEvent
         }
 
         await fulfillment(of: [modelSyncedReceived, mutationEventAppliedReceived, mutationEventDroppedReceived], timeout: 10)

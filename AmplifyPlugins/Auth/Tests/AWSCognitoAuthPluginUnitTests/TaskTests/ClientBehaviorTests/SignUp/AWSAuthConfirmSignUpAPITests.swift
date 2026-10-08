@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @_spi(UnknownAWSHTTPServiceError) import AWSClientRuntime
 
-class AWSAuthConfirmSignUpAPITests: BasePluginTest {
+class AWSAuthConfirmSignUpAPITests: BasePluginTest, @unchecked Sendable {
 
     let options = AuthConfirmSignUpRequest.Options()
 

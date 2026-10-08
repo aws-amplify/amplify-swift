@@ -186,7 +186,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase, @uncheck
         let commentId1 = UUID().uuidString
         let commentId2 = UUID().uuidString
 
-        let task = Task {
+        let observeTask = Task {
             let mutationEvents = Amplify.DataStore.observe(Comment6.self)
             do {
                 for try await mutationEvent in mutationEvents {
@@ -210,6 +210,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase, @uncheck
         _ = try await saveComment(id: commentId2, post: post2, content: "content")
 
         await fulfillment(of: [remoteEventReceived], timeout: 30)
+        observeTask.cancel()
 
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         var processedSoFar = 0

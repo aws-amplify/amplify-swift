@@ -34,7 +34,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
 
         let newPost = Post(
             title: "MyPost",
@@ -353,7 +353,6 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase, @unchecke
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
-        let apiQuerySuccess = expectation(description: "API query is successful")
         let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
         switch mutationSyncResult {
         case .success(let data):

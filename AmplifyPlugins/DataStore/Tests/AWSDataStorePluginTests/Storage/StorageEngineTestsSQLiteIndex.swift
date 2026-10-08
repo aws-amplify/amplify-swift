@@ -16,7 +16,7 @@ import XCTest
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
-class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
+class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase, @unchecked Sendable {
 
     // number of records to be created
     let numberOfRecords = 1_000

@@ -45,6 +45,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase, @unchecked Sendab
     }
 
     override func tearDown() async throws {
+        // Let any in-flight Pinpoint work (event submission / endpoint updates, which read
+        // credentials through Amplify.Auth) finish before `Amplify.reset()` tears down the Auth
+        // category. Otherwise a late task crashes with "Authentication category is not configured".
+        try await Task.sleep(nanoseconds: 1_000_000_000)
         await Amplify.reset()
     }
 
@@ -269,7 +273,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase, @unchecked Sendab
     /// When: An analytics event is recorded and flushed with global properties registered
     /// Then: Flush Hub event is received with global properties
     func testRegisterGlobalProperties() async throws {
-        throw XCTSkip("Race condition - registerGlobalProperties does async work in a Task")
+        try XCTSkipIf(true, "Race condition - registerGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -327,7 +331,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase, @unchecked Sendab
     /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
     func testUnRegisterGlobalProperties() async throws {
-        throw XCTSkip("Race condition - unregisterGlobalProperties does async work in a Task")
+        try XCTSkipIf(true, "Race condition - unregisterGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
